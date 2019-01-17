@@ -1,5 +1,4 @@
 # DeedPlanner-3
-============
 
 Deed planner/house calculator for Wurm Online - public repository.
 
