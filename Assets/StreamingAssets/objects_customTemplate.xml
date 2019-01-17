@@ -1,0 +1,27 @@
+<!-- this is template of custom DeedPlanner database file. You can use it to easily transfer your custom entites between the DeedPlanner versions. This might be useful for future PMK's, Wurm Unlimited servers or people who want to keep DeedPlanner database up to date before official patch will come live. -->
+<!-- you can copy and rename this file - as long as its format is xml and name starts with "objects", it will be loaded by DeedPlanner. -->
+<!-- it is good practice to also keep custom models/textures in new folder inside the "Data" folder - keep in mind that models and textures inside "official" folders can change without any warning, so assets inside custom folders should be self-contained. -->
+<entities>
+	<grounds>
+		<!-- add custom ground types here -->
+	</grounds>
+	<floors>
+		<!-- add custom floor/opening/staircase types here -->
+	</floors>
+	<walls>
+		<!-- add custom wall/fence types here -->
+	</walls>
+	<roofs>
+		<!-- add custom roof types here -->
+	</roofs>
+	<objects>
+		<!-- add custom object types here -->
+	</objects>
+	<animals>
+		<!-- add custom animal types here -->
+	</animals>
+	<caves>
+		<!-- add custom cave wall/floor types here -->
+	</caves>
+	<!-- no way to add custom borders or bridges (for now) -->
+</entities>
