@@ -1,0 +1,120 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml;
+using UnityEngine;
+using Warlander.Deedplanner.Utils;
+
+namespace Warlander.Deedplanner.Data
+{
+    public static class DataLoader
+    {
+
+        private static List<string> shortNames = new List<string>();
+
+        public static void LoadData()
+        {
+            string[] objectFiles = Directory.GetFiles(Application.streamingAssetsPath);
+            objectFiles = objectFiles
+                .Where((name) => Path.GetFileName(name).StartsWith("objects"))
+                .Where((name) => name.EndsWith("xml"))
+                .ToArray();
+
+            LoadData(objectFiles);
+        }
+
+        private static void LoadData(string[] locations)
+        {
+            XmlDocument[] documents = new XmlDocument[locations.Length];
+
+            for (int i = 0; i < documents.Length; i++)
+            {
+                documents[i] = new XmlDocument();
+                documents[i].Load(locations[i]);
+            }
+
+            foreach (XmlDocument document in documents)
+            {
+                LoadGrounds(document);
+            }
+        }
+
+        private static void LoadGrounds(XmlDocument document)
+        {
+            XmlNodeList entities = document.GetElementsByTagName("ground");
+
+            foreach (XmlElement element in entities)
+            {
+                string name = element.GetAttribute("name");
+                string shortName = element.GetAttribute("shortname");
+
+                Debug.Log("Loading ground " + name);
+
+                bool unique = VerifyShortName(shortName);
+                if (!unique)
+                {
+                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    continue;
+                }
+
+                TextureReference tex2d = null;
+                TextureReference tex3d = null;
+                List<string[]> categories = new List<string[]>();
+                bool diagonal = false;
+
+                foreach (XmlElement child in element)
+                {
+                    switch (child.LocalName)
+                    {
+                        case "tex":
+                            string target = child.GetAttribute("target");
+                            if (target == "editmode")
+                            {
+                                tex2d = TextureReference.GetTextureReference(child);
+                            }
+                            else if (target == "previewmode")
+                            {
+                                tex3d = TextureReference.GetTextureReference(child);
+                            }
+                            else
+                            {
+                                tex2d = TextureReference.GetTextureReference(child);
+                                tex3d = tex2d;
+                            }
+                            break;
+                        case "category":
+                            categories.Add(child.InnerText.Split('/'));
+                            break;
+                        case "diagonal":
+                            diagonal = true;
+                            break;
+                    }
+                }
+
+                if (tex2d == null || tex3d == null)
+                {
+                    Debug.LogWarning("No textures loaded, aborting");
+                }
+
+                GroundData data = new GroundData(name, shortName, tex2d, tex3d, diagonal);
+                Data.Grounds[shortName] = data;
+                Debug.Log("Ground data " + name + " loaded and ready to use!");
+            }
+        }
+
+        private static bool VerifyShortName(string shortName)
+        {
+            if (shortNames.Contains(shortName))
+            {
+                return false;
+            }
+
+            shortNames.Add(shortName);
+            return true;
+        }
+
+    }
+}

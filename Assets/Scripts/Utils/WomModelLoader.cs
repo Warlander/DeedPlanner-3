@@ -5,35 +5,43 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace Assets.ModelViewer.Scripts.Utils {
+namespace Warlander.Deedplanner.Utils
+{
 
-    public static class WomModelLoader {
+    public static class WomModelLoader
+    {
 
-        public static GameObject LoadModel(string filePath) {
+        public static GameObject LoadModel(string filePath)
+        {
             BinaryReader source = new BinaryReader(File.OpenRead(filePath));
             string fileFolder = Path.GetDirectoryName(filePath);
 
             GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(filePath));
 
-            try {
+            try
+            {
                 int meshCount = source.ReadInt32();
-                for (int i = 0; i < meshCount; i++) {
+                for (int i = 0; i < meshCount; i++)
+                {
                     GameObject meshObject = LoadMeshObject(source, fileFolder);
                     meshObject.transform.SetParent(modelGameObject.transform);
                 }
 
                 return modelGameObject;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 GameObject.Destroy(modelGameObject);
                 throw ex;
             }
-            finally {
+            finally
+            {
                 source.Close();
             }
         }
 
-        private static GameObject LoadMeshObject(BinaryReader source, string fileFolder) {
+        private static GameObject LoadMeshObject(BinaryReader source, string fileFolder)
+        {
             Mesh loadedMesh = LoadMesh(source);
             GameObject meshObject = new GameObject(loadedMesh.name);
 
@@ -41,11 +49,14 @@ namespace Assets.ModelViewer.Scripts.Utils {
             MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
             meshFilter.mesh = loadedMesh;
 
-            try {
+            try
+            {
                 int materialsCount = source.ReadInt32();
                 Material loadedMaterial = LoadMaterial(source, fileFolder);
                 meshRenderer.material = loadedMaterial;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 GameObject.Destroy(meshObject);
                 throw ex;
             }
@@ -53,7 +64,8 @@ namespace Assets.ModelViewer.Scripts.Utils {
             return meshObject;
         }
 
-        private static Mesh LoadMesh(BinaryReader source) {
+        private static Mesh LoadMesh(BinaryReader source)
+        {
             bool hasTangents = source.ReadBoolean();
             bool hasBinormal = source.ReadBoolean();
             bool hasVertexColor = source.ReadBoolean();
@@ -66,18 +78,22 @@ namespace Assets.ModelViewer.Scripts.Utils {
             List<Color> colorList = new List<Color>();
             List<Vector4> tangentsList = new List<Vector4>();
 
-            for (int i = 0; i < verticesCount; i++) {
+            for (int i = 0; i < verticesCount; i++)
+            {
                 vertexList.Add(new Vector3(source.ReadSingle(), source.ReadSingle(), source.ReadSingle()));
                 normalList.Add(new Vector3(source.ReadSingle(), source.ReadSingle(), source.ReadSingle()));
                 uvList.Add(new Vector2(source.ReadSingle(), source.ReadSingle()));
 
-                if (hasVertexColor) {
+                if (hasVertexColor)
+                {
                     colorList.Add(new Color(source.ReadSingle(), source.ReadSingle(), source.ReadSingle()));
                 }
-                if (hasTangents) {
+                if (hasTangents)
+                {
                     tangentsList.Add(new Vector4(source.ReadSingle(), source.ReadSingle(), source.ReadSingle()));
                 }
-                if (hasBinormal) {
+                if (hasBinormal)
+                {
                     source.ReadSingle();
                     source.ReadSingle();
                     source.ReadSingle();
@@ -87,7 +103,8 @@ namespace Assets.ModelViewer.Scripts.Utils {
             int trianglesCount = source.ReadInt32();
             int[] triangles = new int[trianglesCount];
 
-            for (int i = 0; i < trianglesCount; ++i) {
+            for (int i = 0; i < trianglesCount; ++i)
+            {
                 triangles[i] = source.ReadInt16();
             }
 
@@ -96,10 +113,12 @@ namespace Assets.ModelViewer.Scripts.Utils {
             mesh.SetVertices(vertexList);
             mesh.SetNormals(normalList);
             mesh.SetUVs(0, uvList);
-            if (colorList.Count != 0) {
+            if (colorList.Count != 0)
+            {
                 mesh.SetColors(colorList);
             }
-            if (tangentsList.Count != 0) {
+            if (tangentsList.Count != 0)
+            {
                 mesh.SetTangents(tangentsList);
             }
             mesh.SetTriangles(triangles, 0);
@@ -107,7 +126,8 @@ namespace Assets.ModelViewer.Scripts.Utils {
             return mesh;
         }
 
-        private static Material LoadMaterial(BinaryReader source, string modelFolder) {
+        private static Material LoadMaterial(BinaryReader source, string modelFolder)
+        {
             string texName = ReadString(source);
             string texExtension = Path.GetExtension(texName);
             string matName = ReadString(source);
@@ -117,28 +137,24 @@ namespace Assets.ModelViewer.Scripts.Utils {
             material.SetFloat("_Mode", 1);
 
             string texLocation = Path.Combine(modelFolder, texName);
-            if (!string.IsNullOrEmpty(texName)) {
-                byte[] texBytes = File.ReadAllBytes(texLocation);
-                Texture2D texture;
-                if (texExtension == ".dds") {
-                    texture = LoadTextureDXT(texBytes);
-                }
-                else {
-                    texture = new Texture2D(0, 0);
-                    texture.LoadImage(texBytes);
-                }
+            Texture2D texture = LoadTexture(texLocation);
 
+            if (texture)
+            {
                 material.SetTexture("_MainTex", texture);
             }
-            else {
+            else
+            {
                 material.SetColor("_Color", new Color(1, 1, 1, 0));
             }
-            
+
             material.SetFloat("_Glossiness", 0);
             bool hasMaterialProperties = source.ReadBoolean();
-            if (hasMaterialProperties) {
+            if (hasMaterialProperties)
+            {
                 bool hasEmissive = source.ReadBoolean();
-                if (hasEmissive) {
+                if (hasEmissive)
+                {
                     source.ReadSingle();
                     source.ReadSingle();
                     source.ReadSingle();
@@ -146,12 +162,14 @@ namespace Assets.ModelViewer.Scripts.Utils {
                 }
 
                 bool hasShininess = source.ReadBoolean();
-                if (hasShininess) {
+                if (hasShininess)
+                {
                     source.ReadSingle();
                 }
 
                 bool hasSpecular = source.ReadBoolean();
-                if (hasSpecular) {
+                if (hasSpecular)
+                {
                     source.ReadSingle();
                     source.ReadSingle();
                     source.ReadSingle();
@@ -159,7 +177,8 @@ namespace Assets.ModelViewer.Scripts.Utils {
                 }
 
                 bool hasTransparencyColor = source.ReadBoolean();
-                if (hasTransparencyColor) {
+                if (hasTransparencyColor)
+                {
                     source.ReadSingle();
                     source.ReadSingle();
                     source.ReadSingle();
@@ -170,7 +189,30 @@ namespace Assets.ModelViewer.Scripts.Utils {
             return material;
         }
 
-        private static Texture2D LoadTextureDXT(byte[] ddsBytes) {
+        public static Texture2D LoadTexture(string location)
+        {
+            if (string.IsNullOrEmpty(location))
+            {
+                return null;
+            }
+
+            byte[] texBytes = File.ReadAllBytes(location);
+            Texture2D texture;
+            if (Path.GetExtension(location) == ".dds")
+            {
+                texture = LoadTextureDXT(texBytes);
+            }
+            else
+            {
+                texture = new Texture2D(0, 0);
+                texture.LoadImage(texBytes);
+            }
+
+            return texture;
+        }
+
+        private static Texture2D LoadTextureDXT(byte[] ddsBytes)
+        {
             byte ddsSizeCheck = ddsBytes[4];
             if (ddsSizeCheck != 124)
                 throw new Exception("Invalid DDS DXTn texture. Unable to read");  //this header byte should be 124 for DDS image files
@@ -201,7 +243,8 @@ namespace Assets.ModelViewer.Scripts.Utils {
             return (texture);
         }
 
-        private static string ReadString(BinaryReader source) {
+        private static string ReadString(BinaryReader source)
+        {
             int size = source.ReadInt32();
             byte[] bytes = source.ReadBytes(size);
             return Encoding.ASCII.GetString(bytes);
