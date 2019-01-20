@@ -15,7 +15,7 @@ namespace Warlander.Deedplanner.Gui
         {
             if (windowToClose)
             {
-                Destroy(windowToClose);
+                windowToClose.SetActive(false);
             }
         }
 
