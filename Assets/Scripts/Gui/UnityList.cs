@@ -4,8 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
+public delegate void UnityListValueChangedHandler(object sender, object value);
+
 public class UnityList : MonoBehaviour
 {
+
+    public event UnityListValueChangedHandler ValueChanged;
 
     // we want these fields to be settable via inspector, but not via code
     [SerializeField]
@@ -49,6 +53,13 @@ public class UnityList : MonoBehaviour
         UnityListElement newElement = Instantiate(listElementPrefab);
         newElement.Toggle.group = toggleGroup;
         newElement.Value = value;
+        newElement.Toggle.onValueChanged.AddListener(toggled =>
+        {
+            if (toggled && ValueChanged != null)
+            {
+                ValueChanged(this, newElement.Value);
+            }
+        });
         newElement.transform.SetParent(listElementsParent);
 
         if (GetComponentsInChildren<UnityListElement>().Length == 1)
@@ -58,4 +69,5 @@ public class UnityList : MonoBehaviour
 
         return newElement;
     }
+
 }
