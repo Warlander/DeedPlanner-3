@@ -37,11 +37,6 @@ namespace Warlander.Deedplanner.Gui
             return windowClone;
         }
 
-        public void OnLayoutsButtonPressed()
-        {
-
-        }
-
     }
 
 }
