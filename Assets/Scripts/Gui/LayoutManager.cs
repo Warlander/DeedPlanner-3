@@ -7,7 +7,7 @@ namespace Warlander.Deedplanner.Gui
     public class LayoutManager : MonoBehaviour
     {
 
-        private int activeWindow = 0;
+        public int ActiveWindow { get; private set; }
         private Layout currentLayout = Layout.Single;
 
         [SerializeField]
@@ -44,10 +44,10 @@ namespace Warlander.Deedplanner.Gui
                     Splits[2].gameObject.SetActive(false);
                     Splits[3].gameObject.SetActive(false);
                     Splits[4].gameObject.SetActive(false);
-                    if (activeWindow != 0)
+                    if (ActiveWindow != 0)
                     {
-                        IndicatorButtons[activeWindow].isOn = false;
-                        activeWindow = 0;
+                        IndicatorButtons[ActiveWindow].isOn = false;
+                        ActiveWindow = 0;
                         IndicatorButtons[0].isOn = true;
                     }
                     break;
@@ -67,10 +67,10 @@ namespace Warlander.Deedplanner.Gui
                     Splits[2].gameObject.SetActive(false);
                     Splits[3].gameObject.SetActive(false);
                     Splits[4].gameObject.SetActive(false);
-                    if (activeWindow != 0 && activeWindow != 2)
+                    if (ActiveWindow != 0 && ActiveWindow != 2)
                     {
-                        IndicatorButtons[activeWindow].isOn = false;
-                        activeWindow = 0;
+                        IndicatorButtons[ActiveWindow].isOn = false;
+                        ActiveWindow = 0;
                         IndicatorButtons[0].isOn = true;
                     }
                     break;
@@ -90,10 +90,10 @@ namespace Warlander.Deedplanner.Gui
                     Splits[2].gameObject.SetActive(false);
                     Splits[3].gameObject.SetActive(false);
                     Splits[4].gameObject.SetActive(false);
-                    if (activeWindow != 0 && activeWindow != 1)
+                    if (ActiveWindow != 0 && ActiveWindow != 1)
                     {
-                        IndicatorButtons[activeWindow].isOn = false;
-                        activeWindow = 0;
+                        IndicatorButtons[ActiveWindow].isOn = false;
+                        ActiveWindow = 0;
                         IndicatorButtons[0].isOn = true;
                     }
                     break;
@@ -113,10 +113,10 @@ namespace Warlander.Deedplanner.Gui
                     Splits[2].gameObject.SetActive(true);
                     Splits[3].gameObject.SetActive(false);
                     Splits[4].gameObject.SetActive(false);
-                    if (activeWindow != 0 && activeWindow != 2 && activeWindow != 3)
+                    if (ActiveWindow != 0 && ActiveWindow != 2 && ActiveWindow != 3)
                     {
-                        IndicatorButtons[activeWindow].isOn = false;
-                        activeWindow = 0;
+                        IndicatorButtons[ActiveWindow].isOn = false;
+                        ActiveWindow = 0;
                         IndicatorButtons[0].isOn = true;
                     }
                     break;
@@ -136,10 +136,10 @@ namespace Warlander.Deedplanner.Gui
                     Splits[2].gameObject.SetActive(false);
                     Splits[3].gameObject.SetActive(true);
                     Splits[4].gameObject.SetActive(false);
-                    if (activeWindow != 0 && activeWindow != 1 && activeWindow != 2)
+                    if (ActiveWindow != 0 && ActiveWindow != 1 && ActiveWindow != 2)
                     {
-                        IndicatorButtons[activeWindow].isOn = false;
-                        activeWindow = 0;
+                        IndicatorButtons[ActiveWindow].isOn = false;
+                        ActiveWindow = 0;
                         IndicatorButtons[0].isOn = true;
                     }
                     break;
@@ -167,15 +167,15 @@ namespace Warlander.Deedplanner.Gui
         {
             if (IndicatorButtons[window].isOn)
             {
-                activeWindow = window;
+                ActiveWindow = window;
             }
         }
 
         public void OnActiveWindowChange(int window)
         {
-            IndicatorButtons[activeWindow].isOn = false;
+            IndicatorButtons[ActiveWindow].isOn = false;
             IndicatorButtons[window].isOn = true;
-            activeWindow = window;
+            ActiveWindow = window;
         }
 
     }
