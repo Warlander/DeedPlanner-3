@@ -19,10 +19,13 @@ namespace Warlander.Deedplanner.Logic
         {
             for (int i = 0; i < 4; i++)
             {
+                int index = i;
                 GameObject screen = screens[i];
                 screen.GetComponent<MouseEventCatcher>().OnDragEvent.AddListener(data =>
                 {
-                    cameras[0].transform.Rotate(data.delta.y * MouseSensitivity, data.delta.x * MouseSensitivity, 0, Space.World);
+                    Vector3 rotation = cameras[index].transform.localRotation.eulerAngles;
+                    rotation += new Vector3(-data.delta.y * MouseSensitivity, data.delta.x * MouseSensitivity, 0);
+                    cameras[index].transform.localRotation = Quaternion.Euler(rotation);
                 });
             }
         }
