@@ -8,7 +8,11 @@ namespace Warlander.Deedplanner.Logic
     public class CameraManager : MonoBehaviour
     {
 
+        [SerializeField]
+        private LayoutManager layoutManager;
+
         public float MouseSensitivity = 0.5f;
+        public float movementSpeed = 0.5f;
 
         [SerializeField]
         private Camera[] cameras = new Camera[4];
@@ -32,7 +36,9 @@ namespace Warlander.Deedplanner.Logic
 
         void Update()
         {
-
+            int activeWindow = layoutManager.ActiveWindow;
+            Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+            cameras[activeWindow].transform.Translate(movement * movementSpeed, Space.Self);
         }
     }
 }
