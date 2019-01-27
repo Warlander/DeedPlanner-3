@@ -19,7 +19,7 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField]
         private GameObject[] screens = new GameObject[4];
 
-        void Start()
+        private void Start()
         {
             for (int i = 0; i < 4; i++)
             {
@@ -34,7 +34,7 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
-        void Update()
+        private void Update()
         {
             int activeWindow = layoutManager.ActiveWindow;
             Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
