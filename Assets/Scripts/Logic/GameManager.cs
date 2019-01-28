@@ -17,6 +17,9 @@ namespace Warlander.Deedplanner.Logic
         public UnityMap UnityMap { get; private set; }
         private Tab currentTab;
 
+        [SerializeField]
+        private GameObject water;
+
         public Tab CurrentTab {
             get {
                 return currentTab;
@@ -40,6 +43,9 @@ namespace Warlander.Deedplanner.Logic
 
         private void Start()
         {
+            // we are disabling water to avoid annoying editor errors
+            water.SetActive(true);
+
             Debug.Log("Loading data");
             DataLoader.LoadData();
 

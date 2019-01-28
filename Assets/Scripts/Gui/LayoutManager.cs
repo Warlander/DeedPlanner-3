@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Warlander.Deedplanner.Logic;
+using System.Linq;
 
 namespace Warlander.Deedplanner.Gui
 {
@@ -7,7 +9,9 @@ namespace Warlander.Deedplanner.Gui
     public class LayoutManager : MonoBehaviour
     {
 
-        public int ActiveWindow { get; private set; }
+        public static LayoutManager Instance { get; private set; }
+
+        private int activeWindow;
         private Layout currentLayout = Layout.Single;
 
         [SerializeField]
@@ -20,7 +24,69 @@ namespace Warlander.Deedplanner.Gui
         private RectTransform HorizontalBottomScreenHolder;
         [SerializeField]
         private RectTransform[] Splits = new RectTransform[5];
-        
+        [SerializeField]
+        private MultiCamera[] cameras = new MultiCamera[4];
+        [SerializeField]
+        private ToggleGroup cameraModeGroup;
+        [SerializeField]
+        private Toggle[] cameraModeToggles = new Toggle[4];
+        [SerializeField]
+        private ToggleGroup floorGroup;
+        [SerializeField]
+        private Toggle[] positiveFloorToggles = new Toggle[16];
+        [SerializeField]
+        private Toggle[] negativeFloorToggles = new Toggle[6];
+
+        public int ActiveWindow {
+            get {
+                return activeWindow;
+            }
+            private set {
+                activeWindow = value;
+
+                int floor = cameras[ActiveWindow].Floor;
+                foreach (Toggle toggle in positiveFloorToggles)
+                {
+                    toggle.isOn = false;
+                }
+                foreach (Toggle toggle in negativeFloorToggles)
+                {
+                    toggle.isOn = false;
+                }
+
+                if (floor < 0)
+                {
+                    floor++;
+                    negativeFloorToggles[floor].isOn = true;
+                }
+                else
+                {
+                    positiveFloorToggles[floor].isOn = true;
+                }
+
+                CameraMode cameraMode = cameras[ActiveWindow].CameraMode;
+                foreach (Toggle toggle in cameraModeToggles)
+                {
+                    toggle.isOn = false;
+                    if (toggle.GetComponent<CameraModeReference>().CameraMode == cameraMode)
+                    {
+                        toggle.isOn = true;
+                    }
+                }
+            }
+        }
+
+        private void Awake()
+        {
+            if (Instance)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+        }
+
         public void OnLayoutChange(LayoutReference layoutReference)
         {
             Layout layout = layoutReference.Layout;
@@ -165,17 +231,57 @@ namespace Warlander.Deedplanner.Gui
 
         public void OnActiveIndicatorChange(int window)
         {
+            if (ActiveWindow == window)
+            {
+                return;
+            }
+
             if (IndicatorButtons[window].isOn)
             {
                 ActiveWindow = window;
+                Debug.Log("Active window changed to " + ActiveWindow);
             }
         }
 
         public void OnActiveWindowChange(int window)
         {
+            if (ActiveWindow == window)
+            {
+                return;
+            }
+
             IndicatorButtons[ActiveWindow].isOn = false;
             IndicatorButtons[window].isOn = true;
             ActiveWindow = window;
+            Debug.Log("Active window changed to " + ActiveWindow);
+        }
+
+        public void OnCameraModeChange()
+        {
+            CameraModeReference cameraModeReference = cameraModeGroup.ActiveToggles().First().GetComponent<CameraModeReference>();
+            CameraMode cameraMode = cameraModeReference.CameraMode;
+
+            if (cameras[ActiveWindow].CameraMode == cameraMode)
+            {
+                return;
+            }
+
+            cameras[ActiveWindow].CameraMode = cameraMode;
+            Debug.Log("Camera " + ActiveWindow + " camera mode changed to " + cameraMode);
+        }
+
+        public void OnFloorChange()
+        {
+            FloorReference floorReference = floorGroup.ActiveToggles().First().GetComponent<FloorReference>();
+            int floor = floorReference.Floor;
+
+            if (cameras[ActiveWindow].Floor == floor)
+            {
+                return;
+            }
+
+            cameras[ActiveWindow].Floor = floor;
+            Debug.Log("Camera " + ActiveWindow + " floor changed to " + floor);
         }
 
     }
