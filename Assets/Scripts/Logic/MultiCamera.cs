@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 
 namespace Warlander.Deedplanner.Logic
@@ -9,13 +10,15 @@ namespace Warlander.Deedplanner.Logic
     public class MultiCamera : MonoBehaviour
     {
 
+        private static Material lineDrawingMaterial;
+
         private Camera attachedCamera;
         [SerializeField]
         private int screenId;
         [SerializeField]
         private GameObject screen;
         [SerializeField]
-        private CameraMode cameraMode = CameraMode.Perspective;
+        private CameraMode cameraMode = CameraMode.Top;
         [SerializeField]
         private int floor = 0;
 
@@ -23,10 +26,10 @@ namespace Warlander.Deedplanner.Logic
         private Vector3 fppRotation = new Vector3(15, 45, 0);
 
         private Vector2 topPosition;
-        private float topScale = 10;
+        private float topScale = 40;
 
         private Vector2 isometricPosition;
-        private float isometricScale = 10;
+        private float isometricScale = 40;
 
         public CameraMode CameraMode {
             get {
@@ -50,6 +53,14 @@ namespace Warlander.Deedplanner.Logic
 
         void Start()
         {
+            if (lineDrawingMaterial == null)
+            {
+                Shader shader = Shader.Find("Hidden/Internal-Colored");
+                lineDrawingMaterial = new Material(shader);
+                lineDrawingMaterial.SetInt("_SrcBlend", (int) UnityEngine.Rendering.BlendMode.SrcAlpha);
+                lineDrawingMaterial.SetInt("_DstBlend", (int) UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            }
+
             attachedCamera = GetComponent<Camera>();
 
             screen.GetComponent<MouseEventCatcher>().OnDragEvent.AddListener(data =>
@@ -61,9 +72,19 @@ namespace Warlander.Deedplanner.Logic
                 }
                 else if (CameraMode == CameraMode.Top)
                 {
-                    topPosition += new Vector2(data.delta.x * Properties.TopMouseSensitivity, data.delta.y * Properties.TopMouseSensitivity);
-                    attachedCamera.transform.localPosition = new Vector3(topPosition.x, topPosition.y, -10);
+                    topPosition += new Vector2(-data.delta.x * Properties.TopMouseSensitivity, -data.delta.y * Properties.TopMouseSensitivity);
+                    attachedCamera.transform.localPosition = new Vector3(topPosition.x, 10000, topPosition.y);
                 }
+            });
+
+            screen.GetComponent<MouseEventCatcher>().OnBeginDragEvent.AddListener(data =>
+            {
+                Cursor.visible = false;
+            });
+
+            screen.GetComponent<MouseEventCatcher>().OnEndDragEvent.AddListener(data =>
+            {
+                Cursor.visible = true;
             });
 
             CameraMode = cameraMode;
@@ -81,6 +102,7 @@ namespace Warlander.Deedplanner.Logic
             {
                 Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                 movement *= Properties.FppMovementSpeed * Time.deltaTime;
+                attachedCamera.transform.localPosition = fppPosition;
                 attachedCamera.transform.Translate(movement, Space.Self);
                 fppPosition = attachedCamera.transform.position;
             }
@@ -88,7 +110,41 @@ namespace Warlander.Deedplanner.Logic
 
         private void UpdateState()
         {
-            
+            if (CameraMode == CameraMode.Perspective)
+            {
+                attachedCamera.orthographic = false;
+                attachedCamera.transform.position = fppPosition;
+                attachedCamera.transform.rotation = Quaternion.Euler(fppRotation);
+            }
+            else if (cameraMode == CameraMode.Top)
+            {
+                attachedCamera.orthographic = true;
+                attachedCamera.orthographicSize = topScale;
+                attachedCamera.transform.position = new Vector3(topPosition.x, 10000, topPosition.y);
+                attachedCamera.transform.rotation = Quaternion.Euler(90, 0, 0);
+            }
+        }
+
+        private void OnPostRender()
+        {
+            Map map = GameManager.Instance.Map;
+
+            GL.PushMatrix();
+            lineDrawingMaterial.SetPass(0);
+            lineDrawingMaterial.SetVector("_Color", new Color(1, 1, 1, 0.5f));
+            GL.Begin(GL.LINES);
+            for (int i = 0; i < map.Width; i++)
+            {
+                for (int i2 = 0; i2 < map.Height; i2++)
+                {
+                    GL.Vertex3(i * 4, 1, i2 * 4);
+                    GL.Vertex3(i * 4, 1, i2 * 4 + 4);
+                    GL.Vertex3(i * 4, 1, i2 * 4);
+                    GL.Vertex3(i * 4 + 4, 1, i2 * 4);
+                }
+            }
+            GL.End();
+            GL.PopMatrix();
         }
 
     }
