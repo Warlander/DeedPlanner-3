@@ -9,13 +9,15 @@ namespace Warlander.Deedplanner.Gui
     [System.Serializable]
     public class PointerEvent : UnityEvent<PointerEventData> { }
 
-    public class MouseEventCatcher : MonoBehaviour, IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class MouseEventCatcher : MonoBehaviour, IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
 
         public PointerEvent OnBeginDragEvent = new PointerEvent();
         public PointerEvent OnDragEvent = new PointerEvent();
         public PointerEvent OnEndDragEvent = new PointerEvent();
         public PointerEvent OnPointerDownEvent = new PointerEvent();
+        public PointerEvent OnPointerEnterEvent = new PointerEvent();
+        public PointerEvent OnPointerExitEvent = new PointerEvent();
 
         public void OnBeginDrag(PointerEventData eventData)
         {
@@ -37,5 +39,14 @@ namespace Warlander.Deedplanner.Gui
             OnPointerDownEvent.Invoke(eventData);
         }
 
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            OnPointerEnterEvent.Invoke(eventData);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            OnPointerExitEvent.Invoke(eventData);
+        }
     }
 }

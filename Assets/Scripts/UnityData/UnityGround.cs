@@ -8,6 +8,7 @@ namespace Warlander.Deedplanner.Unitydata
     public class UnityGround : MonoBehaviour
     {
         private Ground ground;
+        private MeshCollider groundCollider;
 
         public Ground Ground {
             get {
@@ -50,7 +51,12 @@ namespace Warlander.Deedplanner.Unitydata
             meshRenderer.material.SetFloat("_Glossiness", 0);
             MeshFilter meshFilter = GetComponent<MeshFilter>();
             meshFilter.mesh = mesh;
-            
+
+            if (!groundCollider)
+            {
+                groundCollider = gameObject.AddComponent<MeshCollider>();
+            }
+            groundCollider.sharedMesh = mesh;
         }
     }
 }
