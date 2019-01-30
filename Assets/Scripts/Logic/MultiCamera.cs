@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 
@@ -30,6 +31,8 @@ namespace Warlander.Deedplanner.Logic
 
         private Vector2 isometricPosition;
         private float isometricScale = 40;
+
+        private bool mouseOver = false;
 
         public CameraMode CameraMode {
             get {
@@ -63,7 +66,9 @@ namespace Warlander.Deedplanner.Logic
 
             attachedCamera = GetComponent<Camera>();
 
-            screen.GetComponent<MouseEventCatcher>().OnDragEvent.AddListener(data =>
+            MouseEventCatcher eventCatcher = screen.GetComponent<MouseEventCatcher>();
+
+            eventCatcher.OnDragEvent.AddListener(data =>
             {
                 if (CameraMode == CameraMode.Perspective)
                 {
@@ -77,14 +82,24 @@ namespace Warlander.Deedplanner.Logic
                 }
             });
 
-            screen.GetComponent<MouseEventCatcher>().OnBeginDragEvent.AddListener(data =>
+            eventCatcher.OnBeginDragEvent.AddListener(data =>
             {
                 Cursor.visible = false;
             });
 
-            screen.GetComponent<MouseEventCatcher>().OnEndDragEvent.AddListener(data =>
+            eventCatcher.OnEndDragEvent.AddListener(data =>
             {
                 Cursor.visible = true;
+            });
+
+            eventCatcher.OnPointerEnterEvent.AddListener(data =>
+            {
+                mouseOver = true;
+            });
+
+            eventCatcher.OnPointerExitEvent.AddListener(data =>
+            {
+                mouseOver = false;
             });
 
             CameraMode = cameraMode;
@@ -92,6 +107,21 @@ namespace Warlander.Deedplanner.Logic
 
         void Update()
         {
+            if (mouseOver)
+            {
+                Vector2 local;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(screen.GetComponent<RectTransform>(), Input.mousePosition, null, out local);
+                local /= screen.GetComponent<RectTransform>().sizeDelta;
+                local += new Vector2(0.5f, 0.5f);
+                Ray ray = attachedCamera.ViewportPointToRay(local);
+                RaycastHit raycastHit;
+                bool hit = Physics.Raycast(ray, out raycastHit, 20000);
+                if (hit)
+                {
+                    Debug.Log("Hit something!");
+                }
+            }
+
             int activeWindow = LayoutManager.Instance.ActiveWindow;
             if (activeWindow != screenId)
             {
