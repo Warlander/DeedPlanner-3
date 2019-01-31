@@ -14,12 +14,12 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Tile
+  - Ground
+  - FloorRoof
+  - Wall
+  - Object
+  - Bridge
   - 
   - 
   - 

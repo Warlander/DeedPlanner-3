@@ -115,10 +115,11 @@ namespace Warlander.Deedplanner.Logic
                 local += new Vector2(0.5f, 0.5f);
                 Ray ray = attachedCamera.ViewportPointToRay(local);
                 RaycastHit raycastHit;
-                bool hit = Physics.Raycast(ray, out raycastHit, 20000);
+                bool hit = Physics.Raycast(ray, out raycastHit, 20000, LayerMasks.GroundEditMask);
                 if (hit)
                 {
-                    Debug.Log("Hit something!");
+                    Debug.Log("Hit something at " + raycastHit.point);
+                    
                 }
             }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Unitydata
 {
@@ -18,6 +19,11 @@ namespace Warlander.Deedplanner.Unitydata
                 ground = value;
                 InitializeGround();
             }
+        }
+
+        private void Start()
+        {
+            gameObject.layer = LayerMasks.GroundLayer;
         }
 
         private void InitializeGround()
