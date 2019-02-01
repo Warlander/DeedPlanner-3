@@ -37,5 +37,34 @@ namespace Warlander.Deedplanner.Logic
         public const int BorderEditMask = GroundMask;
         public const int BridgeEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
 
+        public static int GetMaskForTab(Tab tab)
+        {
+            switch (tab)
+            {
+                case Tab.Ground:
+                    return GroundEditMask;
+                case Tab.Height:
+                    return HeightEditMask;
+                case Tab.Floors:
+                    return FloorEditMask;
+                case Tab.Roofs:
+                    return RoofEditMask;
+                case Tab.Walls:
+                    return WallEditMask;
+                case Tab.Objects:
+                    return ObjectEditMask;
+                case Tab.Animals:
+                    return AnimalEditMask;
+                case Tab.Labels:
+                    return LabelEditMask;
+                case Tab.Borders:
+                    return BorderEditMask;
+                case Tab.Bridges:
+                    return BridgeEditMask;
+                default:
+                    throw new ArgumentException("Cannot find mask for tab " + tab, "tab");
+            }
+        }
+
     }
 }
