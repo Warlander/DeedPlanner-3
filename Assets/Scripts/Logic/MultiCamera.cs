@@ -172,7 +172,10 @@ namespace Warlander.Deedplanner.Logic
             {
                 topScale += 4;
             }
-            attachedCamera.orthographicSize = topScale;
+
+            Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            movement *= Properties.TopMovementSpeed * Time.deltaTime;
+            topPosition += movement;
 
             if (topPosition.x < topScale * attachedCamera.aspect)
             {
@@ -207,7 +210,21 @@ namespace Warlander.Deedplanner.Logic
 
         private void UpdateIsometricCamera()
         {
+            Map map = GameManager.Instance.Map;
 
+            float scroll = Input.mouseScrollDelta.y;
+            if (scroll > 0)
+            {
+                isoScale -= 4;
+            }
+            else if (scroll < 0)
+            {
+                isoScale += 4;
+            }
+
+            Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            movement *= Properties.IsoMovementSpeed * Time.deltaTime;
+            isoPosition += movement;
         }
 
         private void UpdateState()
@@ -227,11 +244,23 @@ namespace Warlander.Deedplanner.Logic
             }
             else if (cameraMode == CameraMode.Isometric)
             {
+                Vector2 isoCoords = cartToIso(isoPosition);
+
                 attachedCamera.orthographic = true;
                 attachedCamera.orthographicSize = isoScale;
-                attachedCamera.transform.position = new Vector3(isoPosition.x + isoPosition.y, isoScale, isoPosition.y - isoPosition.x / 2f);
+                attachedCamera.transform.position = new Vector3(isoCoords.x, isoScale, isoCoords.y);
                 attachedCamera.transform.rotation = Quaternion.Euler(30, 45, 0);
             }
+        }
+
+        private Vector2 isoToCart(Vector2 iso)
+        {
+            return new Vector2((iso.x - iso.y) / 1.5f, iso.x / 3.0f + iso.y / 1.5f);
+        }
+
+        private Vector2 cartToIso(Vector2 cart)
+        {
+            return new Vector2(cart.x + cart.y, cart.y - cart.x / 2f);
         }
 
         private void OnPostRender()
