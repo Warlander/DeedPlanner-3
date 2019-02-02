@@ -15,7 +15,10 @@ namespace Warlander.Deedplanner.Data
         public int X { get; private set; }
         public int Y { get; private set; }
 
+        public int Height { get; private set; }
+
         public Ground Ground { get; private set; }
+        private readonly Dictionary<EntityData, ITileEntity> entities;
 
         public Tile(Map map, int x, int y)
         {
@@ -24,6 +27,7 @@ namespace Warlander.Deedplanner.Data
             Y = y;
 
             Ground = new Ground(Data.Grounds["gr"]);
+            entities = new Dictionary<EntityData, ITileEntity>();
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
