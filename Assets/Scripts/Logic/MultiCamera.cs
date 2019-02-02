@@ -131,11 +131,68 @@ namespace Warlander.Deedplanner.Logic
 
             if (CameraMode == CameraMode.Perspective)
             {
-                Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                movement *= Properties.FppMovementSpeed * Time.deltaTime;
-                attachedCamera.transform.localPosition = fppPosition;
-                attachedCamera.transform.Translate(movement, Space.Self);
-                fppPosition = attachedCamera.transform.position;
+                UpdatePerspectiveCamera();
+            }
+            else if (CameraMode == CameraMode.Top)
+            {
+                UpdateTopCamera();
+            }
+
+            UpdateState();
+        }
+
+        private void UpdatePerspectiveCamera()
+        {
+            Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+            movement *= Properties.FppMovementSpeed * Time.deltaTime;
+            attachedCamera.transform.localPosition = fppPosition;
+            attachedCamera.transform.Translate(movement, Space.Self);
+            fppPosition = attachedCamera.transform.position;
+        }
+
+        private void UpdateTopCamera()
+        {
+            Map map = GameManager.Instance.Map;
+
+            float scroll = Input.mouseScrollDelta.y;
+            if (scroll > 0)
+            {
+                topScale -= 4;
+            }
+            else if (scroll < 0)
+            {
+                topScale += 4;
+            }
+            attachedCamera.orthographicSize = topScale;
+
+            if (topPosition.x < topScale * attachedCamera.aspect)
+            {
+                topPosition.x = topScale * attachedCamera.aspect;
+            }
+            if (topPosition.y < topScale)
+            {
+                topPosition.y = topScale;
+            }
+
+            if (topPosition.x > map.Width * 4 - topScale * attachedCamera.aspect)
+            {
+                topPosition.x = map.Width * 4 - topScale * attachedCamera.aspect;
+            }
+            if (topPosition.y > map.Height * 4 - topScale)
+            {
+                topPosition.y = map.Height * 4 - topScale;
+            }
+
+            bool fitsHorizontally = map.Width * 2 < topScale * attachedCamera.aspect;
+            bool fitsVertically = map.Height * 2 < topScale;
+
+            if (fitsHorizontally)
+            {
+                topPosition.x = map.Width * 2;
+            }
+            if (fitsVertically)
+            {
+                topPosition.y = map.Height * 2;
             }
         }
 
