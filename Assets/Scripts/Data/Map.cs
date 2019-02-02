@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class Map
+    public class Map : IXMLSerializable
     {
 
         public int Width { get; private set; }
@@ -47,5 +49,22 @@ namespace Warlander.Deedplanner.Data
             return this[x, y];
         }
 
+        public void Serialize(XmlDocument document, XmlElement localRoot)
+        {
+            // localRoot for map is always null at start
+            localRoot = document.CreateElement("map");
+            localRoot.SetAttribute("width", Width.ToString());
+            localRoot.SetAttribute("height", Height.ToString());
+            localRoot.SetAttribute("exporter", Constants.TitleString);
+            document.AppendChild(localRoot);
+
+            for (int i = 0; i <= Width; i++)
+            {
+                for (int i2 = 0; i2 <= Height; i2++)
+                {
+                    tiles[i, i2].Serialize(document, localRoot);
+                }
+            }
+        }
     }
 }
