@@ -29,8 +29,8 @@ namespace Warlander.Deedplanner.Logic
         private Vector2 topPosition;
         private float topScale = 40;
 
-        private Vector2 isometricPosition;
-        private float isometricScale = 40;
+        private Vector2 isoPosition;
+        private float isoScale = 40;
 
         private bool mouseOver = false;
 
@@ -73,12 +73,17 @@ namespace Warlander.Deedplanner.Logic
                 if (CameraMode == CameraMode.Perspective)
                 {
                     fppRotation += new Vector3(-data.delta.y * Properties.FppMouseSensitivity, data.delta.x * Properties.FppMouseSensitivity, 0);
-                    attachedCamera.transform.localRotation = Quaternion.Euler(fppRotation);
+                    UpdateState();
                 }
                 else if (CameraMode == CameraMode.Top)
                 {
                     topPosition += new Vector2(-data.delta.x * Properties.TopMouseSensitivity, -data.delta.y * Properties.TopMouseSensitivity);
-                    attachedCamera.transform.localPosition = new Vector3(topPosition.x, 10000, topPosition.y);
+                    UpdateState();
+                }
+                else if (CameraMode == CameraMode.Isometric)
+                {
+                    isoPosition += new Vector2(-data.delta.x * Properties.IsoMouseSensitivity, -data.delta.y * Properties.IsoMouseSensitivity);
+                    UpdateState();
                 }
             });
 
@@ -136,6 +141,10 @@ namespace Warlander.Deedplanner.Logic
             else if (CameraMode == CameraMode.Top)
             {
                 UpdateTopCamera();
+            }
+            else if (CameraMode == CameraMode.Isometric)
+            {
+                UpdateIsometricCamera();
             }
 
             UpdateState();
@@ -196,6 +205,11 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
+        private void UpdateIsometricCamera()
+        {
+
+        }
+
         private void UpdateState()
         {
             if (CameraMode == CameraMode.Perspective)
@@ -210,6 +224,13 @@ namespace Warlander.Deedplanner.Logic
                 attachedCamera.orthographicSize = topScale;
                 attachedCamera.transform.position = new Vector3(topPosition.x, 10000, topPosition.y);
                 attachedCamera.transform.rotation = Quaternion.Euler(90, 0, 0);
+            }
+            else if (cameraMode == CameraMode.Isometric)
+            {
+                attachedCamera.orthographic = true;
+                attachedCamera.orthographicSize = isoScale;
+                attachedCamera.transform.position = new Vector3(isoPosition.x + isoPosition.y, isoScale, isoPosition.y - isoPosition.x / 2f);
+                attachedCamera.transform.rotation = Quaternion.Euler(30, 45, 0);
             }
         }
 
