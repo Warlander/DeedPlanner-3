@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner
 {
     public static class Properties
     {

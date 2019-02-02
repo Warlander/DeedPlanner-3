@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class Tile
+    public class Tile : IXMLSerializable
     {
 
         public Map Map { get; private set; }
@@ -24,5 +26,9 @@ namespace Warlander.Deedplanner.Data
             Ground = new Ground(Data.Grounds["gr"]);
         }
 
+        public void Serialize(XmlDocument document, XmlElement localRoot)
+        {
+            
+        }
     }
 }
