@@ -13,6 +13,7 @@ namespace Warlander.Deedplanner.Logic
 
         private static Material lineDrawingMaterial;
 
+        private Transform parentTransform;
         private Camera attachedCamera;
         [SerializeField]
         private int screenId;
@@ -64,6 +65,7 @@ namespace Warlander.Deedplanner.Logic
                 lineDrawingMaterial.SetInt("_DstBlend", (int) UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             }
 
+            parentTransform = transform.parent;
             attachedCamera = GetComponent<Camera>();
 
             MouseEventCatcher eventCatcher = screen.GetComponent<MouseEventCatcher>();
@@ -225,6 +227,36 @@ namespace Warlander.Deedplanner.Logic
             Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
             movement *= Properties.IsoMovementSpeed * Time.deltaTime;
             isoPosition += movement;
+
+            if (isoPosition.x < -(map.Width * 4 / Mathf.Sqrt(2) - isoScale * attachedCamera.aspect))
+            {
+                isoPosition.x = -(map.Width * 4 / Mathf.Sqrt(2) - isoScale * attachedCamera.aspect);
+            }
+            if (isoPosition.y < isoScale)
+            {
+                isoPosition.y = isoScale;
+            }
+
+            if (isoPosition.x > map.Width * 4 / Mathf.Sqrt(2) - isoScale * attachedCamera.aspect)
+            {
+                isoPosition.x = map.Width * 4 / Mathf.Sqrt(2) - isoScale * attachedCamera.aspect;
+            }
+            if (isoPosition.y > map.Height * 4 / Mathf.Sqrt(2) - isoScale)
+            {
+                isoPosition.y = map.Height * 4 / Mathf.Sqrt(2) - isoScale;
+            }
+
+            bool fitsHorizontally = map.Width * 2 * Mathf.Sqrt(2) < isoScale * attachedCamera.aspect;
+            bool fitsVertically = map.Height * 2 / Mathf.Sqrt(2) < isoScale;
+
+            if (fitsHorizontally)
+            {
+                isoPosition.x = 0;
+            }
+            if (fitsVertically)
+            {
+                isoPosition.y = map.Height * 2 / Mathf.Sqrt(2);
+            }
         }
 
         private void UpdateState()
@@ -232,35 +264,26 @@ namespace Warlander.Deedplanner.Logic
             if (CameraMode == CameraMode.Perspective)
             {
                 attachedCamera.orthographic = false;
-                attachedCamera.transform.position = fppPosition;
-                attachedCamera.transform.rotation = Quaternion.Euler(fppRotation);
+                attachedCamera.transform.localPosition = fppPosition;
+                attachedCamera.transform.localRotation = Quaternion.Euler(fppRotation);
+                parentTransform.localRotation = Quaternion.identity;
             }
             else if (cameraMode == CameraMode.Top)
             {
                 attachedCamera.orthographic = true;
                 attachedCamera.orthographicSize = topScale;
-                attachedCamera.transform.position = new Vector3(topPosition.x, 10000, topPosition.y);
-                attachedCamera.transform.rotation = Quaternion.Euler(90, 0, 0);
+                attachedCamera.transform.localPosition = new Vector3(topPosition.x, 10000, topPosition.y);
+                attachedCamera.transform.localRotation = Quaternion.Euler(90, 0, 0);
+                parentTransform.localRotation = Quaternion.identity;
             }
             else if (cameraMode == CameraMode.Isometric)
             {
-                Vector2 isoCoords = cartToIso(isoPosition);
-
                 attachedCamera.orthographic = true;
                 attachedCamera.orthographicSize = isoScale;
-                attachedCamera.transform.position = new Vector3(isoCoords.x, isoScale, isoCoords.y);
-                attachedCamera.transform.rotation = Quaternion.Euler(30, 45, 0);
+                attachedCamera.transform.localPosition = new Vector3(isoPosition.x, isoPosition.y, -10000);
+                attachedCamera.transform.localRotation = Quaternion.identity;
+                parentTransform.localRotation = Quaternion.Euler(30, 45, 0);
             }
-        }
-
-        private Vector2 isoToCart(Vector2 iso)
-        {
-            return new Vector2((iso.x - iso.y) / 1.5f, iso.x / 3.0f + iso.y / 1.5f);
-        }
-
-        private Vector2 cartToIso(Vector2 cart)
-        {
-            return new Vector2(cart.x + cart.y, cart.y - cart.x / 2f);
         }
 
         private void OnPostRender()
