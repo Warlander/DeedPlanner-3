@@ -26,6 +26,7 @@ namespace Warlander.Deedplanner.Logic
 
         private Vector3 fppPosition = new Vector3(-3, 4, -3);
         private Vector3 fppRotation = new Vector3(15, 45, 0);
+        private float wurmianHeight = 1.4f;
 
         private Vector2 topPosition;
         private float topScale = 40;
@@ -72,7 +73,7 @@ namespace Warlander.Deedplanner.Logic
 
             eventCatcher.OnDragEvent.AddListener(data =>
             {
-                if (CameraMode == CameraMode.Perspective)
+                if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
                 {
                     fppRotation += new Vector3(-data.delta.y * Properties.FppMouseSensitivity, data.delta.x * Properties.FppMouseSensitivity, 0);
                     UpdateState();
@@ -136,7 +137,7 @@ namespace Warlander.Deedplanner.Logic
                 return;
             }
 
-            if (CameraMode == CameraMode.Perspective)
+            if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
             {
                 UpdatePerspectiveCamera();
             }
@@ -154,11 +155,57 @@ namespace Warlander.Deedplanner.Logic
 
         private void UpdatePerspectiveCamera()
         {
+            Map map = GameManager.Instance.Map;
+
             Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             movement *= Properties.FppMovementSpeed * Time.deltaTime;
             attachedCamera.transform.localPosition = fppPosition;
             attachedCamera.transform.Translate(movement, Space.Self);
             fppPosition = attachedCamera.transform.position;
+
+            if (CameraMode == CameraMode.Wurmian)
+            {
+                if (fppPosition.x < 0)
+                {
+                    fppPosition.x = 0;
+                }
+                if (fppPosition.z < 0)
+                {
+                    fppPosition.z = 0;
+                }
+                if (fppPosition.x > map.Width * 4)
+                {
+                    fppPosition.x = map.Width * 4;
+                }
+                if (fppPosition.z > map.Height * 4)
+                {
+                    fppPosition.z = map.Height * 4;
+                }
+
+                int currentTileX = (int) (fppPosition.x / 4f);
+                int currentTileY = (int) (fppPosition.z / 4f);
+
+                float xPart = (fppPosition.x % 4f) / 4f;
+                float yPart = (fppPosition.z % 4f) / 4f;
+                float xPartRev = 1f - xPart;
+                float yPartRev = 1f - yPart;
+
+                float h00 = map[currentTileX, currentTileY].Height * 0.1f;
+                float h10 = map[currentTileX + 1, currentTileY].Height * 0.1f;
+                float h01 = map[currentTileX, currentTileY + 1].Height * 0.1f;
+                float h11 = map[currentTileX + 1, currentTileY + 1].Height * 0.1f;
+
+                float x0 = (h00 * xPartRev + h10 * xPart);
+                float x1 = (h01 * xPartRev + h11 * xPart);
+
+                float height = (x0 * yPartRev + x1 * yPart);
+                height += wurmianHeight;
+                if (height < 0.3f)
+                {
+                    height = 0.3f;
+                }
+                fppPosition.y = height;
+            }
         }
 
         private void UpdateTopCamera()
@@ -261,7 +308,7 @@ namespace Warlander.Deedplanner.Logic
 
         private void UpdateState()
         {
-            if (CameraMode == CameraMode.Perspective)
+            if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
             {
                 attachedCamera.orthographic = false;
                 attachedCamera.transform.localPosition = fppPosition;
