@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class Map : IXMLSerializable
+    public class Map : MonoBehaviour, IXMLSerializable
     {
 
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        private readonly Tile[,] tiles;
+        private Tile[,] tiles;
 
         public Tile this[int x, int y] {
             get {
@@ -22,7 +23,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        public Map(int width, int height)
+        public void Initialize(int width, int height)
         {
             Width = width;
             Height = height;
@@ -31,7 +32,12 @@ namespace Warlander.Deedplanner.Data
             {
                 for (int i2 = 0; i2 < Height; i2++)
                 {
-                    tiles[i, i2] = new Tile(this, i, i2);
+                    GameObject tileObject = new GameObject("Tile " + i + "X" + i2, typeof(Tile));
+                    tileObject.transform.SetParent(transform);
+                    tileObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
+                    Tile tile = tileObject.GetComponent<Tile>();
+                    tile.Initialize(this, i, i2);
+                    tiles[i, i2] = tile;
                 }
             }
         }
