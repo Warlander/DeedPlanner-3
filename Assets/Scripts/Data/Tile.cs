@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class Tile : IXMLSerializable
+    public class Tile : MonoBehaviour, IXMLSerializable
     {
 
         public Map Map { get; private set; }
@@ -18,16 +19,21 @@ namespace Warlander.Deedplanner.Data
         public int Height { get; private set; }
 
         public Ground Ground { get; private set; }
-        private readonly Dictionary<EntityData, ITileEntity> entities;
+        private Dictionary<EntityData, ITileEntity> entities;
 
-        public Tile(Map map, int x, int y)
+        public void Initialize(Map map, int x, int y)
         {
             Map = map;
             X = x;
             Y = y;
 
-            Ground = new Ground(Data.Grounds["gr"]);
             entities = new Dictionary<EntityData, ITileEntity>();
+
+            GameObject groundObject = new GameObject("Ground", typeof(Ground));
+            groundObject.transform.SetParent(transform);
+            groundObject.transform.localPosition = Vector3.zero;
+            Ground = groundObject.GetComponent<Ground>();
+            Ground.Initialize(Data.Grounds["gr"]);
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
