@@ -131,12 +131,6 @@ namespace Warlander.Deedplanner.Logic
                 }
             }
 
-            int activeWindow = LayoutManager.Instance.ActiveWindow;
-            if (activeWindow != screenId)
-            {
-                return;
-            }
-
             if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
             {
                 UpdatePerspectiveCamera();
@@ -157,11 +151,15 @@ namespace Warlander.Deedplanner.Logic
         {
             Map map = GameManager.Instance.Map;
 
-            Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-            movement *= Properties.FppMovementSpeed * Time.deltaTime;
-            attachedCamera.transform.localPosition = fppPosition;
-            attachedCamera.transform.Translate(movement, Space.Self);
-            fppPosition = attachedCamera.transform.position;
+            int activeWindow = LayoutManager.Instance.ActiveWindow;
+            if (activeWindow == screenId)
+            {
+                Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                movement *= Properties.FppMovementSpeed * Time.deltaTime;
+                attachedCamera.transform.localPosition = fppPosition;
+                attachedCamera.transform.Translate(movement, Space.Self);
+                fppPosition = attachedCamera.transform.position;
+            }
 
             if (CameraMode == CameraMode.Wurmian)
             {
@@ -212,19 +210,23 @@ namespace Warlander.Deedplanner.Logic
         {
             Map map = GameManager.Instance.Map;
 
-            float scroll = Input.mouseScrollDelta.y;
-            if (scroll > 0)
+            int activeWindow = LayoutManager.Instance.ActiveWindow;
+            if (activeWindow == screenId)
             {
-                topScale -= 4;
-            }
-            else if (scroll < 0)
-            {
-                topScale += 4;
-            }
+                float scroll = Input.mouseScrollDelta.y;
+                if (scroll > 0)
+                {
+                    topScale -= 4;
+                }
+                else if (scroll < 0)
+                {
+                    topScale += 4;
+                }
 
-            Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-            movement *= Properties.TopMovementSpeed * Time.deltaTime;
-            topPosition += movement;
+                Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+                movement *= Properties.TopMovementSpeed * Time.deltaTime;
+                topPosition += movement;
+            }
 
             if (topPosition.x < topScale * attachedCamera.aspect)
             {
@@ -261,19 +263,23 @@ namespace Warlander.Deedplanner.Logic
         {
             Map map = GameManager.Instance.Map;
 
-            float scroll = Input.mouseScrollDelta.y;
-            if (scroll > 0)
+            int activeWindow = LayoutManager.Instance.ActiveWindow;
+            if (activeWindow == screenId)
             {
-                isoScale -= 4;
-            }
-            else if (scroll < 0)
-            {
-                isoScale += 4;
-            }
+                float scroll = Input.mouseScrollDelta.y;
+                if (scroll > 0)
+                {
+                    isoScale -= 4;
+                }
+                else if (scroll < 0)
+                {
+                    isoScale += 4;
+                }
 
-            Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-            movement *= Properties.IsoMovementSpeed * Time.deltaTime;
-            isoPosition += movement;
+                Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+                movement *= Properties.IsoMovementSpeed * Time.deltaTime;
+                isoPosition += movement;
+            }
 
             if (isoPosition.x < -(map.Width * 4 / Mathf.Sqrt(2) - isoScale * attachedCamera.aspect))
             {
