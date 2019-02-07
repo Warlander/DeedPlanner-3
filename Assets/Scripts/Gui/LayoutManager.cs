@@ -41,6 +41,10 @@ namespace Warlander.Deedplanner.Gui
 
         [SerializeField]
         private TabObject[] tabs = new TabObject[12];
+        [SerializeField]
+        private Toggle groundToggle;
+        [SerializeField]
+        private Toggle cavesToggle;
 
         public int ActiveWindow {
             get {
@@ -300,12 +304,64 @@ namespace Warlander.Deedplanner.Gui
 
             cameras[ActiveWindow].Floor = floor;
             Debug.Log("Camera " + ActiveWindow + " floor changed to " + floor);
+            UpdateTabs();
         }
 
         public void OnTabChange(TabReference tabReference)
         {
             Tab tab = tabReference.Tab;
             CurrentTab = tab;
+            UpdateTabs();
+        }
+
+        private void UpdateTabs()
+        {
+            int floor = floorGroup.ActiveToggles().First().GetComponent<FloorReference>().Floor;
+            if (floor < 0)
+            {
+                FindObjectForTab(Tab.Ground).SetActive(false);
+                FindObjectForTab(Tab.Caves).SetActive(true);
+                groundToggle.gameObject.SetActive(false);
+                cavesToggle.gameObject.SetActive(true);
+                if (groundToggle.isOn)
+                {
+                    groundToggle.isOn = false;
+                    cavesToggle.isOn = true;
+                }
+                if (FindObjectForTab(Tab.Ground).activeInHierarchy)
+                {
+                    CurrentTab = Tab.Caves;
+                }
+            }
+            else if (floor >= 0)
+            {
+                FindObjectForTab(Tab.Ground).SetActive(true);
+                FindObjectForTab(Tab.Caves).SetActive(false);
+                groundToggle.gameObject.SetActive(true);
+                cavesToggle.gameObject.SetActive(false);
+                if (cavesToggle.isOn)
+                {
+                    groundToggle.isOn = true;
+                    cavesToggle.isOn = false;
+                }
+                if (FindObjectForTab(Tab.Caves).activeInHierarchy)
+                {
+                    CurrentTab = Tab.Ground;
+                }
+            }
+        }
+
+        private GameObject FindObjectForTab(Tab tab)
+        {
+            foreach (TabObject tabObject in tabs)
+            {
+                if (tabObject.Tab == tab)
+                {
+                    return tabObject.Object;
+                }
+            }
+
+            return null;
         }
 
     }
