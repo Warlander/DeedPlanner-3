@@ -13,20 +13,9 @@ namespace Warlander.Deedplanner.Logic
         public static GameManager Instance { get; private set; }
 
         public Map Map { get; private set; }
-        private Tab currentTab;
 
         [SerializeField]
         private GameObject water;
-
-        public Tab CurrentTab {
-            get {
-                return currentTab;
-            }
-            set {
-                currentTab = value;
-
-            }
-        }
 
         private void Awake()
         {
@@ -58,11 +47,6 @@ namespace Warlander.Deedplanner.Logic
 
         }
 
-        public void OnTabChange(TabReference tabReference)
-        {
-            Tab tab = tabReference.Tab;
-            CurrentTab = tab;
-        }
     }
 
 }
