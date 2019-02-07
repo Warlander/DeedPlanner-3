@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using Warlander.Deedplanner.Logic;
 using System.Linq;
+using System;
 
 namespace Warlander.Deedplanner.Gui
 {
@@ -13,6 +14,7 @@ namespace Warlander.Deedplanner.Gui
 
         private int activeWindow;
         private Layout currentLayout = Layout.Single;
+        private Tab currentTab;
 
         [SerializeField]
         private Toggle[] IndicatorButtons = new Toggle[4];
@@ -36,6 +38,9 @@ namespace Warlander.Deedplanner.Gui
         private Toggle[] positiveFloorToggles = new Toggle[16];
         [SerializeField]
         private Toggle[] negativeFloorToggles = new Toggle[6];
+
+        [SerializeField]
+        private TabObject[] tabs = new TabObject[12];
 
         public int ActiveWindow {
             get {
@@ -72,6 +77,19 @@ namespace Warlander.Deedplanner.Gui
                     {
                         toggle.isOn = true;
                     }
+                }
+            }
+        }
+
+        public Tab CurrentTab {
+            get {
+                return currentTab;
+            }
+            set {
+                currentTab = value;
+                foreach (TabObject tabObject in tabs)
+                {
+                    tabObject.Object.SetActive(tabObject.Tab == currentTab);
                 }
             }
         }
@@ -284,6 +302,19 @@ namespace Warlander.Deedplanner.Gui
             Debug.Log("Camera " + ActiveWindow + " floor changed to " + floor);
         }
 
+        public void OnTabChange(TabReference tabReference)
+        {
+            Tab tab = tabReference.Tab;
+            CurrentTab = tab;
+        }
+
+    }
+
+    [Serializable]
+    public struct TabObject
+    {
+        public Tab Tab;
+        public GameObject Object;
     }
 
 }

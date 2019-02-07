@@ -13,9 +13,6 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField]
         private Window windowPrefab;
 
-        [SerializeField]
-        private UnityList LayoutsList;
-
         private void Awake()
         {
             if (Instance)
