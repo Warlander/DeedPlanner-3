@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class UnityListElement : MonoBehaviour
+namespace Warlander.Deedplanner.Gui
 {
-
-    public abstract Toggle Toggle { get; }
-    public abstract object Value { get; set; }
-
+    public abstract class UnityListElement : MonoBehaviour
+    {
+        public abstract Toggle Toggle { get; }
+        public abstract object Value { get; set; }
+    }
 }
