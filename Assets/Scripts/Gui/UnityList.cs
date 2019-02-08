@@ -4,70 +4,73 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
-public delegate void UnityListValueChangedHandler(object sender, object value);
-
-public class UnityList : MonoBehaviour
+namespace Warlander.Deedplanner.Gui
 {
+    public delegate void UnityListValueChangedHandler(object sender, object value);
 
-    public event UnityListValueChangedHandler ValueChanged;
-
-    // we want these fields to be settable via inspector, but not via code
-    [SerializeField]
-    private ToggleGroup toggleGroup;
-    [SerializeField]
-    private RectTransform listElementsParent;
-    [SerializeField]
-    private UnityListElement listElementPrefab;
-
-    public object SelectedValue {
-        get {
-            Toggle activeToggle = toggleGroup.ActiveToggles().FirstOrDefault();
-            if (!activeToggle)
-            {
-                return default;
-            }
-
-            return activeToggle.GetComponent<UnityListElement>().Value;
-        }
-    }
-
-    public UnityListElement SelectedElement {
-        get {
-            return toggleGroup.ActiveToggles().FirstOrDefault().GetComponent<UnityListElement>();
-        }
-    }
-
-    public object[] Values {
-        get {
-            return GetComponentsInChildren<UnityListElement>().Select((element) => element.Value).ToArray();
-        }
-    }
-
-    /// <summary>
-    /// See returns for notes on returned value
-    /// </summary>
-    /// <param name="value">value to add to the list</param>
-    /// <returns>Created list element from prefab (useful if any further modification is needed)</returns>
-    public UnityListElement Add(object value)
+    public class UnityList : MonoBehaviour
     {
-        UnityListElement newElement = Instantiate(listElementPrefab);
-        newElement.Toggle.group = toggleGroup;
-        newElement.Value = value;
-        newElement.Toggle.onValueChanged.AddListener(toggled =>
-        {
-            if (toggled && ValueChanged != null)
-            {
-                ValueChanged(this, newElement.Value);
-            }
-        });
-        newElement.transform.SetParent(listElementsParent);
 
-        if (GetComponentsInChildren<UnityListElement>().Length == 1)
-        {
-            newElement.Toggle.isOn = true;
+        public event UnityListValueChangedHandler ValueChanged;
+
+        // we want these fields to be settable via inspector, but not via code
+        [SerializeField]
+        private ToggleGroup toggleGroup;
+        [SerializeField]
+        private RectTransform listElementsParent;
+        [SerializeField]
+        private UnityListElement listElementPrefab;
+
+        public object SelectedValue {
+            get {
+                Toggle activeToggle = toggleGroup.ActiveToggles().FirstOrDefault();
+                if (!activeToggle)
+                {
+                    return default;
+                }
+
+                return activeToggle.GetComponent<UnityListElement>().Value;
+            }
         }
 
-        return newElement;
-    }
+        public UnityListElement SelectedElement {
+            get {
+                return toggleGroup.ActiveToggles().FirstOrDefault().GetComponent<UnityListElement>();
+            }
+        }
 
+        public object[] Values {
+            get {
+                return GetComponentsInChildren<UnityListElement>().Select((element) => element.Value).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// See returns for notes on returned value
+        /// </summary>
+        /// <param name="value">value to add to the list</param>
+        /// <returns>Created list element from prefab (useful if any further modification is needed)</returns>
+        public UnityListElement Add(object value)
+        {
+            UnityListElement newElement = Instantiate(listElementPrefab);
+            newElement.Toggle.group = toggleGroup;
+            newElement.Value = value;
+            newElement.Toggle.onValueChanged.AddListener(toggled =>
+            {
+                if (toggled && ValueChanged != null)
+                {
+                    ValueChanged(this, newElement.Value);
+                }
+            });
+            newElement.transform.SetParent(listElementsParent);
+
+            if (GetComponentsInChildren<UnityListElement>().Length == 1)
+            {
+                newElement.Toggle.isOn = true;
+            }
+
+            return newElement;
+        }
+
+    }
 }
