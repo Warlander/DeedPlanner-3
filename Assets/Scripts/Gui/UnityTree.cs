@@ -88,7 +88,8 @@ namespace Warlander.Deedplanner.Gui
                 }
             });
             newElement.transform.SetParent(currentParent);
-            newElement.gameObject.SetActive(false);
+            bool rootElement = tree == null || tree.Length == 0;
+            newElement.gameObject.SetActive(rootElement);
 
             if (GetComponentsInChildren<UnityListElement>(true).Length == 1)
             {
