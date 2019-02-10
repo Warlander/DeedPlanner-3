@@ -13,6 +13,15 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField]
         private Window windowPrefab;
 
+        [SerializeField]
+        private UnityTree groundsTree;
+
+        public UnityTree GroundsTree {
+            get {
+                return groundsTree;
+            }
+        }
+
         private void Awake()
         {
             if (Instance)
