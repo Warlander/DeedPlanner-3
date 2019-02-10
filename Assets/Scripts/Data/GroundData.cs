@@ -28,5 +28,10 @@ namespace Warlander.Deedplanner.Data
             Diagonal = diagonal;
         }
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
     }
 }

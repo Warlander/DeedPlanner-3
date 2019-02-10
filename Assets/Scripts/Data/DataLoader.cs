@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
@@ -101,6 +99,10 @@ namespace Warlander.Deedplanner.Data
 
                 GroundData data = new GroundData(name, shortName, tex2d, tex3d, diagonal);
                 Data.Grounds[shortName] = data;
+                foreach (string[] category in categories)
+                {
+                    GuiManager.Instance.GroundsTree.Add(data, category);
+                }
                 Debug.Log("Ground data " + name + " loaded and ready to use!");
             }
         }
