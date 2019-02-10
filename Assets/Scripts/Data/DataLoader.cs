@@ -101,7 +101,8 @@ namespace Warlander.Deedplanner.Data
                 Data.Grounds[shortName] = data;
                 foreach (string[] category in categories)
                 {
-                    GuiManager.Instance.GroundsTree.Add(data, category);
+                    IconUnityListElement iconListElement = (IconUnityListElement) GuiManager.Instance.GroundsTree.Add(data, category);
+                    iconListElement.TextureReference = tex2d;
                 }
                 Debug.Log("Ground data " + name + " loaded and ready to use!");
             }

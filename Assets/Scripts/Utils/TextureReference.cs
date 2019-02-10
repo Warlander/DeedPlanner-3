@@ -35,6 +35,7 @@ namespace Warlander.Deedplanner.Utils
         }
 
         private Texture2D texture;
+        private Sprite sprite;
 
         public string Location { get; private set; }
 
@@ -47,6 +48,18 @@ namespace Warlander.Deedplanner.Utils
 
                 texture = WomModelLoader.LoadTexture(Application.streamingAssetsPath + "/" + Location);
                 return texture;
+            }
+        }
+
+        public Sprite Sprite {
+            get {
+                if (sprite)
+                {
+                    return sprite;
+                }
+
+                sprite = Sprite.Create(Texture, new Rect(0.0f, 0.0f, Texture.width, Texture.height), new Vector2(0.5f, 0.5f));
+                return sprite;
             }
         }
 
