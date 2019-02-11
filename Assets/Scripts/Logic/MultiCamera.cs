@@ -76,28 +76,31 @@ namespace Warlander.Deedplanner.Logic
                 if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
                 {
                     fppRotation += new Vector3(-data.delta.y * Properties.FppMouseSensitivity, data.delta.x * Properties.FppMouseSensitivity, 0);
-                    UpdateState();
                 }
-                else if (CameraMode == CameraMode.Top)
+                else if (CameraMode == CameraMode.Top && Input.GetMouseButton(2))
                 {
                     topPosition += new Vector2(-data.delta.x * Properties.TopMouseSensitivity, -data.delta.y * Properties.TopMouseSensitivity);
-                    UpdateState();
                 }
-                else if (CameraMode == CameraMode.Isometric)
+                else if (CameraMode == CameraMode.Isometric && Input.GetMouseButton(2))
                 {
                     isoPosition += new Vector2(-data.delta.x * Properties.IsoMouseSensitivity, -data.delta.y * Properties.IsoMouseSensitivity);
-                    UpdateState();
                 }
             });
 
             eventCatcher.OnBeginDragEvent.AddListener(data =>
             {
-                Cursor.visible = false;
+                if (data.button == PointerEventData.InputButton.Middle)
+                {
+                    Cursor.visible = false;
+                }
             });
 
             eventCatcher.OnEndDragEvent.AddListener(data =>
             {
-                Cursor.visible = true;
+                if (data.button == PointerEventData.InputButton.Middle)
+                {
+                    Cursor.visible = true;
+                }
             });
 
             eventCatcher.OnPointerEnterEvent.AddListener(data =>
@@ -211,16 +214,19 @@ namespace Warlander.Deedplanner.Logic
             Map map = GameManager.Instance.Map;
 
             int activeWindow = LayoutManager.Instance.ActiveWindow;
-            if (activeWindow == screenId && mouseOver)
+            if (activeWindow == screenId)
             {
-                float scroll = Input.mouseScrollDelta.y;
-                if (scroll > 0)
+                if (mouseOver)
                 {
-                    topScale -= 4;
-                }
-                else if (scroll < 0)
-                {
-                    topScale += 4;
+                    float scroll = Input.mouseScrollDelta.y;
+                    if (scroll > 0)
+                    {
+                        topScale -= 4;
+                    }
+                    else if (scroll < 0)
+                    {
+                        topScale += 4;
+                    }
                 }
 
                 Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
@@ -264,16 +270,19 @@ namespace Warlander.Deedplanner.Logic
             Map map = GameManager.Instance.Map;
 
             int activeWindow = LayoutManager.Instance.ActiveWindow;
-            if (activeWindow == screenId && mouseOver)
+            if (activeWindow == screenId)
             {
-                float scroll = Input.mouseScrollDelta.y;
-                if (scroll > 0)
+                if (mouseOver)
                 {
-                    isoScale -= 4;
-                }
-                else if (scroll < 0)
-                {
-                    isoScale += 4;
+                    float scroll = Input.mouseScrollDelta.y;
+                    if (scroll > 0)
+                    {
+                        isoScale -= 4;
+                    }
+                    else if (scroll < 0)
+                    {
+                        isoScale += 4;
+                    }
                 }
 
                 Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
