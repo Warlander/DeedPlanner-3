@@ -211,7 +211,7 @@ namespace Warlander.Deedplanner.Logic
             Map map = GameManager.Instance.Map;
 
             int activeWindow = LayoutManager.Instance.ActiveWindow;
-            if (activeWindow == screenId)
+            if (activeWindow == screenId && mouseOver)
             {
                 float scroll = Input.mouseScrollDelta.y;
                 if (scroll > 0)
@@ -264,7 +264,7 @@ namespace Warlander.Deedplanner.Logic
             Map map = GameManager.Instance.Map;
 
             int activeWindow = LayoutManager.Instance.ActiveWindow;
-            if (activeWindow == screenId)
+            if (activeWindow == screenId && mouseOver)
             {
                 float scroll = Input.mouseScrollDelta.y;
                 if (scroll > 0)
