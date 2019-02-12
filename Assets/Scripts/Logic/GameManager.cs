@@ -44,8 +44,18 @@ namespace Warlander.Deedplanner.Logic
 
         private void Update()
         {
+            Tab currentTab = LayoutManager.Instance.CurrentTab;
+            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
 
+            switch (currentTab)
+            {
+                case Tab.Ground:
+                    GroundUpdater.Update(raycast);
+                    break;
+            }
         }
+
+
 
     }
 
