@@ -46,6 +46,12 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField]
         private Toggle cavesToggle;
 
+        public MultiCamera CurrentCamera {
+            get {
+                return cameras[ActiveWindow];
+            }
+        }
+
         public int ActiveWindow {
             get {
                 return activeWindow;

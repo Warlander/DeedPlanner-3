@@ -36,6 +36,8 @@ namespace Warlander.Deedplanner.Logic
 
         private bool mouseOver = false;
 
+        public RaycastHit CurrentRaycast { get; private set; }
+
         public CameraMode CameraMode {
             get {
                 return cameraMode;
@@ -118,6 +120,8 @@ namespace Warlander.Deedplanner.Logic
 
         void Update()
         {
+            CurrentRaycast = default;
+
             if (mouseOver)
             {
                 Vector2 local;
@@ -129,9 +133,9 @@ namespace Warlander.Deedplanner.Logic
                 bool hit = Physics.Raycast(ray, out raycastHit, 20000, LayerMasks.GroundEditMask);
                 if (hit)
                 {
-                    Debug.Log("Hit something at " + raycastHit.point);
-                    
+                    CurrentRaycast = raycastHit;
                 }
+                
             }
 
             if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
