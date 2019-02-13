@@ -13,6 +13,7 @@ namespace Warlander.Deedplanner.Data
 
         private GroundData data;
 
+        private Mesh mesh;
         private MeshRenderer meshRenderer;
         private MeshCollider groundCollider;
 
@@ -31,9 +32,9 @@ namespace Warlander.Deedplanner.Data
         public void Initialize(GroundData data)
         {
             gameObject.layer = LayerMasks.GroundLayer;
-            if (!GetComponent<MeshRenderer>())
+            if (!meshRenderer)
             {
-                gameObject.AddComponent<MeshRenderer>();
+                meshRenderer = gameObject.AddComponent<MeshRenderer>();
             }
             if (!GetComponent<MeshFilter>())
             {
@@ -44,13 +45,12 @@ namespace Warlander.Deedplanner.Data
             Vector2[] uv = new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1) };
             int[] triangles = new int[] { 0, 2, 1, 2, 3, 1 };
 
-            Mesh mesh = new Mesh();
+            mesh = new Mesh();
             mesh.vertices = vertices;
             mesh.uv = uv;
             mesh.triangles = triangles;
             mesh.RecalculateNormals();
 
-            meshRenderer = GetComponent<MeshRenderer>();
             meshRenderer.material.SetFloat("_Glossiness", 0);
             MeshFilter meshFilter = GetComponent<MeshFilter>();
             meshFilter.mesh = mesh;
