@@ -21,17 +21,7 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField]
         private UnityListElement listElementPrefab;
 
-        public object SelectedValue {
-            get {
-                Toggle activeToggle = toggleGroup.ActiveToggles().FirstOrDefault();
-                if (!activeToggle)
-                {
-                    return default;
-                }
-
-                return activeToggle.GetComponent<UnityListElement>().Value;
-            }
-        }
+        public object SelectedValue { get; private set; }
 
         public UnityListElement SelectedElement {
             get {
@@ -57,6 +47,10 @@ namespace Warlander.Deedplanner.Gui
             newElement.Value = value;
             newElement.Toggle.onValueChanged.AddListener(toggled =>
             {
+                if (toggled)
+                {
+                    SelectedValue = newElement.Value;
+                }
                 if (toggled && ValueChanged != null)
                 {
                     ValueChanged(this, newElement.Value);
@@ -66,6 +60,7 @@ namespace Warlander.Deedplanner.Gui
 
             if (GetComponentsInChildren<UnityListElement>().Length == 1)
             {
+                SelectedValue = newElement.Value;
                 newElement.Toggle.isOn = true;
             }
 
