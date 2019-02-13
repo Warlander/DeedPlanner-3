@@ -12,10 +12,14 @@ namespace Warlander.Deedplanner.Data
     public class Map : MonoBehaviour, IXMLSerializable
     {
 
+        private Tile[,] tiles;
+
+        private Transform surfaceRoot;
+        private Transform caveRoot;
+        private Transform gridRoot;
+
         public int Width { get; private set; }
         public int Height { get; private set; }
-
-        private Tile[,] tiles;
 
         public Tile this[int x, int y] {
             get {
@@ -28,12 +32,20 @@ namespace Warlander.Deedplanner.Data
             Width = width;
             Height = height;
             tiles = new Tile[width, height];
+
+            surfaceRoot = new GameObject("Surface").transform;
+            surfaceRoot.SetParent(transform);
+            caveRoot = new GameObject("Cave").transform;
+            caveRoot.SetParent(transform);
+            gridRoot = new GameObject("Grid").transform;
+            gridRoot.SetParent(transform);
+
             for (int i = 0; i < Width; i++)
             {
                 for (int i2 = 0; i2 < Height; i2++)
                 {
                     GameObject tileObject = new GameObject("Tile " + i + "X" + i2, typeof(Tile));
-                    tileObject.transform.SetParent(transform);
+                    tileObject.transform.SetParent(surfaceRoot);
                     tileObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
                     Tile tile = tileObject.GetComponent<Tile>();
                     tile.Initialize(this, i, i2);
