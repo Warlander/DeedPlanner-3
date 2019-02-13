@@ -9,9 +9,9 @@ public class SimpleUnityListElement : UnityListElement
 {
 
     [SerializeField]
-    private TextMeshProUGUI text;
+    private TextMeshProUGUI text = null;
     [SerializeField]
-    private Toggle toggle;
+    private Toggle toggle = null;
 
     private object value;
 

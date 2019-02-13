@@ -19,21 +19,21 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField]
         private Toggle[] IndicatorButtons = new Toggle[4];
         [SerializeField]
-        private RectTransform HorizontalBottomIndicatorHolder;
+        private RectTransform HorizontalBottomIndicatorHolder = null;
         [SerializeField]
         private RawImage[] Screens = new RawImage[4];
         [SerializeField]
-        private RectTransform HorizontalBottomScreenHolder;
+        private RectTransform HorizontalBottomScreenHolder = null;
         [SerializeField]
         private RectTransform[] Splits = new RectTransform[5];
         [SerializeField]
         private MultiCamera[] cameras = new MultiCamera[4];
         [SerializeField]
-        private ToggleGroup cameraModeGroup;
+        private ToggleGroup cameraModeGroup = null;
         [SerializeField]
         private Toggle[] cameraModeToggles = new Toggle[4];
         [SerializeField]
-        private ToggleGroup floorGroup;
+        private ToggleGroup floorGroup = null;
         [SerializeField]
         private Toggle[] positiveFloorToggles = new Toggle[16];
         [SerializeField]
@@ -42,9 +42,9 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField]
         private TabObject[] tabs = new TabObject[12];
         [SerializeField]
-        private Toggle groundToggle;
+        private Toggle groundToggle = null;
         [SerializeField]
-        private Toggle cavesToggle;
+        private Toggle cavesToggle = null;
 
         public MultiCamera CurrentCamera {
             get {
