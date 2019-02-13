@@ -16,11 +16,9 @@ namespace Warlander.Deedplanner.Logic
         {
             if (raycast.transform == null)
             {
-                Debug.Log("Empty raycast");
                 return;
             }
 
-            Debug.Log("Updating ground");
             GroundData groundData = GuiManager.Instance.GroundsTree.SelectedValue as GroundData;
             Ground ground = raycast.transform.GetComponent<Ground>();
 
