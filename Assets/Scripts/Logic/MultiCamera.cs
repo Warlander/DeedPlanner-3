@@ -130,12 +130,12 @@ namespace Warlander.Deedplanner.Logic
                 local += new Vector2(0.5f, 0.5f);
                 Ray ray = attachedCamera.ViewportPointToRay(local);
                 RaycastHit raycastHit;
-                bool hit = Physics.Raycast(ray, out raycastHit, 20000, LayerMasks.GroundEditMask);
+                int mask = LayerMasks.GetMaskForTab(LayoutManager.Instance.CurrentTab);
+                bool hit = Physics.Raycast(ray, out raycastHit, 20000, mask);
                 if (hit)
                 {
                     CurrentRaycast = raycastHit;
                 }
-                
             }
 
             if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
