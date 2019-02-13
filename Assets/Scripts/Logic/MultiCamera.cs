@@ -16,9 +16,9 @@ namespace Warlander.Deedplanner.Logic
         private Transform parentTransform;
         private Camera attachedCamera;
         [SerializeField]
-        private int screenId;
+        private int screenId = 0;
         [SerializeField]
-        private GameObject screen;
+        private GameObject screen = null;
         [SerializeField]
         private CameraMode cameraMode = CameraMode.Top;
         [SerializeField]

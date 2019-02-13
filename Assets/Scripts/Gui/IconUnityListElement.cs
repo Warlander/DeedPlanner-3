@@ -10,11 +10,11 @@ public class IconUnityListElement : UnityListElement
 {
 
     [SerializeField]
-    private TextMeshProUGUI text;
+    private TextMeshProUGUI text = null;
     [SerializeField]
-    private Toggle toggle;
+    private Toggle toggle = null;
     [SerializeField]
-    private Image image;
+    private Image image = null;
 
     private TextureReference textureReference;
     private object value;

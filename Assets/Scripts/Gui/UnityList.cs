@@ -15,11 +15,11 @@ namespace Warlander.Deedplanner.Gui
 
         // we want these fields to be settable via inspector, but not via code
         [SerializeField]
-        private ToggleGroup toggleGroup;
+        private ToggleGroup toggleGroup = null;
         [SerializeField]
-        private RectTransform listElementsParent;
+        private RectTransform listElementsParent = null;
         [SerializeField]
-        private UnityListElement listElementPrefab;
+        private UnityListElement listElementPrefab = null;
 
         public object SelectedValue { get; private set; }
 

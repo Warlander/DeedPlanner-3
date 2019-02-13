@@ -11,10 +11,10 @@ namespace Warlander.Deedplanner.Gui
         public static GuiManager Instance { get; private set; }
 
         [SerializeField]
-        private Window windowPrefab;
+        private Window windowPrefab = null;
 
         [SerializeField]
-        private UnityTree groundsTree;
+        private UnityTree groundsTree = null;
 
         public UnityTree GroundsTree {
             get {

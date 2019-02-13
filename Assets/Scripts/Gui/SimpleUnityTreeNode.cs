@@ -13,13 +13,13 @@ namespace Warlander.Deedplanner.Gui
     {
 
         [SerializeField]
-        private TextMeshProUGUI text;
+        private TextMeshProUGUI text = null;
         [SerializeField]
-        private Toggle toggle;
+        private Toggle toggle = null;
         [SerializeField]
-        private Image expandButtonImage;
+        private Image expandButtonImage = null;
         [SerializeField]
-        private Image collapseButtonImage;
+        private Image collapseButtonImage = null;
 
         private string value;
 

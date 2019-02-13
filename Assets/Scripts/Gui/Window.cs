@@ -10,13 +10,11 @@ namespace Warlander.Deedplanner.Gui
     {
 
         [SerializeField]
-        private GameObject closeButton;
-
+        private GameObject closeButton = null;
         [SerializeField]
-        private RectTransform contentAnchor;
-
+        private RectTransform contentAnchor = null;
         [SerializeField]
-        private TextMeshProUGUI titleGui;
+        private TextMeshProUGUI titleGui = null;
 
         public bool CloseButtonVisible {
             get {

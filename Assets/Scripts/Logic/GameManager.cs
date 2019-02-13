@@ -15,7 +15,7 @@ namespace Warlander.Deedplanner.Logic
         public Map Map { get; private set; }
 
         [SerializeField]
-        private GameObject water;
+        private GameObject water = null;
 
         private void Awake()
         {
