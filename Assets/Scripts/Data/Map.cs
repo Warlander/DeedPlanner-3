@@ -16,7 +16,8 @@ namespace Warlander.Deedplanner.Data
 
         private Transform surfaceRoot;
         private Transform caveRoot;
-        private Transform gridRoot;
+        private Transform surfaceGridRoot;
+        private Transform caveGridRoot;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -31,24 +32,44 @@ namespace Warlander.Deedplanner.Data
         {
             Width = width;
             Height = height;
-            tiles = new Tile[width, height];
+            tiles = new Tile[width + 1, height + 1];
 
             surfaceRoot = new GameObject("Surface").transform;
             surfaceRoot.SetParent(transform);
             caveRoot = new GameObject("Cave").transform;
             caveRoot.SetParent(transform);
-            gridRoot = new GameObject("Grid").transform;
-            gridRoot.SetParent(transform);
+            surfaceGridRoot = new GameObject("Surface Grid").transform;
+            surfaceGridRoot.SetParent(transform);
+            caveGridRoot = new GameObject("Cave Grid").transform;
+            caveGridRoot.SetParent(transform);
 
-            for (int i = 0; i < Width; i++)
+            for (int i = 0; i <= Width; i++)
             {
-                for (int i2 = 0; i2 < Height; i2++)
+                for (int i2 = 0; i2 <= Height; i2++)
                 {
-                    GameObject tileObject = new GameObject("Tile " + i + "X" + i2, typeof(Tile));
-                    tileObject.transform.SetParent(surfaceRoot);
-                    tileObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
-                    Tile tile = tileObject.GetComponent<Tile>();
-                    tile.Initialize(this, i, i2);
+                    GameObject surfaceGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
+                    surfaceGridObject.transform.SetParent(surfaceGridRoot);
+                    surfaceGridObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
+                    GridTile surfaceGrid = surfaceGridObject.GetComponent<GridTile>();
+
+                    GameObject surfaceObject = new GameObject("Tile " + i + "X" + i2, typeof(SurfaceTile));
+                    surfaceObject.transform.SetParent(surfaceRoot);
+                    surfaceObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
+                    SurfaceTile surface = surfaceObject.GetComponent<SurfaceTile>();
+                    surface.Initialize(surfaceGrid);
+
+                    GameObject caveGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
+                    caveGridObject.transform.SetParent(caveGridRoot);
+                    caveGridObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
+                    GridTile caveGrid = caveGridObject.GetComponent<GridTile>();
+
+                    GameObject caveObject = new GameObject("Tile " + i + "X" + i2, typeof(CaveTile));
+                    caveObject.transform.SetParent(caveRoot);
+                    caveObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
+                    CaveTile cave = caveObject.GetComponent<CaveTile>();
+                    cave.Initialize(caveGrid);
+
+                    Tile tile = new Tile(this, surface, cave, i, i2);
                     tiles[i, i2] = tile;
                 }
             }
