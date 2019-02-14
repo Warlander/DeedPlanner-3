@@ -24,6 +24,12 @@ namespace Warlander.Deedplanner.Data
         public int Width { get; private set; }
         public int Height { get; private set; }
 
+        public int LowestSurfaceHeight { get; private set; }
+        public int HighestSurfaceHeight { get; private set; }
+
+        public int LowestCaveHeight { get; private set; }
+        public int HighestCaveHeight { get; private set; }
+
         public Tile this[int x, int y] {
             get {
                 return tiles[x, y];
@@ -91,7 +97,6 @@ namespace Warlander.Deedplanner.Data
                     surfaceObject.transform.SetParent(surfaceRoot);
                     surfaceObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
                     SurfaceTile surface = surfaceObject.GetComponent<SurfaceTile>();
-                    surface.Initialize(surfaceGrid);
 
                     GameObject caveGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
                     caveGridObject.transform.SetParent(caveGridRoot);
@@ -102,15 +107,51 @@ namespace Warlander.Deedplanner.Data
                     caveObject.transform.SetParent(caveRoot);
                     caveObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
                     CaveTile cave = caveObject.GetComponent<CaveTile>();
-                    cave.Initialize(caveGrid);
 
                     Tile tile = new Tile(this, surface, cave, i, i2);
+                    surface.Initialize(tile, surfaceGrid);
+                    cave.Initialize(tile, caveGrid);
                     tiles[i, i2] = tile;
                 }
             }
+        }
 
-            StaticBatchingUtility.Combine(surfaceRoot.gameObject);
-            StaticBatchingUtility.Combine(caveRoot.gameObject);
+        public void RecalculateHeights()
+        {
+            int min = int.MaxValue;
+            int max = int.MinValue;
+            int caveMin = int.MaxValue;
+            int caveMax = int.MinValue;
+
+            for (int i = 0; i <= Width; i++)
+            {
+                for (int i2 = 0; i2 <= Height; i2++)
+                {
+                    int elevation = this[i, i2].Surface.Height;
+                    int caveElevation = this[i, i2].Cave.Height;
+                    if (elevation > max)
+                    {
+                        max = elevation;
+                    }
+                    if (elevation < min)
+                    {
+                        min = elevation;
+                    }
+                    if (caveElevation > caveMax)
+                    {
+                        caveMax = caveElevation;
+                    }
+                    if (caveElevation < caveMin)
+                    {
+                        caveMin = caveElevation;
+                    }
+                }
+            }
+
+            LowestSurfaceHeight = min;
+            HighestSurfaceHeight = max;
+            LowestCaveHeight = caveMin;
+            HighestCaveHeight = caveMax;
         }
 
         public Tile getRelativeTile(Tile tile, int relativeX, int relativeY)
