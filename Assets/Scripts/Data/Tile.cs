@@ -38,6 +38,15 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
+        public BasicTile GetTileOfSameType(BasicTile tile)
+        {
+            if (tile.GetType() == typeof(SurfaceTile))
+            {
+                return Surface;
+            }
+            return Cave;
+        }
+
         public void Serialize(XmlDocument document, XmlElement localRoot)
         {
 

@@ -12,9 +12,9 @@ namespace Warlander.Deedplanner.Data
     public class CaveTile : BasicTile
     {
 
-        public new void Initialize(GridTile gridTile)
+        public new void Initialize(Tile tile, GridTile gridTile)
         {
-            base.Initialize(gridTile);
+            base.Initialize(tile, gridTile);
         }
 
     }

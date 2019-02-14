@@ -14,9 +14,9 @@ namespace Warlander.Deedplanner.Data
         
         public Ground Ground { get; private set; }
 
-        public new void Initialize(GridTile gridTile)
+        public new void Initialize(Tile tile, GridTile gridTile)
         {
-            base.Initialize(gridTile);
+            base.Initialize(tile, gridTile);
 
             GameObject groundObject = new GameObject("Ground", typeof(Ground));
             groundObject.transform.SetParent(transform);
