@@ -24,7 +24,7 @@ namespace Warlander.Deedplanner.Data
             }
             set {
                 data = value;
-                meshRenderer.material.SetTexture("_MainTex", data.Tex3d.Texture);
+                meshRenderer.material = data.Tex3d.Material;
             }
         }
 
@@ -40,7 +40,6 @@ namespace Warlander.Deedplanner.Data
                 gameObject.AddComponent<MeshFilter>();
             }
 
-            meshRenderer.material.SetFloat("_Glossiness", 0);
             MeshFilter meshFilter = GetComponent<MeshFilter>();
             meshFilter.mesh = mesh;
 

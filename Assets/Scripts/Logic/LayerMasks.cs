@@ -43,6 +43,8 @@ namespace Warlander.Deedplanner.Logic
             {
                 case Tab.Ground:
                     return GroundEditMask;
+                case Tab.Caves:
+                    return GroundEditMask;
                 case Tab.Height:
                     return HeightEditMask;
                 case Tab.Floors:
