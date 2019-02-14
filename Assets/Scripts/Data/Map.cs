@@ -19,12 +19,45 @@ namespace Warlander.Deedplanner.Data
         private Transform surfaceGridRoot;
         private Transform caveGridRoot;
 
+        private int renderedFloor;
+
         public int Width { get; private set; }
         public int Height { get; private set; }
 
         public Tile this[int x, int y] {
             get {
                 return tiles[x, y];
+            }
+        }
+
+        public int RenderedFloor {
+            get {
+                return RenderedFloor;
+            }
+            set {
+                renderedFloor = value;
+
+                bool underground = renderedFloor < 0;
+                int absoluteFloor = underground ? -renderedFloor + 1 : renderedFloor;
+
+                if (underground)
+                {
+                    surfaceRoot.gameObject.SetActive(false);
+                    surfaceGridRoot.gameObject.SetActive(false);
+                    caveRoot.gameObject.SetActive(true);
+                    caveGridRoot.gameObject.SetActive(true);
+
+                    caveGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
+                }
+                else
+                {
+                    surfaceRoot.gameObject.SetActive(true);
+                    surfaceGridRoot.gameObject.SetActive(true);
+                    caveRoot.gameObject.SetActive(false);
+                    caveGridRoot.gameObject.SetActive(false);
+
+                    surfaceGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
+                }
             }
         }
 
@@ -38,10 +71,12 @@ namespace Warlander.Deedplanner.Data
             surfaceRoot.SetParent(transform);
             caveRoot = new GameObject("Cave").transform;
             caveRoot.SetParent(transform);
+            caveRoot.gameObject.SetActive(false);
             surfaceGridRoot = new GameObject("Surface Grid").transform;
             surfaceGridRoot.SetParent(transform);
             caveGridRoot = new GameObject("Cave Grid").transform;
             caveGridRoot.SetParent(transform);
+            caveGridRoot.gameObject.SetActive(false);
 
             for (int i = 0; i <= Width; i++)
             {
@@ -73,6 +108,9 @@ namespace Warlander.Deedplanner.Data
                     tiles[i, i2] = tile;
                 }
             }
+
+            StaticBatchingUtility.Combine(surfaceRoot.gameObject);
+            StaticBatchingUtility.Combine(caveRoot.gameObject);
         }
 
         public Tile getRelativeTile(Tile tile, int relativeX, int relativeY)

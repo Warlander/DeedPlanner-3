@@ -123,6 +123,10 @@ namespace Warlander.Deedplanner.Gui
             switch (layout)
             {
                 case Layout.Single:
+                    cameras[0].gameObject.SetActive(true);
+                    cameras[1].gameObject.SetActive(false);
+                    cameras[2].gameObject.SetActive(false);
+                    cameras[3].gameObject.SetActive(false);
                     IndicatorButtons[0].gameObject.SetActive(true);
                     IndicatorButtons[1].gameObject.SetActive(false);
                     IndicatorButtons[2].gameObject.SetActive(false);
@@ -146,6 +150,10 @@ namespace Warlander.Deedplanner.Gui
                     }
                     break;
                 case Layout.HorizontalSplit:
+                    cameras[0].gameObject.SetActive(true);
+                    cameras[1].gameObject.SetActive(false);
+                    cameras[2].gameObject.SetActive(true);
+                    cameras[3].gameObject.SetActive(false);
                     IndicatorButtons[0].gameObject.SetActive(true);
                     IndicatorButtons[1].gameObject.SetActive(false);
                     IndicatorButtons[2].gameObject.SetActive(true);
@@ -169,6 +177,10 @@ namespace Warlander.Deedplanner.Gui
                     }
                     break;
                 case Layout.VerticalSplit:
+                    cameras[0].gameObject.SetActive(true);
+                    cameras[1].gameObject.SetActive(true);
+                    cameras[2].gameObject.SetActive(false);
+                    cameras[3].gameObject.SetActive(false);
                     IndicatorButtons[0].gameObject.SetActive(true);
                     IndicatorButtons[1].gameObject.SetActive(true);
                     IndicatorButtons[2].gameObject.SetActive(false);
@@ -192,6 +204,10 @@ namespace Warlander.Deedplanner.Gui
                     }
                     break;
                 case Layout.HorizontalTop:
+                    cameras[0].gameObject.SetActive(true);
+                    cameras[1].gameObject.SetActive(false);
+                    cameras[2].gameObject.SetActive(true);
+                    cameras[3].gameObject.SetActive(true);
                     IndicatorButtons[0].gameObject.SetActive(true);
                     IndicatorButtons[1].gameObject.SetActive(false);
                     IndicatorButtons[2].gameObject.SetActive(true);
@@ -215,6 +231,10 @@ namespace Warlander.Deedplanner.Gui
                     }
                     break;
                 case Layout.HorizontalBottom:
+                    cameras[0].gameObject.SetActive(true);
+                    cameras[1].gameObject.SetActive(true);
+                    cameras[2].gameObject.SetActive(true);
+                    cameras[3].gameObject.SetActive(false);
                     IndicatorButtons[0].gameObject.SetActive(true);
                     IndicatorButtons[1].gameObject.SetActive(true);
                     IndicatorButtons[2].gameObject.SetActive(true);
@@ -238,6 +258,10 @@ namespace Warlander.Deedplanner.Gui
                     }
                     break;
                 case Layout.Quad:
+                    cameras[0].gameObject.SetActive(true);
+                    cameras[1].gameObject.SetActive(true);
+                    cameras[2].gameObject.SetActive(true);
+                    cameras[3].gameObject.SetActive(true);
                     IndicatorButtons[0].gameObject.SetActive(true);
                     IndicatorButtons[1].gameObject.SetActive(true);
                     IndicatorButtons[2].gameObject.SetActive(true);

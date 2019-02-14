@@ -36,6 +36,7 @@ namespace Warlander.Deedplanner.Utils
 
         private Texture2D texture;
         private Sprite sprite;
+        private Material material;
 
         public string Location { get; private set; }
 
@@ -60,6 +61,20 @@ namespace Warlander.Deedplanner.Utils
 
                 sprite = Sprite.Create(Texture, new Rect(0.0f, 0.0f, Texture.width, Texture.height), new Vector2(0.5f, 0.5f));
                 return sprite;
+            }
+        }
+
+        public Material Material {
+            get {
+                if (material)
+                {
+                    return material;
+                }
+
+                material = new Material(Shader.Find("Standard"));
+                material.SetTexture("_MainTex", Texture);
+                material.SetFloat("_Glossiness", 0);
+                return material;
             }
         }
 

@@ -118,8 +118,30 @@ namespace Warlander.Deedplanner.Logic
             CameraMode = cameraMode;
         }
 
-        void Update()
+        private void Update()
         {
+            Map map = GameManager.Instance.Map;
+
+            if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
+            {
+                UpdatePerspectiveCamera(map);
+            }
+            else if (CameraMode == CameraMode.Top)
+            {
+                UpdateTopCamera(map);
+            }
+            else if (CameraMode == CameraMode.Isometric)
+            {
+                UpdateIsometricCamera(map);
+            }
+
+            UpdateState();
+        }
+
+        void OnPreCull()
+        {
+            Map map = GameManager.Instance.Map;
+            map.RenderedFloor = Floor;
             CurrentRaycast = default;
 
             if (mouseOver)
@@ -137,27 +159,10 @@ namespace Warlander.Deedplanner.Logic
                     CurrentRaycast = raycastHit;
                 }
             }
-
-            if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
-            {
-                UpdatePerspectiveCamera();
-            }
-            else if (CameraMode == CameraMode.Top)
-            {
-                UpdateTopCamera();
-            }
-            else if (CameraMode == CameraMode.Isometric)
-            {
-                UpdateIsometricCamera();
-            }
-
-            UpdateState();
         }
 
-        private void UpdatePerspectiveCamera()
+        private void UpdatePerspectiveCamera(Map map)
         {
-            Map map = GameManager.Instance.Map;
-
             int activeWindow = LayoutManager.Instance.ActiveWindow;
             if (activeWindow == screenId)
             {
@@ -213,10 +218,8 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
-        private void UpdateTopCamera()
+        private void UpdateTopCamera(Map map)
         {
-            Map map = GameManager.Instance.Map;
-
             int activeWindow = LayoutManager.Instance.ActiveWindow;
             if (activeWindow == screenId)
             {
@@ -269,10 +272,8 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
-        private void UpdateIsometricCamera()
+        private void UpdateIsometricCamera(Map map)
         {
-            Map map = GameManager.Instance.Map;
-
             int activeWindow = LayoutManager.Instance.ActiveWindow;
             if (activeWindow == screenId)
             {
