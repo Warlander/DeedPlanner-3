@@ -119,7 +119,6 @@ namespace Warlander.Deedplanner.Data
                         surfaceObject.SetActive(false);
                         caveGridObject.SetActive(false);
                         caveObject.SetActive(false);
-                        
                     }
                 }
             }
