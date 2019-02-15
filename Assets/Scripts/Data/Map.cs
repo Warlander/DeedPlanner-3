@@ -112,6 +112,15 @@ namespace Warlander.Deedplanner.Data
                     surface.Initialize(tile, surfaceGrid);
                     cave.Initialize(tile, caveGrid);
                     tiles[i, i2] = tile;
+
+                    if (i == Width || i2 == Height)
+                    {
+                        surfaceGridObject.SetActive(false);
+                        surfaceObject.SetActive(false);
+                        caveGridObject.SetActive(false);
+                        caveObject.SetActive(false);
+                        
+                    }
                 }
             }
         }
