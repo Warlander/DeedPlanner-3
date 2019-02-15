@@ -62,10 +62,8 @@ namespace Warlander.Deedplanner.Logic
         {
             if (lineDrawingMaterial == null)
             {
-                Shader shader = Shader.Find("Hidden/Internal-Colored");
+                Shader shader = Shader.Find("DeedPlanner/SimpleLineShader");
                 lineDrawingMaterial = new Material(shader);
-                lineDrawingMaterial.SetInt("_SrcBlend", (int) UnityEngine.Rendering.BlendMode.SrcAlpha);
-                lineDrawingMaterial.SetInt("_DstBlend", (int) UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             }
 
             parentTransform = transform.parent;
@@ -355,21 +353,52 @@ namespace Warlander.Deedplanner.Logic
 
         private void OnPostRender()
         {
-            int absoluteFloor = floor < 0 ? -floor + 1 : floor;
+            bool renderHeights = LayoutManager.Instance.CurrentTab == Tab.Height;
+            bool cave = floor < 0;
+            int absoluteFloor = cave ? -floor + 1 : floor;
 
             Map map = GameManager.Instance.Map;
+            float highestHeight = cave ? map.HighestCaveHeight : map.HighestSurfaceHeight;
+            float lowestHeight = cave ? map.LowestCaveHeight : map.LowestSurfaceHeight;
+            float heightDelta = highestHeight - lowestHeight;
+
+            float alpha = 0.75f;
 
             GL.PushMatrix();
             lineDrawingMaterial.SetPass(0);
-            lineDrawingMaterial.SetVector("_Color", new Color(1, 1, 1, 0.5f));
             GL.Begin(GL.LINES);
+            GL.Color(new Color(1, 1, 1, alpha));
             for (int i = 0; i < map.Width; i++)
             {
                 for (int i2 = 0; i2 < map.Height; i2++)
                 {
+                    float cornerHeight = map[i, i2].GetTileForFloor(floor).Height;
+                    float cornerColorComponent = (cornerHeight - lowestHeight) / heightDelta;
+
+                    float verticalHeight = map[i, i2 + 1].GetTileForFloor(floor).Height;
+                    if (renderHeights)
+                    {
+                        GL.Color(new Color(cornerColorComponent, 1f - cornerColorComponent, 0, alpha));
+                    }
                     GL.Vertex3(i * 4, absoluteFloor * 4 + map[i, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
+                    if (renderHeights)
+                    {
+                        float verticalColorComponent = (verticalHeight - lowestHeight) / heightDelta;
+                        GL.Color(new Color(verticalColorComponent, 1f - verticalColorComponent, 0, alpha));
+                    }
                     GL.Vertex3(i * 4, absoluteFloor * 4 + map[i, i2 + 1].GetTileForFloor(floor).Height * 0.1f, i2 * 4 + 4);
+
+                    float horizontalHeight = map[i + 1, i2].GetTileForFloor(floor).Height;
+                    if (renderHeights)
+                    {
+                        GL.Color(new Color(cornerColorComponent, 1f - cornerColorComponent, 0, alpha));
+                    }
                     GL.Vertex3(i * 4, absoluteFloor * 4 + map[i, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
+                    if (renderHeights)
+                    {
+                        float horizontalColorComponent = (horizontalHeight - lowestHeight) / heightDelta;
+                        GL.Color(new Color(horizontalColorComponent, 1f - horizontalColorComponent, 0, alpha));
+                    }
                     GL.Vertex3(i * 4 + 4, absoluteFloor * 4 + map[i + 1, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
                 }
             }
