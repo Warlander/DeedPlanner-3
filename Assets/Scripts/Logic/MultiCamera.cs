@@ -380,26 +380,26 @@ namespace Warlander.Deedplanner.Logic
                     {
                         GL.Color(new Color(cornerColorComponent, 1f - cornerColorComponent, 0, linesAlpha));
                     }
-                    GL.Vertex3(i * 4, absoluteFloor * 4 + map[i, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
+                    GL.Vertex3(i * 4, absoluteFloor * 3 + map[i, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
                     if (renderHeights)
                     {
                         float verticalColorComponent = (verticalHeight - lowestHeight) / heightDelta;
                         GL.Color(new Color(verticalColorComponent, 1f - verticalColorComponent, 0, linesAlpha));
                     }
-                    GL.Vertex3(i * 4, absoluteFloor * 4 + map[i, i2 + 1].GetTileForFloor(floor).Height * 0.1f, i2 * 4 + 4);
+                    GL.Vertex3(i * 4, absoluteFloor * 3 + map[i, i2 + 1].GetTileForFloor(floor).Height * 0.1f, i2 * 4 + 4);
 
                     float horizontalHeight = map[i + 1, i2].GetTileForFloor(floor).Height;
                     if (renderHeights)
                     {
                         GL.Color(new Color(cornerColorComponent, 1f - cornerColorComponent, 0, linesAlpha));
                     }
-                    GL.Vertex3(i * 4, absoluteFloor * 4 + map[i, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
+                    GL.Vertex3(i * 4, absoluteFloor * 3 + map[i, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
                     if (renderHeights)
                     {
                         float horizontalColorComponent = (horizontalHeight - lowestHeight) / heightDelta;
                         GL.Color(new Color(horizontalColorComponent, 1f - horizontalColorComponent, 0, linesAlpha));
                     }
-                    GL.Vertex3(i * 4 + 4, absoluteFloor * 4 + map[i + 1, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
+                    GL.Vertex3(i * 4 + 4, absoluteFloor * 3 + map[i + 1, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
                 }
             }
             GL.End();
