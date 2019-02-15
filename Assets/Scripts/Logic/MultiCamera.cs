@@ -362,12 +362,12 @@ namespace Warlander.Deedplanner.Logic
             float lowestHeight = cave ? map.LowestCaveHeight : map.LowestSurfaceHeight;
             float heightDelta = highestHeight - lowestHeight;
 
-            float alpha = 0.75f;
+            float linesAlpha = 0.75f;
 
             GL.PushMatrix();
             lineDrawingMaterial.SetPass(0);
             GL.Begin(GL.LINES);
-            GL.Color(new Color(1, 1, 1, alpha));
+            GL.Color(new Color(1, 1, 1, linesAlpha));
             for (int i = 0; i < map.Width; i++)
             {
                 for (int i2 = 0; i2 < map.Height; i2++)
@@ -378,31 +378,52 @@ namespace Warlander.Deedplanner.Logic
                     float verticalHeight = map[i, i2 + 1].GetTileForFloor(floor).Height;
                     if (renderHeights)
                     {
-                        GL.Color(new Color(cornerColorComponent, 1f - cornerColorComponent, 0, alpha));
+                        GL.Color(new Color(cornerColorComponent, 1f - cornerColorComponent, 0, linesAlpha));
                     }
                     GL.Vertex3(i * 4, absoluteFloor * 4 + map[i, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
                     if (renderHeights)
                     {
                         float verticalColorComponent = (verticalHeight - lowestHeight) / heightDelta;
-                        GL.Color(new Color(verticalColorComponent, 1f - verticalColorComponent, 0, alpha));
+                        GL.Color(new Color(verticalColorComponent, 1f - verticalColorComponent, 0, linesAlpha));
                     }
                     GL.Vertex3(i * 4, absoluteFloor * 4 + map[i, i2 + 1].GetTileForFloor(floor).Height * 0.1f, i2 * 4 + 4);
 
                     float horizontalHeight = map[i + 1, i2].GetTileForFloor(floor).Height;
                     if (renderHeights)
                     {
-                        GL.Color(new Color(cornerColorComponent, 1f - cornerColorComponent, 0, alpha));
+                        GL.Color(new Color(cornerColorComponent, 1f - cornerColorComponent, 0, linesAlpha));
                     }
                     GL.Vertex3(i * 4, absoluteFloor * 4 + map[i, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
                     if (renderHeights)
                     {
                         float horizontalColorComponent = (horizontalHeight - lowestHeight) / heightDelta;
-                        GL.Color(new Color(horizontalColorComponent, 1f - horizontalColorComponent, 0, alpha));
+                        GL.Color(new Color(horizontalColorComponent, 1f - horizontalColorComponent, 0, linesAlpha));
                     }
                     GL.Vertex3(i * 4 + 4, absoluteFloor * 4 + map[i + 1, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
                 }
             }
             GL.End();
+
+            float raytraceAlpha = 0.25f;
+            Collider hitCollider = CurrentRaycast.collider;
+            if (hitCollider != null && hitCollider.GetType() == typeof(MeshCollider))
+            {
+                Transform hitTransform = CurrentRaycast.transform;
+                Vector3 position = hitTransform.position;
+                MeshCollider collider = (MeshCollider)hitCollider;
+                Mesh mesh = collider.sharedMesh;
+                Vector3[] vertices = mesh.vertices;
+                int[] triangles = mesh.triangles;
+                GL.Begin(GL.TRIANGLES);
+                GL.Color(new Color(1, 1, 0, raytraceAlpha));
+                for (int i = 0; i < triangles.Length; i += 3)
+                {
+                    GL.Vertex(position + vertices[triangles[i]]);
+                    GL.Vertex(position + vertices[triangles[i + 1]]);
+                    GL.Vertex(position + vertices[triangles[i + 2]]);
+                }
+                GL.End();
+            }
             GL.PopMatrix();
         }
 
