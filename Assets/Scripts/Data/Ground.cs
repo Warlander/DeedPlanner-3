@@ -14,7 +14,8 @@ namespace Warlander.Deedplanner.Data
         private GroundData data;
 
         private MeshRenderer meshRenderer;
-        private MeshCollider groundCollider;
+
+        public MeshCollider Collider { get; private set; }
 
         public RoadDirection RoadDirection { get; private set; }
 
@@ -43,11 +44,11 @@ namespace Warlander.Deedplanner.Data
             MeshFilter meshFilter = GetComponent<MeshFilter>();
             meshFilter.mesh = mesh;
 
-            if (!groundCollider)
+            if (!Collider)
             {
-                groundCollider = gameObject.AddComponent<MeshCollider>();
+                Collider = gameObject.AddComponent<MeshCollider>();
             }
-            groundCollider.sharedMesh = mesh;
+            Collider.sharedMesh = mesh;
 
             Data = data;
             RoadDirection = RoadDirection.Center;

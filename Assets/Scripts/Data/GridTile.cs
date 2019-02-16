@@ -13,15 +13,17 @@ namespace Warlander.Deedplanner.Data
     public class GridTile : MonoBehaviour
     {
 
+        public MeshCollider Collider { get; private set; }
+
         public void Initialize(Mesh mesh)
         {
             gameObject.layer = LayerMasks.TileLayer;
-            MeshCollider tileCollider = gameObject.GetComponent<MeshCollider>();
-            if (!tileCollider)
+            Collider = gameObject.GetComponent<MeshCollider>();
+            if (!Collider)
             {
-                tileCollider = gameObject.AddComponent<MeshCollider>();
+                Collider = gameObject.AddComponent<MeshCollider>();
             }
-            tileCollider.sharedMesh = mesh;
+            Collider.sharedMesh = mesh;
         }
 
     }
