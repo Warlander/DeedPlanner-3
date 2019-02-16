@@ -356,6 +356,11 @@ namespace Warlander.Deedplanner.Logic
             bool renderHeights = LayoutManager.Instance.CurrentTab == Tab.Height;
             bool cave = floor < 0;
             int absoluteFloor = cave ? -floor + 1 : floor;
+            Tab currentTab = LayoutManager.Instance.CurrentTab;
+            if (currentTab == Tab.Ground || currentTab == Tab.Height || currentTab == Tab.Borders)
+            {
+                absoluteFloor = 0;
+            }
 
             Map map = GameManager.Instance.Map;
             float highestHeight = cave ? map.HighestCaveHeight : map.HighestSurfaceHeight;
