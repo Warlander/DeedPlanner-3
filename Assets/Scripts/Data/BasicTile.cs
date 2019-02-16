@@ -32,7 +32,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        public void Initialize(Tile tile, GridTile gridTile)
+        public virtual void Initialize(Tile tile, GridTile gridTile)
         {
             Vector3[] vertices = new Vector3[] { new Vector3(0, 0, 0), new Vector3(4, 0, 0), new Vector3(0, 0, 4), new Vector3(4, 0, 4) };
             Vector2[] uv = new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1) };
@@ -51,7 +51,7 @@ namespace Warlander.Deedplanner.Data
             gridTile.Initialize(HeightMesh);
         }
 
-        protected void RefreshMesh()
+        protected virtual void RefreshMesh()
         {
             Vector3[] vertices = new Vector3[4];
             vertices[0] = new Vector3(0, Height * 0.1f, 0);
@@ -61,6 +61,7 @@ namespace Warlander.Deedplanner.Data
             HeightMesh.vertices = vertices;
             HeightMesh.RecalculateNormals();
             HeightMesh.RecalculateBounds();
+            gridTile.Collider.sharedMesh = HeightMesh;
         }
 
     }

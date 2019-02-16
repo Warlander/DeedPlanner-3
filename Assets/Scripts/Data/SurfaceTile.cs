@@ -14,7 +14,7 @@ namespace Warlander.Deedplanner.Data
         
         public Ground Ground { get; private set; }
 
-        public new void Initialize(Tile tile, GridTile gridTile)
+        public override void Initialize(Tile tile, GridTile gridTile)
         {
             base.Initialize(tile, gridTile);
 
@@ -23,6 +23,12 @@ namespace Warlander.Deedplanner.Data
             groundObject.transform.localPosition = Vector3.zero;
             Ground = groundObject.GetComponent<Ground>();
             Ground.Initialize(Data.Grounds["gr"], HeightMesh);
+        }
+
+        protected override void RefreshMesh()
+        {
+            base.RefreshMesh();
+            Ground.Collider.sharedMesh = HeightMesh;
         }
 
     }
