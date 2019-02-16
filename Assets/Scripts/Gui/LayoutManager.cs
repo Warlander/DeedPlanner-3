@@ -349,33 +349,27 @@ namespace Warlander.Deedplanner.Gui
             int floor = floorGroup.ActiveToggles().First().GetComponent<FloorReference>().Floor;
             if (floor < 0)
             {
-                FindObjectForTab(Tab.Ground).SetActive(false);
-                FindObjectForTab(Tab.Caves).SetActive(true);
                 groundToggle.gameObject.SetActive(false);
                 cavesToggle.gameObject.SetActive(true);
                 if (groundToggle.isOn)
                 {
+                    FindObjectForTab(Tab.Ground).SetActive(false);
+                    FindObjectForTab(Tab.Caves).SetActive(true);
                     groundToggle.isOn = false;
                     cavesToggle.isOn = true;
-                }
-                if (FindObjectForTab(Tab.Ground).activeInHierarchy)
-                {
                     CurrentTab = Tab.Caves;
                 }
             }
             else if (floor >= 0)
             {
-                FindObjectForTab(Tab.Ground).SetActive(true);
-                FindObjectForTab(Tab.Caves).SetActive(false);
                 groundToggle.gameObject.SetActive(true);
                 cavesToggle.gameObject.SetActive(false);
                 if (cavesToggle.isOn)
                 {
+                    FindObjectForTab(Tab.Ground).SetActive(true);
+                    FindObjectForTab(Tab.Caves).SetActive(false);
                     groundToggle.isOn = true;
                     cavesToggle.isOn = false;
-                }
-                if (FindObjectForTab(Tab.Caves).activeInHierarchy)
-                {
                     CurrentTab = Tab.Ground;
                 }
             }
