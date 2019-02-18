@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Gui;
 
 namespace Warlander.Deedplanner.Logic
 {
@@ -13,6 +14,11 @@ namespace Warlander.Deedplanner.Logic
 
         [SerializeField]
         private bool testSurfaceHeights = false;
+
+        [SerializeField]
+        private bool overrideStartingTileSelectionMode = false;
+        [SerializeField]
+        private TileSelectionMode tileSelectionMode = TileSelectionMode.Nothing;
 
         public void Start()
         {
@@ -33,6 +39,11 @@ namespace Warlander.Deedplanner.Logic
                 map[6, 7].Surface.Height = 10;
                 map[5, 8].Surface.Height = -10;
                 map[6, 8].Surface.Height = -10;
+            }
+
+            if (overrideStartingTileSelectionMode)
+            {
+                LayoutManager.Instance.TileSelectionMode = tileSelectionMode;
             }
         }
 

@@ -15,6 +15,7 @@ namespace Warlander.Deedplanner.Gui
         private int activeWindow;
         private Layout currentLayout = Layout.Single;
         private Tab currentTab;
+        public TileSelectionMode TileSelectionMode { get; set; }
 
         [SerializeField]
         private Toggle[] IndicatorButtons = new Toggle[4];
