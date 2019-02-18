@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -353,6 +354,28 @@ namespace Warlander.Deedplanner.Logic
 
         private void OnPostRender()
         {
+            GameObject hitObject = CurrentRaycast.collider?.gameObject;
+            bool gridOrGroundHit = hitObject != null && (hitObject.GetComponent<Ground>() || hitObject.GetComponent<GridTile>());
+
+            GL.PushMatrix();
+            lineDrawingMaterial.SetPass(0);
+            RenderLines();
+            if (hitObject != null)
+            {
+                if (!gridOrGroundHit)
+                {
+                    RenderRaytrace();
+                }
+                else
+                {
+                    RenderGridSquare();
+                }
+            }
+            GL.PopMatrix();
+        }
+
+        private void RenderLines()
+        {
             bool renderHeights = LayoutManager.Instance.CurrentTab == Tab.Height;
             bool cave = floor < 0;
             int absoluteFloor = cave ? -floor + 1 : floor;
@@ -369,8 +392,6 @@ namespace Warlander.Deedplanner.Logic
 
             float linesAlpha = 0.75f;
 
-            GL.PushMatrix();
-            lineDrawingMaterial.SetPass(0);
             GL.Begin(GL.LINES);
             GL.Color(new Color(1, 1, 1, linesAlpha));
             for (int i = 0; i < map.Width; i++)
@@ -408,7 +429,10 @@ namespace Warlander.Deedplanner.Logic
                 }
             }
             GL.End();
+        }
 
+        private void RenderRaytrace()
+        {
             float raytraceAlpha = 0.25f;
             Collider hitCollider = CurrentRaycast.collider;
             if (hitCollider != null && hitCollider.GetType() == typeof(MeshCollider))
@@ -429,7 +453,66 @@ namespace Warlander.Deedplanner.Logic
                 }
                 GL.End();
             }
-            GL.PopMatrix();
+        }
+
+        private void RenderGridSquare()
+        {
+            TileSelectionMode tileSelectionMode = LayoutManager.Instance.TileSelectionMode;
+            if (tileSelectionMode == TileSelectionMode.Nothing)
+            {
+                return;
+            }
+
+            Vector3 raycastPosition = CurrentRaycast.point;
+            TileSelectionHit tileSelectionHit = TileSelection.PositionToTileSelectionHit(raycastPosition, tileSelectionMode);
+            TileSelectionTarget target = tileSelectionHit.Target;
+            int tileX = tileSelectionHit.X;
+            int tileY = tileSelectionHit.Y;
+            Map map = GameManager.Instance.Map;
+
+            GameObject hitObject = CurrentRaycast.collider?.gameObject;
+            bool groundHit = hitObject != null && hitObject.GetComponent<Ground>();
+            bool cave = floor < 0;
+            int absoluteFloor = cave ? -floor + 1 : floor;
+            Tab currentTab = LayoutManager.Instance.CurrentTab;
+            if (currentTab == Tab.Ground || currentTab == Tab.Height || currentTab == Tab.Borders || groundHit)
+            {
+                absoluteFloor = 0;
+            }
+
+            float raytraceAlpha = 0.25f;
+            Collider hitCollider = CurrentRaycast.collider;
+
+            float borderThickness = TileSelection.BorderThickness;
+
+            GL.Begin(GL.QUADS);
+            GL.Color(new Color(1, 1, 0, raytraceAlpha));
+
+            float floorHeight = absoluteFloor * 3 + 0.01f;
+            if (target == TileSelectionTarget.Tile)
+            {
+                float xStart = tileX * 4;
+                float xEnd = tileX * 4 + 4;
+                float yStart = tileY * 4;
+                float yEnd = tileY * 4 + 4;
+                GL.Vertex3(xEnd, floorHeight + map.GetInterpolatedHeight(tileX + 1, tileY, floor) * 0.1f, yStart);
+                GL.Vertex3(xEnd, floorHeight + map.GetInterpolatedHeight(tileX + 1, tileY + 1, floor) * 0.1f, yEnd);
+                GL.Vertex3(xStart, floorHeight + map.GetInterpolatedHeight(tileX, tileY + 1, floor) * 0.1f, yEnd);
+                GL.Vertex3(xStart, floorHeight + map.GetInterpolatedHeight(tileX, tileY, floor) * 0.1f, yStart);
+            }
+            else if (target == TileSelectionTarget.InnerTile)
+            {
+                float xStart = tileX * 4 + borderThickness * 4f;
+                float xEnd = tileX * 4 + 4 - borderThickness * 4f;
+                float yStart = tileY * 4 + borderThickness * 4f;
+                float yEnd = tileY * 4 + 4 - borderThickness * 4f;
+                GL.Vertex3(xEnd, floorHeight + map.GetInterpolatedHeight(tileX + 1 - borderThickness, tileY + borderThickness, floor) * 0.1f, yStart);
+                GL.Vertex3(xEnd, floorHeight + map.GetInterpolatedHeight(tileX + 1 - borderThickness, tileY + 1 - borderThickness, floor) * 0.1f, yEnd);
+                GL.Vertex3(xStart, floorHeight + map.GetInterpolatedHeight(tileX + borderThickness, tileY + 1 - borderThickness, floor) * 0.1f, yEnd);
+                GL.Vertex3(xStart, floorHeight + map.GetInterpolatedHeight(tileX + borderThickness, tileY + borderThickness, floor) * 0.1f, yStart);
+            }
+
+            GL.End();
         }
 
     }

@@ -32,6 +32,11 @@ namespace Warlander.Deedplanner.Data
 
         public Tile this[int x, int y] {
             get {
+                if (x < 0 || y < 0 || x > Width || y > Height)
+                {
+                    return null;
+                }
+
                 return tiles[x, y];
             }
         }
@@ -173,6 +178,23 @@ namespace Warlander.Deedplanner.Data
             }
 
             return this[x, y];
+        }
+
+        public float GetInterpolatedHeight(float x, float y, int floor)
+        {
+            int tileX = (int)x;
+            int tileY = (int)y;
+            float xPart = x % 1f;
+            float yPart = y % 1f;
+
+            float h00 = this[tileX, tileY].GetTileForFloor(floor).Height;
+            float h10 = this[tileX + 1, tileY].GetTileForFloor(floor).Height;
+            float h01 = this[tileX, tileY + 1].GetTileForFloor(floor).Height;
+            float h11 = this[tileX + 1, tileY + 1].GetTileForFloor(floor).Height;
+
+            float horizontalBottom = h00 * (1f - xPart) + h10 * xPart;
+            float horizontalTop = h01 * (1f - xPart) + h11 * xPart;
+            return horizontalBottom * (1f - yPart) + horizontalTop * yPart;
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
