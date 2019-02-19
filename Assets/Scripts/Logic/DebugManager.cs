@@ -40,7 +40,10 @@ namespace Warlander.Deedplanner.Logic
                 map[5, 8].Surface.Height = -10;
                 map[6, 8].Surface.Height = -10;
             }
+        }
 
+        public void Update()
+        {
             if (overrideStartingTileSelectionMode)
             {
                 LayoutManager.Instance.TileSelectionMode = tileSelectionMode;
