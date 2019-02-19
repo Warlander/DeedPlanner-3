@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
@@ -180,21 +181,17 @@ namespace Warlander.Deedplanner.Data
             return this[x, y];
         }
 
-        public float GetInterpolatedHeight(float x, float y, int floor)
+        public float GetInterpolatedHeight(float x, float y)
         {
-            int tileX = (int)x;
-            int tileY = (int)y;
-            float xPart = x % 1f;
-            float yPart = y % 1f;
-
-            float h00 = this[tileX, tileY].GetTileForFloor(floor).Height;
-            float h10 = this[tileX + 1, tileY].GetTileForFloor(floor).Height;
-            float h01 = this[tileX, tileY + 1].GetTileForFloor(floor).Height;
-            float h11 = this[tileX + 1, tileY + 1].GetTileForFloor(floor).Height;
-
-            float horizontalBottom = h00 * (1f - xPart) + h10 * xPart;
-            float horizontalTop = h01 * (1f - xPart) + h11 * xPart;
-            return horizontalBottom * (1f - yPart) + horizontalTop * yPart;
+            Ray ray = new Ray(new Vector3(x, 10000, y), new Vector3(0, -1, 0));
+            RaycastHit raycastHit;
+            int mask = LayerMasks.GroundMask;
+            bool hit = Physics.Raycast(ray, out raycastHit, 20000, mask);
+            if (hit)
+            {
+                return raycastHit.point.y;
+            }
+            return 0;
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
