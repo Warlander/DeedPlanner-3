@@ -492,9 +492,9 @@ namespace Warlander.Deedplanner.Logic
             if (target == TileSelectionTarget.Tile)
             {
                 float xStart = tileX * 4;
-                float xEnd = tileX * 4 + 4;
+                float xEnd = (tileX + 1) * 4;
                 float yStart = tileY * 4;
-                float yEnd = tileY * 4 + 4;
+                float yEnd = (tileY + 1) * 4;
                 float h00 = floorHeight + map.GetInterpolatedHeight(xStart, yStart);
                 float h10 = floorHeight + map.GetInterpolatedHeight(xEnd, yStart);
                 float h01 = floorHeight + map.GetInterpolatedHeight(xStart, yEnd);
@@ -510,10 +510,10 @@ namespace Warlander.Deedplanner.Logic
             }
             else if (target == TileSelectionTarget.InnerTile)
             {
-                float xStart = tileX * 4 + borderThickness * 4f;
-                float xEnd = tileX * 4 + 4 - borderThickness * 4f;
-                float yStart = tileY * 4 + borderThickness * 4f;
-                float yEnd = tileY * 4 + 4 - borderThickness * 4f;
+                float xStart = (tileX + borderThickness) * 4f;
+                float xEnd = (tileX + 1 - borderThickness) * 4f;
+                float yStart = (tileY + borderThickness) * 4f;
+                float yEnd = (tileY + 1 - borderThickness) * 4f;
                 float h00 = floorHeight + map.GetInterpolatedHeight(xStart, yStart);
                 float h10 = floorHeight + map.GetInterpolatedHeight(xEnd, yStart);
                 float h01 = floorHeight + map.GetInterpolatedHeight(xStart, yEnd);
@@ -526,8 +526,92 @@ namespace Warlander.Deedplanner.Logic
                 GL.Vertex3(xEnd, h10, yStart);
                 GL.Vertex3(xEnd, h11, yEnd);
                 GL.Vertex3(xStart, h01, yEnd);
+            }
+            else if (target == TileSelectionTarget.BottomBorder)
+            {
+                float xStart = (tileX + borderThickness) * 4f;
+                float xEnd = (tileX + 1 - borderThickness) * 4f;
+                float yStart = (tileY - borderThickness) * 4f;
+                float yMid = tileY * 4f;
+                float yEnd = (tileY + borderThickness) * 4f;
+                float h00 = floorHeight + map.GetInterpolatedHeight(xStart, yStart);
+                float h10 = floorHeight + map.GetInterpolatedHeight(xEnd, yStart);
+                float h01 = floorHeight + map.GetInterpolatedHeight(xStart, yMid);
+                float h11 = floorHeight + map.GetInterpolatedHeight(xEnd, yMid);
+                float h02 = floorHeight + map.GetInterpolatedHeight(xStart, yEnd);
+                float h12 = floorHeight + map.GetInterpolatedHeight(xEnd, yEnd);
 
+                GL.Vertex3(xEnd, h10, yStart);
+                GL.Vertex3(xStart, h00, yStart);
+                GL.Vertex3(xStart, h01, yMid);
 
+                GL.Vertex3(xEnd, h10, yStart);
+                GL.Vertex3(xEnd, h11, yMid);
+                GL.Vertex3(xStart, h01, yMid);
+
+                GL.Vertex3(xEnd, h11, yMid);
+                GL.Vertex3(xStart, h01, yMid);
+                GL.Vertex3(xStart, h02, yEnd);
+
+                GL.Vertex3(xEnd, h11, yMid);
+                GL.Vertex3(xEnd, h12, yEnd);
+                GL.Vertex3(xStart, h02, yEnd);
+            }
+            else if (target == TileSelectionTarget.LeftBorder)
+            {
+                float xStart = (tileX - borderThickness) * 4f;
+                float xMid = tileX * 4f;
+                float xEnd = (tileX + borderThickness) * 4f;
+                float yStart = (tileY + borderThickness) * 4f;
+                float yEnd = (tileY + 1 - borderThickness) * 4f;
+                float h00 = floorHeight + map.GetInterpolatedHeight(xStart, yStart);
+                float h10 = floorHeight + map.GetInterpolatedHeight(xMid, yStart);
+                float h20 = floorHeight + map.GetInterpolatedHeight(xEnd, yStart);
+                float h01 = floorHeight + map.GetInterpolatedHeight(xStart, yEnd);
+                float h11 = floorHeight + map.GetInterpolatedHeight(xMid, yEnd);
+                float h21 = floorHeight + map.GetInterpolatedHeight(xEnd, yEnd);
+
+                GL.Vertex3(xMid, h10, yStart);
+                GL.Vertex3(xStart, h00, yStart);
+                GL.Vertex3(xStart, h01, yEnd);
+
+                GL.Vertex3(xMid, h10, yStart);
+                GL.Vertex3(xMid, h11, yEnd);
+                GL.Vertex3(xStart, h01, yEnd);
+
+                GL.Vertex3(xEnd, h20, yStart);
+                GL.Vertex3(xMid, h10, yStart);
+                GL.Vertex3(xMid, h11, yEnd);
+
+                GL.Vertex3(xEnd, h20, yStart);
+                GL.Vertex3(xEnd, h21, yEnd);
+                GL.Vertex3(xMid, h11, yEnd);
+            }
+            else if (target == TileSelectionTarget.Corner)
+            {
+                for (float i = -borderThickness; i <= 0; i += borderThickness)
+                {
+                    for (float i2 = -borderThickness; i2 <= 0; i2 += borderThickness)
+                    {
+
+                        float xStart = (tileX + i)* 4f;
+                        float xEnd = (tileX + borderThickness + i) * 4f;
+                        float yStart = (tileY + i2) * 4f;
+                        float yEnd = (tileY + borderThickness + i2) * 4f;
+                        float h00 = floorHeight + map.GetInterpolatedHeight(xStart, yStart);
+                        float h10 = floorHeight + map.GetInterpolatedHeight(xEnd, yStart);
+                        float h01 = floorHeight + map.GetInterpolatedHeight(xStart, yEnd);
+                        float h11 = floorHeight + map.GetInterpolatedHeight(xEnd, yEnd);
+
+                        GL.Vertex3(xEnd, h10, yStart);
+                        GL.Vertex3(xStart, h00, yStart);
+                        GL.Vertex3(xStart, h01, yEnd);
+
+                        GL.Vertex3(xEnd, h10, yStart);
+                        GL.Vertex3(xEnd, h11, yEnd);
+                        GL.Vertex3(xStart, h01, yEnd);
+                    }
+                }
             }
 
             GL.End();
