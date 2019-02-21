@@ -354,6 +354,11 @@ namespace Warlander.Deedplanner.Logic
 
         private void OnRenderObject()
         {
+            if (Camera.current != attachedCamera && Camera.current.GetComponent<MultiCamera>())
+            {
+                return;
+            }
+
             GameObject hitObject = CurrentRaycast.collider?.gameObject;
             bool gridOrGroundHit = hitObject != null && (hitObject.GetComponent<Ground>() || hitObject.GetComponent<GridTile>());
 
