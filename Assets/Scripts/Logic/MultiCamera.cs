@@ -352,7 +352,7 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
-        private void OnPostRender()
+        private void OnRenderObject()
         {
             GameObject hitObject = CurrentRaycast.collider?.gameObject;
             bool gridOrGroundHit = hitObject != null && (hitObject.GetComponent<Ground>() || hitObject.GetComponent<GridTile>());
