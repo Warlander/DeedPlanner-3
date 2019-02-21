@@ -37,8 +37,14 @@ namespace Warlander.Deedplanner.Logic
                 map[6, 6].Surface.Height = 30;
                 map[5, 7].Surface.Height = 10;
                 map[6, 7].Surface.Height = 10;
+                map[4, 8].Surface.Height = -10;
                 map[5, 8].Surface.Height = -10;
                 map[6, 8].Surface.Height = -10;
+                map[7, 8].Surface.Height = -10;
+                map[4, 9].Surface.Height = -10;
+                map[5, 9].Surface.Height = -10;
+                map[6, 9].Surface.Height = -10;
+                map[7, 9].Surface.Height = -10;
             }
         }
 
