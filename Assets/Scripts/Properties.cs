@@ -13,6 +13,8 @@ namespace Warlander.Deedplanner
 
         public static float FppMouseSensitivity = 0.5f;
         public static float FppMovementSpeed = 16f;
+        public static float FppShiftModifier = 5f;
+        public static float FppControlModifier = 0.2f;
 
         public static float TopMouseSensitivity = 0.2f;
         public static float TopMovementSpeed = 16f;
