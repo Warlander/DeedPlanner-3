@@ -167,6 +167,14 @@ namespace Warlander.Deedplanner.Logic
             {
                 Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                 movement *= Properties.FppMovementSpeed * Time.deltaTime;
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    movement *= Properties.FppShiftModifier;
+                }
+                else if (Input.GetKey(KeyCode.LeftControl))
+                {
+                    movement *= Properties.FppControlModifier;
+                }
                 attachedCamera.transform.localPosition = fppPosition;
                 attachedCamera.transform.Translate(movement, Space.Self);
                 fppPosition = attachedCamera.transform.position;
