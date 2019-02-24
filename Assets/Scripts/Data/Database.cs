@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Warlander.Deedplanner.Data
 {
-    public static class Data
+    public static class Database
     {
 
         public static readonly Dictionary<string, GroundData> Grounds = new Dictionary<string, GroundData>();

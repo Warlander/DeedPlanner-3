@@ -17,6 +17,9 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField]
         private GameObject water = null;
 
+        [SerializeField]
+        private GroundUpdater groundUpdater = null;
+
         private void Awake()
         {
             if (Instance)
@@ -50,7 +53,7 @@ namespace Warlander.Deedplanner.Logic
             switch (currentTab)
             {
                 case Tab.Ground:
-                    GroundUpdater.Update(raycast);
+                    groundUpdater.Tick(raycast);
                     break;
             }
         }
