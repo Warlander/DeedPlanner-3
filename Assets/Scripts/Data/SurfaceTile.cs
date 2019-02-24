@@ -22,7 +22,7 @@ namespace Warlander.Deedplanner.Data
             groundObject.transform.SetParent(transform);
             groundObject.transform.localPosition = Vector3.zero;
             Ground = groundObject.GetComponent<Ground>();
-            Ground.Initialize(Data.Grounds["gr"], HeightMesh);
+            Ground.Initialize(Database.Grounds["gr"], HeightMesh);
         }
 
         protected override void RefreshMesh()

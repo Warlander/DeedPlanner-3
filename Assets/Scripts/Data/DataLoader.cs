@@ -98,7 +98,7 @@ namespace Warlander.Deedplanner.Data
                 }
 
                 GroundData data = new GroundData(name, shortName, tex2d, tex3d, diagonal);
-                Data.Grounds[shortName] = data;
+                Database.Grounds[shortName] = data;
                 foreach (string[] category in categories)
                 {
                     IconUnityListElement iconListElement = (IconUnityListElement) GuiManager.Instance.GroundsTree.Add(data, category);
