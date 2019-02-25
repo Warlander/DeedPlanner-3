@@ -37,6 +37,8 @@ namespace Warlander.Deedplanner.Data
             foreach (XmlDocument document in documents)
             {
                 LoadGrounds(document);
+                shortNames.Clear();
+                LoadFloors(document);
             }
         }
 
@@ -105,6 +107,62 @@ namespace Warlander.Deedplanner.Data
                     iconListElement.TextureReference = tex2d;
                 }
                 Debug.Log("Ground data " + name + " loaded and ready to use!");
+            }
+        }
+
+        private static void LoadFloors(XmlDocument document)
+        {
+            XmlNodeList entities = document.GetElementsByTagName("floor");
+
+            foreach (XmlElement element in entities)
+            {
+                string name = element.GetAttribute("name");
+                string shortName = element.GetAttribute("shortname");
+
+                Debug.Log("Loading floor " + name);
+
+                bool unique = VerifyShortName(shortName);
+                if (!unique)
+                {
+                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    continue;
+                }
+
+                Model model = null;
+                List<string[]> categories = new List<string[]>();
+                bool opening = false;
+                Materials materials = null;
+
+                foreach (XmlElement child in element)
+                {
+                    switch (child.LocalName)
+                    {
+                        case "model":
+                            model = WomModelLoader.LoadModel(child.GetAttribute("location"));
+                            break;
+                        case "category":
+                            categories.Add(child.InnerText.Split('/'));
+                            break;
+                        case "opening":
+                            opening = true;
+                            break;
+                        case "materials":
+                            materials = new Materials(child);
+                            break;
+                    }
+                }
+
+                if (model == null)
+                {
+                    Debug.LogWarning("No model loaded, aborting");
+                }
+
+                FloorData data = new FloorData(model, name, shortName, opening, materials);
+                Database.Floors[shortName] = data;
+                foreach (string[] category in categories)
+                {
+                    GuiManager.Instance.FloorsTree.Add(data, category);
+                }
             }
         }
 
