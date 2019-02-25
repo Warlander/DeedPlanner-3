@@ -167,7 +167,7 @@ namespace UnityStandardAssets.Water
 
 
         // Cleanup all the objects we possibly have created
-        void OnDisable()
+        void OnDestroy()
         {
             if (m_ReflectionTexture)
             {
@@ -194,7 +194,7 @@ namespace UnityStandardAssets.Water
 
         // This just sets up some matrices in the material; for really
         // old cards to make water texture scroll.
-        void Update()
+        public void Update()
         {
             if (!GetComponent<Renderer>())
             {
@@ -292,6 +292,7 @@ namespace UnityStandardAssets.Water
                     reflectionCamera.transform.position = transform.position;
                     reflectionCamera.transform.rotation = transform.rotation;
                     reflectionCamera.gameObject.AddComponent<FlareLayer>();
+                    go.transform.SetParent(transform);
                     go.hideFlags = HideFlags.HideAndDontSave;
                     m_ReflectionCameras[currentCamera] = reflectionCamera;
                 }
@@ -325,6 +326,7 @@ namespace UnityStandardAssets.Water
                     refractionCamera.transform.position = transform.position;
                     refractionCamera.transform.rotation = transform.rotation;
                     refractionCamera.gameObject.AddComponent<FlareLayer>();
+                    go.transform.SetParent(transform);
                     go.hideFlags = HideFlags.HideAndDontSave;
                     m_RefractionCameras[currentCamera] = refractionCamera;
                 }
