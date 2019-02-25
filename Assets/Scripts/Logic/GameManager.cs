@@ -15,9 +15,6 @@ namespace Warlander.Deedplanner.Logic
         public Map Map { get; private set; }
 
         [SerializeField]
-        private GameObject water = null;
-
-        [SerializeField]
         private GroundUpdater groundUpdater = null;
 
         private void Awake()
@@ -33,9 +30,6 @@ namespace Warlander.Deedplanner.Logic
 
         private void Start()
         {
-            // we are disabling water to avoid annoying editor errors
-            water.SetActive(true);
-
             Debug.Log("Loading data");
             DataLoader.LoadData();
 

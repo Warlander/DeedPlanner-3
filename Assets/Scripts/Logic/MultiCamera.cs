@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityStandardAssets.Water;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 
@@ -24,6 +26,8 @@ namespace Warlander.Deedplanner.Logic
         private CameraMode cameraMode = CameraMode.Top;
         [SerializeField]
         private int floor = 0;
+        [SerializeField]
+        private Water attachedWater;
 
         private Vector3 fppPosition = new Vector3(-3, 4, -3);
         private Vector3 fppRotation = new Vector3(15, 45, 0);
@@ -140,6 +144,8 @@ namespace Warlander.Deedplanner.Logic
 
         void OnPreCull()
         {
+            attachedWater.gameObject.SetActive(true);
+            attachedWater.Update();
             Map map = GameManager.Instance.Map;
             map.RenderedFloor = Floor;
             CurrentRaycast = default;
@@ -363,11 +369,14 @@ namespace Warlander.Deedplanner.Logic
 
         private void OnRenderObject()
         {
-            if (Camera.current != attachedCamera && Camera.current.GetComponent<MultiCamera>())
+            Camera[] waterCameras = attachedWater.GetComponentsInChildren<Camera>();
+            bool currentWaterCamera = waterCameras.Contains(Camera.current);
+            bool currentAttachedCamera = Camera.current == attachedCamera;
+            if (!currentWaterCamera && !currentAttachedCamera)
             {
                 return;
             }
-
+            
             GameObject hitObject = CurrentRaycast.collider?.gameObject;
             bool gridOrGroundHit = hitObject != null && (hitObject.GetComponent<Ground>() || hitObject.GetComponent<GridTile>());
 
@@ -629,6 +638,11 @@ namespace Warlander.Deedplanner.Logic
             }
 
             GL.End();
+        }
+
+        private void OnPostRender()
+        {
+            attachedWater.gameObject.SetActive(false);
         }
 
     }
