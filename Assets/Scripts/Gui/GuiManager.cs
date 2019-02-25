@@ -15,10 +15,17 @@ namespace Warlander.Deedplanner.Gui
 
         [SerializeField]
         private UnityTree groundsTree = null;
+        [SerializeField]
+        private UnityTree floorsTree = null;
 
         public UnityTree GroundsTree {
             get {
                 return groundsTree;
+            }
+        }
+        public UnityTree FloorsTree {
+            get {
+                return floorsTree;
             }
         }
 
