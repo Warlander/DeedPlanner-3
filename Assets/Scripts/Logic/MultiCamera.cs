@@ -240,7 +240,7 @@ namespace Warlander.Deedplanner.Logic
                 if (mouseOver)
                 {
                     float scroll = Input.mouseScrollDelta.y;
-                    if (scroll > 0)
+                    if (scroll > 0 && topScale > 10)
                     {
                         topScale -= 4;
                     }
@@ -294,7 +294,7 @@ namespace Warlander.Deedplanner.Logic
                 if (mouseOver)
                 {
                     float scroll = Input.mouseScrollDelta.y;
-                    if (scroll > 0)
+                    if (scroll > 0 && isoScale > 10)
                     {
                         isoScale -= 4;
                     }
