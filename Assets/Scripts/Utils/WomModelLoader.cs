@@ -11,13 +11,12 @@ namespace Warlander.Deedplanner.Utils
     public static class WomModelLoader
     {
 
-        public static Model LoadModel(string filePath)
+        public static GameObject LoadModel(string filePath)
         {
             BinaryReader source = new BinaryReader(File.OpenRead(filePath));
             string fileFolder = Path.GetDirectoryName(filePath);
 
             GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(filePath), typeof(Model));
-            Model model = new Model(modelGameObject);
 
             try
             {
@@ -28,7 +27,7 @@ namespace Warlander.Deedplanner.Utils
                     meshObject.transform.SetParent(modelGameObject.transform);
                 }
 
-                return model;
+                return modelGameObject;
             }
             catch (Exception ex)
             {
