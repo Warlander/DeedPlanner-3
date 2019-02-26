@@ -138,7 +138,7 @@ namespace Warlander.Deedplanner.Data
                     switch (child.LocalName)
                     {
                         case "model":
-                            model = WomModelLoader.LoadModel(child.GetAttribute("location"));
+                            model = new Model(child);
                             break;
                         case "category":
                             categories.Add(child.InnerText.Split('/'));
