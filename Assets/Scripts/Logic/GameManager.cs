@@ -16,6 +16,8 @@ namespace Warlander.Deedplanner.Logic
 
         [SerializeField]
         private GroundUpdater groundUpdater = null;
+        [SerializeField]
+        private FloorUpdater floorUpdater = null;
 
         private void Awake()
         {
@@ -26,10 +28,7 @@ namespace Warlander.Deedplanner.Logic
             }
 
             Instance = this;
-        }
 
-        private void Start()
-        {
             Debug.Log("Loading data");
             DataLoader.LoadData();
 
@@ -39,20 +38,37 @@ namespace Warlander.Deedplanner.Logic
             Map.Initialize(25, 25);
         }
 
-        private void Update()
+        private void Start()
         {
-            Tab currentTab = LayoutManager.Instance.CurrentTab;
-            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
-
-            switch (currentTab)
-            {
-                case Tab.Ground:
-                    groundUpdater.Tick(raycast);
-                    break;
-            }
+            groundUpdater.gameObject.SetActive(true);
+            LayoutManager.Instance.TabChanged += OnTabChange;
         }
 
+        private void OnTabChange(Tab tab)
+        {
+            MonoBehaviour newUpdater = GetUpdaterForTab(tab);
 
+            CheckUpdater(groundUpdater, newUpdater);
+            CheckUpdater(floorUpdater, newUpdater);
+        }
+
+        private void CheckUpdater(MonoBehaviour updater, MonoBehaviour check)
+        {
+            updater.gameObject.SetActive(updater == check);
+        }
+
+        private MonoBehaviour GetUpdaterForTab(Tab tab)
+        {
+            switch (tab)
+            {
+                case Tab.Ground:
+                    return groundUpdater;
+                case Tab.Floors:
+                    return floorUpdater;
+                default:
+                    return null;
+            }
+        }
 
     }
 

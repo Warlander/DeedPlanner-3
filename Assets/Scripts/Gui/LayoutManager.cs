@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Logic;
 using System.Linq;
 using System;
+using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Gui
 {
@@ -11,6 +12,8 @@ namespace Warlander.Deedplanner.Gui
     {
 
         public static LayoutManager Instance { get; private set; }
+
+        public event GenericEventArgs<Tab> TabChanged;
 
         private int activeWindow;
         private Layout currentLayout = Layout.Single;
@@ -102,6 +105,7 @@ namespace Warlander.Deedplanner.Gui
                 {
                     tabObject.Object.SetActive(tabObject.Tab == currentTab);
                 }
+                TabChanged?.Invoke(currentTab);
             }
         }
 

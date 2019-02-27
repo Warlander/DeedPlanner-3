@@ -18,6 +18,8 @@ namespace Warlander.Deedplanner.Logic
         private GroundData leftClickData;
         private GroundData rightClickData;
 
+        private bool editCorners = true;
+
         [SerializeField]
         private Image leftClickImage = null;
         [SerializeField]
@@ -52,11 +54,38 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
+        public bool EditCorners {
+            get {
+                return editCorners;
+            }
+            set {
+                editCorners = value;
+                UpdateSelectionMode();
+            }
+        }
+
         public void Start()
         {
             GuiManager.Instance.GroundsTree.ValueChanged += OnGroundsTreeValueChanged;
             LeftClickData = Database.Grounds["gr"];
             RightClickData = Database.Grounds["di"];
+        }
+
+        public void OnEnable()
+        {
+            UpdateSelectionMode();
+        }
+
+        private void UpdateSelectionMode()
+        {
+            if (editCorners)
+            {
+                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.TilesAndCorners;
+            }
+            else
+            {
+                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+            }
         }
 
         private void OnGroundsTreeValueChanged(object sender, object value)
@@ -73,8 +102,9 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
-        public void Tick(RaycastHit raycast)
+        private void Update()
         {
+            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
             if (raycast.transform == null)
             {
                 return;
