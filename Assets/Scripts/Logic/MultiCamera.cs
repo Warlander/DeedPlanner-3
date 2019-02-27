@@ -27,7 +27,7 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField]
         private int floor = 0;
         [SerializeField]
-        private Water attachedWater;
+        private Water attachedWater = null;
 
         private Vector3 fppPosition = new Vector3(-3, 4, -3);
         private Vector3 fppRotation = new Vector3(15, 45, 0);
