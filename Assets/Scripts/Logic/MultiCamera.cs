@@ -28,6 +28,8 @@ namespace Warlander.Deedplanner.Logic
         private int floor = 0;
         [SerializeField]
         private Water attachedWater = null;
+        [SerializeField]
+        private Projector attachedProjector = null;
 
         private Vector3 fppPosition = new Vector3(-3, 4, -3);
         private Vector3 fppRotation = new Vector3(15, 45, 0);
@@ -144,6 +146,7 @@ namespace Warlander.Deedplanner.Logic
 
         void OnPreCull()
         {
+            PrepareProjector();
             attachedWater.gameObject.SetActive(true);
             attachedWater.Update();
             Map map = GameManager.Instance.Map;
@@ -164,6 +167,66 @@ namespace Warlander.Deedplanner.Logic
                 {
                     CurrentRaycast = raycastHit;
                 }
+            }
+        }
+
+        private void PrepareProjector()
+        {
+            GameObject hitObject = CurrentRaycast.collider?.gameObject;
+            bool gridOrGroundHit = hitObject != null && (hitObject.GetComponent<Ground>() || hitObject.GetComponent<GridTile>());
+
+            if (!gridOrGroundHit)
+            {
+                return;
+            }
+
+            TileSelectionMode tileSelectionMode = LayoutManager.Instance.TileSelectionMode;
+            Vector3 raycastPosition = CurrentRaycast.point;
+            TileSelectionHit tileSelectionHit = TileSelection.PositionToTileSelectionHit(raycastPosition, tileSelectionMode);
+            TileSelectionTarget target = tileSelectionHit.Target;
+
+            if (target == TileSelectionTarget.Nothing)
+            {
+                return;
+            }
+
+            attachedProjector.gameObject.SetActive(true);
+
+            int tileX = tileSelectionHit.X;
+            int tileY = tileSelectionHit.Y;
+            Map map = GameManager.Instance.Map;
+
+            float borderThickness = TileSelection.BorderThickness;
+
+            if (target == TileSelectionTarget.Tile)
+            {
+                attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4 + 2);
+                attachedProjector.orthographicSize = 2;
+                attachedProjector.aspectRatio = 1;
+            }
+            else if (target == TileSelectionTarget.InnerTile)
+            {
+                attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4 + 2);
+                attachedProjector.orthographicSize = 2 - borderThickness * 2;
+                attachedProjector.aspectRatio = 1;
+            }
+            else if (target == TileSelectionTarget.BottomBorder)
+            {
+                attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4);
+                attachedProjector.orthographicSize = borderThickness * 2;
+                attachedProjector.aspectRatio = 4f / (borderThickness * 2);
+            }
+            else if (target == TileSelectionTarget.LeftBorder)
+            {
+                attachedProjector.transform.position = new Vector3(tileX * 4, 10000, tileY * 4 + 2);
+                attachedProjector.orthographicSize = 2;
+                attachedProjector.aspectRatio = (borderThickness * 2) / 4f;
+            }
+            else if (target == TileSelectionTarget.Corner)
+            {
+                attachedProjector.transform.position = new Vector3(tileX * 4, 10000, tileY * 4);
+                attachedProjector.orthographicSize = borderThickness * 2;
+                attachedProjector.aspectRatio = 1;
             }
         }
 
@@ -383,16 +446,9 @@ namespace Warlander.Deedplanner.Logic
             GL.PushMatrix();
             lineDrawingMaterial.SetPass(0);
             RenderLines();
-            if (hitObject != null)
+            if (hitObject != null && !gridOrGroundHit)
             {
-                if (!gridOrGroundHit)
-                {
-                    RenderRaytrace();
-                }
-                else
-                {
-                    RenderGridSquare();
-                }
+                RenderRaytrace();
             }
             GL.PopMatrix();
         }
@@ -478,170 +534,9 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
-        private void RenderGridSquare()
-        {
-            TileSelectionMode tileSelectionMode = LayoutManager.Instance.TileSelectionMode;
-            if (tileSelectionMode == TileSelectionMode.Nothing)
-            {
-                return;
-            }
-
-            Vector3 raycastPosition = CurrentRaycast.point;
-            TileSelectionHit tileSelectionHit = TileSelection.PositionToTileSelectionHit(raycastPosition, tileSelectionMode);
-            TileSelectionTarget target = tileSelectionHit.Target;
-            int tileX = tileSelectionHit.X;
-            int tileY = tileSelectionHit.Y;
-            Map map = GameManager.Instance.Map;
-
-            GameObject hitObject = CurrentRaycast.collider?.gameObject;
-            bool groundHit = hitObject != null && hitObject.GetComponent<Ground>();
-            bool cave = floor < 0;
-            int absoluteFloor = cave ? -floor + 1 : floor;
-            Tab currentTab = LayoutManager.Instance.CurrentTab;
-            if (currentTab == Tab.Ground || currentTab == Tab.Height || currentTab == Tab.Borders || groundHit)
-            {
-                absoluteFloor = 0;
-            }
-
-            float raytraceAlpha = 0.25f;
-            Collider hitCollider = CurrentRaycast.collider;
-
-            float borderThickness = TileSelection.BorderThickness;
-
-            GL.Begin(GL.TRIANGLES);
-            GL.Color(new Color(1, 1, 0, raytraceAlpha));
-
-            float floorHeight = absoluteFloor * 3 + 0.01f;
-            if (target == TileSelectionTarget.Tile)
-            {
-                float xStart = tileX * 4;
-                float xEnd = (tileX + 1) * 4;
-                float yStart = tileY * 4;
-                float yEnd = (tileY + 1) * 4;
-                float h00 = floorHeight + map.GetInterpolatedHeight(xStart, yStart);
-                float h10 = floorHeight + map.GetInterpolatedHeight(xEnd, yStart);
-                float h01 = floorHeight + map.GetInterpolatedHeight(xStart, yEnd);
-                float h11 = floorHeight + map.GetInterpolatedHeight(xEnd, yEnd);
-
-                GL.Vertex3(xEnd, h10, yStart);
-                GL.Vertex3(xStart, h00, yStart);
-                GL.Vertex3(xStart, h01, yEnd);
-
-                GL.Vertex3(xEnd, h10, yStart);
-                GL.Vertex3(xEnd, h11, yEnd);
-                GL.Vertex3(xStart, h01, yEnd);
-            }
-            else if (target == TileSelectionTarget.InnerTile)
-            {
-                float xStart = (tileX + borderThickness) * 4f;
-                float xEnd = (tileX + 1 - borderThickness) * 4f;
-                float yStart = (tileY + borderThickness) * 4f;
-                float yEnd = (tileY + 1 - borderThickness) * 4f;
-                float h00 = floorHeight + map.GetInterpolatedHeight(xStart, yStart);
-                float h10 = floorHeight + map.GetInterpolatedHeight(xEnd, yStart);
-                float h01 = floorHeight + map.GetInterpolatedHeight(xStart, yEnd);
-                float h11 = floorHeight + map.GetInterpolatedHeight(xEnd, yEnd);
-
-                GL.Vertex3(xEnd, h10, yStart);
-                GL.Vertex3(xStart, h00, yStart);
-                GL.Vertex3(xStart, h01, yEnd);
-
-                GL.Vertex3(xEnd, h10, yStart);
-                GL.Vertex3(xEnd, h11, yEnd);
-                GL.Vertex3(xStart, h01, yEnd);
-            }
-            else if (target == TileSelectionTarget.BottomBorder)
-            {
-                float xStart = (tileX + borderThickness) * 4f;
-                float xEnd = (tileX + 1 - borderThickness) * 4f;
-                float yStart = (tileY - borderThickness) * 4f;
-                float yMid = tileY * 4f;
-                float yEnd = (tileY + borderThickness) * 4f;
-                float h00 = floorHeight + map.GetInterpolatedHeight(xStart, yStart);
-                float h10 = floorHeight + map.GetInterpolatedHeight(xEnd, yStart);
-                float h01 = floorHeight + map.GetInterpolatedHeight(xStart, yMid);
-                float h11 = floorHeight + map.GetInterpolatedHeight(xEnd, yMid);
-                float h02 = floorHeight + map.GetInterpolatedHeight(xStart, yEnd);
-                float h12 = floorHeight + map.GetInterpolatedHeight(xEnd, yEnd);
-
-                GL.Vertex3(xEnd, h10, yStart);
-                GL.Vertex3(xStart, h00, yStart);
-                GL.Vertex3(xStart, h01, yMid);
-
-                GL.Vertex3(xEnd, h10, yStart);
-                GL.Vertex3(xEnd, h11, yMid);
-                GL.Vertex3(xStart, h01, yMid);
-
-                GL.Vertex3(xEnd, h11, yMid);
-                GL.Vertex3(xStart, h01, yMid);
-                GL.Vertex3(xStart, h02, yEnd);
-
-                GL.Vertex3(xEnd, h11, yMid);
-                GL.Vertex3(xEnd, h12, yEnd);
-                GL.Vertex3(xStart, h02, yEnd);
-            }
-            else if (target == TileSelectionTarget.LeftBorder)
-            {
-                float xStart = (tileX - borderThickness) * 4f;
-                float xMid = tileX * 4f;
-                float xEnd = (tileX + borderThickness) * 4f;
-                float yStart = (tileY + borderThickness) * 4f;
-                float yEnd = (tileY + 1 - borderThickness) * 4f;
-                float h00 = floorHeight + map.GetInterpolatedHeight(xStart, yStart);
-                float h10 = floorHeight + map.GetInterpolatedHeight(xMid, yStart);
-                float h20 = floorHeight + map.GetInterpolatedHeight(xEnd, yStart);
-                float h01 = floorHeight + map.GetInterpolatedHeight(xStart, yEnd);
-                float h11 = floorHeight + map.GetInterpolatedHeight(xMid, yEnd);
-                float h21 = floorHeight + map.GetInterpolatedHeight(xEnd, yEnd);
-
-                GL.Vertex3(xMid, h10, yStart);
-                GL.Vertex3(xStart, h00, yStart);
-                GL.Vertex3(xStart, h01, yEnd);
-
-                GL.Vertex3(xMid, h10, yStart);
-                GL.Vertex3(xMid, h11, yEnd);
-                GL.Vertex3(xStart, h01, yEnd);
-
-                GL.Vertex3(xEnd, h20, yStart);
-                GL.Vertex3(xMid, h10, yStart);
-                GL.Vertex3(xMid, h11, yEnd);
-
-                GL.Vertex3(xEnd, h20, yStart);
-                GL.Vertex3(xEnd, h21, yEnd);
-                GL.Vertex3(xMid, h11, yEnd);
-            }
-            else if (target == TileSelectionTarget.Corner)
-            {
-                for (float i = -borderThickness; i <= 0; i += borderThickness)
-                {
-                    for (float i2 = -borderThickness; i2 <= 0; i2 += borderThickness)
-                    {
-
-                        float xStart = (tileX + i)* 4f;
-                        float xEnd = (tileX + borderThickness + i) * 4f;
-                        float yStart = (tileY + i2) * 4f;
-                        float yEnd = (tileY + borderThickness + i2) * 4f;
-                        float h00 = floorHeight + map.GetInterpolatedHeight(xStart, yStart);
-                        float h10 = floorHeight + map.GetInterpolatedHeight(xEnd, yStart);
-                        float h01 = floorHeight + map.GetInterpolatedHeight(xStart, yEnd);
-                        float h11 = floorHeight + map.GetInterpolatedHeight(xEnd, yEnd);
-
-                        GL.Vertex3(xEnd, h10, yStart);
-                        GL.Vertex3(xStart, h00, yStart);
-                        GL.Vertex3(xStart, h01, yEnd);
-
-                        GL.Vertex3(xEnd, h10, yStart);
-                        GL.Vertex3(xEnd, h11, yEnd);
-                        GL.Vertex3(xStart, h01, yEnd);
-                    }
-                }
-            }
-
-            GL.End();
-        }
-
         private void OnPostRender()
         {
+            attachedProjector.gameObject.SetActive(false);
             attachedWater.gameObject.SetActive(false);
         }
 

@@ -114,6 +114,14 @@ namespace Warlander.Deedplanner.Logic
 
             if (Input.GetMouseButton(0))
             {
+                if (editCorners && leftClickData.Diagonal)
+                {
+
+                }
+                else
+                {
+                    //ground.RoadDirection = RoadDirection.Center;
+                }
                 ground.Data = leftClickData;
             }
             else if (Input.GetMouseButton(1))
