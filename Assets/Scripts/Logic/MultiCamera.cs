@@ -207,25 +207,25 @@ namespace Warlander.Deedplanner.Logic
             else if (target == TileSelectionTarget.InnerTile)
             {
                 attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4 + 2);
-                attachedProjector.orthographicSize = 2 - borderThickness * 2;
+                attachedProjector.orthographicSize = 2 - borderThickness * 4;
                 attachedProjector.aspectRatio = 1;
             }
             else if (target == TileSelectionTarget.BottomBorder)
             {
                 attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4);
-                attachedProjector.orthographicSize = borderThickness * 2;
-                attachedProjector.aspectRatio = 4f / (borderThickness * 2);
+                attachedProjector.orthographicSize = borderThickness * 4;
+                attachedProjector.aspectRatio = 2f / (borderThickness * 4) - (borderThickness * 6);
             }
             else if (target == TileSelectionTarget.LeftBorder)
             {
                 attachedProjector.transform.position = new Vector3(tileX * 4, 10000, tileY * 4 + 2);
-                attachedProjector.orthographicSize = 2;
-                attachedProjector.aspectRatio = (borderThickness * 2) / 4f;
+                attachedProjector.orthographicSize = 2 - (borderThickness * 4);
+                attachedProjector.aspectRatio = (borderThickness * 4) / 1.5f;
             }
             else if (target == TileSelectionTarget.Corner)
             {
                 attachedProjector.transform.position = new Vector3(tileX * 4, 10000, tileY * 4);
-                attachedProjector.orthographicSize = borderThickness * 2;
+                attachedProjector.orthographicSize = borderThickness * 4;
                 attachedProjector.aspectRatio = 1;
             }
         }
