@@ -13,7 +13,12 @@ namespace Warlander.Deedplanner.Data
     public class GridTile : MonoBehaviour
     {
 
+        private static Material gridMaterial;
+
         public MeshCollider Collider { get; private set; }
+
+        private MeshFilter meshFilter;
+        private MeshRenderer meshRenderer;
 
         public void Initialize(Mesh mesh)
         {
@@ -24,6 +29,23 @@ namespace Warlander.Deedplanner.Data
                 Collider = gameObject.AddComponent<MeshCollider>();
             }
             Collider.sharedMesh = mesh;
+
+            if (!gridMaterial)
+            {
+                gridMaterial = new Material(Shader.Find("Standard"));
+                gridMaterial.EnableKeyword("_ALPHATEST_ON");
+                gridMaterial.color = new Color(0, 0, 0, 0);
+            }
+            if (!meshRenderer)
+            {
+                meshRenderer = gameObject.AddComponent<MeshRenderer>();
+                meshRenderer.material = gridMaterial;
+            }
+            if (!meshFilter)
+            {
+                meshFilter = gameObject.AddComponent<MeshFilter>();
+                meshFilter.sharedMesh = mesh;
+            }
         }
 
     }

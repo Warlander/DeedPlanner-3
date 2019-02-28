@@ -34,9 +34,9 @@ namespace Warlander.Deedplanner.Data
 
         public virtual void Initialize(Tile tile, GridTile gridTile)
         {
-            Vector3[] vertices = new Vector3[] { new Vector3(0, 0, 0), new Vector3(4, 0, 0), new Vector3(0, 0, 4), new Vector3(4, 0, 4) };
-            Vector2[] uv = new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1) };
-            int[] triangles = new int[] { 0, 2, 1, 2, 3, 1 };
+            Vector3[] vertices = new Vector3[] { new Vector3(0, 0, 0), new Vector3(4, 0, 0), new Vector3(0, 0, 4), new Vector3(4, 0, 4), new Vector3(2, 0, 2) };
+            Vector2[] uv = new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(0.5f, 0.5f) };
+            int[] triangles = new int[] { 0, 2, 4, 2, 3, 4, 3, 1, 4, 1, 0, 4 };
 
             HeightMesh = new Mesh();
             HeightMesh.vertices = vertices;
@@ -53,11 +53,17 @@ namespace Warlander.Deedplanner.Data
 
         protected virtual void RefreshMesh()
         {
-            Vector3[] vertices = new Vector3[4];
-            vertices[0] = new Vector3(0, Height * 0.1f, 0);
-            vertices[1] = new Vector3(4, Tile.Map.getRelativeTile(Tile, 1, 0).GetTileOfSameType(this).Height * 0.1f, 0);
-            vertices[2] = new Vector3(0, Tile.Map.getRelativeTile(Tile, 0, 1).GetTileOfSameType(this).Height * 0.1f, 4);
-            vertices[3] = new Vector3(4, Tile.Map.getRelativeTile(Tile, 1, 1).GetTileOfSameType(this).Height * 0.1f, 4);
+            float h00 = Height * 0.1f;
+            float h10 = Tile.Map.getRelativeTile(Tile, 1, 0).GetTileOfSameType(this).Height * 0.1f;
+            float h01 = Tile.Map.getRelativeTile(Tile, 0, 1).GetTileOfSameType(this).Height * 0.1f;
+            float h11 = Tile.Map.getRelativeTile(Tile, 1, 1).GetTileOfSameType(this).Height * 0.1f;
+            float hMid = (h00 + h10 + h01 + h11) / 4f;
+            Vector3[] vertices = new Vector3[5];
+            vertices[0] = new Vector3(0, h00, 0);
+            vertices[1] = new Vector3(4, h10, 0);
+            vertices[2] = new Vector3(0, h01, 4);
+            vertices[3] = new Vector3(4, h11, 4);
+            vertices[4] = new Vector3(2, hMid, 2);
             HeightMesh.vertices = vertices;
             HeightMesh.RecalculateNormals();
             HeightMesh.RecalculateBounds();
