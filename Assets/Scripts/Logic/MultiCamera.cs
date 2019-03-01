@@ -82,8 +82,11 @@ namespace Warlander.Deedplanner.Logic
             {
                 if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
                 {
-                    fppRotation += new Vector3(-data.delta.y * Properties.FppMouseSensitivity, data.delta.x * Properties.FppMouseSensitivity, 0);
-                    fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
+                    if (data.button == PointerEventData.InputButton.Middle)
+                    {
+                        fppRotation += new Vector3(-data.delta.y * Properties.FppMouseSensitivity, data.delta.x * Properties.FppMouseSensitivity, 0);
+                        fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
+                    }
                 }
                 else if (CameraMode == CameraMode.Top && Input.GetMouseButton(2))
                 {
