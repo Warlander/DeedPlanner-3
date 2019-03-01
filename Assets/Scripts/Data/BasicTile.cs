@@ -43,6 +43,7 @@ namespace Warlander.Deedplanner.Data
             HeightMesh.uv = uv;
             HeightMesh.triangles = triangles;
             HeightMesh.RecalculateNormals();
+            HeightMesh.RecalculateBounds();
 
             Entities = new Dictionary<EntityData, ITileEntity>();
 
