@@ -16,6 +16,9 @@ namespace Warlander.Deedplanner.Utils
         private readonly string oneIncludedMesh;
         private Dictionary<string, string> textureOverrides;
 
+        private GameObject originalModel;
+        private Dictionary<int, GameObject> skewedModels;
+
         public string Tag { get; private set; }
         public Vector3 Scale { get; private set; }
 
@@ -59,6 +62,53 @@ namespace Warlander.Deedplanner.Utils
         public Model(string location)
         {
             this.location = location;
+        }
+
+        public GameObject CreateOrGetModel(int skew = 0)
+        {
+            if (!originalModel)
+            {
+                originalModel = WomModelLoader.LoadModel(location);
+                skewedModels[0] = originalModel;
+            }
+
+            if (!skewedModels.ContainsKey(skew))
+            {
+                skewedModels[skew] = CreateSkewedModel(skew);
+            }
+
+            return skewedModels[skew];
+        }
+
+        private GameObject CreateSkewedModel(int skew)
+        {
+            // skew is in Wurm units that are 4 Unity units long and 0.1 units high
+            float skewPerUnit = skew * 0.1f * 0.25f;
+
+            GameObject clone = GameObject.Instantiate(originalModel);
+
+            MeshFilter[] filters = clone.GetComponentsInChildren<MeshFilter>();
+            foreach (MeshFilter filter in filters)
+            {
+                Mesh mesh = filter.mesh;
+                Mesh newMesh = new Mesh();
+                Vector3[] originalVertices = mesh.vertices;
+                Vector3[] newVertices = new Vector3[originalVertices.Length];
+                for (int i = 0; i < originalVertices.Length; i++)
+                {
+                    Vector3 vec = originalVertices[i];
+                    newVertices[i] = new Vector3(vec.x, vec.y + skewPerUnit * vec.x, vec.z);
+                }
+                newMesh.vertices = newVertices;
+                newMesh.uv = mesh.uv;
+                newMesh.triangles = newMesh.triangles;
+                newMesh.normals = mesh.normals;
+                newMesh.tangents = mesh.tangents;
+                newMesh.RecalculateBounds();
+                filter.mesh = newMesh;
+            }
+
+            return clone;
         }
 
     }
