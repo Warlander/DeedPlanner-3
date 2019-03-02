@@ -12,12 +12,10 @@ namespace Warlander.Deedplanner.Data
     {
 
         private GroundData data;
+        public RoadDirection RoadDirection { get; private set; }
 
         private MeshRenderer meshRenderer;
-
         public MeshCollider Collider { get; private set; }
-
-        public RoadDirection RoadDirection { get; private set; }
 
         public GroundData Data {
             get {
