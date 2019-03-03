@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,13 +21,15 @@ namespace Warlander.Deedplanner.Utils
 
         private GameObject modelRoot;
         private GameObject originalModel;
-        private Dictionary<int, GameObject> skewedModels;
+        private readonly Dictionary<int, GameObject> skewedModels;
 
         public string Tag { get; private set; }
         public Vector3 Scale { get; private set; }
 
         public Model(XmlElement element)
         {
+            skewedModels = new Dictionary<int, GameObject>();
+
             Tag = element.GetAttribute("tag");
             location = element.GetAttribute("location");
             string scaleStr = element.GetAttribute("scale");
@@ -72,6 +75,7 @@ namespace Warlander.Deedplanner.Utils
             if (!modelsRoot)
             {
                 modelsRoot = new GameObject("Models");
+                modelsRoot.SetActive(false);
             }
             if (!modelRoot)
             {
@@ -80,11 +84,11 @@ namespace Warlander.Deedplanner.Utils
             }
             if (!originalModel)
             {
-                originalModel = WomModelLoader.LoadModel(location);
+                string fullLocation = Path.Combine(Application.streamingAssetsPath, location);
+                originalModel = WomModelLoader.LoadModel(fullLocation);
                 originalModel.transform.SetParent(modelRoot.transform);
                 skewedModels[0] = originalModel;
             }
-
             if (!skewedModels.ContainsKey(skew))
             {
                 GameObject skewedModel = CreateSkewedModel(skew);

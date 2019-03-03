@@ -14,7 +14,7 @@ namespace Warlander.Deedplanner.Data
 
         protected Tile Tile { get; private set; }
         protected Mesh HeightMesh { get; private set; }
-        protected Dictionary<EntityData, ITileEntity> Entities { get; private set; }
+        protected Dictionary<EntityData, TileEntity> Entities { get; private set; }
         private GridTile gridTile;
 
         public int Height {
@@ -24,9 +24,13 @@ namespace Warlander.Deedplanner.Data
             set {
                 height = value;
                 RefreshMesh();
+                UpdateEntitiesHeights();
                 Tile.Map.getRelativeTile(Tile, -1, 0)?.GetTileOfSameType(this).RefreshMesh();
+                Tile.Map.getRelativeTile(Tile, -1, 0)?.GetTileOfSameType(this).UpdateEntitiesHeights();
                 Tile.Map.getRelativeTile(Tile, 0, -1)?.GetTileOfSameType(this).RefreshMesh();
+                Tile.Map.getRelativeTile(Tile, 0, -1)?.GetTileOfSameType(this).UpdateEntitiesHeights();
                 Tile.Map.getRelativeTile(Tile, -1, -1)?.GetTileOfSameType(this).RefreshMesh();
+                Tile.Map.getRelativeTile(Tile, -1, -1)?.GetTileOfSameType(this).UpdateEntitiesHeights();
 
                 Tile.Map.RecalculateHeights();
             }
@@ -45,11 +49,48 @@ namespace Warlander.Deedplanner.Data
             HeightMesh.RecalculateNormals();
             HeightMesh.RecalculateBounds();
 
-            Entities = new Dictionary<EntityData, ITileEntity>();
+            Entities = new Dictionary<EntityData, TileEntity>();
 
             this.Tile = tile;
             this.gridTile = gridTile;
             gridTile.Initialize(HeightMesh);
+        }
+
+        public Floor SetFloor(FloorData data, EntityOrientation orientation, int level)
+        {
+            EntityData entityData = new EntityData(level, EntityType.FLOORROOF);
+            TileEntity tileEntity;
+            Entities.TryGetValue(entityData, out tileEntity);
+            if (tileEntity == null)
+            {
+                return CreateNewFloor(entityData, data, orientation, level);
+            }
+            else if (tileEntity.GetType() == typeof(Floor))
+            {
+                Floor currentFloor = (Floor) tileEntity;
+                if (currentFloor.Data != data || currentFloor.Orientation != orientation)
+                {
+                    Destroy(currentFloor.gameObject);
+                }
+
+                return CreateNewFloor(entityData, data, orientation, level);
+            }
+            // TODO: add behaviour if roof is there
+
+            return null;
+        }
+
+        private Floor CreateNewFloor(EntityData entity, FloorData data, EntityOrientation orientation, int level)
+        {
+            GameObject floorObject = new GameObject("Floor " + level, typeof(Floor));
+            Floor floor = floorObject.GetComponent<Floor>();
+            floor.Initialize(data, orientation);
+
+            Entities[entity] = floor;
+            floorObject.transform.SetParent(transform);
+            UpdateEntitiesHeights();
+
+            return floor;
         }
 
         protected virtual void RefreshMesh()
@@ -69,6 +110,16 @@ namespace Warlander.Deedplanner.Data
             HeightMesh.RecalculateNormals();
             HeightMesh.RecalculateBounds();
             gridTile.Collider.sharedMesh = HeightMesh;
+        }
+
+        private void UpdateEntitiesHeights()
+        {
+            foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
+            {
+                EntityData data = pair.Key;
+                TileEntity tileEntity = pair.Value;
+                tileEntity.transform.localPosition = new Vector3(0, Height * 0.1f + data.Floor * 3f, 0);
+            }
         }
 
     }
