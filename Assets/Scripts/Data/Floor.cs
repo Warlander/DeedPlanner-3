@@ -28,6 +28,7 @@ namespace Warlander.Deedplanner.Data
             Data = data;
 
             Model = Data.Model.CreateOrGetModel();
+            Model.transform.SetParent(transform);
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
