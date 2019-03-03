@@ -9,7 +9,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class Floor : MonoBehaviour, ITileEntity
+    public class Floor : TileEntity
     {
 
         public FloorData Data { get; private set; }
@@ -18,20 +18,24 @@ namespace Warlander.Deedplanner.Data
 
         public GameObject Model { get; private set; }
 
-        public void Initialize(FloorData data, Mesh mesh)
+        public void Initialize(FloorData data, EntityOrientation orientation)
         {
-            gameObject.layer = LayerMasks.FloorRoofMask;
-
-            MeshFilter meshFilter = GetComponent<MeshFilter>();
-            meshFilter.mesh = mesh;
+            gameObject.layer = LayerMasks.GroundLayer;
 
             Data = data;
 
             Model = Data.Model.CreateOrGetModel();
             Model.transform.SetParent(transform);
+
+            if (!GetComponent<BoxCollider>())
+            {
+                BoxCollider collider = gameObject.AddComponent<BoxCollider>();
+                collider.center = new Vector3(-2f, 0.125f, -2f);
+                collider.size = new Vector3(4f, 0.25f, 4f);
+            }
         }
 
-        public void Serialize(XmlDocument document, XmlElement localRoot)
+        public override void Serialize(XmlDocument document, XmlElement localRoot)
         {
             
         }

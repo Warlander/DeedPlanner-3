@@ -14,6 +14,8 @@ namespace Warlander.Deedplanner.Logic
 
         [SerializeField]
         private bool testSurfaceHeights = false;
+        [SerializeField]
+        private bool testSurfaceFloors = false;
 
         [SerializeField]
         private bool overrideStartingTileSelectionMode = false;
@@ -45,6 +47,17 @@ namespace Warlander.Deedplanner.Logic
                 map[5, 9].Surface.Height = -10;
                 map[6, 9].Surface.Height = -10;
                 map[7, 9].Surface.Height = -10;
+            }
+            if (testSurfaceFloors)
+            {
+                Map map = GameManager.Instance.Map;
+                FloorData exampleData = Database.Floors["wFloor"];
+                EntityOrientation orientation = EntityOrientation.Up;
+                map[15, 15].Surface.SetFloor(exampleData, orientation, 0);
+                map[15, 15].Surface.SetFloor(exampleData, orientation, 1);
+                map[16, 15].Surface.SetFloor(exampleData, orientation, 0);
+                map[15, 16].Surface.SetFloor(exampleData, orientation, 0);
+                map[16, 16].Surface.SetFloor(exampleData, orientation, 0);
             }
         }
 

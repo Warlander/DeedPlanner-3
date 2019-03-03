@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
 
-    public interface ITileEntity : IXMLSerializable
+    public abstract class TileEntity : MonoBehaviour, IXMLSerializable
     {
 
         Materials Materials { get; }
+
+        public abstract void Serialize(XmlDocument document, XmlElement localRoot);
 
     }
 
