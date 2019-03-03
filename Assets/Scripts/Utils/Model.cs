@@ -11,11 +11,14 @@ namespace Warlander.Deedplanner.Utils
     public class Model
     {
 
+        private static GameObject modelsRoot;
+
         private readonly string location;
         private readonly bool loadTextures;
         private readonly string oneIncludedMesh;
         private Dictionary<string, string> textureOverrides;
 
+        private GameObject modelRoot;
         private GameObject originalModel;
         private Dictionary<int, GameObject> skewedModels;
 
@@ -66,18 +69,31 @@ namespace Warlander.Deedplanner.Utils
 
         public GameObject CreateOrGetModel(int skew = 0)
         {
+            if (!modelsRoot)
+            {
+                modelsRoot = new GameObject("Models");
+            }
+            if (!modelRoot)
+            {
+                modelRoot = new GameObject(location);
+                modelRoot.transform.SetParent(modelsRoot.transform);
+            }
             if (!originalModel)
             {
                 originalModel = WomModelLoader.LoadModel(location);
+                originalModel.transform.SetParent(modelRoot.transform);
                 skewedModels[0] = originalModel;
             }
 
             if (!skewedModels.ContainsKey(skew))
             {
-                skewedModels[skew] = CreateSkewedModel(skew);
+                GameObject skewedModel = CreateSkewedModel(skew);
+                skewedModel.name = originalModel.name + " " + skew;
+                skewedModel.transform.SetParent(modelRoot.transform);
+                skewedModels[skew] = skewedModel;
             }
 
-            return skewedModels[skew];
+            return GameObject.Instantiate(skewedModels[skew]);
         }
 
         private GameObject CreateSkewedModel(int skew)
