@@ -515,12 +515,18 @@ namespace Warlander.Deedplanner.Logic
 
         private void RenderRaytrace()
         {
-            float raytraceAlpha = 0.25f;
             Collider hitCollider = CurrentRaycast.collider;
-            if (hitCollider != null && hitCollider.GetType() == typeof(MeshCollider))
+            if (hitCollider == null)
             {
-                Transform hitTransform = CurrentRaycast.transform;
-                Vector3 position = hitTransform.position;
+                return;
+            }
+
+            float raytraceAlpha = 0.25f;
+            Transform hitTransform = CurrentRaycast.transform;
+            Vector3 position = hitTransform.position;
+
+            if (hitCollider.GetType() == typeof(MeshCollider))
+            {
                 MeshCollider collider = (MeshCollider)hitCollider;
                 Mesh mesh = collider.sharedMesh;
                 Vector3[] vertices = mesh.vertices;
@@ -533,6 +539,55 @@ namespace Warlander.Deedplanner.Logic
                     GL.Vertex(position + vertices[triangles[i + 1]]);
                     GL.Vertex(position + vertices[triangles[i + 2]]);
                 }
+                GL.End();
+            }
+            else if (hitCollider.GetType() == typeof(BoxCollider))
+            {
+                BoxCollider collider = (BoxCollider)hitCollider;
+                Vector3 size = collider.size * 1.01f;
+                Vector3 center = position + collider.center;
+
+                Vector3 v000 = center + new Vector3(-size.x, -size.y, -size.z) / 2f;
+                Vector3 v001 = center + new Vector3(-size.x, -size.y, size.z) / 2f;
+                Vector3 v010 = center + new Vector3(-size.x, size.y, -size.z) / 2f;
+                Vector3 v011 = center + new Vector3(-size.x, size.y, size.z) / 2f;
+                Vector3 v100 = center + new Vector3(size.x, -size.y, -size.z) / 2f;
+                Vector3 v101 = center + new Vector3(size.x, -size.y, size.z) / 2f;
+                Vector3 v110 = center + new Vector3(size.x, size.y, -size.z) / 2f;
+                Vector3 v111 = center + new Vector3(size.x, size.y, size.z) / 2f;
+
+                GL.Begin(GL.QUADS);
+                GL.Color(new Color(1, 1, 0, raytraceAlpha));
+                //bottom
+                GL.Vertex(v000);
+                GL.Vertex(v100);
+                GL.Vertex(v101);
+                GL.Vertex(v001);
+                //top
+                GL.Vertex(v010);
+                GL.Vertex(v110);
+                GL.Vertex(v111);
+                GL.Vertex(v011);
+                //down
+                GL.Vertex(v000);
+                GL.Vertex(v100);
+                GL.Vertex(v110);
+                GL.Vertex(v010);
+                //up
+                GL.Vertex(v001);
+                GL.Vertex(v101);
+                GL.Vertex(v111);
+                GL.Vertex(v011);
+                //left
+                GL.Vertex(v000);
+                GL.Vertex(v001);
+                GL.Vertex(v011);
+                GL.Vertex(v010);
+                //right
+                GL.Vertex(v100);
+                GL.Vertex(v101);
+                GL.Vertex(v111);
+                GL.Vertex(v110);
                 GL.End();
             }
         }

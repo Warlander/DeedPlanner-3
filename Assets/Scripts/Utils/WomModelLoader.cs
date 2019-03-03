@@ -16,7 +16,7 @@ namespace Warlander.Deedplanner.Utils
             BinaryReader source = new BinaryReader(File.OpenRead(filePath));
             string fileFolder = Path.GetDirectoryName(filePath);
 
-            GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(filePath), typeof(Model));
+            GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(filePath));
 
             try
             {
