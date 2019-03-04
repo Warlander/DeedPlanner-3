@@ -530,14 +530,15 @@ namespace Warlander.Deedplanner.Logic
                 MeshCollider collider = (MeshCollider)hitCollider;
                 Mesh mesh = collider.sharedMesh;
                 Vector3[] vertices = mesh.vertices;
+                Vector3[] normals = mesh.normals;
                 int[] triangles = mesh.triangles;
                 GL.Begin(GL.TRIANGLES);
                 GL.Color(new Color(1, 1, 0, raytraceAlpha));
                 for (int i = 0; i < triangles.Length; i += 3)
                 {
-                    GL.Vertex(position + vertices[triangles[i]]);
-                    GL.Vertex(position + vertices[triangles[i + 1]]);
-                    GL.Vertex(position + vertices[triangles[i + 2]]);
+                    GL.Vertex(position + vertices[triangles[i]] + normals[triangles[i]] * 0.05f);
+                    GL.Vertex(position + vertices[triangles[i + 1]] + normals[triangles[i + 1]] * 0.05f);
+                    GL.Vertex(position + vertices[triangles[i + 2]] + normals[triangles[i + 2]] * 0.05f);
                 }
                 GL.End();
             }
