@@ -17,6 +17,18 @@ namespace Warlander.Deedplanner.Data
         protected Dictionary<EntityData, TileEntity> Entities { get; private set; }
         private GridTile gridTile;
 
+        public int X {
+            get {
+                return Tile.X;
+            }
+        }
+
+        public int Y {
+            get {
+                return Tile.Y;
+            }
+        }
+
         public int Height {
             get {
                 return height;
@@ -53,7 +65,7 @@ namespace Warlander.Deedplanner.Data
 
             this.Tile = tile;
             this.gridTile = gridTile;
-            gridTile.Initialize(HeightMesh);
+            gridTile.Initialize(HeightMesh, Tile.X, Tile.Y);
         }
 
         public Floor SetFloor(FloorData data, EntityOrientation orientation, int level)
