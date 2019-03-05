@@ -20,8 +20,14 @@ namespace Warlander.Deedplanner.Data
         private MeshFilter meshFilter;
         private MeshRenderer meshRenderer;
 
-        public void Initialize(Mesh mesh)
+        public int X { get; private set; }
+        public int Y { get; private set; }
+
+        public void Initialize(Mesh mesh, int x, int y)
         {
+            X = x;
+            Y = y;
+
             gameObject.layer = LayerMasks.TileLayer;
             Collider = gameObject.GetComponent<MeshCollider>();
             if (!Collider)
