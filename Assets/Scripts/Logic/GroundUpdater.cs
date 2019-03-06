@@ -32,6 +32,11 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField]
         private Toggle leftClickToggle = null;
 
+        [SerializeField]
+        private Toggle pencilToggle = null;
+        [SerializeField]
+        private Toggle fillToggle = null;
+
         private GroundData LeftClickData {
             get {
                 return leftClickData;
@@ -112,21 +117,28 @@ namespace Warlander.Deedplanner.Logic
 
             Ground ground = raycast.transform.GetComponent<Ground>();
 
-            if (Input.GetMouseButton(0))
+            if (pencilToggle.isOn)
             {
-                if (editCorners && leftClickData.Diagonal)
+                if (Input.GetMouseButton(0))
                 {
+                    if (editCorners && leftClickData.Diagonal)
+                    {
 
+                    }
+                    else
+                    {
+                        //ground.RoadDirection = RoadDirection.Center;
+                    }
+                    ground.Data = leftClickData;
                 }
-                else
+                else if (Input.GetMouseButton(1))
                 {
-                    //ground.RoadDirection = RoadDirection.Center;
+                    ground.Data = rightClickData;
                 }
-                ground.Data = leftClickData;
             }
-            else if (Input.GetMouseButton(1))
+            else if (fillToggle.isOn)
             {
-                ground.Data = rightClickData;
+
             }
         }
 
