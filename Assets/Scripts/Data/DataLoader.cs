@@ -39,6 +39,8 @@ namespace Warlander.Deedplanner.Data
                 LoadGrounds(document);
                 shortNames.Clear();
                 LoadFloors(document);
+                shortNames.Clear();
+                LoadRoofs(document);
             }
         }
 
@@ -163,6 +165,44 @@ namespace Warlander.Deedplanner.Data
                 {
                     GuiManager.Instance.FloorsTree.Add(data, category);
                 }
+            }
+        }
+
+        private static void LoadRoofs(XmlDocument document)
+        {
+            XmlNodeList entities = document.GetElementsByTagName("roof");
+
+            foreach (XmlElement element in entities)
+            {
+                string name = element.GetAttribute("name");
+                string shortName = element.GetAttribute("shortname");
+
+                Debug.Log("Loading roof " + name);
+
+                bool unique = VerifyShortName(shortName);
+                if (!unique)
+                {
+                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    continue;
+                }
+
+                TextureReference texture = null;
+                Materials materials = null;
+
+                foreach (XmlElement child in element)
+                {
+                    switch (child.LocalName)
+                    {
+                        case "materials":
+                            materials = new Materials(child);
+                            break;
+                    }
+                }
+
+                RoofData data = new RoofData(texture, name, shortName, materials);
+                Database.Roofs[shortName] = data;
+
+                GuiManager.Instance.RoofsList.Add(data);
             }
         }
 
