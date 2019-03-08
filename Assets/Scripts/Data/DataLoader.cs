@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -40,7 +41,10 @@ namespace Warlander.Deedplanner.Data
                 shortNames.Clear();
                 LoadFloors(document);
                 shortNames.Clear();
+                LoadWalls(document);
+                shortNames.Clear();
                 LoadRoofs(document);
+                shortNames.Clear();
             }
         }
 
@@ -164,6 +168,84 @@ namespace Warlander.Deedplanner.Data
                 foreach (string[] category in categories)
                 {
                     GuiManager.Instance.FloorsTree.Add(data, category);
+                }
+            }
+        }
+
+        private static void LoadWalls(XmlDocument document)
+        {
+            XmlNodeList entities = document.GetElementsByTagName("wall");
+
+            foreach (XmlElement element in entities)
+            {
+                string name = element.GetAttribute("name");
+                string shortName = element.GetAttribute("shortname");
+                float scale = float.Parse(element.GetAttribute("scale"));
+
+                bool unique = VerifyShortName(shortName);
+                if (!unique)
+                {
+                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    continue;
+                }
+
+                string type = element.GetAttribute("type");
+                bool houseWall = type == "house" || type == "arch";
+                bool arch = type == "arch";
+                bool archBuildable = type == "lowfence";
+
+                Model bottomModel = null;
+                Model normalModel = null;
+                TextureReference icon = null;
+                Color color = Color.white;
+
+                List<string[]> categories = new List<string[]>();
+                Materials materials = null;
+
+                foreach (XmlElement child in element)
+                {
+                    switch (child.LocalName)
+                    {
+                        case "model":
+                            Model model = new Model(child);
+                            if (model.Tag == "bottom")
+                            {
+                                bottomModel = model;
+                            }
+                            else
+                            {
+                                normalModel = model;
+                            }
+                            break;
+                        case "category":
+                            categories.Add(child.InnerText.Split('/'));
+                            break;
+                        case "color":
+                            float r = float.Parse(child.GetAttribute("r"), CultureInfo.InvariantCulture);
+                            float g = float.Parse(child.GetAttribute("g"), CultureInfo.InvariantCulture);
+                            float b = float.Parse(child.GetAttribute("b"), CultureInfo.InvariantCulture);
+                            color = new Color(r, g, b);
+                            break;
+                        case "materials":
+                            materials = new Materials(child);
+                            break;
+                        case "icon":
+                            icon = TextureReference.GetTextureReference(child.GetAttribute("location"));
+                            break;
+                    }
+                }
+
+                if (bottomModel == null)
+                {
+                    bottomModel = normalModel;
+                }
+
+                WallData data = new WallData(bottomModel, normalModel, name, shortName, color, scale, houseWall, arch, archBuildable, materials, icon);
+                Database.Walls[shortName] = data;
+                foreach (string[] category in categories)
+                {
+                    IconUnityListElement iconListElement = (IconUnityListElement)GuiManager.Instance.WallsTree.Add(data, category);
+                    iconListElement.TextureReference = icon;
                 }
             }
         }
