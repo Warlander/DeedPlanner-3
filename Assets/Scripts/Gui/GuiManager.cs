@@ -18,6 +18,8 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField]
         private UnityTree floorsTree = null;
         [SerializeField]
+        private UnityTree wallsTree = null;
+        [SerializeField]
         private UnityList roofsList = null;
 
         public UnityTree GroundsTree {
@@ -28,6 +30,11 @@ namespace Warlander.Deedplanner.Gui
         public UnityTree FloorsTree {
             get {
                 return floorsTree;
+            }
+        }
+        public UnityTree WallsTree {
+            get {
+                return wallsTree;
             }
         }
         public UnityList RoofsList {
