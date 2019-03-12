@@ -45,6 +45,8 @@ namespace Warlander.Deedplanner.Data
                 shortNames.Clear();
                 LoadRoofs(document);
                 shortNames.Clear();
+                LoadObjects(document);
+                shortNames.Clear();
             }
         }
 
@@ -285,6 +287,58 @@ namespace Warlander.Deedplanner.Data
                 Database.Roofs[shortName] = data;
 
                 GuiManager.Instance.RoofsList.Add(data);
+            }
+        }
+
+        private static void LoadObjects(XmlDocument document)
+        {
+            XmlNodeList entities = document.GetElementsByTagName("object");
+
+            foreach (XmlElement element in entities)
+            {
+                string name = element.GetAttribute("name");
+                string shortName = element.GetAttribute("shortname");
+                string type = element.GetAttribute("type");
+                bool centerOnly = type == "centered";
+                bool cornerOnly = type == "corner";
+                bool floating = type == "floating";
+
+                Debug.Log("Loading object " + name);
+
+                bool unique = VerifyShortName(shortName);
+                if (!unique)
+                {
+                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    continue;
+                }
+
+                Model model = null;
+                List<string[]> categories = new List<string[]>();
+                Materials materials = null;
+
+                foreach (XmlElement child in element)
+                {
+                    switch (child.LocalName)
+                    {
+                        case "model":
+                            model = new Model(child);
+                            break;
+                        case "materials":
+                            materials = new Materials(child);
+                            break;
+                        case "category":
+                            categories.Add(child.InnerText.Split('/'));
+                            break;
+                    }
+                }
+
+                GameObjectData data = new GameObjectData(model, name, shortName, type, centerOnly, cornerOnly, floating, materials);
+                Database.Objects[shortName] = data;
+
+                foreach (string[] category in categories)
+                {
+                    GuiManager.Instance.ObjectsTree.Add(data, category);
+                }
             }
         }
 
