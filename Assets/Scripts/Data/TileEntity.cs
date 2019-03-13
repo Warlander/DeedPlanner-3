@@ -13,7 +13,7 @@ namespace Warlander.Deedplanner.Data
     public abstract class TileEntity : MonoBehaviour, IXMLSerializable
     {
 
-        Materials Materials { get; }
+        public abstract Materials Materials { get; }
 
         public abstract void Serialize(XmlDocument document, XmlElement localRoot);
 

@@ -14,7 +14,7 @@ namespace Warlander.Deedplanner.Data
 
         public FloorData Data { get; private set; }
         public EntityOrientation Orientation { get; private set; }
-        public Materials Materials { get { return Data.Materials; } }
+        public override Materials Materials { get { return Data.Materials; } }
 
         public GameObject Model { get; private set; }
 
