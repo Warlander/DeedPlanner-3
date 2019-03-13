@@ -39,6 +39,8 @@ namespace Warlander.Deedplanner.Data
             {
                 LoadGrounds(document);
                 shortNames.Clear();
+                LoadCaves(document);
+                shortNames.Clear();
                 LoadFloors(document);
                 shortNames.Clear();
                 LoadWalls(document);
@@ -115,6 +117,54 @@ namespace Warlander.Deedplanner.Data
                     iconListElement.TextureReference = tex2d;
                 }
                 Debug.Log("Ground data " + name + " loaded and ready to use!");
+            }
+        }
+
+        private static void LoadCaves(XmlDocument document)
+        {
+            XmlNodeList entities = document.GetElementsByTagName("rock");
+
+            foreach (XmlElement element in entities)
+            {
+                string name = element.GetAttribute("name");
+                string shortName = element.GetAttribute("shortname");
+
+                Debug.Log("Loading cave data " + name);
+
+                bool unique = VerifyShortName(shortName);
+                if (!unique)
+                {
+                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    continue;
+                }
+
+                TextureReference texture = TextureReference.GetTextureReference(element.GetAttribute("tex"));
+                string type = element.GetAttribute("type");
+                bool wall = type == "wall";
+                bool entrance = type == "entrance";
+
+                List<string[]> categories = new List<string[]>();
+                bool show = true;
+
+                foreach (XmlElement child in element)
+                {
+                    switch (child.LocalName)
+                    {
+                        case "category":
+                            categories.Add(child.InnerText.Split('/'));
+                            break;
+                        case "hidden":
+                            show = false;
+                            break;
+                    }
+                }
+
+                CaveData data = new CaveData(texture, name, shortName, wall, show, entrance);
+                Database.Caves[shortName] = data;
+                foreach (string[] category in categories)
+                {
+                    GuiManager.Instance.CavesTree.Add(data, category);
+                }
             }
         }
 
