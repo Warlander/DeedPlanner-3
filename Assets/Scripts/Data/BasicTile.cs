@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public abstract class BasicTile : MonoBehaviour
+    public abstract class BasicTile : MonoBehaviour, IXMLSerializable
     {
 
         private int height = 0;
@@ -103,6 +105,11 @@ namespace Warlander.Deedplanner.Data
             UpdateEntitiesHeights();
 
             return floor;
+        }
+
+        public void Serialize(XmlDocument document, XmlElement localRoot)
+        {
+            
         }
 
         protected virtual void RefreshMesh()

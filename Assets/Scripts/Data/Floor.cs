@@ -20,7 +20,7 @@ namespace Warlander.Deedplanner.Data
 
         public void Initialize(FloorData data, EntityOrientation orientation)
         {
-            gameObject.layer = LayerMasks.GroundLayer;
+            gameObject.layer = LayerMasks.FloorRoofLayer;
 
             Data = data;
 

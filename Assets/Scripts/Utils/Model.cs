@@ -25,8 +25,9 @@ namespace Warlander.Deedplanner.Utils
 
         public string Tag { get; private set; }
         public Vector3 Scale { get; private set; }
+        public int Layer { get; private set; }
 
-        public Model(XmlElement element)
+        public Model(XmlElement element, int layer = int.MaxValue)
         {
             skewedModels = new Dictionary<int, GameObject>();
 
@@ -63,11 +64,14 @@ namespace Warlander.Deedplanner.Utils
             {
                 oneIncludedMesh = null;
             }
+
+            this.Layer = layer;
         }
 
-        public Model(string location)
+        public Model(string location, int layer = int.MaxValue)
         {
             this.location = location;
+            this.Layer = layer;
         }
 
         public GameObject CreateOrGetModel(int skew = 0)
@@ -86,6 +90,11 @@ namespace Warlander.Deedplanner.Utils
             {
                 string fullLocation = Path.Combine(Application.streamingAssetsPath, location);
                 originalModel = WomModelLoader.LoadModel(fullLocation);
+                originalModel.layer = Layer;
+                foreach (Transform child in originalModel.transform)
+                {
+                    child.gameObject.layer = Layer;
+                }
                 originalModel.transform.SetParent(modelRoot.transform);
                 skewedModels[0] = originalModel;
             }
