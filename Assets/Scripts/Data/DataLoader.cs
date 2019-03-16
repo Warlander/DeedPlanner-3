@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
@@ -196,7 +197,7 @@ namespace Warlander.Deedplanner.Data
                     switch (child.LocalName)
                     {
                         case "model":
-                            model = new Model(child);
+                            model = new Model(child, LayerMasks.FloorRoofLayer);
                             break;
                         case "category":
                             categories.Add(child.InnerText.Split('/'));
@@ -259,7 +260,7 @@ namespace Warlander.Deedplanner.Data
                     switch (child.LocalName)
                     {
                         case "model":
-                            Model model = new Model(child);
+                            Model model = new Model(child, LayerMasks.WallLayer);
                             if (model.Tag == "bottom")
                             {
                                 bottomModel = model;
@@ -371,7 +372,7 @@ namespace Warlander.Deedplanner.Data
                     switch (child.LocalName)
                     {
                         case "model":
-                            model = new Model(child);
+                            model = new Model(child, LayerMasks.ObjectLayer);
                             break;
                         case "materials":
                             materials = new Materials(child);

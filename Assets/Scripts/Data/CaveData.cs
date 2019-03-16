@@ -9,7 +9,7 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class CaveData : TileEntity
+    public class CaveData
     {
 
         public string Name { get; private set; }
@@ -20,12 +20,6 @@ namespace Warlander.Deedplanner.Data
         public bool Wall { get; private set; }
         public bool Show { get; private set; }
         public bool Entrance { get; private set; }
-
-        public override Materials Materials {
-            get {
-                return null;
-            }
-        }
 
         public CaveData(TextureReference texture, string name, string shortName, bool wall, bool show, bool entrance)
         {
@@ -42,9 +36,5 @@ namespace Warlander.Deedplanner.Data
             return Name;
         }
 
-        public override void Serialize(XmlDocument document, XmlElement localRoot)
-        {
-            
-        }
     }
 }

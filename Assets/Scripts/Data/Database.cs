@@ -16,5 +16,11 @@ namespace Warlander.Deedplanner.Data
         public static readonly Dictionary<string, RoofData> Roofs = new Dictionary<string, RoofData>();
         public static readonly Dictionary<string, GameObjectData> Objects = new Dictionary<string, GameObjectData>();
 
+        public static CaveData DefaultCaveData {
+            get {
+                return Caves["sw"];
+            }
+        }
+
     }
 }
