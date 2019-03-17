@@ -20,7 +20,7 @@ namespace Warlander.Deedplanner.Gui
     public static class TileSelection
     {
 
-        public const float BorderThickness = 0.15f;
+        public const float BorderThickness = 0.2f;
 
         public static TileSelectionHit PositionToTileSelectionHit(Vector3 position, TileSelectionMode tileSelectionMode)
         {

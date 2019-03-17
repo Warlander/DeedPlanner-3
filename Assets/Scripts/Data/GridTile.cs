@@ -44,8 +44,14 @@ namespace Warlander.Deedplanner.Data
             }
             if (!meshRenderer)
             {
+                Material[] materials = new Material[4];
+                for (int i = 0; i < 4; i++)
+                {
+                    materials[i] = gridMaterial;
+                }
+
                 meshRenderer = gameObject.AddComponent<MeshRenderer>();
-                meshRenderer.material = gridMaterial;
+                meshRenderer.materials = materials;
             }
             if (!meshFilter)
             {
