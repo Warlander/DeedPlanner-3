@@ -54,12 +54,15 @@ namespace Warlander.Deedplanner.Data
         {
             Vector3[] vertices = new Vector3[] { new Vector3(0, 0, 0), new Vector3(4, 0, 0), new Vector3(0, 0, 4), new Vector3(4, 0, 4), new Vector3(2, 0, 2) };
             Vector2[] uv = new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(0.5f, 0.5f) };
-            int[] triangles = new int[] { 0, 2, 4, 2, 3, 4, 3, 1, 4, 1, 0, 4 };
 
             HeightMesh = new Mesh();
             HeightMesh.vertices = vertices;
             HeightMesh.uv = uv;
-            HeightMesh.triangles = triangles;
+            HeightMesh.subMeshCount = 4;
+            HeightMesh.SetTriangles(new int[] { 0, 2, 4 }, 0);
+            HeightMesh.SetTriangles(new int[] { 2, 3, 4 }, 1);
+            HeightMesh.SetTriangles(new int[] { 3, 1, 4 }, 2);
+            HeightMesh.SetTriangles(new int[] { 1, 0, 4 }, 3);
             HeightMesh.RecalculateNormals();
             HeightMesh.RecalculateBounds();
 

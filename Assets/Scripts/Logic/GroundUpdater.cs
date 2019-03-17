@@ -116,6 +116,7 @@ namespace Warlander.Deedplanner.Logic
             }
 
             Ground ground = raycast.transform.GetComponent<Ground>();
+            SurfaceTile tile = raycast.transform.parent.GetComponent<SurfaceTile>();
 
             if (pencilToggle.isOn)
             {
@@ -123,17 +124,37 @@ namespace Warlander.Deedplanner.Logic
                 {
                     if (editCorners && leftClickData.Diagonal)
                     {
-
+                        TileSelectionHit hit = TileSelection.PositionToTileSelectionHit(raycast.point, TileSelectionMode.TilesAndCorners);
+                        if (hit.Target == TileSelectionTarget.InnerTile || hit.Target == TileSelectionTarget.Nothing)
+                        {
+                            ground.SetRoadDirection(RoadDirection.Center, tile);
+                        }
+                        else if (hit.X - tile.X == 0 && hit.Y - tile.Y == 0)
+                        {
+                            ground.SetRoadDirection(RoadDirection.SW, tile);
+                        }
+                        else if (hit.X - tile.X == 1 && hit.Y - tile.Y == 0)
+                        {
+                            ground.SetRoadDirection(RoadDirection.SE, tile);
+                        }
+                        else if (hit.X - tile.X == 0 && hit.Y - tile.Y == 1)
+                        {
+                            ground.SetRoadDirection(RoadDirection.NW, tile);
+                        }
+                        else if (hit.X - tile.X == 1 && hit.Y - tile.Y == 1)
+                        {
+                            ground.SetRoadDirection(RoadDirection.NE, tile);
+                        }
                     }
                     else
                     {
-                        //ground.RoadDirection = RoadDirection.Center;
+                        ground.SetRoadDirection(RoadDirection.Center, tile);
                     }
-                    ground.Data = leftClickData;
+                    ground.SetData(leftClickData, tile);
                 }
                 else if (Input.GetMouseButton(1))
                 {
-                    ground.Data = rightClickData;
+                    ground.SetData(rightClickData, tile);
                 }
             }
             else if (fillToggle.isOn)
