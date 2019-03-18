@@ -8,7 +8,7 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class RoofData
+    public class RoofData : ScriptableObject
     {
 
         public string Name { get; private set; }
@@ -16,7 +16,7 @@ namespace Warlander.Deedplanner.Data
         public TextureReference Texture { get; private set; }
         public Materials Materials { get; private set; }
 
-        public RoofData(TextureReference texture, string name, string shortName, Materials materials)
+        public void Initialize(TextureReference texture, string name, string shortName, Materials materials)
         {
             Texture = texture;
             Name = name;

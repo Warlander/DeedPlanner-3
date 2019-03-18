@@ -9,7 +9,7 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class CaveData
+    public class CaveData : ScriptableObject
     {
 
         public string Name { get; private set; }
@@ -21,7 +21,7 @@ namespace Warlander.Deedplanner.Data
         public bool Show { get; private set; }
         public bool Entrance { get; private set; }
 
-        public CaveData(TextureReference texture, string name, string shortName, bool wall, bool show, bool entrance)
+        public void Initialize(TextureReference texture, string name, string shortName, bool wall, bool show, bool entrance)
         {
             Texture = texture;
             Name = name;

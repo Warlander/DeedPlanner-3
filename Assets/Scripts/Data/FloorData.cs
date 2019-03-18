@@ -8,7 +8,7 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class FloorData
+    public class FloorData : ScriptableObject
     {
 
         public string Name { get; private set; }
@@ -17,7 +17,7 @@ namespace Warlander.Deedplanner.Data
         public bool Opening { get; private set; }
         public Materials Materials { get; private set; }
 
-        public FloorData(Model model, string name, string shortName, bool opening, Materials materials)
+        public void Initialize(Model model, string name, string shortName, bool opening, Materials materials)
         {
             Model = model;
             Name = name;

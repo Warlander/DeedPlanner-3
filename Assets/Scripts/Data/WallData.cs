@@ -8,7 +8,7 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class WallData
+    public class WallData : ScriptableObject
     {
 
         public Model BottomModel { get; private set; }
@@ -25,7 +25,7 @@ namespace Warlander.Deedplanner.Data
 
         public Materials Materials { get; private set; }
 
-        public WallData(Model bottomModel, Model normalModel, string name, string shortName, Color color, float scale, bool houseWall, bool arch, bool archBuildable, Materials materials, TextureReference icon)
+        public void Initialize(Model bottomModel, Model normalModel, string name, string shortName, Color color, float scale, bool houseWall, bool arch, bool archBuildable, Materials materials, TextureReference icon)
         {
             BottomModel = bottomModel;
             NormalModel = normalModel;
