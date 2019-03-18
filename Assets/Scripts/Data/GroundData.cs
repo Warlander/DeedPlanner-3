@@ -8,7 +8,7 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class GroundData
+    public class GroundData : ScriptableObject
     {
 
         public string Name { get; private set; }
@@ -19,7 +19,7 @@ namespace Warlander.Deedplanner.Data
 
         public bool Diagonal { get; private set; }
 
-        public GroundData(string name, string shortName, TextureReference tex2d, TextureReference tex3d, bool diagonal)
+        public void Initialize(string name, string shortName, TextureReference tex2d, TextureReference tex3d, bool diagonal)
         {
             Name = name;
             ShortName = shortName;

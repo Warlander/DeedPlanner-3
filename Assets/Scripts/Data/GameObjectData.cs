@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class GameObjectData
+    public class GameObjectData : ScriptableObject
     {
 
         public Model Model { get; private set; }
@@ -21,7 +22,7 @@ namespace Warlander.Deedplanner.Data
 
         public Materials Materials { get; private set; }
 
-        public GameObjectData(Model model, string name, string shortName, string type, bool centerOnly, bool cornerOnly, bool floating, Materials materials)
+        public void Initialize(Model model, string name, string shortName, string type, bool centerOnly, bool cornerOnly, bool floating, Materials materials)
         {
             Model = model;
             Name = name;
