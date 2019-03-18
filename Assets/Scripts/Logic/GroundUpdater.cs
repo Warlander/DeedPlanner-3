@@ -115,52 +115,65 @@ namespace Warlander.Deedplanner.Logic
                 return;
             }
 
+            GroundData currentClickData = GetCurrentClickData();
+            if (currentClickData == null)
+            {
+                return;
+            }
+
             Ground ground = raycast.transform.GetComponent<Ground>();
             SurfaceTile tile = raycast.transform.parent.GetComponent<SurfaceTile>();
 
             if (pencilToggle.isOn)
             {
-                if (Input.GetMouseButton(0))
+                if (editCorners && leftClickData.Diagonal)
                 {
-                    if (editCorners && leftClickData.Diagonal)
-                    {
-                        TileSelectionHit hit = TileSelection.PositionToTileSelectionHit(raycast.point, TileSelectionMode.TilesAndCorners);
-                        if (hit.Target == TileSelectionTarget.InnerTile || hit.Target == TileSelectionTarget.Nothing)
-                        {
-                            ground.SetRoadDirection(RoadDirection.Center, tile);
-                        }
-                        else if (hit.X - tile.X == 0 && hit.Y - tile.Y == 0)
-                        {
-                            ground.SetRoadDirection(RoadDirection.SW, tile);
-                        }
-                        else if (hit.X - tile.X == 1 && hit.Y - tile.Y == 0)
-                        {
-                            ground.SetRoadDirection(RoadDirection.SE, tile);
-                        }
-                        else if (hit.X - tile.X == 0 && hit.Y - tile.Y == 1)
-                        {
-                            ground.SetRoadDirection(RoadDirection.NW, tile);
-                        }
-                        else if (hit.X - tile.X == 1 && hit.Y - tile.Y == 1)
-                        {
-                            ground.SetRoadDirection(RoadDirection.NE, tile);
-                        }
-                    }
-                    else
+                    TileSelectionHit hit = TileSelection.PositionToTileSelectionHit(raycast.point, TileSelectionMode.TilesAndCorners);
+                    if (hit.Target == TileSelectionTarget.InnerTile || hit.Target == TileSelectionTarget.Nothing)
                     {
                         ground.SetRoadDirection(RoadDirection.Center, tile);
                     }
-                    ground.SetData(leftClickData, tile);
+                    else if (hit.X - tile.X == 0 && hit.Y - tile.Y == 0)
+                    {
+                        ground.SetRoadDirection(RoadDirection.SW, tile);
+                    }
+                    else if (hit.X - tile.X == 1 && hit.Y - tile.Y == 0)
+                    {
+                        ground.SetRoadDirection(RoadDirection.SE, tile);
+                    }
+                    else if (hit.X - tile.X == 0 && hit.Y - tile.Y == 1)
+                    {
+                        ground.SetRoadDirection(RoadDirection.NW, tile);
+                    }
+                    else if (hit.X - tile.X == 1 && hit.Y - tile.Y == 1)
+                    {
+                        ground.SetRoadDirection(RoadDirection.NE, tile);
+                    }
                 }
-                else if (Input.GetMouseButton(1))
+                else
                 {
-                    ground.SetData(rightClickData, tile);
+                    ground.SetRoadDirection(RoadDirection.Center, tile);
                 }
+                ground.SetData(currentClickData, tile);
             }
             else if (fillToggle.isOn)
             {
-
+                
             }
+        }
+
+        private GroundData GetCurrentClickData()
+        {
+            if (Input.GetMouseButton(0))
+            {
+                return leftClickData;
+            }
+            else if (Input.GetMouseButton(1))
+            {
+                return rightClickData;
+            }
+
+            return null;
         }
 
     }
