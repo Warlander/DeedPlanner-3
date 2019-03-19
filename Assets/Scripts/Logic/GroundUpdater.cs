@@ -165,6 +165,10 @@ namespace Warlander.Deedplanner.Logic
 
         private void FloodFill(SurfaceTile tile, GroundData data, GroundData toReplace)
         {
+            if (data == toReplace)
+            {
+                return;
+            }
             Map map = GameManager.Instance.Map;
             Stack<SurfaceTile> stack = new Stack<SurfaceTile>();
             stack.Push(tile);
@@ -172,7 +176,6 @@ namespace Warlander.Deedplanner.Logic
             while (stack.Count != 0)
             {
                 SurfaceTile anchor = stack.Pop();
-                Debug.Log("Stack size: " + (stack.Count + 1) + ", data: " + anchor.Ground.Data + ", coord: " + anchor.X + "X" + anchor.Y + ", replace: " + toReplace + ", compare: " + (anchor.Ground.Data == toReplace));
                 if (anchor.Ground.Data == toReplace)
                 {
                     anchor.Ground.SetData(data, anchor);
@@ -180,10 +183,6 @@ namespace Warlander.Deedplanner.Logic
                     AddTileIfNotNull(stack, map[anchor.X + 1, anchor.Y]?.Surface);
                     AddTileIfNotNull(stack, map[anchor.X, anchor.Y - 1]?.Surface);
                     AddTileIfNotNull(stack, map[anchor.X, anchor.Y + 1]?.Surface);
-                }
-                if (stack.Count > 100)
-                {
-                    return;
                 }
             }
         }
