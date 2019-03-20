@@ -18,6 +18,8 @@ namespace Warlander.Deedplanner.Logic
         private GroundUpdater groundUpdater = null;
         [SerializeField]
         private FloorUpdater floorUpdater = null;
+        [SerializeField]
+        private WallUpdater wallUpdater = null;
 
         private void Awake()
         {
@@ -50,6 +52,7 @@ namespace Warlander.Deedplanner.Logic
 
             CheckUpdater(groundUpdater, newUpdater);
             CheckUpdater(floorUpdater, newUpdater);
+            CheckUpdater(wallUpdater, newUpdater);
         }
 
         private void CheckUpdater(MonoBehaviour updater, MonoBehaviour check)
@@ -65,6 +68,8 @@ namespace Warlander.Deedplanner.Logic
                     return groundUpdater;
                 case Tab.Floors:
                     return floorUpdater;
+                case Tab.Walls:
+                    return wallUpdater;
                 default:
                     return null;
             }
