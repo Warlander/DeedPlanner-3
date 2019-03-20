@@ -78,18 +78,14 @@ namespace Warlander.Deedplanner.Data
             EntityData entityData = new EntityData(level, EntityType.FLOORROOF);
             TileEntity tileEntity;
             Entities.TryGetValue(entityData, out tileEntity);
-            if (tileEntity == null)
+            Floor currentFloor = tileEntity as Floor;
+            if (!currentFloor)
             {
                 return CreateNewFloor(entityData, data, orientation, level);
             }
-            else if (tileEntity.GetType() == typeof(Floor))
+            else if (currentFloor.Data != data || currentFloor.Orientation != orientation)
             {
-                Floor currentFloor = (Floor) tileEntity;
-                if (currentFloor.Data != data || currentFloor.Orientation != orientation)
-                {
-                    Destroy(currentFloor.gameObject);
-                }
-
+                Destroy(currentFloor.gameObject);
                 return CreateNewFloor(entityData, data, orientation, level);
             }
             // TODO: add behaviour if roof is there
