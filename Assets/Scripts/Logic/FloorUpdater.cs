@@ -30,13 +30,12 @@ namespace Warlander.Deedplanner.Logic
 
             BasicTile tile = raycast.transform.GetComponentInParent<BasicTile>();
             GridTile gridTile = raycast.transform.GetComponent<GridTile>();
-            Ground ground = raycast.transform.GetComponent<Ground>();
             Floor floor = raycast.transform.GetComponent<Floor>();
 
             int level = 0;
             int x = -1;
             int y = -1;
-            if (ground)
+            if (tile)
             {
                 level = 0;
                 x = tile.X;
