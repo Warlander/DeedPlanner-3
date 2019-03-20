@@ -85,7 +85,7 @@ namespace Warlander.Deedplanner.Logic
         {
             if (editCorners)
             {
-                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.TilesAndCorners;
+                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Everything;
             }
             else
             {
