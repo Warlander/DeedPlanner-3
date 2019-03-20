@@ -33,6 +33,8 @@ namespace Warlander.Deedplanner.Data
                 collider.center = new Vector3(-2f, 0.125f, -2f);
                 collider.size = new Vector3(4f, 0.25f, 4f);
             }
+
+            transform.rotation = Quaternion.Euler(0, 180, 0);
         }
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)
