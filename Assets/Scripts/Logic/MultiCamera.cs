@@ -451,6 +451,8 @@ namespace Warlander.Deedplanner.Logic
             RenderLines();
             if (hitObject != null && !gridOrGroundHit)
             {
+                Matrix4x4 rotationMatrix = Matrix4x4.TRS(hitObject.transform.position, hitObject.transform.rotation, hitObject.transform.lossyScale);
+                GL.MultMatrix(rotationMatrix);
                 RenderRaytrace();
             }
             GL.PopMatrix();
@@ -523,7 +525,6 @@ namespace Warlander.Deedplanner.Logic
 
             float raytraceAlpha = 0.25f;
             Transform hitTransform = CurrentRaycast.transform;
-            Vector3 position = hitTransform.position;
 
             if (hitCollider.GetType() == typeof(MeshCollider))
             {
@@ -536,9 +537,9 @@ namespace Warlander.Deedplanner.Logic
                 GL.Color(new Color(1, 1, 0, raytraceAlpha));
                 for (int i = 0; i < triangles.Length; i += 3)
                 {
-                    GL.Vertex(position + vertices[triangles[i]] + normals[triangles[i]] * 0.05f);
-                    GL.Vertex(position + vertices[triangles[i + 1]] + normals[triangles[i + 1]] * 0.05f);
-                    GL.Vertex(position + vertices[triangles[i + 2]] + normals[triangles[i + 2]] * 0.05f);
+                    GL.Vertex(vertices[triangles[i]] + normals[triangles[i]] * 0.05f);
+                    GL.Vertex(vertices[triangles[i + 1]] + normals[triangles[i + 1]] * 0.05f);
+                    GL.Vertex(vertices[triangles[i + 2]] + normals[triangles[i + 2]] * 0.05f);
                 }
                 GL.End();
             }
@@ -546,7 +547,7 @@ namespace Warlander.Deedplanner.Logic
             {
                 BoxCollider collider = (BoxCollider)hitCollider;
                 Vector3 size = collider.size * 1.01f;
-                Vector3 center = position + collider.center;
+                Vector3 center = collider.center;
 
                 Vector3 v000 = center + new Vector3(-size.x, -size.y, -size.z) / 2f;
                 Vector3 v001 = center + new Vector3(-size.x, -size.y, size.z) / 2f;
