@@ -79,11 +79,16 @@ namespace Warlander.Deedplanner.Data
             TileEntity tileEntity;
             Entities.TryGetValue(entityData, out tileEntity);
             Floor currentFloor = tileEntity as Floor;
-            if (!currentFloor)
+            if (!currentFloor && data)
             {
                 return CreateNewFloor(entityData, data, orientation, level);
             }
-            else if (currentFloor.Data != data || currentFloor.Orientation != orientation)
+            else if (!data && currentFloor)
+            {
+                Destroy(currentFloor.gameObject);
+                return null;
+            }
+            else if (currentFloor && (currentFloor.Data != data || currentFloor.Orientation != orientation))
             {
                 Destroy(currentFloor.gameObject);
                 return CreateNewFloor(entityData, data, orientation, level);
