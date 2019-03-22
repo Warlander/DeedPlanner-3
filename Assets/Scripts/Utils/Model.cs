@@ -94,6 +94,14 @@ namespace Warlander.Deedplanner.Utils
                 foreach (Transform child in originalModel.transform)
                 {
                     child.gameObject.layer = Layer;
+                    string textureOverride = null;
+                    textureOverrides.TryGetValue(child.name, out textureOverride);
+                    if (textureOverride != null)
+                    {
+                        MeshRenderer renderer = child.GetComponent<MeshRenderer>();
+                        TextureReference texture = TextureReference.GetTextureReference(textureOverride);
+                        renderer.material = texture.Material;
+                    }
                 }
                 originalModel.transform.SetParent(modelRoot.transform);
                 skewedModels[0] = originalModel;

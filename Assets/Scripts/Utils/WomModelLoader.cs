@@ -129,7 +129,6 @@ namespace Warlander.Deedplanner.Utils
         private static Material LoadMaterial(BinaryReader source, string modelFolder)
         {
             string texName = ReadString(source);
-            string texExtension = Path.GetExtension(texName);
             string matName = ReadString(source);
 
             Material material = new Material(Shader.Find("Standard"));
