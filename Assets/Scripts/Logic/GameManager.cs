@@ -17,9 +17,23 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField]
         private GroundUpdater groundUpdater = null;
         [SerializeField]
+        private CaveUpdater caveUpdater = null;
+        [SerializeField]
         private FloorUpdater floorUpdater = null;
         [SerializeField]
         private WallUpdater wallUpdater = null;
+        [SerializeField]
+        private RoofUpdater roofUpdater = null;
+        [SerializeField]
+        private ObjectUpdater objectUpdater = null;
+        [SerializeField]
+        private LabelUpdater labelUpdater = null;
+        [SerializeField]
+        private BorderUpdater borderUpdater = null;
+        [SerializeField]
+        private BridgesUpdater bridgeUpdater = null;
+        [SerializeField]
+        private MirrorUpdater mirrorUpdater = null;
 
         private void Awake()
         {
@@ -51,8 +65,15 @@ namespace Warlander.Deedplanner.Logic
             MonoBehaviour newUpdater = GetUpdaterForTab(tab);
 
             CheckUpdater(groundUpdater, newUpdater);
+            CheckUpdater(caveUpdater, newUpdater);
             CheckUpdater(floorUpdater, newUpdater);
+            CheckUpdater(roofUpdater, newUpdater);
             CheckUpdater(wallUpdater, newUpdater);
+            CheckUpdater(objectUpdater, newUpdater);
+            CheckUpdater(labelUpdater, newUpdater);
+            CheckUpdater(borderUpdater, newUpdater);
+            CheckUpdater(bridgeUpdater, newUpdater);
+            CheckUpdater(mirrorUpdater, newUpdater);
         }
 
         private void CheckUpdater(MonoBehaviour updater, MonoBehaviour check)
@@ -66,10 +87,24 @@ namespace Warlander.Deedplanner.Logic
             {
                 case Tab.Ground:
                     return groundUpdater;
+                case Tab.Caves:
+                    return caveUpdater;
                 case Tab.Floors:
                     return floorUpdater;
+                case Tab.Roofs:
+                    return roofUpdater;
                 case Tab.Walls:
                     return wallUpdater;
+                case Tab.Objects:
+                    return objectUpdater;
+                case Tab.Labels:
+                    return labelUpdater;
+                case Tab.Borders:
+                    return borderUpdater;
+                case Tab.Bridges:
+                    return bridgeUpdater;
+                case Tab.Mirror:
+                    return mirrorUpdater;
                 default:
                     return null;
             }

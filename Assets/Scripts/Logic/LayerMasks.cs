@@ -32,7 +32,6 @@ namespace Warlander.Deedplanner.Logic
         public const int RoofEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
         public const int WallEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
         public const int ObjectEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | ObjectMask | BridgeMask;
-        public const int AnimalEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | ObjectMask | BridgeMask;
         public const int LabelEditMask = GroundMask;
         public const int BorderEditMask = GroundMask;
         public const int BridgeEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
@@ -55,8 +54,6 @@ namespace Warlander.Deedplanner.Logic
                     return WallEditMask;
                 case Tab.Objects:
                     return ObjectEditMask;
-                case Tab.Animals:
-                    return AnimalEditMask;
                 case Tab.Labels:
                     return LabelEditMask;
                 case Tab.Borders:
