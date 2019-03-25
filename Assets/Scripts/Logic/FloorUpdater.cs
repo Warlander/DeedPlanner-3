@@ -28,18 +28,17 @@ namespace Warlander.Deedplanner.Logic
                 return;
             }
 
-            BasicTile tile = raycast.transform.GetComponentInParent<BasicTile>();
             GridTile gridTile = raycast.transform.GetComponent<GridTile>();
-            Floor floor = raycast.transform.GetComponent<Floor>();
+            TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
 
             int level = 0;
             int x = -1;
             int y = -1;
-            if (tile)
+            if (tileEntity)
             {
                 level = 0;
-                x = tile.X;
-                y = tile.Y;
+                x = tileEntity.Tile.X;
+                y = tileEntity.Tile.Y;
             }
             else if (gridTile)
             {
@@ -51,11 +50,11 @@ namespace Warlander.Deedplanner.Logic
             if (Input.GetMouseButton(0))
             {
                 FloorData data = GuiManager.Instance.FloorsTree.SelectedValue as FloorData;
-                GameManager.Instance.Map[x, y].GetTileForFloor(level).SetFloor(data, EntityOrientation.Up, level);
+                GameManager.Instance.Map[x, y].SetFloor(data, EntityOrientation.Up, level);
             }
             else if (Input.GetMouseButton(1))
             {
-                GameManager.Instance.Map[x, y].GetTileForFloor(level).SetFloor(null, EntityOrientation.Up, level);
+                GameManager.Instance.Map[x, y].SetFloor(null, EntityOrientation.Up, level);
             }
             
         }

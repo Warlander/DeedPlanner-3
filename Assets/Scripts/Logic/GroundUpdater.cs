@@ -122,7 +122,7 @@ namespace Warlander.Deedplanner.Logic
             }
 
             Ground ground = raycast.transform.GetComponent<Ground>();
-            SurfaceTile tile = raycast.transform.parent.GetComponent<SurfaceTile>();
+            Tile tile = ground.Tile;
 
             if (pencilToggle.isOn)
             {
@@ -163,31 +163,31 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
-        private void FloodFill(SurfaceTile tile, GroundData data, GroundData toReplace)
+        private void FloodFill(Tile tile, GroundData data, GroundData toReplace)
         {
             if (data == toReplace)
             {
                 return;
             }
             Map map = GameManager.Instance.Map;
-            Stack<SurfaceTile> stack = new Stack<SurfaceTile>();
+            Stack<Tile> stack = new Stack<Tile>();
             stack.Push(tile);
 
             while (stack.Count != 0)
             {
-                SurfaceTile anchor = stack.Pop();
+                Tile anchor = stack.Pop();
                 if (anchor.Ground.Data == toReplace)
                 {
                     anchor.Ground.SetData(data, anchor);
-                    AddTileIfNotNull(stack, map[anchor.X - 1, anchor.Y]?.Surface);
-                    AddTileIfNotNull(stack, map[anchor.X + 1, anchor.Y]?.Surface);
-                    AddTileIfNotNull(stack, map[anchor.X, anchor.Y - 1]?.Surface);
-                    AddTileIfNotNull(stack, map[anchor.X, anchor.Y + 1]?.Surface);
+                    AddTileIfNotNull(stack, map[anchor.X - 1, anchor.Y]);
+                    AddTileIfNotNull(stack, map[anchor.X + 1, anchor.Y]);
+                    AddTileIfNotNull(stack, map[anchor.X, anchor.Y - 1]);
+                    AddTileIfNotNull(stack, map[anchor.X, anchor.Y + 1]);
                 }
             }
         }
 
-        private void AddTileIfNotNull(Stack<SurfaceTile> stack, SurfaceTile tile)
+        private void AddTileIfNotNull(Stack<Tile> stack, Tile tile)
         {
             if (tile)
             {

@@ -12,14 +12,24 @@ namespace Warlander.Deedplanner.Data
     public class Floor : TileEntity
     {
 
+        private Tile tile;
+
         public FloorData Data { get; private set; }
         public EntityOrientation Orientation { get; private set; }
         public override Materials Materials { get { return Data.Materials; } }
 
         public GameObject Model { get; private set; }
 
-        public void Initialize(FloorData data, EntityOrientation orientation)
+        public override Tile Tile {
+            get {
+                return tile;
+            }
+        }
+
+        public void Initialize(Tile tile, FloorData data, EntityOrientation orientation)
         {
+            this.tile = tile;
+
             gameObject.layer = LayerMasks.FloorRoofLayer;
 
             Data = data;

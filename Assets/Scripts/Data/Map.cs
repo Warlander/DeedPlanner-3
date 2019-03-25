@@ -15,8 +15,8 @@ namespace Warlander.Deedplanner.Data
 
         private Tile[,] tiles;
 
-        private Transform surfaceRoot;
-        private Transform caveRoot;
+        private Transform[] surfaceLevelRoots;
+        private Transform[] caveLevelRoots;
         private Transform surfaceGridRoot;
         private Transform caveGridRoot;
 
@@ -54,18 +54,30 @@ namespace Warlander.Deedplanner.Data
 
                 if (underground)
                 {
-                    surfaceRoot.gameObject.SetActive(false);
+                    foreach (Transform root in surfaceLevelRoots)
+                    {
+                        root.gameObject.SetActive(false);
+                    }
                     surfaceGridRoot.gameObject.SetActive(false);
-                    caveRoot.gameObject.SetActive(true);
+                    foreach (Transform root in caveLevelRoots)
+                    {
+                        root.gameObject.SetActive(true);
+                    }
                     caveGridRoot.gameObject.SetActive(true);
 
                     caveGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
                 }
                 else
                 {
-                    surfaceRoot.gameObject.SetActive(true);
+                    foreach (Transform root in surfaceLevelRoots)
+                    {
+                        root.gameObject.SetActive(true);
+                    }
                     surfaceGridRoot.gameObject.SetActive(true);
-                    caveRoot.gameObject.SetActive(false);
+                    foreach (Transform root in caveLevelRoots)
+                    {
+                        root.gameObject.SetActive(false);
+                    }
                     caveGridRoot.gameObject.SetActive(false);
 
                     surfaceGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
@@ -79,11 +91,20 @@ namespace Warlander.Deedplanner.Data
             Height = height;
             tiles = new Tile[width + 1, height + 1];
 
-            surfaceRoot = new GameObject("Surface").transform;
-            surfaceRoot.SetParent(transform);
-            caveRoot = new GameObject("Cave").transform;
-            caveRoot.SetParent(transform);
-            caveRoot.gameObject.SetActive(false);
+            surfaceLevelRoots = new Transform[16];
+            for (int i = 0; i < surfaceLevelRoots.Length; i++)
+            {
+                Transform root = new GameObject("Floor " + (i + 1)).transform;
+                root.SetParent(transform);
+                surfaceLevelRoots[i] = root;
+            }
+            caveLevelRoots = new Transform[6];
+            for (int i = 0; i < caveLevelRoots.Length; i++)
+            {
+                Transform root = new GameObject("Floor -" + (i + 1)).transform;
+                root.SetParent(transform);
+                caveLevelRoots[i] = root;
+            }
             surfaceGridRoot = new GameObject("Surface Grid").transform;
             surfaceGridRoot.SetParent(transform);
             caveGridRoot = new GameObject("Cave Grid").transform;
@@ -94,39 +115,42 @@ namespace Warlander.Deedplanner.Data
             {
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
+                    bool edge = i == Width || i2 == Height;
+
                     GameObject surfaceGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
                     surfaceGridObject.transform.SetParent(surfaceGridRoot);
                     surfaceGridObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
                     GridTile surfaceGrid = surfaceGridObject.GetComponent<GridTile>();
-
-                    GameObject surfaceObject = new GameObject("Tile " + i + "X" + i2, typeof(SurfaceTile));
-                    surfaceObject.transform.SetParent(surfaceRoot);
-                    surfaceObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
-                    SurfaceTile surface = surfaceObject.GetComponent<SurfaceTile>();
 
                     GameObject caveGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
                     caveGridObject.transform.SetParent(caveGridRoot);
                     caveGridObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
                     GridTile caveGrid = caveGridObject.GetComponent<GridTile>();
 
-                    GameObject caveObject = new GameObject("Tile " + i + "X" + i2, typeof(CaveTile));
-                    caveObject.transform.SetParent(caveRoot);
-                    caveObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
-                    CaveTile cave = caveObject.GetComponent<CaveTile>();
-
-                    Tile tile = new Tile(this, surface, cave, i, i2);
-                    surface.Initialize(tile, surfaceGrid);
-                    cave.Initialize(tile, caveGrid);
+                    Tile tile = ScriptableObject.CreateInstance<Tile>();
+                    tile.Initialize(this, surfaceGrid, caveGrid, i, i2, edge);
                     tiles[i, i2] = tile;
 
-                    if (i == Width || i2 == Height)
+                    if (edge)
                     {
                         surfaceGridObject.SetActive(false);
-                        surfaceObject.SetActive(false);
                         caveGridObject.SetActive(false);
-                        caveObject.SetActive(false);
                     }
                 }
+            }
+        }
+
+        public void AddEntityToMap(GameObject entity, int floor)
+        {
+            bool cave = floor < 0;
+            int absoluteFloor = cave ? -floor - 1 : floor;
+            if (cave)
+            {
+                entity.transform.SetParent(caveLevelRoots[absoluteFloor]);
+            }
+            else
+            {
+                entity.transform.SetParent(surfaceLevelRoots[absoluteFloor]);
             }
         }
 
@@ -141,8 +165,8 @@ namespace Warlander.Deedplanner.Data
             {
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
-                    int elevation = this[i, i2].Surface.Height;
-                    int caveElevation = this[i, i2].Cave.Height;
+                    int elevation = this[i, i2].SurfaceHeight;
+                    int caveElevation = this[i, i2].CaveHeight;
                     if (elevation > max)
                     {
                         max = elevation;
