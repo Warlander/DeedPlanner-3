@@ -28,9 +28,9 @@ namespace Warlander.Deedplanner.Logic
                 return;
             }
 
-            BasicTile tile = raycast.transform.GetComponentInParent<BasicTile>();
             GridTile gridTile = raycast.transform.GetComponent<GridTile>();
-            
+            TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
+
         }
 
     }

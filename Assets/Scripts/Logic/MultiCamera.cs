@@ -280,10 +280,10 @@ namespace Warlander.Deedplanner.Logic
                 float xPartRev = 1f - xPart;
                 float yPartRev = 1f - yPart;
 
-                float h00 = map[currentTileX, currentTileY].GetTileForFloor(floor).Height * 0.1f;
-                float h10 = map[currentTileX + 1, currentTileY].GetTileForFloor(floor).Height * 0.1f;
-                float h01 = map[currentTileX, currentTileY + 1].GetTileForFloor(floor).Height * 0.1f;
-                float h11 = map[currentTileX + 1, currentTileY + 1].GetTileForFloor(floor).Height * 0.1f;
+                float h00 = map[currentTileX, currentTileY].GetHeightForFloor(floor) * 0.1f;
+                float h10 = map[currentTileX + 1, currentTileY].GetHeightForFloor(floor) * 0.1f;
+                float h01 = map[currentTileX, currentTileY + 1].GetHeightForFloor(floor) * 0.1f;
+                float h11 = map[currentTileX + 1, currentTileY + 1].GetHeightForFloor(floor) * 0.1f;
 
                 float x0 = (h00 * xPartRev + h10 * xPart);
                 float x1 = (h01 * xPartRev + h11 * xPart);
@@ -482,34 +482,34 @@ namespace Warlander.Deedplanner.Logic
             {
                 for (int i2 = 0; i2 < map.Height; i2++)
                 {
-                    float cornerHeight = map[i, i2].GetTileForFloor(floor).Height;
+                    float cornerHeight = map[i, i2].GetHeightForFloor(floor);
                     float cornerColorComponent = (cornerHeight - lowestHeight) / heightDelta;
 
-                    float verticalHeight = map[i, i2 + 1].GetTileForFloor(floor).Height;
+                    float verticalHeight = map[i, i2 + 1].GetHeightForFloor(floor);
                     if (renderHeights)
                     {
                         GL.Color(new Color(cornerColorComponent, 1f - cornerColorComponent, 0, linesAlpha));
                     }
-                    GL.Vertex3(i * 4, absoluteFloor * 3 + map[i, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
+                    GL.Vertex3(i * 4, absoluteFloor * 3 + map[i, i2].GetHeightForFloor(floor) * 0.1f, i2 * 4);
                     if (renderHeights)
                     {
                         float verticalColorComponent = (verticalHeight - lowestHeight) / heightDelta;
                         GL.Color(new Color(verticalColorComponent, 1f - verticalColorComponent, 0, linesAlpha));
                     }
-                    GL.Vertex3(i * 4, absoluteFloor * 3 + map[i, i2 + 1].GetTileForFloor(floor).Height * 0.1f, i2 * 4 + 4);
+                    GL.Vertex3(i * 4, absoluteFloor * 3 + map[i, i2 + 1].GetHeightForFloor(floor) * 0.1f, i2 * 4 + 4);
 
-                    float horizontalHeight = map[i + 1, i2].GetTileForFloor(floor).Height;
+                    float horizontalHeight = map[i + 1, i2].GetHeightForFloor(floor);
                     if (renderHeights)
                     {
                         GL.Color(new Color(cornerColorComponent, 1f - cornerColorComponent, 0, linesAlpha));
                     }
-                    GL.Vertex3(i * 4, absoluteFloor * 3 + map[i, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
+                    GL.Vertex3(i * 4, absoluteFloor * 3 + map[i, i2].GetHeightForFloor(floor) * 0.1f, i2 * 4);
                     if (renderHeights)
                     {
                         float horizontalColorComponent = (horizontalHeight - lowestHeight) / heightDelta;
                         GL.Color(new Color(horizontalColorComponent, 1f - horizontalColorComponent, 0, linesAlpha));
                     }
-                    GL.Vertex3(i * 4 + 4, absoluteFloor * 3 + map[i + 1, i2].GetTileForFloor(floor).Height * 0.1f, i2 * 4);
+                    GL.Vertex3(i * 4 + 4, absoluteFloor * 3 + map[i + 1, i2].GetHeightForFloor(floor) * 0.1f, i2 * 4);
                 }
             }
             GL.End();

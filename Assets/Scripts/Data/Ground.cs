@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class Ground : MonoBehaviour
+    public class Ground : TileEntity
     {
+
+        private Tile tile;
 
         public GroundData Data { get; private set; }
         public RoadDirection RoadDirection { get; private set; }
@@ -17,8 +20,18 @@ namespace Warlander.Deedplanner.Data
         private MeshRenderer meshRenderer;
         public MeshCollider Collider { get; private set; }
 
-        public void Initialize(GroundData data, Mesh mesh)
+        public override Tile Tile {
+            get {
+                return tile;
+            }
+        }
+
+        public override Materials Materials { get { return null; } }
+
+        public void Initialize(Tile tile, GroundData data, Mesh mesh)
         {
+            this.tile = tile;
+
             gameObject.layer = LayerMasks.GroundLayer;
             if (!meshRenderer)
             {
@@ -48,13 +61,13 @@ namespace Warlander.Deedplanner.Data
             meshRenderer.materials = materials;
         }
 
-        public void SetData(GroundData data, SurfaceTile callingTile)
+        public void SetData(GroundData data, Tile callingTile)
         {
             Data = data;
             SetRoadDirection(RoadDirection, callingTile);
         }
 
-        public void SetRoadDirection(RoadDirection direction, SurfaceTile callingTile)
+        public void SetRoadDirection(RoadDirection direction, Tile callingTile)
         {
             RoadDirection = direction;
 
@@ -68,10 +81,10 @@ namespace Warlander.Deedplanner.Data
             }
             else
             {
-                Material matW = GameManager.Instance.Map[callingTile.X - 1, callingTile.Y]?.Surface.Ground.Data.Tex3d.Material;
-                Material matE = GameManager.Instance.Map[callingTile.X + 1, callingTile.Y]?.Surface.Ground.Data.Tex3d.Material;
-                Material matS = GameManager.Instance.Map[callingTile.X, callingTile.Y - 1]?.Surface.Ground.Data.Tex3d.Material;
-                Material matN = GameManager.Instance.Map[callingTile.X, callingTile.Y + 1]?.Surface.Ground.Data.Tex3d.Material;
+                Material matW = GameManager.Instance.Map[callingTile.X - 1, callingTile.Y]?.Ground.Data.Tex3d.Material;
+                Material matE = GameManager.Instance.Map[callingTile.X + 1, callingTile.Y]?.Ground.Data.Tex3d.Material;
+                Material matS = GameManager.Instance.Map[callingTile.X, callingTile.Y - 1]?.Ground.Data.Tex3d.Material;
+                Material matN = GameManager.Instance.Map[callingTile.X, callingTile.Y + 1]?.Ground.Data.Tex3d.Material;
 
                 if (direction == RoadDirection.NW || direction == RoadDirection.SW || !matW)
                 {
@@ -99,5 +112,9 @@ namespace Warlander.Deedplanner.Data
             meshRenderer.materials = materials;
         }
 
+        public override void Serialize(XmlDocument document, XmlElement localRoot)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
