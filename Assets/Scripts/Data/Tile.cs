@@ -14,6 +14,7 @@ namespace Warlander.Deedplanner.Data
 
         private int surfaceHeight = 0;
         private int caveHeight = 0;
+        private int caveSize = 0;
 
         public Map Map { get; private set; }
         public int X { get; private set; }
@@ -53,6 +54,25 @@ namespace Warlander.Deedplanner.Data
             }
             set {
                 caveHeight = value;
+                RefreshCaveMesh();
+                UpdateCaveEntitiesPositions();
+                Map.getRelativeTile(this, -1, 0)?.RefreshCaveMesh();
+                Map.getRelativeTile(this, -1, 0)?.UpdateCaveEntitiesPositions();
+                Map.getRelativeTile(this, 0, -1)?.RefreshCaveMesh();
+                Map.getRelativeTile(this, 0, -1)?.UpdateCaveEntitiesPositions();
+                Map.getRelativeTile(this, -1, -1)?.RefreshCaveMesh();
+                Map.getRelativeTile(this, -1, -1)?.UpdateCaveEntitiesPositions();
+
+                Map.RecalculateHeights();
+            }
+        }
+
+        public int CaveSize {
+            get {
+                return caveSize;
+            }
+            set {
+                caveSize = value;
                 RefreshCaveMesh();
                 UpdateCaveEntitiesPositions();
                 Map.getRelativeTile(this, -1, 0)?.RefreshCaveMesh();
@@ -206,7 +226,74 @@ namespace Warlander.Deedplanner.Data
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
         {
-            
+            XmlElement tile = document.CreateElement("tile");
+            tile.SetAttribute("x", X.ToString());
+            tile.SetAttribute("y", Y.ToString());
+            tile.SetAttribute("height", SurfaceHeight.ToString());
+            tile.SetAttribute("caveHeight", CaveHeight.ToString());
+            tile.SetAttribute("caveSize", CaveSize.ToString());
+            localRoot.AppendChild(tile);
+
+            Ground.Serialize(document, tile);
+            Cave.Serialize(document, tile);
+
+            Dictionary<int, XmlElement> levels = new Dictionary<int, XmlElement>();
+            foreach (KeyValuePair<EntityData, TileEntity> e in Entities)
+            {
+                EntityData key = e.Key;
+                TileEntity entity = e.Value;
+                int floor = key.Floor;
+
+                XmlElement level = null;
+                levels.TryGetValue(floor, out level);
+                if (level == null)
+                {
+                    level = document.CreateElement("level");
+                    level.SetAttribute("value", key.Floor.ToString());
+                    levels[key.Floor] = level;
+                    tile.AppendChild(level);
+                }
+
+                switch (key.Type)
+                {
+                    case EntityType.FLOORROOF:
+                        entity.Serialize(document, level);
+                        break;
+                    case EntityType.HWALL:
+                    case EntityType.HFENCE:
+                        XmlElement hWall = document.CreateElement("hWall");
+                        entity.Serialize(document, hWall);
+                        level.AppendChild(hWall);
+                        break;
+                    case EntityType.VWALL:
+                    case EntityType.VFENCE:
+                        XmlElement vWall = document.CreateElement("vWall");
+                        entity.Serialize(document, vWall);
+                        level.AppendChild(vWall);
+                        break;
+                    case EntityType.HBORDER:
+                        XmlElement hDeco = document.CreateElement("hBorder");
+                        entity.Serialize(document, hDeco);
+                        level.AppendChild(hDeco);
+                        break;
+                    case EntityType.VBORDER:
+                        XmlElement vDeco = document.CreateElement("vBorder");
+                        entity.Serialize(document, vDeco);
+                        level.AppendChild(vDeco);
+                        break;
+                    case EntityType.OBJECT:
+                        ObjectEntityData objectData = (ObjectEntityData)key;
+                        XmlElement objectElement = document.CreateElement("object");
+                        objectElement.SetAttribute("x", objectData.X.ToString());
+                        objectElement.SetAttribute("y", objectData.Y.ToString());
+                        entity.Serialize(document, objectElement);
+                        level.AppendChild(objectElement);
+                        break;
+                    case EntityType.LABEL:
+                        entity.Serialize(document, level);
+                        break;
+                }
+            }
         }
 
         private void RefreshSurfaceMesh()
