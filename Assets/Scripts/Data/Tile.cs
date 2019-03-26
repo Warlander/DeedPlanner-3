@@ -165,6 +165,45 @@ namespace Warlander.Deedplanner.Data
             return floor;
         }
 
+        public Wall SetHorizontalWall(WallData data, bool reversed, int level)
+        {
+            EntityType entityType = data.HouseWall ? EntityType.HWALL : EntityType.HFENCE;
+            EntityData entityData = new EntityData(level, entityType);
+            TileEntity tileEntity;
+            Entities.TryGetValue(entityData, out tileEntity);
+            Wall currentWall = tileEntity as Wall;
+            if (!currentWall && data)
+            {
+                return CreateNewHorizontalWall(entityData, data, reversed, level);
+            }
+            else if (!data && currentWall)
+            {
+                Destroy(currentWall.gameObject);
+                return null;
+            }
+            else if (currentWall && (currentWall.Data != data || currentWall.Reversed != reversed))
+            {
+                Destroy(currentWall.gameObject);
+                return CreateNewHorizontalWall(entityData, data, reversed, level);
+            }
+            // TODO: add fences in walls
+
+            return null;
+        }
+
+        private Wall CreateNewHorizontalWall(EntityData entity, WallData data, bool reversed, int level)
+        {
+            GameObject wallObject = new GameObject("Horizontal Wall " + level, typeof(Wall));
+            Wall wall = wallObject.GetComponent<Wall>();
+            wall.Initialize(this, data, reversed, (level == 0 || level == -1));
+
+            Entities[entity] = wall;
+            Map.AddEntityToMap(wallObject, level);
+            UpdateSurfaceEntitiesPositions();
+
+            return wall;
+        }
+
         public void Serialize(XmlDocument document, XmlElement localRoot)
         {
             
