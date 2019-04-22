@@ -44,7 +44,7 @@ namespace Warlander.Deedplanner.Gui
         private Toggle[] negativeFloorToggles = new Toggle[6];
 
         [SerializeField]
-        private TabObject[] tabs = new TabObject[11];
+        private TabObject[] tabs = new TabObject[12];
         [SerializeField]
         private Toggle groundToggle = null;
         [SerializeField]
