@@ -150,7 +150,9 @@ namespace Warlander.Deedplanner.Logic
         void OnPreCull()
         {
             PrepareProjector();
+            Vector3 cameraPosition = attachedCamera.transform.position;
             attachedWater.gameObject.SetActive(true);
+            attachedWater.transform.position = new Vector3(cameraPosition.x, attachedWater.transform.position.y, cameraPosition.z);
             attachedWater.Update();
             Map map = GameManager.Instance.Map;
             map.RenderedFloor = Floor;
