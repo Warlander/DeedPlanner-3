@@ -120,6 +120,12 @@ namespace Warlander.Deedplanner.Gui
             Instance = this;
         }
 
+        private void Start()
+        {
+            // state validation at launch - it makes development and debugging easier as you don't need to make sure tab is set to the proper one when commiting
+            CurrentTab = currentTab;
+        }
+
         public void OnLayoutChange(LayoutReference layoutReference)
         {
             Layout layout = layoutReference.Layout;
