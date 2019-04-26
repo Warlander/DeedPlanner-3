@@ -30,32 +30,32 @@ namespace Warlander.Deedplanner.Gui
 
         public void OnResizeMap()
         {
-
+            GuiManager.Instance.ResizeMapWindow.gameObject.SetActive(true);
         }
 
         public void OnClearMap()
         {
-
+            GuiManager.Instance.ClearMapWindow.gameObject.SetActive(true);
         }
 
         public void OnSaveMap()
         {
-
+            GuiManager.Instance.SaveMapWindow.gameObject.SetActive(true);
         }
 
         public void OnLoadMap()
         {
-
+            GuiManager.Instance.LoadMapWindow.gameObject.SetActive(true);
         }
 
         public void OnGraphicsSettings()
         {
-
+            GuiManager.Instance.GraphicsSettingsWindow.gameObject.SetActive(true);
         }
 
         public void OnInputSettings()
         {
-
+            GuiManager.Instance.InputSettingsWindow.gameObject.SetActive(true);
         }
 
         public void OnToggleFullscreen()
@@ -65,6 +65,7 @@ namespace Warlander.Deedplanner.Gui
 
         public void OnQuit()
         {
+            // TODO: add auto-saving before quit logic
             Application.Quit();
         }
 
