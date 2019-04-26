@@ -26,36 +26,33 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField]
         private UnityTree objectsTree = null;
 
-        public UnityTree GroundsTree {
-            get {
-                return groundsTree;
-            }
-        }
-        public UnityTree CavesTree {
-            get {
-                return cavesTree;
-            }
-        }
-        public UnityTree FloorsTree {
-            get {
-                return floorsTree;
-            }
-        }
-        public UnityTree WallsTree {
-            get {
-                return wallsTree;
-            }
-        }
-        public UnityList RoofsList {
-            get {
-                return roofsList;
-            }
-        }
-        public UnityTree ObjectsTree {
-            get {
-                return objectsTree;
-            }
-        }
+        [SerializeField]
+        private Window resizeMapWindow = null;
+        [SerializeField]
+        private Window clearMapWindow = null;
+        [SerializeField]
+        private Window saveMapWindow = null;
+        [SerializeField]
+        private Window loadMapWindow = null;
+        [SerializeField]
+        private Window graphicsSettingsWindow = null;
+        [SerializeField]
+        private Window inputSettingsWindow = null;
+
+        public UnityTree GroundsTree { get => groundsTree; }
+        public UnityTree CavesTree { get => cavesTree; }
+        public UnityTree FloorsTree { get => floorsTree; }
+        public UnityTree WallsTree { get => wallsTree; }
+        public UnityList RoofsList { get => roofsList; }
+        public UnityTree ObjectsTree { get => objectsTree; }
+
+        public Window ResizeMapWindow { get => resizeMapWindow; }
+        public Window ClearMapWindow { get => clearMapWindow; }
+        public Window SaveMapWindow { get => saveMapWindow; }
+        public Window LoadMapWindow { get => loadMapWindow; }
+        public Window GraphicsSettingsWindow { get => graphicsSettingsWindow; }
+        public Window InputSettingsWindow { get => inputSettingsWindow; }
+        
 
         private void Awake()
         {
