@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
-namespace Warlander.Deedplanner
+namespace Warlander.Deedplanner.Gui
 {
     public static class Properties
     {
+
+        private static readonly bool Mobile = Application.isMobilePlatform;
+        private static readonly bool Web = Application.platform == RuntimePlatform.WebGLPlayer;
 
         public static int FieldOfView = 60;
 
@@ -21,6 +25,31 @@ namespace Warlander.Deedplanner
 
         public static float IsoMouseSensitivity = 0.2f;
         public static float IsoMovementSpeed = 16f;
+
+        public static WaterQuality WaterQuality = WaterDefaultQuality;
+
+        private static WaterQuality WaterDefaultQuality {
+            get {
+                if (Mobile || Web)
+                {
+                    return WaterQuality.SIMPLE;
+                }
+                else
+                {
+                    return WaterQuality.HIGH;
+                }
+            }
+        }
+
+        public static void SaveProperties()
+        {
+
+        }
+
+        public static void LoadProperties()
+        {
+
+        }
 
     }
 }
