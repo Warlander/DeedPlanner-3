@@ -12,11 +12,11 @@ namespace Warlander.Deedplanner.Gui
     {
 
         [SerializeField]
-        private Toggle simpleWaterToggle;
+        private Toggle simpleWaterToggle = null;
         [SerializeField]
-        private Toggle highWaterToggle;
+        private Toggle highWaterToggle = null;
         [SerializeField]
-        private Toggle ultraWaterToggle;
+        private Toggle ultraWaterToggle = null;
 
         private void OnEnable()
         {

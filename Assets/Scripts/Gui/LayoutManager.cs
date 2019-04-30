@@ -50,6 +50,11 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField]
         private Toggle cavesToggle = null;
 
+        [SerializeField]
+        private GameObject highQualityWaterObject = null;
+        [SerializeField]
+        private GameObject simpleQualityWaterObject = null;
+
         public MultiCamera CurrentCamera {
             get {
                 return cameras[ActiveWindow];
@@ -124,6 +129,16 @@ namespace Warlander.Deedplanner.Gui
         {
             // state validation at launch - it makes development and debugging easier as you don't need to make sure tab is set to the proper one when commiting
             CurrentTab = currentTab;
+
+            Properties.Saved += ValidateState;
+            ValidateState();
+        }
+
+        private void ValidateState()
+        {
+            WaterQuality waterQuality = Properties.WaterQuality;
+            highQualityWaterObject.SetActive(waterQuality == WaterQuality.HIGH);
+            simpleQualityWaterObject.SetActive(waterQuality == WaterQuality.SIMPLE);
         }
 
         public void OnLayoutChange(LayoutReference layoutReference)
