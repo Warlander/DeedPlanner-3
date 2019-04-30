@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Gui
 {
     public static class Properties
     {
+
+        public static event GenericEventArgs Saved;
 
         private static readonly bool Mobile = Application.isMobilePlatform;
         private static readonly bool Web = Application.platform == RuntimePlatform.WebGLPlayer;
@@ -43,7 +46,10 @@ namespace Warlander.Deedplanner.Gui
 
         public static void SaveProperties()
         {
-
+            if (Saved != null)
+            {
+                Saved();
+            }
         }
 
         public static void LoadProperties()
