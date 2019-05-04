@@ -71,6 +71,12 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
+        public bool RenderEntireLayer {
+            get {
+                return CameraMode == CameraMode.Perspective;
+            }
+        }
+
         void Start()
         {
             if (lineDrawingMaterial == null)
@@ -169,18 +175,21 @@ namespace Warlander.Deedplanner.Logic
         {
             PrepareProjector();
             Vector3 cameraPosition = attachedCamera.transform.position;
+            bool renderWater = RenderEntireLayer ? true : (Floor == 0 || Floor == -1);
             if (Properties.WaterQuality == Gui.WaterQuality.ULTRA)
             {
-                ultraQualityWater.gameObject.SetActive(true);
+                ultraQualityWater.gameObject.SetActive(renderWater);
                 ultraQualityWater.transform.position = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
                 ultraQualityWater.Update();
             }
             else if (Properties.WaterQuality == Gui.WaterQuality.HIGH)
             {
+                highQualityWater.gameObject.SetActive(renderWater);
                 highQualityWater.transform.position = new Vector3(cameraPosition.x, highQualityWater.transform.position.y, cameraPosition.z);
             }
             Map map = GameManager.Instance.Map;
             map.RenderedFloor = Floor;
+            map.RenderEntireLayer = RenderEntireLayer;
             CurrentRaycast = default;
 
             if (mouseOver)
