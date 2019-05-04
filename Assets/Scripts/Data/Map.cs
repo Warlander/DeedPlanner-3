@@ -21,6 +21,7 @@ namespace Warlander.Deedplanner.Data
         private Transform caveGridRoot;
 
         private int renderedFloor;
+        private bool renderEntireLayer = true;
 
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -44,7 +45,7 @@ namespace Warlander.Deedplanner.Data
 
         public int RenderedFloor {
             get {
-                return RenderedFloor;
+                return renderedFloor;
             }
             set {
                 renderedFloor = value;
@@ -54,34 +55,52 @@ namespace Warlander.Deedplanner.Data
 
                 if (underground)
                 {
-                    foreach (Transform root in surfaceLevelRoots)
+                    for (int i = 0; i < surfaceLevelRoots.Length; i++)
                     {
+                        Transform root = surfaceLevelRoots[i];
                         root.gameObject.SetActive(false);
                     }
                     surfaceGridRoot.gameObject.SetActive(false);
-                    foreach (Transform root in caveLevelRoots)
+                    for (int i = 0; i < caveLevelRoots.Length; i++)
                     {
-                        root.gameObject.SetActive(true);
+                        Transform root = caveLevelRoots[i];
+                        bool renderFloor = RenderEntireLayer ? true : absoluteFloor == i;
+                        root.gameObject.SetActive(renderFloor);
                     }
+                    surfaceGridRoot.gameObject.SetActive(false);
                     caveGridRoot.gameObject.SetActive(true);
 
                     caveGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
                 }
                 else
                 {
-                    foreach (Transform root in surfaceLevelRoots)
+                    for (int i = 0; i < surfaceLevelRoots.Length; i++)
                     {
-                        root.gameObject.SetActive(true);
+                        Transform root = surfaceLevelRoots[i];
+                        bool renderFloor = RenderEntireLayer ? true : absoluteFloor == i;
+                        root.gameObject.SetActive(renderFloor);
                     }
-                    surfaceGridRoot.gameObject.SetActive(true);
-                    foreach (Transform root in caveLevelRoots)
+                    surfaceGridRoot.gameObject.SetActive(false);
+                    for (int i = 0; i < caveLevelRoots.Length; i++)
                     {
+                        Transform root = caveLevelRoots[i];
                         root.gameObject.SetActive(false);
                     }
+                    surfaceGridRoot.gameObject.SetActive(true);
                     caveGridRoot.gameObject.SetActive(false);
 
                     surfaceGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
                 }
+            }
+        }
+
+        public bool RenderEntireLayer {
+            get {
+                return renderEntireLayer;
+            }
+            set {
+                renderEntireLayer = value;
+                RenderedFloor = renderedFloor;
             }
         }
 
