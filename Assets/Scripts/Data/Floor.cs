@@ -33,6 +33,7 @@ namespace Warlander.Deedplanner.Data
             gameObject.layer = LayerMasks.FloorRoofLayer;
 
             Data = data;
+            Orientation = orientation;
 
             Model = Data.Model.CreateOrGetModel();
             Model.transform.SetParent(transform);
