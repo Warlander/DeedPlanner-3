@@ -136,6 +136,30 @@ namespace Warlander.Deedplanner.Data
             return mesh;
         }
 
+        public int FindFloorOfEntity(TileEntity entity)
+        {
+            if (entity == Ground)
+            {
+                return 0;
+            }
+            else if (entity == Cave)
+            {
+                return -1;
+            }
+            
+            foreach (var pair in Entities)
+            {
+                EntityData key = pair.Key;
+                TileEntity checkedEntity = pair.Value;
+                if (entity == checkedEntity)
+                {
+                    return key.Floor;
+                }
+            }
+
+            throw new ArgumentException("Entity is not part of the tile");
+        }
+
         public int GetHeightForFloor(int floor)
         {
             if (floor < 0)
