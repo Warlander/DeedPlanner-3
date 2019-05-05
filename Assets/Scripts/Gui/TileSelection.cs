@@ -64,7 +64,7 @@ namespace Warlander.Deedplanner.Gui
                 }
                 return new TileSelectionHit(TileSelectionTarget.Corner, tileX, tileY);
             }
-            if (border && (tileSelectionMode == TileSelectionMode.TilesAndBorders || tileSelectionMode == TileSelectionMode.Everything))
+            if (border && (tileSelectionMode == TileSelectionMode.Borders || tileSelectionMode == TileSelectionMode.TilesAndBorders || tileSelectionMode == TileSelectionMode.Everything))
             {
                 if (rightBorder)
                 {
