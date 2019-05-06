@@ -136,6 +136,30 @@ namespace Warlander.Deedplanner.Data
             return mesh;
         }
 
+        public EntityType FindTypeOfEntity(TileEntity entity)
+        {
+            if (entity == Ground)
+            {
+                return EntityType.GROUND;
+            }
+            else if (entity == Cave)
+            {
+                return EntityType.CAVE;
+            }
+
+            foreach (var pair in Entities)
+            {
+                EntityData key = pair.Key;
+                TileEntity checkedEntity = pair.Value;
+                if (entity == checkedEntity)
+                {
+                    return key.Type;
+                }
+            }
+
+            throw new ArgumentException("Entity is not part of the tile");
+        }
+
         public int FindFloorOfEntity(TileEntity entity)
         {
             if (entity == Ground)
@@ -209,6 +233,46 @@ namespace Warlander.Deedplanner.Data
             return floor;
         }
 
+        public Wall SetVerticalWall(WallData data, bool reversed, int level)
+        {
+            EntityType entityType = data.HouseWall ? EntityType.VWALL : EntityType.VFENCE;
+            EntityData entityData = new EntityData(level, entityType);
+            TileEntity tileEntity;
+            Entities.TryGetValue(entityData, out tileEntity);
+            Wall currentWall = tileEntity as Wall;
+            if (!currentWall && data)
+            {
+                return CreateNewVerticalWall(entityData, data, reversed, level);
+            }
+            else if (!data && currentWall)
+            {
+                Destroy(currentWall.gameObject);
+                return null;
+            }
+            else if (currentWall && (currentWall.Data != data || currentWall.Reversed != reversed))
+            {
+                Destroy(currentWall.gameObject);
+                return CreateNewVerticalWall(entityData, data, reversed, level);
+            }
+            // TODO: add fences in walls
+
+            return null;
+        }
+
+        private Wall CreateNewVerticalWall(EntityData entity, WallData data, bool reversed, int level)
+        {
+            GameObject wallObject = new GameObject("Vertical Wall " + level, typeof(Wall));
+            Wall wall = wallObject.GetComponent<Wall>();
+            wall.Initialize(this, data, reversed, (level == 0 || level == -1));
+            wallObject.transform.rotation = Quaternion.Euler(0, 180, 0);
+
+            Entities[entity] = wall;
+            Map.AddEntityToMap(wallObject, level);
+            UpdateSurfaceEntitiesPositions();
+
+            return wall;
+        }
+
         public Wall SetHorizontalWall(WallData data, bool reversed, int level)
         {
             EntityType entityType = data.HouseWall ? EntityType.HWALL : EntityType.HFENCE;
@@ -240,6 +304,7 @@ namespace Warlander.Deedplanner.Data
             GameObject wallObject = new GameObject("Horizontal Wall " + level, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
             wall.Initialize(this, data, reversed, (level == 0 || level == -1));
+            wallObject.transform.rotation = Quaternion.Euler(0, 90, 0);
 
             Entities[entity] = wall;
             Map.AddEntityToMap(wallObject, level);

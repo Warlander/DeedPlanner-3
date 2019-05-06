@@ -8,6 +8,6 @@ namespace Warlander.Deedplanner.Data
 {
     public enum EntityType
     {
-        FLOORROOF, HWALL, HFENCE, HBORDER, VWALL, VFENCE, VBORDER, OBJECT, CAVE, LABEL
+        GROUND, FLOORROOF, HWALL, HFENCE, HBORDER, VWALL, VFENCE, VBORDER, OBJECT, CAVE, LABEL
     }
 }
