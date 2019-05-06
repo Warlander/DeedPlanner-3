@@ -20,6 +20,11 @@ namespace Warlander.Deedplanner.Data
                 return Tile.FindFloorOfEntity(this);
             }
         }
+        public EntityType Type {
+            get {
+                return Tile.FindTypeOfEntity(this);
+            }
+        }
 
         public abstract void Serialize(XmlDocument document, XmlElement localRoot);
 
