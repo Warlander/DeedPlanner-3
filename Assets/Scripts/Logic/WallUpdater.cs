@@ -48,6 +48,10 @@ namespace Warlander.Deedplanner.Logic
                 floor = LayoutManager.Instance.CurrentCamera.Floor;
                 TileSelectionHit tileSelectionHit = TileSelection.PositionToTileSelectionHit(raycast.point, TileSelectionMode.Borders);
                 TileSelectionTarget target = tileSelectionHit.Target;
+                if (target == TileSelectionTarget.Nothing)
+                {
+                    return;
+                }
                 x = tileSelectionHit.X;
                 y = tileSelectionHit.Y;
                 horizontal = (target == TileSelectionTarget.LeftBorder);
