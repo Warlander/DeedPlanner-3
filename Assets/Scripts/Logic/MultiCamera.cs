@@ -568,6 +568,10 @@ namespace Warlander.Deedplanner.Logic
                 Mesh mesh = collider.sharedMesh;
                 Vector3[] vertices = mesh.vertices;
                 Vector3[] normals = mesh.normals;
+                if (normals == null || normals.Length == 0)
+                {
+                    normals = new Vector3[vertices.Length];
+                }
                 int[] triangles = mesh.triangles;
                 GL.Begin(GL.TRIANGLES);
                 GL.Color(new Color(1, 1, 0, raytraceAlpha));

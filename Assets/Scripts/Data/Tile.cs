@@ -289,7 +289,7 @@ namespace Warlander.Deedplanner.Data
             GameObject wallObject = new GameObject("Vertical Wall " + entity.Floor, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
             wall.Initialize(this, data, reversed, (entity.Floor == 0 || entity.Floor == -1), slopeDifference);
-            wallObject.transform.rotation = Quaternion.Euler(0, 180, 0);
+            wallObject.transform.rotation = Quaternion.Euler(0, 90, 0);
 
             Entities[entity] = wall;
             Map.AddEntityToMap(wallObject, entity.Floor);
@@ -354,7 +354,7 @@ namespace Warlander.Deedplanner.Data
             GameObject wallObject = new GameObject("Horizontal Wall " + entity.Floor, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
             wall.Initialize(this, data, reversed, (entity.Floor == 0 || entity.Floor == -1), slopeDifference);
-            wallObject.transform.rotation = Quaternion.Euler(0, 90, 0);
+            wallObject.transform.rotation = Quaternion.Euler(0, 180, 0);
 
             Entities[entity] = wall;
             Map.AddEntityToMap(wallObject, entity.Floor);

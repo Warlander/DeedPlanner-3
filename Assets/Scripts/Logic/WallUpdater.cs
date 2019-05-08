@@ -54,7 +54,7 @@ namespace Warlander.Deedplanner.Logic
                 }
                 x = tileSelectionHit.X;
                 y = tileSelectionHit.Y;
-                horizontal = (target == TileSelectionTarget.LeftBorder);
+                horizontal = (target == TileSelectionTarget.BottomBorder);
             }
 
             if (Input.GetMouseButton(0))
