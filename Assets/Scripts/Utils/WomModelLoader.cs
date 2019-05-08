@@ -82,7 +82,7 @@ namespace Warlander.Deedplanner.Utils
             {
                 vertexList.Add(new Vector3(source.ReadSingle(), source.ReadSingle(), source.ReadSingle()));
                 normalList.Add(new Vector3(source.ReadSingle(), source.ReadSingle(), source.ReadSingle()));
-                uvList.Add(new Vector2(source.ReadSingle(), source.ReadSingle()));
+                uvList.Add(new Vector2(source.ReadSingle(), 1 - source.ReadSingle()));
 
                 if (hasVertexColor)
                 {
