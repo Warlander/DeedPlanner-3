@@ -235,26 +235,50 @@ namespace Warlander.Deedplanner.Data
 
         public Wall SetVerticalWall(WallData data, bool reversed, int level)
         {
-            EntityType entityType = data.HouseWall ? EntityType.VWALL : EntityType.VFENCE;
-            EntityData entityData = new EntityData(level, entityType);
-            TileEntity tileEntity;
-            Entities.TryGetValue(entityData, out tileEntity);
-            Wall currentWall = tileEntity as Wall;
-            if (!currentWall && data)
+            EntityData wallEntityData = new EntityData(level, EntityType.VWALL);
+            TileEntity wallEntity;
+            Entities.TryGetValue(wallEntityData, out wallEntity);
+            Wall currentWall = wallEntity as Wall;
+
+            EntityData fenceEntityData = new EntityData(level, EntityType.VFENCE);
+            TileEntity fenceEntity;
+            Entities.TryGetValue(fenceEntityData, out fenceEntity);
+            Wall currentFence = fenceEntity as Wall;
+
+            if (data)
             {
-                return CreateNewVerticalWall(entityData, data, reversed, level);
+                if (data.HouseWall && !currentWall)
+                {
+                    return CreateNewVerticalWall(wallEntityData, data, reversed, level);
+                }
+                else if (!data.HouseWall && !currentFence)
+                {
+                    return CreateNewVerticalWall(fenceEntityData, data, reversed, level);
+                }
+                else if (data.HouseWall && (currentWall.Data != data || currentWall.Reversed != reversed))
+                {
+                    Destroy(currentWall.gameObject);
+                    return CreateNewVerticalWall(wallEntityData, data, reversed, level);
+                }
+                else if (!data.HouseWall && (currentFence.Data != data || currentFence.Reversed != reversed))
+                {
+                    Destroy(currentFence.gameObject);
+                    return CreateNewVerticalWall(fenceEntityData, data, reversed, level);
+                }
             }
-            else if (!data && currentWall)
+            else if (!data)
             {
-                Destroy(currentWall.gameObject);
-                return null;
+                if (currentWall)
+                {
+                    Destroy(currentWall.gameObject);
+                    return null;
+                }
+                if (currentFence)
+                {
+                    Destroy(currentFence.gameObject);
+                    return null;
+                }
             }
-            else if (currentWall && (currentWall.Data != data || currentWall.Reversed != reversed))
-            {
-                Destroy(currentWall.gameObject);
-                return CreateNewVerticalWall(entityData, data, reversed, level);
-            }
-            // TODO: add fences in walls
 
             return null;
         }
@@ -275,26 +299,50 @@ namespace Warlander.Deedplanner.Data
 
         public Wall SetHorizontalWall(WallData data, bool reversed, int level)
         {
-            EntityType entityType = data.HouseWall ? EntityType.HWALL : EntityType.HFENCE;
-            EntityData entityData = new EntityData(level, entityType);
-            TileEntity tileEntity;
-            Entities.TryGetValue(entityData, out tileEntity);
-            Wall currentWall = tileEntity as Wall;
-            if (!currentWall && data)
+            EntityData wallEntityData = new EntityData(level, EntityType.HWALL);
+            TileEntity wallEntity;
+            Entities.TryGetValue(wallEntityData, out wallEntity);
+            Wall currentWall = wallEntity as Wall;
+
+            EntityData fenceEntityData = new EntityData(level, EntityType.HFENCE);
+            TileEntity fenceEntity;
+            Entities.TryGetValue(fenceEntityData, out fenceEntity);
+            Wall currentFence = fenceEntity as Wall;
+
+            if (data)
             {
-                return CreateNewHorizontalWall(entityData, data, reversed, level);
+                if (data.HouseWall && !currentWall)
+                {
+                    return CreateNewVerticalWall(wallEntityData, data, reversed, level);
+                }
+                else if (!data.HouseWall && !currentFence)
+                {
+                    return CreateNewVerticalWall(fenceEntityData, data, reversed, level);
+                }
+                else if (data.HouseWall && (currentWall.Data != data || currentWall.Reversed != reversed))
+                {
+                    Destroy(currentWall.gameObject);
+                    return CreateNewVerticalWall(wallEntityData, data, reversed, level);
+                }
+                else if (!data.HouseWall && (currentFence.Data != data || currentFence.Reversed != reversed))
+                {
+                    Destroy(currentFence.gameObject);
+                    return CreateNewVerticalWall(fenceEntityData, data, reversed, level);
+                }
             }
-            else if (!data && currentWall)
+            else if (!data)
             {
-                Destroy(currentWall.gameObject);
-                return null;
+                if (currentWall)
+                {
+                    Destroy(currentWall.gameObject);
+                    return null;
+                }
+                if (currentFence)
+                {
+                    Destroy(currentFence.gameObject);
+                    return null;
+                }
             }
-            else if (currentWall && (currentWall.Data != data || currentWall.Reversed != reversed))
-            {
-                Destroy(currentWall.gameObject);
-                return CreateNewHorizontalWall(entityData, data, reversed, level);
-            }
-            // TODO: add fences in walls
 
             return null;
         }
