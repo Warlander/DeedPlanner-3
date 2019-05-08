@@ -129,6 +129,7 @@ namespace Warlander.Deedplanner.Utils
             {
                 Mesh mesh = filter.mesh;
                 Mesh newMesh = new Mesh();
+                newMesh.name = mesh.name;
                 Vector3[] originalVertices = mesh.vertices;
                 Vector3[] newVertices = new Vector3[originalVertices.Length];
                 for (int i = 0; i < originalVertices.Length; i++)
@@ -138,11 +139,11 @@ namespace Warlander.Deedplanner.Utils
                 }
                 newMesh.vertices = newVertices;
                 newMesh.uv = mesh.uv;
-                newMesh.triangles = newMesh.triangles;
+                newMesh.triangles = mesh.triangles;
                 newMesh.normals = mesh.normals;
                 newMesh.tangents = mesh.tangents;
                 newMesh.RecalculateBounds();
-                filter.mesh = newMesh;
+                filter.sharedMesh = newMesh;
             }
 
             return clone;

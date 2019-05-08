@@ -26,7 +26,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        public void Initialize(Tile tile, WallData data, bool reversed, bool firstFloor)
+        public void Initialize(Tile tile, WallData data, bool reversed, bool firstFloor, int slopeDifference)
         {
             this.tile = tile;
 
@@ -36,11 +36,11 @@ namespace Warlander.Deedplanner.Data
 
             if (firstFloor)
             {
-                Model = Data.BottomModel.CreateOrGetModel();
+                Model = Data.BottomModel.CreateOrGetModel(slopeDifference);
             }
             else
             {
-                Model = Data.NormalModel.CreateOrGetModel();
+                Model = Data.NormalModel.CreateOrGetModel(slopeDifference);
             }
             Model.transform.SetParent(transform);
 
