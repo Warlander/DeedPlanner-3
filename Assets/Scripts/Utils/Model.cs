@@ -27,6 +27,19 @@ namespace Warlander.Deedplanner.Utils
         public Vector3 Scale { get; private set; }
         public int Layer { get; private set; }
 
+        public Bounds Bounds {
+            get {
+                Bounds bounds = new Bounds();
+                MeshFilter[] filters = originalModel.GetComponentsInChildren<MeshFilter>();
+                foreach (MeshFilter filter in filters)
+                {
+                    Mesh mesh = filter.mesh;
+                    bounds.Encapsulate(mesh.bounds);
+                }
+                return bounds;
+            }
+        }
+
         public Model(XmlElement element, int layer = int.MaxValue)
         {
             skewedModels = new Dictionary<int, GameObject>();
