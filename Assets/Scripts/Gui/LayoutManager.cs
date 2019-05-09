@@ -130,13 +130,13 @@ namespace Warlander.Deedplanner.Gui
             // state validation at launch - it makes development and debugging easier as you don't need to make sure tab is set to the proper one when commiting
             CurrentTab = currentTab;
 
-            Properties.Saved += ValidateState;
+            Properties.Instance.Saved += ValidateState;
             ValidateState();
         }
 
         private void ValidateState()
         {
-            WaterQuality waterQuality = Properties.WaterQuality;
+            WaterQuality waterQuality = Properties.Instance.WaterQuality;
             highQualityWaterObject.SetActive(waterQuality == WaterQuality.HIGH);
             simpleQualityWaterObject.SetActive(waterQuality == WaterQuality.SIMPLE);
         }

@@ -1,37 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Gui
 {
-    public static class Properties
+    public class Properties
     {
-
-        public static event GenericEventArgs Saved;
 
         private static readonly bool Mobile = Application.isMobilePlatform;
         private static readonly bool Web = Application.platform == RuntimePlatform.WebGLPlayer;
 
-        public static int FieldOfView = 60;
+        public static readonly string HomeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        public static readonly string ProgramDirectory = Path.Combine(HomeDirectory, ".DeedPlanner3");
+        public static readonly string PropertiesFile = Path.Combine(ProgramDirectory, "Properties.xml");
 
-        public static float FppMouseSensitivity = 0.5f;
-        public static float FppMovementSpeed = 16f;
-        public static float FppShiftModifier = 5f;
-        public static float FppControlModifier = 0.2f;
+        public static Properties Instance { get; private set; }
 
-        public static float TopMouseSensitivity = 0.2f;
-        public static float TopMovementSpeed = 16f;
+        static Properties()
+        {
+            Instance = LoadProperties();
+        }
 
-        public static float IsoMouseSensitivity = 0.2f;
-        public static float IsoMovementSpeed = 16f;
+        private static Properties LoadProperties()
+        {
+            if (!File.Exists(PropertiesFile))
+            {
+                return new Properties();
+            }
 
-        public static WaterQuality WaterQuality = WaterDefaultQuality;
+            FileStream input = new FileStream(PropertiesFile, FileMode.Open, FileAccess.Read);
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Properties));
+            Properties properties = (Properties) xmlSerializer.Deserialize(input);
+            input.Close();
 
-        private static WaterQuality WaterDefaultQuality {
+            return properties;
+        }
+
+        public event GenericEventArgs Saved;
+
+        public int FieldOfView = 60;
+
+        public float FppMouseSensitivity = 0.5f;
+        public float FppMovementSpeed = 16f;
+        public float FppShiftModifier = 5f;
+        public float FppControlModifier = 0.2f;
+
+        public float TopMouseSensitivity = 0.2f;
+        public float TopMovementSpeed = 16f;
+
+        public float IsoMouseSensitivity = 0.2f;
+        public float IsoMovementSpeed = 16f;
+
+        public WaterQuality WaterQuality;
+
+        private WaterQuality WaterDefaultQuality {
             get {
                 if (Mobile || Web)
                 {
@@ -44,17 +73,25 @@ namespace Warlander.Deedplanner.Gui
             }
         }
 
-        public static void SaveProperties()
+        private Properties()
         {
+            WaterQuality = WaterDefaultQuality;
+        }
+
+        public void SaveProperties()
+        {
+            DirectoryInfo directory = Directory.CreateDirectory(ProgramDirectory);
+            directory.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
+
+            FileStream output = new FileStream(PropertiesFile, FileMode.Create, FileAccess.Write);
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Properties));
+            xmlSerializer.Serialize(output, this);
+            output.Close();
+
             if (Saved != null)
             {
                 Saved();
             }
-        }
-
-        public static void LoadProperties()
-        {
-
         }
 
     }

@@ -96,17 +96,17 @@ namespace Warlander.Deedplanner.Logic
                 {
                     if (data.button == PointerEventData.InputButton.Middle)
                     {
-                        fppRotation += new Vector3(-data.delta.y * Properties.FppMouseSensitivity, data.delta.x * Properties.FppMouseSensitivity, 0);
+                        fppRotation += new Vector3(-data.delta.y * Properties.Instance.FppMouseSensitivity, data.delta.x * Properties.Instance.FppMouseSensitivity, 0);
                         fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
                     }
                 }
                 else if (CameraMode == CameraMode.Top && Input.GetMouseButton(2))
                 {
-                    topPosition += new Vector2(-data.delta.x * Properties.TopMouseSensitivity, -data.delta.y * Properties.TopMouseSensitivity);
+                    topPosition += new Vector2(-data.delta.x * Properties.Instance.TopMouseSensitivity, -data.delta.y * Properties.Instance.TopMouseSensitivity);
                 }
                 else if (CameraMode == CameraMode.Isometric && Input.GetMouseButton(2))
                 {
-                    isoPosition += new Vector2(-data.delta.x * Properties.IsoMouseSensitivity, -data.delta.y * Properties.IsoMouseSensitivity);
+                    isoPosition += new Vector2(-data.delta.x * Properties.Instance.IsoMouseSensitivity, -data.delta.y * Properties.Instance.IsoMouseSensitivity);
                 }
             });
 
@@ -138,13 +138,13 @@ namespace Warlander.Deedplanner.Logic
 
             CameraMode = cameraMode;
 
-            Properties.Saved += ValidateState;
+            Properties.Instance.Saved += ValidateState;
             ValidateState();
         }
 
         private void ValidateState()
         {
-            Gui.WaterQuality waterQuality = Properties.WaterQuality;
+            Gui.WaterQuality waterQuality = Properties.Instance.WaterQuality;
             if (waterQuality != Gui.WaterQuality.ULTRA)
             {
                 ultraQualityWater.gameObject.SetActive(false);
@@ -176,13 +176,13 @@ namespace Warlander.Deedplanner.Logic
             PrepareProjector();
             Vector3 cameraPosition = attachedCamera.transform.position;
             bool renderWater = RenderEntireLayer ? true : (Floor == 0 || Floor == -1);
-            if (Properties.WaterQuality == Gui.WaterQuality.ULTRA)
+            if (Properties.Instance.WaterQuality == Gui.WaterQuality.ULTRA)
             {
                 ultraQualityWater.gameObject.SetActive(renderWater);
                 ultraQualityWater.transform.position = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
                 ultraQualityWater.Update();
             }
-            else if (Properties.WaterQuality == Gui.WaterQuality.HIGH)
+            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.HIGH)
             {
                 highQualityWater.gameObject.SetActive(renderWater);
                 highQualityWater.transform.position = new Vector3(cameraPosition.x, highQualityWater.transform.position.y, cameraPosition.z);
@@ -275,14 +275,14 @@ namespace Warlander.Deedplanner.Logic
             if (activeWindow == screenId)
             {
                 Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                movement *= Properties.FppMovementSpeed * Time.deltaTime;
+                movement *= Properties.Instance.FppMovementSpeed * Time.deltaTime;
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    movement *= Properties.FppShiftModifier;
+                    movement *= Properties.Instance.FppShiftModifier;
                 }
                 else if (Input.GetKey(KeyCode.LeftControl))
                 {
-                    movement *= Properties.FppControlModifier;
+                    movement *= Properties.Instance.FppControlModifier;
                 }
                 attachedCamera.transform.localPosition = fppPosition;
                 attachedCamera.transform.Translate(movement, Space.Self);
@@ -353,7 +353,7 @@ namespace Warlander.Deedplanner.Logic
                 }
 
                 Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-                movement *= Properties.TopMovementSpeed * Time.deltaTime;
+                movement *= Properties.Instance.TopMovementSpeed * Time.deltaTime;
                 topPosition += movement;
             }
 
@@ -407,7 +407,7 @@ namespace Warlander.Deedplanner.Logic
                 }
 
                 Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-                movement *= Properties.IsoMovementSpeed * Time.deltaTime;
+                movement *= Properties.Instance.IsoMovementSpeed * Time.deltaTime;
                 isoPosition += movement;
             }
 
@@ -637,7 +637,7 @@ namespace Warlander.Deedplanner.Logic
         private void OnPostRender()
         {
             attachedProjector.gameObject.SetActive(false);
-            if (Properties.WaterQuality == Gui.WaterQuality.ULTRA)
+            if (Properties.Instance.WaterQuality == Gui.WaterQuality.ULTRA)
             {
                 ultraQualityWater.gameObject.SetActive(false);
             }
