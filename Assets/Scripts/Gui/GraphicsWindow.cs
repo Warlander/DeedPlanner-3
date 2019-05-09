@@ -33,7 +33,7 @@ namespace Warlander.Deedplanner.Gui
 
         private void ApplyProperties()
         {
-            WaterQuality waterQuality = Properties.WaterQuality;
+            WaterQuality waterQuality = Properties.Instance.WaterQuality;
             switch (waterQuality)
             {
                 case WaterQuality.SIMPLE:
@@ -58,18 +58,18 @@ namespace Warlander.Deedplanner.Gui
         {
             if (simpleWaterToggle.isOn)
             {
-                Properties.WaterQuality = WaterQuality.SIMPLE;
+                Properties.Instance.WaterQuality = WaterQuality.SIMPLE;
             }
             else if (highWaterToggle.isOn)
             {
-                Properties.WaterQuality = WaterQuality.HIGH;
+                Properties.Instance.WaterQuality = WaterQuality.HIGH;
             }
             else if (ultraWaterToggle.isOn)
             {
-                Properties.WaterQuality = WaterQuality.ULTRA;
+                Properties.Instance.WaterQuality = WaterQuality.ULTRA;
             }
 
-            Properties.SaveProperties();
+            Properties.Instance.SaveProperties();
         }
 
     }
