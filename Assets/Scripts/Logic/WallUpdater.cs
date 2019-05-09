@@ -38,6 +38,10 @@ namespace Warlander.Deedplanner.Logic
             if (tileEntity)
             {
                 floor = tileEntity.Floor;
+                if (LayoutManager.Instance.CurrentCamera.Floor == floor + 1)
+                {
+                    floor++;
+                }
                 x = tileEntity.Tile.X;
                 y = tileEntity.Tile.Y;
                 EntityType type = tileEntity.Type;
@@ -71,6 +75,10 @@ namespace Warlander.Deedplanner.Logic
             }
             else if (Input.GetMouseButton(1))
             {
+                if (floor != LayoutManager.Instance.CurrentCamera.Floor)
+                {
+                    return;
+                }
                 if (horizontal)
                 {
                     GameManager.Instance.Map[x, y].SetHorizontalWall(null, false, floor);
