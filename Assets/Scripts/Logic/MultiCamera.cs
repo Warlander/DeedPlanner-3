@@ -73,7 +73,7 @@ namespace Warlander.Deedplanner.Logic
 
         public bool RenderEntireLayer {
             get {
-                return CameraMode == CameraMode.Perspective;
+                return CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Isometric;
             }
         }
 
@@ -179,13 +179,31 @@ namespace Warlander.Deedplanner.Logic
             if (Properties.Instance.WaterQuality == Gui.WaterQuality.ULTRA)
             {
                 ultraQualityWater.gameObject.SetActive(renderWater);
-                ultraQualityWater.transform.position = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
+                if (cameraMode != CameraMode.Isometric)
+                {
+                    ultraQualityWater.transform.position = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
+                }
+                else
+                {
+                    ultraQualityWater.transform.position = new Vector3(isoPosition.x, ultraQualityWater.transform.position.y, isoPosition.y);
+                }
                 ultraQualityWater.Update();
             }
             else if (Properties.Instance.WaterQuality == Gui.WaterQuality.HIGH)
             {
                 highQualityWater.gameObject.SetActive(renderWater);
-                highQualityWater.transform.position = new Vector3(cameraPosition.x, highQualityWater.transform.position.y, cameraPosition.z);
+                if (cameraMode != CameraMode.Isometric)
+                {
+                    highQualityWater.transform.position = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
+                }
+                else
+                {
+                    highQualityWater.transform.position = new Vector3(isoPosition.x, ultraQualityWater.transform.position.y, isoPosition.y);
+                }
+            }
+            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.SIMPLE)
+            {
+                simpleQualityWater.gameObject.SetActive(renderWater);
             }
             Map map = GameManager.Instance.Map;
             map.RenderedFloor = Floor;
