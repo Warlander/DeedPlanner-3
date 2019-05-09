@@ -207,12 +207,12 @@ namespace Warlander.Deedplanner.Data
             }
             else if (!data && currentFloor)
             {
-                Destroy(currentFloor.gameObject);
+                DestroyEntity(entityData);
                 return null;
             }
             else if (currentFloor && (currentFloor.Data != data || currentFloor.Orientation != orientation))
             {
-                Destroy(currentFloor.gameObject);
+                DestroyEntity(entityData);
                 return CreateNewFloor(entityData, data, orientation);
             }
             // TODO: add behaviour if roof is there
@@ -257,12 +257,12 @@ namespace Warlander.Deedplanner.Data
                 }
                 else if (data.HouseWall && (currentWall.Data != data || currentWall.Reversed != reversed))
                 {
-                    Destroy(currentWall.gameObject);
+                    DestroyEntity(wallEntityData);
                     return CreateNewVerticalWall(wallEntityData, data, reversed);
                 }
                 else if (!data.HouseWall && (currentFence.Data != data || currentFence.Reversed != reversed))
                 {
-                    Destroy(currentFence.gameObject);
+                    DestroyEntity(fenceEntityData);
                     return CreateNewVerticalWall(fenceEntityData, data, reversed);
                 }
             }
@@ -270,12 +270,12 @@ namespace Warlander.Deedplanner.Data
             {
                 if (currentWall)
                 {
-                    Destroy(currentWall.gameObject);
+                    DestroyEntity(wallEntityData);
                     return null;
                 }
                 if (currentFence)
                 {
-                    Destroy(currentFence.gameObject);
+                    DestroyEntity(fenceEntityData);
                     return null;
                 }
             }
@@ -322,12 +322,12 @@ namespace Warlander.Deedplanner.Data
                 }
                 else if (data.HouseWall && (currentWall.Data != data || currentWall.Reversed != reversed))
                 {
-                    Destroy(currentWall.gameObject);
+                    DestroyEntity(wallEntityData);
                     return CreateNewHorizontalWall(wallEntityData, data, reversed);
                 }
                 else if (!data.HouseWall && (currentFence.Data != data || currentFence.Reversed != reversed))
                 {
-                    Destroy(currentFence.gameObject);
+                    DestroyEntity(fenceEntityData);
                     return CreateNewHorizontalWall(fenceEntityData, data, reversed);
                 }
             }
@@ -335,12 +335,12 @@ namespace Warlander.Deedplanner.Data
             {
                 if (currentWall)
                 {
-                    Destroy(currentWall.gameObject);
+                    DestroyEntity(wallEntityData);
                     return null;
                 }
                 if (currentFence)
                 {
-                    Destroy(currentFence.gameObject);
+                    DestroyEntity(fenceEntityData);
                     return null;
                 }
             }
@@ -502,6 +502,13 @@ namespace Warlander.Deedplanner.Data
                 TileEntity tileEntity = pair.Value;
                 tileEntity.transform.localPosition = new Vector3(X * 4, SurfaceHeight * 0.1f + data.Floor * 3f, Y * 4);
             }
+        }
+
+        private void DestroyEntity(EntityData key)
+        {
+            TileEntity entity = Entities[key];
+            Entities.Remove(key);
+            Destroy(entity.gameObject);
         }
 
     }
