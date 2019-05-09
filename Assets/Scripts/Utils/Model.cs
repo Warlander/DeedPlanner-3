@@ -29,6 +29,7 @@ namespace Warlander.Deedplanner.Utils
 
         public Bounds Bounds {
             get {
+                InitializeModel();
                 Bounds bounds = new Bounds();
                 MeshFilter[] filters = originalModel.GetComponentsInChildren<MeshFilter>();
                 foreach (MeshFilter filter in filters)
@@ -89,6 +90,12 @@ namespace Warlander.Deedplanner.Utils
 
         public GameObject CreateOrGetModel(int skew = 0)
         {
+            InitializeModel(skew);
+            return GameObject.Instantiate(skewedModels[skew]);
+        }
+
+        private void InitializeModel(int skew = 0)
+        {
             if (!modelsRoot)
             {
                 modelsRoot = new GameObject("Models");
@@ -126,8 +133,6 @@ namespace Warlander.Deedplanner.Utils
                 skewedModel.transform.SetParent(modelRoot.transform);
                 skewedModels[skew] = skewedModel;
             }
-
-            return GameObject.Instantiate(skewedModels[skew]);
         }
 
         private GameObject CreateSkewedModel(int skew)
