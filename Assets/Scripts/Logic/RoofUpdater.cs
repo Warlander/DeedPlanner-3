@@ -31,6 +31,23 @@ namespace Warlander.Deedplanner.Logic
             GridTile gridTile = raycast.transform.GetComponent<GridTile>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
 
+            int floor = 0;
+            int x = -1;
+            int y = -1;
+            if (tileEntity)
+            {
+                floor = tileEntity.Floor;
+                x = tileEntity.Tile.X;
+                y = tileEntity.Tile.Y;
+            }
+            else if (gridTile)
+            {
+                floor = LayoutManager.Instance.CurrentCamera.Floor;
+                x = gridTile.X;
+                y = gridTile.Y;
+            }
+
+            
         }
 
     }

@@ -211,7 +211,7 @@ namespace Warlander.Deedplanner.Data
             HighestCaveHeight = caveMax;
         }
 
-        public Tile getRelativeTile(Tile tile, int relativeX, int relativeY)
+        public Tile GetRelativeTile(Tile tile, int relativeX, int relativeY)
         {
             int x = tile.X + relativeX;
             int y = tile.Y + relativeY;
