@@ -82,10 +82,18 @@ namespace Warlander.Deedplanner.Utils
             this.Layer = layer;
         }
 
+        public Model(string location, Vector3 scale, int layer = int.MaxValue) : this(location, layer)
+        {
+            Scale = scale;
+        }
+
         public Model(string location, int layer = int.MaxValue)
         {
             this.location = location;
             this.Layer = layer;
+
+            Tag = "";
+            Scale = new Vector3(1, 1, 1);
         }
 
         public GameObject CreateOrGetModel(int skew = 0)
