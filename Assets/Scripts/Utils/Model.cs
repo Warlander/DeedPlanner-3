@@ -94,6 +94,8 @@ namespace Warlander.Deedplanner.Utils
 
             Tag = "";
             Scale = new Vector3(1, 1, 1);
+            textureOverrides = new Dictionary<string, string>();
+            skewedModels = new Dictionary<int, GameObject>();
         }
 
         public GameObject CreateOrGetModel(int skew = 0)

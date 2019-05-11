@@ -241,6 +241,44 @@ namespace Warlander.Deedplanner.Data
             return floor;
         }
 
+        public Roof SetRoof(RoofData data, int floor)
+        {
+            EntityData entityData = new EntityData(floor, EntityType.FLOORROOF);
+            TileEntity tileEntity;
+            Entities.TryGetValue(entityData, out tileEntity);
+            Roof currentRoof = tileEntity as Roof;
+            if (!currentRoof && data)
+            {
+                return CreateNewRoof(entityData, data);
+            }
+            else if (!data && currentRoof)
+            {
+                DestroyEntity(entityData);
+                return null;
+            }
+            else if (currentRoof && (currentRoof.Data != data))
+            {
+                DestroyEntity(entityData);
+                return CreateNewRoof(entityData, data);
+            }
+
+            return null;
+        }
+
+        private Roof CreateNewRoof(EntityData entity, RoofData data)
+        {
+            GameObject roofObject = new GameObject("Roof " + entity.Floor, typeof(Roof));
+            Roof roof = roofObject.GetComponent<Roof>();
+            roof.Initialize(this, data);
+
+            Entities[entity] = roof;
+            Map.AddEntityToMap(roofObject, entity.Floor);
+            Map.RecalculateRoofs();
+            UpdateSurfaceEntitiesPositions();
+
+            return roof;
+        }
+
         public Wall SetVerticalWall(WallData data, bool reversed, int level)
         {
             EntityData wallEntityData = new EntityData(level, EntityType.VWALL);
