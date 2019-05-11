@@ -157,6 +157,9 @@ namespace Warlander.Deedplanner.Data
                     }
                 }
             }
+
+            RecalculateHeights();
+            RecalculateRoofs();
         }
 
         public void AddEntityToMap(GameObject entity, int floor)
@@ -209,6 +212,39 @@ namespace Warlander.Deedplanner.Data
             HighestSurfaceHeight = max;
             LowestCaveHeight = caveMin;
             HighestCaveHeight = caveMax;
+        }
+
+        public void RecalculateRoofs()
+        {
+            for (int i = 0; i <= Width; i++)
+            {
+                for (int i2 = 0; i2 <= Height; i2++)
+                {
+                    for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
+                    {
+                        TileEntity entity = this[i, i2].GetTileContent(i3);
+                        if (entity != null && entity.GetType() == typeof(Roof))
+                        {
+                            ((Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofLevel();
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i <= Width; i++)
+            {
+                for (int i2 = 0; i2 <= Height; i2++)
+                {
+                    for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
+                    {
+                        TileEntity entity = this[i, i2].GetTileContent(i3);
+                        if (entity != null && entity.GetType() == typeof(Roof))
+                        {
+                            ((Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofModel();
+                        }
+                    }
+                }
+            }
         }
 
         public Tile GetRelativeTile(Tile tile, int relativeX, int relativeY)

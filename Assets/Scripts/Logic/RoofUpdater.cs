@@ -47,7 +47,20 @@ namespace Warlander.Deedplanner.Logic
                 y = gridTile.Y;
             }
 
-            
+            if (floor <= 0)
+            {
+                return;
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                RoofData data = GuiManager.Instance.RoofsList.SelectedValue as RoofData;
+                GameManager.Instance.Map[x, y].SetRoof(data, floor);
+            }
+            else if (Input.GetMouseButton(1))
+            {
+                GameManager.Instance.Map[x, y].SetRoof(null, floor);
+            }
         }
 
     }

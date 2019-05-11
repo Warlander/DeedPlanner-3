@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
 namespace Assets.Scripts.Logic
@@ -12,83 +13,83 @@ namespace Assets.Scripts.Logic
     public sealed class RoofType
     {
 
-        private static readonly RoofType[] roofTypes;
+        public static RoofType[] RoofTypes { get; private set; }
 
         static RoofType()
         {
             List<RoofType> roofTypesList = new List<RoofType>();
 
-            roofTypesList.Add(new RoofType(new Model("Special/side.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/side.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{ 1, 1, 1},
                                           { 0, 0, 0},
                                           {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/sideCorner.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/sideCorner.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{-1,-2,-1},
                                           { 0, 0,-2},
                                           { 1, 0,-1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/sideCut.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/sideCut.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{ 1, 1, 1},
                                           { 0, 0, 1},
                                           {-2, 0, 1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/sideToSpine.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/sideToSpine.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{ 1, 0,-2},
                                           { 1, 0, 0},
                                           { 1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spine.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/spine.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{-1,-2,-1},
                                           { 0, 0, 0},
                                           {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineEnd.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/spineEnd.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{-1,-2,-1},
                                           { 0, 0,-2},
                                           {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineEndUp.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/spineEndUp.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{-1,-2,-1},
                                           { 0, 0, 3},
                                           { 1, 0,-1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineEndUp.wom", new Vector3(-1, 1, 1)),
+            roofTypesList.Add(new RoofType(new Model("Special/spineEndUp.wom", new Vector3(-1, 1, 1), LayerMasks.FloorRoofLayer),
                               new int[,] {{-1,-2,-1},
                                           { 3, 0, 0},
                                           {-1, 0, 1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineCorner.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/spineCorner.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{-1,-2,-1},
                                           {-2, 0, 0},
                                           {-1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineCornerUp.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/spineCornerUp.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{-2, 0,-2},
                                           { 0, 0, 0},
                                           { 1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineCross.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/spineCross.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{-2, 0,-2},
                                           { 0, 0, 0},
                                           {-2, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineTCross.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/spineTCross.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{-1, 0,-2},
                                           {-2, 0, 0},
                                           {-1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineTip.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/spineTip.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{-1,-2,-1},
                                           {-2, 0,-2},
                                           {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/levelsCross.wom"),
+            roofTypesList.Add(new RoofType(new Model("Special/levelsCross.wom", LayerMasks.FloorRoofLayer),
                               new int[,] {{-2, 0, 1},
                                           { 0, 0, 0},
                                           { 1, 0,-2}}));
 
-            roofTypes = roofTypesList.ToArray();
+            RoofTypes = roofTypesList.ToArray();
         }
 
         public Model Model { get; private set; }
@@ -100,7 +101,7 @@ namespace Assets.Scripts.Logic
             this.conditions = conditions;
         }
 
-        private int CheckMatch(Tile tile, int height)
+        public int CheckMatch(Tile tile, int height)
         {
             if (CheckCase(tile, height, conditions))
             {
@@ -137,42 +138,42 @@ namespace Assets.Scripts.Logic
                     {
                         roof = -1;
                     }
-                    else if (!(map.GetRelativeTile(tile, x, y).GetTileContent(height).GetType() == typeof(Roof)))
+                    else if (map.GetRelativeTile(tile, x, y).GetTileContent(height) == null || map.GetRelativeTile(tile, x, y).GetTileContent(height).GetType() != typeof(Roof))
                     {
                         roof = -1;
                     }
                     else
                     {
-                        roof = ((Roof)map.GetRelativeTile(tile, x, y).GetTileContent(height)).Floor;
+                        roof = ((Roof)map.GetRelativeTile(tile, x, y).GetTileContent(height)).RoofLevel;
                     }
                     switch (check[cX, cY])
                     {
                         case -2:
-                            if (((Roof)tile.GetTileContent(height)).Floor <= roof)
+                            if (((Roof)tile.GetTileContent(height)).RoofLevel <= roof)
                             {
                                 return false;
                             }
                             break;
                         case -1:
-                            if (((Roof)tile.GetTileContent(height)).Floor < roof)
+                            if (((Roof)tile.GetTileContent(height)).RoofLevel < roof)
                             {
                                 return false;
                             }
                             break;
                         case 0:
-                            if (((Roof)tile.GetTileContent(height)).Floor != roof)
+                            if (((Roof)tile.GetTileContent(height)).RoofLevel != roof)
                             {
                                 return false;
                             }
                             break;
                         case 1:
-                            if (((Roof)tile.GetTileContent(height)).Floor > roof)
+                            if (((Roof)tile.GetTileContent(height)).RoofLevel > roof)
                             {
                                 return false;
                             }
                             break;
                         case 2:
-                            if (((Roof)tile.GetTileContent(height)).Floor >= roof)
+                            if (((Roof)tile.GetTileContent(height)).RoofLevel >= roof)
                             {
                                 return false;
                             }
