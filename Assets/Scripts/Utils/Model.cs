@@ -98,6 +98,16 @@ namespace Warlander.Deedplanner.Utils
             skewedModels = new Dictionary<int, GameObject>();
         }
 
+        public void AddTextureOverride(string mesh, string texture)
+        {
+            if (skewedModels.Count != 0)
+            {
+                throw new InvalidOperationException("Model is already initialized, cannot add texture override");
+            }
+
+            textureOverrides[mesh] = texture;
+        }
+
         public GameObject CreateOrGetModel(int skew = 0)
         {
             InitializeModel(skew);
@@ -126,6 +136,10 @@ namespace Warlander.Deedplanner.Utils
                     child.gameObject.layer = Layer;
                     string textureOverride = null;
                     textureOverrides.TryGetValue(child.name, out textureOverride);
+                    if (textureOverride == null)
+                    {
+                        textureOverrides.TryGetValue("*", out textureOverride);
+                    }
                     if (textureOverride != null)
                     {
                         MeshRenderer renderer = child.GetComponent<MeshRenderer>();

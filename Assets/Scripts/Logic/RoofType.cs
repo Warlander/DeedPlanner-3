@@ -19,72 +19,72 @@ namespace Assets.Scripts.Logic
         {
             List<RoofType> roofTypesList = new List<RoofType>();
 
-            roofTypesList.Add(new RoofType(new Model("Special/side.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/side.wom",
                               new int[,] {{ 1, 1, 1},
                                           { 0, 0, 0},
                                           {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/sideCorner.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/sideCorner.wom",
                               new int[,] {{-1,-2,-1},
                                           { 0, 0,-2},
                                           { 1, 0,-1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/sideCut.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/sideCut.wom",
                               new int[,] {{ 1, 1, 1},
                                           { 0, 0, 1},
                                           {-2, 0, 1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/sideToSpine.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/sideToSpine.wom",
                               new int[,] {{ 1, 0,-2},
                                           { 1, 0, 0},
                                           { 1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spine.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/spine.wom",
                               new int[,] {{-1,-2,-1},
                                           { 0, 0, 0},
                                           {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineEnd.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/spineEnd.wom",
                               new int[,] {{-1,-2,-1},
                                           { 0, 0,-2},
                                           {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineEndUp.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/spineEndUp.wom",
                               new int[,] {{-1,-2,-1},
                                           { 0, 0, 3},
                                           { 1, 0,-1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineEndUp.wom", new Vector3(-1, 1, 1), LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/spineEndUp.wom", new Vector3(-1, 1, 1),
                               new int[,] {{-1,-2,-1},
                                           { 3, 0, 0},
                                           {-1, 0, 1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineCorner.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/spineCorner.wom",
                               new int[,] {{-1,-2,-1},
                                           {-2, 0, 0},
                                           {-1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineCornerUp.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/spineCornerUp.wom",
                               new int[,] {{-2, 0,-2},
                                           { 0, 0, 0},
                                           { 1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineCross.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/spineCross.wom",
                               new int[,] {{-2, 0,-2},
                                           { 0, 0, 0},
                                           {-2, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineTCross.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/spineTCross.wom",
                               new int[,] {{-1, 0,-2},
                                           {-2, 0, 0},
                                           {-1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/spineTip.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/spineTip.wom",
                               new int[,] {{-1,-2,-1},
                                           {-2, 0,-2},
                                           {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType(new Model("Special/levelsCross.wom", LayerMasks.FloorRoofLayer),
+            roofTypesList.Add(new RoofType("Special/levelsCross.wom",
                               new int[,] {{-2, 0, 1},
                                           { 0, 0, 0},
                                           { 1, 0,-2}}));
@@ -92,13 +92,22 @@ namespace Assets.Scripts.Logic
             RoofTypes = roofTypesList.ToArray();
         }
 
-        public Model Model { get; private set; }
+        private Dictionary<RoofData, Model> models;
         private readonly int[,] conditions;
 
-        private RoofType(Model model, int[,] conditions)
+        private RoofType(string modelLocation, int[,] conditions) : this(modelLocation, new Vector3(1, 1, 1), conditions) {}
+
+        private RoofType(string modelLocation, Vector3 scale, int[,] conditions)
         {
-            Model = model;
+            models = new Dictionary<RoofData, Model>();
             this.conditions = conditions;
+
+            foreach (RoofData data in Database.Roofs.Values)
+            {
+                Model model = new Model(modelLocation, scale, LayerMasks.FloorRoofLayer);
+                model.AddTextureOverride("*", data.Texture.Location);
+                models[data] = model;
+            }
         }
 
         public int CheckMatch(Tile tile, int height)
@@ -235,6 +244,11 @@ namespace Assets.Scripts.Logic
                     return output;
             }
             return output;
+        }
+
+        public Model GetModelForData(RoofData data)
+        {
+            return models[data];
         }
 
     }

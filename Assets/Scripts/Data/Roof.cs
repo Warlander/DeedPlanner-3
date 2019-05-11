@@ -89,7 +89,7 @@ namespace Warlander.Deedplanner.Data
                     {
                         Destroy(Model);
                     }
-                    Model = type.Model.CreateOrGetModel();
+                    Model = type.GetModelForData(Data).CreateOrGetModel();
                     Model.transform.SetParent(transform, true);
                     Model.transform.localPosition = new Vector3(-2, RoofLevel * 3.5f, -2);
                     if (match == 0)
