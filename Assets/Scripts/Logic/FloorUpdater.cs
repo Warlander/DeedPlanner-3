@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 
@@ -6,6 +7,15 @@ namespace Warlander.Deedplanner.Logic
 {
     public class FloorUpdater : MonoBehaviour
     {
+
+        [SerializeField]
+        private Toggle southToggle = null;
+        [SerializeField]
+        private Toggle westToggle = null;
+        [SerializeField]
+        private Toggle northToggle = null;
+        [SerializeField]
+        private Toggle eastToggle = null;
 
         public void OnEnable()
         {
@@ -39,14 +49,32 @@ namespace Warlander.Deedplanner.Logic
                 y = gridTile.Y;
             }
 
+            EntityOrientation orientation;
+            if (southToggle.isOn)
+            {
+                orientation = EntityOrientation.Down;
+            }
+            else if (westToggle.isOn)
+            {
+                orientation = EntityOrientation.Right;
+            }
+            else if (northToggle.isOn)
+            {
+                orientation = EntityOrientation.Up;
+            }
+            else
+            {
+                orientation = EntityOrientation.Left;
+            }
+
             if (Input.GetMouseButton(0))
             {
                 FloorData data = GuiManager.Instance.FloorsTree.SelectedValue as FloorData;
-                GameManager.Instance.Map[x, y].SetFloor(data, EntityOrientation.Up, floor);
+                GameManager.Instance.Map[x, y].SetFloor(data, orientation, floor);
             }
             else if (Input.GetMouseButton(1))
             {
-                GameManager.Instance.Map[x, y].SetFloor(null, EntityOrientation.Up, floor);
+                GameManager.Instance.Map[x, y].SetFloor(null, orientation, floor);
             }
             
         }
