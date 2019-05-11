@@ -325,7 +325,7 @@ namespace Warlander.Deedplanner.Data
                     continue;
                 }
 
-                TextureReference texture = null;
+                TextureReference texture = TextureReference.GetTextureReference(element.GetAttribute("tex"));
                 Materials materials = null;
 
                 foreach (XmlElement child in element)
