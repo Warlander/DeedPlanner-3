@@ -37,6 +37,21 @@ namespace Warlander.Deedplanner.Data
 
             Model = Data.Model.CreateOrGetModel();
             Model.transform.SetParent(transform);
+            if (orientation == EntityOrientation.Right)
+            {
+                Model.transform.localRotation = Quaternion.Euler(0, 90, 0);
+                Model.transform.localPosition = new Vector3(0, 0, -4);
+            }
+            else if (orientation == EntityOrientation.Up)
+            {
+                Model.transform.localRotation = Quaternion.Euler(0, 180, 0);
+                Model.transform.localPosition = new Vector3(-4, 0, -4);
+            }
+            else if (orientation == EntityOrientation.Left)
+            {
+                Model.transform.localRotation = Quaternion.Euler(0, 270, 0);
+                Model.transform.localPosition = new Vector3(-4, 0, 0);
+            }
 
             if (!GetComponent<BoxCollider>())
             {
