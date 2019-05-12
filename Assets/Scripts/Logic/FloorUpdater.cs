@@ -49,6 +49,12 @@ namespace Warlander.Deedplanner.Logic
                 y = gridTile.Y;
             }
 
+            FloorData data = GuiManager.Instance.FloorsTree.SelectedValue as FloorData;
+            if (data.Opening && (floor == 0 || floor == -1))
+            {
+                return;
+            }
+
             EntityOrientation orientation;
             if (southToggle.isOn)
             {
@@ -69,7 +75,6 @@ namespace Warlander.Deedplanner.Logic
 
             if (Input.GetMouseButton(0))
             {
-                FloorData data = GuiManager.Instance.FloorsTree.SelectedValue as FloorData;
                 GameManager.Instance.Map[x, y].SetFloor(data, orientation, floor);
             }
             else if (Input.GetMouseButton(1))
