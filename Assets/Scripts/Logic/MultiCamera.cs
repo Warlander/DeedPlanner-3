@@ -73,7 +73,7 @@ namespace Warlander.Deedplanner.Logic
 
         public bool RenderEntireLayer {
             get {
-                return CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Isometric;
+                return CameraMode == CameraMode.Perspective;
             }
         }
 
