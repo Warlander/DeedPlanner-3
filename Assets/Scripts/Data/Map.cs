@@ -64,8 +64,20 @@ namespace Warlander.Deedplanner.Data
                     for (int i = 0; i < caveLevelRoots.Length; i++)
                     {
                         Transform root = caveLevelRoots[i];
-                        bool renderFloor = RenderEntireLayer ? true : absoluteFloor == i;
+                        int relativeFloor = i - absoluteFloor;
+                        bool renderFloor = RenderEntireLayer ? true : relativeFloor <= 0 && relativeFloor > -3;
                         root.gameObject.SetActive(renderFloor);
+                        if (renderFloor)
+                        {
+                            float opacity = RenderEntireLayer ? 1f : GetRelativeFloorOpacity(relativeFloor);
+                            MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+                            propertyBlock.SetColor("_Color", new Color(opacity, opacity, opacity));
+                            Renderer[] renderers = root.GetComponentsInChildren<Renderer>();
+                            foreach (Renderer renderer in renderers)
+                            {
+                                renderer.SetPropertyBlock(propertyBlock);
+                            }
+                        }
                     }
                     surfaceGridRoot.gameObject.SetActive(false);
                     caveGridRoot.gameObject.SetActive(true);
@@ -77,8 +89,21 @@ namespace Warlander.Deedplanner.Data
                     for (int i = 0; i < surfaceLevelRoots.Length; i++)
                     {
                         Transform root = surfaceLevelRoots[i];
-                        bool renderFloor = RenderEntireLayer ? true : absoluteFloor == i;
+                        int relativeFloor = i - absoluteFloor;
+                        bool renderFloor = RenderEntireLayer ? true : relativeFloor <= 0 && relativeFloor > -3;
                         root.gameObject.SetActive(renderFloor);
+                        if (renderFloor)
+                        {
+                            float opacity = RenderEntireLayer ? 1f : GetRelativeFloorOpacity(relativeFloor);
+                            MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+                            propertyBlock.SetColor("_Color", new Color(opacity, opacity, opacity));
+                            Renderer[] renderers = root.GetComponentsInChildren<Renderer>();
+                            Debug.Log(renderers.Length);
+                            foreach (Renderer renderer in renderers)
+                            {
+                                renderer.SetPropertyBlock(propertyBlock);
+                            }
+                        }
                     }
                     surfaceGridRoot.gameObject.SetActive(false);
                     for (int i = 0; i < caveLevelRoots.Length; i++)
@@ -289,6 +314,24 @@ namespace Warlander.Deedplanner.Data
                     tiles[i, i2].Serialize(document, localRoot);
                 }
             }
+        }
+
+        private float GetRelativeFloorOpacity(int relativeFloor)
+        {
+            if (relativeFloor == 0)
+            {
+                return 1;
+            }
+            else if (relativeFloor == -1)
+            {
+                return 0.6f;
+            }
+            else if (relativeFloor == -2)
+            {
+                return 0.25f;
+            }
+
+            throw new ArgumentOutOfRangeException("Relative floor opacity is supported only for values from -2 to 0, supplied value: " + relativeFloor);
         }
     }
 }
