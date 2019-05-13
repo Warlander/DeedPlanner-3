@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace Warlander.Deedplanner.Logic
     public class DebugManager : MonoBehaviour
     {
 
+        [SerializeField]
+        private bool loadTestMap = false;
         [SerializeField]
         private bool testSurfaceHeights = false;
         [SerializeField]
@@ -30,6 +33,11 @@ namespace Warlander.Deedplanner.Logic
                 return;
             }
 
+            if (loadTestMap)
+            {
+                string fullTestMapLocation = Path.Combine(Application.streamingAssetsPath, "./Special/Test Map.MAP");
+                StartCoroutine(GameManager.Instance.LoadMap(new Uri(fullTestMapLocation)));
+            }
             if (testSurfaceHeights)
             {
                 Map map = GameManager.Instance.Map;
