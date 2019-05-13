@@ -1,6 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
+using System.Xml;
 using UnityEngine;
+using UnityEngine.Networking;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 
@@ -58,6 +64,53 @@ namespace Warlander.Deedplanner.Logic
         {
             groundUpdater.gameObject.SetActive(true);
             LayoutManager.Instance.TabChanged += OnTabChange;
+        }
+
+        public IEnumerator LoadMap(Uri mapUri)
+        {
+            UnityWebRequest webRequest = UnityWebRequest.Get(mapUri);
+            yield return webRequest.SendWebRequest();
+            if (webRequest.isHttpError || webRequest.isNetworkError)
+            {
+                Debug.LogError(webRequest.error);
+            }
+
+            string requestText = webRequest.downloadHandler.text;
+            if (!mapUri.IsFile)
+            {
+                byte[] requestBytes = Convert.FromBase64String(requestText);
+                byte[] decompressedBytes = DecompressGzip(requestBytes);
+                requestText = Encoding.UTF8.GetString(decompressedBytes, 0, decompressedBytes.Length);
+            }
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(requestText);
+            Destroy(Map.gameObject);
+            GameObject mapObject = new GameObject("Map", typeof(Map));
+            Map = mapObject.GetComponent<Map>();
+            Map.Initialize(doc);
+        }
+
+        private byte[] DecompressGzip(byte[] gzip)
+        {
+            using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
+            {
+                const int size = 4096;
+                byte[] buffer = new byte[size];
+                using (MemoryStream memory = new MemoryStream())
+                {
+                    int count = 0;
+                    do
+                    {
+                        count = stream.Read(buffer, 0, size);
+                        if (count > 0)
+                        {
+                            memory.Write(buffer, 0, count);
+                        }
+                    }
+                    while (count > 0);
+                    return memory.ToArray();
+                }
+            }
         }
 
         private void OnTabChange(Tab tab)

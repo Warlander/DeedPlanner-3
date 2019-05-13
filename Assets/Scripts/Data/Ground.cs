@@ -58,7 +58,7 @@ namespace Warlander.Deedplanner.Data
             {
                 materials[i] = Data.Tex3d.Material;
             }
-            meshRenderer.materials = materials;
+            meshRenderer.sharedMaterials = materials;
         }
 
         public void SetData(GroundData data, Tile callingTile)

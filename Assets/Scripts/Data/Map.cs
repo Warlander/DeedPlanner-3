@@ -98,7 +98,6 @@ namespace Warlander.Deedplanner.Data
                             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
                             propertyBlock.SetColor("_Color", new Color(opacity, opacity, opacity));
                             Renderer[] renderers = root.GetComponentsInChildren<Renderer>();
-                            Debug.Log(renderers.Length);
                             foreach (Renderer renderer in renderers)
                             {
                                 renderer.SetPropertyBlock(propertyBlock);
@@ -130,6 +129,25 @@ namespace Warlander.Deedplanner.Data
         }
 
         public void Initialize(int width, int height)
+        {
+            PreInitialize(width, height);
+
+            RecalculateHeights();
+            RecalculateRoofs();
+        }
+
+        public void Initialize(XmlDocument document)
+        {
+            XmlElement mapRoot = document.DocumentElement;
+            int width = Convert.ToInt32(mapRoot.GetAttribute("width"));
+            int height = Convert.ToInt32(mapRoot.GetAttribute("height"));
+            PreInitialize(width, height);
+
+            RecalculateHeights();
+            RecalculateRoofs();
+        }
+
+        private void PreInitialize(int width, int height)
         {
             Width = width;
             Height = height;
@@ -182,9 +200,6 @@ namespace Warlander.Deedplanner.Data
                     }
                 }
             }
-
-            RecalculateHeights();
-            RecalculateRoofs();
         }
 
         public void AddEntityToMap(GameObject entity, int floor)
@@ -332,6 +347,17 @@ namespace Warlander.Deedplanner.Data
             }
 
             throw new ArgumentOutOfRangeException("Relative floor opacity is supported only for values from -2 to 0, supplied value: " + relativeFloor);
+        }
+
+        private void OnDestroy()
+        {
+            for (int i = 0; i <= Width; i++)
+            {
+                for (int i2 = 0; i2 <= Height; i2++)
+                {
+                    Destroy(this[i, i2]);
+                }
+            }
         }
     }
 }
