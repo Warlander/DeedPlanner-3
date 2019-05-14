@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,7 +45,7 @@ namespace Warlander.Deedplanner.Data
                 Map.GetRelativeTile(this, -1, -1)?.RefreshSurfaceMesh();
                 Map.GetRelativeTile(this, -1, -1)?.UpdateSurfaceEntitiesPositions();
 
-                Map.RecalculateHeights();
+                Map.RecalculateHeight(X, Y);
             }
         }
 
@@ -63,7 +64,7 @@ namespace Warlander.Deedplanner.Data
                 Map.GetRelativeTile(this, -1, -1)?.RefreshCaveMesh();
                 Map.GetRelativeTile(this, -1, -1)?.UpdateCaveEntitiesPositions();
 
-                Map.RecalculateHeights();
+                Map.RecalculateHeight(X, Y);
             }
         }
 
@@ -82,7 +83,7 @@ namespace Warlander.Deedplanner.Data
                 Map.GetRelativeTile(this, -1, -1)?.RefreshCaveMesh();
                 Map.GetRelativeTile(this, -1, -1)?.UpdateCaveEntitiesPositions();
 
-                Map.RecalculateHeights();
+                Map.RecalculateHeight(X, Y);
             }
         }
 
@@ -109,12 +110,20 @@ namespace Warlander.Deedplanner.Data
             Ground = groundObject.GetComponent<Ground>();
             Map.AddEntityToMap(groundObject, 0);
             Ground.Initialize(this, Database.Grounds["gr"], SurfaceHeightMesh);
+            if (edge)
+            {
+                Ground.gameObject.SetActive(false);
+            }
 
             GameObject caveObject = new GameObject("Cave", typeof(Cave));
             caveObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
             Cave = caveObject.GetComponent<Cave>();
             Map.AddEntityToMap(caveObject, -1);
             Cave.Initialize(Database.DefaultCaveData);
+            if (edge)
+            {
+                Cave.gameObject.SetActive(false);
+            }
         }
 
         private Mesh InitializeHeightMesh()
@@ -481,8 +490,29 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
+        public void Deserialize(XmlElement tileElement)
+        {
+            surfaceHeight = (int) Convert.ToSingle(tileElement.GetAttribute("height"), CultureInfo.InvariantCulture);
+            caveHeight = (int) Convert.ToSingle(tileElement.GetAttribute("caveHeight"), CultureInfo.InvariantCulture);
+
+            XmlElement groundElement = (XmlElement) tileElement.GetElementsByTagName("ground")[0];
+            Ground.Deserialize(groundElement);
+        }
+
+        public void Refresh()
+        {
+            RefreshSurfaceMesh();
+            RefreshCaveMesh();
+            UpdateSurfaceEntitiesPositions();
+        }
+
         private void RefreshSurfaceMesh()
         {
+            if (Edge)
+            {
+                return;
+            }
+
             float h00 = SurfaceHeight * 0.1f;
             float h10 = Map.GetRelativeTile(this, 1, 0).SurfaceHeight * 0.1f;
             float h01 = Map.GetRelativeTile(this, 0, 1).SurfaceHeight * 0.1f;
@@ -504,6 +534,11 @@ namespace Warlander.Deedplanner.Data
 
         private void RefreshCaveMesh()
         {
+            if (Edge)
+            {
+                return;
+            }
+
             float h00 = CaveHeight * 0.1f;
             float h10 = Map.GetRelativeTile(this, 1, 0).CaveHeight * 0.1f;
             float h01 = Map.GetRelativeTile(this, 0, 1).CaveHeight * 0.1f;

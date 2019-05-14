@@ -131,30 +131,30 @@ namespace Warlander.Deedplanner.Logic
                     TileSelectionHit hit = TileSelection.PositionToTileSelectionHit(raycast.point, TileSelectionMode.TilesAndCorners);
                     if (hit.Target == TileSelectionTarget.InnerTile || hit.Target == TileSelectionTarget.Nothing)
                     {
-                        ground.SetRoadDirection(RoadDirection.Center, tile);
+                        ground.RoadDirection = RoadDirection.Center;
                     }
                     else if (hit.X - tile.X == 0 && hit.Y - tile.Y == 0)
                     {
-                        ground.SetRoadDirection(RoadDirection.SW, tile);
+                        ground.RoadDirection = RoadDirection.SW;
                     }
                     else if (hit.X - tile.X == 1 && hit.Y - tile.Y == 0)
                     {
-                        ground.SetRoadDirection(RoadDirection.SE, tile);
+                        ground.RoadDirection = RoadDirection.SE;
                     }
                     else if (hit.X - tile.X == 0 && hit.Y - tile.Y == 1)
                     {
-                        ground.SetRoadDirection(RoadDirection.NW, tile);
+                        ground.RoadDirection = RoadDirection.NW;
                     }
                     else if (hit.X - tile.X == 1 && hit.Y - tile.Y == 1)
                     {
-                        ground.SetRoadDirection(RoadDirection.NE, tile);
+                        ground.RoadDirection = RoadDirection.NE;
                     }
                 }
                 else
                 {
-                    ground.SetRoadDirection(RoadDirection.Center, tile);
+                    ground.RoadDirection = RoadDirection.Center;
                 }
-                ground.SetData(currentClickData, tile);
+                ground.Data = currentClickData;
             }
             else if (fillToggle.isOn)
             {
@@ -178,7 +178,7 @@ namespace Warlander.Deedplanner.Logic
                 Tile anchor = stack.Pop();
                 if (anchor.Ground.Data == toReplace)
                 {
-                    anchor.Ground.SetData(data, anchor);
+                    anchor.Ground.Data = data;
                     AddTileIfNotNull(stack, map[anchor.X - 1, anchor.Y]);
                     AddTileIfNotNull(stack, map[anchor.X + 1, anchor.Y]);
                     AddTileIfNotNull(stack, map[anchor.X, anchor.Y - 1]);

@@ -13,9 +13,8 @@ namespace Warlander.Deedplanner.Data
     {
 
         private Tile tile;
-
-        public GroundData Data { get; private set; }
-        public RoadDirection RoadDirection { get; private set; }
+        private GroundData data;
+        private RoadDirection roadDirection;
 
         private MeshRenderer meshRenderer;
         public MeshCollider Collider { get; private set; }
@@ -23,6 +22,65 @@ namespace Warlander.Deedplanner.Data
         public override Tile Tile {
             get {
                 return tile;
+            }
+        }
+
+        public GroundData Data {
+            get {
+                return data;
+            }
+            set {
+                data = value;
+                RoadDirection = roadDirection;
+            }
+        }
+
+        public RoadDirection RoadDirection {
+            get {
+                return RoadDirection;
+            }
+            set {
+                roadDirection = value;
+
+                Material[] materials = new Material[4];
+                if (roadDirection == RoadDirection.Center)
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        materials[i] = Data.Tex3d.Material;
+                    }
+                }
+                else
+                {
+                    Material matW = GameManager.Instance.Map.GetRelativeTile(tile, -1, 0)?.Ground.Data.Tex3d.Material;
+                    Material matE = GameManager.Instance.Map.GetRelativeTile(tile, 1, 0)?.Ground.Data.Tex3d.Material;
+                    Material matS = GameManager.Instance.Map.GetRelativeTile(tile, 0, -1)?.Ground.Data.Tex3d.Material;
+                    Material matN = GameManager.Instance.Map.GetRelativeTile(tile, 0, 1)?.Ground.Data.Tex3d.Material;
+
+                    if (roadDirection == RoadDirection.NW || roadDirection == RoadDirection.SW || !matW)
+                    {
+                        matW = Data.Tex3d.Material;
+                    }
+                    if (roadDirection == RoadDirection.NE || roadDirection == RoadDirection.SE || !matE)
+                    {
+                        matE = Data.Tex3d.Material;
+                    }
+                    if (roadDirection == RoadDirection.SW || roadDirection == RoadDirection.SE || !matS)
+                    {
+                        matS = Data.Tex3d.Material;
+                    }
+                    if (roadDirection == RoadDirection.NW || roadDirection == RoadDirection.NE || !matN)
+                    {
+                        matN = Data.Tex3d.Material;
+                    }
+
+                    materials[0] = matW;
+                    materials[1] = matN;
+                    materials[2] = matE;
+                    materials[3] = matS;
+                }
+
+                meshRenderer.materials = materials;
             }
         }
 
@@ -61,60 +119,36 @@ namespace Warlander.Deedplanner.Data
             meshRenderer.sharedMaterials = materials;
         }
 
-        public void SetData(GroundData data, Tile callingTile)
-        {
-            Data = data;
-            SetRoadDirection(RoadDirection, callingTile);
-        }
-
-        public void SetRoadDirection(RoadDirection direction, Tile callingTile)
-        {
-            RoadDirection = direction;
-
-            Material[] materials = new Material[4];
-            if (direction == RoadDirection.Center)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    materials[i] = Data.Tex3d.Material;
-                }
-            }
-            else
-            {
-                Material matW = GameManager.Instance.Map[callingTile.X - 1, callingTile.Y]?.Ground.Data.Tex3d.Material;
-                Material matE = GameManager.Instance.Map[callingTile.X + 1, callingTile.Y]?.Ground.Data.Tex3d.Material;
-                Material matS = GameManager.Instance.Map[callingTile.X, callingTile.Y - 1]?.Ground.Data.Tex3d.Material;
-                Material matN = GameManager.Instance.Map[callingTile.X, callingTile.Y + 1]?.Ground.Data.Tex3d.Material;
-
-                if (direction == RoadDirection.NW || direction == RoadDirection.SW || !matW)
-                {
-                    matW = Data.Tex3d.Material;
-                }
-                if (direction == RoadDirection.NE || direction == RoadDirection.SE || !matE)
-                {
-                    matE = Data.Tex3d.Material;
-                }
-                if (direction == RoadDirection.SW || direction == RoadDirection.SE || !matS)
-                {
-                    matS = Data.Tex3d.Material;
-                }
-                if (direction == RoadDirection.NW || direction == RoadDirection.NE || !matN)
-                {
-                    matN = Data.Tex3d.Material;
-                }
-
-                materials[0] = matW;
-                materials[1] = matN;
-                materials[2] = matE;
-                materials[3] = matS;
-            }
-
-            meshRenderer.materials = materials;
-        }
-
         public override void Serialize(XmlDocument document, XmlElement localRoot)
         {
             throw new NotImplementedException();
         }
+
+        public void Deserialize(XmlElement element)
+        {
+            string id = element.GetAttribute("id");
+            string dir = element.GetAttribute("dir");
+
+            Data = Database.Grounds[id];
+            switch (dir)
+            {
+                case "NW":
+                    RoadDirection = RoadDirection.NW;
+                    break;
+                case "NE":
+                    RoadDirection = RoadDirection.NE;
+                    break;
+                case "SW":
+                    RoadDirection = RoadDirection.SW;
+                    break;
+                case "SE":
+                    RoadDirection = RoadDirection.SE;
+                    break;
+                default:
+                    RoadDirection = RoadDirection.Center;
+                    break;
+            }
+        }
+
     }
 }
