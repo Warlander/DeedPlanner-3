@@ -7,14 +7,13 @@ using UnityEngine.EventSystems;
 using UnityStandardAssets.Water;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Logic
 {
     [RequireComponent(typeof(Camera))]
     public class MultiCamera : MonoBehaviour
     {
-
-        private static Material lineDrawingMaterial;
 
         private Transform parentTransform;
         private Camera attachedCamera;
@@ -79,12 +78,6 @@ namespace Warlander.Deedplanner.Logic
 
         void Start()
         {
-            if (lineDrawingMaterial == null)
-            {
-                Shader shader = Shader.Find("DeedPlanner/SimpleLineShader");
-                lineDrawingMaterial = new Material(shader);
-            }
-
             parentTransform = transform.parent;
             attachedCamera = GetComponent<Camera>();
 
@@ -206,8 +199,14 @@ namespace Warlander.Deedplanner.Logic
                 simpleQualityWater.gameObject.SetActive(renderWater);
             }
             Map map = GameManager.Instance.Map;
-            map.RenderedFloor = Floor;
-            map.RenderEntireLayer = RenderEntireLayer;
+            if (map.RenderedFloor != Floor)
+            {
+                map.RenderedFloor = Floor;
+            }
+            if (map.RenderEntireLayer != RenderEntireLayer)
+            {
+                map.RenderEntireLayer = RenderEntireLayer;
+            }
             CurrentRaycast = default;
 
             if (mouseOver)
@@ -501,8 +500,7 @@ namespace Warlander.Deedplanner.Logic
             bool gridOrGroundHit = hitObject != null && (hitObject.GetComponent<Ground>() || hitObject.GetComponent<GridTile>());
 
             GL.PushMatrix();
-            lineDrawingMaterial.SetPass(0);
-            RenderLines();
+            RenderMaterials.SimpleDrawingMaterial.SetPass(0);
             if (hitObject != null && !gridOrGroundHit)
             {
                 Matrix4x4 rotationMatrix = Matrix4x4.TRS(hitObject.transform.position, hitObject.transform.rotation, hitObject.transform.lossyScale);
@@ -529,7 +527,7 @@ namespace Warlander.Deedplanner.Logic
             float heightDelta = highestHeight - lowestHeight;
 
             float linesAlpha = 0.75f;
-
+            
             GL.Begin(GL.LINES);
             GL.Color(new Color(1, 1, 1, linesAlpha));
             for (int i = 0; i < map.Width; i++)

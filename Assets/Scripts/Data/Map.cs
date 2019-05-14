@@ -20,6 +20,9 @@ namespace Warlander.Deedplanner.Data
         private Transform surfaceGridRoot;
         private Transform caveGridRoot;
 
+        private Mesh surfaceGridMesh;
+        private Mesh caveGridMesh;
+
         private int renderedFloor;
         private bool renderEntireLayer = true;
 
@@ -143,6 +146,32 @@ namespace Warlander.Deedplanner.Data
             int height = Convert.ToInt32(mapRoot.GetAttribute("height"));
             PreInitialize(width, height);
 
+            XmlNodeList tilesList = mapRoot.GetElementsByTagName("tile");
+            Vector3[] surfaceGridVertices = surfaceGridMesh.vertices;
+            Vector3[] caveGridVertices = caveGridMesh.vertices;
+            foreach (XmlElement tileElement in tilesList)
+            {
+                int x = Convert.ToInt32(tileElement.GetAttribute("x"));
+                int y = Convert.ToInt32(tileElement.GetAttribute("y"));
+
+                this[x, y].Deserialize(tileElement);
+
+                int surfaceHeight = this[x, y].SurfaceHeight;
+                int caveHeight = this[x, y].CaveHeight;
+                surfaceGridVertices[CoordinateToIndex(x, y)] = new Vector3(x * 4, surfaceHeight * 0.1f, y * 4);
+                caveGridVertices[CoordinateToIndex(x, y)] = new Vector3(x * 4, caveHeight * 0.1f, y * 4);
+            }
+            surfaceGridMesh.vertices = surfaceGridVertices;
+            caveGridMesh.vertices = caveGridVertices;
+
+            for (int i = 0; i <= Width; i++)
+            {
+                for (int i2 = 0; i2 <= Height; i2++)
+                {
+                    this[i, i2].Refresh();
+                }
+            }
+
             RecalculateHeights();
             RecalculateRoofs();
         }
@@ -200,6 +229,62 @@ namespace Warlander.Deedplanner.Data
                     }
                 }
             }
+
+            surfaceGridMesh = PrepareGridMesh();
+            PrepareGridObject("Surface grid", surfaceGridMesh, surfaceGridRoot);
+            caveGridMesh = PrepareGridMesh();
+            PrepareGridObject("Cave grid", caveGridMesh, caveGridRoot);
+        }
+
+        private GameObject PrepareGridObject(string name, Mesh gridMesh, Transform parent)
+        {
+            GameObject gridObject = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer));
+            gridObject.transform.SetParent(parent);
+            MeshFilter meshFilter = gridObject.GetComponent<MeshFilter>();
+            meshFilter.sharedMesh = gridMesh;
+            MeshRenderer meshRenderer = gridObject.GetComponent<MeshRenderer>();
+            meshRenderer.sharedMaterial = RenderMaterials.SimpleDrawingMaterial;
+
+            return gridObject;
+        }
+
+        private Mesh PrepareGridMesh()
+        {
+            Mesh gridMesh = new Mesh();
+            Vector3[] vertices = new Vector3[(Width + 1) * (Height + 1)];
+            for (int i = 0; i <= Width; i++)
+            {
+                for (int i2 = 0; i2 <= Height; i2++)
+                {
+                    int index = CoordinateToIndex(i, i2);
+                    vertices[index] = new Vector3(i * 4, 0, i2 * 4);
+                }
+            }
+            gridMesh.vertices = vertices;
+
+            int[] indices = new int[(Width + 1) * (Height + 1) * 4];
+            for (int i = 0; i < Width; i++)
+            {
+                for (int i2 = 0; i2 < Height; i2++)
+                {
+                    int verticeIndex = CoordinateToIndex(i, i2);
+                    int arrayIndex = verticeIndex * 4;
+                    indices[arrayIndex] = verticeIndex;
+                    indices[arrayIndex + 1] = verticeIndex + 1;
+                    indices[arrayIndex + 2] = verticeIndex;
+                    indices[arrayIndex + 3] = verticeIndex + Height + 1;
+                }
+            }
+
+            gridMesh.SetIndices(indices, MeshTopology.Lines, 0, true);
+            gridMesh.RecalculateBounds();
+
+            return gridMesh;
+        }
+
+        private int CoordinateToIndex(int x, int y)
+        {
+            return x * (Height + 1) + y;
         }
 
         public void AddEntityToMap(GameObject entity, int floor)
@@ -254,6 +339,36 @@ namespace Warlander.Deedplanner.Data
             HighestCaveHeight = caveMax;
         }
 
+        public void RecalculateHeight(int x, int y)
+        {
+            int elevation = this[x, y].SurfaceHeight;
+            int caveElevation = this[x, y].CaveHeight;
+
+            if (elevation > HighestSurfaceHeight)
+            {
+                HighestSurfaceHeight = elevation;
+            }
+            if (elevation < LowestSurfaceHeight)
+            {
+                LowestSurfaceHeight = elevation;
+            }
+            if (caveElevation > HighestCaveHeight)
+            {
+                HighestCaveHeight = caveElevation;
+            }
+            if (caveElevation < LowestCaveHeight)
+            {
+                LowestCaveHeight = caveElevation;
+            }
+
+            Vector3[] surfaceGridVertices = surfaceGridMesh.vertices;
+            Vector3[] caveGridVertices = caveGridMesh.vertices;
+            surfaceGridVertices[CoordinateToIndex(x, y)] = new Vector3(x * 4, elevation * 0.1f, y * 4);
+            caveGridVertices[CoordinateToIndex(x, y)] = new Vector3(x * 4, caveElevation * 0.1f, y * 4);
+            surfaceGridMesh.vertices = surfaceGridVertices;
+            caveGridMesh.vertices = caveGridVertices;
+        }
+
         public void RecalculateRoofs()
         {
             for (int i = 0; i <= Width; i++)
@@ -292,7 +407,7 @@ namespace Warlander.Deedplanner.Data
             int x = tile.X + relativeX;
             int y = tile.Y + relativeY;
 
-            if (x < 0 || x >= Width || y < 0 || y >= Height)
+            if (x < 0 || x > Width || y < 0 || y > Height)
             {
                 return null;
             }
