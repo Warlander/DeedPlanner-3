@@ -42,7 +42,7 @@ namespace Warlander.Deedplanner.Data
                 Model.transform.localRotation = Quaternion.Euler(0, 90, 0);
                 Model.transform.localPosition = new Vector3(0, 0, -4);
             }
-            else if (orientation == EntityOrientation.Up)
+            else if (orientation == EntityOrientation.Down)
             {
                 Model.transform.localRotation = Quaternion.Euler(0, 180, 0);
                 Model.transform.localPosition = new Vector3(-4, 0, -4);

@@ -302,20 +302,20 @@ namespace Warlander.Deedplanner.Data
 
             if (data)
             {
-                if (data.HouseWall && !currentWall)
+                if (!data.ArchBuildable && !currentWall)
                 {
                     return CreateNewVerticalWall(wallEntityData, data, reversed);
                 }
-                else if (!data.HouseWall && !currentFence)
+                else if (data.ArchBuildable && !currentFence)
                 {
                     return CreateNewVerticalWall(fenceEntityData, data, reversed);
                 }
-                else if (data.HouseWall && (currentWall.Data != data || currentWall.Reversed != reversed))
+                else if (!data.ArchBuildable && (currentWall.Data != data || currentWall.Reversed != reversed))
                 {
                     DestroyEntity(wallEntityData);
                     return CreateNewVerticalWall(wallEntityData, data, reversed);
                 }
-                else if (!data.HouseWall && (currentFence.Data != data || currentFence.Reversed != reversed))
+                else if (data.ArchBuildable && (currentFence.Data != data || currentFence.Reversed != reversed))
                 {
                     DestroyEntity(fenceEntityData);
                     return CreateNewVerticalWall(fenceEntityData, data, reversed);
@@ -343,7 +343,7 @@ namespace Warlander.Deedplanner.Data
             int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 0, 1).GetHeightForFloor(entity.Floor);
             GameObject wallObject = new GameObject("Vertical Wall " + entity.Floor, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
-            wall.Initialize(this, data, reversed, (entity.Floor == 0 || entity.Floor == -1), slopeDifference);
+            wall.Initialize(this, data, reversed, entity.IsGroundFloor, slopeDifference);
             wallObject.transform.rotation = Quaternion.Euler(0, 90, 0);
 
             Entities[entity] = wall;
@@ -367,20 +367,20 @@ namespace Warlander.Deedplanner.Data
 
             if (data)
             {
-                if (data.HouseWall && !currentWall)
+                if (!data.ArchBuildable && !currentWall)
                 {
                     return CreateNewHorizontalWall(wallEntityData, data, reversed);
                 }
-                else if (!data.HouseWall && !currentFence)
+                else if (data.ArchBuildable && !currentFence)
                 {
                     return CreateNewHorizontalWall(fenceEntityData, data, reversed);
                 }
-                else if (data.HouseWall && (currentWall.Data != data || currentWall.Reversed != reversed))
+                else if (!data.ArchBuildable && (currentWall.Data != data || currentWall.Reversed != reversed))
                 {
                     DestroyEntity(wallEntityData);
                     return CreateNewHorizontalWall(wallEntityData, data, reversed);
                 }
-                else if (!data.HouseWall && (currentFence.Data != data || currentFence.Reversed != reversed))
+                else if (data.ArchBuildable && (currentFence.Data != data || currentFence.Reversed != reversed))
                 {
                     DestroyEntity(fenceEntityData);
                     return CreateNewHorizontalWall(fenceEntityData, data, reversed);
@@ -408,7 +408,7 @@ namespace Warlander.Deedplanner.Data
             int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 1, 0).GetHeightForFloor(entity.Floor);
             GameObject wallObject = new GameObject("Horizontal Wall " + entity.Floor, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
-            wall.Initialize(this, data, reversed, (entity.Floor == 0 || entity.Floor == -1), slopeDifference);
+            wall.Initialize(this, data, reversed, entity.IsGroundFloor, slopeDifference);
             wallObject.transform.rotation = Quaternion.Euler(0, 180, 0);
 
             Entities[entity] = wall;
@@ -495,8 +495,129 @@ namespace Warlander.Deedplanner.Data
             surfaceHeight = (int) Convert.ToSingle(tileElement.GetAttribute("height"), CultureInfo.InvariantCulture);
             caveHeight = (int) Convert.ToSingle(tileElement.GetAttribute("caveHeight"), CultureInfo.InvariantCulture);
 
-            XmlElement groundElement = (XmlElement) tileElement.GetElementsByTagName("ground")[0];
-            Ground.Deserialize(groundElement);
+            foreach (XmlElement childElement in tileElement)
+            {
+                string tag = childElement.Name;
+                switch (tag)
+                {
+                    case "ground":
+                        Ground.Deserialize(childElement);
+                        break;
+                    case "level":
+                        DeserializeFloor(childElement);
+                        break;
+                }
+            }
+        }
+
+        private void DeserializeFloor(XmlElement floorElement)
+        {
+            int floor = Convert.ToInt32(floorElement.GetAttribute("value"));
+
+            foreach (XmlElement childElement in floorElement)
+            {
+                string tag = childElement.Name;
+                switch (tag)
+                {
+                    case "Floor":
+                        DeserializeFloor(childElement, floor);
+                        break;
+                    case "hWall": case "vWall":
+                        DeserializeWall(childElement, floor);
+                        break;
+                    case "roof":
+                        DeserializeRoof(childElement, floor);
+                        break;
+                }
+            }
+        }
+
+        private void DeserializeFloor(XmlElement element, int floor)
+        {
+            string id = element.GetAttribute("id");
+            FloorData data;
+            Database.Floors.TryGetValue(id, out data);
+            if (data == null)
+            {
+                Debug.LogWarning("Unable to load floor " + id);
+            }
+
+            string orientationString = element.GetAttribute("orientation");
+            EntityOrientation orientation = EntityOrientation.Down;
+            switch (orientationString.ToUpper())
+            {
+                case "UP":
+                    orientation = EntityOrientation.Up;
+                    break;
+                case "LEFT":
+                    orientation = EntityOrientation.Left;
+                    break;
+                case "DOWN":
+                    orientation = EntityOrientation.Down;
+                    break;
+                case "RIGHT":
+                    orientation = EntityOrientation.Right;
+                    break;
+            }
+
+            EntityData entityData = new EntityData(floor, EntityType.FLOORROOF);
+            CreateNewFloor(entityData, data, orientation);
+        }
+
+        private void DeserializeWall(XmlElement element, int floor)
+        {
+            string id = element.GetAttribute("id");
+            WallData data;
+            Database.Walls.TryGetValue(id, out data);
+            if (data == null)
+            {
+                Debug.LogWarning("Unable to load wall " + id);
+            }
+
+            EntityType entityType;
+            bool horizontal = (element.Name == "hWall");
+            
+            if (horizontal && data.ArchBuildable)
+            {
+                entityType = EntityType.HFENCE;
+            }
+            else if (horizontal)
+            {
+                entityType = EntityType.HWALL;
+            }
+            else if (!horizontal && data.ArchBuildable)
+            {
+                entityType = EntityType.VFENCE;
+            }
+            else
+            {
+                entityType = EntityType.VWALL;
+            }
+
+            bool reversed = element.GetAttribute("reversed") == "true";
+            EntityData entityData = new EntityData(floor, entityType);
+            if (horizontal)
+            {
+                CreateNewHorizontalWall(entityData, data, reversed);
+            }
+            else
+            {
+                CreateNewVerticalWall(entityData, data, reversed);
+            }
+        }
+
+        private void DeserializeRoof(XmlElement element, int floor)
+        {
+            string id = element.GetAttribute("id");
+            RoofData data;
+            Database.Roofs.TryGetValue(id, out data);
+            if (data == null)
+            {
+                Debug.LogWarning("Unable to load roof " + id);
+            }
+
+            EntityData entityData = new EntityData(floor, EntityType.FLOORROOF);
+            CreateNewRoof(entityData, data);
         }
 
         public void Refresh()
@@ -504,6 +625,7 @@ namespace Warlander.Deedplanner.Data
             RefreshSurfaceMesh();
             RefreshCaveMesh();
             UpdateSurfaceEntitiesPositions();
+            UpdateCaveEntitiesPositions();
         }
 
         private void RefreshSurfaceMesh()
@@ -567,7 +689,7 @@ namespace Warlander.Deedplanner.Data
                     continue;
                 }
                 TileEntity tileEntity = pair.Value;
-                tileEntity.transform.localPosition = new Vector3(X * 4, SurfaceHeight * 0.1f + data.Floor * 3f, Y * 4);
+                UpdateEntityPosition(data, tileEntity);
             }
         }
 
@@ -581,7 +703,24 @@ namespace Warlander.Deedplanner.Data
                     continue;
                 }
                 TileEntity tileEntity = pair.Value;
-                tileEntity.transform.localPosition = new Vector3(X * 4, SurfaceHeight * 0.1f + data.Floor * 3f, Y * 4);
+                UpdateEntityPosition(data, tileEntity);
+            }
+        }
+
+        private void UpdateEntityPosition(EntityData data, TileEntity entity)
+        {
+            entity.transform.localPosition = new Vector3(X * 4, SurfaceHeight * 0.1f + data.Floor * 3f, Y * 4);
+            if (data.Type == EntityType.HFENCE || data.Type == EntityType.HWALL)
+            {
+                int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 1, 0).GetHeightForFloor(entity.Floor);
+                Wall wall = (Wall) entity;
+                wall.UpdateModel(slopeDifference, data.IsGroundFloor);
+            }
+            else if (data.Type == EntityType.VFENCE || data.Type == EntityType.VWALL)
+            {
+                int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 0, 1).GetHeightForFloor(entity.Floor);
+                Wall wall = (Wall) entity;
+                wall.UpdateModel(slopeDifference, data.IsGroundFloor);
             }
         }
 
