@@ -185,6 +185,7 @@ namespace Warlander.Deedplanner.Utils
                 }
             }
 
+            material.enableInstancing = true;
             return material;
         }
 

@@ -13,6 +13,12 @@ namespace Warlander.Deedplanner.Data
         public int Floor { get; private set; }
         public EntityType Type { get; private set; }
 
+        public bool IsGroundFloor {
+            get {
+                return Floor == 0 || Floor == -1;
+            }
+        }
+
         public EntityData(int floor, EntityType type)
         {
             Floor = floor;
