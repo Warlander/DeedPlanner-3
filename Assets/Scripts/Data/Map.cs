@@ -240,6 +240,7 @@ namespace Warlander.Deedplanner.Data
         {
             GameObject gridObject = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer));
             gridObject.transform.SetParent(parent);
+            gridObject.transform.localPosition = new Vector3(0, 0.01f, 0);
             MeshFilter meshFilter = gridObject.GetComponent<MeshFilter>();
             meshFilter.sharedMesh = gridMesh;
             MeshRenderer meshRenderer = gridObject.GetComponent<MeshRenderer>();
@@ -252,15 +253,18 @@ namespace Warlander.Deedplanner.Data
         {
             Mesh gridMesh = new Mesh();
             Vector3[] vertices = new Vector3[(Width + 1) * (Height + 1)];
+            Color[] colors = new Color[(Width + 1) * (Height + 1)];
             for (int i = 0; i <= Width; i++)
             {
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
                     int index = CoordinateToIndex(i, i2);
                     vertices[index] = new Vector3(i * 4, 0, i2 * 4);
+                    colors[index] = new Color(1, 1, 1);
                 }
             }
             gridMesh.vertices = vertices;
+            gridMesh.colors = colors;
 
             int[] indices = new int[(Width + 1) * (Height + 1) * 4];
             for (int i = 0; i < Width; i++)
