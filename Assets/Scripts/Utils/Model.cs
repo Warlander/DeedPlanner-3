@@ -224,8 +224,33 @@ namespace Warlander.Deedplanner.Utils
                 }
                 newMesh.vertices = newVertices;
                 newMesh.uv = mesh.uv;
-                newMesh.triangles = mesh.triangles;
-                newMesh.normals = mesh.normals;
+                if (mirrorZ)
+                {
+                    int[] oldTriangles = mesh.triangles;
+                    int[] newTriangles = new int[oldTriangles.Length];
+                    for (int i = 0; i < oldTriangles.Length; i += 3)
+                    {
+                        newTriangles[i] = oldTriangles[i + 2];
+                        newTriangles[i + 1] = oldTriangles[i + 1];
+                        newTriangles[i + 2] = oldTriangles[i];
+                    }
+                    newMesh.triangles = newTriangles;
+
+                    Vector3[] oldNormals = mesh.normals;
+                    Vector3[] newNormals = new Vector3[oldNormals.Length];
+                    for (int i = 0; i < oldNormals.Length; i++)
+                    {
+                        Vector3 normal = oldNormals[i];
+                        newNormals[i] = new Vector3(normal.x, normal.y, normal.z * mirrorZFactor);
+                    }
+                    newMesh.normals = newNormals;
+                }
+                else
+                {
+                    newMesh.triangles = mesh.triangles;
+                    newMesh.normals = mesh.normals;
+                }
+                
                 newMesh.tangents = mesh.tangents;
                 newMesh.RecalculateBounds();
                 filter.sharedMesh = newMesh;
