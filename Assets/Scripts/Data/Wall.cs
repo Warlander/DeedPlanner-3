@@ -51,18 +51,13 @@ namespace Warlander.Deedplanner.Data
 
             if (firstFloor)
             {
-                Model = Data.BottomModel.CreateOrGetModel(slopeDifference);
+                Model = Data.BottomModel.CreateOrGetModel(slopeDifference, Reversed);
             }
             else
             {
-                Model = Data.NormalModel.CreateOrGetModel(slopeDifference);
+                Model = Data.NormalModel.CreateOrGetModel(slopeDifference, Reversed);
             }
             Model.transform.SetParent(transform, false);
-
-            if (Reversed)
-            {
-                Model.transform.localScale = new Vector3(1, 1, -1);
-            }
 
             Bounds bounds = Data.NormalModel.Bounds;
                 

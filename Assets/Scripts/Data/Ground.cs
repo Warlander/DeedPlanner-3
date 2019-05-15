@@ -101,7 +101,7 @@ namespace Warlander.Deedplanner.Data
             }
 
             MeshFilter meshFilter = GetComponent<MeshFilter>();
-            meshFilter.mesh = mesh;
+            meshFilter.sharedMesh = mesh;
 
             if (!Collider)
             {

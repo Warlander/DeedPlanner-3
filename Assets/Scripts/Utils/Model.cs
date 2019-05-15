@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace Warlander.Deedplanner.Utils
 {
+
     public class Model
     {
 
@@ -21,7 +22,7 @@ namespace Warlander.Deedplanner.Utils
 
         private GameObject modelRoot;
         private GameObject originalModel;
-        private readonly Dictionary<int, GameObject> skewedModels;
+        private readonly Dictionary<ModelProperties, GameObject> modifiedModels;
 
         public string Tag { get; private set; }
         public Vector3 Scale { get; private set; }
@@ -29,7 +30,10 @@ namespace Warlander.Deedplanner.Utils
 
         public Bounds Bounds {
             get {
-                InitializeModel();
+                ModelProperties properties = new ModelProperties();
+                properties.Skew = 0;
+                properties.MirrorZ = false;
+                InitializeModel(properties);
                 Bounds bounds = new Bounds();
                 MeshFilter[] filters = originalModel.GetComponentsInChildren<MeshFilter>();
                 foreach (MeshFilter filter in filters)
@@ -43,7 +47,7 @@ namespace Warlander.Deedplanner.Utils
 
         public Model(XmlElement element, int layer = int.MaxValue)
         {
-            skewedModels = new Dictionary<int, GameObject>();
+            modifiedModels = new Dictionary<ModelProperties, GameObject>();
 
             Tag = element.GetAttribute("tag");
             location = element.GetAttribute("location");
@@ -95,12 +99,12 @@ namespace Warlander.Deedplanner.Utils
             Tag = "";
             Scale = new Vector3(1, 1, 1);
             textureOverrides = new Dictionary<string, string>();
-            skewedModels = new Dictionary<int, GameObject>();
+            modifiedModels = new Dictionary<ModelProperties, GameObject>();
         }
 
         public void AddTextureOverride(string mesh, string texture)
         {
-            if (skewedModels.Count != 0)
+            if (modifiedModels.Count != 0)
             {
                 throw new InvalidOperationException("Model is already initialized, cannot add texture override");
             }
@@ -108,13 +112,37 @@ namespace Warlander.Deedplanner.Utils
             textureOverrides[mesh] = texture;
         }
 
-        public GameObject CreateOrGetModel(int skew = 0)
+        private GameObject CreateOrGetModel(ModelProperties properties)
         {
-            InitializeModel(skew);
-            return GameObject.Instantiate(skewedModels[skew]);
+            InitializeModel(properties);
+            return GameObject.Instantiate(modifiedModels[properties]);
         }
 
-        private void InitializeModel(int skew = 0)
+        public GameObject CreateOrGetModel(int skew, bool mirrorZ)
+        {
+            ModelProperties properties = new ModelProperties();
+            properties.Skew = skew;
+            properties.MirrorZ = mirrorZ;
+            return CreateOrGetModel(properties);
+        }
+
+        public GameObject CreateOrGetModel(int skew)
+        {
+            ModelProperties properties = new ModelProperties();
+            properties.Skew = skew;
+            properties.MirrorZ = false;
+            return CreateOrGetModel(properties);
+        }
+
+        public GameObject CreateOrGetModel()
+        {
+            ModelProperties properties = new ModelProperties();
+            properties.Skew = 0;
+            properties.MirrorZ = false;
+            return CreateOrGetModel(properties);
+        }
+
+        private void InitializeModel(ModelProperties modelProperties)
         {
             if (!modelsRoot)
             {
@@ -144,23 +172,38 @@ namespace Warlander.Deedplanner.Utils
                     {
                         MeshRenderer renderer = child.GetComponent<MeshRenderer>();
                         TextureReference texture = TextureReference.GetTextureReference(textureOverride);
-                        renderer.material = texture.Material;
+                        texture.Material.enableInstancing = true;
+                        renderer.sharedMaterial = texture.Material;
                     }
                 }
                 originalModel.transform.SetParent(modelRoot.transform);
-                skewedModels[0] = originalModel;
+                ModelProperties originalProperties = new ModelProperties();
+                originalProperties.Skew = 0;
+                originalProperties.MirrorZ = false;
+                modifiedModels[originalProperties] = originalModel;
             }
-            if (!skewedModels.ContainsKey(skew))
+            if (!modifiedModels.ContainsKey(modelProperties))
             {
-                GameObject skewedModel = CreateSkewedModel(skew);
-                skewedModel.name = originalModel.name + " " + skew;
+                GameObject skewedModel = CreateModel(modelProperties);
+                skewedModel.name = originalModel.name;
+                if (modelProperties.Skew != 0)
+                {
+                    skewedModel.name += " " + modelProperties.Skew;
+                }
+                if (modelProperties.MirrorZ)
+                {
+                    skewedModel.name += " ZMirrored";
+                }
                 skewedModel.transform.SetParent(modelRoot.transform);
-                skewedModels[skew] = skewedModel;
+                modifiedModels[modelProperties] = skewedModel;
             }
         }
 
-        private GameObject CreateSkewedModel(int skew)
+        private GameObject CreateModel(ModelProperties modelProperties)
         {
+            int skew = modelProperties.Skew;
+            bool mirrorZ = modelProperties.MirrorZ;
+            float mirrorZFactor = mirrorZ ? -1f : 1f;
             // skew is in Wurm units that are 4 Unity units long and 0.1 units high
             float skewPerUnit = skew * 0.1f * 0.25f;
 
@@ -177,7 +220,7 @@ namespace Warlander.Deedplanner.Utils
                 for (int i = 0; i < originalVertices.Length; i++)
                 {
                     Vector3 vec = originalVertices[i];
-                    newVertices[i] = new Vector3(vec.x, vec.y + skewPerUnit * vec.x, vec.z);
+                    newVertices[i] = new Vector3(vec.x, vec.y + skewPerUnit * vec.x, vec.z * mirrorZFactor);
                 }
                 newMesh.vertices = newVertices;
                 newMesh.uv = mesh.uv;
@@ -189,6 +232,12 @@ namespace Warlander.Deedplanner.Utils
             }
 
             return clone;
+        }
+
+        private struct ModelProperties
+        {
+            public int Skew;
+            public bool MirrorZ;
         }
 
     }
