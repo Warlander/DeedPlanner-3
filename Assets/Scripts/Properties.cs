@@ -68,7 +68,7 @@ namespace Warlander.Deedplanner.Gui
                 }
                 else
                 {
-                    return WaterQuality.ULTRA;
+                    return WaterQuality.HIGH;
                 }
             }
         }
