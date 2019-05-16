@@ -15,6 +15,9 @@ namespace Warlander.Deedplanner.Logic
     public class WallUpdater : MonoBehaviour
     {
 
+        [SerializeField]
+        private Toggle reverseToggle;
+
         public void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Borders;
@@ -31,6 +34,7 @@ namespace Warlander.Deedplanner.Logic
             GridTile gridTile = raycast.transform.GetComponent<GridTile>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
 
+            bool reverse = reverseToggle.isOn;
             int floor = 0;
             int x = -1;
             int y = -1;
@@ -66,11 +70,11 @@ namespace Warlander.Deedplanner.Logic
                 WallData data = GuiManager.Instance.WallsTree.SelectedValue as WallData;
                 if (horizontal)
                 {
-                    GameManager.Instance.Map[x, y].SetHorizontalWall(data, false, floor);
+                    GameManager.Instance.Map[x, y].SetHorizontalWall(data, reverse, floor);
                 }
                 else
                 {
-                    GameManager.Instance.Map[x, y].SetVerticalWall(data, false, floor);
+                    GameManager.Instance.Map[x, y].SetVerticalWall(data, reverse, floor);
                 }
             }
             else if (Input.GetMouseButton(1))
@@ -81,11 +85,11 @@ namespace Warlander.Deedplanner.Logic
                 }
                 if (horizontal)
                 {
-                    GameManager.Instance.Map[x, y].SetHorizontalWall(null, false, floor);
+                    GameManager.Instance.Map[x, y].SetHorizontalWall(null, reverse, floor);
                 }
                 else
                 {
-                    GameManager.Instance.Map[x, y].SetVerticalWall(null, false, floor);
+                    GameManager.Instance.Map[x, y].SetVerticalWall(null, reverse, floor);
                 }
             }
         }
