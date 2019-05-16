@@ -576,10 +576,10 @@ namespace Warlander.Deedplanner.Logic
             }
 
             float raytraceAlpha = 0.25f;
-            Transform hitTransform = CurrentRaycast.transform;
 
             if (hitCollider.GetType() == typeof(MeshCollider))
             {
+                Debug.Log(hitCollider.gameObject.name);
                 MeshCollider collider = (MeshCollider)hitCollider;
                 Mesh mesh = collider.sharedMesh;
                 Vector3[] vertices = mesh.vertices;
