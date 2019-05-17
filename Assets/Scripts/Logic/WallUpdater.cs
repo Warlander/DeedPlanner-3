@@ -70,16 +70,16 @@ namespace Warlander.Deedplanner.Logic
 
             if (Input.GetMouseButton(0))
             {
-                TileEntity currentFloor = GameManager.Instance.Map[x, y].GetTileContent(floor);
+                Floor currentFloor = GameManager.Instance.Map[x, y].GetTileContent(floor) as Floor;
                 bool shouldReverse;
                 if (horizontal)
                 {
-                    TileEntity nearFloor = GameManager.Instance.Map[x, y - 1].GetTileContent(floor);
+                    Floor nearFloor = GameManager.Instance.Map[x, y - 1].GetTileContent(floor) as Floor;
                     shouldReverse = currentFloor && !nearFloor;
                 }
                 else
                 {
-                    TileEntity nearFloor = GameManager.Instance.Map[x - 1, y].GetTileContent(floor);
+                    Floor nearFloor = GameManager.Instance.Map[x - 1, y].GetTileContent(floor) as Floor;
                     shouldReverse = !currentFloor && nearFloor;
                 }
 
