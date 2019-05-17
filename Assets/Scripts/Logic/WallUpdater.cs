@@ -17,6 +17,8 @@ namespace Warlander.Deedplanner.Logic
 
         [SerializeField]
         private Toggle reverseToggle;
+        [SerializeField]
+        private Toggle automaticReverseToggle;
 
         public void OnEnable()
         {
@@ -34,6 +36,7 @@ namespace Warlander.Deedplanner.Logic
             GridTile gridTile = raycast.transform.GetComponent<GridTile>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
 
+            bool automaticReverse = automaticReverseToggle.isOn;
             bool reverse = reverseToggle.isOn;
             int floor = 0;
             int x = -1;
@@ -67,14 +70,32 @@ namespace Warlander.Deedplanner.Logic
 
             if (Input.GetMouseButton(0))
             {
-                WallData data = GuiManager.Instance.WallsTree.SelectedValue as WallData;
+                TileEntity currentFloor = GameManager.Instance.Map[x, y].GetTileContent(floor);
+                bool shouldReverse;
                 if (horizontal)
                 {
-                    GameManager.Instance.Map[x, y].SetHorizontalWall(data, reverse, floor);
+                    TileEntity nearFloor = GameManager.Instance.Map[x, y - 1].GetTileContent(floor);
+                    shouldReverse = currentFloor && !nearFloor;
                 }
                 else
                 {
-                    GameManager.Instance.Map[x, y].SetVerticalWall(data, reverse, floor);
+                    TileEntity nearFloor = GameManager.Instance.Map[x - 1, y].GetTileContent(floor);
+                    shouldReverse = !currentFloor && nearFloor;
+                }
+
+                if (reverse)
+                {
+                    shouldReverse = !shouldReverse;
+                }
+
+                WallData data = GuiManager.Instance.WallsTree.SelectedValue as WallData;
+                if (horizontal)
+                {
+                    GameManager.Instance.Map[x, y].SetHorizontalWall(data, shouldReverse, floor);
+                }
+                else
+                {
+                    GameManager.Instance.Map[x, y].SetVerticalWall(data, shouldReverse, floor);
                 }
             }
             else if (Input.GetMouseButton(1))
@@ -85,11 +106,11 @@ namespace Warlander.Deedplanner.Logic
                 }
                 if (horizontal)
                 {
-                    GameManager.Instance.Map[x, y].SetHorizontalWall(null, reverse, floor);
+                    GameManager.Instance.Map[x, y].SetHorizontalWall(null, false, floor);
                 }
                 else
                 {
-                    GameManager.Instance.Map[x, y].SetVerticalWall(null, reverse, floor);
+                    GameManager.Instance.Map[x, y].SetVerticalWall(null, false, floor);
                 }
             }
         }
