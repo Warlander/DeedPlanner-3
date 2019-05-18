@@ -210,12 +210,12 @@ namespace Warlander.Deedplanner.Data
 
                     GameObject surfaceGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
                     surfaceGridObject.transform.SetParent(surfaceGridRoot);
-                    surfaceGridObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
+                    surfaceGridObject.transform.localPosition = new Vector3(i * 4, 0.01f, i2 * 4);
                     GridTile surfaceGrid = surfaceGridObject.GetComponent<GridTile>();
 
                     GameObject caveGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
                     caveGridObject.transform.SetParent(caveGridRoot);
-                    caveGridObject.transform.localPosition = new Vector3(i * 4, 0, i2 * 4);
+                    caveGridObject.transform.localPosition = new Vector3(i * 4, 0.01f, i2 * 4);
                     GridTile caveGrid = caveGridObject.GetComponent<GridTile>();
 
                     Tile tile = ScriptableObject.CreateInstance<Tile>();
