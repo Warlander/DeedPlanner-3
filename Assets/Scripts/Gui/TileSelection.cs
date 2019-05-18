@@ -87,7 +87,6 @@ namespace Warlander.Deedplanner.Gui
 
             return default;
         }
-
     }
 
     public struct TileSelectionHit
