@@ -45,7 +45,7 @@ namespace Warlander.Deedplanner.Data
                 Map.GetRelativeTile(this, -1, -1)?.RefreshSurfaceMesh();
                 Map.GetRelativeTile(this, -1, -1)?.UpdateSurfaceEntitiesPositions();
 
-                Map.RecalculateHeight(X, Y);
+                Map.RecalculateSurfaceHeight(X, Y);
             }
         }
 
@@ -64,7 +64,7 @@ namespace Warlander.Deedplanner.Data
                 Map.GetRelativeTile(this, -1, -1)?.RefreshCaveMesh();
                 Map.GetRelativeTile(this, -1, -1)?.UpdateCaveEntitiesPositions();
 
-                Map.RecalculateHeight(X, Y);
+                Map.RecalculateCaveHeight(X, Y);
             }
         }
 
@@ -83,7 +83,7 @@ namespace Warlander.Deedplanner.Data
                 Map.GetRelativeTile(this, -1, -1)?.RefreshCaveMesh();
                 Map.GetRelativeTile(this, -1, -1)?.UpdateCaveEntitiesPositions();
 
-                Map.RecalculateHeight(X, Y);
+                Map.RecalculateCaveHeight(X, Y);
             }
         }
 
