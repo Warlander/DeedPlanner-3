@@ -198,6 +198,7 @@ namespace Warlander.Deedplanner.Logic
             {
                 simpleQualityWater.gameObject.SetActive(renderWater);
             }
+
             Map map = GameManager.Instance.Map;
             if (map.RenderedFloor != Floor)
             {
@@ -207,6 +208,18 @@ namespace Warlander.Deedplanner.Logic
             {
                 map.RenderEntireLayer = RenderEntireLayer;
             }
+            bool renderHeights = LayoutManager.Instance.CurrentTab == Tab.Height;
+            if (Floor < 0)
+            {
+                map.CaveGridMesh.SetRenderHeightColors(renderHeights);
+                map.CaveGridMesh.ApplyAllChanges();
+            }
+            else
+            {
+                map.SurfaceGridMesh.SetRenderHeightColors(renderHeights);
+                map.SurfaceGridMesh.ApplyAllChanges();
+            }
+
             CurrentRaycast = default;
 
             if (mouseOver)
