@@ -25,6 +25,8 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField]
         private CaveUpdater caveUpdater = null;
         [SerializeField]
+        private HeightUpdater heightUpdater = null;
+        [SerializeField]
         private FloorUpdater floorUpdater = null;
         [SerializeField]
         private WallUpdater wallUpdater = null;
@@ -119,6 +121,7 @@ namespace Warlander.Deedplanner.Logic
 
             CheckUpdater(groundUpdater, newUpdater);
             CheckUpdater(caveUpdater, newUpdater);
+            CheckUpdater(heightUpdater, newUpdater);
             CheckUpdater(floorUpdater, newUpdater);
             CheckUpdater(roofUpdater, newUpdater);
             CheckUpdater(wallUpdater, newUpdater);
@@ -142,6 +145,8 @@ namespace Warlander.Deedplanner.Logic
                     return groundUpdater;
                 case Tab.Caves:
                     return caveUpdater;
+                case Tab.Height:
+                    return heightUpdater;
                 case Tab.Floors:
                     return floorUpdater;
                 case Tab.Roofs:
