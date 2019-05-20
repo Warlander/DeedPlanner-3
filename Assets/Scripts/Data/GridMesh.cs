@@ -39,6 +39,7 @@ namespace Warlander.Deedplanner.Data
             this.cave = cave;
 
             mesh = new Mesh();
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
             vertices = new Vector3[(map.Width + 1) * (map.Height + 1)];
             uniformColors = new Color[(map.Width + 1) * (map.Height + 1)];
