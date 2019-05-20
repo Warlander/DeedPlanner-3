@@ -38,7 +38,7 @@ namespace Warlander.Deedplanner.Logic
 
         private Vector3 fppPosition = new Vector3(-3, 4, -3);
         private Vector3 fppRotation = new Vector3(15, 45, 0);
-        private float wurmianHeight = 1.4f;
+        private const float wurmianHeight = 1.4f;
 
         private Vector2 topPosition;
         private float topScale = 40;
@@ -314,6 +314,27 @@ namespace Warlander.Deedplanner.Logic
                 {
                     movement *= Properties.Instance.FppControlModifier;
                 }
+
+                if (Input.GetKey(KeyCode.Q))
+                {
+                    fppRotation += new Vector3(0, -Time.deltaTime * Properties.Instance.FppKeyboardRotationSensitivity, 0);
+                    fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
+                }
+                if (Input.GetKey(KeyCode.E))
+                {
+                    fppRotation += new Vector3(0, Time.deltaTime * Properties.Instance.FppKeyboardRotationSensitivity, 0);
+                    fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
+                }
+
+                if (Input.GetKey(KeyCode.R))
+                {
+                    fppPosition += new Vector3(0, Time.deltaTime * Properties.Instance.FppMovementSpeed, 0);
+                }
+                if (Input.GetKey(KeyCode.F))
+                {
+                    fppPosition += new Vector3(0, -Time.deltaTime * Properties.Instance.FppMovementSpeed, 0);
+                }
+
                 attachedCamera.transform.localPosition = fppPosition;
                 attachedCamera.transform.Translate(movement, Space.Self);
                 fppPosition = attachedCamera.transform.position;

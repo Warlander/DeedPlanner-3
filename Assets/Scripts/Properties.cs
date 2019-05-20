@@ -48,6 +48,7 @@ namespace Warlander.Deedplanner.Gui
         public int FieldOfView = 60;
 
         public float FppMouseSensitivity = 0.5f;
+        public float FppKeyboardRotationSensitivity = 60f;
         public float FppMovementSpeed = 16f;
         public float FppShiftModifier = 5f;
         public float FppControlModifier = 0.2f;
