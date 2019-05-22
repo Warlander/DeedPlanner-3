@@ -16,9 +16,7 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField]
         private bool loadTestMap = false;
         [SerializeField]
-        private bool testSurfaceHeights = false;
-        [SerializeField]
-        private bool testSurfaceFloors = false;
+        private bool testHeightEditIndicators = false;
 
         [SerializeField]
         private bool overrideStartingTileSelectionMode = false;
@@ -38,34 +36,16 @@ namespace Warlander.Deedplanner.Logic
                 string fullTestMapLocation = Path.Combine(Application.streamingAssetsPath, "./Special/Test Map.MAP");
                 StartCoroutine(GameManager.Instance.LoadMap(new Uri(fullTestMapLocation)));
             }
-            if (testSurfaceHeights)
+
+            if (testHeightEditIndicators)
             {
-                Map map = GameManager.Instance.Map;
-                map[5, 5].SurfaceHeight = 30;
-                map[6, 5].SurfaceHeight = 30;
-                map[5, 6].SurfaceHeight = 30;
-                map[6, 6].SurfaceHeight = 30;
-                map[5, 7].SurfaceHeight = 10;
-                map[6, 7].SurfaceHeight = 10;
-                map[4, 8].SurfaceHeight = -10;
-                map[5, 8].SurfaceHeight = -10;
-                map[6, 8].SurfaceHeight = -10;
-                map[7, 8].SurfaceHeight = -10;
-                map[4, 9].SurfaceHeight = -10;
-                map[5, 9].SurfaceHeight = -10;
-                map[6, 9].SurfaceHeight = -10;
-                map[7, 9].SurfaceHeight = -10;
-            }
-            if (testSurfaceFloors)
-            {
-                Map map = GameManager.Instance.Map;
-                FloorData exampleData = Database.Floors["wFloor"];
-                EntityOrientation orientation = EntityOrientation.Up;
-                map[15, 15].SetFloor(exampleData, orientation, 0);
-                map[15, 15].SetFloor(exampleData, orientation, 1);
-                map[16, 15].SetFloor(exampleData, orientation, 0);
-                map[15, 16].SetFloor(exampleData, orientation, 0);
-                map[16, 16].SetFloor(exampleData, orientation, 0);
+                for (int i = 0; i <= GameManager.Instance.Map.Width; i++)
+                {
+                    for (int i2 = 0; i2 <= GameManager.Instance.Map.Height; i2++)
+                    {
+                        GameManager.Instance.Map.SurfaceGridMesh.TogglePoint(i, i2, true);
+                    }
+                }
             }
         }
 
