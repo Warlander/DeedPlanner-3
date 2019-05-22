@@ -103,6 +103,15 @@ namespace Warlander.Deedplanner.Data
             if (newVector != vertices[pos])
             {
                 vertices[pos] = newVector;
+
+                Vector2Int vec = new Vector2Int(x, y);
+                GameObject point;
+                points.TryGetValue(vec, out point);
+                if (point != null)
+                {
+                    point.transform.localPosition = vertices[pos];
+                }
+
                 verticesChanged = true;
                 dirty = true;
             }
@@ -116,6 +125,7 @@ namespace Warlander.Deedplanner.Data
             if (toggle && !point)
             {
                 point = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                point.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
                 point.transform.SetParent(transform);
 
                 int pos = map.CoordinateToIndex(x, y);
