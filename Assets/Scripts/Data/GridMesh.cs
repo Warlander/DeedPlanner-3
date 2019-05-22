@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
@@ -21,8 +22,12 @@ namespace Warlander.Deedplanner.Data
         private bool verticesChanged = false;
         private bool dirty = false;
 
+        private Dictionary<Vector2Int, GameObject> points;
+
         public void Initialize(Map map, bool cave)
         {
+            points = new Dictionary<Vector2Int, GameObject>();
+
             meshFilter = GetComponent<MeshFilter>();
             if (!meshFilter)
             {
@@ -40,6 +45,7 @@ namespace Warlander.Deedplanner.Data
 
             mesh = new Mesh();
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            mesh.subMeshCount = 2;
 
             vertices = new Vector3[(map.Width + 1) * (map.Height + 1)];
             uniformColors = new Color[(map.Width + 1) * (map.Height + 1)];
@@ -100,6 +106,37 @@ namespace Warlander.Deedplanner.Data
                 verticesChanged = true;
                 dirty = true;
             }
+        }
+
+        public void TogglePoint(int x, int y, bool toggle)
+        {
+            Vector2Int vec = new Vector2Int(x, y);
+            GameObject point;
+            points.TryGetValue(vec, out point);
+            if (toggle && !point)
+            {
+                point = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                point.transform.SetParent(transform);
+
+                int pos = map.CoordinateToIndex(x, y);
+                point.transform.localPosition = vertices[pos];
+                points[vec] = point;
+            }
+            else if (!toggle && point)
+            {
+                points.Remove(vec);
+                Destroy(point);
+            }
+        }
+
+        public void ClearPoints()
+        {
+            foreach (GameObject point in points.Values)
+            {
+                Destroy(point);
+            }
+
+            points.Clear();
         }
 
         public void ApplyAllChanges()

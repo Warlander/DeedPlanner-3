@@ -14,8 +14,8 @@ namespace Warlander.Deedplanner.Utils
 
         static RenderMaterials()
         {
-            Shader shader = Shader.Find("DeedPlanner/SimpleLineShader");
-            SimpleDrawingMaterial = new Material(shader);
+            Shader drawingShader = Shader.Find("DeedPlanner/SimpleLineShader");
+            SimpleDrawingMaterial = new Material(drawingShader);
         }
 
     }
