@@ -132,6 +132,11 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
+        public HeightmapHandle GetHandle(int x, int y)
+        {
+            return heightmapHandles[x, y];
+        }
+
         public void ApplyAllChanges()
         {
             if (!dirty)
