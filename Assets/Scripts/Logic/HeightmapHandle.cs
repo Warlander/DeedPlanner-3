@@ -13,13 +13,21 @@ namespace Warlander.Deedplanner.Logic
         public Vector2Int TileCoords { get; private set; }
 
         private Renderer commonRenderer;
+        private Color color;
 
         public Color Color {
+            get {
+                return color;
+            }
             set {
-                Debug.Log("Setting color");
+                if (color == value)
+                {
+                    return;
+                }
                 MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
                 propertyBlock.SetColor("_Color", value);
                 commonRenderer.SetPropertyBlock(propertyBlock);
+                color = value;
             }
         }
 

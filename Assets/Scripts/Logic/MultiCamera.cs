@@ -16,7 +16,8 @@ namespace Warlander.Deedplanner.Logic
     {
 
         private Transform parentTransform;
-        private Camera attachedCamera;
+        public Camera AttachedCamera { get; private set; }
+        public Vector2 MousePosition { get; private set; }
         [SerializeField]
         private int screenId = 0;
         [SerializeField]
@@ -33,6 +34,8 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField]
         private GameObject simpleQualityWater = null;
 
+        [SerializeField]
+        private RectTransform selectionBox = null;
         [SerializeField]
         private Projector attachedProjector = null;
 
@@ -76,10 +79,43 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
+        public GameObject Screen {
+            get {
+                return screen;
+            }
+        }
+
+        public bool RenderSelectionBox {
+            get {
+                return selectionBox.gameObject.activeSelf;
+            }
+            set {
+                selectionBox.gameObject.SetActive(value);
+            }
+        }
+
+        public Vector2 SelectionBoxPosition {
+            get {
+                return selectionBox.anchoredPosition;
+            }
+            set {
+                selectionBox.anchoredPosition = value;
+            }
+        }
+
+        public Vector2 SelectionBoxSize {
+            get {
+                return selectionBox.sizeDelta;
+            }
+            set {
+                selectionBox.sizeDelta = value;
+            }
+        }
+
         void Start()
         {
             parentTransform = transform.parent;
-            attachedCamera = GetComponent<Camera>();
+            AttachedCamera = GetComponent<Camera>();
 
             MouseEventCatcher eventCatcher = screen.GetComponent<MouseEventCatcher>();
 
@@ -167,7 +203,7 @@ namespace Warlander.Deedplanner.Logic
         void OnPreCull()
         {
             PrepareProjector();
-            Vector3 cameraPosition = attachedCamera.transform.position;
+            Vector3 cameraPosition = AttachedCamera.transform.position;
             bool renderWater = RenderEntireLayer ? true : (Floor == 0 || Floor == -1);
             if (Properties.Instance.WaterQuality == Gui.WaterQuality.ULTRA)
             {
@@ -228,9 +264,10 @@ namespace Warlander.Deedplanner.Logic
             {
                 Vector2 local;
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(screen.GetComponent<RectTransform>(), Input.mousePosition, null, out local);
+                MousePosition = local + (screen.GetComponent<RectTransform>().sizeDelta / 2);
                 local /= screen.GetComponent<RectTransform>().sizeDelta;
                 local += new Vector2(0.5f, 0.5f);
-                Ray ray = attachedCamera.ViewportPointToRay(local);
+                Ray ray = AttachedCamera.ViewportPointToRay(local);
                 RaycastHit raycastHit;
                 int mask = LayerMasks.GetMaskForTab(LayoutManager.Instance.CurrentTab);
                 bool hit = Physics.Raycast(ray, out raycastHit, 20000, mask);
@@ -337,9 +374,9 @@ namespace Warlander.Deedplanner.Logic
                     fppPosition += new Vector3(0, -Time.deltaTime * Properties.Instance.FppMovementSpeed, 0);
                 }
 
-                attachedCamera.transform.localPosition = fppPosition;
-                attachedCamera.transform.Translate(movement, Space.Self);
-                fppPosition = attachedCamera.transform.position;
+                AttachedCamera.transform.localPosition = fppPosition;
+                AttachedCamera.transform.Translate(movement, Space.Self);
+                fppPosition = AttachedCamera.transform.position;
             }
 
             if (CameraMode == CameraMode.Wurmian)
@@ -410,25 +447,25 @@ namespace Warlander.Deedplanner.Logic
                 topPosition += movement;
             }
 
-            if (topPosition.x < topScale * attachedCamera.aspect)
+            if (topPosition.x < topScale * AttachedCamera.aspect)
             {
-                topPosition.x = topScale * attachedCamera.aspect;
+                topPosition.x = topScale * AttachedCamera.aspect;
             }
             if (topPosition.y < topScale)
             {
                 topPosition.y = topScale;
             }
 
-            if (topPosition.x > map.Width * 4 - topScale * attachedCamera.aspect)
+            if (topPosition.x > map.Width * 4 - topScale * AttachedCamera.aspect)
             {
-                topPosition.x = map.Width * 4 - topScale * attachedCamera.aspect;
+                topPosition.x = map.Width * 4 - topScale * AttachedCamera.aspect;
             }
             if (topPosition.y > map.Height * 4 - topScale)
             {
                 topPosition.y = map.Height * 4 - topScale;
             }
 
-            bool fitsHorizontally = map.Width * 2 < topScale * attachedCamera.aspect;
+            bool fitsHorizontally = map.Width * 2 < topScale * AttachedCamera.aspect;
             bool fitsVertically = map.Height * 2 < topScale;
 
             if (fitsHorizontally)
@@ -464,25 +501,25 @@ namespace Warlander.Deedplanner.Logic
                 isoPosition += movement;
             }
 
-            if (isoPosition.x < -(map.Width * 4 / Mathf.Sqrt(2) - isoScale * attachedCamera.aspect))
+            if (isoPosition.x < -(map.Width * 4 / Mathf.Sqrt(2) - isoScale * AttachedCamera.aspect))
             {
-                isoPosition.x = -(map.Width * 4 / Mathf.Sqrt(2) - isoScale * attachedCamera.aspect);
+                isoPosition.x = -(map.Width * 4 / Mathf.Sqrt(2) - isoScale * AttachedCamera.aspect);
             }
             if (isoPosition.y < isoScale)
             {
                 isoPosition.y = isoScale;
             }
 
-            if (isoPosition.x > map.Width * 4 / Mathf.Sqrt(2) - isoScale * attachedCamera.aspect)
+            if (isoPosition.x > map.Width * 4 / Mathf.Sqrt(2) - isoScale * AttachedCamera.aspect)
             {
-                isoPosition.x = map.Width * 4 / Mathf.Sqrt(2) - isoScale * attachedCamera.aspect;
+                isoPosition.x = map.Width * 4 / Mathf.Sqrt(2) - isoScale * AttachedCamera.aspect;
             }
             if (isoPosition.y > map.Height * 4 / Mathf.Sqrt(2) - isoScale)
             {
                 isoPosition.y = map.Height * 4 / Mathf.Sqrt(2) - isoScale;
             }
 
-            bool fitsHorizontally = map.Width * 2 * Mathf.Sqrt(2) < isoScale * attachedCamera.aspect;
+            bool fitsHorizontally = map.Width * 2 * Mathf.Sqrt(2) < isoScale * AttachedCamera.aspect;
             bool fitsVertically = map.Height * 2 / Mathf.Sqrt(2) < isoScale;
 
             if (fitsHorizontally)
@@ -499,25 +536,25 @@ namespace Warlander.Deedplanner.Logic
         {
             if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
             {
-                attachedCamera.orthographic = false;
-                attachedCamera.transform.localPosition = fppPosition;
-                attachedCamera.transform.localRotation = Quaternion.Euler(fppRotation);
+                AttachedCamera.orthographic = false;
+                AttachedCamera.transform.localPosition = fppPosition;
+                AttachedCamera.transform.localRotation = Quaternion.Euler(fppRotation);
                 parentTransform.localRotation = Quaternion.identity;
             }
             else if (cameraMode == CameraMode.Top)
             {
-                attachedCamera.orthographic = true;
-                attachedCamera.orthographicSize = topScale;
-                attachedCamera.transform.localPosition = new Vector3(topPosition.x, 10000, topPosition.y);
-                attachedCamera.transform.localRotation = Quaternion.Euler(90, 0, 0);
+                AttachedCamera.orthographic = true;
+                AttachedCamera.orthographicSize = topScale;
+                AttachedCamera.transform.localPosition = new Vector3(topPosition.x, 10000, topPosition.y);
+                AttachedCamera.transform.localRotation = Quaternion.Euler(90, 0, 0);
                 parentTransform.localRotation = Quaternion.identity;
             }
             else if (cameraMode == CameraMode.Isometric)
             {
-                attachedCamera.orthographic = true;
-                attachedCamera.orthographicSize = isoScale;
-                attachedCamera.transform.localPosition = new Vector3(isoPosition.x, isoPosition.y, -10000);
-                attachedCamera.transform.localRotation = Quaternion.identity;
+                AttachedCamera.orthographic = true;
+                AttachedCamera.orthographicSize = isoScale;
+                AttachedCamera.transform.localPosition = new Vector3(isoPosition.x, isoPosition.y, -10000);
+                AttachedCamera.transform.localRotation = Quaternion.identity;
                 parentTransform.localRotation = Quaternion.Euler(30, 45, 0);
             }
         }
@@ -526,7 +563,7 @@ namespace Warlander.Deedplanner.Logic
         {
             Camera[] waterCameras = ultraQualityWater.GetComponentsInChildren<Camera>();
             bool currentWaterCamera = waterCameras.Contains(Camera.current);
-            bool currentAttachedCamera = Camera.current == attachedCamera;
+            bool currentAttachedCamera = Camera.current == AttachedCamera;
             if (!currentWaterCamera && !currentAttachedCamera)
             {
                 return;

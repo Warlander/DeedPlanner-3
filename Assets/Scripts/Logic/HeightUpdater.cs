@@ -20,6 +20,11 @@ namespace Warlander.Deedplanner.Logic
 
         private HeightmapHandle hoveredHandle = null;
 
+        private bool validDragging = false;
+        private bool dragging = false;
+        private Vector2 dragStartPos;
+        private Vector2 dragEndPos;
+
         public void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
@@ -50,6 +55,65 @@ namespace Warlander.Deedplanner.Logic
             if (raycast.transform == null)
             {
                 return;
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                if (!dragging)
+                {
+                    dragStartPos = LayoutManager.Instance.CurrentCamera.MousePosition;
+                    dragEndPos = dragStartPos;
+                    dragging = true;
+                }
+                else if (dragging)
+                {
+                    dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
+                }
+
+                if (Vector2.Distance(dragStartPos, dragEndPos) > 5)
+                {
+                    validDragging = true;
+                    LayoutManager.Instance.CurrentCamera.RenderSelectionBox = true;
+                }
+                Vector2 difference = dragEndPos - dragStartPos;
+                float clampedDifferenceX = Mathf.Clamp(-difference.x, 0, float.MaxValue);
+                float clampedDifferenceY = Mathf.Clamp(-difference.y, 0, float.MaxValue);
+                Vector2 clampedDifference = new Vector2(clampedDifferenceX, clampedDifferenceY);
+
+                Vector2 selectionStart = dragStartPos - clampedDifference;
+                Vector2 selectionEnd = dragEndPos - dragStartPos + clampedDifference * 2;
+
+                LayoutManager.Instance.CurrentCamera.SelectionBoxPosition = selectionStart;
+                LayoutManager.Instance.CurrentCamera.SelectionBoxSize = selectionEnd;
+
+                Vector2 viewportStart = selectionStart / LayoutManager.Instance.CurrentCamera.Screen.GetComponent<RectTransform>().sizeDelta;
+                Vector2 viewportEnd = selectionEnd / LayoutManager.Instance.CurrentCamera.Screen.GetComponent<RectTransform>().sizeDelta;
+                Rect viewportRect = new Rect(viewportStart, viewportEnd);
+
+                Camera checkedCamera = LayoutManager.Instance.CurrentCamera.AttachedCamera;
+
+                for (int i = 0; i <= GameManager.Instance.Map.Width; i++)
+                {
+                    for (int i2 = 0; i2 < GameManager.Instance.Map.Height; i2++)
+                    {
+                        float height = GameManager.Instance.Map[i, i2].GetHeightForFloor(LayoutManager.Instance.CurrentCamera.Floor) * 0.1f;
+                        Vector2 viewportLocation = checkedCamera.WorldToViewportPoint(new Vector3(i * 4, height, i2 * 4));
+                        if (viewportRect.Contains(viewportLocation))
+                        {
+                            GameManager.Instance.Map.SurfaceGridMesh.GetHandle(i, i2).Color = hoveredColor;
+                        }
+                        else
+                        {
+                            GameManager.Instance.Map.SurfaceGridMesh.GetHandle(i, i2).Color = neutralColor;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                dragging = false;
+                validDragging = false;
+                LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
             }
 
             if (heightmapHandle)
