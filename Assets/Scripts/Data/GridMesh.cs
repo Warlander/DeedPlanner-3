@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using UnityEngine;
+using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
@@ -22,12 +23,20 @@ namespace Warlander.Deedplanner.Data
         private bool verticesChanged = false;
         private bool dirty = false;
 
-        private Dictionary<Vector2Int, GameObject> points;
+        private Transform handlesParent;
+        private HeightmapHandle[,] heightmapHandles;
+
+        public bool HandlesVisible {
+            get {
+                return handlesParent.gameObject.activeSelf;
+            }
+            set {
+                handlesParent.gameObject.SetActive(value);
+            }
+        }
 
         public void Initialize(Map map, bool cave)
         {
-            points = new Dictionary<Vector2Int, GameObject>();
-
             meshFilter = GetComponent<MeshFilter>();
             if (!meshFilter)
             {
@@ -42,6 +51,7 @@ namespace Warlander.Deedplanner.Data
 
             this.map = map;
             this.cave = cave;
+            heightmapHandles = new HeightmapHandle[map.Width + 1, map.Height + 1];
 
             mesh = new Mesh();
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
@@ -50,6 +60,9 @@ namespace Warlander.Deedplanner.Data
             vertices = new Vector3[(map.Width + 1) * (map.Height + 1)];
             uniformColors = new Color[(map.Width + 1) * (map.Height + 1)];
             heightColors = new Color[(map.Width + 1) * (map.Height + 1)];
+            handlesParent = new GameObject("Handles parent").transform;
+            handlesParent.SetParent(transform);
+
             for (int i = 0; i <= map.Width; i++)
             {
                 for (int i2 = 0; i2 <= map.Height; i2++)
@@ -58,6 +71,12 @@ namespace Warlander.Deedplanner.Data
                     vertices[index] = new Vector3(i * 4, 0, i2 * 4);
                     uniformColors[index] = new Color(1, 1, 1);
                     heightColors[index] = new Color(1, 1, 1);
+
+                    HeightmapHandle newHandle = Instantiate(GameManager.Instance.HeightmapHandlePrefab);
+                    newHandle.Initialize(new Vector2Int(i, i2));
+                    newHandle.transform.localPosition = vertices[index];
+                    newHandle.transform.SetParent(handlesParent);
+                    heightmapHandles[i, i2] = newHandle;
                 }
             }
 
@@ -83,6 +102,7 @@ namespace Warlander.Deedplanner.Data
 
             meshFilter.sharedMesh = mesh;
             meshRenderer.sharedMaterial = RenderMaterials.SimpleDrawingMaterial;
+
             verticesChanged = false;
             dirty = false;
         }
@@ -104,49 +124,12 @@ namespace Warlander.Deedplanner.Data
             {
                 vertices[pos] = newVector;
 
-                Vector2Int vec = new Vector2Int(x, y);
-                GameObject point;
-                points.TryGetValue(vec, out point);
-                if (point != null)
-                {
-                    point.transform.localPosition = vertices[pos];
-                }
+                HeightmapHandle handle = heightmapHandles[x, y];
+                handle.transform.localPosition = vertices[pos];
 
                 verticesChanged = true;
                 dirty = true;
             }
-        }
-
-        public void TogglePoint(int x, int y, bool toggle)
-        {
-            Vector2Int vec = new Vector2Int(x, y);
-            GameObject point;
-            points.TryGetValue(vec, out point);
-            if (toggle && !point)
-            {
-                point = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                point.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
-                point.transform.SetParent(transform);
-
-                int pos = map.CoordinateToIndex(x, y);
-                point.transform.localPosition = vertices[pos];
-                points[vec] = point;
-            }
-            else if (!toggle && point)
-            {
-                points.Remove(vec);
-                Destroy(point);
-            }
-        }
-
-        public void ClearPoints()
-        {
-            foreach (GameObject point in points.Values)
-            {
-                Destroy(point);
-            }
-
-            points.Clear();
         }
 
         public void ApplyAllChanges()

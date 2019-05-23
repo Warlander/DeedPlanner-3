@@ -211,11 +211,13 @@ namespace Warlander.Deedplanner.Logic
             bool renderHeights = LayoutManager.Instance.CurrentTab == Tab.Height;
             if (Floor < 0)
             {
+                map.CaveGridMesh.HandlesVisible = renderHeights;
                 map.CaveGridMesh.SetRenderHeightColors(renderHeights);
                 map.CaveGridMesh.ApplyAllChanges();
             }
             else
             {
+                map.SurfaceGridMesh.HandlesVisible = renderHeights;
                 map.SurfaceGridMesh.SetRenderHeightColors(renderHeights);
                 map.SurfaceGridMesh.ApplyAllChanges();
             }
@@ -531,74 +533,17 @@ namespace Warlander.Deedplanner.Logic
             }
             
             GameObject hitObject = CurrentRaycast.collider?.gameObject;
-            bool gridOrGroundHit = hitObject != null && (hitObject.GetComponent<Ground>() || hitObject.GetComponent<GridTile>());
+            bool gridOrGroundHit = hitObject != null && (hitObject.GetComponent<Ground>() || hitObject.GetComponent<GridTile>() || hitObject.GetComponent<HeightmapHandle>());
 
-            GL.PushMatrix();
-            RenderMaterials.SimpleDrawingMaterial.SetPass(0);
             if (hitObject != null && !gridOrGroundHit)
             {
+                GL.PushMatrix();
+                RenderMaterials.SimpleDrawingMaterial.SetPass(0);
                 Matrix4x4 rotationMatrix = Matrix4x4.TRS(hitObject.transform.position, hitObject.transform.rotation, hitObject.transform.lossyScale);
                 GL.MultMatrix(rotationMatrix);
                 RenderRaytrace();
+                GL.PopMatrix();
             }
-            GL.PopMatrix();
-        }
-
-        private void RenderLines()
-        {
-            bool renderHeights = LayoutManager.Instance.CurrentTab == Tab.Height;
-            bool cave = floor < 0;
-            int absoluteFloor = cave ? -floor + 1 : floor;
-            Tab currentTab = LayoutManager.Instance.CurrentTab;
-            if (currentTab == Tab.Ground || currentTab == Tab.Height || currentTab == Tab.Borders)
-            {
-                absoluteFloor = 0;
-            }
-
-            Map map = GameManager.Instance.Map;
-            float highestHeight = cave ? map.HighestCaveHeight : map.HighestSurfaceHeight;
-            float lowestHeight = cave ? map.LowestCaveHeight : map.LowestSurfaceHeight;
-            float heightDelta = highestHeight - lowestHeight;
-
-            float linesAlpha = 0.75f;
-            
-            GL.Begin(GL.LINES);
-            GL.Color(new Color(1, 1, 1, linesAlpha));
-            for (int i = 0; i < map.Width; i++)
-            {
-                for (int i2 = 0; i2 < map.Height; i2++)
-                {
-                    float cornerHeight = map[i, i2].GetHeightForFloor(floor);
-                    float cornerColorComponent = (cornerHeight - lowestHeight) / heightDelta;
-
-                    float verticalHeight = map[i, i2 + 1].GetHeightForFloor(floor);
-                    if (renderHeights)
-                    {
-                        GL.Color(new Color(cornerColorComponent, 1f - cornerColorComponent, 0, linesAlpha));
-                    }
-                    GL.Vertex3(i * 4, absoluteFloor * 3 + map[i, i2].GetHeightForFloor(floor) * 0.1f, i2 * 4);
-                    if (renderHeights)
-                    {
-                        float verticalColorComponent = (verticalHeight - lowestHeight) / heightDelta;
-                        GL.Color(new Color(verticalColorComponent, 1f - verticalColorComponent, 0, linesAlpha));
-                    }
-                    GL.Vertex3(i * 4, absoluteFloor * 3 + map[i, i2 + 1].GetHeightForFloor(floor) * 0.1f, i2 * 4 + 4);
-
-                    float horizontalHeight = map[i + 1, i2].GetHeightForFloor(floor);
-                    if (renderHeights)
-                    {
-                        GL.Color(new Color(cornerColorComponent, 1f - cornerColorComponent, 0, linesAlpha));
-                    }
-                    GL.Vertex3(i * 4, absoluteFloor * 3 + map[i, i2].GetHeightForFloor(floor) * 0.1f, i2 * 4);
-                    if (renderHeights)
-                    {
-                        float horizontalColorComponent = (horizontalHeight - lowestHeight) / heightDelta;
-                        GL.Color(new Color(horizontalColorComponent, 1f - horizontalColorComponent, 0, linesAlpha));
-                    }
-                    GL.Vertex3(i * 4 + 4, absoluteFloor * 3 + map[i + 1, i2].GetHeightForFloor(floor) * 0.1f, i2 * 4);
-                }
-            }
-            GL.End();
         }
 
         private void RenderRaytrace()
