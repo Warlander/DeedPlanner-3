@@ -1,4 +1,8 @@
 ﻿Shader "DeedPlanner/SimpleLineShader" {
+	Properties
+	{
+		[PerRendererData] _Color("Color", Color) = (1, 1, 1, 1)
+	}
 	SubShader{
 		Pass {
 			Blend SrcAlpha OneMinusSrcAlpha
@@ -19,6 +23,8 @@
 				float4 color : COLOR;
 			};
 
+			float4 _Color;
+
 			data vert(data d)
 			{
 				data newData;
@@ -29,7 +35,8 @@
 
 			float4 frag(data d) : COLOR
 			{
-				return d.color;
+				float4 col = _Color * d.color;
+				return col;
 			}
 			ENDCG
 		}

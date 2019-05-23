@@ -15,6 +15,11 @@ namespace Warlander.Deedplanner.Logic
     public class HeightUpdater : MonoBehaviour
     {
 
+        private readonly Color neutralColor = Color.white;
+        private readonly Color hoveredColor = new Color(0.7f, 0.7f, 0, 1);
+
+        private HeightmapHandle hoveredHandle = null;
+
         public void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
@@ -23,12 +28,38 @@ namespace Warlander.Deedplanner.Logic
         private void Update()
         {
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
+
+            Ground ground = raycast.transform ? raycast.transform.GetComponent<Ground>() : null;
+            HeightmapHandle heightmapHandle =  raycast.transform ? raycast.transform.GetComponent<HeightmapHandle>() : null;
+
+            if (!heightmapHandle && hoveredHandle)
+            {
+                hoveredHandle.Color = neutralColor;
+                hoveredHandle = null;
+            }
+            else if (heightmapHandle && heightmapHandle != hoveredHandle)
+            {
+                if (hoveredHandle)
+                {
+                    hoveredHandle.Color = neutralColor;
+                }
+                heightmapHandle.Color = hoveredColor;
+                hoveredHandle = heightmapHandle;
+            }
+
             if (raycast.transform == null)
             {
                 return;
             }
 
-            
+            if (heightmapHandle)
+            {
+                
+            }
+            else if (ground)
+            {
+
+            }
         }
 
     }

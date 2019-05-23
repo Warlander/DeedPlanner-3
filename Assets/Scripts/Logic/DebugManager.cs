@@ -15,8 +15,6 @@ namespace Warlander.Deedplanner.Logic
 
         [SerializeField]
         private bool loadTestMap = false;
-        [SerializeField]
-        private bool testHeightEditIndicators = false;
 
         [SerializeField]
         private bool overrideStartingTileSelectionMode = false;
@@ -35,17 +33,6 @@ namespace Warlander.Deedplanner.Logic
             {
                 string fullTestMapLocation = Path.Combine(Application.streamingAssetsPath, "./Special/Test Map.MAP");
                 StartCoroutine(GameManager.Instance.LoadMap(new Uri(fullTestMapLocation)));
-            }
-
-            if (testHeightEditIndicators)
-            {
-                for (int i = 0; i <= GameManager.Instance.Map.Width; i++)
-                {
-                    for (int i2 = 0; i2 <= GameManager.Instance.Map.Height; i2++)
-                    {
-                        GameManager.Instance.Map.SurfaceGridMesh.TogglePoint(i, i2, true);
-                    }
-                }
             }
         }
 

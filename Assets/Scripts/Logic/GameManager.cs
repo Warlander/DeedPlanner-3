@@ -21,6 +21,9 @@ namespace Warlander.Deedplanner.Logic
         public Map Map { get; private set; }
 
         [SerializeField]
+        private HeightmapHandle heightmapHandlePrefab = null;
+
+        [SerializeField]
         private GroundUpdater groundUpdater = null;
         [SerializeField]
         private CaveUpdater caveUpdater = null;
@@ -42,6 +45,12 @@ namespace Warlander.Deedplanner.Logic
         private BridgesUpdater bridgeUpdater = null;
         [SerializeField]
         private MirrorUpdater mirrorUpdater = null;
+
+        public HeightmapHandle HeightmapHandlePrefab {
+            get {
+                return heightmapHandlePrefab;
+            }
+        }
 
         private void Awake()
         {
