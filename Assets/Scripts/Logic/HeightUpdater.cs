@@ -52,7 +52,7 @@ namespace Warlander.Deedplanner.Logic
                 hoveredHandle = heightmapHandle;
             }
 
-            if (raycast.transform == null)
+            if (!raycast.transform)
             {
                 return;
             }
