@@ -1,0 +1,1 @@
+Editor plugins go here. Please don't remove this file, it makes sure integrity of files is saved for users of other IDE's/text editors than Rider. Please make sure not to commit any Rider-related plugin files.
