@@ -15,15 +15,15 @@ namespace Warlander.Deedplanner.Logic
     public class LabelUpdater : MonoBehaviour
     {
 
-        public void OnEnable()
+        private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
-        public void Update()
+        private void Update()
         {
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
-            if (raycast.transform == null)
+            if (!raycast.transform)
             {
                 return;
             }

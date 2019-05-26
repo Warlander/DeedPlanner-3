@@ -69,14 +69,14 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
-        public void Start()
+        private void Start()
         {
             GuiManager.Instance.GroundsTree.ValueChanged += OnGroundsTreeValueChanged;
             LeftClickData = Database.Grounds["gr"];
             RightClickData = Database.Grounds["di"];
         }
 
-        public void OnEnable()
+        private void OnEnable()
         {
             UpdateSelectionMode();
         }
@@ -110,13 +110,13 @@ namespace Warlander.Deedplanner.Logic
         private void Update()
         {
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
-            if (raycast.transform == null)
+            if (!raycast.transform)
             {
                 return;
             }
 
             GroundData currentClickData = GetCurrentClickData();
-            if (currentClickData == null)
+            if (!currentClickData)
             {
                 return;
             }

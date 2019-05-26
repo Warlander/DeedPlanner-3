@@ -17,15 +17,15 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField]
         private Toggle eastToggle = null;
 
-        public void OnEnable()
+        private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
-        public void Update()
+        private void Update()
         {
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
-            if (raycast.transform == null)
+            if (!raycast.transform)
             {
                 return;
             }
