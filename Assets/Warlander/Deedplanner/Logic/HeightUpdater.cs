@@ -19,18 +19,16 @@ namespace Warlander.Deedplanner.Logic
         private Color neutralColor = Color.white;
         [SerializeField]
         private Color hoveredColor = new Color(0.7f, 0.7f, 0, 1);
+        [SerializeField]
+        private Color selectedColor = new Color(0, 1, 0, 1);
+        [SerializeField]
+        private Color activeColor = new Color(1, 0, 0, 1);
 
-        private List<HeightmapHandle> lastFrameHoveredHandles = null;
-
-        private bool validDragging = false;
-        private bool dragging = false;
+        private List<HeightmapHandle> lastFrameHoveredHandles = new List<HeightmapHandle>();
+        private List<HeightmapHandle> selectedHandles = new List<HeightmapHandle>();
+        
         private Vector2 dragStartPos;
         private Vector2 dragEndPos;
-
-        private void Awake()
-        {
-            lastFrameHoveredHandles = new List<HeightmapHandle>();
-        }
 
         private void OnEnable()
         {
@@ -49,14 +47,37 @@ namespace Warlander.Deedplanner.Logic
             {
                 handle.Color = hoveredColor;
             }
-            
-            foreach (HeightmapHandle handle in lastFrameHoveredHandles)
+
+            if (Input.GetMouseButtonDown(0))
             {
-                if (!currentFrameHoveredHandles.Contains(handle))
+                foreach (HeightmapHandle handle in selectedHandles)
                 {
                     handle.Color = neutralColor;
                 }
+
+                selectedHandles = new List<HeightmapHandle>();
             }
+            
+            if (Input.GetMouseButtonUp(0))
+            {
+                foreach (HeightmapHandle handle in lastFrameHoveredHandles)
+                {
+                    handle.Color = selectedColor;
+                }
+
+                selectedHandles = lastFrameHoveredHandles;
+            }
+            else
+            {
+                foreach (HeightmapHandle handle in lastFrameHoveredHandles)
+                {
+                    if (!currentFrameHoveredHandles.Contains(handle))
+                    {
+                        handle.Color = neutralColor;
+                    }
+                }
+            }
+            
 
             lastFrameHoveredHandles = currentFrameHoveredHandles;
         }
@@ -65,24 +86,22 @@ namespace Warlander.Deedplanner.Logic
         {
             List<HeightmapHandle> hoveredHandles = new List<HeightmapHandle>();
 
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                dragStartPos = LayoutManager.Instance.CurrentCamera.MousePosition;
+                dragEndPos = dragStartPos;
+            }
+            
             if (Input.GetMouseButton(0))
             {
-                if (!dragging)
-                {
-                    dragStartPos = LayoutManager.Instance.CurrentCamera.MousePosition;
-                    dragEndPos = dragStartPos;
-                    dragging = true;
-                }
-                else if (dragging)
-                {
-                    dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
-                }
+                dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
 
                 if (Vector2.Distance(dragStartPos, dragEndPos) > 5)
                 {
-                    validDragging = true;
                     LayoutManager.Instance.CurrentCamera.RenderSelectionBox = true;
                 }
+                
                 Vector2 difference = dragEndPos - dragStartPos;
                 float clampedDifferenceX = Mathf.Clamp(-difference.x, 0, float.MaxValue);
                 float clampedDifferenceY = Mathf.Clamp(-difference.y, 0, float.MaxValue);
@@ -113,10 +132,9 @@ namespace Warlander.Deedplanner.Logic
                     }
                 }
             }
-            else
+            
+            if (Input.GetMouseButtonUp(0))
             {
-                dragging = false;
-                validDragging = false;
                 LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
             }
             
