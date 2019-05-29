@@ -15,17 +15,24 @@ namespace Warlander.Deedplanner.Logic
     public class HeightUpdater : MonoBehaviour
     {
 
-        private readonly Color neutralColor = Color.white;
-        private readonly Color hoveredColor = new Color(0.7f, 0.7f, 0, 1);
+        [SerializeField]
+        private Color neutralColor = Color.white;
+        [SerializeField]
+        private Color hoveredColor = new Color(0.7f, 0.7f, 0, 1);
 
-        private HeightmapHandle hoveredHandle = null;
+        private List<HeightmapHandle> lastFrameHoveredHandles = null;
 
         private bool validDragging = false;
         private bool dragging = false;
         private Vector2 dragStartPos;
         private Vector2 dragEndPos;
 
-        public void OnEnable()
+        private void Awake()
+        {
+            lastFrameHoveredHandles = new List<HeightmapHandle>();
+        }
+
+        private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
         }
@@ -35,27 +42,28 @@ namespace Warlander.Deedplanner.Logic
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
 
             Ground ground = raycast.transform ? raycast.transform.GetComponent<Ground>() : null;
-            HeightmapHandle heightmapHandle =  raycast.transform ? raycast.transform.GetComponent<HeightmapHandle>() : null;
+            
+            List<HeightmapHandle> currentFrameHoveredHandles = UpdateHoveredHandles(raycast);
 
-            if (!heightmapHandle && hoveredHandle)
+            foreach (HeightmapHandle handle in currentFrameHoveredHandles)
             {
-                hoveredHandle.Color = neutralColor;
-                hoveredHandle = null;
+                handle.Color = hoveredColor;
             }
-            else if (heightmapHandle && heightmapHandle != hoveredHandle)
+            
+            foreach (HeightmapHandle handle in lastFrameHoveredHandles)
             {
-                if (hoveredHandle)
+                if (!currentFrameHoveredHandles.Contains(handle))
                 {
-                    hoveredHandle.Color = neutralColor;
+                    handle.Color = neutralColor;
                 }
-                heightmapHandle.Color = hoveredColor;
-                hoveredHandle = heightmapHandle;
             }
 
-            if (!raycast.transform)
-            {
-                return;
-            }
+            lastFrameHoveredHandles = currentFrameHoveredHandles;
+        }
+
+        private List<HeightmapHandle> UpdateHoveredHandles(RaycastHit raycast)
+        {
+            List<HeightmapHandle> hoveredHandles = new List<HeightmapHandle>();
 
             if (Input.GetMouseButton(0))
             {
@@ -100,11 +108,7 @@ namespace Warlander.Deedplanner.Logic
                         Vector2 viewportLocation = checkedCamera.WorldToViewportPoint(new Vector3(i * 4, height, i2 * 4));
                         if (viewportRect.Contains(viewportLocation))
                         {
-                            GameManager.Instance.Map.SurfaceGridMesh.GetHandle(i, i2).Color = hoveredColor;
-                        }
-                        else
-                        {
-                            GameManager.Instance.Map.SurfaceGridMesh.GetHandle(i, i2).Color = neutralColor;
+                            hoveredHandles.Add(GameManager.Instance.Map.SurfaceGridMesh.GetHandle(i, i2));
                         }
                     }
                 }
@@ -115,15 +119,17 @@ namespace Warlander.Deedplanner.Logic
                 validDragging = false;
                 LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
             }
-
-            if (heightmapHandle)
+            
+            if (hoveredHandles.Count == 0)
             {
-                
+                HeightmapHandle heightmapHandle = raycast.transform ? raycast.transform.GetComponent<HeightmapHandle>() : null;
+                if (heightmapHandle)
+                {
+                    hoveredHandles.Add(heightmapHandle);
+                }
             }
-            else if (ground)
-            {
-
-            }
+            
+            return hoveredHandles;
         }
 
     }
