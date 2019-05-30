@@ -22,8 +22,11 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField]
         private Color selectedColor = new Color(0, 1, 0, 1);
         [SerializeField]
+        private Color selectedHoveredColor = new Color(0.7f, 0.39f, 0f);
+        [SerializeField]
         private Color activeColor = new Color(1, 0, 0, 1);
 
+        private List<HeightmapHandle> currentFrameHoveredHandles = new List<HeightmapHandle>();
         private List<HeightmapHandle> lastFrameHoveredHandles = new List<HeightmapHandle>();
         private List<HeightmapHandle> selectedHandles = new List<HeightmapHandle>();
         
@@ -39,53 +42,25 @@ namespace Warlander.Deedplanner.Logic
         {
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
 
-            Ground ground = raycast.transform ? raycast.transform.GetComponent<Ground>() : null;
-            
-            List<HeightmapHandle> currentFrameHoveredHandles = UpdateHoveredHandles(raycast);
+            currentFrameHoveredHandles = UpdateHoveredHandles(raycast);
 
-            foreach (HeightmapHandle handle in currentFrameHoveredHandles)
+            if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftShift))
             {
-                handle.Color = hoveredColor;
-            }
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                foreach (HeightmapHandle handle in selectedHandles)
-                {
-                    handle.Color = neutralColor;
-                }
-
                 selectedHandles = new List<HeightmapHandle>();
             }
             
             if (Input.GetMouseButtonUp(0))
             {
-                foreach (HeightmapHandle handle in lastFrameHoveredHandles)
-                {
-                    handle.Color = selectedColor;
-                }
-
-                selectedHandles = lastFrameHoveredHandles;
+                selectedHandles.AddRange(lastFrameHoveredHandles);
             }
-            else
-            {
-                foreach (HeightmapHandle handle in lastFrameHoveredHandles)
-                {
-                    if (!currentFrameHoveredHandles.Contains(handle))
-                    {
-                        handle.Color = neutralColor;
-                    }
-                }
-            }
-            
 
+            UpdateHandlesColors();
             lastFrameHoveredHandles = currentFrameHoveredHandles;
         }
 
         private List<HeightmapHandle> UpdateHoveredHandles(RaycastHit raycast)
         {
             List<HeightmapHandle> hoveredHandles = new List<HeightmapHandle>();
-
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -148,6 +123,37 @@ namespace Warlander.Deedplanner.Logic
             }
             
             return hoveredHandles;
+        }
+        
+        private void UpdateHandlesColors()
+        {
+            foreach (HeightmapHandle handle in currentFrameHoveredHandles)
+            {
+                if (!selectedHandles.Contains(handle))
+                {
+                    handle.Color = hoveredColor;
+                }
+            }
+            
+            foreach (HeightmapHandle handle in lastFrameHoveredHandles)
+            {
+                if (!currentFrameHoveredHandles.Contains(handle) && !selectedHandles.Contains(handle))
+                {
+                    handle.Color = neutralColor;
+                }
+            }
+            
+            foreach (HeightmapHandle handle in selectedHandles)
+            {
+                if (currentFrameHoveredHandles.Count == 1 && currentFrameHoveredHandles.Contains(handle))
+                {
+                    handle.Color = selectedHoveredColor;
+                }
+                else
+                {
+                    handle.Color = selectedColor;
+                }
+            }
         }
 
     }
