@@ -29,7 +29,9 @@ namespace Warlander.Deedplanner.Logic
         private List<HeightmapHandle> currentFrameHoveredHandles = new List<HeightmapHandle>();
         private List<HeightmapHandle> lastFrameHoveredHandles = new List<HeightmapHandle>();
         private List<HeightmapHandle> selectedHandles = new List<HeightmapHandle>();
-        
+        private List<HeightmapHandle> deselectedHandles = new List<HeightmapHandle>();
+
+        private bool manipulating = false;
         private Vector2 dragStartPos;
         private Vector2 dragEndPos;
 
@@ -46,15 +48,33 @@ namespace Warlander.Deedplanner.Logic
 
             if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftShift))
             {
-                selectedHandles = new List<HeightmapHandle>();
+                if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
+                {
+                    manipulating = true;
+                }
+                else
+                {
+                    deselectedHandles = selectedHandles;
+                    selectedHandles = new List<HeightmapHandle>();
+                }
             }
             
             if (Input.GetMouseButtonUp(0))
             {
-                selectedHandles.AddRange(lastFrameHoveredHandles);
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    selectedHandles.AddRange(lastFrameHoveredHandles);
+                }
+                else if (!manipulating)
+                {
+                    deselectedHandles = selectedHandles;
+                    selectedHandles = lastFrameHoveredHandles;
+                }
+                manipulating = false;
             }
 
             UpdateHandlesColors();
+            deselectedHandles = new List<HeightmapHandle>();
             lastFrameHoveredHandles = currentFrameHoveredHandles;
         }
 
@@ -72,7 +92,7 @@ namespace Warlander.Deedplanner.Logic
             {
                 dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
 
-                if (Vector2.Distance(dragStartPos, dragEndPos) > 5)
+                if (!manipulating && Vector2.Distance(dragStartPos, dragEndPos) > 5)
                 {
                     LayoutManager.Instance.CurrentCamera.RenderSelectionBox = true;
                 }
@@ -145,7 +165,11 @@ namespace Warlander.Deedplanner.Logic
             
             foreach (HeightmapHandle handle in selectedHandles)
             {
-                if (currentFrameHoveredHandles.Count == 1 && currentFrameHoveredHandles.Contains(handle))
+                if (manipulating)
+                {
+                    handle.Color = activeColor;
+                }
+                else if (currentFrameHoveredHandles.Count == 1 && currentFrameHoveredHandles.Contains(handle))
                 {
                     handle.Color = selectedHoveredColor;
                 }
@@ -153,6 +177,11 @@ namespace Warlander.Deedplanner.Logic
                 {
                     handle.Color = selectedColor;
                 }
+            }
+            
+            foreach (HeightmapHandle handle in deselectedHandles)
+            {
+                handle.Color = neutralColor;
             }
         }
 
