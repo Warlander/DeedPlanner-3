@@ -49,7 +49,7 @@ namespace Warlander.Deedplanner.Logic
         private Vector2 isoPosition;
         private float isoScale = 40;
 
-        private bool mouseOver = false;
+        public bool MouseOver { get; private set; } = false;
 
         public RaycastHit CurrentRaycast { get; private set; }
 
@@ -157,12 +157,12 @@ namespace Warlander.Deedplanner.Logic
 
             eventCatcher.OnPointerEnterEvent.AddListener(data =>
             {
-                mouseOver = true;
+                MouseOver = true;
             });
 
             eventCatcher.OnPointerExitEvent.AddListener(data =>
             {
-                mouseOver = false;
+                MouseOver = false;
             });
 
             CameraMode = cameraMode;
@@ -260,7 +260,7 @@ namespace Warlander.Deedplanner.Logic
 
             CurrentRaycast = default;
 
-            if (mouseOver)
+            if (MouseOver)
             {
                 Vector2 local;
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(screen.GetComponent<RectTransform>(), Input.mousePosition, null, out local);
@@ -429,7 +429,7 @@ namespace Warlander.Deedplanner.Logic
             int activeWindow = LayoutManager.Instance.ActiveWindow;
             if (activeWindow == screenId)
             {
-                if (mouseOver)
+                if (MouseOver)
                 {
                     float scroll = Input.mouseScrollDelta.y;
                     if (scroll > 0 && topScale > 10)
@@ -483,7 +483,7 @@ namespace Warlander.Deedplanner.Logic
             int activeWindow = LayoutManager.Instance.ActiveWindow;
             if (activeWindow == screenId)
             {
-                if (mouseOver)
+                if (MouseOver)
                 {
                     float scroll = Input.mouseScrollDelta.y;
                     if (scroll > 0 && isoScale > 10)

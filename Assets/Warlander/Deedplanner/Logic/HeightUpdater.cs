@@ -43,6 +43,12 @@ namespace Warlander.Deedplanner.Logic
         private void Update()
         {
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
+            bool cameraOnScreen = LayoutManager.Instance.CurrentCamera.MouseOver;
+
+            if (!cameraOnScreen)
+            {
+                return;
+            }
 
             currentFrameHoveredHandles = UpdateHoveredHandles(raycast);
 
