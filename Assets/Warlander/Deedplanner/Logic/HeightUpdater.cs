@@ -32,6 +32,7 @@ namespace Warlander.Deedplanner.Logic
         private List<HeightmapHandle> deselectedHandles = new List<HeightmapHandle>();
 
         private bool manipulating = false;
+        private bool dragging = false;
         private Vector2 dragStartPos;
         private Vector2 dragEndPos;
 
@@ -52,16 +53,21 @@ namespace Warlander.Deedplanner.Logic
 
             currentFrameHoveredHandles = UpdateHoveredHandles(raycast);
 
-            if (Input.GetMouseButtonDown(0) && !Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetMouseButtonDown(0))
             {
                 if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
                 {
                     manipulating = true;
                 }
+                else if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    dragging = true;
+                }
                 else
                 {
                     deselectedHandles = selectedHandles;
                     selectedHandles = new List<HeightmapHandle>();
+                    dragging = true;
                 }
             }
             
@@ -77,6 +83,14 @@ namespace Warlander.Deedplanner.Logic
                     selectedHandles = lastFrameHoveredHandles;
                 }
                 manipulating = false;
+                dragging = false;
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                dragging = false;
+                manipulating = false;
+                LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
             }
 
             UpdateHandlesColors();
@@ -94,7 +108,7 @@ namespace Warlander.Deedplanner.Logic
                 dragEndPos = dragStartPos;
             }
             
-            if (Input.GetMouseButton(0))
+            if (dragging)
             {
                 dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
 
@@ -175,7 +189,7 @@ namespace Warlander.Deedplanner.Logic
                 {
                     handle.Color = activeColor;
                 }
-                else if (currentFrameHoveredHandles.Count == 1 && currentFrameHoveredHandles.Contains(handle))
+                else if (currentFrameHoveredHandles.Count == 1 && currentFrameHoveredHandles.Contains(handle) && !dragging)
                 {
                     handle.Color = selectedHoveredColor;
                 }
