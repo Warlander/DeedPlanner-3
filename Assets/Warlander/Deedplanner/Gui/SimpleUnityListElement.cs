@@ -1,33 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Warlander.Deedplanner.Gui;
 
-public class SimpleUnityListElement : UnityListElement
+namespace Warlander.Deedplanner.Gui
 {
+    public class SimpleUnityListElement : UnityListElement
+    {
 
-    [SerializeField]
-    private TextMeshProUGUI text = null;
-    [SerializeField]
-    private Toggle toggle = null;
+        [SerializeField]
+        private TextMeshProUGUI text = null;
+        [SerializeField]
+        private Toggle toggle = null;
 
-    private object value;
+        private object value;
 
-    public override object Value {
-        get {
-            return value;
+        public override object Value {
+            get {
+                return value;
+            }
+            set {
+                this.value = value;
+                text.SetText(value.ToString());
+            }
         }
-        set {
-            this.value = value;
-            text.SetText(value.ToString());
-        }
-    }
 
-    public override Toggle Toggle {
-        get {
-            return toggle;
+        public override Toggle Toggle {
+            get {
+                return toggle;
+            }
         }
     }
 }
