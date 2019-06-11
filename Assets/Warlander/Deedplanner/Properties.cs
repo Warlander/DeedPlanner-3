@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 using UnityEngine;
+using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner
 {
     public class Properties
     {
