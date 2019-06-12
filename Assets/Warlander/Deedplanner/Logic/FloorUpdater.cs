@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Logic
 {
@@ -81,7 +82,6 @@ namespace Warlander.Deedplanner.Logic
             {
                 GameManager.Instance.Map[x, y].SetFloor(null, orientation, floor);
             }
-            
         }
 
     }

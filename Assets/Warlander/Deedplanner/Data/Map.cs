@@ -36,6 +36,8 @@ namespace Warlander.Deedplanner.Data
         public int LowestCaveHeight { get; private set; }
         public int HighestCaveHeight { get; private set; }
 
+        public CommandManager CommandManager { get; set; } = new CommandManager();
+
         public Tile this[int x, int y] {
             get {
                 if (x < 0 || y < 0 || x > Width || y > Height)
@@ -92,7 +94,7 @@ namespace Warlander.Deedplanner.Data
                     {
                         Transform root = surfaceLevelRoots[i];
                         int relativeFloor = i - absoluteFloor;
-                        bool renderFloor = RenderEntireLayer ? true : relativeFloor <= 0 && relativeFloor > -3;
+                        bool renderFloor = RenderEntireLayer || (relativeFloor <= 0 && relativeFloor > -3);
                         root.gameObject.SetActive(renderFloor);
                         if (renderFloor)
                         {
