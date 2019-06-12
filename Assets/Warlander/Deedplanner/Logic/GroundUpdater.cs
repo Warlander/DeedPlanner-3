@@ -38,9 +38,7 @@ namespace Warlander.Deedplanner.Logic
         private Toggle fillToggle = null;
 
         private GroundData LeftClickData {
-            get {
-                return leftClickData;
-            }
+            get => leftClickData;
             set {
                 leftClickData = value;
                 leftClickImage.sprite = leftClickData.Tex2d.Sprite;
@@ -49,9 +47,7 @@ namespace Warlander.Deedplanner.Logic
         }
 
         private GroundData RightClickData {
-            get {
-                return rightClickData;
-            }
+            get => rightClickData;
             set {
                 rightClickData = value;
                 rightClickImage.sprite = rightClickData.Tex2d.Sprite;
@@ -60,9 +56,7 @@ namespace Warlander.Deedplanner.Logic
         }
 
         public bool EditCorners {
-            get {
-                return editCorners;
-            }
+            get => editCorners;
             set {
                 editCorners = value;
                 UpdateSelectionMode();

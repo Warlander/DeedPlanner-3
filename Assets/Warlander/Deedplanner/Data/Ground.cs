@@ -19,16 +19,10 @@ namespace Warlander.Deedplanner.Data
         private MeshRenderer meshRenderer;
         public MeshCollider Collider { get; private set; }
 
-        public override Tile Tile {
-            get {
-                return tile;
-            }
-        }
+        public override Tile Tile => tile;
 
         public GroundData Data {
-            get {
-                return data;
-            }
+            get => data;
             set {
                 data = value;
                 RoadDirection = roadDirection;
@@ -36,9 +30,7 @@ namespace Warlander.Deedplanner.Data
         }
 
         public RoadDirection RoadDirection {
-            get {
-                return RoadDirection;
-            }
+            get => RoadDirection;
             set {
                 roadDirection = value;
 
@@ -84,7 +76,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        public override Materials Materials { get { return null; } }
+        public override Materials Materials => null;
 
         public void Initialize(Tile tile, GroundData data, Mesh mesh)
         {

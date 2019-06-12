@@ -15,16 +15,12 @@ namespace Warlander.Deedplanner.Data
         private Tile tile;
 
         public RoofData Data { get; private set; }
-        public override Materials Materials { get { return Data.Materials; } }
+        public override Materials Materials => Data.Materials;
 
         public int RoofLevel { get; private set; }
         public GameObject Model { get; private set; }
 
-        public override Tile Tile {
-            get {
-                return tile;
-            }
-        }
+        public override Tile Tile => tile;
 
         public void Initialize(Tile tile, RoofData data)
         {

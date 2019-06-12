@@ -23,11 +23,7 @@ namespace Warlander.Deedplanner.Gui
 
         public object SelectedValue { get; private set; }
 
-        public UnityListElement SelectedElement {
-            get {
-                return toggleGroup.ActiveToggles().FirstOrDefault().GetComponent<UnityListElement>();
-            }
-        }
+        public UnityListElement SelectedElement => toggleGroup.ActiveToggles().FirstOrDefault().GetComponent<UnityListElement>();
 
         public object[] Values {
             get {

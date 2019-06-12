@@ -46,11 +46,7 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField]
         private MirrorUpdater mirrorUpdater = null;
 
-        public HeightmapHandle HeightmapHandlePrefab {
-            get {
-                return heightmapHandlePrefab;
-            }
-        }
+        public HeightmapHandle HeightmapHandlePrefab => heightmapHandlePrefab;
 
         private void Awake()
         {

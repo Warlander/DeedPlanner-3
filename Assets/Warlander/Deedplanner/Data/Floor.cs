@@ -16,15 +16,11 @@ namespace Warlander.Deedplanner.Data
 
         public FloorData Data { get; private set; }
         public EntityOrientation Orientation { get; private set; }
-        public override Materials Materials { get { return Data.Materials; } }
+        public override Materials Materials => Data.Materials;
 
         public GameObject Model { get; private set; }
 
-        public override Tile Tile {
-            get {
-                return tile;
-            }
-        }
+        public override Tile Tile => tile;
 
         public void Initialize(Tile tile, FloorData data, EntityOrientation orientation)
         {

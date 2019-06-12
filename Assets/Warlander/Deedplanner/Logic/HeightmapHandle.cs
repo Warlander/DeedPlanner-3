@@ -16,9 +16,7 @@ namespace Warlander.Deedplanner.Logic
         private Color color;
 
         public Color Color {
-            get {
-                return color;
-            }
+            get => color;
             set {
                 if (color == value)
                 {

@@ -48,9 +48,7 @@ namespace Warlander.Deedplanner.Data
         }
 
         public int RenderedFloor {
-            get {
-                return renderedFloor;
-            }
+            get => renderedFloor;
             set {
                 renderedFloor = value;
 
@@ -123,9 +121,7 @@ namespace Warlander.Deedplanner.Data
         }
 
         public bool RenderEntireLayer {
-            get {
-                return renderEntireLayer;
-            }
+            get => renderEntireLayer;
             set {
                 renderEntireLayer = value;
                 RenderedFloor = renderedFloor;

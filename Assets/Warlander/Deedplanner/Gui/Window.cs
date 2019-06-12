@@ -17,33 +17,21 @@ namespace Warlander.Deedplanner.Gui
         private TextMeshProUGUI titleGui = null;
 
         public bool CloseButtonVisible {
-            get {
-                return closeButton.activeInHierarchy;
-            }
-            set {
-                closeButton.SetActive(value);
-            }
+            get => closeButton.activeInHierarchy;
+            set => closeButton.SetActive(value);
         }
 
         /// <summary>
         /// Content MUST have minimum width/height to resize from
         /// </summary>
         public RectTransform Content {
-            get {
-                return contentAnchor.childCount == 0 ? null : (RectTransform) contentAnchor.GetChild(0);
-            }
-            set {
-                value.transform.SetParent(contentAnchor);
-            }
+            get => contentAnchor.childCount == 0 ? null : (RectTransform) contentAnchor.GetChild(0);
+            set => value.transform.SetParent(contentAnchor);
         }
 
         public string Title {
-            get {
-                return titleGui.text;
-            }
-            set {
-                titleGui.text = value;
-            }
+            get => titleGui.text;
+            set => titleGui.text = value;
         }
 
     }

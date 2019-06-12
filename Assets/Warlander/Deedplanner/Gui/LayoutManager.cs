@@ -55,16 +55,10 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField]
         private GameObject simpleQualityWaterObject = null;
 
-        public MultiCamera CurrentCamera {
-            get {
-                return cameras[ActiveWindow];
-            }
-        }
+        public MultiCamera CurrentCamera => cameras[ActiveWindow];
 
         public int ActiveWindow {
-            get {
-                return activeWindow;
-            }
+            get => activeWindow;
             private set {
                 activeWindow = value;
 
@@ -101,9 +95,7 @@ namespace Warlander.Deedplanner.Gui
         }
 
         public Tab CurrentTab {
-            get {
-                return currentTab;
-            }
+            get => currentTab;
             set {
                 currentTab = value;
                 foreach (TabObject tabObject in tabs)

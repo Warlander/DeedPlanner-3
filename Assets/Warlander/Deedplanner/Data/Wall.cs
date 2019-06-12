@@ -16,16 +16,12 @@ namespace Warlander.Deedplanner.Data
 
         public WallData Data { get; private set; }
         public bool Reversed { get; private set; }
-        public override Materials Materials { get { return Data.Materials; } }
+        public override Materials Materials => Data.Materials;
 
         public GameObject Model { get; private set; }
         private MeshCollider meshCollider;
 
-        public override Tile Tile {
-            get {
-                return tile;
-            }
-        }
+        public override Tile Tile => tile;
 
         public void Initialize(Tile tile, WallData data, bool reversed, bool firstFloor, int slopeDifference)
         {

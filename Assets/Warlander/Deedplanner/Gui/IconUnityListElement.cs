@@ -19,9 +19,7 @@ namespace Warlander.Deedplanner.Gui
         private object value;
 
         public override object Value {
-            get {
-                return value;
-            }
+            get => value;
             set {
                 this.value = value;
                 text.SetText(value.ToString());
@@ -29,9 +27,7 @@ namespace Warlander.Deedplanner.Gui
         }
 
         public TextureReference TextureReference {
-            get {
-                return TextureReference;
-            }
+            get => TextureReference;
             set {
                 textureReference = value;
                 if (gameObject.activeInHierarchy && image.sprite == null)
@@ -41,11 +37,7 @@ namespace Warlander.Deedplanner.Gui
             }
         }
 
-        public override Toggle Toggle {
-            get {
-                return toggle;
-            }
-        }
+        public override Toggle Toggle => toggle;
 
         public void Start()
         {
