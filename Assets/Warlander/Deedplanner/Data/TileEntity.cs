@@ -15,16 +15,9 @@ namespace Warlander.Deedplanner.Data
 
         public abstract Tile Tile { get; }
         public abstract Materials Materials { get; }
-        public int Floor {
-            get {
-                return Tile.FindFloorOfEntity(this);
-            }
-        }
-        public EntityType Type {
-            get {
-                return Tile.FindTypeOfEntity(this);
-            }
-        }
+        public int Floor => Tile.FindFloorOfEntity(this);
+
+        public EntityType Type => Tile.FindTypeOfEntity(this);
 
         public abstract void Serialize(XmlDocument document, XmlElement localRoot);
 

@@ -27,12 +27,8 @@ namespace Warlander.Deedplanner.Data
         private HeightmapHandle[,] heightmapHandles;
 
         public bool HandlesVisible {
-            get {
-                return handlesParent.gameObject.activeSelf;
-            }
-            set {
-                handlesParent.gameObject.SetActive(value);
-            }
+            get => handlesParent.gameObject.activeSelf;
+            set => handlesParent.gameObject.SetActive(value);
         }
 
         public void Initialize(Map map, bool cave)

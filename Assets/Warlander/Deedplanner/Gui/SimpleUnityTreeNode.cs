@@ -24,9 +24,7 @@ namespace Warlander.Deedplanner.Gui
         private string value;
 
         public override string Value {
-            get {
-                return value;
-            }
+            get => value;
             set {
                 this.value = value;
                 text.SetText(value);

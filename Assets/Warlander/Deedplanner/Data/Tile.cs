@@ -31,9 +31,7 @@ namespace Warlander.Deedplanner.Data
         public Cave Cave { get; private set; }
 
         public int SurfaceHeight {
-            get {
-                return surfaceHeight;
-            }
+            get => surfaceHeight;
             set {
                 surfaceHeight = value;
                 RefreshSurfaceMesh();
@@ -50,9 +48,7 @@ namespace Warlander.Deedplanner.Data
         }
 
         public int CaveHeight {
-            get {
-                return caveHeight;
-            }
+            get => caveHeight;
             set {
                 caveHeight = value;
                 RefreshCaveMesh();
@@ -69,9 +65,7 @@ namespace Warlander.Deedplanner.Data
         }
 
         public int CaveSize {
-            get {
-                return caveSize;
-            }
+            get => caveSize;
             set {
                 caveSize = value;
                 RefreshCaveMesh();

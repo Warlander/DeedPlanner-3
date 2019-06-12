@@ -39,20 +39,20 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField]
         private Window inputSettingsWindow = null;
 
-        public UnityTree GroundsTree { get => groundsTree; }
-        public UnityTree CavesTree { get => cavesTree; }
-        public UnityTree FloorsTree { get => floorsTree; }
-        public UnityTree WallsTree { get => wallsTree; }
-        public UnityList RoofsList { get => roofsList; }
-        public UnityTree ObjectsTree { get => objectsTree; }
+        public UnityTree GroundsTree => groundsTree;
+        public UnityTree CavesTree => cavesTree;
+        public UnityTree FloorsTree => floorsTree;
+        public UnityTree WallsTree => wallsTree;
+        public UnityList RoofsList => roofsList;
+        public UnityTree ObjectsTree => objectsTree;
 
-        public Window ResizeMapWindow { get => resizeMapWindow; }
-        public Window ClearMapWindow { get => clearMapWindow; }
-        public Window SaveMapWindow { get => saveMapWindow; }
-        public Window LoadMapWindow { get => loadMapWindow; }
-        public Window GraphicsSettingsWindow { get => graphicsSettingsWindow; }
-        public Window InputSettingsWindow { get => inputSettingsWindow; }
-        
+        public Window ResizeMapWindow => resizeMapWindow;
+        public Window ClearMapWindow => clearMapWindow;
+        public Window SaveMapWindow => saveMapWindow;
+        public Window LoadMapWindow => loadMapWindow;
+        public Window GraphicsSettingsWindow => graphicsSettingsWindow;
+        public Window InputSettingsWindow => inputSettingsWindow;
+
 
         private void Awake()
         {

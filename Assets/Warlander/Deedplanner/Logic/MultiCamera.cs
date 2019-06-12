@@ -54,9 +54,7 @@ namespace Warlander.Deedplanner.Logic
         public RaycastHit CurrentRaycast { get; private set; }
 
         public CameraMode CameraMode {
-            get {
-                return cameraMode;
-            }
+            get => cameraMode;
             set {
                 cameraMode = value;
                 UpdateState();
@@ -64,52 +62,30 @@ namespace Warlander.Deedplanner.Logic
         }
 
         public int Floor {
-            get {
-                return floor;
-            }
+            get => floor;
             set {
                 floor = value;
                 UpdateState();
             }
         }
 
-        public bool RenderEntireLayer {
-            get {
-                return CameraMode == CameraMode.Perspective;
-            }
-        }
+        public bool RenderEntireLayer => CameraMode == CameraMode.Perspective;
 
-        public GameObject Screen {
-            get {
-                return screen;
-            }
-        }
+        public GameObject Screen => screen;
 
         public bool RenderSelectionBox {
-            get {
-                return selectionBox.gameObject.activeSelf;
-            }
-            set {
-                selectionBox.gameObject.SetActive(value);
-            }
+            get => selectionBox.gameObject.activeSelf;
+            set => selectionBox.gameObject.SetActive(value);
         }
 
         public Vector2 SelectionBoxPosition {
-            get {
-                return selectionBox.anchoredPosition;
-            }
-            set {
-                selectionBox.anchoredPosition = value;
-            }
+            get => selectionBox.anchoredPosition;
+            set => selectionBox.anchoredPosition = value;
         }
 
         public Vector2 SelectionBoxSize {
-            get {
-                return selectionBox.sizeDelta;
-            }
-            set {
-                selectionBox.sizeDelta = value;
-            }
+            get => selectionBox.sizeDelta;
+            set => selectionBox.sizeDelta = value;
         }
 
         void Start()

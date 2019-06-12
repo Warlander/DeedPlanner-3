@@ -17,12 +17,8 @@ namespace Warlander.Deedplanner.Data
         private CaveData data;
 
         public CaveData Data {
-            get {
-                return data;
-            }
-            set {
-                data = value;
-            }
+            get => data;
+            set => data = value;
         }
 
         public void Initialize(CaveData data)
