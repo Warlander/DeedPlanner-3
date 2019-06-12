@@ -212,21 +212,22 @@ namespace Warlander.Deedplanner.Data
             TileEntity tileEntity;
             Entities.TryGetValue(entityData, out tileEntity);
             Floor currentFloor = tileEntity as Floor;
-            if (!currentFloor && data)
+            Roof currentRoof = tileEntity as Roof;
+            
+            if (!tileEntity && data)
             {
                 return CreateNewFloor(entityData, data, orientation);
             }
-            else if (!data && currentFloor)
+            else if (!data && tileEntity)
             {
                 DestroyEntity(entityData);
                 return null;
             }
-            else if (currentFloor && (currentFloor.Data != data || currentFloor.Orientation != orientation))
+            else if ((currentFloor && (currentFloor.Data != data || currentFloor.Orientation != orientation)) || currentRoof)
             {
                 DestroyEntity(entityData);
                 return CreateNewFloor(entityData, data, orientation);
             }
-            // TODO: add behaviour if roof is there
 
             return null;
         }
@@ -250,16 +251,18 @@ namespace Warlander.Deedplanner.Data
             TileEntity tileEntity;
             Entities.TryGetValue(entityData, out tileEntity);
             Roof currentRoof = tileEntity as Roof;
-            if (!currentRoof && data)
+            Floor currentFloor = tileEntity as Floor;
+
+            if (!tileEntity && data)
             {
                 return CreateNewRoof(entityData, data);
             }
-            else if (!data && currentRoof)
+            else if (!data && tileEntity)
             {
                 DestroyEntity(entityData);
                 return null;
             }
-            else if (currentRoof && (currentRoof.Data != data))
+            else if ((currentRoof && (currentRoof.Data != data)) || currentFloor)
             {
                 DestroyEntity(entityData);
                 return CreateNewRoof(entityData, data);

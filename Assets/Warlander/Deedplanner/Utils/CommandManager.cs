@@ -48,6 +48,11 @@ namespace Warlander.Deedplanner.Utils
 
         public void FinishAction()
         {
+            if (currentActionStack.Count == 0)
+            {
+                return;
+            }
+            
             AddToStack(new CommandAction(currentActionStack.ToArray()));
             currentActionStack.Clear();
         }
