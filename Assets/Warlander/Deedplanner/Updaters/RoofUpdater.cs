@@ -1,22 +1,13 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Roof;
 using Warlander.Deedplanner.Gui;
-using Warlander.Deedplanner.Utils;
+using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Updaters
 {
-    public class FloorUpdater : MonoBehaviour
+    public class RoofUpdater : MonoBehaviour
     {
-
-        [SerializeField]
-        private Toggle southToggle = null;
-        [SerializeField]
-        private Toggle westToggle = null;
-        [SerializeField]
-        private Toggle northToggle = null;
-        [SerializeField]
-        private Toggle eastToggle = null;
 
         private void OnEnable()
         {
@@ -50,37 +41,19 @@ namespace Warlander.Deedplanner.Logic
                 y = gridTile.Y;
             }
 
-            FloorData data = GuiManager.Instance.FloorsTree.SelectedValue as FloorData;
-            if (data.Opening && (floor == 0 || floor == -1))
+            if (floor <= 0)
             {
                 return;
             }
 
-            EntityOrientation orientation;
-            if (southToggle.isOn)
-            {
-                orientation = EntityOrientation.Down;
-            }
-            else if (westToggle.isOn)
-            {
-                orientation = EntityOrientation.Right;
-            }
-            else if (northToggle.isOn)
-            {
-                orientation = EntityOrientation.Up;
-            }
-            else
-            {
-                orientation = EntityOrientation.Left;
-            }
-
             if (Input.GetMouseButton(0))
             {
-                GameManager.Instance.Map[x, y].SetFloor(data, orientation, floor);
+                RoofData data = GuiManager.Instance.RoofsList.SelectedValue as RoofData;
+                GameManager.Instance.Map[x, y].SetRoof(data, floor);
             }
             else if (Input.GetMouseButton(1))
             {
-                GameManager.Instance.Map[x, y].SetFloor(null, orientation, floor);
+                GameManager.Instance.Map[x, y].SetRoof(null, floor);
             }
         }
 

@@ -1,19 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Floor;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Updaters
 {
-    public class RoofUpdater : MonoBehaviour
+    public class FloorUpdater : MonoBehaviour
     {
+
+        [SerializeField]
+        private Toggle southToggle = null;
+        [SerializeField]
+        private Toggle westToggle = null;
+        [SerializeField]
+        private Toggle northToggle = null;
+        [SerializeField]
+        private Toggle eastToggle = null;
 
         private void OnEnable()
         {
@@ -47,19 +51,37 @@ namespace Warlander.Deedplanner.Logic
                 y = gridTile.Y;
             }
 
-            if (floor <= 0)
+            FloorData data = GuiManager.Instance.FloorsTree.SelectedValue as FloorData;
+            if (data.Opening && (floor == 0 || floor == -1))
             {
                 return;
             }
 
+            FloorOrientation orientation;
+            if (southToggle.isOn)
+            {
+                orientation = FloorOrientation.Down;
+            }
+            else if (westToggle.isOn)
+            {
+                orientation = FloorOrientation.Right;
+            }
+            else if (northToggle.isOn)
+            {
+                orientation = FloorOrientation.Up;
+            }
+            else
+            {
+                orientation = FloorOrientation.Left;
+            }
+
             if (Input.GetMouseButton(0))
             {
-                RoofData data = GuiManager.Instance.RoofsList.SelectedValue as RoofData;
-                GameManager.Instance.Map[x, y].SetRoof(data, floor);
+                GameManager.Instance.Map[x, y].SetFloor(data, orientation, floor);
             }
             else if (Input.GetMouseButton(1))
             {
-                GameManager.Instance.Map[x, y].SetRoof(null, floor);
+                GameManager.Instance.Map[x, y].SetFloor(null, orientation, floor);
             }
         }
 

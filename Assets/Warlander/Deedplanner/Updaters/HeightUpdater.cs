@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Updaters
 {
     public class HeightUpdater : MonoBehaviour
     {
@@ -70,6 +63,11 @@ namespace Warlander.Deedplanner.Logic
                     dragging = true;
                 }
             }
+
+            if (Input.GetMouseButton(0))
+            {
+                
+            }
             
             if (Input.GetMouseButtonUp(0))
             {
@@ -108,10 +106,10 @@ namespace Warlander.Deedplanner.Logic
                 dragEndPos = dragStartPos;
             }
             
+            dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
+            
             if (dragging)
             {
-                dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
-
                 if (!manipulating && Vector2.Distance(dragStartPos, dragEndPos) > 5)
                 {
                     LayoutManager.Instance.CurrentCamera.RenderSelectionBox = true;

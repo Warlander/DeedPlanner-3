@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Roof;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Logic
