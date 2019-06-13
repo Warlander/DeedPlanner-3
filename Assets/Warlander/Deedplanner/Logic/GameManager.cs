@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Updaters;
 
 namespace Warlander.Deedplanner.Logic
 {

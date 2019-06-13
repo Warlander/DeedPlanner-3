@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Ground;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Updaters
 {
     public class GroundUpdater : MonoBehaviour
     {

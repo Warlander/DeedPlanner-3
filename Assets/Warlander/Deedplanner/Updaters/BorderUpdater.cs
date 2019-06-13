@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Updaters
 {
     public class BorderUpdater : MonoBehaviour
     {

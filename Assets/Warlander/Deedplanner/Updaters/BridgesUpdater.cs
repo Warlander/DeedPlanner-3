@@ -1,29 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Updaters
 {
-    public class CaveUpdater : MonoBehaviour
+    public class BridgesUpdater : MonoBehaviour
     {
 
-        public void OnEnable()
+        private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
-        public void Update()
+        private void Update()
         {
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
-            if (raycast.transform == null)
+            if (!raycast.transform)
             {
                 return;
             }

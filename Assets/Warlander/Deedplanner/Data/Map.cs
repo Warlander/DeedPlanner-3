@@ -336,9 +336,9 @@ namespace Warlander.Deedplanner.Data
                     for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
                     {
                         TileEntity entity = this[i, i2].GetTileContent(i3);
-                        if (entity != null && entity.GetType() == typeof(Roof))
+                        if (entity != null && entity.GetType() == typeof(Roof.Roof))
                         {
-                            ((Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofLevel();
+                            ((Roof.Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofLevel();
                         }
                     }
                 }
@@ -351,9 +351,9 @@ namespace Warlander.Deedplanner.Data
                     for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
                     {
                         TileEntity entity = this[i, i2].GetTileContent(i3);
-                        if (entity != null && entity.GetType() == typeof(Roof))
+                        if (entity != null && entity.GetType() == typeof(Roof.Roof))
                         {
-                            ((Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofModel();
+                            ((Roof.Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofModel();
                         }
                     }
                 }

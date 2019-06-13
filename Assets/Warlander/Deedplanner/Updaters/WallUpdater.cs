@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Floor;
+using Warlander.Deedplanner.Data.Ground;
+using Warlander.Deedplanner.Data.Wall;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Updaters
 {
     public class WallUpdater : MonoBehaviour
     {
@@ -54,7 +51,7 @@ namespace Warlander.Deedplanner.Logic
                 x = tileEntity.Tile.X;
                 y = tileEntity.Tile.Y;
                 EntityType type = tileEntity.Type;
-                horizontal = (type == EntityType.HWALL || type == EntityType.HFENCE);
+                horizontal = (type == EntityType.Hwall || type == EntityType.Hfence);
             }
             else if (gridTile || groundEntity)
             {
