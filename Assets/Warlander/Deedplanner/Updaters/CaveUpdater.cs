@@ -15,7 +15,7 @@ namespace Warlander.Deedplanner.Updaters
         public void Update()
         {
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
-            if (raycast.transform == null)
+            if (!raycast.transform)
             {
                 return;
             }

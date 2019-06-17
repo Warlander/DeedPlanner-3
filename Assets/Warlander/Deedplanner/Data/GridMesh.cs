@@ -1,6 +1,4 @@
-﻿
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
@@ -68,10 +66,9 @@ namespace Warlander.Deedplanner.Data
                     uniformColors[index] = new Color(1, 1, 1);
                     heightColors[index] = new Color(1, 1, 1);
 
-                    HeightmapHandle newHandle = Instantiate(GameManager.Instance.HeightmapHandlePrefab);
+                    HeightmapHandle newHandle = Instantiate(GameManager.Instance.HeightmapHandlePrefab, handlesParent);
                     newHandle.Initialize(new Vector2Int(i, i2));
                     newHandle.transform.localPosition = vertices[index];
-                    newHandle.transform.SetParent(handlesParent);
                     heightmapHandles[i, i2] = newHandle;
                 }
             }

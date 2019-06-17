@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
@@ -38,7 +36,7 @@ namespace Warlander.Deedplanner.Gui
         /// <returns>Created list element from prefab (useful if any further modification is needed)</returns>
         public UnityListElement Add(object value)
         {
-            UnityListElement newElement = Instantiate(listElementPrefab);
+            UnityListElement newElement = Instantiate(listElementPrefab, listElementsParent);
             newElement.Toggle.group = toggleGroup;
             newElement.Value = value;
             newElement.Toggle.onValueChanged.AddListener(toggled =>
@@ -52,7 +50,6 @@ namespace Warlander.Deedplanner.Gui
                     ValueChanged(this, newElement.Value);
                 }
             });
-            newElement.transform.SetParent(listElementsParent);
 
             if (GetComponentsInChildren<UnityListElement>().Length == 1)
             {

@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Utils
 {
 
     public static class WomModelLoader
     {
+        private static readonly int Mode = Shader.PropertyToID("_Mode");
+        private static readonly int MainTex = Shader.PropertyToID("_MainTex");
+        private static readonly int Color = Shader.PropertyToID("_Color");
+        private static readonly int Glossiness = Shader.PropertyToID("_Glossiness");
 
         public static GameObject LoadModel(string filePath)
         {
@@ -31,7 +35,7 @@ namespace Warlander.Deedplanner.Utils
             }
             catch (Exception ex)
             {
-                GameObject.Destroy(modelGameObject);
+                Object.Destroy(modelGameObject);
                 throw ex;
             }
             finally
@@ -57,7 +61,7 @@ namespace Warlander.Deedplanner.Utils
             }
             catch (Exception ex)
             {
-                GameObject.Destroy(meshObject);
+                Object.Destroy(meshObject);
                 throw ex;
             }
 
@@ -133,21 +137,21 @@ namespace Warlander.Deedplanner.Utils
 
             Material material = new Material(Shader.Find("Standard"));
             material.EnableKeyword("_ALPHATEST_ON");
-            material.SetFloat("_Mode", 1);
+            material.SetFloat(Mode, 1);
 
             string texLocation = Path.Combine(modelFolder, texName);
             Texture2D texture = LoadTexture(texLocation);
 
             if (texture)
             {
-                material.SetTexture("_MainTex", texture);
+                material.SetTexture(MainTex, texture);
             }
             else
             {
-                material.SetColor("_Color", new Color(1, 1, 1, 0));
+                material.SetColor(Color, new Color(1, 1, 1, 0));
             }
 
-            material.SetFloat("_Glossiness", 0);
+            material.SetFloat(Glossiness, 0);
             bool hasMaterialProperties = source.ReadBoolean();
             if (hasMaterialProperties)
             {

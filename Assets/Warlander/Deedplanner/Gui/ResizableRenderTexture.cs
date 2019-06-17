@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Warlander.Deedplanner.Gui
@@ -22,9 +20,10 @@ namespace Warlander.Deedplanner.Gui
         private void OnRectTransformDimensionsChange()
         {
             RectTransform rectTransform = transform as RectTransform;
+            Vector2 size = RectTransformUtility.CalculateRelativeRectTransformBounds(rectTransform).size;
             RawImage rawImage = GetComponent<RawImage>();
-            float width = rectTransform.sizeDelta.x;
-            float height = rectTransform.sizeDelta.y;
+            float width = size.x;
+            float height = size.y;
             if (width <= 0 || height <= 0)
             {
                 return;

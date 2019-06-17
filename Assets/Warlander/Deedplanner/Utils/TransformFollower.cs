@@ -17,10 +17,14 @@ namespace Warlander.Deedplanner.Utils
                 return;
             }
 
-            float x = FollowX ? FollowedTransform.position.x : transform.position.x;
-            float y = FollowY ? FollowedTransform.position.y : transform.position.y;
-            float z = FollowZ ? FollowedTransform.position.z : transform.position.z;
-            transform.position = new Vector3(x, y, z);
+            Transform currentTransform = transform;
+            Vector3 currentTransformPosition = currentTransform.position;
+            Vector3 followedTransformPosition = FollowedTransform.position;
+
+            float x = FollowX ? followedTransformPosition.x : currentTransformPosition.x;
+            float y = FollowY ? followedTransformPosition.y : currentTransformPosition.y;
+            float z = FollowZ ? followedTransformPosition.z : currentTransformPosition.z;
+            currentTransform.position = new Vector3(x, y, z);
         }
 
     }
