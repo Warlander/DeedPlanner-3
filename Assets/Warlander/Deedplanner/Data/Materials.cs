@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace Warlander.Deedplanner.Data
@@ -10,9 +7,10 @@ namespace Warlander.Deedplanner.Data
     public sealed class Materials : Dictionary<string, int>
     {
 
-        public Materials() : base() { }
+        public Materials()
+        { }
 
-        public Materials(XmlNode node) : base()
+        public Materials(XmlNode node)
         {
             string content = node.InnerText;
             string[] materials = content.Split(',');

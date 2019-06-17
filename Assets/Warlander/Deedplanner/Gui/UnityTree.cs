@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Warlander.Deedplanner.Gui
@@ -64,7 +60,7 @@ namespace Warlander.Deedplanner.Gui
                 currentParent = node.transform;
             }
 
-            UnityListElement newElement = Instantiate(listElementPrefab);
+            UnityListElement newElement = Instantiate(listElementPrefab, currentParent);
             newElement.Toggle.group = toggleGroup;
             newElement.Value = value;
             newElement.Toggle.onValueChanged.AddListener(toggled =>
@@ -75,7 +71,6 @@ namespace Warlander.Deedplanner.Gui
                     ValueChanged?.Invoke(this, newElement.Value);
                 }
             });
-            newElement.transform.SetParent(currentParent);
             bool rootElement = tree == null || tree.Length == 0;
             newElement.gameObject.SetActive(rootElement);
 
@@ -112,9 +107,8 @@ namespace Warlander.Deedplanner.Gui
                 }
             }
 
-            UnityTreeNode newNode = Instantiate(treeElementPrefab);
+            UnityTreeNode newNode = Instantiate(treeElementPrefab, parent);
             newNode.Value = currentValue;
-            newNode.transform.SetParent(parent);
             bool root = (parent == treeElementsParent);
             newNode.gameObject.SetActive(root);
             if (tree.Length == 1)

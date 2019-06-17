@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
 
@@ -11,6 +7,9 @@ namespace Warlander.Deedplanner.Utils
     public class TextureReference
     {
 
+        private static readonly int MainTex = Shader.PropertyToID("_MainTex");
+        private static readonly int Glossiness = Shader.PropertyToID("_Glossiness");
+        
         private static Dictionary<string, TextureReference> references = new Dictionary<string, TextureReference>();
 
         public static TextureReference GetTextureReference(string location)
@@ -72,8 +71,8 @@ namespace Warlander.Deedplanner.Utils
                 }
 
                 material = new Material(Shader.Find("Standard"));
-                material.SetTexture("_MainTex", Texture);
-                material.SetFloat("_Glossiness", 0);
+                material.SetTexture(MainTex, Texture);
+                material.SetFloat(Glossiness, 0);
                 return material;
             }
         }

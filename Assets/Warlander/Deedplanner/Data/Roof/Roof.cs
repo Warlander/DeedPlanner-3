@@ -52,16 +52,16 @@ namespace Warlander.Deedplanner.Data.Roof
                 }
                 currRadius++;
             }
-        outOfLoop:
+            outOfLoop:
             RoofLevel = currRadius - 1;
         }
 
         private bool ContainsRoof(Tile t, int floor)
         {
-            if (t != null)
+            if (t)
             {
                 TileEntity entity = t.GetTileContent(floor);
-                return entity != null && entity.GetType() == typeof(Roof);
+                return entity && entity.GetType() == typeof(Roof);
             }
             return false;
         }

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Warlander.Deedplanner.Logic;
+﻿using UnityEngine;
 
 namespace Warlander.Deedplanner.Gui
 {

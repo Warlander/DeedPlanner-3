@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Floor;
@@ -154,7 +151,7 @@ namespace Warlander.Deedplanner.Data
                 return EntityType.Cave;
             }
 
-            foreach (var pair in Entities)
+            foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
                 TileEntity checkedEntity = pair.Value;
@@ -178,7 +175,7 @@ namespace Warlander.Deedplanner.Data
                 return -1;
             }
             
-            foreach (var pair in Entities)
+            foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
                 TileEntity checkedEntity = pair.Value;
@@ -479,8 +476,8 @@ namespace Warlander.Deedplanner.Data
                     case EntityType.Object:
                         ObjectEntityData objectData = (ObjectEntityData)key;
                         XmlElement objectElement = document.CreateElement("object");
-                        objectElement.SetAttribute("x", objectData.X.ToString());
-                        objectElement.SetAttribute("y", objectData.Y.ToString());
+                        objectElement.SetAttribute("x", objectData.X.ToString(CultureInfo.InvariantCulture));
+                        objectElement.SetAttribute("y", objectData.Y.ToString(CultureInfo.InvariantCulture));
                         entity.Serialize(document, objectElement);
                         level.AppendChild(objectElement);
                         break;
@@ -538,7 +535,7 @@ namespace Warlander.Deedplanner.Data
             string id = element.GetAttribute("id");
             FloorData data;
             Database.Floors.TryGetValue(id, out data);
-            if (data == null)
+            if (!data)
             {
                 Debug.LogWarning("Unable to load floor " + id);
             }
@@ -570,7 +567,7 @@ namespace Warlander.Deedplanner.Data
             string id = element.GetAttribute("id");
             WallData data;
             Database.Walls.TryGetValue(id, out data);
-            if (data == null)
+            if (!data)
             {
                 Debug.LogWarning("Unable to load wall " + id);
             }
@@ -612,7 +609,7 @@ namespace Warlander.Deedplanner.Data
             string id = element.GetAttribute("id");
             RoofData data;
             Database.Roofs.TryGetValue(id, out data);
-            if (data == null)
+            if (!data)
             {
                 Debug.LogWarning("Unable to load roof " + id);
             }

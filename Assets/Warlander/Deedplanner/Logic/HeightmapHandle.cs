@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Warlander.Deedplanner.Logic
 {
     public class HeightmapHandle : MonoBehaviour
     {
 
+        private static readonly int Color1 = Shader.PropertyToID("_Color");
+        
         public Vector2Int TileCoords { get; private set; }
 
         private Renderer commonRenderer;
@@ -23,7 +20,7 @@ namespace Warlander.Deedplanner.Logic
                     return;
                 }
                 MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                propertyBlock.SetColor("_Color", value);
+                propertyBlock.SetColor(Color1, value);
                 commonRenderer.SetPropertyBlock(propertyBlock);
                 color = value;
             }

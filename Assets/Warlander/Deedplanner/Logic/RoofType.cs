@@ -139,11 +139,11 @@ namespace Warlander.Deedplanner.Logic
             {
                 for (int y = -1; y <= 1; y++)
                 {
-                    if (map.GetRelativeTile(tile, x, y) == null)
+                    if (!map.GetRelativeTile(tile, x, y))
                     {
                         roof = -1;
                     }
-                    else if (map.GetRelativeTile(tile, x, y).GetTileContent(height) == null || map.GetRelativeTile(tile, x, y).GetTileContent(height).GetType() != typeof(Roof))
+                    else if (!map.GetRelativeTile(tile, x, y).GetTileContent(height) || map.GetRelativeTile(tile, x, y).GetTileContent(height).GetType() != typeof(Roof))
                     {
                         roof = -1;
                     }

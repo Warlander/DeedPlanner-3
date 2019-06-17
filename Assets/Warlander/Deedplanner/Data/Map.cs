@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
@@ -14,6 +9,8 @@ namespace Warlander.Deedplanner.Data
     public class Map : MonoBehaviour, IXMLSerializable
     {
 
+        private static readonly int Color = Shader.PropertyToID("_Color");
+        
         private Tile[,] tiles;
 
         private Transform[] surfaceLevelRoots;
@@ -69,13 +66,13 @@ namespace Warlander.Deedplanner.Data
                     {
                         Transform root = caveLevelRoots[i];
                         int relativeFloor = i - absoluteFloor;
-                        bool renderFloor = RenderEntireLayer ? true : relativeFloor <= 0 && relativeFloor > -3;
+                        bool renderFloor = RenderEntireLayer || (relativeFloor <= 0 && relativeFloor > -3);
                         root.gameObject.SetActive(renderFloor);
                         if (renderFloor)
                         {
                             float opacity = RenderEntireLayer ? 1f : GetRelativeFloorOpacity(relativeFloor);
                             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                            propertyBlock.SetColor("_Color", new Color(opacity, opacity, opacity));
+                            propertyBlock.SetColor(Color, new Color(opacity, opacity, opacity));
                             Renderer[] renderers = root.GetComponentsInChildren<Renderer>();
                             foreach (Renderer renderer in renderers)
                             {
@@ -100,7 +97,7 @@ namespace Warlander.Deedplanner.Data
                         {
                             float opacity = RenderEntireLayer ? 1f : GetRelativeFloorOpacity(relativeFloor);
                             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                            propertyBlock.SetColor("_Color", new Color(opacity, opacity, opacity));
+                            propertyBlock.SetColor(Color, new Color(opacity, opacity, opacity));
                             Renderer[] renderers = root.GetComponentsInChildren<Renderer>();
                             foreach (Renderer renderer in renderers)
                             {
@@ -336,7 +333,7 @@ namespace Warlander.Deedplanner.Data
                     for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
                     {
                         TileEntity entity = this[i, i2].GetTileContent(i3);
-                        if (entity != null && entity.GetType() == typeof(Roof.Roof))
+                        if (entity && entity.GetType() == typeof(Roof.Roof))
                         {
                             ((Roof.Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofLevel();
                         }
@@ -351,7 +348,7 @@ namespace Warlander.Deedplanner.Data
                     for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
                     {
                         TileEntity entity = this[i, i2].GetTileContent(i3);
-                        if (entity != null && entity.GetType() == typeof(Roof.Roof))
+                        if (entity && entity.GetType() == typeof(Roof.Roof))
                         {
                             ((Roof.Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofModel();
                         }
