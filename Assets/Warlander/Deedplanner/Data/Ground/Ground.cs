@@ -16,6 +16,7 @@ namespace Warlander.Deedplanner.Data.Ground
         public MeshCollider Collider { get; private set; }
 
         public override Tile Tile => tile;
+        public override Materials Materials => null;
 
         public GroundData Data {
             get => data;
@@ -71,8 +72,6 @@ namespace Warlander.Deedplanner.Data.Ground
                 meshRenderer.materials = materials;
             }
         }
-
-        public override Materials Materials => null;
 
         public void Initialize(Tile tile, GroundData data, Mesh mesh)
         {
