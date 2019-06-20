@@ -21,10 +21,10 @@ namespace Warlander.Deedplanner.Data
         public Map Map { get; private set; }
         public int X { get; private set; }
         public int Y { get; private set; }
-        public bool Edge { get; private set; }
-        protected Mesh SurfaceHeightMesh { get; private set; }
-        protected Mesh CaveHeightMesh { get; private set; }
-        protected Dictionary<EntityData, TileEntity> Entities { get; private set; }
+        private bool Edge { get; set; }
+        private Mesh SurfaceHeightMesh { get; set; }
+        private Mesh CaveHeightMesh { get; set; }
+        private Dictionary<EntityData, TileEntity> Entities { get; set; }
         private GridTile surfaceGridTile;
         private GridTile caveGridTile;
 
@@ -114,7 +114,7 @@ namespace Warlander.Deedplanner.Data
             caveObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
             Cave = caveObject.GetComponent<Cave.Cave>();
             Map.AddEntityToMap(caveObject, -1);
-            Cave.Initialize(Database.DefaultCaveData);
+            Cave.Initialize(this, Database.DefaultCaveData);
             if (edge)
             {
                 Cave.gameObject.SetActive(false);
@@ -123,8 +123,8 @@ namespace Warlander.Deedplanner.Data
 
         private Mesh InitializeHeightMesh()
         {
-            Vector3[] vertices = new Vector3[] { new Vector3(0, 0, 0), new Vector3(4, 0, 0), new Vector3(0, 0, 4), new Vector3(4, 0, 4), new Vector3(2, 0, 2) };
-            Vector2[] uv = new Vector2[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(0.5f, 0.5f) };
+            Vector3[] vertices = { new Vector3(0, 0, 0), new Vector3(4, 0, 0), new Vector3(0, 0, 4), new Vector3(4, 0, 4), new Vector3(2, 0, 2) };
+            Vector2[] uv = { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(0.5f, 0.5f) };
 
             Mesh mesh = new Mesh();
             mesh.vertices = vertices;
