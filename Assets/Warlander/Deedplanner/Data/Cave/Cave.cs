@@ -29,7 +29,10 @@ namespace Warlander.Deedplanner.Data.Cave
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)
         {
-            throw new NotImplementedException();
+            XmlElement cave = document.CreateElement("cave");
+            cave.SetAttribute("id", data.ShortName);
+
+            localRoot.AppendChild(cave);
         }
     }
 }
