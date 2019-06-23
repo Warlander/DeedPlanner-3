@@ -108,13 +108,10 @@ namespace Warlander.Deedplanner.Data.Ground
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)
         {
-            XmlElement ground = document.CreateElement("ground");
-            ground.SetAttribute("id", data.ShortName);
+            localRoot.SetAttribute("id", data.ShortName);
             if (roadDirection != RoadDirection.Center) {
-                ground.SetAttribute("dir", roadDirection.ToString());
+                localRoot.SetAttribute("dir", roadDirection.ToString());
             }
-
-            localRoot.AppendChild(ground);
         }
 
         public void Deserialize(XmlElement element)

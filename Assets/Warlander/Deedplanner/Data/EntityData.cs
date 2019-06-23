@@ -1,6 +1,9 @@
-﻿namespace Warlander.Deedplanner.Data
+﻿using System.Xml;
+using Warlander.Deedplanner.Utils;
+
+namespace Warlander.Deedplanner.Data
 {
-    public class EntityData
+    public class EntityData : IXMLSerializable
     {
 
         public int Floor { get; private set; }
@@ -14,6 +17,11 @@
             Type = type;
         }
 
+        public void Serialize(XmlDocument document, XmlElement localRoot)
+        {
+            // no extra data needed
+        }
+        
         public override bool Equals(object other)
         {
             EntityData data = other as EntityData;
@@ -35,6 +43,5 @@
         {
             return "Entity floor " + Floor + " type " + Type;
         }
-
     }
 }

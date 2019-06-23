@@ -1,10 +1,13 @@
-﻿namespace Warlander.Deedplanner.Data.Object
+﻿using System.Globalization;
+using System.Xml;
+
+namespace Warlander.Deedplanner.Data.Object
 {
     public class ObjectEntityData : EntityData
     {
 
-        public float X { get; private set; }
-        public float Y { get; private set; }
+        public float X { get; }
+        public float Y { get; }
 
         public ObjectEntityData(int floor, EntityType type, float x, float y) : base(floor, type)
         {
@@ -12,6 +15,12 @@
             Y = y;
         }
 
+        public new void Serialize(XmlDocument document, XmlElement localRoot)
+        {
+            localRoot.SetAttribute("x", X.ToString(CultureInfo.InvariantCulture));
+            localRoot.SetAttribute("y", Y.ToString(CultureInfo.InvariantCulture));
+        }
+        
         public override bool Equals(object other)
         {
             ObjectEntityData data = other as ObjectEntityData;

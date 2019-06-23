@@ -385,18 +385,20 @@ namespace Warlander.Deedplanner.Data
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
         {
-            // localRoot for map is always null at start
+            // localRoot for map is always null at start, we create it
             localRoot = document.CreateElement("map");
             localRoot.SetAttribute("width", Width.ToString());
             localRoot.SetAttribute("height", Height.ToString());
             localRoot.SetAttribute("exporter", Constants.TitleString);
             document.AppendChild(localRoot);
-
+    
             for (int i = 0; i <= Width; i++)
             {
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
-                    tiles[i, i2].Serialize(document, localRoot);
+                    XmlElement tile = document.CreateElement("tile");
+                    tiles[i, i2].Serialize(document, tile);
+                    localRoot.AppendChild(tile);
                 }
             }
         }
