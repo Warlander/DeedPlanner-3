@@ -418,16 +418,19 @@ namespace Warlander.Deedplanner.Data
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
         {
-            XmlElement tile = document.CreateElement("tile");
-            tile.SetAttribute("x", X.ToString());
-            tile.SetAttribute("y", Y.ToString());
-            tile.SetAttribute("height", SurfaceHeight.ToString());
-            tile.SetAttribute("caveHeight", CaveHeight.ToString());
-            tile.SetAttribute("caveSize", CaveSize.ToString());
-            localRoot.AppendChild(tile);
+            localRoot.SetAttribute("x", X.ToString());
+            localRoot.SetAttribute("y", Y.ToString());
+            localRoot.SetAttribute("height", SurfaceHeight.ToString());
+            localRoot.SetAttribute("caveHeight", CaveHeight.ToString());
+            localRoot.SetAttribute("caveSize", CaveSize.ToString());
 
-            Ground.Serialize(document, tile);
-            Cave.Serialize(document, tile);
+            XmlElement ground = document.CreateElement("ground");
+            Ground.Serialize(document, ground);
+            localRoot.AppendChild(ground);
+            
+            XmlElement cave = document.CreateElement("cave");
+            Cave.Serialize(document, cave);
+            localRoot.AppendChild(cave);
 
             Dictionary<int, XmlElement> levels = new Dictionary<int, XmlElement>();
             foreach (KeyValuePair<EntityData, TileEntity> e in Entities)
@@ -436,56 +439,47 @@ namespace Warlander.Deedplanner.Data
                 TileEntity entity = e.Value;
                 int floor = key.Floor;
 
-                XmlElement level = null;
+                XmlElement level;
                 levels.TryGetValue(floor, out level);
                 if (level == null)
                 {
                     level = document.CreateElement("level");
                     level.SetAttribute("value", key.Floor.ToString());
                     levels[key.Floor] = level;
-                    tile.AppendChild(level);
+                    localRoot.AppendChild(level);
                 }
 
-                switch (key.Type)
+                string elementName = GetEntitySerializedName(key, entity);
+                XmlElement element = document.CreateElement(elementName);
+                key.Serialize(document, element);
+                entity.Serialize(document, element);
+                level.AppendChild(element);
+            }
+        }
+
+        private string GetEntitySerializedName(EntityData key, TileEntity entity)
+        {
+            switch (key.Type)
                 {
                     case EntityType.Floorroof:
-                        entity.Serialize(document, level);
-                        break;
+                        return entity.GetType() == typeof(Floor.Floor) ? "floor" : "roof";
                     case EntityType.Hwall:
                     case EntityType.Hfence:
-                        XmlElement hWall = document.CreateElement("hWall");
-                        entity.Serialize(document, hWall);
-                        level.AppendChild(hWall);
-                        break;
+                        return "hWall";
                     case EntityType.Vwall:
                     case EntityType.Vfence:
-                        XmlElement vWall = document.CreateElement("vWall");
-                        entity.Serialize(document, vWall);
-                        level.AppendChild(vWall);
-                        break;
+                        return "vWall";
                     case EntityType.Hborder:
-                        XmlElement hDeco = document.CreateElement("hBorder");
-                        entity.Serialize(document, hDeco);
-                        level.AppendChild(hDeco);
-                        break;
+                        return "hBorder";
                     case EntityType.Vborder:
-                        XmlElement vDeco = document.CreateElement("vBorder");
-                        entity.Serialize(document, vDeco);
-                        level.AppendChild(vDeco);
-                        break;
+                        return "vBorder";
                     case EntityType.Object:
-                        ObjectEntityData objectData = (ObjectEntityData)key;
-                        XmlElement objectElement = document.CreateElement("object");
-                        objectElement.SetAttribute("x", objectData.X.ToString(CultureInfo.InvariantCulture));
-                        objectElement.SetAttribute("y", objectData.Y.ToString(CultureInfo.InvariantCulture));
-                        entity.Serialize(document, objectElement);
-                        level.AppendChild(objectElement);
-                        break;
+                        return "object";
                     case EntityType.Label:
-                        entity.Serialize(document, level);
-                        break;
+                        return "label";
+                    default:
+                        throw new ArgumentException("Invalid entity type for serialization: " + key.Type);
                 }
-            }
         }
 
         public void Deserialize(XmlElement tileElement)
