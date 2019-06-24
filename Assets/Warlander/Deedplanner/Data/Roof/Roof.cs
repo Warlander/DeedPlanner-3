@@ -110,7 +110,7 @@ namespace Warlander.Deedplanner.Data.Roof
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)
         {
-            
+            localRoot.SetAttribute("id", Data.ShortName);
         }
     }
 }
