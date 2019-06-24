@@ -120,7 +120,10 @@ namespace Warlander.Deedplanner.Data.Wall
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)
         {
-            
+            localRoot.SetAttribute("id", Data.ShortName);
+            if (Data.HouseWall) {
+                localRoot.SetAttribute("reversed", Reversed.ToString());
+            }
         }
     }
 }

@@ -56,7 +56,8 @@ namespace Warlander.Deedplanner.Data.Floor
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)
         {
-            
+            localRoot.SetAttribute("id", Data.ShortName);
+            localRoot.SetAttribute("orientation", Orientation.ToString());
         }
     }
 }
