@@ -723,5 +723,28 @@ namespace Warlander.Deedplanner.Data
             Destroy(entity.gameObject);
         }
 
+        private class TileEntityUndoCommand : IUndoCommand
+        {
+            public void Execute()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Undo()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void DisposeUndo()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void DisposeRedo()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
     }
 }
