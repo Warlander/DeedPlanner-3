@@ -73,6 +73,18 @@ namespace Warlander.Deedplanner.Logic
             LayoutManager.Instance.TabChanged += OnTabChange;
         }
 
+        private void Update()
+        {
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z))
+            {
+                Map.CommandManager.Undo();
+            }
+            else if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Y))
+            {
+                Map.CommandManager.Redo();
+            }
+        }
+
         public IEnumerator LoadMap(Uri mapUri)
         {
             UnityWebRequest webRequest = UnityWebRequest.Get(mapUri);

@@ -83,6 +83,11 @@ namespace Warlander.Deedplanner.Updaters
             {
                 GameManager.Instance.Map[x, y].SetFloor(null, orientation, floor);
             }
+
+            if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
+            {
+                GameManager.Instance.Map.CommandManager.FinishAction();
+            }
         }
 
     }

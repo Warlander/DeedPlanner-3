@@ -1,6 +1,6 @@
 namespace Warlander.Deedplanner.Utils
 {
-    public interface IUndoCommand
+    public interface IReversibleCommand
     {
         void Execute();
         void Undo();
