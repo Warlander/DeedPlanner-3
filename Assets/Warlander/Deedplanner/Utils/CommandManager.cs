@@ -5,10 +5,10 @@ namespace Warlander.Deedplanner.Utils
     public class CommandManager
     {
 
-        private readonly LinkedList<IUndoCommand> undoList = new LinkedList<IUndoCommand>();
-        private readonly LinkedList<IUndoCommand> redoList = new LinkedList<IUndoCommand>();
+        private readonly LinkedList<IReversibleCommand> undoList = new LinkedList<IReversibleCommand>();
+        private readonly LinkedList<IReversibleCommand> redoList = new LinkedList<IReversibleCommand>();
 
-        private readonly Stack<IUndoCommand> currentActionStack = new Stack<IUndoCommand>();
+        private readonly Stack<IReversibleCommand> currentActionStack = new Stack<IReversibleCommand>();
 
         public int MaxUndoCount { get; }
         
@@ -24,10 +24,10 @@ namespace Warlander.Deedplanner.Utils
                 return;
             }
 
-            IUndoCommand undoCommand = undoList.First.Value;
+            IReversibleCommand reversibleCommand = undoList.First.Value;
             undoList.RemoveFirst();
-            undoCommand.Undo();
-            redoList.AddFirst(undoCommand);
+            reversibleCommand.Undo();
+            redoList.AddFirst(reversibleCommand);
         }
 
         public void Redo()
@@ -37,16 +37,16 @@ namespace Warlander.Deedplanner.Utils
                 return;
             }
             
-            IUndoCommand undoCommand = redoList.First.Value;
+            IReversibleCommand reversibleCommand = redoList.First.Value;
             redoList.RemoveFirst();
-            undoCommand.Execute();
-            undoList.AddFirst(undoCommand);
+            reversibleCommand.Execute();
+            undoList.AddFirst(reversibleCommand);
         }
         
-        public void AddToStack(IUndoCommand undoCommand)
+        public void AddToStack(IReversibleCommand reversibleCommand)
         {
-            undoList.AddFirst(undoCommand);
-            foreach (IUndoCommand command in redoList)
+            undoList.AddFirst(reversibleCommand);
+            foreach (IReversibleCommand command in redoList)
             {
                 command.DisposeRedo();
             }
@@ -54,16 +54,16 @@ namespace Warlander.Deedplanner.Utils
 
             if (undoList.Count > MaxUndoCount)
             {
-                IUndoCommand removedCommand = undoList.Last.Value;
+                IReversibleCommand removedCommand = undoList.Last.Value;
                 removedCommand.DisposeUndo();
                 undoList.RemoveLast();
             }
         }
         
-        public void AddToActionAndExecute(IUndoCommand undoCommand)
+        public void AddToActionAndExecute(IReversibleCommand reversibleCommand)
         {
-            currentActionStack.Push(undoCommand);
-            undoCommand.Execute();
+            currentActionStack.Push(reversibleCommand);
+            reversibleCommand.Execute();
         }
 
         public void FinishAction()
@@ -73,32 +73,33 @@ namespace Warlander.Deedplanner.Utils
                 return;
             }
             
-            AddToStack(new UndoCommandAction(currentActionStack.ToArray()));
+            AddToStack(new ReversibleCommandAction(currentActionStack.ToArray()));
             currentActionStack.Clear();
         }
 
         public void UndoAction()
         {
-            foreach (IUndoCommand command in currentActionStack)
+            foreach (IReversibleCommand command in currentActionStack)
             {
                 command.Undo();
+                command.DisposeRedo();
             }
             currentActionStack.Clear();
         }
 
-        private struct UndoCommandAction : IUndoCommand
+        private struct ReversibleCommandAction : IReversibleCommand
         {
 
-            private readonly IUndoCommand[] containedUndoCommands;
+            private readonly IReversibleCommand[] containedReversibleCommands;
 
-            public UndoCommandAction(IUndoCommand[] undoCommands)
+            public ReversibleCommandAction(IReversibleCommand[] reversibleCommands)
             {
-                containedUndoCommands = undoCommands;
+                containedReversibleCommands = reversibleCommands;
             }
             
             public void Execute()
             {
-                foreach (IUndoCommand containedCommand in containedUndoCommands)
+                foreach (IReversibleCommand containedCommand in containedReversibleCommands)
                 {
                     containedCommand.Execute();
                 }
@@ -106,7 +107,7 @@ namespace Warlander.Deedplanner.Utils
 
             public void Undo()
             {
-                foreach (IUndoCommand containedCommand in containedUndoCommands)
+                foreach (IReversibleCommand containedCommand in containedReversibleCommands)
                 {
                     containedCommand.Undo();
                 }
@@ -114,7 +115,7 @@ namespace Warlander.Deedplanner.Utils
 
             public void DisposeUndo()
             {
-                foreach (IUndoCommand containedUndoCommand in containedUndoCommands)
+                foreach (IReversibleCommand containedUndoCommand in containedReversibleCommands)
                 {
                     containedUndoCommand.DisposeUndo();
                 }
@@ -122,7 +123,7 @@ namespace Warlander.Deedplanner.Utils
 
             public void DisposeRedo()
             {
-                foreach (IUndoCommand containedUndoCommand in containedUndoCommands)
+                foreach (IReversibleCommand containedUndoCommand in containedReversibleCommands)
                 {
                     containedUndoCommand.DisposeRedo();
                 }

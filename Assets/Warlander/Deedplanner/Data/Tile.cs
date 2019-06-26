@@ -202,7 +202,7 @@ namespace Warlander.Deedplanner.Data
         public TileEntity GetTileContent(int level)
         {
             EntityData entityData = new EntityData(level, EntityType.Floorroof);
-            TileEntity tileEntity = null;
+            TileEntity tileEntity;
             Entities.TryGetValue(entityData, out tileEntity);
             return tileEntity;
         }
@@ -214,22 +214,21 @@ namespace Warlander.Deedplanner.Data
             Entities.TryGetValue(entityData, out tileEntity);
             Floor.Floor currentFloor = tileEntity as Floor.Floor;
             Roof.Roof currentRoof = tileEntity as Roof.Roof;
+
+            bool needsChange = !tileEntity || (currentFloor && (currentFloor.Data != data || currentFloor.Orientation != orientation)) || currentRoof;
             
-            if (!tileEntity && data)
+            if (data && needsChange)
             {
-                return CreateNewFloor(entityData, data, orientation);
+                Floor.Floor floor = CreateNewFloor(entityData, data, orientation);
+                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, floor));
+                return floor;
             }
             else if (!data && tileEntity)
             {
-                DestroyEntity(entityData);
+                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, null));
                 return null;
             }
-            else if ((currentFloor && (currentFloor.Data != data || currentFloor.Orientation != orientation)) || currentRoof)
-            {
-                DestroyEntity(entityData);
-                return CreateNewFloor(entityData, data, orientation);
-            }
-
+            
             return null;
         }
 
@@ -238,10 +237,7 @@ namespace Warlander.Deedplanner.Data
             GameObject floorObject = new GameObject("Floor " + entity.Floor, typeof(Floor.Floor));
             Floor.Floor floor = floorObject.GetComponent<Floor.Floor>();
             floor.Initialize(this, data, orientation);
-
-            Entities[entity] = floor;
             Map.AddEntityToMap(floorObject, entity.Floor);
-            UpdateSurfaceEntitiesPositions();
 
             return floor;
         }
@@ -723,26 +719,89 @@ namespace Warlander.Deedplanner.Data
             Destroy(entity.gameObject);
         }
 
-        private class TileEntityUndoCommand : IUndoCommand
+        private class TileEntityChangeCommand : IReversibleCommand
         {
+
+            private readonly Tile tile;
+            private readonly EntityData data;
+            
+            private readonly TileEntity oldEntity;
+            private readonly TileEntity newEntity;
+            
+            public TileEntityChangeCommand(Tile tile, EntityData data, TileEntity oldEntity, TileEntity newEntity)
+            {
+                this.tile = tile;
+                this.data = data;
+                this.oldEntity = oldEntity;
+                this.newEntity = newEntity;
+            }
+            
             public void Execute()
             {
-                throw new NotImplementedException();
+                tile.Entities.Remove(data);
+                if (newEntity)
+                {
+                    tile.Entities[data] = newEntity;
+                }
+
+                if (oldEntity)
+                {
+                    oldEntity.gameObject.SetActive(false);
+                }
+                
+                if (newEntity)
+                {
+                    newEntity.gameObject.SetActive(true);
+                }
+
+                if (data.IsSurface)
+                {
+                    tile.UpdateSurfaceEntitiesPositions();
+                }
+                else
+                {
+                    tile.UpdateCaveEntitiesPositions();
+                }
             }
 
             public void Undo()
             {
-                throw new NotImplementedException();
+                tile.Entities.Remove(data);
+                if (oldEntity)
+                {
+                    tile.Entities[data] = oldEntity;
+                }
+                
+                if (oldEntity)
+                {
+                    oldEntity.gameObject.SetActive(true);
+                }
+                
+                if (newEntity)
+                {
+                    newEntity.gameObject.SetActive(false);
+                }
+                
+                tile.UpdateSurfaceEntitiesPositions();
+                
+                if (data.IsSurface)
+                {
+                    tile.UpdateSurfaceEntitiesPositions();
+                }
+                else
+                {
+                    tile.UpdateCaveEntitiesPositions();
+                }
             }
 
             public void DisposeUndo()
             {
-                throw new NotImplementedException();
+                Destroy(oldEntity.gameObject);
             }
 
             public void DisposeRedo()
             {
-                throw new NotImplementedException();
+                Destroy(newEntity.gameObject);
             }
         }
 

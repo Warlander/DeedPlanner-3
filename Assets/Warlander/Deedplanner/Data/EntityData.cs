@@ -10,6 +10,8 @@ namespace Warlander.Deedplanner.Data
         public EntityType Type { get; private set; }
 
         public bool IsGroundFloor => Floor == 0 || Floor == -1;
+        public bool IsSurface => Floor >= 0;
+        public bool IsCave => Floor < 0;
 
         public EntityData(int floor, EntityType type)
         {
