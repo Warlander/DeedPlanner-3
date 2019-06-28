@@ -486,13 +486,13 @@ namespace Warlander.Deedplanner.Data
                         Ground.Deserialize(childElement);
                         break;
                     case "level":
-                        DeserializeFloor(childElement);
+                        DeserializeLevel(childElement);
                         break;
                 }
             }
         }
 
-        private void DeserializeFloor(XmlElement floorElement)
+        private void DeserializeLevel(XmlElement floorElement)
         {
             int floor = Convert.ToInt32(floorElement.GetAttribute("value"));
 
@@ -541,9 +541,8 @@ namespace Warlander.Deedplanner.Data
                     orientation = FloorOrientation.Right;
                     break;
             }
-
-            EntityData entityData = new EntityData(floor, EntityType.Floorroof);
-            CreateNewFloor(entityData, data, orientation);
+            
+            SetFloor(data, orientation, floor);
         }
 
         private void DeserializeWall(XmlElement element, int floor)
@@ -555,36 +554,17 @@ namespace Warlander.Deedplanner.Data
             {
                 Debug.LogWarning("Unable to load wall " + id);
             }
-
-            EntityType entityType;
-            bool horizontal = (element.Name == "hWall");
             
-            if (horizontal && data.ArchBuildable)
-            {
-                entityType = EntityType.Hfence;
-            }
-            else if (horizontal)
-            {
-                entityType = EntityType.Hwall;
-            }
-            else if (!horizontal && data.ArchBuildable)
-            {
-                entityType = EntityType.Vfence;
-            }
-            else
-            {
-                entityType = EntityType.Vwall;
-            }
+            bool horizontal = (element.Name == "hWall");
 
             bool reversed = element.GetAttribute("reversed") == "true";
-            EntityData entityData = new EntityData(floor, entityType);
             if (horizontal)
             {
-                CreateNewHorizontalWall(entityData, data, reversed);
+                SetHorizontalWall(data, reversed, floor);
             }
             else
             {
-                CreateNewVerticalWall(entityData, data, reversed);
+                SetVerticalWall(data, reversed, floor);
             }
         }
 
@@ -597,9 +577,8 @@ namespace Warlander.Deedplanner.Data
             {
                 Debug.LogWarning("Unable to load roof " + id);
             }
-
-            EntityData entityData = new EntityData(floor, EntityType.Floorroof);
-            CreateNewRoof(entityData, data);
+            
+            SetRoof(data, floor);
         }
 
         public void Refresh()
