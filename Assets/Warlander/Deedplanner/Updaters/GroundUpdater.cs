@@ -106,6 +106,11 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
+            if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
+            {
+                GameManager.Instance.Map.CommandManager.FinishAction();
+            }
+            
             GroundData currentClickData = GetCurrentClickData();
             if (!currentClickData)
             {
