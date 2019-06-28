@@ -134,6 +134,7 @@ namespace Warlander.Deedplanner.Data
 
             RecalculateHeights();
             RecalculateRoofs();
+            CommandManager.ForgetAction();
         }
 
         public void Initialize(XmlDocument document)
@@ -167,6 +168,7 @@ namespace Warlander.Deedplanner.Data
 
             RecalculateHeights();
             RecalculateRoofs();
+            CommandManager.ForgetAction();
         }
 
         private void PreInitialize(int width, int height)
