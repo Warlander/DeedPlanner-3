@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Data.Cave
+namespace Warlander.Deedplanner.Data.Caves
 {
     public class CaveData : ScriptableObject
     {

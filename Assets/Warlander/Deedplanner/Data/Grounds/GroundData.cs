@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Data.Ground
+namespace Warlander.Deedplanner.Data.Grounds
 {
     public class GroundData : ScriptableObject
     {

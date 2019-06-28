@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Warlander.Deedplanner.Data.Cave;
-using Warlander.Deedplanner.Data.Floor;
-using Warlander.Deedplanner.Data.Ground;
-using Warlander.Deedplanner.Data.Object;
-using Warlander.Deedplanner.Data.Roof;
-using Warlander.Deedplanner.Data.Wall;
+using Warlander.Deedplanner.Data.Caves;
+using Warlander.Deedplanner.Data.Floors;
+using Warlander.Deedplanner.Data.Grounds;
+using Warlander.Deedplanner.Data.Objects;
+using Warlander.Deedplanner.Data.Roofs;
+using Warlander.Deedplanner.Data.Walls;
 
 namespace Warlander.Deedplanner.Data
 {

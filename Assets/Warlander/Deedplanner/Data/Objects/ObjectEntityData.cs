@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Xml;
 
-namespace Warlander.Deedplanner.Data.Object
+namespace Warlander.Deedplanner.Data.Objects
 {
     public class ObjectEntityData : EntityData
     {

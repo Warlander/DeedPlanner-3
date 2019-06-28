@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Data.Floor;
-using Warlander.Deedplanner.Data.Ground;
-using Warlander.Deedplanner.Data.Wall;
+using Warlander.Deedplanner.Data.Floors;
+using Warlander.Deedplanner.Data.Grounds;
+using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 

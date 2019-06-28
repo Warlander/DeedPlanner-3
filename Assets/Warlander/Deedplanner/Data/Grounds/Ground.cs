@@ -1,9 +1,8 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Data.Ground
+namespace Warlander.Deedplanner.Data.Grounds
 {
     public class Ground : TileEntity
     {

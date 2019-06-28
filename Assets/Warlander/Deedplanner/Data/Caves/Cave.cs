@@ -1,10 +1,8 @@
-﻿using System;
-using System.Xml;
-using UnityEngine;
+﻿using System.Xml;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Data.Cave
+namespace Warlander.Deedplanner.Data.Caves
 {
     public class Cave : TileEntity, IXMLSerializable
     {

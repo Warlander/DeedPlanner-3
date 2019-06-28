@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Data.Roof
+namespace Warlander.Deedplanner.Data.Roofs
 {
     public class RoofData : ScriptableObject
     {

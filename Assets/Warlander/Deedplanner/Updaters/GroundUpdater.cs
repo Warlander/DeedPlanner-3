@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Data.Ground;
+using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 
