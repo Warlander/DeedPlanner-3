@@ -1,4 +1,4 @@
-﻿namespace Warlander.Deedplanner.Data.Ground
+﻿namespace Warlander.Deedplanner.Data.Grounds
 {
     public enum RoadDirection
     {

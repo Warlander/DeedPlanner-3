@@ -2,7 +2,7 @@
 using UnityEngine;
 using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Data.Roof
+namespace Warlander.Deedplanner.Data.Roofs
 {
     public class Roof : TileEntity
     {

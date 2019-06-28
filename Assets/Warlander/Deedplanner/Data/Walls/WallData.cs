@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Data.Wall
+namespace Warlander.Deedplanner.Data.Walls
 {
     public class WallData : ScriptableObject
     {

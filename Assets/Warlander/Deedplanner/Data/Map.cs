@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
@@ -333,9 +334,9 @@ namespace Warlander.Deedplanner.Data
                     for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
                     {
                         TileEntity entity = this[i, i2].GetTileContent(i3);
-                        if (entity && entity.GetType() == typeof(Roof.Roof))
+                        if (entity && entity.GetType() == typeof(Roof))
                         {
-                            ((Roof.Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofLevel();
+                            ((Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofLevel();
                         }
                     }
                 }
@@ -348,9 +349,9 @@ namespace Warlander.Deedplanner.Data
                     for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
                     {
                         TileEntity entity = this[i, i2].GetTileContent(i3);
-                        if (entity && entity.GetType() == typeof(Roof.Roof))
+                        if (entity && entity.GetType() == typeof(Roof))
                         {
-                            ((Roof.Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofModel();
+                            ((Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofModel();
                         }
                     }
                 }
