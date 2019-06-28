@@ -87,6 +87,11 @@ namespace Warlander.Deedplanner.Utils
             currentActionStack.Clear();
         }
 
+        public void ForgetAction()
+        {
+            currentActionStack.Clear();
+        }
+
         private struct ReversibleCommandAction : IReversibleCommand
         {
 
