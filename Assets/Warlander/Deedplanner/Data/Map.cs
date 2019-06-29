@@ -47,6 +47,8 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
+        public Tile this[Vector2Int v] => this[v.x, v.y];
+
         public int RenderedFloor {
             get => renderedFloor;
             set {

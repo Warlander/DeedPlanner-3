@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 
@@ -24,8 +25,7 @@ namespace Warlander.Deedplanner.Updaters
         private List<HeightmapHandle> selectedHandles = new List<HeightmapHandle>();
         private List<HeightmapHandle> deselectedHandles = new List<HeightmapHandle>();
 
-        private bool manipulating = false;
-        private bool dragging = false;
+        private HeightUpdaterState state = HeightUpdaterState.Idle;
         private Vector2 dragStartPos;
         private Vector2 dragEndPos;
 
@@ -50,23 +50,33 @@ namespace Warlander.Deedplanner.Updaters
             {
                 if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
                 {
-                    manipulating = true;
+                    state = HeightUpdaterState.Manipulating;
                 }
                 else if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    dragging = true;
+                    state = HeightUpdaterState.Dragging;
                 }
                 else
                 {
                     deselectedHandles = selectedHandles;
                     selectedHandles = new List<HeightmapHandle>();
-                    dragging = true;
+                    state = HeightUpdaterState.Dragging;
                 }
             }
 
             if (Input.GetMouseButton(0))
             {
-                
+                if (state == HeightUpdaterState.Manipulating)
+                {
+                    Map map = GameManager.Instance.Map;
+                    map.CommandManager.UndoAction();
+                    int heightDelta = (int) (dragEndPos.y - dragStartPos.y) / 2;
+                    foreach (HeightmapHandle heightmapHandle in selectedHandles)
+                    {
+                        Vector2Int tileCoords = heightmapHandle.TileCoords;
+                        map[tileCoords].SurfaceHeight += heightDelta;
+                    }
+                }
             }
             
             if (Input.GetMouseButtonUp(0))
@@ -75,19 +85,30 @@ namespace Warlander.Deedplanner.Updaters
                 {
                     selectedHandles.AddRange(lastFrameHoveredHandles);
                 }
-                else if (!manipulating)
+                else if (state != HeightUpdaterState.Manipulating && state != HeightUpdaterState.Recovering)
                 {
                     deselectedHandles = selectedHandles;
                     selectedHandles = lastFrameHoveredHandles;
                 }
-                manipulating = false;
-                dragging = false;
+                else if (state == HeightUpdaterState.Manipulating)
+                {
+                    GameManager.Instance.Map.CommandManager.FinishAction();
+                }
+                state = HeightUpdaterState.Idle;
             }
 
             if (Input.GetMouseButtonDown(1))
             {
-                dragging = false;
-                manipulating = false;
+                if (state == HeightUpdaterState.Manipulating)
+                {
+                    GameManager.Instance.Map.CommandManager.UndoAction();
+                    state = HeightUpdaterState.Recovering;
+                }
+                else
+                {
+                    state = HeightUpdaterState.Idle;
+                }
+                
                 LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
             }
 
@@ -103,14 +124,13 @@ namespace Warlander.Deedplanner.Updaters
             if (Input.GetMouseButtonDown(0))
             {
                 dragStartPos = LayoutManager.Instance.CurrentCamera.MousePosition;
-                dragEndPos = dragStartPos;
             }
             
             dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
             
-            if (dragging)
+            if (state == HeightUpdaterState.Dragging)
             {
-                if (!manipulating && Vector2.Distance(dragStartPos, dragEndPos) > 5)
+                if (Vector2.Distance(dragStartPos, dragEndPos) > 5)
                 {
                     LayoutManager.Instance.CurrentCamera.RenderSelectionBox = true;
                 }
@@ -183,11 +203,11 @@ namespace Warlander.Deedplanner.Updaters
             
             foreach (HeightmapHandle handle in selectedHandles)
             {
-                if (manipulating)
+                if (state == HeightUpdaterState.Manipulating)
                 {
                     handle.Color = activeColor;
                 }
-                else if (currentFrameHoveredHandles.Count == 1 && currentFrameHoveredHandles.Contains(handle) && !dragging)
+                else if (currentFrameHoveredHandles.Count == 1 && currentFrameHoveredHandles.Contains(handle) && state != HeightUpdaterState.Dragging)
                 {
                     handle.Color = selectedHoveredColor;
                 }
@@ -203,5 +223,11 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
+        private enum HeightUpdaterState
+        {
+            Idle, Dragging, Manipulating, Recovering
+        }
+        
     }
+
 }
