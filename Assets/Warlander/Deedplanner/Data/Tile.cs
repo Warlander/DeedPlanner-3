@@ -35,17 +35,10 @@ namespace Warlander.Deedplanner.Data
         public int SurfaceHeight {
             get => surfaceHeight;
             set {
-                surfaceHeight = value;
-                RefreshSurfaceMesh();
-                UpdateSurfaceEntitiesPositions();
-                Map.GetRelativeTile(this, -1, 0)?.RefreshSurfaceMesh();
-                Map.GetRelativeTile(this, -1, 0)?.UpdateSurfaceEntitiesPositions();
-                Map.GetRelativeTile(this, 0, -1)?.RefreshSurfaceMesh();
-                Map.GetRelativeTile(this, 0, -1)?.UpdateSurfaceEntitiesPositions();
-                Map.GetRelativeTile(this, -1, -1)?.RefreshSurfaceMesh();
-                Map.GetRelativeTile(this, -1, -1)?.UpdateSurfaceEntitiesPositions();
-
-                Map.RecalculateSurfaceHeight(X, Y);
+                if (surfaceHeight != value)
+                {
+                    Map.CommandManager.AddToActionAndExecute(new SurfaceHeightChangeCommand(this, surfaceHeight, value));
+                }
             }
         }
 
@@ -768,6 +761,58 @@ namespace Warlander.Deedplanner.Data
             public void DisposeRedo()
             {
                 Destroy(newEntity.gameObject);
+            }
+        }
+
+        private class SurfaceHeightChangeCommand : IReversibleCommand
+        {
+
+            private readonly Tile tile;
+
+            private readonly int oldHeight;
+            private readonly int newHeight;
+
+            public SurfaceHeightChangeCommand(Tile tile, int oldHeight, int newHeight)
+            {
+                this.tile = tile;
+                this.oldHeight = oldHeight;
+                this.newHeight = newHeight;
+            }
+
+            public void Execute()
+            {
+                tile.surfaceHeight = newHeight;
+                Refresh();
+            }
+
+            public void Undo()
+            {
+                tile.surfaceHeight = oldHeight;
+                Refresh();
+            }
+
+            private void Refresh()
+            {
+                tile.RefreshSurfaceMesh();
+                tile.UpdateSurfaceEntitiesPositions();
+                tile.Map.GetRelativeTile(tile, -1, 0)?.RefreshSurfaceMesh();
+                tile.Map.GetRelativeTile(tile, -1, 0)?.UpdateSurfaceEntitiesPositions();
+                tile.Map.GetRelativeTile(tile, 0, -1)?.RefreshSurfaceMesh();
+                tile.Map.GetRelativeTile(tile, 0, -1)?.UpdateSurfaceEntitiesPositions();
+                tile.Map.GetRelativeTile(tile, -1, -1)?.RefreshSurfaceMesh();
+                tile.Map.GetRelativeTile(tile, -1, -1)?.UpdateSurfaceEntitiesPositions();
+
+                tile.Map.RecalculateSurfaceHeight(tile.X, tile.Y);
+            }
+
+            public void DisposeUndo()
+            {
+                // no operation needed
+            }
+
+            public void DisposeRedo()
+            {
+                // no operation needed
             }
         }
 
