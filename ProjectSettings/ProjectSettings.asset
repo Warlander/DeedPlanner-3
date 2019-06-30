@@ -868,10 +868,10 @@ PlayerSettings:
   facebookXfbml: 0
   facebookFrictionlessRequests: 1
   apiCompatibilityLevel: 6
-  cloudProjectId: 
+  cloudProjectId: b66a7dfc-1909-43af-98ba-b0b09635e156
   framebufferDepthMemorylessMode: 0
-  projectName: 
-  organizationId: 
+  projectName: DeedPlanner 3
+  organizationId: maciej-cyranowicz
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
