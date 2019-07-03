@@ -99,6 +99,12 @@ namespace Warlander.Deedplanner.Updaters
 
             if (Input.GetMouseButtonDown(1))
             {
+                if (state == HeightUpdaterState.Idle)
+                {
+                    deselectedHandles = selectedHandles;
+                    selectedHandles = new List<HeightmapHandle>();
+                }
+                
                 if (state == HeightUpdaterState.Manipulating)
                 {
                     GameManager.Instance.Map.CommandManager.UndoAction();
