@@ -276,7 +276,6 @@ namespace Warlander.Deedplanner.Logic
 
             int tileX = tileSelectionHit.X;
             int tileY = tileSelectionHit.Y;
-            Map map = GameManager.Instance.Map;
 
             float borderThickness = TileSelection.BorderThickness;
 
@@ -405,13 +404,18 @@ namespace Warlander.Deedplanner.Logic
             {
                 if (MouseOver)
                 {
+                    Vector3 raycastPoint = CurrentRaycast.point;
+                    Vector2 topPoint = new Vector2(raycastPoint.x, raycastPoint.z);
+                    
                     float scroll = Input.mouseScrollDelta.y;
                     if (scroll > 0 && topScale > 10)
                     {
+                        topPosition += (topPoint - topPosition) / topScale * 4;
                         topScale -= 4;
                     }
                     else if (scroll < 0)
                     {
+                        topPosition -= (topPoint - topPosition) / topScale * 4;
                         topScale += 4;
                     }
                 }
@@ -508,27 +512,28 @@ namespace Warlander.Deedplanner.Logic
 
         private void UpdateState()
         {
+            Transform cameraTransform = AttachedCamera.transform;
             if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
             {
                 AttachedCamera.orthographic = false;
-                AttachedCamera.transform.localPosition = fppPosition;
-                AttachedCamera.transform.localRotation = Quaternion.Euler(fppRotation);
+                cameraTransform.localPosition = fppPosition;
+                cameraTransform.localRotation = Quaternion.Euler(fppRotation);
                 parentTransform.localRotation = Quaternion.identity;
             }
             else if (cameraMode == CameraMode.Top)
             {
                 AttachedCamera.orthographic = true;
                 AttachedCamera.orthographicSize = topScale;
-                AttachedCamera.transform.localPosition = new Vector3(topPosition.x, 10000, topPosition.y);
-                AttachedCamera.transform.localRotation = Quaternion.Euler(90, 0, 0);
+                cameraTransform.localPosition = new Vector3(topPosition.x, 10000, topPosition.y);
+                cameraTransform.localRotation = Quaternion.Euler(90, 0, 0);
                 parentTransform.localRotation = Quaternion.identity;
             }
             else if (cameraMode == CameraMode.Isometric)
             {
                 AttachedCamera.orthographic = true;
                 AttachedCamera.orthographicSize = isoScale;
-                AttachedCamera.transform.localPosition = new Vector3(isoPosition.x, isoPosition.y, -10000);
-                AttachedCamera.transform.localRotation = Quaternion.identity;
+                cameraTransform.localPosition = new Vector3(isoPosition.x, isoPosition.y, -10000);
+                cameraTransform.localRotation = Quaternion.identity;
                 parentTransform.localRotation = Quaternion.Euler(30, 45, 0);
             }
         }
@@ -543,7 +548,12 @@ namespace Warlander.Deedplanner.Logic
                 return;
             }
             
-            GameObject hitObject = CurrentRaycast.collider?.gameObject;
+            GameObject hitObject = null;
+            if (CurrentRaycast.collider)
+            {
+                hitObject = CurrentRaycast.collider.gameObject;
+            }
+            
             bool gridOrGroundHit = hitObject != null && (hitObject.GetComponent<Ground>() || hitObject.GetComponent<GridTile>() || hitObject.GetComponent<HeightmapHandle>());
 
             if (hitObject != null && !gridOrGroundHit)

@@ -57,6 +57,8 @@ namespace Warlander.Deedplanner.Gui
 
         public MultiCamera CurrentCamera => cameras[ActiveWindow];
 
+        public RectTransform ActiveWindowTransform => Screens[activeWindow].gameObject.GetComponent<RectTransform>();
+
         public int ActiveWindow {
             get => activeWindow;
             private set {
