@@ -11,7 +11,7 @@ namespace Warlander.Deedplanner.Logic
 
         [SerializeField] private GameObject splashRoot;
         [SerializeField] private GameObject managersRoot;
-        [SerializeField] private GameObject camerasRoot;
+        [SerializeField] private MultiCamera[] cameras;
 
         [SerializeField] private TMP_Text text;
         [SerializeField] private Slider loadingBar;
@@ -43,7 +43,10 @@ namespace Warlander.Deedplanner.Logic
             loadingBar.value = 1.0f;
             
             managersRoot.SetActive(true);
-            camerasRoot.SetActive(true);
+            foreach (MultiCamera multiCamera in cameras)
+            {
+                multiCamera.enabled = true;
+            }
             fadeAnimator.enabled = true;
             Destroy(gameObject);
         }
