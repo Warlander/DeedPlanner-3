@@ -9,6 +9,7 @@ namespace Warlander.Deedplanner.Logic
     public class LoadingManager : MonoBehaviour
     {
 
+        [SerializeField] private GameObject splashRoot;
         [SerializeField] private GameObject managersRoot;
         [SerializeField] private GameObject camerasRoot;
 
@@ -18,6 +19,7 @@ namespace Warlander.Deedplanner.Logic
         
         private void Start()
         {
+            splashRoot.SetActive(true);
             StartCoroutine(Load());
         }
 
