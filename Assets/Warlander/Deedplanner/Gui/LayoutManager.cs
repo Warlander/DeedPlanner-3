@@ -108,7 +108,7 @@ namespace Warlander.Deedplanner.Gui
             }
         }
 
-        private void Awake()
+        public LayoutManager()
         {
             if (Instance)
             {
