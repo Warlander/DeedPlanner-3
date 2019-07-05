@@ -92,7 +92,7 @@ namespace Warlander.Deedplanner.Logic
             {
                 Debug.LogError(webRequest.error);
             }
-
+            
             string requestText = webRequest.downloadHandler.text;
             if (!mapUri.IsFile)
             {

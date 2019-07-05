@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -15,12 +16,16 @@ namespace Warlander.Deedplanner.Utils
         private static readonly int Color = Shader.PropertyToID("_Color");
         private static readonly int Glossiness = Shader.PropertyToID("_Glossiness");
 
-        public static GameObject LoadModel(string filePath)
+        public static GameObject LoadModel(string path)
         {
-            BinaryReader source = new BinaryReader(File.OpenRead(filePath));
-            string fileFolder = Path.GetDirectoryName(filePath);
+            WebRequest request = WebRequest.Create(path);
+            WebResponse response = request.GetResponse();
+            Stream dataStream = response.GetResponseStream();
+            
+            BinaryReader source = new BinaryReader(dataStream);
+            string fileFolder = Path.GetDirectoryName(path);
 
-            GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(filePath));
+            GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(path));
 
             try
             {
@@ -200,7 +205,13 @@ namespace Warlander.Deedplanner.Utils
                 return null;
             }
 
-            byte[] texBytes = File.ReadAllBytes(location);
+            WebRequest request = WebRequest.Create(location);
+            WebResponse response = request.GetResponse();
+            Stream dataStream = response.GetResponseStream();
+
+            byte[] texBytes = StreamToByteArray(dataStream);
+            dataStream.Close();
+            
             Texture2D texture;
             if (Path.GetExtension(location) == ".dds")
             {
@@ -213,6 +224,18 @@ namespace Warlander.Deedplanner.Utils
             }
 
             return texture;
+        }
+
+        private static byte[] StreamToByteArray(Stream inputStream)
+        {
+            byte[] result;
+            using (MemoryStream streamReader = new MemoryStream())
+            {
+                inputStream.CopyTo(streamReader);
+                result = streamReader.ToArray();
+            }
+
+            return result;
         }
 
         private static Texture2D LoadTextureDXT(byte[] ddsBytes)
