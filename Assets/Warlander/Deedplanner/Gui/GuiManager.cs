@@ -51,8 +51,7 @@ namespace Warlander.Deedplanner.Gui
         public Window GraphicsSettingsWindow => graphicsSettingsWindow;
         public Window InputSettingsWindow => inputSettingsWindow;
 
-
-        private void Awake()
+        public GuiManager()
         {
             if (Instance)
             {

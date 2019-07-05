@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Warlander.Deedplanner.Data
 
         private static List<string> shortNames = new List<string>();
 
-        public static void LoadData()
+        public static IEnumerator LoadData()
         {
             string[] objectFiles = Directory.GetFiles(Application.streamingAssetsPath);
             objectFiles = objectFiles
@@ -29,10 +30,10 @@ namespace Warlander.Deedplanner.Data
                 .Where((name) => name.EndsWith("xml"))
                 .ToArray();
 
-            LoadData(objectFiles);
+            return LoadData(objectFiles);
         }
 
-        private static void LoadData(string[] locations)
+        private static IEnumerator LoadData(string[] locations)
         {
             XmlDocument[] documents = new XmlDocument[locations.Length];
 
@@ -57,6 +58,8 @@ namespace Warlander.Deedplanner.Data
                 LoadObjects(document);
                 shortNames.Clear();
             }
+            
+            yield return null;
         }
 
         private static void LoadGrounds(XmlDocument document)

@@ -48,7 +48,7 @@ namespace Warlander.Deedplanner.Logic
 
         public HeightmapHandle HeightmapHandlePrefab => heightmapHandlePrefab;
 
-        private void Awake()
+        public GameManager()
         {
             if (Instance)
             {
@@ -57,14 +57,6 @@ namespace Warlander.Deedplanner.Logic
             }
 
             Instance = this;
-
-            Debug.Log("Loading data");
-            DataLoader.LoadData();
-
-            Debug.Log("Creating map");
-            GameObject mapObject = new GameObject("Map", typeof(Map));
-            Map = mapObject.GetComponent<Map>();
-            Map.Initialize(25, 25);
         }
 
         private void Start()
@@ -85,6 +77,13 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
+        public void CreateNewMap(int width, int height)
+        {
+            GameObject mapObject = new GameObject("Map", typeof(Map));
+            Map = mapObject.GetComponent<Map>();
+            Map.Initialize(25, 25);
+        }
+        
         public IEnumerator LoadMap(Uri mapUri)
         {
             UnityWebRequest webRequest = UnityWebRequest.Get(mapUri);
