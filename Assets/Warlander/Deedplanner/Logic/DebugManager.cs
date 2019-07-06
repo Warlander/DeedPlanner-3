@@ -18,7 +18,7 @@ namespace Warlander.Deedplanner.Logic
 
         public void Start()
         {
-            if (!Application.isEditor)
+            if (!Application.isEditor && !Debug.isDebugBuild)
             {
                 Destroy(gameObject);
                 return;
