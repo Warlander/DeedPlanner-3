@@ -23,7 +23,7 @@ namespace Warlander.Deedplanner.Utils
             Stream dataStream = response.GetResponseStream();
             
             BinaryReader source = new BinaryReader(dataStream);
-            string fileFolder = Path.GetDirectoryName(path);
+            string fileFolder = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
 
             GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(path));
 
@@ -141,6 +141,7 @@ namespace Warlander.Deedplanner.Utils
             string matName = ReadString(source);
 
             Material material = new Material(Shader.Find("Standard"));
+            material.name = matName;
             material.EnableKeyword("_ALPHATEST_ON");
             material.SetFloat(Mode, 1);
 
@@ -156,7 +157,7 @@ namespace Warlander.Deedplanner.Utils
                 material.SetColor(Color, new Color(1, 1, 1, 0));
             }
 
-            material.SetFloat(Glossiness, 0);
+            
             bool hasMaterialProperties = source.ReadBoolean();
             if (hasMaterialProperties)
             {
@@ -172,7 +173,12 @@ namespace Warlander.Deedplanner.Utils
                 bool hasShininess = source.ReadBoolean();
                 if (hasShininess)
                 {
-                    source.ReadSingle();
+                    material.SetFloat(Glossiness, source.ReadSingle());
+                    
+                }
+                else
+                {
+                    material.SetFloat(Glossiness, 0);
                 }
 
                 bool hasSpecular = source.ReadBoolean();
@@ -202,6 +208,7 @@ namespace Warlander.Deedplanner.Utils
         {
             if (string.IsNullOrEmpty(location))
             {
+                Debug.LogWarning("Attempting to load texture from empty location");
                 return null;
             }
 
@@ -210,7 +217,7 @@ namespace Warlander.Deedplanner.Utils
             Stream dataStream = response.GetResponseStream();
 
             byte[] texBytes = StreamToByteArray(dataStream);
-            dataStream.Close();
+            dataStream?.Close();
             
             Texture2D texture;
             if (Path.GetExtension(location) == ".dds")
