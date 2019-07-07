@@ -2,7 +2,7 @@
 using System.Xml;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Utils
+namespace Warlander.Deedplanner.Graphics
 {
     public class TextureReference
     {

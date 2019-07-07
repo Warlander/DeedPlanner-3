@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Logic
 {
     public enum TileSelectionMode
     {
