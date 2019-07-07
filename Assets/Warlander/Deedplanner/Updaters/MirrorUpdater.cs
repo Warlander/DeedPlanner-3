@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {

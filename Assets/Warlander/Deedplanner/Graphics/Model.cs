@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Xml;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Utils
+namespace Warlander.Deedplanner.Graphics
 {
 
     public class Model

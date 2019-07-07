@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Warlander.Deedplanner.Utils
+namespace Warlander.Deedplanner.Graphics
 {
 
     public static class WomModelLoader
