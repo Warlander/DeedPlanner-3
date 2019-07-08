@@ -158,7 +158,7 @@ namespace Warlander.Deedplanner.Graphics
                 foreach (Transform child in originalModel.transform)
                 {
                     child.gameObject.layer = Layer;
-                    string textureOverride = null;
+                    string textureOverride;
                     textureOverrides.TryGetValue(child.name, out textureOverride);
                     if (textureOverride == null)
                     {
@@ -168,14 +168,11 @@ namespace Warlander.Deedplanner.Graphics
                     {
                         MeshRenderer renderer = child.GetComponent<MeshRenderer>();
                         TextureReference texture = TextureReference.GetTextureReference(textureOverride);
-                        texture.Material.enableInstancing = true;
                         renderer.sharedMaterial = texture.Material;
                     }
                 }
                 originalModel.transform.SetParent(modelRoot.transform);
-                ModelProperties originalProperties = new ModelProperties();
-                originalProperties.Skew = 0;
-                originalProperties.MirrorZ = false;
+                ModelProperties originalProperties = new ModelProperties(0, false);
                 modifiedModels[originalProperties] = originalModel;
             }
             if (!modifiedModels.ContainsKey(modelProperties))
@@ -259,6 +256,13 @@ namespace Warlander.Deedplanner.Graphics
         {
             public int Skew;
             public bool MirrorZ;
+
+            public ModelProperties(int skew, bool mirrorZ)
+            {
+                Skew = skew;
+                MirrorZ = mirrorZ;
+            }
+            
         }
 
     }

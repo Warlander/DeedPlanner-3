@@ -8,8 +8,7 @@ namespace Warlander.Deedplanner.Graphics
     {
 
         private static readonly int MainTex = Shader.PropertyToID("_MainTex");
-        private static readonly int Glossiness = Shader.PropertyToID("_Glossiness");
-        
+
         private static Dictionary<string, TextureReference> references = new Dictionary<string, TextureReference>();
 
         public static TextureReference GetTextureReference(string location)
@@ -47,6 +46,7 @@ namespace Warlander.Deedplanner.Graphics
                 }
 
                 texture = WomModelLoader.LoadTexture(Application.streamingAssetsPath + "/" + Location);
+                texture.name = Location;
                 return texture;
             }
         }
@@ -70,9 +70,9 @@ namespace Warlander.Deedplanner.Graphics
                     return material;
                 }
 
-                material = new Material(Shader.Find("Standard"));
+                material = new Material(GraphicsManager.Instance.TextureDefaultMaterial);
                 material.SetTexture(MainTex, Texture);
-                material.SetFloat(Glossiness, 0);
+                
                 return material;
             }
         }

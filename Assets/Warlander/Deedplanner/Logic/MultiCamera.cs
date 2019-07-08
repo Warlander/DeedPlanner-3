@@ -560,7 +560,7 @@ namespace Warlander.Deedplanner.Logic
             if (hitObject != null && !gridOrGroundHit)
             {
                 GL.PushMatrix();
-                RenderMaterials.SimpleDrawingMaterial.SetPass(0);
+                GraphicsManager.Instance.SimpleDrawingMaterial.SetPass(0);
                 Matrix4x4 rotationMatrix = Matrix4x4.TRS(hitObject.transform.position, hitObject.transform.rotation, hitObject.transform.lossyScale);
                 GL.MultMatrix(rotationMatrix);
                 RenderRaytrace();

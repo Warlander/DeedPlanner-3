@@ -95,7 +95,7 @@ namespace Warlander.Deedplanner.Data
             mesh.RecalculateBounds();
 
             meshFilter.sharedMesh = mesh;
-            meshRenderer.sharedMaterial = RenderMaterials.SimpleDrawingMaterial;
+            meshRenderer.sharedMaterial = GraphicsManager.Instance.SimpleDrawingMaterial;
 
             verticesChanged = false;
             dirty = false;

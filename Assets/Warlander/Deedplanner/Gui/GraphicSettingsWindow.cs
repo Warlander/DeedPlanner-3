@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Warlander.Deedplanner.Gui
 {
-    public class GraphicsWindow : MonoBehaviour
+    public class GraphicSettingsWindow : MonoBehaviour
     {
 
         [SerializeField]
