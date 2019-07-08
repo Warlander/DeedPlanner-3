@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Graphics
@@ -140,13 +141,12 @@ namespace Warlander.Deedplanner.Graphics
             string texName = ReadString(source);
             string matName = ReadString(source);
 
-            Material material = new Material(Shader.Find("Standard"));
+            Material material = new Material(GraphicsManager.Instance.WomDefaultMaterial);
             material.name = matName;
-            material.EnableKeyword("_ALPHATEST_ON");
-            material.SetFloat(Mode, 1);
 
             string texLocation = Path.Combine(modelFolder, texName);
             Texture2D texture = LoadTexture(texLocation);
+            texture.name = texName;
 
             if (texture)
             {
@@ -173,7 +173,7 @@ namespace Warlander.Deedplanner.Graphics
                 bool hasShininess = source.ReadBoolean();
                 if (hasShininess)
                 {
-                    material.SetFloat(Glossiness, source.ReadSingle());
+                    material.SetFloat(Glossiness, source.ReadSingle() / 100);
                     
                 }
                 else
@@ -199,8 +199,7 @@ namespace Warlander.Deedplanner.Graphics
                     source.ReadSingle();
                 }
             }
-
-            material.enableInstancing = true;
+            
             return material;
         }
 
@@ -218,16 +217,16 @@ namespace Warlander.Deedplanner.Graphics
 
             byte[] texBytes = StreamToByteArray(dataStream);
             dataStream?.Close();
-            
+
             Texture2D texture;
-            if (Path.GetExtension(location) == ".dds")
+            if (location.Substring(location.LastIndexOf(".", StringComparison.Ordinal) + 1) == ".dds")
             {
                 texture = LoadTextureDXT(texBytes);
             }
             else
             {
                 texture = new Texture2D(0, 0);
-                texture.LoadImage(texBytes);
+                texture.LoadImage(texBytes, true);
             }
 
             return texture;

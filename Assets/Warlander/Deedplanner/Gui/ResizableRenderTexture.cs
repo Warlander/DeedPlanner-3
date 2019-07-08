@@ -29,7 +29,7 @@ namespace Warlander.Deedplanner.Gui
                 return;
             }
 
-            RenderTexture renderTexture = new RenderTexture((int) width, (int) height, 16, RenderTextureFormat.ARGB64);
+            RenderTexture renderTexture = new RenderTexture((int) width, (int) height, 16, RenderTextureFormat.ARGB32);
             rawImage.texture = renderTexture;
 
             if (renderCamera)
