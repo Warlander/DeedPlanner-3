@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Xml.Serialization;
 using UnityEngine;
 using Warlander.Deedplanner.Gui;
@@ -10,12 +11,10 @@ namespace Warlander.Deedplanner
     public class Properties
     {
 
+        private const string PropertiesKey = "properties";
+        
         private static readonly bool Mobile = Application.isMobilePlatform;
         private static readonly bool Web = Application.platform == RuntimePlatform.WebGLPlayer;
-
-        public static readonly string HomeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        public static readonly string ProgramDirectory = Path.Combine(HomeDirectory, ".DeedPlanner3");
-        public static readonly string PropertiesFile = Path.Combine(ProgramDirectory, "Properties.xml");
 
         public static Properties Instance { get; private set; }
 
@@ -26,17 +25,16 @@ namespace Warlander.Deedplanner
 
         private static Properties LoadProperties()
         {
-            if (!File.Exists(PropertiesFile))
+            if (!PlayerPrefs.HasKey(PropertiesKey))
             {
                 return new Properties();
             }
-
-            FileStream input = new FileStream(PropertiesFile, FileMode.Open, FileAccess.Read);
+            
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Properties));
-            Properties properties = (Properties) xmlSerializer.Deserialize(input);
-            input.Close();
-
-            return properties;
+            using (TextReader reader = new StringReader(PlayerPrefs.GetString(PropertiesKey)))
+            {
+                return (Properties) xmlSerializer.Deserialize(reader);
+            }
         }
 
         public event GenericEventArgs Saved;
@@ -77,18 +75,15 @@ namespace Warlander.Deedplanner
 
         public void SaveProperties()
         {
-            DirectoryInfo directory = Directory.CreateDirectory(ProgramDirectory);
-            directory.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
-
-            FileStream output = new FileStream(PropertiesFile, FileMode.Create, FileAccess.Write);
+            StringBuilder builder = new StringBuilder();
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Properties));
-            xmlSerializer.Serialize(output, this);
-            output.Close();
-
-            if (Saved != null)
+            using (TextWriter writer = new StringWriter(builder))
             {
-                Saved();
+                xmlSerializer.Serialize(writer, this);
             }
+            PlayerPrefs.SetString(PropertiesKey, builder.ToString());
+            
+            Saved?.Invoke();
         }
 
     }
