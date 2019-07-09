@@ -81,7 +81,7 @@ namespace Warlander.Deedplanner.Logic
         {
             GameObject mapObject = new GameObject("Map", typeof(Map));
             Map = mapObject.GetComponent<Map>();
-            Map.Initialize(25, 25);
+            Map.Initialize(width, height);
         }
         
         public IEnumerator LoadMap(Uri mapUri)

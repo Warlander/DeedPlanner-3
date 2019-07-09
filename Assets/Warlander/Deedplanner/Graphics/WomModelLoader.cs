@@ -1,10 +1,10 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Text;
+using System.Threading;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.Networking;
 using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Graphics
@@ -19,34 +19,49 @@ namespace Warlander.Deedplanner.Graphics
 
         public static GameObject LoadModel(string path)
         {
-            WebRequest request = WebRequest.Create(path);
-            WebResponse response = request.GetResponse();
-            Stream dataStream = response.GetResponseStream();
+            Debug.Log("Loading model at " + path);
             
-            BinaryReader source = new BinaryReader(dataStream);
-            string fileFolder = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
-
-            GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(path));
-
-            try
+            UnityWebRequest request = UnityWebRequest.Get(path);
+            request.SendWebRequest();
+            while (!request.isDone && !request.isHttpError && !request.isNetworkError)
             {
-                int meshCount = source.ReadInt32();
-                for (int i = 0; i < meshCount; i++)
+                Thread.Sleep(1);
+            }
+
+            if (request.isHttpError || request.isNetworkError)
+            {
+                Debug.LogError(request.error);
+            }
+
+            byte[] requestData = request.downloadHandler.data;
+            using (MemoryStream memoryStream = new MemoryStream(requestData))
+            {
+                BinaryReader source = new BinaryReader(memoryStream);
+                
+                string fileFolder = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
+
+                GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(path));
+
+                try
                 {
-                    GameObject meshObject = LoadMeshObject(source, fileFolder);
-                    meshObject.transform.SetParent(modelGameObject.transform);
-                }
+                    int meshCount = source.ReadInt32();
+                    for (int i = 0; i < meshCount; i++)
+                    {
+                        GameObject meshObject = LoadMeshObject(source, fileFolder);
+                        meshObject.transform.SetParent(modelGameObject.transform);
+                    }
 
-                return modelGameObject;
-            }
-            catch (Exception ex)
-            {
-                Object.Destroy(modelGameObject);
-                throw ex;
-            }
-            finally
-            {
-                source.Close();
+                    return modelGameObject;
+                }
+                catch (Exception ex)
+                {
+                    Object.Destroy(modelGameObject);
+                    throw ex;
+                }
+                finally
+                {
+                    source.Close();
+                }
             }
         }
 
@@ -211,15 +226,23 @@ namespace Warlander.Deedplanner.Graphics
                 return null;
             }
 
-            WebRequest request = WebRequest.Create(location);
-            WebResponse response = request.GetResponse();
-            Stream dataStream = response.GetResponseStream();
+            Debug.Log("Loading texture at " + location);
+            UnityWebRequest request = UnityWebRequest.Get(location);
+            request.SendWebRequest();
+            while (!request.isDone && !request.isHttpError && !request.isNetworkError)
+            {
+                Thread.Sleep(1);
+            }
 
-            byte[] texBytes = StreamToByteArray(dataStream);
-            dataStream?.Close();
+            if (request.isHttpError || request.isNetworkError)
+            {
+                Debug.LogError(request.error);
+            }
+
+            byte[] texBytes = request.downloadHandler.data;
 
             Texture2D texture;
-            if (location.Substring(location.LastIndexOf(".", StringComparison.Ordinal) + 1) == ".dds")
+            if (location.Substring(location.LastIndexOf(".", StringComparison.Ordinal) + 1) == "dds")
             {
                 texture = LoadTextureDXT(texBytes);
             }
@@ -230,18 +253,6 @@ namespace Warlander.Deedplanner.Graphics
             }
 
             return texture;
-        }
-
-        private static byte[] StreamToByteArray(Stream inputStream)
-        {
-            byte[] result;
-            using (MemoryStream streamReader = new MemoryStream())
-            {
-                inputStream.CopyTo(streamReader);
-                result = streamReader.ToArray();
-            }
-
-            return result;
         }
 
         private static Texture2D LoadTextureDXT(byte[] ddsBytes)

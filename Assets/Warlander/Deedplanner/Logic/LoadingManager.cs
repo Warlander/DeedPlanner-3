@@ -31,6 +31,7 @@ namespace Warlander.Deedplanner.Logic
             Debug.Log("Loading data");
             yield return DataLoader.LoadData();
             yield return null;
+            Debug.Log("Data loaded");
 
             text.text = "Creating map";
             loadingBar.value = 0.5f;
@@ -38,6 +39,7 @@ namespace Warlander.Deedplanner.Logic
             Debug.Log("Creating map");
             GameManager.Instance.CreateNewMap(25, 25);
             yield return null;
+            Debug.Log("Map created");
             
             text.text = "Loading complete";
             loadingBar.value = 1.0f;
