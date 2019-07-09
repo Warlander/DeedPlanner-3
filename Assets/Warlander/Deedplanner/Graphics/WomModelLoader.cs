@@ -20,20 +20,8 @@ namespace Warlander.Deedplanner.Graphics
         public static GameObject LoadModel(string path)
         {
             Debug.Log("Loading model at " + path);
+            byte[] requestData = LocationToByteArray(path);
             
-            UnityWebRequest request = UnityWebRequest.Get(path);
-            request.SendWebRequest();
-            while (!request.isDone && !request.isHttpError && !request.isNetworkError)
-            {
-                Thread.Sleep(1);
-            }
-
-            if (request.isHttpError || request.isNetworkError)
-            {
-                Debug.LogError(request.error);
-            }
-
-            byte[] requestData = request.downloadHandler.data;
             using (MemoryStream memoryStream = new MemoryStream(requestData))
             {
                 BinaryReader source = new BinaryReader(memoryStream);
@@ -227,19 +215,7 @@ namespace Warlander.Deedplanner.Graphics
             }
 
             Debug.Log("Loading texture at " + location);
-            UnityWebRequest request = UnityWebRequest.Get(location);
-            request.SendWebRequest();
-            while (!request.isDone && !request.isHttpError && !request.isNetworkError)
-            {
-                Thread.Sleep(1);
-            }
-
-            if (request.isHttpError || request.isNetworkError)
-            {
-                Debug.LogError(request.error);
-            }
-
-            byte[] texBytes = request.downloadHandler.data;
+            byte[] texBytes = LocationToByteArray(location);
 
             Texture2D texture;
             if (location.Substring(location.LastIndexOf(".", StringComparison.Ordinal) + 1) == "dds")
@@ -292,6 +268,23 @@ namespace Warlander.Deedplanner.Graphics
             int size = source.ReadInt32();
             byte[] bytes = source.ReadBytes(size);
             return Encoding.ASCII.GetString(bytes);
+        }
+
+        private static byte[] LocationToByteArray(string location)
+        {
+            UnityWebRequest request = UnityWebRequest.Get(location);
+            request.SendWebRequest();
+            while (!request.isDone && !request.isHttpError && !request.isNetworkError)
+            {
+                Thread.Sleep(1);
+            }
+
+            if (request.isHttpError || request.isNetworkError)
+            {
+                Debug.LogError(request.error);
+            }
+
+            return request.downloadHandler.data;
         }
 
     }
