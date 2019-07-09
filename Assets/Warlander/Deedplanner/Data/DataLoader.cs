@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using UnityEngine;
+using UnityEngine.Networking;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
@@ -14,34 +16,50 @@ using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
-using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
     public static class DataLoader
     {
 
-        private static List<string> shortNames = new List<string>();
+        private static readonly List<string> shortNames = new List<string>();
 
         public static IEnumerator LoadData()
         {
+            if (Properties.Mobile || Properties.Web)
+            {
+                yield return LoadData(Application.streamingAssetsPath + "/objects.xml");
+                yield break;
+            }
+            
             string[] objectFiles = Directory.GetFiles(Application.streamingAssetsPath);
             objectFiles = objectFiles
-                .Where((name) => Path.GetFileName(name).StartsWith("objects"))
+                .Where((name) => name.Substring(name.LastIndexOf("\\", StringComparison.Ordinal) + 1).StartsWith("objects"))
                 .Where((name) => name.EndsWith("xml"))
                 .ToArray();
 
-            return LoadData(objectFiles);
+            for (int i = 0; i < objectFiles.Length; i++)
+            {
+                string oldFile = objectFiles[i];
+                oldFile = oldFile.Substring(oldFile.LastIndexOf("\\", StringComparison.Ordinal) + 1);
+                objectFiles[i] = Application.streamingAssetsPath + "/" + oldFile;
+            }
+            
+            yield return LoadData(objectFiles);
         }
 
-        private static IEnumerator LoadData(string[] locations)
+        private static IEnumerator LoadData(params string[] locations)
         {
             XmlDocument[] documents = new XmlDocument[locations.Length];
 
             for (int i = 0; i < documents.Length; i++)
             {
+                Debug.Log("Parsing " + locations[i]);
+                UnityWebRequest request = UnityWebRequest.Get(locations[i]);
+                yield return request.SendWebRequest();
                 documents[i] = new XmlDocument();
-                documents[i].Load(locations[i]);
+                documents[i].LoadXml(request.downloadHandler.text);
+                Debug.Log("Parsed " + locations[i]);
             }
 
             foreach (XmlDocument document in documents)
@@ -59,8 +77,6 @@ namespace Warlander.Deedplanner.Data
                 LoadObjects(document);
                 shortNames.Clear();
             }
-            
-            yield return null;
         }
 
         private static void LoadGrounds(XmlDocument document)

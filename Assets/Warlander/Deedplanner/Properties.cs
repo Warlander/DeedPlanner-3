@@ -13,8 +13,8 @@ namespace Warlander.Deedplanner
 
         private const string PropertiesKey = "properties";
         
-        private static readonly bool Mobile = Application.isMobilePlatform;
-        private static readonly bool Web = Application.platform == RuntimePlatform.WebGLPlayer;
+        public static readonly bool Mobile = Application.isMobilePlatform;
+        public static readonly bool Web = Application.platform == RuntimePlatform.WebGLPlayer;
 
         public static Properties Instance { get; private set; }
 
