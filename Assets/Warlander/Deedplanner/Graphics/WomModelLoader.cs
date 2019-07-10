@@ -284,18 +284,7 @@ namespace Warlander.Deedplanner.Graphics
                 int length = GetLastLoadedResourceLengthNative();
                 byte[] data = new byte[length];
                 Marshal.Copy(pointer, data, 0, length);
-                StringBuilder build = new StringBuilder();
-                for (int i = 0; i < 320; i++)
-                {
-                    build.Append(data[i].ToString("X2")).Append(" ");
-                    if (i % 16 == 0 && i != 0)
-                    {
-                        build.AppendLine();
-                    }
-                }
 
-                Debug.Log(build.ToString());
-                
                 return data;
             }
             else
