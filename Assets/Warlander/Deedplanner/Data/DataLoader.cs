@@ -28,8 +28,7 @@ namespace Warlander.Deedplanner.Data
         {
             if (Properties.Mobile || Properties.Web)
             {
-                yield return LoadData(Application.streamingAssetsPath + "/objects.xml");
-                yield break;
+                return LoadData(Application.streamingAssetsPath + "/objects.xml");
             }
             
             string[] objectFiles = Directory.GetFiles(Application.streamingAssetsPath);
@@ -45,7 +44,7 @@ namespace Warlander.Deedplanner.Data
                 objectFiles[i] = Application.streamingAssetsPath + "/" + oldFile;
             }
             
-            yield return LoadData(objectFiles);
+            return LoadData(objectFiles);
         }
 
         private static IEnumerator LoadData(params string[] locations)
@@ -64,18 +63,25 @@ namespace Warlander.Deedplanner.Data
 
             foreach (XmlDocument document in documents)
             {
+                Debug.Log("Loading grounds");
                 LoadGrounds(document);
                 shortNames.Clear();
+                Debug.Log("Loading caves");
                 LoadCaves(document);
                 shortNames.Clear();
+                Debug.Log("Loading floors");
                 LoadFloors(document);
                 shortNames.Clear();
+                Debug.Log("Loading walls");
                 LoadWalls(document);
                 shortNames.Clear();
+                Debug.Log("Loading roofs");
                 LoadRoofs(document);
                 shortNames.Clear();
+                Debug.Log("Loading objects");
                 LoadObjects(document);
                 shortNames.Clear();
+                Debug.Log("XML file loading complete");
             }
         }
 
