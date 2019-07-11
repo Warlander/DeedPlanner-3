@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,11 +35,19 @@ namespace Warlander.Deedplanner.Logic
             yield return null;
             Debug.Log("Data loaded");
 
-            text.text = "Creating map";
-            loadingBar.value = 0.5f;
-            
             Debug.Log("Creating map");
-            GameManager.Instance.CreateNewMap(25, 25);
+            loadingBar.value = 0.5f;
+            if (DebugManager.Instance != null && DebugManager.Instance.LoadTestMap)
+            {
+                text.text = "Loading debug map";
+                string fullTestMapLocation = Path.Combine(Application.streamingAssetsPath, "./Special/Test Map.MAP");
+                yield return GameManager.Instance.LoadMap(new Uri(fullTestMapLocation));
+            }
+            else
+            {
+                text.text = "Creating map";
+                GameManager.Instance.CreateNewMap(25, 25);
+            }
             yield return null;
             Debug.Log("Map created");
             
