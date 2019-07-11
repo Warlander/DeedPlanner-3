@@ -102,7 +102,10 @@ namespace Warlander.Deedplanner.Logic
             }
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(requestText);
-            Destroy(Map.gameObject);
+            if (Map)
+            {
+                Destroy(Map.gameObject);
+            }
             GameObject mapObject = new GameObject("Map", typeof(Map));
             Map = mapObject.GetComponent<Map>();
             Map.Initialize(doc);
