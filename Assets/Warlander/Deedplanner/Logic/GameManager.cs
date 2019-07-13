@@ -79,6 +79,26 @@ namespace Warlander.Deedplanner.Logic
 
         public void CreateNewMap(int width, int height)
         {
+            if (Map)
+            {
+                Destroy(Map.gameObject);
+            }
+            
+            GameObject mapObject = new GameObject("Map", typeof(Map));
+            Map = mapObject.GetComponent<Map>();
+            Map.Initialize(width, height);
+        }
+
+        public void ClearMap()
+        {
+            int width = Map.Width;
+            int height = Map.Height;
+            
+            if (Map)
+            {
+                Destroy(Map.gameObject);
+            }
+            
             GameObject mapObject = new GameObject("Map", typeof(Map));
             Map = mapObject.GetComponent<Map>();
             Map.Initialize(width, height);
@@ -106,6 +126,7 @@ namespace Warlander.Deedplanner.Logic
             {
                 Destroy(Map.gameObject);
             }
+            
             GameObject mapObject = new GameObject("Map", typeof(Map));
             Map = mapObject.GetComponent<Map>();
             Map.Initialize(doc);
