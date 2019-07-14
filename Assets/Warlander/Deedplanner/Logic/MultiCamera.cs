@@ -249,6 +249,20 @@ namespace Warlander.Deedplanner.Logic
                 if (hit)
                 {
                     CurrentRaycast = raycastHit;
+                    GameObject hitObject = raycastHit.transform.gameObject;
+                    TileEntity tileEntity = hitObject.GetComponent<TileEntity>();
+                    if (tileEntity)
+                    {
+                        LayoutManager.Instance.TooltipText = tileEntity.ToString();
+                    }
+                    else
+                    {
+                        LayoutManager.Instance.TooltipText = null;
+                    }
+                }
+                else
+                {
+                    LayoutManager.Instance.TooltipText = null;
                 }
             }
         }

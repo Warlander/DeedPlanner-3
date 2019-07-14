@@ -120,6 +120,23 @@ namespace Warlander.Deedplanner.Gui
             ValidateState();
         }
 
+        private void Update()
+        {
+            bool tooltipNeedsClearing = true;
+            foreach (MultiCamera multiCamera in cameras)
+            {
+                if (multiCamera.MouseOver)
+                {
+                    tooltipNeedsClearing = false;
+                }
+            }
+
+            if (tooltipNeedsClearing)
+            {
+                TooltipText = null;
+            }
+        }
+        
         private void ValidateState()
         {
             WaterQuality waterQuality = Properties.Instance.WaterQuality;
