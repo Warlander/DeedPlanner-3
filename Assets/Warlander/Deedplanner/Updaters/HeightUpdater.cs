@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
@@ -227,6 +228,11 @@ namespace Warlander.Deedplanner.Updaters
             {
                 handle.Color = neutralColor;
             }
+        }
+
+        private void OnDisable()
+        {
+            LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
         }
 
         private enum HeightUpdaterState
