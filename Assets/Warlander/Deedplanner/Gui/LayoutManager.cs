@@ -20,42 +20,34 @@ namespace Warlander.Deedplanner.Gui
         private Tab currentTab;
         public TileSelectionMode TileSelectionMode { get; set; }
 
-        [SerializeField]
-        private Toggle[] IndicatorButtons = new Toggle[4];
-        [SerializeField]
-        private RectTransform HorizontalBottomIndicatorHolder = null;
-        [SerializeField]
-        private RawImage[] Screens = new RawImage[4];
-        [SerializeField]
-        private RectTransform HorizontalBottomScreenHolder = null;
-        [SerializeField]
-        private RectTransform[] Splits = new RectTransform[5];
-        [SerializeField]
-        private MultiCamera[] cameras = new MultiCamera[4];
-        [SerializeField]
-        private ToggleGroup cameraModeGroup = null;
-        [SerializeField]
-        private Toggle[] cameraModeToggles = new Toggle[4];
-        [SerializeField]
-        private ToggleGroup floorGroup = null;
-        [SerializeField]
-        private Toggle[] positiveFloorToggles = new Toggle[16];
-        [SerializeField]
-        private Toggle[] negativeFloorToggles = new Toggle[6];
+        [SerializeField] private Toggle[] IndicatorButtons = new Toggle[4];
+        [SerializeField] private RectTransform HorizontalBottomIndicatorHolder = null;
+        [SerializeField] private RawImage[] Screens = new RawImage[4];
+        [SerializeField] private RectTransform HorizontalBottomScreenHolder = null;
+        [SerializeField] private RectTransform[] Splits = new RectTransform[5];
+        [SerializeField] private MultiCamera[] cameras = new MultiCamera[4];
+        [SerializeField] private ToggleGroup cameraModeGroup = null;
+        [SerializeField] private Toggle[] cameraModeToggles = new Toggle[4];
+        [SerializeField] private ToggleGroup floorGroup = null;
+        [SerializeField] private Toggle[] positiveFloorToggles = new Toggle[16];
+        [SerializeField] private Toggle[] negativeFloorToggles = new Toggle[6];
 
-        [SerializeField]
-        private TabObject[] tabs = new TabObject[12];
-        [SerializeField]
-        private Toggle groundToggle = null;
-        [SerializeField]
-        private Toggle cavesToggle = null;
+        [SerializeField] private TabObject[] tabs = new TabObject[12];
+        [SerializeField] private Toggle groundToggle = null;
+        [SerializeField] private Toggle cavesToggle = null;
 
-        [SerializeField]
-        private GameObject highQualityWaterObject = null;
-        [SerializeField]
-        private GameObject simpleQualityWaterObject = null;
+        [SerializeField] private GameObject highQualityWaterObject = null;
+        [SerializeField] private GameObject simpleQualityWaterObject = null;
+
+        [SerializeField] private Tooltip tooltip;
 
         public MultiCamera CurrentCamera => cameras[ActiveWindow];
+
+        public string TooltipText
+        {
+            get => tooltip.Value;
+            set => tooltip.Value = value;
+        }
 
         public RectTransform ActiveWindowTransform => Screens[activeWindow].gameObject.GetComponent<RectTransform>();
 
