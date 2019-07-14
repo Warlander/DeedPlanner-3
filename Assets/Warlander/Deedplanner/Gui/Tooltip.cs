@@ -18,10 +18,11 @@ namespace Warlander.Deedplanner.Gui
                 if (string.IsNullOrEmpty(value))
                 {
                     gameObject.SetActive(false);
+                    return;
                 }
                 
                 gameObject.SetActive(true);
-                
+                text.text = value;
             }
         }
 
