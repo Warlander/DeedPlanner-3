@@ -246,14 +246,19 @@ namespace Warlander.Deedplanner.Logic
                 RaycastHit raycastHit;
                 int mask = LayerMasks.GetMaskForTab(LayoutManager.Instance.CurrentTab);
                 bool hit = Physics.Raycast(ray, out raycastHit, 20000, mask);
-                if (hit)
+                if (hit && Cursor.visible)
                 {
                     CurrentRaycast = raycastHit;
                     GameObject hitObject = raycastHit.transform.gameObject;
                     TileEntity tileEntity = hitObject.GetComponent<TileEntity>();
+                    GridTile gridTile = hitObject.GetComponent<GridTile>();
                     if (tileEntity)
                     {
                         LayoutManager.Instance.TooltipText = tileEntity.ToString();
+                    }
+                    else if (gridTile)
+                    {
+                        LayoutManager.Instance.TooltipText = gridTile.ToString();
                     }
                     else
                     {
