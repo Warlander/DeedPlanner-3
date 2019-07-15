@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Text;
+using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
@@ -136,6 +137,16 @@ namespace Warlander.Deedplanner.Data.Grounds
                     RoadDirection = RoadDirection.Center;
                     break;
             }
+        }
+
+        public override string ToString()
+        {
+            StringBuilder build = new StringBuilder();
+
+            build.Append("X: ").Append(tile.X).Append(" Y: ").Append(tile.Y).AppendLine();
+            build.Append(data.Name);
+            
+            return build.ToString();
         }
 
         private class GroundDataChangeCommand : IReversibleCommand

@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Text;
+using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Logic;
 
@@ -58,6 +59,16 @@ namespace Warlander.Deedplanner.Data.Floors
         {
             localRoot.SetAttribute("id", Data.ShortName);
             localRoot.SetAttribute("orientation", Orientation.ToString());
+        }
+        
+        public override string ToString()
+        {
+            StringBuilder build = new StringBuilder();
+
+            build.Append("X: ").Append(tile.X).Append(" Y: ").Append(tile.Y).AppendLine();
+            build.Append(Data.Name);
+            
+            return build.ToString();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Text;
+using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Logic;
 
@@ -111,6 +112,16 @@ namespace Warlander.Deedplanner.Data.Roofs
         public override void Serialize(XmlDocument document, XmlElement localRoot)
         {
             localRoot.SetAttribute("id", Data.ShortName);
+        }
+        
+        public override string ToString()
+        {
+            StringBuilder build = new StringBuilder();
+
+            build.Append("X: ").Append(tile.X).Append(" Y: ").Append(tile.Y).AppendLine();
+            build.Append(Data.Name);
+            
+            return build.ToString();
         }
     }
 }
