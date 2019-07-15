@@ -6,7 +6,8 @@ using System.IO;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Networking;
-using Object = UnityEngine.Object;
+ using Warlander.Deedplanner.Utils;
+ using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Graphics
 {
@@ -17,11 +18,6 @@ namespace Warlander.Deedplanner.Graphics
         private static readonly int MainTex = Shader.PropertyToID("_MainTex");
         private static readonly int Color = Shader.PropertyToID("_Color");
         private static readonly int Glossiness = Shader.PropertyToID("_Glossiness");
-
-        [DllImport("__Internal")]
-        private static extern IntPtr LoadResourceNative(string location);
-        [DllImport("__Internal")]
-        private static extern int GetLastLoadedResourceLengthNative();
 
         public static GameObject LoadModel(string path)
         {
@@ -280,12 +276,7 @@ namespace Warlander.Deedplanner.Graphics
         {
             if (Properties.Web)
             {
-                IntPtr pointer = LoadResourceNative(location);
-                int length = GetLastLoadedResourceLengthNative();
-                byte[] data = new byte[length];
-                Marshal.Copy(pointer, data, 0, length);
-
-                return data;
+                return JavaScriptUtils.LoadUrlToBytes(location);
             }
             else
             {
