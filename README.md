@@ -12,4 +12,4 @@ This repository is a work in progress version of DeedPlanner 3. DeedPlanner 2 - 
 3. The program usage should be as simple as possible<br>
 4. Cooperation with other Wurm-related programs and the game itself.
 
-Graphical assets in Assets folder are © Code Club AB or their respective authors and may not be reused, modified or distributed without written permission.
+Graphical assets in StreamingAssets folder are © Code Club AB or their respective authors and may not be reused, modified or distributed without written permission.

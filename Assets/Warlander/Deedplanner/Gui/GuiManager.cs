@@ -36,6 +36,8 @@ namespace Warlander.Deedplanner.Gui
         private Window graphicsSettingsWindow = null;
         [SerializeField]
         private Window inputSettingsWindow = null;
+        [SerializeField]
+        private Window aboutWindow = null;
 
         public UnityTree GroundsTree => groundsTree;
         public UnityTree CavesTree => cavesTree;
@@ -50,6 +52,7 @@ namespace Warlander.Deedplanner.Gui
         public Window LoadMapWindow => loadMapWindow;
         public Window GraphicsSettingsWindow => graphicsSettingsWindow;
         public Window InputSettingsWindow => inputSettingsWindow;
+        public Window AboutWindow => aboutWindow;
 
         public GuiManager()
         {

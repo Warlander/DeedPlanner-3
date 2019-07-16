@@ -53,6 +53,11 @@ namespace Warlander.Deedplanner.Gui
             GuiManager.Instance.InputSettingsWindow.gameObject.SetActive(true);
         }
 
+        public void OnAbout()
+        {
+            GuiManager.Instance.AboutWindow.gameObject.SetActive(true);
+        }
+
         public void OnToggleFullscreen()
         {
             Screen.fullScreen = !Screen.fullScreen;
