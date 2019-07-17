@@ -6514,49 +6514,49 @@
 		
 	<caves>
 	
-		<rock name="Stone wall" shortname="sw" type="wall" tex="Caves/cave_512.png">
+		<rock name="Stone wall" shortname="sw" type="wall" tex="Caves/cave_512.dds">
 			<category>Walls</category>
 		</rock>
-		<rock name="Reinforced stone wall" shortname="rsw" type="wall" tex="Caves/reinforcedcave_v1.png">
+		<rock name="Reinforced stone wall" shortname="rsw" type="wall" tex="Caves/reinforcedcave_v1.dds">
 			<category>Walls</category>
 		</rock>
-		<rock name="Iron vein" shortname="iv" type="wall" tex="Caves/ironvein_512.png">
-			<category>Walls</category>
-			<category>Veins</category>
-		</rock>
-		<rock name="Copper vein" shortname="cv" type="wall" tex="Caves/coppervein_512.png">
+		<rock name="Iron vein" shortname="iv" type="wall" tex="Caves/ironvein_512.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Tin vein" shortname="tv" type="wall" tex="Caves/tinvein_512.png">
+		<rock name="Copper vein" shortname="cv" type="wall" tex="Caves/coppervein_512.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Zinc vein" shortname="zv" type="wall" tex="Caves/zincvein_512.png">
+		<rock name="Tin vein" shortname="tv" type="wall" tex="Caves/tinvein_512.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Lead vein" shortname="lv" type="wall" tex="Caves/leadvein_512.png">
+		<rock name="Zinc vein" shortname="zv" type="wall" tex="Caves/zincvein_512.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Silver vein" shortname="sv" type="wall" tex="Caves/silvervein_512.png">
+		<rock name="Lead vein" shortname="lv" type="wall" tex="Caves/leadvein_512.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Gold vein" shortname="gv" type="wall" tex="Caves/goldvein_512.png">
+		<rock name="Silver vein" shortname="sv" type="wall" tex="Caves/silvervein_512.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Slate vein" shortname="slv" type="wall" tex="Caves/slatevein_512.png">
+		<rock name="Gold vein" shortname="gv" type="wall" tex="Caves/goldvein_512.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Marble vein" shortname="mv" type="wall" tex="Caves/marblevein_512.png">
+		<rock name="Slate vein" shortname="slv" type="wall" tex="Caves/slatevein_512.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Sandstone vein" shortname="ssv" type="wall" tex="Caves/sandstonevein.png">
+		<rock name="Marble vein" shortname="mv" type="wall" tex="Caves/marblevein_512.dds">
+			<category>Walls</category>
+			<category>Veins</category>
+		</rock>
+		<rock name="Sandstone vein" shortname="ssv" type="wall" tex="Caves/sandstonevein.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
@@ -6589,62 +6589,62 @@
 			<category>Walls/Decorative</category>
 		</rock>
 		
-		<rock name="Stone floor" shortname="sfl" type="floor" tex="Caves/cave_512.png">
+		<rock name="Stone floor" shortname="sfl" type="floor" tex="Caves/cave_512.dds">
 			<category>Floors</category>
 		</rock>
 		<rock name="Reinforced stone floor" shortname="rsfl" type="floor" tex="Caves/reinforcedcaveFloor_v1.dds">
 			<category>Floors</category>
 		</rock>
-		<rock name="Gravel" shortname="grav" type="floor" tex="GroundTextures/gravel.jpg">
+		<rock name="Gravel" shortname="grav" type="floor" tex="GroundTextures/gravel.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Cobblestone" shortname="cs" type="floor" tex="GroundTextures/cobble.png">
+		<rock name="Cobblestone" shortname="cs" type="floor" tex="GroundTextures/cobble.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Rough cobblestone" shortname="rcs" type="floor" tex="GroundTextures/cobble2.png">
+		<rock name="Rough cobblestone" shortname="rcs" type="floor" tex="GroundTextures/cobble2.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Round cobblestone" shortname="csr" type="floor" tex="GroundTextures/cobble3.png">
+		<rock name="Round cobblestone" shortname="csr" type="floor" tex="GroundTextures/cobble3.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Stone slab" shortname="sl" type="floor" tex="GroundTextures/slab.jpg">
+		<rock name="Stone slab" shortname="sl" type="floor" tex="GroundTextures/slab.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Marble slab" shortname="msl" type="floor" tex="GroundTextures/marbleslab.jpg">
+		<rock name="Marble slab" shortname="msl" type="floor" tex="GroundTextures/marbleslab.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Marble brick" shortname="mb" type="floor" tex="GroundTextures/marbleBricks.png">
+		<rock name="Marble brick" shortname="mb" type="floor" tex="GroundTextures/marbleBricks.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Slate slab" shortname="ssl2" type="floor" tex="GroundTextures/slateTiles.png">
+		<rock name="Slate slab" shortname="ssl2" type="floor" tex="GroundTextures/slateTiles.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Slate brick" shortname="ssl" type="floor" tex="GroundTextures/slateslab.jpg">
+		<rock name="Slate brick" shortname="ssl" type="floor" tex="GroundTextures/slateslab.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Sandstone slab" shortname="sas" type="floor" tex="GroundTextures/sandstoneslab.png">
+		<rock name="Sandstone slab" shortname="sas" type="floor" tex="GroundTextures/sandstoneslab.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Sandstone brick" shortname="sab" type="floor" tex="GroundTextures/sandstonebrick.png">
+		<rock name="Sandstone brick" shortname="sab" type="floor" tex="GroundTextures/sandstonebrick.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Pottery brick" shortname="pb" type="floor" tex="GroundTextures/potterybrickpaving.png">
+		<rock name="Pottery brick" shortname="pb" type="floor" tex="GroundTextures/potterybrickpaving.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Planks" shortname="pl" type="floor" tex="GroundTextures/planks.png">
+		<rock name="Planks" shortname="pl" type="floor" tex="GroundTextures/planks.dds">
 			<category>Floors/Decorative</category>
 		</rock>
 		
-		<rock name="Wooden cave door" shortname="wcaDoorC" type="entrance" tex="GroundTextures/minedoor_wooden.png">
+		<rock name="Wooden cave door" shortname="wcaDoorC" type="entrance" tex="GroundTextures/minedoor_wooden.dds">
 			<category>Entrances</category>
 		</rock>
-		<rock name="Metal cave door" shortname="mcaDoorC" type="entrance" tex="GroundTextures/minedoor_steel.png">
+		<rock name="Metal cave door" shortname="mcaDoorC" type="entrance" tex="GroundTextures/minedoor_steel.dds">
 			<category>Entrances</category>
 		</rock>
-		<rock name="Silver cave door" shortname="scaDoorC" type="entrance" tex="GroundTextures/minedoor_silver.png">
+		<rock name="Silver cave door" shortname="scaDoorC" type="entrance" tex="GroundTextures/minedoor_silver.dds">
 			<category>Entrances</category>
 		</rock>
-		<rock name="Golden cave door" shortname="gcaDoorC" type="entrance" tex="GroundTextures/minedoor_gold.png">
+		<rock name="Golden cave door" shortname="gcaDoorC" type="entrance" tex="GroundTextures/minedoor_gold.dds">
 			<category>Entrances</category>
 		</rock>
 		
