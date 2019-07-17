@@ -1,43 +1,43 @@
 <entities>
 	<grounds>
 		<ground name="Grass" shortname="gr">
-			<tex location="GroundTextures/grass.jpg"/>
+			<tex location="GroundTextures/grass.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Dirt" shortname="di">
-			<tex location="GroundTextures/dirt.jpg"/>
+			<tex location="GroundTextures/dirt.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Packed dirt" shortname="pd">
-			<tex location="GroundTextures/packed-dirt.jpg"/>
+			<tex location="GroundTextures/packed.dds"/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Sand" shortname="sa">
-			<tex location="GroundTextures/sand.jpg"/>
+			<tex location="GroundTextures/sand.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Water" shortname="wa">
-			<tex location="GroundTextures/water.png"/>
+			<tex location="GroundTextures/water.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Forest" shortname="fo">
-			<tex location="GroundTextures/forest.jpg"/>
+			<tex location="GroundTextures/forest.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Marsh" shortname="ma">
-			<tex location="GroundTextures/marsh.png"/>
+			<tex location="GroundTextures/marsh.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Steppe" shortname="st">
-			<tex location="GroundTextures/steppe.jpg"/>
+			<tex location="GroundTextures/steppe.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Tundra" shortname="tu">
-			<tex location="GroundTextures/tundra.png"/>
+			<tex location="GroundTextures/tundra.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Field" shortname="fi">
-			<tex location="GroundTextures/farm.jpg"/>
+			<tex location="GroundTextures/farm.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Barley Field" shortname="bafi">
@@ -146,132 +146,132 @@
 			<category>Farm</category>
 		</ground>
 		<ground name="Gravel" shortname="gv">
-			<tex location="GroundTextures/gravel.jpg"/>
+			<tex location="GroundTextures/gravel.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Cobblestone" shortname="cs">
-			<tex location="GroundTextures/cobble.png"/>
+			<tex location="GroundTextures/cobble.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Rough cobblestone" shortname="rcs">
-			<tex location="GroundTextures/cobble2.png"/>
+			<tex location="GroundTextures/cobble2.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Round cobblestone" shortname="csr">
-			<tex location="GroundTextures/cobble3.png"/>
+			<tex location="GroundTextures/cobble3.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Stone slab" shortname="sl">
-			<tex location="GroundTextures/slab.jpg"/>
+			<tex location="GroundTextures/slab.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Marble slab" shortname="msl">
-			<tex location="GroundTextures/marbleslab.jpg"/>
+			<tex location="GroundTextures/marbleslab.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Marble brick" shortname="mb">
-			<tex location="GroundTextures/marbleBricks.png"/>
+			<tex location="GroundTextures/marbleBricks.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Slate slab" shortname="ssl2">
-			<tex location="GroundTextures/slateTiles.png"/>
+			<tex location="GroundTextures/slateTiles.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Slate brick" shortname="ssl">
-			<tex location="GroundTextures/slateslab.jpg"/>
+			<tex location="GroundTextures/slatebricks.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Sandstone slab" shortname="sas">
-			<tex location="GroundTextures/sandstoneslab.png"/>
+			<tex location="GroundTextures/sandstoneslab.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Sandstone brick" shortname="sab">
-			<tex location="GroundTextures/sandstonebrick.png"/>
+			<tex location="GroundTextures/sandstonebrick.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Pottery brick" shortname="pb">
-			<tex location="GroundTextures/potterybrickpaving.png"/>
+			<tex location="GroundTextures/potterybrickpaving.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Planks" shortname="pl">
-			<tex location="GroundTextures/planks.png"/>
+			<tex location="GroundTextures/planks.dds"/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Enchanted forest" shortname="ef">
-			<tex location="GroundTextures/enchantedforest.jpg"/>
+			<tex location="GroundTextures/enchantedforest.dds"/>
 			<category>Enchanted terrain</category>
 		</ground>
 		<ground name="Enchanted grass" shortname="eg">
-			<tex location="GroundTextures/enchantedgrass.jpg"/>
+			<tex location="GroundTextures/enchantedgrass.dds"/>
 			<category>Enchanted terrain</category>
 		</ground>
 		<ground name="Lawn" shortname="lw">
-			<tex location="GroundTextures/lawn.png"/>
+			<tex location="GroundTextures/lawn.dds"/>
 			<category>Enchanted terrain</category>
 		</ground>
 		<ground name="Forest mycelium" shortname="fm">
-			<tex location="GroundTextures/forest-Mycelium.jpg"/>
+			<tex location="GroundTextures/forest-Mycelium.dds"/>
 			<category>Infected terrain</category>
 		</ground>
 		<ground name="Mycelium" shortname="my">
-			<tex location="GroundTextures/mycelium.jpg"/>
+			<tex location="GroundTextures/mycelium.dds"/>
 			<category>Infected terrain</category>
 		</ground>
 		<ground name="Wooden cave door" shortname="wcaDoor">
-			<tex location="GroundTextures/minedoor_wooden.png"/>
+			<tex location="GroundTextures/minedoor_wooden.dds"/>
 			<category>Cave doors</category>
 		</ground>
 		<ground name="Metal cave door" shortname="mcaDoor">
-			<tex location="GroundTextures/minedoor_steel.png"/>
+			<tex location="GroundTextures/minedoor_steel.dds"/>
 			<category>Cave doors</category>
 		</ground>
 		<ground name="Silver cave door" shortname="scaDoor">
-			<tex location="GroundTextures/minedoor_silver.png"/>
+			<tex location="GroundTextures/minedoor_silver.dds"/>
 			<category>Cave doors</category>
 		</ground>
 		<ground name="Golden cave door" shortname="gcaDoor">
-			<tex location="GroundTextures/minedoor_gold.png"/>
+			<tex location="GroundTextures/minedoor_gold.dds"/>
 			<category>Cave doors</category>
 		</ground>
 		
 		<ground name="Rock" shortname="ro">
-			<tex location="GroundTextures/rock.jpg"/>
+			<tex location="GroundTextures/rock.dds"/>
 			<category>Natural terrain/Mountain</category>
 		</ground>
 		<ground name="Cliff" shortname="cl">
-			<tex location="GroundTextures/cliff.jpg"/>
+			<tex location="GroundTextures/cliff.dds"/>
 			<category>Natural terrain/Mountain</category>
 		</ground>
 		<ground name="Lava" shortname="la">
-			<tex location="GroundTextures/lava.jpg"/>
+			<tex location="GroundTextures/lava.dds"/>
 			<category>Natural terrain/Mountain</category>
 		</ground>
 		<ground name="Clay" shortname="cy">
-			<tex location="GroundTextures/clay.jpg"/>
+			<tex location="GroundTextures/clay.dds"/>
 			<category>Natural terrain/Resources</category>
 		</ground>
 		<ground name="Moss" shortname="mo">
-			<tex location="GroundTextures/moss.png"/>
+			<tex location="GroundTextures/moss.dds"/>
 			<category>Natural terrain/Resources</category>
 		</ground>
 		<ground name="Peat" shortname="pe">
-			<tex location="GroundTextures/peat.jpg"/>
+			<tex location="GroundTextures/peat.dds"/>
 			<category>Natural terrain/Resources</category>
 		</ground>
 		<ground name="Tar" shortname="ta">
-			<tex location="GroundTextures/tar.jpg"/>
+			<tex location="GroundTextures/tar.dds"/>
 			<category>Natural terrain/Resources</category>
 		</ground>
 	</grounds>
