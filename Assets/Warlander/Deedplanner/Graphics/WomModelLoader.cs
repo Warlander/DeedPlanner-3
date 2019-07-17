@@ -258,11 +258,18 @@ namespace Warlander.Deedplanner.Graphics
                 textureFormat = TextureFormat.DXT1;
             }
 
-            Texture2D texture = new Texture2D(width, height, textureFormat, false);
-            texture.LoadRawTextureData(dxtBytes);
-            texture.Apply();
+            Texture2D dxtTexture = new Texture2D(width, height, textureFormat, false);
+            dxtTexture.LoadRawTextureData(dxtBytes);
+            dxtTexture.Apply();
 
-            return (texture);
+            Texture2D finalTexture = new Texture2D(dxtTexture.width, dxtTexture.height);
+            Color[] pixelBuffer = dxtTexture.GetPixels(0, 0, dxtTexture.width, dxtTexture.height);
+            finalTexture.SetPixels(pixelBuffer);
+            finalTexture.Apply();
+            
+            Object.Destroy(dxtTexture);
+
+            return finalTexture;
         }
 
         private static string ReadString(BinaryReader source)
