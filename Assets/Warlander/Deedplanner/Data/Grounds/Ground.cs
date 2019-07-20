@@ -109,7 +109,7 @@ namespace Warlander.Deedplanner.Data.Grounds
         {
             localRoot.SetAttribute("id", data.ShortName);
             if (roadDirection != RoadDirection.Center) {
-                localRoot.SetAttribute("dir", roadDirection.ToString());
+                localRoot.SetAttribute("dir", roadDirection.ToString().ToUpperInvariant());
             }
         }
 
