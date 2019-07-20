@@ -10,7 +10,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logic;
-using File = UnityEngine.Windows.File;
+using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Gui
 {
@@ -24,16 +24,6 @@ namespace Warlander.Deedplanner.Gui
 
         public void OnFileSave()
         {
-            ExtensionFilter[] extensionArray = {
-                new ExtensionFilter("DeedPlanner 3 save", "MAP"),
-            };
-            string path = StandaloneFileBrowser.SaveFilePanel("Save Map", "", "Deed plan", extensionArray);
-            
-            if (string.IsNullOrEmpty(path))
-            {
-                return;
-            }
-
             Map map = GameManager.Instance.Map;
 
             if (!map)
@@ -52,11 +42,29 @@ namespace Warlander.Deedplanner.Gui
                 map.Serialize(document, null);
                 document.Save(xmlWriter);
             }
+
+            string mapString = build.ToString();
             
-            byte[] bytes = Encoding.Default.GetBytes(build.ToString());
+            if (Properties.Web)
+            {
+                JavaScriptUtils.DownloadNative("Deed plan.MAP", mapString);
+            }
+            else
+            {
+                ExtensionFilter[] extensionArray = {
+                    new ExtensionFilter("DeedPlanner 3 save", "MAP"),
+                };
+                string path = StandaloneFileBrowser.SaveFilePanel("Save Map", "", "Deed plan", extensionArray);
             
-            File.WriteAllBytes(path, bytes);
+                if (string.IsNullOrEmpty(path))
+                {
+                    return;
+                }
             
+                byte[] bytes = Encoding.Default.GetBytes(build.ToString());
+                File.WriteAllBytes(path, bytes);
+            }
+
             gameObject.SetActive(false);
         }
 
