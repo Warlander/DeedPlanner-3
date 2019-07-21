@@ -18,7 +18,6 @@ namespace Warlander.Deedplanner.Gui
 
             if (mobile || web)
             {
-                fullscreenButton.gameObject.SetActive(false);
                 quitButton.gameObject.SetActive(false);
             }
         }
