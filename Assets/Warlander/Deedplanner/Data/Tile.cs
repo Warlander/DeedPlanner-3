@@ -494,7 +494,7 @@ namespace Warlander.Deedplanner.Data
                 string tag = childElement.Name;
                 switch (tag)
                 {
-                    case "Floor":
+                    case "floor":
                         DeserializeFloor(childElement, floor);
                         break;
                     case "hWall": case "vWall":
