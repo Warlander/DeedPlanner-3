@@ -11,13 +11,13 @@ namespace Warlander.Deedplanner.Logic
     public class LoadingManager : MonoBehaviour
     {
 
-        [SerializeField] private GameObject splashRoot;
-        [SerializeField] private GameObject managersRoot;
-        [SerializeField] private MultiCamera[] cameras;
+        [SerializeField] private GameObject splashRoot = null;
+        [SerializeField] private GameObject managersRoot = null;
+        [SerializeField] private MultiCamera[] cameras = null;
 
-        [SerializeField] private TMP_Text text;
-        [SerializeField] private Slider loadingBar;
-        [SerializeField] private Animator fadeAnimator;
+        [SerializeField] private TMP_Text text = null;
+        [SerializeField] private Slider loadingBar = null;
+        [SerializeField] private Animator fadeAnimator = null;
         
         private void Start()
         {

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Logic;
 using System.Linq;
 using System;
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Gui
@@ -39,7 +40,7 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField] private GameObject highQualityWaterObject = null;
         [SerializeField] private GameObject simpleQualityWaterObject = null;
 
-        [SerializeField] private Tooltip tooltip;
+        [SerializeField] private Tooltip tooltip = null;
 
         public MultiCamera CurrentCamera => cameras[ActiveWindow];
 

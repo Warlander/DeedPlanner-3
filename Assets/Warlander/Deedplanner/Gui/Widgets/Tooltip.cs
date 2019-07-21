@@ -1,12 +1,12 @@
 using TMPro;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Widgets
 {
     public class Tooltip : MonoBehaviour
     {
 
-        [SerializeField] private TMP_Text text;
+        [SerializeField] private TMP_Text text = null;
 
         private RectTransform rectTransform;
 

@@ -2,7 +2,7 @@
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Widgets
 {
     [System.Serializable]
     public class PointerEvent : UnityEvent<PointerEventData> { }

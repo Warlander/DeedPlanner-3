@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Widgets
 {
     public delegate void UnityListValueChangedHandler(object sender, object value);
 

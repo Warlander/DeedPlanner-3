@@ -7,9 +7,9 @@ namespace Warlander.Deedplanner.Graphics
 
         public static GraphicsManager Instance;
 
-        [SerializeField] private Material textureDefaultMaterial;
-        [SerializeField] private Material womDefaultMaterial;
-        [SerializeField] private Material simpleDrawingMaterial;
+        [SerializeField] private Material textureDefaultMaterial = null;
+        [SerializeField] private Material womDefaultMaterial = null;
+        [SerializeField] private Material simpleDrawingMaterial = null;
         
         public Material TextureDefaultMaterial => textureDefaultMaterial;
         public Material WomDefaultMaterial => womDefaultMaterial;
