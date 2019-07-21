@@ -12,10 +12,8 @@ namespace Warlander.Deedplanner.Updaters
     public class WallUpdater : MonoBehaviour
     {
 
-        [SerializeField]
-        private Toggle reverseToggle;
-        [SerializeField]
-        private Toggle automaticReverseToggle;
+        [SerializeField] private Toggle reverseToggle = null;
+        [SerializeField] private Toggle automaticReverseToggle = null;
 
         private void OnEnable()
         {

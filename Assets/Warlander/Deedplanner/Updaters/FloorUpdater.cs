@@ -57,7 +57,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            FloorOrientation orientation;
+            FloorOrientation orientation = FloorOrientation.Down;
             if (southToggle.isOn)
             {
                 orientation = FloorOrientation.Down;
@@ -70,7 +70,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 orientation = FloorOrientation.Up;
             }
-            else
+            else if (eastToggle.isOn)
             {
                 orientation = FloorOrientation.Left;
             }

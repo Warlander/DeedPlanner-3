@@ -15,6 +15,7 @@ using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data

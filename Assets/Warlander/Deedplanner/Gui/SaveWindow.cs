@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Xml;
-using SFB;
+using StandaloneFileBrowser;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -17,8 +17,8 @@ namespace Warlander.Deedplanner.Gui
     public class SaveWindow : MonoBehaviour
     {
 
-        [SerializeField] private Button pastebinButton;
-        [SerializeField] private TMP_Dropdown pastebinDropdown;
+        [SerializeField] private Button pastebinButton = null;
+        [SerializeField] private TMP_Dropdown pastebinDropdown = null;
 
         private UnityWebRequest currentPastebinRequest;
 
@@ -54,7 +54,7 @@ namespace Warlander.Deedplanner.Gui
                 ExtensionFilter[] extensionArray = {
                     new ExtensionFilter("DeedPlanner 3 save", "MAP"),
                 };
-                string path = StandaloneFileBrowser.SaveFilePanel("Save Map", "", "Deed plan", extensionArray);
+                string path = StandaloneFileBrowser.StandaloneFileBrowser.SaveFilePanel("Save Map", "", "Deed plan", extensionArray);
             
                 if (string.IsNullOrEmpty(path))
                 {
