@@ -20,6 +20,11 @@ namespace Warlander.Deedplanner.Gui
             {
                 quitButton.gameObject.SetActive(false);
             }
+
+            if (mobile)
+            {
+                fullscreenButton.gameObject.SetActive(false);
+            }
         }
 
         public void OnResizeMap()
