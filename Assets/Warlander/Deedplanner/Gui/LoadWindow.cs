@@ -13,7 +13,7 @@ namespace Warlander.Deedplanner.Gui
     public class LoadWindow : MonoBehaviour
     {
 
-        [SerializeField] private TMP_InputField pastebinInput;
+        [SerializeField] private TMP_InputField pastebinInput = null;
 
         public void OnFileLoad()
         {
