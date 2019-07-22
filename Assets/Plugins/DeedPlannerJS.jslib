@@ -37,6 +37,40 @@ mergeInto(LibraryManager.library, {
         element.click();
     
         document.body.removeChild(element);
+    },
+    
+    UploadNative : function(objectCallbackName, methodCallbackName) {
+        var jsObjectCallbackName = Pointer_stringify(objectCallbackName);
+        var jsMethodCallbackName = Pointer_stringify(methodCallbackName);
+        
+        var element = document.createElement('input');
+        element.setAttribute('type', 'file');
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        // check if works with this
+        document.body.removeChild(element);
+
+        element.addEventListener('input', function (evt) {
+            var file = element.files[0];
+            if (file) {
+                var reader = new FileReader();
+
+                reader.onload = function (evt) {
+                    var result = reader.result;
+                    SendMessage(jsObjectCallbackName, jsMethodCallbackName, result);
+                };
+
+                reader.onerror = function (evt) {
+                    SendMessage(jsObjectCallbackName, jsMethodCallbackName, '');
+                };
+
+                reader.readAsText(file, "UTF-8");
+            }
+        });
     }
 
 });

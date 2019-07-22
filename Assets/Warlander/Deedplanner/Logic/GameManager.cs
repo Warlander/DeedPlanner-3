@@ -103,7 +103,7 @@ namespace Warlander.Deedplanner.Logic
             Map = mapObject.GetComponent<Map>();
             Map.Initialize(width, height);
         }
-        
+
         public IEnumerator LoadMap(Uri mapUri)
         {
             UnityWebRequest webRequest = UnityWebRequest.Get(mapUri);
@@ -120,8 +120,14 @@ namespace Warlander.Deedplanner.Logic
                 byte[] decompressedBytes = DecompressGzip(requestBytes);
                 requestText = Encoding.UTF8.GetString(decompressedBytes, 0, decompressedBytes.Length);
             }
+
+            LoadMap(requestText);
+        }
+        
+        public void LoadMap(string mapString)
+        {
             XmlDocument doc = new XmlDocument();
-            doc.LoadXml(requestText);
+            doc.LoadXml(mapString);
             if (Map)
             {
                 Destroy(Map.gameObject);

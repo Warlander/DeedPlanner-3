@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Warlander.Deedplanner.Utils
 {
-    public class JavaScriptUtils
+    public static class JavaScriptUtils
     {
         
         [DllImport("__Internal")]
@@ -13,6 +13,9 @@ namespace Warlander.Deedplanner.Utils
         
         [DllImport("__Internal")]
         public static extern void DownloadNative(string name, string content);
+
+        [DllImport("__Internal")]
+        public static extern void UploadNative(string objectCallbackName, string methodCallbackName);
 
         public static byte[] LoadUrlToBytes(string url)
         {
