@@ -36,8 +36,6 @@ namespace Warlander.Deedplanner.Gui
 
         public void LoadFileBrowserCallback(string result)
         {
-            Debug.Log(result);
-
             if (string.IsNullOrEmpty(result))
             {
                 return;
