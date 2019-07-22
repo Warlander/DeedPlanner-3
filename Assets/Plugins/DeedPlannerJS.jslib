@@ -50,8 +50,7 @@ mergeInto(LibraryManager.library, {
         document.body.appendChild(element);
 
         element.click();
-
-        // check if works with this
+        
         document.body.removeChild(element);
 
         element.addEventListener('input', function (evt) {
