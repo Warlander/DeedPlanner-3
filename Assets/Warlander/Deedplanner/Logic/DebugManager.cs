@@ -19,22 +19,18 @@ namespace Warlander.Deedplanner.Logic
 
         public DebugManager()
         {
-            if (Application.isEditor || Debug.isDebugBuild)
-            {
-                Instance = this;
-            }
+            Instance = this;
         }
-        
-        public void Start()
+
+        private void Awake()
         {
             if (!Application.isEditor && !Debug.isDebugBuild)
             {
                 Destroy(gameObject);
-                return;
             }
         }
 
-        public void Update()
+        private void Update()
         {
             if (overrideStartingTileSelectionMode)
             {
