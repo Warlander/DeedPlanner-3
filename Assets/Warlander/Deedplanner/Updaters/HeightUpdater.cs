@@ -32,7 +32,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void OnEnable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
+            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
         private void Update()

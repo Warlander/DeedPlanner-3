@@ -1,6 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Text;
+using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Tilemaps;
 using UnityStandardAssets.Water;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
@@ -8,6 +12,7 @@ using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Utils;
+using Tile = Warlander.Deedplanner.Data.Tile;
 
 namespace Warlander.Deedplanner.Logic
 {
@@ -73,9 +78,16 @@ namespace Warlander.Deedplanner.Logic
 
         public GameObject Screen => screen;
 
-        public bool RenderSelectionBox {
+        public bool RenderSelectionBox
+        {
             get => selectionBox.gameObject.activeSelf;
-            set => selectionBox.gameObject.SetActive(value);
+            set
+            {
+                if (selectionBox)
+                {
+                    selectionBox.gameObject.SetActive(value);
+                }
+            }
         }
 
         public Vector2 SelectionBoxPosition {
@@ -247,30 +259,114 @@ namespace Warlander.Deedplanner.Logic
                 RaycastHit raycastHit;
                 int mask = LayerMasks.GetMaskForTab(LayoutManager.Instance.CurrentTab);
                 bool hit = Physics.Raycast(ray, out raycastHit, 20000, mask);
+                StringBuilder tooltipBuild = new StringBuilder();
+                
                 if (hit && Cursor.visible)
                 {
                     CurrentRaycast = raycastHit;
+
+                    bool isHeightEditing = LayoutManager.Instance.CurrentTab == Tab.Height;
+                    
                     GameObject hitObject = raycastHit.transform.gameObject;
                     TileEntity tileEntity = hitObject.GetComponent<TileEntity>();
                     GridTile gridTile = hitObject.GetComponent<GridTile>();
+                    HeightmapHandle heightmapHandle = hitObject.GetComponent<HeightmapHandle>();
+                    
                     if (tileEntity)
                     {
-                        LayoutManager.Instance.TooltipText = tileEntity.ToString();
+                        tooltipBuild.Append(tileEntity.ToString());
+                        if (isHeightEditing)
+                        {
+                            Vector3 raycastPoint = raycastHit.point;
+                            Vector2Int tileCoords = new Vector2Int(Mathf.FloorToInt(raycastPoint.x / 4), Mathf.FloorToInt(raycastPoint.z / 4));
+                            int clampedX = Mathf.Clamp(tileCoords.x, 0, map.Width);
+                            int clampedY = Mathf.Clamp(tileCoords.y, 0, map.Height);
+                            tileCoords = new Vector2Int(clampedX, clampedY);
+
+                            int h00 = map[tileCoords.x, tileCoords.y].GetHeightForFloor(floor);
+                            int h10 = map[tileCoords.x + 1, tileCoords.y].GetHeightForFloor(floor);
+                            int h01 = map[tileCoords.x, tileCoords.y + 1].GetHeightForFloor(floor);
+                            int h11 = map[tileCoords.x + 1, tileCoords.y + 1].GetHeightForFloor(floor);
+                            int h00Digits = DigitsCount(h00);
+                            int h10Digits = DigitsCount(h10);
+                            int h01Digits = DigitsCount(h01);
+                            int h11Digits = DigitsCount(h11);
+                            int maxDigits = Mathf.Max(h00Digits, h10Digits, h01Digits, h11Digits);
+
+                            tooltipBuild.Append("<br>");
+                            tooltipBuild.Append("<br><mspace=0.5em>");
+                            tooltipBuild.Append(PaddedNumberString(h01, maxDigits)).Append("   ").Append(PaddedNumberString(h11, maxDigits)).Append("<br>");
+                            tooltipBuild.Append("<br>");
+                            tooltipBuild.Append(PaddedNumberString(h00, maxDigits)).Append("   ").Append(PaddedNumberString(h10, maxDigits)).Append("</mspace>");
+                        }
                     }
                     else if (gridTile)
                     {
-                        LayoutManager.Instance.TooltipText = gridTile.ToString();
+                        tooltipBuild.Append(gridTile.ToString());
                     }
-                    else
+                    else if (heightmapHandle)
                     {
-                        LayoutManager.Instance.TooltipText = null;
+                        tooltipBuild.Append("<mspace=0.5em>");
+                        
+                        Vector2Int tileCoords = heightmapHandle.TileCoords;
+                        Tile centralTile = map[tileCoords.x, tileCoords.y];
+                        int centralHeight = centralTile.GetHeightForFloor(floor);
+                        for (int i = -1; i <= 1; i++)
+                        {
+                            for (int i2 = -1; i2 <= 1; i2++)
+                            {
+                                if (i == 0 && i2 == 0)
+                                {
+                                    tooltipBuild.Append("<b>").Append(PaddedNumberString(centralHeight, 5)).Append("</b>");
+                                }
+                                else
+                                {
+                                    int heightDifference = centralHeight - TileHeightOrDefault(map[tileCoords.x + i2, tileCoords.y + 1], centralHeight);
+                                    tooltipBuild.Append(PaddedNumberString(heightDifference, 5));
+                                }
+
+                                if (i2 != 1)
+                                {
+                                    tooltipBuild.Append(" ");
+                                }
+                            }
+
+                            if (i != 1)
+                            {
+                                tooltipBuild.Append("<br>");
+                            }
+                        }
+                        
+                        tooltipBuild.Append("</mspace>");
                     }
                 }
-                else
-                {
-                    LayoutManager.Instance.TooltipText = null;
-                }
+
+                LayoutManager.Instance.TooltipText = tooltipBuild.ToString();
             }
+        }
+
+        private int TileHeightOrDefault(Tile tile, int defaultHeight)
+        {
+            return tile ? tile.GetHeightForFloor(floor) : defaultHeight;
+        }
+
+        private int DigitsCount(int number)
+        {
+            return number.ToString().Length;
+        }
+        
+        private string PaddedNumberString(int number, int maxDigits)
+        {
+            int digits = DigitsCount(number);
+            int digitsDiff = maxDigits - digits;
+            int digitsDiffHalf = digitsDiff / 2;
+
+            return Spaces(digitsDiffHalf) + number + Spaces(digitsDiff - digitsDiffHalf);
+        }
+
+        private string Spaces(int count)
+        {
+            return new string(' ', count);
         }
 
         private void PrepareProjector()
