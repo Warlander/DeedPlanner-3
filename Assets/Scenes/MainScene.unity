@@ -1507,7 +1507,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 1173785076}
+  m_TargetTexture: {fileID: 1836459357}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -3141,40 +3141,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 247d8c9be6bae3c42a25228ccb21c605, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!84 &215731957
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  serializedVersion: 3
-  m_Width: 311
-  m_Height: 384
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 8
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &218983207
 GameObject:
   m_ObjectHideFlags: 0
@@ -5648,7 +5614,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 1764767581}
+  m_Texture: {fileID: 1525850407}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -7698,7 +7664,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 1764767581}
+  m_TargetTexture: {fileID: 1525850407}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -13629,40 +13595,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1689050309}
   m_PrefabAsset: {fileID: 0}
---- !u!84 &832848057
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  serializedVersion: 3
-  m_Width: 311
-  m_Height: 768
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 8
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &835980715
 GameObject:
   m_ObjectHideFlags: 0
@@ -14478,83 +14410,84 @@ MonoBehaviour:
     \"Warlander\" Cyranowicz</b> - lead developer, database maintainer\n<b>Aldur</b>
     - ideas, help with figuring out roof algorithm\n<b>Aum</b> - program logo used
     in standalone launcher\n<b>Malena</b> - program logo used in loading screen, farm
-    textures\n<b>Yldrania</b> - program icons\n<b>All users</b> - feedback and donations
-    :)\n\n<b>Unity Technologies</b> - Unity engine\n<b>gkngkc (https://github.com/gkngkc)</b>
-    - Standalone File Browser\n\n<align=\"center\"><size=20>Code Club AB copyright
-    notice</size></align>\n\nGraphical assets in StreamingAssets folder are \xA9 Code
-    Club AB or their respective authors and may not be reused, modified or distributed
-    without written permission.\n\n<align=\"center\"><size=20>DeedPlanner 3 license</size></align>\n\n<align=\"center\">Apache
-    License\r\nVersion 2.0, January 2004\r\nhttp://www.apache.org/licenses/\r</align>\n\r\n
-    \  TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\r\n\r\n   1. Definitions.\r\n\r\n
-    \     \"License\" shall mean the terms and conditions for use, reproduction,\r\n
-    \     and distribution as defined by Sections 1 through 9 of this document.\r\n\r\n
-    \     \"Licensor\" shall mean the copyright owner or entity authorized by\r\n
-    \     the copyright owner that is granting the License.\r\n\r\n      \"Legal Entity\"
-    shall mean the union of the acting entity and all\r\n      other entities that
-    control, are controlled by, or are under common\r\n      control with that entity.
-    For the purposes of this definition,\r\n      \"control\" means (i) the power,
-    direct or indirect, to cause the\r\n      direction or management of such entity,
-    whether by contract or\r\n      otherwise, or (ii) ownership of fifty percent
-    (50%) or more of the\r\n      outstanding shares, or (iii) beneficial ownership
-    of such entity.\r\n\r\n      \"You\" (or \"Your\") shall mean an individual or
-    Legal Entity\r\n      exercising permissions granted by this License.\r\n\r\n
-    \     \"Source\" form shall mean the preferred form for making modifications,\r\n
-    \     including but not limited to software source code, documentation\r\n      source,
-    and configuration files.\r\n\r\n      \"Object\" form shall mean any form resulting
-    from mechanical\r\n      transformation or translation of a Source form, including
-    but\r\n      not limited to compiled object code, generated documentation,\r\n
-    \     and conversions to other media types.\r\n\r\n      \"Work\" shall mean the
-    work of authorship, whether in Source or\r\n      Object form, made available
-    under the License, as indicated by a\r\n      copyright notice that is included
-    in or attached to the work\r\n      (an example is provided in the Appendix below).\r\n\r\n
-    \     \"Derivative Works\" shall mean any work, whether in Source or Object\r\n
-    \     form, that is based on (or derived from) the Work and for which the\r\n
-    \     editorial revisions, annotations, elaborations, or other modifications\r\n
-    \     represent, as a whole, an original work of authorship. For the purposes\r\n
-    \     of this License, Derivative Works shall not include works that remain\r\n
-    \     separable from, or merely link (or bind by name) to the interfaces of,\r\n
-    \     the Work and Derivative Works thereof.\r\n\r\n      \"Contribution\" shall
-    mean any work of authorship, including\r\n      the original version of the Work
-    and any modifications or additions\r\n      to that Work or Derivative Works thereof,
-    that is intentionally\r\n      submitted to Licensor for inclusion in the Work
-    by the copyright owner\r\n      or by an individual or Legal Entity authorized
-    to submit on behalf of\r\n      the copyright owner. For the purposes of this
-    definition, \"submitted\"\r\n      means any form of electronic, verbal, or written
-    communication sent\r\n      to the Licensor or its representatives, including
-    but not limited to\r\n      communication on electronic mailing lists, source
-    code control systems,\r\n      and issue tracking systems that are managed by,
-    or on behalf of, the\r\n      Licensor for the purpose of discussing and improving
-    the Work, but\r\n      excluding communication that is conspicuously marked or
-    otherwise\r\n      designated in writing by the copyright owner as \"Not a Contribution.\"\r\n\r\n
-    \     \"Contributor\" shall mean Licensor and any individual or Legal Entity\r\n
-    \     on behalf of whom a Contribution has been received by Licensor and\r\n      subsequently
-    incorporated within the Work.\r\n\r\n   2. Grant of Copyright License. Subject
-    to the terms and conditions of\r\n      this License, each Contributor hereby
-    grants to You a perpetual,\r\n      worldwide, non-exclusive, no-charge, royalty-free,
-    irrevocable\r\n      copyright license to reproduce, prepare Derivative Works
-    of,\r\n      publicly display, publicly perform, sublicense, and distribute the\r\n
-    \     Work and such Derivative Works in Source or Object form.\r\n\r\n   3. Grant
-    of Patent License. Subject to the terms and conditions of\r\n      this License,
-    each Contributor hereby grants to You a perpetual,\r\n      worldwide, non-exclusive,
-    no-charge, royalty-free, irrevocable\r\n      (except as stated in this section)
-    patent license to make, have made,\r\n      use, offer to sell, sell, import,
-    and otherwise transfer the Work,\r\n      where such license applies only to those
-    patent claims licensable\r\n      by such Contributor that are necessarily infringed
-    by their\r\n      Contribution(s) alone or by combination of their Contribution(s)\r\n
-    \     with the Work to which such Contribution(s) was submitted. If You\r\n      institute
-    patent litigation against any entity (including a\r\n      cross-claim or counterclaim
-    in a lawsuit) alleging that the Work\r\n      or a Contribution incorporated within
-    the Work constitutes direct\r\n      or contributory patent infringement, then
-    any patent licenses\r\n      granted to You under this License for that Work shall
-    terminate\r\n      as of the date such litigation is filed.\r\n\r\n   4. Redistribution.
-    You may reproduce and distribute copies of the\r\n      Work or Derivative Works
-    thereof in any medium, with or without\r\n      modifications, and in Source or
-    Object form, provided that You\r\n      meet the following conditions:\r\n\r\n
-    \     (a) You must give any other recipients of the Work or\r\n          Derivative
-    Works a copy of this License; and\r\n\r\n      (b) You must cause any modified
-    files to carry prominent notices\r\n          stating that You changed the files;
-    and\r\n\r\n      (c) You must retain, in the Source form of any Derivative Works\r\n
-    \         that You distribute, all copyright, patent, trademark, and\r\n          attribution
+    textures\n<b>Yldrania</b> - program icons\n<b>Xenonpl</b> - ideas, camera icons\n<b>All
+    users</b> - feedback and donations :)\n\n<b>Unity Technologies</b> - Unity engine\n<b>gkngkc
+    (https://github.com/gkngkc)</b> - Standalone File Browser\n\n<align=\"center\"><size=20>Code
+    Club AB copyright notice</size></align>\n\nGraphical assets in StreamingAssets
+    folder are \xA9 Code Club AB or their respective authors and may not be reused,
+    modified or distributed without written permission.\n\n<align=\"center\"><size=20>DeedPlanner
+    3 license</size></align>\n\n<align=\"center\">Apache License\r\nVersion 2.0, January
+    2004\r\nhttp://www.apache.org/licenses/\r</align>\n\r\n   TERMS AND CONDITIONS
+    FOR USE, REPRODUCTION, AND DISTRIBUTION\r\n\r\n   1. Definitions.\r\n\r\n      \"License\"
+    shall mean the terms and conditions for use, reproduction,\r\n      and distribution
+    as defined by Sections 1 through 9 of this document.\r\n\r\n      \"Licensor\"
+    shall mean the copyright owner or entity authorized by\r\n      the copyright
+    owner that is granting the License.\r\n\r\n      \"Legal Entity\" shall mean the
+    union of the acting entity and all\r\n      other entities that control, are controlled
+    by, or are under common\r\n      control with that entity. For the purposes of
+    this definition,\r\n      \"control\" means (i) the power, direct or indirect,
+    to cause the\r\n      direction or management of such entity, whether by contract
+    or\r\n      otherwise, or (ii) ownership of fifty percent (50%) or more of the\r\n
+    \     outstanding shares, or (iii) beneficial ownership of such entity.\r\n\r\n
+    \     \"You\" (or \"Your\") shall mean an individual or Legal Entity\r\n      exercising
+    permissions granted by this License.\r\n\r\n      \"Source\" form shall mean the
+    preferred form for making modifications,\r\n      including but not limited to
+    software source code, documentation\r\n      source, and configuration files.\r\n\r\n
+    \     \"Object\" form shall mean any form resulting from mechanical\r\n      transformation
+    or translation of a Source form, including but\r\n      not limited to compiled
+    object code, generated documentation,\r\n      and conversions to other media
+    types.\r\n\r\n      \"Work\" shall mean the work of authorship, whether in Source
+    or\r\n      Object form, made available under the License, as indicated by a\r\n
+    \     copyright notice that is included in or attached to the work\r\n      (an
+    example is provided in the Appendix below).\r\n\r\n      \"Derivative Works\"
+    shall mean any work, whether in Source or Object\r\n      form, that is based
+    on (or derived from) the Work and for which the\r\n      editorial revisions,
+    annotations, elaborations, or other modifications\r\n      represent, as a whole,
+    an original work of authorship. For the purposes\r\n      of this License, Derivative
+    Works shall not include works that remain\r\n      separable from, or merely link
+    (or bind by name) to the interfaces of,\r\n      the Work and Derivative Works
+    thereof.\r\n\r\n      \"Contribution\" shall mean any work of authorship, including\r\n
+    \     the original version of the Work and any modifications or additions\r\n
+    \     to that Work or Derivative Works thereof, that is intentionally\r\n      submitted
+    to Licensor for inclusion in the Work by the copyright owner\r\n      or by an
+    individual or Legal Entity authorized to submit on behalf of\r\n      the copyright
+    owner. For the purposes of this definition, \"submitted\"\r\n      means any form
+    of electronic, verbal, or written communication sent\r\n      to the Licensor
+    or its representatives, including but not limited to\r\n      communication on
+    electronic mailing lists, source code control systems,\r\n      and issue tracking
+    systems that are managed by, or on behalf of, the\r\n      Licensor for the purpose
+    of discussing and improving the Work, but\r\n      excluding communication that
+    is conspicuously marked or otherwise\r\n      designated in writing by the copyright
+    owner as \"Not a Contribution.\"\r\n\r\n      \"Contributor\" shall mean Licensor
+    and any individual or Legal Entity\r\n      on behalf of whom a Contribution has
+    been received by Licensor and\r\n      subsequently incorporated within the Work.\r\n\r\n
+    \  2. Grant of Copyright License. Subject to the terms and conditions of\r\n      this
+    License, each Contributor hereby grants to You a perpetual,\r\n      worldwide,
+    non-exclusive, no-charge, royalty-free, irrevocable\r\n      copyright license
+    to reproduce, prepare Derivative Works of,\r\n      publicly display, publicly
+    perform, sublicense, and distribute the\r\n      Work and such Derivative Works
+    in Source or Object form.\r\n\r\n   3. Grant of Patent License. Subject to the
+    terms and conditions of\r\n      this License, each Contributor hereby grants
+    to You a perpetual,\r\n      worldwide, non-exclusive, no-charge, royalty-free,
+    irrevocable\r\n      (except as stated in this section) patent license to make,
+    have made,\r\n      use, offer to sell, sell, import, and otherwise transfer the
+    Work,\r\n      where such license applies only to those patent claims licensable\r\n
+    \     by such Contributor that are necessarily infringed by their\r\n      Contribution(s)
+    alone or by combination of their Contribution(s)\r\n      with the Work to which
+    such Contribution(s) was submitted. If You\r\n      institute patent litigation
+    against any entity (including a\r\n      cross-claim or counterclaim in a lawsuit)
+    alleging that the Work\r\n      or a Contribution incorporated within the Work
+    constitutes direct\r\n      or contributory patent infringement, then any patent
+    licenses\r\n      granted to You under this License for that Work shall terminate\r\n
+    \     as of the date such litigation is filed.\r\n\r\n   4. Redistribution. You
+    may reproduce and distribute copies of the\r\n      Work or Derivative Works thereof
+    in any medium, with or without\r\n      modifications, and in Source or Object
+    form, provided that You\r\n      meet the following conditions:\r\n\r\n      (a)
+    You must give any other recipients of the Work or\r\n          Derivative Works
+    a copy of this License; and\r\n\r\n      (b) You must cause any modified files
+    to carry prominent notices\r\n          stating that You changed the files; and\r\n\r\n
+    \     (c) You must retain, in the Source form of any Derivative Works\r\n          that
+    You distribute, all copyright, patent, trademark, and\r\n          attribution
     notices from the Source form of the Work,\r\n          excluding those notices
     that do not pertain to any part of\r\n          the Derivative Works; and\r\n\r\n
     \     (d) If the Work includes a \"NOTICE\" text file as part of its\r\n          distribution,
@@ -16137,7 +16070,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 832848057}
+  m_Texture: {fileID: 1419152457}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -18675,40 +18608,6 @@ Transform:
   m_Father: {fileID: 825856258}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!84 &1173785076
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  serializedVersion: 3
-  m_Width: 559
-  m_Height: 768
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 8
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1 &1177460184
 GameObject:
   m_ObjectHideFlags: 0
@@ -20238,7 +20137,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 215731957}
+  m_Texture: {fileID: 1783760361}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -21949,7 +21848,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 1173785076}
+  m_Texture: {fileID: 1836459357}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -23137,7 +23036,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 215731957}
+  m_TargetTexture: {fileID: 1783760361}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -23182,6 +23081,40 @@ MonoBehaviour:
   simpleQualityWater: {fileID: 474621805}
   selectionBox: {fileID: 2025413718}
   attachedProjector: {fileID: 1110908783}
+--- !u!84 &1419152457
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  serializedVersion: 3
+  m_Width: 311
+  m_Height: 768
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 8
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1001 &1422412214
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25294,6 +25227,40 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1522350738}
   m_PrefabAsset: {fileID: 0}
+--- !u!84 &1525850407
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  serializedVersion: 3
+  m_Width: 311
+  m_Height: 384
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 8
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &1528293157 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
@@ -28442,40 +28409,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19574092408115b4393b449b1e80f5db, type: 3}
---- !u!84 &1764767581
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  serializedVersion: 3
-  m_Width: 311
-  m_Height: 384
-  m_AntiAliasing: 1
-  m_DepthFormat: 1
-  m_ColorFormat: 8
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
 --- !u!1001 &1766274918
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28972,6 +28905,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1782458100}
   m_CullTransparentMesh: 0
+--- !u!84 &1783760361
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  serializedVersion: 3
+  m_Width: 311
+  m_Height: 384
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 8
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &1791521838
 GameObject:
   m_ObjectHideFlags: 0
@@ -29915,6 +29882,40 @@ MonoBehaviour:
   m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!84 &1836459357
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  serializedVersion: 3
+  m_Width: 623
+  m_Height: 768
+  m_AntiAliasing: 1
+  m_DepthFormat: 1
+  m_ColorFormat: 8
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
 --- !u!1 &1837759758
 GameObject:
   m_ObjectHideFlags: 0
@@ -32920,7 +32921,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 832848057}
+  m_TargetTexture: {fileID: 1419152457}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
