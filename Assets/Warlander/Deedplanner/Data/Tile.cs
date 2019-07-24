@@ -491,13 +491,13 @@ namespace Warlander.Deedplanner.Data
 
             foreach (XmlElement childElement in floorElement)
             {
-                string tag = childElement.Name;
+                string tag = childElement.Name.ToLowerInvariant();
                 switch (tag)
                 {
                     case "floor":
                         DeserializeFloor(childElement, floor);
                         break;
-                    case "hWall": case "vWall":
+                    case "hwall": case "vwall":
                         DeserializeWall(childElement, floor);
                         break;
                     case "roof":
@@ -519,7 +519,7 @@ namespace Warlander.Deedplanner.Data
 
             string orientationString = element.GetAttribute("orientation");
             FloorOrientation orientation = FloorOrientation.Down;
-            switch (orientationString.ToUpper())
+            switch (orientationString.ToUpperInvariant())
             {
                 case "UP":
                     orientation = FloorOrientation.Up;
