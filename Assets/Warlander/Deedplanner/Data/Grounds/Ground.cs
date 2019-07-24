@@ -62,6 +62,15 @@ namespace Warlander.Deedplanner.Data.Grounds
             meshRenderer.sharedMaterials = materials;
         }
 
+        private void RefreshAllState()
+        {
+            RefreshState();
+            tile.Map[tile.X - 1, tile.Y]?.Ground.RefreshState();
+            tile.Map[tile.X + 1, tile.Y]?.Ground.RefreshState();
+            tile.Map[tile.X, tile.Y - 1]?.Ground.RefreshState();
+            tile.Map[tile.X, tile.Y + 1]?.Ground.RefreshState();
+        }
+        
         private void RefreshState()
         {
             Material[] materials = new Material[4];
@@ -168,7 +177,7 @@ namespace Warlander.Deedplanner.Data.Grounds
                 if (newData)
                 {
                     ground.data = newData;
-                    ground.RefreshState();
+                    ground.RefreshAllState();
                 }
             }
 
@@ -177,7 +186,7 @@ namespace Warlander.Deedplanner.Data.Grounds
                 if (oldData)
                 {
                     ground.data = oldData;
-                    ground.RefreshState();
+                    ground.RefreshAllState();
                 }
             }
 
@@ -209,13 +218,13 @@ namespace Warlander.Deedplanner.Data.Grounds
             public void Execute()
             {
                 ground.roadDirection = newDirection;
-                ground.RefreshState();
+                ground.RefreshAllState();
             }
 
             public void Undo()
             {
                 ground.roadDirection = oldDirection;
-                ground.RefreshState();
+                ground.RefreshAllState();
             }
 
             public void DisposeUndo()
