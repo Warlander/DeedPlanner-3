@@ -22,6 +22,11 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Update()
         {
+            if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
+            {
+                GameManager.Instance.Map.CommandManager.FinishAction();
+            }
+            
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
             if (!raycast.transform)
             {
@@ -116,11 +121,6 @@ namespace Warlander.Deedplanner.Updaters
                 {
                     GameManager.Instance.Map[x, y].SetVerticalWall(null, false, floor);
                 }
-            }
-            
-            if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
-            {
-                GameManager.Instance.Map.CommandManager.FinishAction();
             }
         }
 
