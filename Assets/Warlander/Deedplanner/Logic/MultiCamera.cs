@@ -74,7 +74,7 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
-        public bool RenderEntireLayer => CameraMode == CameraMode.Perspective;
+        public bool RenderEntireMap => CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian;
 
         public GameObject Screen => screen;
 
@@ -192,7 +192,7 @@ namespace Warlander.Deedplanner.Logic
         {
             PrepareProjector();
             Vector3 cameraPosition = AttachedCamera.transform.position;
-            bool renderWater = RenderEntireLayer ? true : (Floor == 0 || Floor == -1);
+            bool renderWater = RenderEntireMap ? true : (Floor == 0 || Floor == -1);
             if (Properties.Instance.WaterQuality == Gui.WaterQuality.ULTRA)
             {
                 ultraQualityWater.gameObject.SetActive(renderWater);
@@ -228,9 +228,9 @@ namespace Warlander.Deedplanner.Logic
             {
                 map.RenderedFloor = Floor;
             }
-            if (map.RenderEntireLayer != RenderEntireLayer)
+            if (map.RenderEntireMap != RenderEntireMap)
             {
-                map.RenderEntireLayer = RenderEntireLayer;
+                map.RenderEntireMap = RenderEntireMap;
             }
             bool renderHeights = LayoutManager.Instance.CurrentTab == Tab.Height;
             if (Floor < 0)

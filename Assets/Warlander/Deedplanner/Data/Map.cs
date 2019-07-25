@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using UnityEngine;
+using UnityEngine.Experimental.PlayerLoop;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
@@ -11,7 +12,7 @@ namespace Warlander.Deedplanner.Data
     {
 
         private static readonly int Color = Shader.PropertyToID("_Color");
-        
+
         private Tile[,] tiles;
 
         private Transform[] surfaceLevelRoots;
@@ -20,7 +21,7 @@ namespace Warlander.Deedplanner.Data
         private Transform caveGridRoot;
 
         private int renderedFloor;
-        private bool renderEntireLayer = true;
+        private bool renderEntireMap = true;
 
         public GridMesh SurfaceGridMesh { get; private set; }
         public GridMesh CaveGridMesh { get; private set; }
@@ -36,8 +37,10 @@ namespace Warlander.Deedplanner.Data
 
         public CommandManager CommandManager { get; set; } = new CommandManager(50);
 
-        public Tile this[int x, int y] {
-            get {
+        public Tile this[int x, int y]
+        {
+            get
+            {
                 if (x < 0 || y < 0 || x > Width || y > Height)
                 {
                     return null;
@@ -49,84 +52,23 @@ namespace Warlander.Deedplanner.Data
 
         public Tile this[Vector2Int v] => this[v.x, v.y];
 
-        public int RenderedFloor {
+        public int RenderedFloor
+        {
             get => renderedFloor;
-            set {
+            set
+            {
                 renderedFloor = value;
-
-                bool underground = renderedFloor < 0;
-                int absoluteFloor = underground ? -renderedFloor + 1 : renderedFloor;
-
-                if (underground)
-                {
-                    for (int i = 0; i < surfaceLevelRoots.Length; i++)
-                    {
-                        Transform root = surfaceLevelRoots[i];
-                        root.gameObject.SetActive(false);
-                    }
-                    surfaceGridRoot.gameObject.SetActive(false);
-                    for (int i = 0; i < caveLevelRoots.Length; i++)
-                    {
-                        Transform root = caveLevelRoots[i];
-                        int relativeFloor = i - absoluteFloor;
-                        bool renderFloor = RenderEntireLayer || (relativeFloor <= 0 && relativeFloor > -3);
-                        root.gameObject.SetActive(renderFloor);
-                        if (renderFloor)
-                        {
-                            float opacity = RenderEntireLayer ? 1f : GetRelativeFloorOpacity(relativeFloor);
-                            MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                            propertyBlock.SetColor(Color, new Color(opacity, opacity, opacity));
-                            Renderer[] renderers = root.GetComponentsInChildren<Renderer>();
-                            foreach (Renderer renderer in renderers)
-                            {
-                                renderer.SetPropertyBlock(propertyBlock);
-                            }
-                        }
-                    }
-                    surfaceGridRoot.gameObject.SetActive(false);
-                    caveGridRoot.gameObject.SetActive(true);
-
-                    caveGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
-                }
-                else
-                {
-                    for (int i = 0; i < surfaceLevelRoots.Length; i++)
-                    {
-                        Transform root = surfaceLevelRoots[i];
-                        int relativeFloor = i - absoluteFloor;
-                        bool renderFloor = RenderEntireLayer || (relativeFloor <= 0 && relativeFloor > -3);
-                        root.gameObject.SetActive(renderFloor);
-                        if (renderFloor)
-                        {
-                            float opacity = RenderEntireLayer ? 1f : GetRelativeFloorOpacity(relativeFloor);
-                            MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                            propertyBlock.SetColor(Color, new Color(opacity, opacity, opacity));
-                            Renderer[] renderers = root.GetComponentsInChildren<Renderer>();
-                            foreach (Renderer renderer in renderers)
-                            {
-                                renderer.SetPropertyBlock(propertyBlock);
-                            }
-                        }
-                    }
-                    surfaceGridRoot.gameObject.SetActive(false);
-                    for (int i = 0; i < caveLevelRoots.Length; i++)
-                    {
-                        Transform root = caveLevelRoots[i];
-                        root.gameObject.SetActive(false);
-                    }
-                    surfaceGridRoot.gameObject.SetActive(true);
-                    caveGridRoot.gameObject.SetActive(false);
-
-                    surfaceGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
-                }
+                UpdateFloorsRendering();
             }
         }
 
-        public bool RenderEntireLayer {
-            get => renderEntireLayer;
-            set {
-                renderEntireLayer = value;
-                RenderedFloor = renderedFloor;
+        public bool RenderEntireMap
+        {
+            get => renderEntireMap;
+            set
+            {
+                renderEntireMap = value;
+                UpdateFloorsRendering();
             }
         }
 
@@ -186,6 +128,7 @@ namespace Warlander.Deedplanner.Data
                 root.SetParent(transform);
                 surfaceLevelRoots[i] = root;
             }
+
             caveLevelRoots = new Transform[6];
             for (int i = 0; i < caveLevelRoots.Length; i++)
             {
@@ -193,6 +136,7 @@ namespace Warlander.Deedplanner.Data
                 root.SetParent(transform);
                 caveLevelRoots[i] = root;
             }
+
             surfaceGridRoot = new GameObject("Surface Grid").transform;
             surfaceGridRoot.SetParent(transform);
             caveGridRoot = new GameObject("Cave Grid").transform;
@@ -278,14 +222,17 @@ namespace Warlander.Deedplanner.Data
                     {
                         max = elevation;
                     }
+
                     if (elevation < min)
                     {
                         min = elevation;
                     }
+
                     if (caveElevation > caveMax)
                     {
                         caveMax = caveElevation;
                     }
+
                     if (caveElevation < caveMin)
                     {
                         caveMin = caveElevation;
@@ -306,6 +253,7 @@ namespace Warlander.Deedplanner.Data
             {
                 HighestSurfaceHeight = elevation;
             }
+
             if (elevation < LowestSurfaceHeight)
             {
                 LowestSurfaceHeight = elevation;
@@ -321,6 +269,7 @@ namespace Warlander.Deedplanner.Data
             {
                 HighestCaveHeight = caveElevation;
             }
+
             if (caveElevation < LowestCaveHeight)
             {
                 LowestCaveHeight = caveElevation;
@@ -340,7 +289,7 @@ namespace Warlander.Deedplanner.Data
                         TileEntity entity = this[i, i2].GetTileContent(i3);
                         if (entity && entity.GetType() == typeof(Roof))
                         {
-                            ((Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofLevel();
+                            ((Roof) this[i, i2].GetTileContent(i3)).RecalculateRoofLevel();
                         }
                     }
                 }
@@ -355,7 +304,7 @@ namespace Warlander.Deedplanner.Data
                         TileEntity entity = this[i, i2].GetTileContent(i3);
                         if (entity && entity.GetType() == typeof(Roof))
                         {
-                            ((Roof)this[i, i2].GetTileContent(i3)).RecalculateRoofModel();
+                            ((Roof) this[i, i2].GetTileContent(i3)).RecalculateRoofModel();
                         }
                     }
                 }
@@ -385,6 +334,7 @@ namespace Warlander.Deedplanner.Data
             {
                 return raycastHit.point.y;
             }
+
             return 0;
         }
 
@@ -396,7 +346,7 @@ namespace Warlander.Deedplanner.Data
             localRoot.SetAttribute("height", Height.ToString());
             localRoot.SetAttribute("exporter", Constants.TitleString);
             document.AppendChild(localRoot);
-    
+
             for (int i = 0; i <= Width; i++)
             {
                 for (int i2 = 0; i2 <= Height; i2++)
@@ -423,10 +373,82 @@ namespace Warlander.Deedplanner.Data
                 return 0.25f;
             }
 
-            throw new ArgumentOutOfRangeException("Relative floor opacity is supported only for values from -2 to 0, supplied value: " + relativeFloor);
+            throw new ArgumentOutOfRangeException(
+                "Relative floor opacity is supported only for values from -2 to 0, supplied value: " + relativeFloor);
         }
 
-        private void OnDestroy()
+        private void UpdateFloorsRendering()
+        {
+            bool underground = renderedFloor < 0;
+            int absoluteFloor = underground ? -renderedFloor + 1 : renderedFloor;
+
+            if (underground)
+            {
+                foreach (Transform root in surfaceLevelRoots)
+                {
+                    root.gameObject.SetActive(false);
+                }
+
+                surfaceGridRoot.gameObject.SetActive(false);
+                for (int i = 0; i < caveLevelRoots.Length; i++)
+                {
+                    Transform root = caveLevelRoots[i];
+                    int relativeFloor = i - absoluteFloor;
+                    bool renderFloor = RenderEntireMap || (relativeFloor <= 0 && relativeFloor > -3);
+                    root.gameObject.SetActive(renderFloor);
+                    if (renderFloor)
+                    {
+                        float opacity = RenderEntireMap ? 1f : GetRelativeFloorOpacity(relativeFloor);
+                        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+                        propertyBlock.SetColor(Color, new Color(opacity, opacity, opacity));
+                        Renderer[] renderers = root.GetComponentsInChildren<Renderer>();
+                        foreach (Renderer renderer in renderers)
+                        {
+                            renderer.SetPropertyBlock(propertyBlock);
+                        }
+                    }
+                }
+
+                surfaceGridRoot.gameObject.SetActive(false);
+                caveGridRoot.gameObject.SetActive(true);
+
+                caveGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
+            }
+            else
+            {
+                for (int i = 0; i < surfaceLevelRoots.Length; i++)
+                {
+                    Transform root = surfaceLevelRoots[i];
+                    int relativeFloor = i - absoluteFloor;
+                    bool renderFloor = RenderEntireMap || (relativeFloor <= 0 && relativeFloor > -3);
+                    root.gameObject.SetActive(renderFloor);
+                    if (renderFloor)
+                    {
+                        float opacity = RenderEntireMap ? 1f : GetRelativeFloorOpacity(relativeFloor);
+                        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+                        propertyBlock.SetColor(Color, new Color(opacity, opacity, opacity));
+                        Renderer[] renderers = root.GetComponentsInChildren<Renderer>();
+                        foreach (Renderer renderer in renderers)
+                        {
+                            renderer.SetPropertyBlock(propertyBlock);
+                        }
+                    }
+                }
+
+                surfaceGridRoot.gameObject.SetActive(false);
+                foreach (Transform root in caveLevelRoots)
+                {
+                    root.gameObject.SetActive(false);
+                }
+
+                surfaceGridRoot.gameObject.SetActive(true);
+                caveGridRoot.gameObject.SetActive(false);
+
+                surfaceGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
+            }
+        }
+
+    private void OnDestroy()
         {
             for (int i = 0; i <= Width; i++)
             {
