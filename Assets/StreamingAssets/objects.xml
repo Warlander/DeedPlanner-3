@@ -3603,89 +3603,67 @@
 			<category>Hedges</category>
 		</wall>
 		<wall name="Medium camellia hedge" shortname="mcHedge" scale="1" type="highfence">
-			<model location="Walls/HedgeCamellia_Medium.wom">
-				<override mesh="camelliaMediumMesh" texture="Walls/CamelliaHedge.png"/>
-			</model>
+			<model location="Walls/HedgeCamellia_Medium.wom"/>
 			<color type="dec" r="0.6" g="0.6" b="0.6"/>
 			<icon location="Walls/Icons/Hedge01_Medium.png"/>
 			<category>Hedges</category>
 		</wall>
 		<wall name="Low camellia hedge" shortname="lcHedge" scale="1" type="highfence">
-			<model location="Walls/HedgeCamellia_Low.wom">
-				<override mesh="camelliaLow1Mesh" texture="Walls/CamelliaHedge.png"/>
-			</model>
+			<model location="Walls/HedgeCamellia_Low.wom"/>
 			<color type="dec" r="0.7" g="0.7" b="0.7"/>
 			<icon location="Walls/Icons/Hedge01_Low.png"/>
 			<category>Hedges</category>
 		</wall>
 		<wall name="High cedar hedge" shortname="hc2Hedge" scale="1" type="highfence">
-			<model location="Walls/cedarHigh.wom">
-				<override mesh="cedarHedgeMesh" texture="Walls/cedar.png"/>
-			</model>
+			<model location="Walls/cedarHigh.wom"/>
 			<color type="dec" r="0.5" g="0.5" b="0.5"/>
 			<icon location="Walls/Icons/Hedge01_High.png"/>
 			<category>Hedges</category>
 		</wall>
 		<wall name="Medium cedar hedge" shortname="mc2Hedge" scale="1" type="highfence">
-			<model location="Walls/cedarMedium.wom">
-				<override mesh="cedarHedgeMediumMesh" texture="Walls/cedar.png"/>
-			</model>
+			<model location="Walls/cedarMedium.wom"/>
 			<color type="dec" r="0.6" g="0.6" b="0.6"/>
 			<icon location="Walls/Icons/Hedge01_Medium.png"/>
 			<category>Hedges</category>
 		</wall>
 		<wall name="Low cedar hedge" shortname="lc2Hedge" scale="1" type="highfence">
-			<model location="Walls/cedarLow.wom">
-				<override mesh="cedarHedgeLowMesh" texture="Walls/cedar.png"/>
-			</model>
+			<model location="Walls/cedarLow.wom"/>
 			<color type="dec" r="0.7" g="0.7" b="0.7"/>
 			<icon location="Walls/Icons/Hedge01_Low.png"/>
 			<category>Hedges</category>
 		</wall>
 		<wall name="High oleander hedge" shortname="hoHedge" scale="1" type="highfence">
-			<model location="Walls/oleanderHigh.wom">
-				<override mesh="oleanderHighMesh" texture="Walls/Hedge_Oleander.png"/>
-			</model>
+			<model location="Walls/oleanderHigh.wom"/>
 			<color type="dec" r="0.5" g="0.5" b="0.5"/>
 			<icon location="Walls/Icons/Hedge01_High.png"/>
 			<category>Hedges</category>
 		</wall>
 		<wall name="Medium oleander hedge" shortname="moHedge" scale="1" type="highfence">
-			<model location="Walls/oleanderMedium.wom">
-				<override mesh="oleanderMediumMesh" texture="Walls/Hedge_Oleander.png"/>
-			</model>
+			<model location="Walls/oleanderMedium.wom"/>
 			<color type="dec" r="0.6" g="0.6" b="0.6"/>
 			<icon location="Walls/Icons/Hedge01_Medium.png"/>
 			<category>Hedges</category>
 		</wall>
 		<wall name="Low oleander hedge" shortname="loHedge" scale="1" type="highfence">
-			<model location="Walls/oleanderLow.wom">
-				<override mesh="oleanderLowMesh" texture="Walls/Hedge_Oleander.png"/>
-			</model>
+			<model location="Walls/oleanderLow.wom"/>
 			<color type="dec" r="0.7" g="0.7" b="0.7"/>
 			<icon location="Walls/Icons/Hedge01_Low.png"/>
 			<category>Hedges</category>
 		</wall>
 		<wall name="High rose hedge" shortname="hrHedge" scale="1" type="highfence">
-			<model location="Walls/HedgeRose_High.wom">
-				<override mesh="roseHedge_HighMesh" texture="Walls/Hedge_Rose.png"/>
-			</model>
+			<model location="Walls/HedgeRose_High.wom"/>
 			<color type="dec" r="0.5" g="0.5" b="0.5"/>
 			<icon location="Walls/Icons/Hedge01_High.png"/>
 			<category>Hedges</category>
 		</wall>
 		<wall name="Medium rose hedge" shortname="mrHedge" scale="1" type="highfence">
-			<model location="Walls/HedgeRose_Mature.wom">
-				<override mesh="roseHedge_MatureMesh" texture="Walls/Hedge_Rose.png"/>
-			</model>
+			<model location="Walls/HedgeRose_Mature.wom"/>
 			<color type="dec" r="0.6" g="0.6" b="0.6"/>
 			<icon location="Walls/Icons/Hedge01_Medium.png"/>
 			<category>Hedges</category>
 		</wall>
 		<wall name="Low rose hedge" shortname="lrHedge" scale="1" type="highfence">
-			<model location="Walls/HedgeRose_Young.wom">
-				<override mesh="roseHedge_YoungMesh" texture="Walls/Hedge_Rose.png"/>
-			</model>
+			<model location="Walls/HedgeRose_Young.wom"/>
 			<color type="dec" r="0.7" g="0.7" b="0.7"/>
 			<icon location="Walls/Icons/Hedge01_Low.png"/>
 			<category>Hedges</category>
