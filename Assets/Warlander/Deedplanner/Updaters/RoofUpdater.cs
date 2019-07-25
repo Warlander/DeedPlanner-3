@@ -28,7 +28,7 @@ namespace Warlander.Deedplanner.Updaters
             int floor = 0;
             int x = -1;
             int y = -1;
-            if (tileEntity)
+            if (tileEntity && tileEntity.Valid)
             {
                 floor = tileEntity.Floor;
                 x = tileEntity.Tile.X;
