@@ -548,7 +548,7 @@ namespace Warlander.Deedplanner.Data
                 Debug.LogWarning("Unable to load wall " + id);
             }
             
-            bool horizontal = (element.Name == "hWall");
+            bool horizontal = (element.Name.Equals("hWall", StringComparison.OrdinalIgnoreCase));
 
             bool reversed = element.GetAttribute("reversed") == "true";
             if (horizontal)

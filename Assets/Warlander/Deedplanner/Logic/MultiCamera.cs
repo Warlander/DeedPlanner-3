@@ -287,17 +287,17 @@ namespace Warlander.Deedplanner.Logic
                             int h10 = map[tileCoords.x + 1, tileCoords.y].GetHeightForFloor(floor);
                             int h01 = map[tileCoords.x, tileCoords.y + 1].GetHeightForFloor(floor);
                             int h11 = map[tileCoords.x + 1, tileCoords.y + 1].GetHeightForFloor(floor);
-                            int h00Digits = DigitsCount(h00);
-                            int h10Digits = DigitsCount(h10);
-                            int h01Digits = DigitsCount(h01);
-                            int h11Digits = DigitsCount(h11);
+                            int h00Digits = StringUtils.DigitsStringCount(h00);
+                            int h10Digits = StringUtils.DigitsStringCount(h10);
+                            int h01Digits = StringUtils.DigitsStringCount(h01);
+                            int h11Digits = StringUtils.DigitsStringCount(h11);
                             int maxDigits = Mathf.Max(h00Digits, h10Digits, h01Digits, h11Digits);
 
                             tooltipBuild.Append("<br>");
                             tooltipBuild.Append("<br><mspace=0.5em>");
-                            tooltipBuild.Append(PaddedNumberString(h01, maxDigits)).Append("   ").Append(PaddedNumberString(h11, maxDigits)).Append("<br>");
+                            tooltipBuild.Append(StringUtils.PaddedNumberString(h01, maxDigits)).Append("   ").Append(StringUtils.PaddedNumberString(h11, maxDigits)).Append("<br>");
                             tooltipBuild.Append("<br>");
-                            tooltipBuild.Append(PaddedNumberString(h00, maxDigits)).Append("   ").Append(PaddedNumberString(h10, maxDigits)).Append("</mspace>");
+                            tooltipBuild.Append(StringUtils.PaddedNumberString(h00, maxDigits)).Append("   ").Append(StringUtils.PaddedNumberString(h10, maxDigits)).Append("</mspace>");
                         }
                     }
                     else if (gridTile)
@@ -306,67 +306,12 @@ namespace Warlander.Deedplanner.Logic
                     }
                     else if (heightmapHandle)
                     {
-                        tooltipBuild.Append("<mspace=0.5em>");
-                        
-                        Vector2Int tileCoords = heightmapHandle.TileCoords;
-                        Tile centralTile = map[tileCoords.x, tileCoords.y];
-                        int centralHeight = centralTile.GetHeightForFloor(floor);
-                        for (int i = -1; i <= 1; i++)
-                        {
-                            for (int i2 = -1; i2 <= 1; i2++)
-                            {
-                                if (i == 0 && i2 == 0)
-                                {
-                                    tooltipBuild.Append("<b>").Append(PaddedNumberString(centralHeight, 5)).Append("</b>");
-                                }
-                                else
-                                {
-                                    int heightDifference = centralHeight - TileHeightOrDefault(map[tileCoords.x + i2, tileCoords.y + 1], centralHeight);
-                                    tooltipBuild.Append(PaddedNumberString(heightDifference, 5));
-                                }
-
-                                if (i2 != 1)
-                                {
-                                    tooltipBuild.Append(" ");
-                                }
-                            }
-
-                            if (i != 1)
-                            {
-                                tooltipBuild.Append("<br>");
-                            }
-                        }
-                        
-                        tooltipBuild.Append("</mspace>");
+                        tooltipBuild.Append(heightmapHandle.ToRichString());
                     }
                 }
 
                 LayoutManager.Instance.TooltipText = tooltipBuild.ToString();
             }
-        }
-
-        private int TileHeightOrDefault(Tile tile, int defaultHeight)
-        {
-            return tile ? tile.GetHeightForFloor(floor) : defaultHeight;
-        }
-
-        private int DigitsCount(int number)
-        {
-            return number.ToString().Length;
-        }
-        
-        private string PaddedNumberString(int number, int maxDigits)
-        {
-            int digits = DigitsCount(number);
-            int digitsDiff = maxDigits - digits;
-            int digitsDiffHalf = digitsDiff / 2;
-
-            return Spaces(digitsDiffHalf) + number + Spaces(digitsDiff - digitsDiffHalf);
-        }
-
-        private string Spaces(int count)
-        {
-            return new string(' ', count);
         }
 
         private void PrepareProjector()

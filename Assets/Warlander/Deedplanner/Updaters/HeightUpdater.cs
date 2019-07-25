@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
@@ -25,6 +26,7 @@ namespace Warlander.Deedplanner.Updaters
         private List<HeightmapHandle> lastFrameHoveredHandles = new List<HeightmapHandle>();
         private List<HeightmapHandle> selectedHandles = new List<HeightmapHandle>();
         private List<HeightmapHandle> deselectedHandles = new List<HeightmapHandle>();
+        private HeightmapHandle activeHandle;
 
         private HeightUpdaterState state = HeightUpdaterState.Idle;
         private Vector2 dragStartPos;
@@ -51,6 +53,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
                 {
+                    activeHandle = currentFrameHoveredHandles[0];
                     state = HeightUpdaterState.Manipulating;
                 }
                 else if (Input.GetKey(KeyCode.LeftShift))
@@ -94,6 +97,7 @@ namespace Warlander.Deedplanner.Updaters
                 else if (state == HeightUpdaterState.Manipulating)
                 {
                     GameManager.Instance.Map.CommandManager.FinishAction();
+                    activeHandle = null;
                 }
                 state = HeightUpdaterState.Idle;
             }
@@ -110,6 +114,7 @@ namespace Warlander.Deedplanner.Updaters
                 {
                     GameManager.Instance.Map.CommandManager.UndoAction();
                     state = HeightUpdaterState.Recovering;
+                    activeHandle = null;
                 }
                 else
                 {
@@ -122,6 +127,11 @@ namespace Warlander.Deedplanner.Updaters
             UpdateHandlesColors();
             deselectedHandles = new List<HeightmapHandle>();
             lastFrameHoveredHandles = currentFrameHoveredHandles;
+
+            if (activeHandle)
+            {
+                LayoutManager.Instance.TooltipText = activeHandle.ToRichString();
+            }
         }
 
         private List<HeightmapHandle> UpdateHoveredHandles(RaycastHit raycast)
