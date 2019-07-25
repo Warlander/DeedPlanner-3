@@ -134,13 +134,33 @@ namespace Warlander.Deedplanner.Data
             return mesh;
         }
 
+        public bool ContainsEntity(TileEntity entity)
+        {
+            if (entity == Ground || entity == Cave)
+            {
+                return true;
+            }
+            
+            foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
+            {
+                EntityData key = pair.Key;
+                TileEntity checkedEntity = pair.Value;
+                if (entity == checkedEntity)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        
         public EntityType FindTypeOfEntity(TileEntity entity)
         {
             if (entity == Ground)
             {
                 return EntityType.Ground;
             }
-            else if (entity == Cave)
+            if (entity == Cave)
             {
                 return EntityType.Cave;
             }
@@ -164,7 +184,7 @@ namespace Warlander.Deedplanner.Data
             {
                 return 0;
             }
-            else if (entity == Cave)
+            if (entity == Cave)
             {
                 return -1;
             }
@@ -187,7 +207,8 @@ namespace Warlander.Deedplanner.Data
             if (floor < 0)
             {
                 return caveHeight;
-            }else
+            }
+            else
             {
                 return SurfaceHeight;
             }
@@ -291,19 +312,27 @@ namespace Warlander.Deedplanner.Data
             {
                 bool wallNeedsChange = !data.ArchBuildable && (!currentWall || currentWall.Data != data || currentWall.Reversed != reversed);
                 bool fenceNeedsChange = data.ArchBuildable && (!currentFence || currentFence.Data != data || currentFence.Reversed != reversed);
-                
+                bool wallNeedsRemoval = (wallNeedsChange && !data.ArchBuildable && currentWall) || (data.ArchBuildable && currentWall && !currentWall.Data.Arch);
+
                 if (wallNeedsChange)
                 {
                     Wall wall = CreateNewVerticalWall(wallEntityData, data, reversed);
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, wall));
                     return wall;
                 }
-                else if (fenceNeedsChange)
+                if (fenceNeedsChange)
                 {
                     Wall fence = CreateNewVerticalWall(fenceEntityData, data, reversed);
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, fence));
                     return fence;
                 }
+
+                if (wallNeedsRemoval)
+                {
+                    Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
+                    return null;
+                }
+                
             }
             else if (!data)
             {
@@ -353,6 +382,7 @@ namespace Warlander.Deedplanner.Data
             {
                 bool wallNeedsChange = !data.ArchBuildable && (!currentWall || currentWall.Data != data || currentWall.Reversed != reversed);
                 bool fenceNeedsChange = data.ArchBuildable && (!currentFence || currentFence.Data != data || currentFence.Reversed != reversed);
+                bool wallNeedsRemoval = (wallNeedsChange && !data.ArchBuildable && currentWall) || (data.ArchBuildable && currentWall && !currentWall.Data.Arch);
                 
                 if (wallNeedsChange)
                 {
@@ -360,11 +390,17 @@ namespace Warlander.Deedplanner.Data
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, wall));
                     return wall;
                 }
-                else if (fenceNeedsChange)
+                if (fenceNeedsChange)
                 {
                     Wall fence = CreateNewHorizontalWall(fenceEntityData, data, reversed);
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, fence));
                     return fence;
+                }
+                
+                if (wallNeedsRemoval)
+                {
+                    Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
+                    return null;
                 }
             }
             else if (!data)
