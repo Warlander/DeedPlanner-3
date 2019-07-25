@@ -39,7 +39,7 @@ namespace Warlander.Deedplanner.Updaters
             int x = -1;
             int y = -1;
             bool horizontal = false;
-            if (wallEntity)
+            if (wallEntity && wallEntity.Valid)
             {
                 floor = tileEntity.Floor;
                 if (LayoutManager.Instance.CurrentCamera.Floor == floor + 1)
