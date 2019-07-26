@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
@@ -11,16 +13,24 @@ namespace Warlander.Deedplanner.Updaters
     public class HeightUpdater : MonoBehaviour
     {
 
-        [SerializeField]
-        private Color neutralColor = Color.white;
-        [SerializeField]
-        private Color hoveredColor = new Color(0.7f, 0.7f, 0, 1);
-        [SerializeField]
-        private Color selectedColor = new Color(0, 1, 0, 1);
-        [SerializeField]
-        private Color selectedHoveredColor = new Color(0.7f, 0.39f, 0f);
-        [SerializeField]
-        private Color activeColor = new Color(1, 0, 0, 1);
+        [SerializeField] private Toggle selectAndDragToggle;
+        [SerializeField] private Toggle createRampsToggle;
+        [SerializeField] private Toggle levelAreaToggle;
+        [SerializeField] private Toggle paintTerrainToggle;
+
+        [SerializeField] private RectTransform handlesSettingsTransform;
+        [SerializeField] private RectTransform paintingSettingsTransform;
+
+        [SerializeField] private RectTransform selectAndDragInstructionsTransform;
+        [SerializeField] private RectTransform createRampsInstructionsTransform;
+        [SerializeField] private RectTransform levelAreaInstructionsTransform;
+        [SerializeField] private RectTransform paintTerrainInstructionsTransform;
+
+        [SerializeField] private Color neutralColor = Color.white;
+        [SerializeField] private Color hoveredColor = new Color(0.7f, 0.7f, 0, 1);
+        [SerializeField] private Color selectedColor = new Color(0, 1, 0, 1);
+        [SerializeField] private Color selectedHoveredColor = new Color(0.7f, 0.39f, 0f);
+        [SerializeField] private Color activeColor = new Color(1, 0, 0, 1);
 
         private List<HeightmapHandle> currentFrameHoveredHandles = new List<HeightmapHandle>();
         private List<HeightmapHandle> lastFrameHoveredHandles = new List<HeightmapHandle>();
@@ -28,6 +38,7 @@ namespace Warlander.Deedplanner.Updaters
         private List<HeightmapHandle> deselectedHandles = new List<HeightmapHandle>();
         private HeightmapHandle activeHandle;
 
+        private HeightUpdaterMode mode = HeightUpdaterMode.SelectAndDrag;
         private HeightUpdaterState state = HeightUpdaterState.Idle;
         private Vector2 dragStartPos;
         private Vector2 dragEndPos;
@@ -37,6 +48,44 @@ namespace Warlander.Deedplanner.Updaters
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
+        public void OnModeChange(bool toggledOn)
+        {
+            if (!toggledOn)
+            {
+                return;
+            }
+
+            UpdateMode();
+            
+            handlesSettingsTransform.gameObject.SetActive(mode == HeightUpdaterMode.SelectAndDrag || mode == HeightUpdaterMode.CreateRamps);
+            paintingSettingsTransform.gameObject.SetActive(mode == HeightUpdaterMode.LevelArea || mode == HeightUpdaterMode.PaintTerrain);
+            
+            selectAndDragInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.SelectAndDrag);
+            createRampsInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.CreateRamps);
+            levelAreaInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.LevelArea);
+            paintTerrainInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.PaintTerrain);
+        }
+
+        private void UpdateMode()
+        {
+            if (selectAndDragToggle.isOn)
+            {
+                mode = HeightUpdaterMode.SelectAndDrag;
+            }
+            else if (createRampsToggle.isOn)
+            {
+                mode = HeightUpdaterMode.CreateRamps;
+            }
+            else if (levelAreaToggle.isOn)
+            {
+                mode = HeightUpdaterMode.LevelArea;
+            }
+            else if (paintTerrainToggle.isOn)
+            {
+                mode = HeightUpdaterMode.PaintTerrain;
+            }
+        }
+        
         private void Update()
         {
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
@@ -248,6 +297,11 @@ namespace Warlander.Deedplanner.Updaters
         private enum HeightUpdaterState
         {
             Idle, Dragging, Manipulating, Recovering
+        }
+
+        private enum HeightUpdaterMode
+        {
+            SelectAndDrag, CreateRamps, LevelArea, PaintTerrain
         }
         
     }
