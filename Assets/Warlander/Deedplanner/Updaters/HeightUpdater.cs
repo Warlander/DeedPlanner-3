@@ -13,18 +13,18 @@ namespace Warlander.Deedplanner.Updaters
     public class HeightUpdater : MonoBehaviour
     {
 
-        [SerializeField] private Toggle selectAndDragToggle;
-        [SerializeField] private Toggle createRampsToggle;
-        [SerializeField] private Toggle levelAreaToggle;
-        [SerializeField] private Toggle paintTerrainToggle;
+        [SerializeField] private Toggle selectAndDragToggle = null;
+        [SerializeField] private Toggle createRampsToggle = null;
+        [SerializeField] private Toggle levelAreaToggle = null;
+        [SerializeField] private Toggle paintTerrainToggle = null;
 
-        [SerializeField] private RectTransform handlesSettingsTransform;
-        [SerializeField] private RectTransform paintingSettingsTransform;
+        [SerializeField] private RectTransform handlesSettingsTransform = null;
+        [SerializeField] private RectTransform paintingSettingsTransform = null;
 
-        [SerializeField] private RectTransform selectAndDragInstructionsTransform;
-        [SerializeField] private RectTransform createRampsInstructionsTransform;
-        [SerializeField] private RectTransform levelAreaInstructionsTransform;
-        [SerializeField] private RectTransform paintTerrainInstructionsTransform;
+        [SerializeField] private RectTransform selectAndDragInstructionsTransform = null;
+        [SerializeField] private RectTransform createRampsInstructionsTransform = null;
+        [SerializeField] private RectTransform levelAreaInstructionsTransform = null;
+        [SerializeField] private RectTransform paintTerrainInstructionsTransform = null;
 
         [SerializeField] private Color neutralColor = Color.white;
         [SerializeField] private Color hoveredColor = new Color(0.7f, 0.7f, 0, 1);
@@ -43,9 +43,11 @@ namespace Warlander.Deedplanner.Updaters
         private Vector2 dragStartPos;
         private Vector2 dragEndPos;
 
+        private bool ComplexSelectionEnabled => mode != HeightUpdaterMode.PaintTerrain;
+
         private void OnEnable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+            UpdateTileSelectionMode();
         }
 
         public void OnModeChange(bool toggledOn)
@@ -56,14 +58,10 @@ namespace Warlander.Deedplanner.Updaters
             }
 
             UpdateMode();
-            
-            handlesSettingsTransform.gameObject.SetActive(mode == HeightUpdaterMode.SelectAndDrag || mode == HeightUpdaterMode.CreateRamps);
-            paintingSettingsTransform.gameObject.SetActive(mode == HeightUpdaterMode.LevelArea || mode == HeightUpdaterMode.PaintTerrain);
-            
-            selectAndDragInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.SelectAndDrag);
-            createRampsInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.CreateRamps);
-            levelAreaInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.LevelArea);
-            paintTerrainInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.PaintTerrain);
+            UpdateGui();
+            UpdateTileSelectionMode();
+            selectedHandles.Clear();
+            activeHandle = null;
         }
 
         private void UpdateMode()
@@ -85,7 +83,30 @@ namespace Warlander.Deedplanner.Updaters
                 mode = HeightUpdaterMode.PaintTerrain;
             }
         }
-        
+
+        private void UpdateTileSelectionMode()
+        {
+            if (ComplexSelectionEnabled)
+            {
+                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+            }
+            else
+            {
+                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Everything;
+            }
+        }
+
+        private void UpdateGui()
+        {
+            handlesSettingsTransform.gameObject.SetActive(mode == HeightUpdaterMode.SelectAndDrag || mode == HeightUpdaterMode.CreateRamps);
+            paintingSettingsTransform.gameObject.SetActive(mode == HeightUpdaterMode.LevelArea || mode == HeightUpdaterMode.PaintTerrain);
+            
+            selectAndDragInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.SelectAndDrag);
+            createRampsInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.CreateRamps);
+            levelAreaInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.LevelArea);
+            paintTerrainInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.PaintTerrain);
+        }
+
         private void Update()
         {
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
@@ -185,6 +206,24 @@ namespace Warlander.Deedplanner.Updaters
 
         private List<HeightmapHandle> UpdateHoveredHandles(RaycastHit raycast)
         {
+            if (ComplexSelectionEnabled)
+            {
+                return UpdateHoveredHandlesComplexSelection(raycast);
+            }
+            else
+            {
+                MultiCamera hoveredCamera = LayoutManager.Instance.HoveredCamera;
+                if (!hoveredCamera || hoveredCamera.CameraMode != CameraMode.Top)
+                {
+                    return new List<HeightmapHandle>();
+                }
+
+                return UpdateHoveredHandlesSimpleSelection(raycast);
+            }
+        }
+
+        private List<HeightmapHandle> UpdateHoveredHandlesComplexSelection(RaycastHit raycast)
+        {
             List<HeightmapHandle> hoveredHandles = new List<HeightmapHandle>();
 
             if (Input.GetMouseButtonDown(0))
@@ -246,6 +285,38 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
             
+            return hoveredHandles;
+        }
+
+        private List<HeightmapHandle> UpdateHoveredHandlesSimpleSelection(RaycastHit raycast)
+        {
+            GridMesh gridMesh = GameManager.Instance.Map.SurfaceGridMesh;
+            
+            List<HeightmapHandle> hoveredHandles = new List<HeightmapHandle>();
+
+            TileSelectionHit hit = TileSelection.PositionToTileSelectionHit(raycast.point, TileSelectionMode.Everything);
+            if (hit.Target == TileSelectionTarget.InnerTile)
+            {
+                hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y));
+                hoveredHandles.Add(gridMesh.GetHandle(hit.X + 1, hit.Y));
+                hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y + 1));
+                hoveredHandles.Add(gridMesh.GetHandle(hit.X + 1, hit.Y + 1));
+            }
+            else if (hit.Target == TileSelectionTarget.Corner)
+            {
+                hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y));
+            }
+            else if (hit.Target == TileSelectionTarget.BottomBorder)
+            {
+                hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y));
+                hoveredHandles.Add(gridMesh.GetHandle(hit.X + 1, hit.Y));
+            }
+            else if (hit.Target == TileSelectionTarget.LeftBorder)
+            {
+                hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y));
+                hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y + 1));
+            }
+
             return hoveredHandles;
         }
         
