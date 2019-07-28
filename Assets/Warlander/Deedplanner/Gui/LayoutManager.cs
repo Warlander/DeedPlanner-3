@@ -44,6 +44,22 @@ namespace Warlander.Deedplanner.Gui
 
         public MultiCamera CurrentCamera => cameras[ActiveWindow];
 
+        public MultiCamera HoveredCamera
+        {
+            get
+            {
+                foreach (MultiCamera cam in cameras)
+                {
+                    if (cam.MouseOver)
+                    {
+                        return cam;
+                    }
+                }
+
+                return null;
+            }
+        }
+
         public string TooltipText
         {
             get => tooltip.Value;
