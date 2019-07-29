@@ -70,6 +70,21 @@ mergeInto(LibraryManager.library, {
                 reader.readAsText(file, "UTF-8");
             }
         });
+    },
+    
+    PromptNative : function(message, defaultInput) {
+        var jsMessage = Pointer_stringify(message);
+        var jsDefaultInput = Pointer_stringify(defaultInput);
+        var jsContent = prompt(jsMessage, jsDefaultInput);
+
+        if (jsContent == null) {
+            jsContent = "";
+        }
+
+        var bufferSize = lengthBytesUTF8(jsContent) + 1;
+        var buffer = _malloc(bufferSize);
+        stringToUTF8(jsContent, buffer, bufferSize);
+        return buffer;
     }
 
 });
