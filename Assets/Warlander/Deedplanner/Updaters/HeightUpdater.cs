@@ -47,7 +47,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void OnEnable()
         {
-            UpdateTileSelectionMode();
+            RefreshTileSelectionMode();
         }
 
         public void OnModeChange(bool toggledOn)
@@ -57,14 +57,13 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            UpdateMode();
-            UpdateGui();
-            UpdateTileSelectionMode();
-            selectedHandles.Clear();
-            activeHandle = null;
+            RefreshMode();
+            RefreshGui();
+            RefreshTileSelectionMode();
+            ResetState();
         }
 
-        private void UpdateMode()
+        private void RefreshMode()
         {
             if (selectAndDragToggle.isOn)
             {
@@ -84,7 +83,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void UpdateTileSelectionMode()
+        private void RefreshTileSelectionMode()
         {
             if (ComplexSelectionEnabled)
             {
@@ -96,7 +95,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void UpdateGui()
+        private void RefreshGui()
         {
             handlesSettingsTransform.gameObject.SetActive(mode == HeightUpdaterMode.SelectAndDrag || mode == HeightUpdaterMode.CreateRamps);
             paintingSettingsTransform.gameObject.SetActive(mode == HeightUpdaterMode.LevelArea || mode == HeightUpdaterMode.PaintTerrain);
@@ -105,6 +104,16 @@ namespace Warlander.Deedplanner.Updaters
             createRampsInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.CreateRamps);
             levelAreaInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.LevelArea);
             paintTerrainInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.PaintTerrain);
+        }
+
+        private void ResetState()
+        {
+            currentFrameHoveredHandles.Clear();
+            lastFrameHoveredHandles.Clear();
+            selectedHandles.Clear();
+            deselectedHandles.Clear();
+            activeHandle = null;
+            state = HeightUpdaterState.Idle;
         }
 
         private void Update()
@@ -119,6 +128,35 @@ namespace Warlander.Deedplanner.Updaters
 
             currentFrameHoveredHandles = UpdateHoveredHandles(raycast);
 
+            if (mode == HeightUpdaterMode.SelectAndDrag)
+            {
+                UpdateSelectAndDrag();
+            }
+            else if (mode == HeightUpdaterMode.CreateRamps)
+            {
+                UpdateCreateRamps();
+            }
+            else if (mode == HeightUpdaterMode.LevelArea)
+            {
+                UpdateLevelArea();
+            }
+            else if (mode == HeightUpdaterMode.PaintTerrain)
+            {
+                UpdatePaintTerrain();
+            }
+
+            UpdateHandlesColors();
+            deselectedHandles = new List<HeightmapHandle>();
+            lastFrameHoveredHandles = currentFrameHoveredHandles;
+
+            if (activeHandle)
+            {
+                LayoutManager.Instance.TooltipText = activeHandle.ToRichString();
+            }
+        }
+
+        private void UpdateSelectAndDrag()
+        {
             if (Input.GetMouseButtonDown(0))
             {
                 if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
@@ -193,17 +231,23 @@ namespace Warlander.Deedplanner.Updaters
                 
                 LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
             }
-
-            UpdateHandlesColors();
-            deselectedHandles = new List<HeightmapHandle>();
-            lastFrameHoveredHandles = currentFrameHoveredHandles;
-
-            if (activeHandle)
-            {
-                LayoutManager.Instance.TooltipText = activeHandle.ToRichString();
-            }
         }
 
+        private void UpdateCreateRamps()
+        {
+            
+        }
+
+        private void UpdateLevelArea()
+        {
+            
+        }
+
+        private void UpdatePaintTerrain()
+        {
+            
+        }
+        
         private List<HeightmapHandle> UpdateHoveredHandles(RaycastHit raycast)
         {
             if (ComplexSelectionEnabled)
