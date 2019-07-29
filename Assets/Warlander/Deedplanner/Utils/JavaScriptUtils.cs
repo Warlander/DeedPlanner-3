@@ -17,6 +17,9 @@ namespace Warlander.Deedplanner.Utils
         [DllImport("__Internal")]
         public static extern void UploadNative(string objectCallbackName, string methodCallbackName);
 
+        [DllImport("__Internal")]
+        public static extern string PromptNative(string message, string defaultInput);
+
         public static byte[] LoadUrlToBytes(string url)
         {
             IntPtr pointer = LoadResourceNative(url);
