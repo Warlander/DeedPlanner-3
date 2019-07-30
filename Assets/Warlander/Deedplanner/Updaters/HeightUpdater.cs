@@ -242,7 +242,31 @@ namespace Warlander.Deedplanner.Updaters
 
         private void UpdateLevelArea()
         {
-            
+            Map map = GameManager.Instance.Map;
+            int targetHeight = int.Parse(targetHeightInput.text);
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                state = HeightUpdaterState.Dragging;
+            }
+
+            if (Input.GetMouseButtonUp(0) && state == HeightUpdaterState.Dragging)
+            {
+                foreach (HeightmapHandle handle in currentFrameHoveredHandles)
+                {
+                    map[handle.TileCoords].SurfaceHeight = targetHeight;
+                }
+                map.CommandManager.FinishAction();
+                state = HeightUpdaterState.Idle;
+                LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                map.CommandManager.UndoAction();
+                state = HeightUpdaterState.Idle;
+                LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
+            }
         }
 
         private void UpdatePaintTerrain()
