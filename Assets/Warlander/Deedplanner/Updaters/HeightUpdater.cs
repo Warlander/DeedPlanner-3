@@ -26,6 +26,8 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private RectTransform levelAreaInstructionsTransform = null;
         [SerializeField] private RectTransform paintTerrainInstructionsTransform = null;
 
+        [SerializeField] private TMP_InputField targetHeightInput = null;
+
         [SerializeField] private Color neutralColor = Color.white;
         [SerializeField] private Color hoveredColor = new Color(0.7f, 0.7f, 0, 1);
         [SerializeField] private Color selectedColor = new Color(0, 1, 0, 1);
@@ -245,6 +247,33 @@ namespace Warlander.Deedplanner.Updaters
 
         private void UpdatePaintTerrain()
         {
+            Map map = GameManager.Instance.Map;
+            int targetHeight = int.Parse(targetHeightInput.text);
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                state = HeightUpdaterState.Manipulating;
+            }
+            
+            if (Input.GetMouseButton(0) && state == HeightUpdaterState.Manipulating)
+            {
+                foreach (HeightmapHandle handle in currentFrameHoveredHandles)
+                {
+                    map[handle.TileCoords].SurfaceHeight = targetHeight;
+                }
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                map.CommandManager.FinishAction();
+                state = HeightUpdaterState.Idle;
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                map.CommandManager.UndoAction();
+                state = HeightUpdaterState.Idle;
+            }
             
         }
         
