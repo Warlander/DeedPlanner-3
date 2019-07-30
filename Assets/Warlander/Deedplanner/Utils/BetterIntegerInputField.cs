@@ -22,10 +22,22 @@ namespace Warlander.Deedplanner.Utils
 
             if (!parsed)
             {
-                result = 0;
+                if (inputField.text == "-")
+                {
+                    inputField.text = "-0";
+                    inputField.caretPosition = 1;
+                    inputField.selectionAnchorPosition = 1;
+                    inputField.selectionFocusPosition = 2;
+                }
+                else
+                {
+                    inputField.text = "0";
+                }
             }
-
-            inputField.text = result.ToString();
+            else if (inputField.text != "-0")
+            {
+                inputField.text = result.ToString();
+            }
         }
         
     }
