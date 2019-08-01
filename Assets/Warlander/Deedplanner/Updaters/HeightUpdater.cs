@@ -116,6 +116,7 @@ namespace Warlander.Deedplanner.Updaters
             deselectedHandles.Clear();
             activeHandle = null;
             state = HeightUpdaterState.Idle;
+            GameManager.Instance.Map.CommandManager.UndoAction();
         }
 
         private void Update()
