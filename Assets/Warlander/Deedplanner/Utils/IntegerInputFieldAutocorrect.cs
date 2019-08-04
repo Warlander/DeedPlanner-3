@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Warlander.Deedplanner.Utils
 {
     [RequireComponent((typeof(TMP_InputField)))]
-    public class BetterIntegerInputField : MonoBehaviour
+    public class IntegerInputFieldAutocorrect : MonoBehaviour
     {
 
         private TMP_InputField inputField;
