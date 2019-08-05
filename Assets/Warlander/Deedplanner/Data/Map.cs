@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
 using UnityEngine.Experimental.PlayerLoop;
@@ -35,6 +36,8 @@ namespace Warlander.Deedplanner.Data
         public int LowestCaveHeight { get; private set; }
         public int HighestCaveHeight { get; private set; }
 
+        public List<PlaneLine> PlaneLines { get; } = new List<PlaneLine>();
+        
         public CommandManager CommandManager { get; set; } = new CommandManager(50);
 
         public Tile this[int x, int y]

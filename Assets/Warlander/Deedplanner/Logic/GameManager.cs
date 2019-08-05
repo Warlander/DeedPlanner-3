@@ -75,6 +75,11 @@ namespace Warlander.Deedplanner.Logic
             {
                 Map.CommandManager.Redo();
             }
+            
+            foreach (PlaneLine planeLine in Map.PlaneLines)
+            {
+                planeLine.UpdateProjector();
+            }
         }
 
         public void CreateNewMap(int width, int height)
