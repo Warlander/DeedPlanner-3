@@ -11,13 +11,9 @@ namespace Warlander.Deedplanner.Graphics
         [SerializeField] private Material womDefaultMaterial = null;
         [SerializeField] private Material simpleDrawingMaterial = null;
 
-        [SerializeField] private Projector axisProjectorPrefab = null;
-        
         public Material TextureDefaultMaterial => textureDefaultMaterial;
         public Material WomDefaultMaterial => womDefaultMaterial;
         public Material SimpleDrawingMaterial => simpleDrawingMaterial;
-
-        public Projector AxisProjectorPrefab => axisProjectorPrefab;
 
         public GraphicsManager()
         {

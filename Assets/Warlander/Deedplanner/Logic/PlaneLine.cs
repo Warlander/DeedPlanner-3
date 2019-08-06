@@ -1,24 +1,22 @@
 using UnityEngine;
-using Warlander.Deedplanner.Graphics;
-using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Data;
 
-namespace Warlander.Deedplanner.Data
+namespace Warlander.Deedplanner.Logic
 {
-    public class PlaneLine
+    public class PlaneLine : MonoBehaviour
     {
 
-        public Vector2Int TileCoords { get; private set; }
-        public PlaneAlignment Alignment { get; private set; }
-        private Projector projector;
+        public Vector2Int TileCoords { get; set; }
+        public PlaneAlignment Alignment { get; set; }
+        [SerializeField] private Projector projector;
 
-        public PlaneLine(Vector2Int tileCoords, PlaneAlignment alignment)
+        private void Awake()
         {
-            TileCoords = tileCoords;
-            Alignment = alignment;
-            projector = Object.Instantiate(GraphicsManager.Instance.AxisProjectorPrefab);
+            Map map = GameManager.Instance.Map;
+            transform.SetParent(map.PlaneLineRoot);
         }
 
-        public void UpdateProjector()
+        private void Update()
         {
             Map map = GameManager.Instance.Map;
 

@@ -1,5 +1,4 @@
 using System;
-using SFB;
 
 namespace StandaloneFileBrowser {
     public struct ExtensionFilter {
