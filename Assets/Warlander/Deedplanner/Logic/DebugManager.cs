@@ -33,22 +33,27 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
+        private void Start()
+        {
+            if (drawDebugPlaneLines)
+            {
+                PlaneLine horizontalLine = Instantiate(GameManager.Instance.PlaneLinePrefab);
+                horizontalLine.Alignment = PlaneAlignment.Horizontal;
+                horizontalLine.TileCoords = new Vector2Int(5, 5);
+                PlaneLine firstVerticalLine = Instantiate(GameManager.Instance.PlaneLinePrefab);
+                firstVerticalLine.Alignment = PlaneAlignment.Vertical;
+                firstVerticalLine.TileCoords = new Vector2Int(5, 5);
+                PlaneLine secondVerticalLine = Instantiate(GameManager.Instance.PlaneLinePrefab);
+                secondVerticalLine.Alignment = PlaneAlignment.Vertical;
+                secondVerticalLine.TileCoords = new Vector2Int(15, 15);
+            }
+        }
+        
         private void Update()
         {
             if (overrideStartingTileSelectionMode)
             {
                 LayoutManager.Instance.TileSelectionMode = tileSelectionMode;
-            }
-
-            if (drawDebugPlaneLines)
-            {
-                Map map = GameManager.Instance.Map;
-                if (map.PlaneLines.Count == 0)
-                {
-                    map.PlaneLines.Add(new PlaneLine(new Vector2Int(5, 5), PlaneAlignment.Horizontal));
-                    map.PlaneLines.Add(new PlaneLine(new Vector2Int(5, 5), PlaneAlignment.Vertical));
-                    map.PlaneLines.Add(new PlaneLine(new Vector2Int(15, 5), PlaneAlignment.Vertical));
-                }
             }
         }
 

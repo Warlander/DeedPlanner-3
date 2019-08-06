@@ -1,4 +1,4 @@
-namespace Warlander.Deedplanner.Data
+namespace Warlander.Deedplanner.Logic
 {
     public enum PlaneAlignment
     {

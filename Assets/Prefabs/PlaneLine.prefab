@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6073029846312294237}
   - component: {fileID: 6073029846307019199}
+  - component: {fileID: -7788806047085427720}
   m_Layer: 0
-  m_Name: AxisProjector
+  m_Name: PlaneLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,3 +51,16 @@ Projector:
   m_IgnoreLayers:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &-7788806047085427720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6073029846312520573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 669a75115f124be5b65fdf5f4b573bce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projector: {fileID: 6073029846307019199}
