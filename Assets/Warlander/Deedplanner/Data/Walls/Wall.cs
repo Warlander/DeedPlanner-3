@@ -52,6 +52,9 @@ namespace Warlander.Deedplanner.Data.Walls
             Model.transform.SetParent(transform, false);
 
             Bounds bounds = Data.NormalModel.Bounds;
+            const float wallDepthConfortableMargin = 0.75f;
+            float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthConfortableMargin);
+            bounds.size = new Vector3(bounds.size.x, bounds.size.y, comfortableWallDepth);
                 
             Mesh boundsMesh = new Mesh();
             Vector3[] vectors = new Vector3[8];
