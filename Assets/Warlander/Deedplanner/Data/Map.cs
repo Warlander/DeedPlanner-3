@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
 using UnityEngine.Experimental.PlayerLoop;
+using UnityEngine.Monetization;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
@@ -36,6 +38,8 @@ namespace Warlander.Deedplanner.Data
         public int HighestCaveHeight { get; private set; }
 
         public CommandManager CommandManager { get; set; } = new CommandManager(50);
+        
+        public Transform PlaneLineRoot { get; private set; }
 
         public Tile this[int x, int y]
         {
@@ -142,6 +146,7 @@ namespace Warlander.Deedplanner.Data
             caveGridRoot = new GameObject("Cave Grid").transform;
             caveGridRoot.SetParent(transform);
             caveGridRoot.gameObject.SetActive(false);
+            PlaneLineRoot = new GameObject("Plane Lines").transform;
 
             for (int i = 0; i <= Width; i++)
             {
