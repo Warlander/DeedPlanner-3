@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -25,6 +26,8 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private RectTransform createRampsInstructionsTransform = null;
         [SerializeField] private RectTransform levelAreaInstructionsTransform = null;
         [SerializeField] private RectTransform paintTerrainInstructionsTransform = null;
+
+        [SerializeField] private TMP_InputField dragSensitivityInput = null;
 
         [SerializeField] private TMP_InputField targetHeightInput = null;
 
@@ -160,6 +163,9 @@ namespace Warlander.Deedplanner.Updaters
 
         private void UpdateSelectAndDrag()
         {
+            float dragSensitivity = 0;
+            float.TryParse(dragSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out dragSensitivity);
+            
             if (Input.GetMouseButtonDown(0))
             {
                 if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
@@ -185,7 +191,7 @@ namespace Warlander.Deedplanner.Updaters
                 {
                     Map map = GameManager.Instance.Map;
                     map.CommandManager.UndoAction();
-                    int heightDelta = (int) (dragEndPos.y - dragStartPos.y) / 2;
+                    int heightDelta = (int) ((dragEndPos.y - dragStartPos.y) * dragSensitivity);
                     foreach (HeightmapHandle heightmapHandle in selectedHandles)
                     {
                         Vector2Int tileCoords = heightmapHandle.TileCoords;

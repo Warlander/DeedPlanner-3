@@ -20,33 +20,23 @@ namespace Warlander.Deedplanner.Logic
 
         public Map Map { get; private set; }
 
-        [SerializeField]
-        private HeightmapHandle heightmapHandlePrefab = null;
+        [SerializeField] private HeightmapHandle heightmapHandlePrefab = null;
+        [SerializeField] private PlaneLine planeLinePrefab = null;
 
-        [SerializeField]
-        private GroundUpdater groundUpdater = null;
-        [SerializeField]
-        private CaveUpdater caveUpdater = null;
-        [SerializeField]
-        private HeightUpdater heightUpdater = null;
-        [SerializeField]
-        private FloorUpdater floorUpdater = null;
-        [SerializeField]
-        private WallUpdater wallUpdater = null;
-        [SerializeField]
-        private RoofUpdater roofUpdater = null;
-        [SerializeField]
-        private ObjectUpdater objectUpdater = null;
-        [SerializeField]
-        private LabelUpdater labelUpdater = null;
-        [SerializeField]
-        private BorderUpdater borderUpdater = null;
-        [SerializeField]
-        private BridgesUpdater bridgeUpdater = null;
-        [SerializeField]
-        private MirrorUpdater mirrorUpdater = null;
+        [SerializeField] private GroundUpdater groundUpdater = null;
+        [SerializeField] private CaveUpdater caveUpdater = null;
+        [SerializeField] private HeightUpdater heightUpdater = null;
+        [SerializeField] private FloorUpdater floorUpdater = null;
+        [SerializeField] private WallUpdater wallUpdater = null;
+        [SerializeField] private RoofUpdater roofUpdater = null;
+        [SerializeField] private ObjectUpdater objectUpdater = null;
+        [SerializeField] private LabelUpdater labelUpdater = null;
+        [SerializeField] private BorderUpdater borderUpdater = null;
+        [SerializeField] private BridgesUpdater bridgeUpdater = null;
+        [SerializeField] private MirrorUpdater mirrorUpdater = null;
 
         public HeightmapHandle HeightmapHandlePrefab => heightmapHandlePrefab;
+        public PlaneLine PlaneLinePrefab => planeLinePrefab;
 
         public GameManager()
         {
