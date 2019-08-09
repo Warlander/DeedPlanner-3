@@ -26,8 +26,9 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private RectTransform createRampsInstructionsTransform = null;
         [SerializeField] private RectTransform levelAreaInstructionsTransform = null;
         [SerializeField] private RectTransform paintTerrainInstructionsTransform = null;
-
+        
         [SerializeField] private TMP_InputField dragSensitivityInput = null;
+        [SerializeField] private Toggle respectOriginalSlopesToggle = null;
 
         [SerializeField] private TMP_InputField targetHeightInput = null;
 
@@ -36,12 +37,15 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private Color selectedColor = new Color(0, 1, 0, 1);
         [SerializeField] private Color selectedHoveredColor = new Color(0.7f, 0.39f, 0f);
         [SerializeField] private Color activeColor = new Color(1, 0, 0, 1);
+        [SerializeField] private Color anchorColor = new Color(0, 1, 1, 1);
 
         private List<HeightmapHandle> currentFrameHoveredHandles = new List<HeightmapHandle>();
         private List<HeightmapHandle> lastFrameHoveredHandles = new List<HeightmapHandle>();
         private List<HeightmapHandle> selectedHandles = new List<HeightmapHandle>();
         private List<HeightmapHandle> deselectedHandles = new List<HeightmapHandle>();
         private HeightmapHandle activeHandle;
+        private HeightmapHandle anchorHandle;
+        private PlaneLine anchorPlaneLine;
 
         private HeightUpdaterMode mode = HeightUpdaterMode.SelectAndDrag;
         private HeightUpdaterState state = HeightUpdaterState.Idle;
@@ -50,6 +54,12 @@ namespace Warlander.Deedplanner.Updaters
 
         private bool ComplexSelectionEnabled => mode != HeightUpdaterMode.PaintTerrain;
 
+        private void Awake()
+        {
+            anchorPlaneLine = Instantiate(GameManager.Instance.PlaneLinePrefab, transform);
+            anchorPlaneLine.gameObject.SetActive(false);
+        }
+        
         private void OnEnable()
         {
             RefreshTileSelectionMode();
@@ -163,8 +173,10 @@ namespace Warlander.Deedplanner.Updaters
 
         private void UpdateSelectAndDrag()
         {
+            Map map = GameManager.Instance.Map;
             float dragSensitivity = 0;
             float.TryParse(dragSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out dragSensitivity);
+            bool respectSlopes = respectOriginalSlopesToggle.isOn;
             
             if (Input.GetMouseButtonDown(0))
             {
@@ -189,13 +201,20 @@ namespace Warlander.Deedplanner.Updaters
             {
                 if (state == HeightUpdaterState.Manipulating)
                 {
-                    Map map = GameManager.Instance.Map;
                     map.CommandManager.UndoAction();
+                    int originalHeight = map[activeHandle.TileCoords].SurfaceHeight;
                     int heightDelta = (int) ((dragEndPos.y - dragStartPos.y) * dragSensitivity);
                     foreach (HeightmapHandle heightmapHandle in selectedHandles)
                     {
                         Vector2Int tileCoords = heightmapHandle.TileCoords;
-                        map[tileCoords].SurfaceHeight += heightDelta;
+                        if (respectSlopes)
+                        {
+                            map[tileCoords].SurfaceHeight += heightDelta;
+                        }
+                        else
+                        {
+                            map[tileCoords].SurfaceHeight = originalHeight + heightDelta;
+                        }
                     }
                 }
             }
@@ -213,7 +232,7 @@ namespace Warlander.Deedplanner.Updaters
                 }
                 else if (state == HeightUpdaterState.Manipulating)
                 {
-                    GameManager.Instance.Map.CommandManager.FinishAction();
+                    map.CommandManager.FinishAction();
                     activeHandle = null;
                 }
                 state = HeightUpdaterState.Idle;
@@ -229,7 +248,7 @@ namespace Warlander.Deedplanner.Updaters
                 
                 if (state == HeightUpdaterState.Manipulating)
                 {
-                    GameManager.Instance.Map.CommandManager.UndoAction();
+                    map.CommandManager.UndoAction();
                     state = HeightUpdaterState.Recovering;
                     activeHandle = null;
                 }
