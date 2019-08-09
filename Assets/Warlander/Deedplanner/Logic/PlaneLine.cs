@@ -8,7 +8,7 @@ namespace Warlander.Deedplanner.Logic
 
         public Vector2Int TileCoords { get; set; }
         public PlaneAlignment Alignment { get; set; }
-        [SerializeField] private Projector projector;
+        [SerializeField] private Projector projector = null;
 
         private void Awake()
         {
