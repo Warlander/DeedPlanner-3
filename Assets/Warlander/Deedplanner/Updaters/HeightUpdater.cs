@@ -125,11 +125,14 @@ namespace Warlander.Deedplanner.Updaters
         {
             currentFrameHoveredHandles.Clear();
             lastFrameHoveredHandles.Clear();
+            deselectedHandles.AddRange(selectedHandles);
             selectedHandles.Clear();
-            deselectedHandles.Clear();
             activeHandle = null;
+            anchorHandle = null;
+            anchorPlaneLine.gameObject.SetActive(false);
             state = HeightUpdaterState.Idle;
             GameManager.Instance.Map.CommandManager.UndoAction();
+            UpdateHandlesColors();
         }
 
         private void Update()
@@ -221,7 +224,7 @@ namespace Warlander.Deedplanner.Updaters
             
             if (Input.GetMouseButtonUp(0))
             {
-                if (Input.GetKey(KeyCode.LeftShift))
+                if (state == HeightUpdaterState.Dragging && Input.GetKey(KeyCode.LeftShift))
                 {
                     selectedHandles.AddRange(lastFrameHoveredHandles);
                 }
@@ -245,16 +248,15 @@ namespace Warlander.Deedplanner.Updaters
                     deselectedHandles = selectedHandles;
                     selectedHandles = new List<HeightmapHandle>();
                 }
-                
-                if (state == HeightUpdaterState.Manipulating)
+                else if (state == HeightUpdaterState.Manipulating)
                 {
                     map.CommandManager.UndoAction();
-                    state = HeightUpdaterState.Recovering;
                     activeHandle = null;
+                    state = HeightUpdaterState.Recovering;
                 }
                 else
                 {
-                    state = HeightUpdaterState.Idle;
+                    state = HeightUpdaterState.Recovering;
                 }
                 
                 LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
@@ -263,7 +265,174 @@ namespace Warlander.Deedplanner.Updaters
 
         private void UpdateCreateRamps()
         {
+            Map map = GameManager.Instance.Map;
+            float dragSensitivity = 0;
+            float.TryParse(dragSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out dragSensitivity);
+            bool respectSlopes = respectOriginalSlopesToggle.isOn;
+            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
             
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
+                {
+                    if (anchorHandle && anchorHandle != currentFrameHoveredHandles[0])
+                    {
+                        activeHandle = currentFrameHoveredHandles[0];
+                    }
+                    else
+                    {
+                        anchorHandle = currentFrameHoveredHandles[0];
+                    }
+                    state = HeightUpdaterState.Manipulating;
+                }
+                else if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    state = HeightUpdaterState.Dragging;
+                }
+                else
+                {
+                    deselectedHandles = selectedHandles;
+                    selectedHandles = new List<HeightmapHandle>();
+                    anchorHandle = null;
+                    anchorPlaneLine.gameObject.SetActive(false);
+                    state = HeightUpdaterState.Dragging;
+                }
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                if (state == HeightUpdaterState.Manipulating)
+                {
+                    if (activeHandle)
+                    {
+                        map.CommandManager.UndoAction();
+                        bool locked = anchorPlaneLine.gameObject.activeSelf;
+                        PlaneAlignment lockedAxis = anchorPlaneLine.Alignment;
+                        int originalHeight = map[activeHandle.TileCoords].SurfaceHeight;
+                        int heightDelta = (int) ((dragEndPos.y - dragStartPos.y) * dragSensitivity);
+                        Vector2Int manipulatedTileCoords = activeHandle.TileCoords;
+                        Vector2Int manipulatedAnchorCoords = GetAxisCorrectedAnchor(manipulatedTileCoords, anchorHandle.TileCoords, locked, lockedAxis);
+                        Vector2Int manipulatedDifference = manipulatedTileCoords - manipulatedAnchorCoords;
+                        
+                        foreach (HeightmapHandle heightmapHandle in selectedHandles)
+                        {
+                            Vector2Int tileCoords = heightmapHandle.TileCoords;
+                            Vector2Int anchorCoords = GetAxisCorrectedAnchor(tileCoords, anchorHandle.TileCoords, locked, lockedAxis);
+                            Vector2Int difference = tileCoords - anchorCoords;
+                            float deltaX = (float) difference.x / manipulatedDifference.x;
+                            if (float.IsNaN(deltaX) || float.IsInfinity(deltaX))
+                            {
+                                deltaX = float.NegativeInfinity;
+                            }
+                            float deltaY = (float) difference.y / manipulatedDifference.y;
+                            if (float.IsNaN(deltaY) || float.IsInfinity(deltaY))
+                            {
+                                deltaY = float.NegativeInfinity;
+                            }
+
+                            float delta = Mathf.Max(deltaX, deltaY);
+                            if (float.IsNegativeInfinity(delta))
+                            {
+                                delta = 0;
+                            }
+
+                            if (respectSlopes)
+                            {
+                                map[tileCoords].SurfaceHeight += (int) (heightDelta * delta);
+                            }
+                            else
+                            {
+                                map[tileCoords].SurfaceHeight = originalHeight + (int) (heightDelta * delta);
+                            }
+                        }
+                    }
+                    else if (anchorHandle)
+                    {
+                        float anchorPositionX = anchorHandle.TileCoords.x * 4;
+                        float anchorPositionY = anchorHandle.TileCoords.y * 4;
+                        Vector2 anchorPosition = new Vector2(anchorPositionX, anchorPositionY);
+
+                        Vector3 raycastPoint = LayoutManager.Instance.CurrentCamera.CurrentRaycast.point;
+                        Vector2 raycastPosition = new Vector2(raycastPoint.x, raycastPoint.z);
+
+                        Vector2 positionDelta = raycastPosition - anchorPosition;
+                        if (positionDelta.magnitude > 4)
+                        {
+                            anchorPlaneLine.gameObject.SetActive(true);
+                            anchorPlaneLine.TileCoords = anchorHandle.TileCoords;
+                            bool horizontal = Mathf.Abs(positionDelta.x) > Mathf.Abs(positionDelta.y);
+                            anchorPlaneLine.Alignment = horizontal ? PlaneAlignment.Vertical : PlaneAlignment.Horizontal;
+                        }
+                        else
+                        {
+                            anchorPlaneLine.gameObject.SetActive(false);
+                        }
+                    }
+                }
+            }
+            
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (state == HeightUpdaterState.Dragging && Input.GetKey(KeyCode.LeftShift))
+                {
+                    selectedHandles.AddRange(lastFrameHoveredHandles);
+                }
+                else if (state != HeightUpdaterState.Manipulating && state != HeightUpdaterState.Recovering)
+                {
+                    deselectedHandles = selectedHandles;
+                    selectedHandles = lastFrameHoveredHandles;
+                }
+                else if (state == HeightUpdaterState.Manipulating)
+                {
+                    map.CommandManager.FinishAction();
+                    activeHandle = null;
+                }
+                state = HeightUpdaterState.Idle;
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                if (state == HeightUpdaterState.Manipulating && activeHandle)
+                {
+                    map.CommandManager.UndoAction();
+                    activeHandle = null;
+                    state = HeightUpdaterState.Recovering;
+                }
+                else if (anchorHandle)
+                {
+                    anchorHandle = null;
+                    anchorPlaneLine.gameObject.SetActive(false);
+                    state = HeightUpdaterState.Recovering;
+                }
+                else if (state == HeightUpdaterState.Idle)
+                {
+                    deselectedHandles = selectedHandles;
+                    selectedHandles = new List<HeightmapHandle>();
+                }
+                else
+                {
+                    state = HeightUpdaterState.Recovering;
+                }
+                
+                LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
+            }
+        }
+
+        private Vector2Int GetAxisCorrectedAnchor(Vector2Int tileCoords, Vector2Int anchorCoords, bool locked, PlaneAlignment lockedAxis)
+        {
+            if (locked)
+            {
+                if (lockedAxis == PlaneAlignment.Horizontal)
+                {
+                    return new Vector2Int(tileCoords.x, anchorCoords.y);
+                }
+                else if (lockedAxis == PlaneAlignment.Vertical)
+                {
+                    return new Vector2Int(anchorCoords.x, tileCoords.y);
+                }
+            }
+
+            return anchorCoords;
         }
 
         private void UpdateLevelArea()
@@ -463,7 +632,11 @@ namespace Warlander.Deedplanner.Updaters
             
             foreach (HeightmapHandle handle in selectedHandles)
             {
-                if (state == HeightUpdaterState.Manipulating)
+                if (handle == anchorHandle)
+                {
+                    handle.Color = anchorColor;
+                }
+                else if (state == HeightUpdaterState.Manipulating)
                 {
                     handle.Color = activeColor;
                 }
