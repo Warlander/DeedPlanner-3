@@ -121,16 +121,21 @@ namespace Warlander.Deedplanner.Updaters
 
         private void ResetState()
         {
+            deselectedHandles.AddRange(currentFrameHoveredHandles);
             currentFrameHoveredHandles.Clear();
             lastFrameHoveredHandles.Clear();
             deselectedHandles.AddRange(selectedHandles);
             selectedHandles.Clear();
             activeHandle = null;
             anchorHandle = null;
-            anchorPlaneLine.gameObject.SetActive(false);
+            if (anchorPlaneLine)
+            {
+                anchorPlaneLine.gameObject.SetActive(false);
+            }
             state = HeightUpdaterState.Idle;
             GameManager.Instance.Map.CommandManager.UndoAction();
             UpdateHandlesColors();
+            LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
         }
 
         private void Update()
@@ -267,7 +272,11 @@ namespace Warlander.Deedplanner.Updaters
             float dragSensitivity = 0;
             float.TryParse(dragSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out dragSensitivity);
             bool respectSlopes = respectOriginalSlopesToggle.isOn;
-            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
+
+            if (state == HeightUpdaterState.Recovering)
+            {
+                state = HeightUpdaterState.Idle;
+            }
             
             if (Input.GetMouseButtonDown(0))
             {
@@ -656,7 +665,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void OnDisable()
         {
-            LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
+            ResetState();
         }
 
         private enum HeightUpdaterState
