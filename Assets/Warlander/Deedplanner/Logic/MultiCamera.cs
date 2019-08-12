@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
-using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Tilemaps;
 using UnityStandardAssets.Water;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
@@ -12,7 +9,6 @@ using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Utils;
-using Tile = Warlander.Deedplanner.Data.Tile;
 
 namespace Warlander.Deedplanner.Logic
 {

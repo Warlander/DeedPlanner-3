@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Logic;
-using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
