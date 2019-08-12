@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
-using UnityEngine.Monetization;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;

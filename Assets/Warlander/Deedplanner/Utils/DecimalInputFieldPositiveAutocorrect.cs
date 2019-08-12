@@ -1,6 +1,3 @@
-using System;
-using System.Globalization;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 
