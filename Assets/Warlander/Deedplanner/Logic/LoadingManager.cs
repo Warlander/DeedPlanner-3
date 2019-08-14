@@ -40,7 +40,7 @@ namespace Warlander.Deedplanner.Logic
             if (DebugManager.Instance != null && DebugManager.Instance.LoadTestMap)
             {
                 text.text = "Loading debug map";
-                string fullTestMapLocation = Path.Combine(Application.streamingAssetsPath, "./Special/Test Map.MAP");
+                string fullTestMapLocation = Path.Combine(Application.streamingAssetsPath, "./Special/Maps/Test Map.MAP");
                 yield return GameManager.Instance.LoadMap(new Uri(fullTestMapLocation));
             }
             else
