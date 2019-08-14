@@ -271,11 +271,13 @@ namespace Warlander.Deedplanner.Data
             {
                 Roof roof = CreateNewRoof(entityData, data);
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, roof));
+                Map.RecalculateRoofs();
                 return roof;
             }
             else if (!data && tileEntity)
             {
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, null));
+                Map.RecalculateRoofs();
                 return null;
             }
 
@@ -290,7 +292,6 @@ namespace Warlander.Deedplanner.Data
 
             Entities[entity] = roof;
             Map.AddEntityToMap(roofObject, entity.Floor);
-            Map.RecalculateRoofs();
             UpdateSurfaceEntitiesPositions();
 
             return roof;
@@ -757,6 +758,11 @@ namespace Warlander.Deedplanner.Data
                 {
                     tile.UpdateCaveEntitiesPositions();
                 }
+
+                if (data.Type == EntityType.Floorroof)
+                {
+                    tile.Map.RecalculateRoofs();
+                }
             }
 
             public void Undo()
@@ -786,6 +792,11 @@ namespace Warlander.Deedplanner.Data
                 else
                 {
                     tile.UpdateCaveEntitiesPositions();
+                }
+                
+                if (data.Type == EntityType.Floorroof)
+                {
+                    tile.Map.RecalculateRoofs();
                 }
             }
 
