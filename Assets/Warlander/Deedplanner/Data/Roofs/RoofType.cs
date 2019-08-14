@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Data.Roofs
 {
     public sealed class RoofType
     {
@@ -17,78 +16,83 @@ namespace Warlander.Deedplanner.Logic
 
             roofTypesList.Add(new RoofType("Special/side.wom",
                               new int[,] {{ 1, 1, 1},
-                                          { 0, 0, 0},
-                                          {-1,-2,-1}}));
+                                                    { 0, 0, 0},
+                                                    {-1,-2,-1}}));
 
             roofTypesList.Add(new RoofType("Special/sideCorner.wom",
                               new int[,] {{-1,-2,-1},
-                                          { 0, 0,-2},
-                                          { 1, 0,-1}}));
+                                                    { 0, 0,-2},
+                                                    { 1, 0,-1}}));
 
             roofTypesList.Add(new RoofType("Special/sideCut.wom",
                               new int[,] {{ 1, 1, 1},
-                                          { 0, 0, 1},
-                                          {-2, 0, 1}}));
-
-            roofTypesList.Add(new RoofType("Special/sideToSpine.wom",
-                              new int[,] {{ 1, 0,-2},
-                                          { 1, 0, 0},
-                                          { 1, 0,-2}}));
+                                                    { 0, 0, 1},
+                                                    {-2, 0, 1}}));
 
             roofTypesList.Add(new RoofType("Special/spine.wom",
                               new int[,] {{-1,-2,-1},
-                                          { 0, 0, 0},
-                                          {-1,-2,-1}}));
+                                                    { 0, 0, 0},
+                                                    {-1,-2,-1}}));
 
             roofTypesList.Add(new RoofType("Special/spineEnd.wom",
                               new int[,] {{-1,-2,-1},
-                                          { 0, 0,-2},
-                                          {-1,-2,-1}}));
+                                                    { 0, 0,-2},
+                                                    {-1,-2,-1}}));
 
             roofTypesList.Add(new RoofType("Special/spineEndUp.wom",
                               new int[,] {{-1,-2,-1},
-                                          { 0, 0, 3},
-                                          { 1, 0,-1}}));
+                                                    { 0, 0, 3},
+                                                    { 1, 0,-1}}));
 
             roofTypesList.Add(new RoofType("Special/spineEndUp.wom", new Vector3(-1, 1, 1),
                               new int[,] {{-1,-2,-1},
-                                          { 3, 0, 0},
-                                          {-1, 0, 1}}));
+                                                    { 3, 0, 0},
+                                                    {-1, 0, 1}}));
 
             roofTypesList.Add(new RoofType("Special/spineCorner.wom",
                               new int[,] {{-1,-2,-1},
-                                          {-2, 0, 0},
-                                          {-1, 0,-2}}));
+                                                    {-2, 0, 0},
+                                                    {-1, 0,-2}}));
 
             roofTypesList.Add(new RoofType("Special/spineCornerUp.wom",
                               new int[,] {{-2, 0,-2},
-                                          { 0, 0, 0},
-                                          { 1, 0,-2}}));
+                                                    { 0, 0, 0},
+                                                    { 1, 0,-2}}));
 
             roofTypesList.Add(new RoofType("Special/spineCross.wom",
                               new int[,] {{-2, 0,-2},
-                                          { 0, 0, 0},
-                                          {-2, 0,-2}}));
+                                                    { 0, 0, 0},
+                                                    {-2, 0,-2}}));
 
             roofTypesList.Add(new RoofType("Special/spineTCross.wom",
                               new int[,] {{-1, 0,-2},
-                                          {-2, 0, 0},
-                                          {-1, 0,-2}}));
+                                                    {-2, 0, 0},
+                                                    {-1, 0,-2}}));
 
             roofTypesList.Add(new RoofType("Special/spineTip.wom",
                               new int[,] {{-1,-2,-1},
-                                          {-2, 0,-2},
-                                          {-1,-2,-1}}));
+                                                    {-2, 0,-2},
+                                                    {-1,-2,-1}}));
+            
+            roofTypesList.Add(new RoofType("Special/spineUp.wom",
+                              new int[,] {{ 1, 0,-2},
+                                                    { 1, 0, 0},
+                                                    { 1, 0,-2}}));
+            
+            roofTypesList.Add(new RoofType("Special/sideToSpine.wom",
+                              new int[,] {{ 1, 0,-2},
+                                                    { 1, 0, 0},
+                                                    { 1, 0,-2}}));
 
             roofTypesList.Add(new RoofType("Special/levelsCross.wom",
                               new int[,] {{-2, 0, 1},
-                                          { 0, 0, 0},
-                                          { 1, 0,-2}}));
+                                                    { 0, 0, 0},
+                                                    { 1, 0,-2}}));
 
             RoofTypes = roofTypesList.ToArray();
         }
 
-        private Dictionary<RoofData, Model> models;
+        private readonly Dictionary<RoofData, Model> models;
         private readonly int[,] conditions;
 
         private RoofType(string modelLocation, int[,] conditions) : this(modelLocation, new Vector3(1, 1, 1), conditions) {}
