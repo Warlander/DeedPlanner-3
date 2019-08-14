@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Warlander.Deedplanner.Gui.Widgets
@@ -29,12 +30,22 @@ namespace Warlander.Deedplanner.Gui.Widgets
                 return;
             }
 
-            RenderTexture renderTexture = new RenderTexture((int) width, (int) height, 16, RenderTextureFormat.ARGB32);
-            rawImage.texture = renderTexture;
+            Texture oldTexture = rawImage.texture;
+            if (oldTexture && oldTexture.GetType() != typeof(RenderTexture) && Math.Abs(oldTexture.width - width) > 1 && Math.Abs(oldTexture.height - height) > 1)
+            {
+                Destroy(oldTexture);
+                RenderTexture renderTexture = new RenderTexture((int) width, (int) height, 16, RenderTextureFormat.ARGB32);
+                rawImage.texture = renderTexture;
+            }
+            else if (!oldTexture)
+            {
+                RenderTexture renderTexture = new RenderTexture((int) width, (int) height, 16, RenderTextureFormat.ARGB32);
+                rawImage.texture = renderTexture;
+            }
 
             if (renderCamera)
             {
-                renderCamera.targetTexture = renderTexture;
+                renderCamera.targetTexture = (RenderTexture) rawImage.texture;
                 renderCamera.aspect = width / height;
             }
         }
