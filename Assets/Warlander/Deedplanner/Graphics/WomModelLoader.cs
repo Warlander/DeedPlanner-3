@@ -167,8 +167,8 @@ namespace Warlander.Deedplanner.Graphics
             material.name = matName;
 
             string texLocation = Path.Combine(modelFolder, texName);
-            Texture2D texture = LoadTexture(texLocation);
-            texture.name = texName;
+            TextureReference textureReference = TextureReference.GetTextureReference(texLocation);
+            Texture2D texture = textureReference.Texture;
 
             if (texture)
             {
