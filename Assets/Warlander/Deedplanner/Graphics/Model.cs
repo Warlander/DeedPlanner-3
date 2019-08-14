@@ -153,7 +153,7 @@ namespace Warlander.Deedplanner.Graphics
             if (!originalModel)
             {
                 string fullLocation = Application.streamingAssetsPath + "/" + location;
-                originalModel = WomModelLoader.LoadModel(fullLocation);
+                originalModel = WomModelLoader.LoadModel(fullLocation, Scale);
                 originalModel.layer = Layer;
                 foreach (Transform child in originalModel.transform)
                 {
