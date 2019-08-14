@@ -18,6 +18,11 @@ namespace Warlander.Deedplanner.Graphics
 
         public static GameObject LoadModel(string path)
         {
+            return LoadModel(path, Vector3.one);
+        }
+        
+        public static GameObject LoadModel(string path, Vector3 scale)
+        {
             Debug.Log("Loading model at " + path);
             byte[] requestData = WebUtils.ReadUrlToByteArray(path);
             
@@ -34,7 +39,7 @@ namespace Warlander.Deedplanner.Graphics
                     int meshCount = source.ReadInt32();
                     for (int i = 0; i < meshCount; i++)
                     {
-                        GameObject meshObject = LoadMeshObject(source, fileFolder);
+                        GameObject meshObject = LoadMeshObject(source, fileFolder, scale);
                         meshObject.transform.SetParent(modelGameObject.transform);
                     }
 
@@ -52,9 +57,9 @@ namespace Warlander.Deedplanner.Graphics
             }
         }
 
-        private static GameObject LoadMeshObject(BinaryReader source, string fileFolder)
+        private static GameObject LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale)
         {
-            Mesh loadedMesh = LoadMesh(source);
+            Mesh loadedMesh = LoadMesh(source, scale);
             GameObject meshObject = new GameObject(loadedMesh.name);
 
             MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
@@ -76,7 +81,7 @@ namespace Warlander.Deedplanner.Graphics
             return meshObject;
         }
 
-        private static Mesh LoadMesh(BinaryReader source)
+        private static Mesh LoadMesh(BinaryReader source, Vector3 scale)
         {
             bool hasTangents = source.ReadBoolean();
             bool hasBinormal = source.ReadBoolean();
@@ -92,8 +97,12 @@ namespace Warlander.Deedplanner.Graphics
 
             for (int i = 0; i < verticesCount; i++)
             {
-                vertexList.Add(new Vector3(source.ReadSingle(), source.ReadSingle(), source.ReadSingle()));
-                normalList.Add(new Vector3(source.ReadSingle(), source.ReadSingle(), source.ReadSingle()));
+                Vector3 vertex = new Vector3(source.ReadSingle(), source.ReadSingle(), source.ReadSingle());
+                vertex.Scale(scale);
+                vertexList.Add(vertex);
+                Vector3 normal = new Vector3(source.ReadSingle(), source.ReadSingle(), source.ReadSingle());
+                normal.Scale(scale);
+                normalList.Add(normal);
                 uvList.Add(new Vector2(source.ReadSingle(), 1 - source.ReadSingle()));
 
                 if (hasVertexColor)
@@ -118,6 +127,17 @@ namespace Warlander.Deedplanner.Graphics
             for (int i = 0; i < trianglesCount; ++i)
             {
                 triangles[i] = source.ReadInt16();
+            }
+
+            if (scale.x * scale.y * scale.z < 0)
+            {
+                for (int i = 0; i < trianglesCount; i += 3)
+                {
+                    int temp = triangles[i];
+                    triangles[i] = triangles[i + 2];
+                    triangles[i + 2] = temp;
+                }
+                
             }
 
             Mesh mesh = new Mesh();
