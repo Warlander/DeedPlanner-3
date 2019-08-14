@@ -42,107 +42,107 @@
 		</ground>
 		<ground name="Barley Field" shortname="bafi">
 			<tex location="GroundTextures/2d-crop-barley.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Cabbage Field" shortname="cafi">
 			<tex location="GroundTextures/2d-crop-cabbage.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Carrot Field" shortname="carfi">
 			<tex location="GroundTextures/2d-crop-carrot.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Corn Field" shortname="cornfi">
 			<tex location="GroundTextures/2d-crop-corn.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Cotton Field" shortname="cottfi">
 			<tex location="GroundTextures/2d-crop-cotton.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Cucumber Field" shortname="cufi">
 			<tex location="GroundTextures/2d-crop-cucumber.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Garlic Field" shortname="gafi">
 			<tex location="GroundTextures/2d-crop-garlic.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Lettuce Field" shortname="lefi">
 			<tex location="GroundTextures/2d-crop-lettuce.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Oat Field" shortname="oafi">
 			<tex location="GroundTextures/2d-crop-oat.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Onion Field" shortname="onfi">
 			<tex location="GroundTextures/2d-crop-onion.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Peapod Field" shortname="pefi">
 			<tex location="GroundTextures/2d-crop-peapod.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Potato Field" shortname="pofi">
 			<tex location="GroundTextures/2d-crop-potato.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Pumpkin Field" shortname="pufi">
 			<tex location="GroundTextures/2d-crop-pumpkin.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Reed Field" shortname="refi">
 			<tex location="GroundTextures/2d-crop-wemp.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Rice Field" shortname="rifi">
 			<tex location="GroundTextures/2d-crop-rice.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Rye Field" shortname="ryfi">
 			<tex location="GroundTextures/2d-crop-rye.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Strawberry Field" shortname="stfi">
 			<tex location="GroundTextures/2d-crop-strawberry.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Sugarbeet Field" shortname="sufi">
 			<tex location="GroundTextures/2d-crop-sugarbeet.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Tomato Field" shortname="tofi">
 			<tex location="GroundTextures/2d-crop-tomato.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Wemp Field" shortname="wefi">
 			<tex location="GroundTextures/2d-crop-wemp.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Wheat Field" shortname="whfi">
 			<tex location="GroundTextures/2d-crop-wheat.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.jpg" target="previewmode"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Gravel" shortname="gv">
