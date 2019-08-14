@@ -13,15 +13,14 @@ namespace Warlander.Deedplanner.Graphics
 
         public static TextureReference GetTextureReference(string location)
         {
-            TextureReference reference;
-
+            location = location.Replace(Application.streamingAssetsPath + "/", "");
+                
             if (references.ContainsKey(location))
             {
-                reference = references[location];
-                return reference;
+                return references[location];
             }
 
-            reference = new TextureReference(location);
+            TextureReference reference = new TextureReference(location);
             references[location] = reference;
             return reference;
         }
