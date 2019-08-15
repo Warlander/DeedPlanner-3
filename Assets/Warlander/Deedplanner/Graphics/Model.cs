@@ -168,7 +168,9 @@ namespace Warlander.Deedplanner.Graphics
                     {
                         MeshRenderer renderer = child.GetComponent<MeshRenderer>();
                         TextureReference texture = TextureReference.GetTextureReference(textureOverride);
-                        renderer.sharedMaterial = texture.Material;
+                        Material newMaterial = new Material(renderer.sharedMaterial);
+                        newMaterial.mainTexture = texture.Texture;
+                        renderer.sharedMaterial = newMaterial;
                     }
                 }
                 originalModel.transform.SetParent(modelRoot.transform);
