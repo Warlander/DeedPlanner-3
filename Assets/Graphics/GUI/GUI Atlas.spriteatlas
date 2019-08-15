@@ -1,0 +1,333 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GUI Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 4deb1249538649e4bbd99e64ec0e606b, type: 3}
+    - {fileID: 10906, guid: 0000000000000000f000000000000000, type: 0}
+    totalSpriteSurfaceArea: 3360580
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 28ebd0c0c308bed42b5cae0cfe912cc8, type: 3}
+  - {fileID: 21300000, guid: e078b7f00cc26404881dc10f747d75eb, type: 3}
+  - {fileID: 21300000, guid: b30e1e216fd2da540be89e2847244c7b, type: 3}
+  - {fileID: 21300118, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300120, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300078, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300100, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300080, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300098, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300102, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300104, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300060, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300106, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300066, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300058, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300108, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300088, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300068, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300110, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300086, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300062, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300112, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300084, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300064, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300052, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300114, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300082, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300074, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300050, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300116, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300096, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300076, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300056, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300094, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300070, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300054, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300092, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300072, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300044, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300090, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300042, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300048, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300046, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300210, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300202, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300204, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300206, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300208, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300124, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300122, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300128, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300126, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300030, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300132, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300032, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300130, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300034, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300136, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300036, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300134, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300022, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300140, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300024, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300138, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300026, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300028, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300198, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300038, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300200, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300040, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300190, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300158, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300192, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300180, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300160, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300194, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300178, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300154, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300196, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300176, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300156, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300182, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300174, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300150, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300184, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300172, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300152, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300186, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300170, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300146, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300188, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300168, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300148, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300166, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300142, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300164, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300144, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300162, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300020, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300018, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300012, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300010, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300016, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300014, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300004, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300002, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300008, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300006, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  - {fileID: 21300000, guid: 5a5456d1fef7fea44aa9046aff2ce04f, type: 3}
+  - {fileID: 21300000, guid: b8be9962003f61c4fa348932b215fdb3, type: 3}
+  - {fileID: 21300000, guid: 562cccc27ae301743a9434f27825accf, type: 3}
+  - {fileID: 21300000, guid: 54b4d733ea224f64891d21746bda01e0, type: 3}
+  - {fileID: 21300000, guid: b25deb83b3ac27f46b91dcee3759f7f0, type: 3}
+  - {fileID: 21300000, guid: 1b0c4594781d7934a93e8e0aaf53644e, type: 3}
+  - {fileID: 21300000, guid: d0f76f05fc63c35458cde07e5fb7639f, type: 3}
+  - {fileID: 21300000, guid: 5a634e15b62faee4c8ada7465bd76205, type: 3}
+  - {fileID: 21300000, guid: 1ce817b554ac0fc499c8f21ecd6dec10, type: 3}
+  - {fileID: 21300000, guid: 62113bd50b934ff4993219fe297c3ced, type: 3}
+  - {fileID: 21300000, guid: 55ffa856654dd2349b393eb64d770a48, type: 3}
+  - {fileID: 21300000, guid: 7c8380c69220ad447bd89ea2dda88de4, type: 3}
+  - {fileID: 21300000, guid: 25512fd69d82b8d46bd7d7c218485721, type: 3}
+  - {fileID: 21300000, guid: effb1617ca14a1f4c9f265ed24433afb, type: 3}
+  - {fileID: 21300000, guid: c2ba7617c13fbb04c9e9a91bba862211, type: 3}
+  - {fileID: 21300000, guid: f6f9db17dd47d714c84fc1b883345851, type: 3}
+  - {fileID: 21300000, guid: 09b8c75714cb7a148810a29a24e7185d, type: 3}
+  - {fileID: 21300000, guid: bd6f7a38afa02974aa0f463dab0cb98c, type: 3}
+  - {fileID: 21300000, guid: e0adeb1a9e5716d4abb3d740a9da4a52, type: 3}
+  - {fileID: 21300000, guid: bc29c65abbb0f6e43b2f5a8787f2c638, type: 3}
+  - {fileID: 21300000, guid: dca7671c147d8c8419e92eaab4b3db92, type: 3}
+  - {fileID: 21300000, guid: ca36db4c898a2114ea3e16b957f31b0b, type: 3}
+  - {fileID: 21300000, guid: 92e8147c39387364096bbcba4fda2392, type: 3}
+  - {fileID: 21300000, guid: b995197ce436e9d49814219ffa6eeb23, type: 3}
+  - {fileID: 21300000, guid: 3862c3bc9dbabee46be18bd376bebdc2, type: 3}
+  - {fileID: 21300000, guid: ce0b4abca2a3d634d8053a2b6ce56525, type: 3}
+  - {fileID: 21300000, guid: bbee3afdc2e7b8941a552321b7e72fcd, type: 3}
+  - {fileID: 21300000, guid: db371deee7e65a346903d18c446332a6, type: 3}
+  - {fileID: 21300000, guid: 6c9e471f7bab2bd45823ee1be124ee86, type: 3}
+  - {fileID: 21300000, guid: 06e6347f8bf75594c9417dcb433f6c42, type: 3}
+  - {fileID: 21300000, guid: ea10119f176f0aa47ac60e573db3756c, type: 3}
+  - {fileID: 21300000, guid: 2a36e1af02322fb448a0d68851de4247, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Selection Box
+  - Slider
+  - 012-parquet
+  - RPG_GUI_v1_58
+  - RPG_GUI_v1_59
+  - RPG_GUI_v1_38
+  - RPG_GUI_v1_49
+  - RPG_GUI_v1_39
+  - RPG_GUI_v1_48
+  - RPG_GUI_v1_50
+  - RPG_GUI_v1_51
+  - RPG_GUI_v1_29
+  - RPG_GUI_v1_52
+  - RPG_GUI_v1_32
+  - RPG_GUI_v1_28
+  - RPG_GUI_v1_53
+  - RPG_GUI_v1_43
+  - RPG_GUI_v1_33
+  - RPG_GUI_v1_54
+  - RPG_GUI_v1_42
+  - RPG_GUI_v1_30
+  - RPG_GUI_v1_55
+  - RPG_GUI_v1_41
+  - RPG_GUI_v1_31
+  - RPG_GUI_v1_25
+  - RPG_GUI_v1_56
+  - RPG_GUI_v1_40
+  - RPG_GUI_v1_36
+  - RPG_GUI_v1_24
+  - RPG_GUI_v1_57
+  - RPG_GUI_v1_47
+  - RPG_GUI_v1_37
+  - RPG_GUI_v1_27
+  - RPG_GUI_v1_46
+  - RPG_GUI_v1_34
+  - RPG_GUI_v1_26
+  - RPG_GUI_v1_45
+  - RPG_GUI_v1_35
+  - RPG_GUI_v1_21
+  - RPG_GUI_v1_44
+  - RPG_GUI_v1_20
+  - RPG_GUI_v1_23
+  - RPG_GUI_v1_22
+  - RPG_GUI_v1_104
+  - RPG_GUI_v1_100
+  - RPG_GUI_v1_101
+  - RPG_GUI_v1_102
+  - RPG_GUI_v1_103
+  - RPG_GUI_v1_61
+  - RPG_GUI_v1_60
+  - RPG_GUI_v1_63
+  - RPG_GUI_v1_62
+  - RPG_GUI_v1_14
+  - RPG_GUI_v1_65
+  - RPG_GUI_v1_15
+  - RPG_GUI_v1_64
+  - RPG_GUI_v1_16
+  - RPG_GUI_v1_67
+  - RPG_GUI_v1_17
+  - RPG_GUI_v1_66
+  - RPG_GUI_v1_10
+  - RPG_GUI_v1_69
+  - RPG_GUI_v1_11
+  - RPG_GUI_v1_68
+  - RPG_GUI_v1_12
+  - RPG_GUI_v1_13
+  - RPG_GUI_v1_98
+  - RPG_GUI_v1_18
+  - RPG_GUI_v1_99
+  - RPG_GUI_v1_19
+  - RPG_GUI_v1_94
+  - RPG_GUI_v1_78
+  - RPG_GUI_v1_95
+  - RPG_GUI_v1_89
+  - RPG_GUI_v1_79
+  - RPG_GUI_v1_96
+  - RPG_GUI_v1_88
+  - RPG_GUI_v1_76
+  - RPG_GUI_v1_97
+  - RPG_GUI_v1_87
+  - RPG_GUI_v1_77
+  - RPG_GUI_v1_90
+  - RPG_GUI_v1_86
+  - RPG_GUI_v1_74
+  - RPG_GUI_v1_91
+  - RPG_GUI_v1_85
+  - RPG_GUI_v1_75
+  - RPG_GUI_v1_92
+  - RPG_GUI_v1_84
+  - RPG_GUI_v1_72
+  - RPG_GUI_v1_93
+  - RPG_GUI_v1_83
+  - RPG_GUI_v1_73
+  - RPG_GUI_v1_82
+  - RPG_GUI_v1_70
+  - RPG_GUI_v1_81
+  - RPG_GUI_v1_71
+  - RPG_GUI_v1_80
+  - RPG_GUI_v1_9
+  - RPG_GUI_v1_8
+  - RPG_GUI_v1_5
+  - RPG_GUI_v1_4
+  - RPG_GUI_v1_7
+  - RPG_GUI_v1_6
+  - RPG_GUI_v1_1
+  - RPG_GUI_v1_0
+  - RPG_GUI_v1_3
+  - RPG_GUI_v1_2
+  - 2ScrVert
+  - 007-bridge
+  - 006-armchair
+  - 019-photo-camera-configuration-symbol-for-interface-with-a-gear-behind
+  - 4_Exclude
+  - 020-menu
+  - 010-bird
+  - 011-horizontal-symmetry
+  - 004-flowers
+  - 021-save
+  - 001-magnifying-glass
+  - 4Scr
+  - 013-edit
+  - 014-price-tag
+  - 1ScrTop2ScrBot
+  - 2ScrTop1ScrBot
+  - 016-mouse-right-button
+  - wood background
+  - 017-broken-lines-square-border
+  - 002-roof
+  - 003-fence
+  - 009-eraser
+  - 008-cave
+  - 015-mouse-left-button
+  - 023-compass
+  - 005-mountain
+  - 1Scr
+  - paper background
+  - 2vert
+  - 022-settings
+  - SplashImage
+  - 018-paint-bucket
+  m_Tag: GUI Atlas
+  m_IsVariant: 0
