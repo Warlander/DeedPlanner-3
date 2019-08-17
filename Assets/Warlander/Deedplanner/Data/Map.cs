@@ -390,8 +390,7 @@ namespace Warlander.Deedplanner.Data
                 {
                     root.gameObject.SetActive(false);
                 }
-
-                surfaceGridRoot.gameObject.SetActive(false);
+                
                 for (int i = 0; i < caveLevelRoots.Length; i++)
                 {
                     Transform root = caveLevelRoots[i];
@@ -418,6 +417,11 @@ namespace Warlander.Deedplanner.Data
             }
             else
             {
+                foreach (Transform root in caveLevelRoots)
+                {
+                    root.gameObject.SetActive(false);
+                }
+                
                 for (int i = 0; i < surfaceLevelRoots.Length; i++)
                 {
                     Transform root = surfaceLevelRoots[i];
@@ -435,12 +439,6 @@ namespace Warlander.Deedplanner.Data
                             renderer.SetPropertyBlock(propertyBlock);
                         }
                     }
-                }
-
-                surfaceGridRoot.gameObject.SetActive(false);
-                foreach (Transform root in caveLevelRoots)
-                {
-                    root.gameObject.SetActive(false);
                 }
 
                 surfaceGridRoot.gameObject.SetActive(true);
