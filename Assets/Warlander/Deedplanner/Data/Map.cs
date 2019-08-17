@@ -150,25 +150,27 @@ namespace Warlander.Deedplanner.Data
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
                     bool edge = i == Width || i2 == Height;
-
-                    GameObject surfaceGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
-                    surfaceGridObject.transform.SetParent(surfaceGridRoot);
-                    surfaceGridObject.transform.localPosition = new Vector3(i * 4, 0.01f, i2 * 4);
-                    GridTile surfaceGrid = surfaceGridObject.GetComponent<GridTile>();
-
-                    GameObject caveGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
-                    caveGridObject.transform.SetParent(caveGridRoot);
-                    caveGridObject.transform.localPosition = new Vector3(i * 4, 0.01f, i2 * 4);
-                    GridTile caveGrid = caveGridObject.GetComponent<GridTile>();
-
                     Tile tile = ScriptableObject.CreateInstance<Tile>();
-                    tile.Initialize(this, surfaceGrid, caveGrid, i, i2, edge);
-                    tiles[i, i2] = tile;
-
-                    if (edge)
+                    
+                    if (!edge)
                     {
-                        surfaceGridObject.SetActive(false);
-                        caveGridObject.SetActive(false);
+                        GameObject surfaceGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
+                        surfaceGridObject.transform.SetParent(surfaceGridRoot);
+                        surfaceGridObject.transform.localPosition = new Vector3(i * 4, 0.01f, i2 * 4);
+                        GridTile surfaceGrid = surfaceGridObject.GetComponent<GridTile>();
+
+                        GameObject caveGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
+                        caveGridObject.transform.SetParent(caveGridRoot);
+                        caveGridObject.transform.localPosition = new Vector3(i * 4, 0.01f, i2 * 4);
+                        GridTile caveGrid = caveGridObject.GetComponent<GridTile>();
+                        
+                        tile.Initialize(this, surfaceGrid, caveGrid, i, i2, false);
+                        tiles[i, i2] = tile;
+                    }
+                    else
+                    {
+                        tile.Initialize(this, null, null, i, i2, true);
+                        tiles[i, i2] = tile;
                     }
                 }
             }
