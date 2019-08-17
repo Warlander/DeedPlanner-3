@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class ObjectUpdater : MonoBehaviour
+    public class DecorationUpdater : MonoBehaviour
     {
 
         private void OnEnable()
@@ -24,6 +25,8 @@ namespace Warlander.Deedplanner.Updaters
             GridTile gridTile = raycast.transform.GetComponent<GridTile>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
 
+            DecorationData data = GuiManager.Instance.ObjectsTree.SelectedValue as DecorationData;
+            
         }
 
     }

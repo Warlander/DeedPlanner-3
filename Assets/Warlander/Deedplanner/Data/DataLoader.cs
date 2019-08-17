@@ -8,9 +8,9 @@ using System.Xml;
 using UnityEngine;
 using UnityEngine.Networking;
 using Warlander.Deedplanner.Data.Caves;
+using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
-using Warlander.Deedplanner.Data.Objects;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Graphics;
@@ -421,7 +421,7 @@ namespace Warlander.Deedplanner.Data
                     }
                 }
 
-                GameObjectData data = ScriptableObject.CreateInstance<GameObjectData>();
+                DecorationData data = ScriptableObject.CreateInstance<DecorationData>();
                 data.Initialize(model, name, shortName, type, centerOnly, cornerOnly, floating, materials);
                 Database.Objects[shortName] = data;
 
