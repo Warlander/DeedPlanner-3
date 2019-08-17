@@ -6,7 +6,6 @@
 	SubShader{
 		Pass {
 			Blend SrcAlpha OneMinusSrcAlpha
-			Cull Off
 
 			BindChannels {
 				Bind "Vertex", vertex

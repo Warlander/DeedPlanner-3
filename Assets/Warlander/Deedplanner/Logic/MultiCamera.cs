@@ -186,64 +186,16 @@ namespace Warlander.Deedplanner.Logic
 
         void OnPreCull()
         {
+            PrepareWater();
+            PrepareMapState();
+            UpdateRaycast();
             PrepareProjector();
-            Vector3 cameraPosition = AttachedCamera.transform.position;
-            bool renderWater = RenderEntireMap ? true : (Floor == 0 || Floor == -1);
-            if (Properties.Instance.WaterQuality == Gui.WaterQuality.ULTRA)
-            {
-                ultraQualityWater.gameObject.SetActive(renderWater);
-                if (cameraMode != CameraMode.Isometric)
-                {
-                    ultraQualityWater.transform.position = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
-                }
-                else
-                {
-                    ultraQualityWater.transform.position = new Vector3(isoPosition.x, ultraQualityWater.transform.position.y, isoPosition.y);
-                }
-                ultraQualityWater.Update();
-            }
-            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.HIGH)
-            {
-                highQualityWater.gameObject.SetActive(renderWater);
-                if (cameraMode != CameraMode.Isometric)
-                {
-                    highQualityWater.transform.position = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
-                }
-                else
-                {
-                    highQualityWater.transform.position = new Vector3(isoPosition.x, ultraQualityWater.transform.position.y, isoPosition.y);
-                }
-            }
-            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.SIMPLE)
-            {
-                simpleQualityWater.gameObject.SetActive(renderWater);
-            }
+        }
 
-            Map map = GameManager.Instance.Map;
-            if (map.RenderedFloor != Floor)
-            {
-                map.RenderedFloor = Floor;
-            }
-            if (map.RenderEntireMap != RenderEntireMap)
-            {
-                map.RenderEntireMap = RenderEntireMap;
-            }
-            bool renderHeights = LayoutManager.Instance.CurrentTab == Tab.Height;
-            if (Floor < 0)
-            {
-                map.CaveGridMesh.HandlesVisible = renderHeights;
-                map.CaveGridMesh.SetRenderHeightColors(renderHeights);
-                map.CaveGridMesh.ApplyAllChanges();
-            }
-            else
-            {
-                map.SurfaceGridMesh.HandlesVisible = renderHeights;
-                map.SurfaceGridMesh.SetRenderHeightColors(renderHeights);
-                map.SurfaceGridMesh.ApplyAllChanges();
-            }
-
+        private void UpdateRaycast()
+        {
             CurrentRaycast = default;
-
+            
             if (MouseOver)
             {
                 Vector2 local;
@@ -273,6 +225,7 @@ namespace Warlander.Deedplanner.Logic
                         tooltipBuild.Append(tileEntity.ToString());
                         if (isHeightEditing)
                         {
+                            Map map = GameManager.Instance.Map;
                             Vector3 raycastPoint = raycastHit.point;
                             Vector2Int tileCoords = new Vector2Int(Mathf.FloorToInt(raycastPoint.x / 4), Mathf.FloorToInt(raycastPoint.z / 4));
                             int clampedX = Mathf.Clamp(tileCoords.x, 0, map.Width);
@@ -310,6 +263,67 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
+        private void PrepareWater()
+        {
+            Vector3 cameraPosition = AttachedCamera.transform.position;
+            bool renderWater = RenderEntireMap || Floor == 0 || Floor == -1;
+            if (Properties.Instance.WaterQuality == Gui.WaterQuality.ULTRA)
+            {
+                ultraQualityWater.gameObject.SetActive(renderWater);
+                if (cameraMode != CameraMode.Isometric)
+                {
+                    ultraQualityWater.transform.position = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
+                }
+                else
+                {
+                    ultraQualityWater.transform.position = new Vector3(isoPosition.x, ultraQualityWater.transform.position.y, isoPosition.y);
+                }
+                ultraQualityWater.Update();
+            }
+            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.HIGH)
+            {
+                highQualityWater.gameObject.SetActive(renderWater);
+                if (cameraMode != CameraMode.Isometric)
+                {
+                    highQualityWater.transform.position = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
+                }
+                else
+                {
+                    highQualityWater.transform.position = new Vector3(isoPosition.x, ultraQualityWater.transform.position.y, isoPosition.y);
+                }
+            }
+            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.SIMPLE)
+            {
+                simpleQualityWater.gameObject.SetActive(renderWater);
+            }
+        }
+
+        private void PrepareMapState()
+        {
+            Map map = GameManager.Instance.Map;
+            if (map.RenderedFloor != Floor)
+            {
+                map.RenderedFloor = Floor;
+            }
+            if (map.RenderEntireMap != RenderEntireMap)
+            {
+                map.RenderEntireMap = RenderEntireMap;
+            }
+            bool renderHeights = LayoutManager.Instance.CurrentTab == Tab.Height;
+            if (Floor < 0)
+            {
+                map.CaveGridMesh.HandlesVisible = renderHeights;
+                map.CaveGridMesh.SetRenderHeightColors(renderHeights);
+                map.CaveGridMesh.ApplyAllChanges();
+            }
+            else
+            {
+                map.SurfaceGridMesh.HandlesVisible = renderHeights;
+                map.SurfaceGridMesh.SetRenderHeightColors(renderHeights);
+                map.SurfaceGridMesh.ApplyAllChanges();
+            }
+        }
+        
         private void PrepareProjector()
         {
             GameObject hitObject = CurrentRaycast.collider?.gameObject;

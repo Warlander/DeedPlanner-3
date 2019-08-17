@@ -49,7 +49,6 @@ namespace Warlander.Deedplanner.Data
 
             mesh = new Mesh();
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            mesh.subMeshCount = 2;
 
             vertices = new Vector3[(map.Width + 1) * (map.Height + 1)];
             uniformColors = new Color[(map.Width + 1) * (map.Height + 1)];
@@ -91,7 +90,6 @@ namespace Warlander.Deedplanner.Data
             }
 
             mesh.SetIndices(indices, MeshTopology.Lines, 0, true);
-            mesh.RecalculateBounds();
 
             meshFilter.sharedMesh = mesh;
             meshRenderer.sharedMaterial = GraphicsManager.Instance.SimpleDrawingMaterial;
