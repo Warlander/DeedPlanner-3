@@ -300,16 +300,20 @@ namespace Warlander.Deedplanner.Logic
 
         private void PrepareMapState()
         {
+            Tab tab = LayoutManager.Instance.CurrentTab;
+            bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
+            int editingFloor = forceSurfaceEditing ? 0 : Floor;
+            
             Map map = GameManager.Instance.Map;
-            if (map.RenderedFloor != Floor)
+            if (map.RenderedFloor != editingFloor)
             {
-                map.RenderedFloor = Floor;
+                map.RenderedFloor = editingFloor;
             }
             if (map.RenderEntireMap != RenderEntireMap)
             {
                 map.RenderEntireMap = RenderEntireMap;
             }
-            bool renderHeights = LayoutManager.Instance.CurrentTab == Tab.Height;
+            bool renderHeights = tab == Tab.Height;
             if (Floor < 0)
             {
                 map.CaveGridMesh.HandlesVisible = renderHeights;
