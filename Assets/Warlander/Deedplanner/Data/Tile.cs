@@ -88,11 +88,13 @@ namespace Warlander.Deedplanner.Data
 
             Entities = new Dictionary<EntityData, TileEntity>();
 
-            this.surfaceGridTile = surfaceGridTile;
-            surfaceGridTile.Initialize(SurfaceHeightMesh, X, Y);
-
-            this.caveGridTile = caveGridTile;
-            caveGridTile.Initialize(CaveHeightMesh, X, Y);
+            if (!edge)
+            {
+                this.surfaceGridTile = surfaceGridTile;
+                surfaceGridTile.Initialize(SurfaceHeightMesh, X, Y);
+                this.caveGridTile = caveGridTile;
+                caveGridTile.Initialize(CaveHeightMesh, X, Y);
+            }
 
             GameObject groundObject = new GameObject("Ground", typeof(Ground));
             groundObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
