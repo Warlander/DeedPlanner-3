@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using Warlander.Deedplanner.Graphics;
 
-namespace Warlander.Deedplanner.Data.Objects
+namespace Warlander.Deedplanner.Data.Decorations
 {
-    public class GameObjectData : ScriptableObject
+    public class DecorationData : ScriptableObject
     {
 
         public Model Model { get; private set; }

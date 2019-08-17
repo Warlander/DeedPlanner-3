@@ -29,7 +29,7 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField] private FloorUpdater floorUpdater = null;
         [SerializeField] private WallUpdater wallUpdater = null;
         [SerializeField] private RoofUpdater roofUpdater = null;
-        [SerializeField] private ObjectUpdater objectUpdater = null;
+        [SerializeField] private DecorationUpdater decorationUpdater = null;
         [SerializeField] private LabelUpdater labelUpdater = null;
         [SerializeField] private BorderUpdater borderUpdater = null;
         [SerializeField] private BridgesUpdater bridgeUpdater = null;
@@ -161,7 +161,7 @@ namespace Warlander.Deedplanner.Logic
             CheckUpdater(floorUpdater, newUpdater);
             CheckUpdater(roofUpdater, newUpdater);
             CheckUpdater(wallUpdater, newUpdater);
-            CheckUpdater(objectUpdater, newUpdater);
+            CheckUpdater(decorationUpdater, newUpdater);
             CheckUpdater(labelUpdater, newUpdater);
             CheckUpdater(borderUpdater, newUpdater);
             CheckUpdater(bridgeUpdater, newUpdater);
@@ -190,7 +190,7 @@ namespace Warlander.Deedplanner.Logic
                 case Tab.Walls:
                     return wallUpdater;
                 case Tab.Objects:
-                    return objectUpdater;
+                    return decorationUpdater;
                 case Tab.Labels:
                     return labelUpdater;
                 case Tab.Borders:

@@ -3480,7 +3480,7 @@ PrefabInstance:
     - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: m_Interactable
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
@@ -29875,7 +29875,7 @@ GameObject:
   - component: {fileID: 1604227845}
   - component: {fileID: 1604227846}
   m_Layer: 0
-  m_Name: Object Updater
+  m_Name: Decoration Updater
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31575,7 +31575,7 @@ MonoBehaviour:
   floorUpdater: {fileID: 716036715}
   wallUpdater: {fileID: 835980717}
   roofUpdater: {fileID: 103496097}
-  objectUpdater: {fileID: 1604227846}
+  decorationUpdater: {fileID: 1604227846}
   labelUpdater: {fileID: 211449320}
   borderUpdater: {fileID: 1828645446}
   bridgeUpdater: {fileID: 475321930}

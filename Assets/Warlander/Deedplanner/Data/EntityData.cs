@@ -19,7 +19,7 @@ namespace Warlander.Deedplanner.Data
             Type = type;
         }
 
-        public void Serialize(XmlDocument document, XmlElement localRoot)
+        public virtual void Serialize(XmlDocument document, XmlElement localRoot)
         {
             // no extra data needed
         }
