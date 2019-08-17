@@ -505,7 +505,10 @@ namespace Warlander.Deedplanner.Data
         public void Deserialize(XmlElement tileElement)
         {
             surfaceHeight = (int) Convert.ToSingle(tileElement.GetAttribute("height"), CultureInfo.InvariantCulture);
-            caveHeight = (int) Convert.ToSingle(tileElement.GetAttribute("caveHeight"), CultureInfo.InvariantCulture);
+            if (tileElement.HasAttribute("caveHeight"))
+            {
+                caveHeight = (int) Convert.ToSingle(tileElement.GetAttribute("caveHeight"), CultureInfo.InvariantCulture);
+            }
 
             foreach (XmlElement childElement in tileElement)
             {

@@ -8961,7 +8961,6 @@ GameObject:
   m_Component:
   - component: {fileID: 476452799}
   - component: {fileID: 476452798}
-  - component: {fileID: 476452797}
   - component: {fileID: 476452800}
   m_Layer: 0
   m_Name: Camera 4
@@ -8970,14 +8969,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!81 &476452797
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 476452796}
-  m_Enabled: 1
 --- !u!20 &476452798
 Camera:
   m_ObjectHideFlags: 0
@@ -25565,7 +25556,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1418748997}
   - component: {fileID: 1418748996}
-  - component: {fileID: 1418748995}
   - component: {fileID: 1418748998}
   m_Layer: 0
   m_Name: Camera 3
@@ -25574,14 +25564,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!81 &1418748995
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1418748994}
-  m_Enabled: 1
 --- !u!20 &1418748996
 Camera:
   m_ObjectHideFlags: 0
@@ -36962,7 +36944,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2039501104}
   - component: {fileID: 2039501102}
-  - component: {fileID: 2039501103}
   - component: {fileID: 2039501105}
   m_Layer: 0
   m_Name: Camera 2
@@ -37014,14 +36995,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &2039501103
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2039501101}
-  m_Enabled: 1
 --- !u!4 &2039501104
 Transform:
   m_ObjectHideFlags: 0

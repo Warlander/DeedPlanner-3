@@ -32,7 +32,9 @@ namespace Warlander.Deedplanner.Data
             if (!gridMaterial)
             {
                 gridMaterial = new Material(Shader.Find("Standard"));
+                gridMaterial.SetOverrideTag("RenderType", "TransparentCutout");
                 gridMaterial.EnableKeyword("_ALPHATEST_ON");
+                gridMaterial.renderQueue = 2450;
                 gridMaterial.color = new Color(0, 0, 0, 0);
             }
             if (!meshRenderer)
