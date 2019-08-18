@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Graphics
 {
@@ -26,9 +27,7 @@ namespace Warlander.Deedplanner.Graphics
 
         public Bounds Bounds {
             get {
-                ModelProperties properties = new ModelProperties();
-                properties.Skew = 0;
-                properties.MirrorZ = false;
+                ModelProperties properties = new ModelProperties(0, false, null);
                 InitializeModel(properties);
                 Bounds bounds = new Bounds();
                 MeshFilter[] filters = originalModel.GetComponentsInChildren<MeshFilter>();
@@ -111,30 +110,30 @@ namespace Warlander.Deedplanner.Graphics
         private GameObject CreateOrGetModel(ModelProperties properties)
         {
             InitializeModel(properties);
-            return GameObject.Instantiate(modifiedModels[properties]);
+            return Object.Instantiate(modifiedModels[properties]);
         }
 
+        public GameObject CreateOrGetModel(Material customMaterial)
+        {
+            ModelProperties properties = new ModelProperties(0, false, customMaterial);
+            return CreateOrGetModel(properties);
+        }
+        
         public GameObject CreateOrGetModel(int skew, bool mirrorZ)
         {
-            ModelProperties properties = new ModelProperties();
-            properties.Skew = skew;
-            properties.MirrorZ = mirrorZ;
+            ModelProperties properties = new ModelProperties(skew, mirrorZ, null);
             return CreateOrGetModel(properties);
         }
 
         public GameObject CreateOrGetModel(int skew)
         {
-            ModelProperties properties = new ModelProperties();
-            properties.Skew = skew;
-            properties.MirrorZ = false;
+            ModelProperties properties = new ModelProperties(skew, false, null);
             return CreateOrGetModel(properties);
         }
 
         public GameObject CreateOrGetModel()
         {
-            ModelProperties properties = new ModelProperties();
-            properties.Skew = 0;
-            properties.MirrorZ = false;
+            ModelProperties properties = new ModelProperties(0, false, null);
             return CreateOrGetModel(properties);
         }
 
@@ -174,7 +173,7 @@ namespace Warlander.Deedplanner.Graphics
                     }
                 }
                 originalModel.transform.SetParent(modelRoot.transform);
-                ModelProperties originalProperties = new ModelProperties(0, false);
+                ModelProperties originalProperties = new ModelProperties(0, false, null);
                 modifiedModels[originalProperties] = originalModel;
             }
             if (!modifiedModels.ContainsKey(modelProperties))
@@ -202,7 +201,7 @@ namespace Warlander.Deedplanner.Graphics
             // skew is in Wurm units that are 4 Unity units long and 0.1 units high
             float skewPerUnit = skew * 0.1f * 0.25f;
 
-            GameObject clone = GameObject.Instantiate(originalModel);
+            GameObject clone = Object.Instantiate(originalModel);
 
             MeshFilter[] filters = clone.GetComponentsInChildren<MeshFilter>();
             foreach (MeshFilter filter in filters)
@@ -251,18 +250,35 @@ namespace Warlander.Deedplanner.Graphics
                 filter.sharedMesh = newMesh;
             }
 
+            if (modelProperties.CustomMaterial)
+            {
+                MeshRenderer[] renderers = clone.GetComponentsInChildren<MeshRenderer>();
+                foreach (MeshRenderer renderer in renderers)
+                {
+                    Material oldMaterial = renderer.sharedMaterial;
+                    Material customMaterial = new Material(modelProperties.CustomMaterial);
+                    if (!customMaterial.mainTexture)
+                    {
+                        customMaterial.mainTexture = oldMaterial.mainTexture;
+                    }
+                    renderer.sharedMaterial = customMaterial;
+                }
+            }
+
             return clone;
         }
 
         private struct ModelProperties
         {
-            public int Skew;
-            public bool MirrorZ;
+            public readonly int Skew;
+            public readonly bool MirrorZ;
+            public readonly Material CustomMaterial;
 
-            public ModelProperties(int skew, bool mirrorZ)
+            public ModelProperties(int skew, bool mirrorZ, Material customMaterial)
             {
                 Skew = skew;
                 MirrorZ = mirrorZ;
+                CustomMaterial = customMaterial;
             }
             
         }
