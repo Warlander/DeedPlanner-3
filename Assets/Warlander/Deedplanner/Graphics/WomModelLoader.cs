@@ -40,7 +40,10 @@ namespace Warlander.Deedplanner.Graphics
                     for (int i = 0; i < meshCount; i++)
                     {
                         GameObject meshObject = LoadMeshObject(source, fileFolder, scale);
-                        meshObject.transform.SetParent(modelGameObject.transform);
+                        if (meshObject)
+                        {
+                            meshObject.transform.SetParent(modelGameObject.transform);
+                        }
                     }
 
                     return modelGameObject;
@@ -60,24 +63,34 @@ namespace Warlander.Deedplanner.Graphics
         private static GameObject LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale)
         {
             Mesh loadedMesh = LoadMesh(source, scale);
-            GameObject meshObject = new GameObject(loadedMesh.name);
+            string meshName = loadedMesh.name;
+            
+            Material loadedMaterial;
+            try
+            {
+                int materialsCount = source.ReadInt32();
+                loadedMaterial = LoadMaterial(source, fileFolder);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            string meshNameLowercase = meshName.ToLower();
+            if (meshNameLowercase.Contains("boundingbox") || meshNameLowercase.Contains("pickingbox") || (meshNameLowercase.Contains("lod") && !meshNameLowercase.Contains("lod0")))
+            {
+                Object.Destroy(loadedMesh);
+                Object.Destroy(loadedMaterial);
+                return null;
+            }
+
+            GameObject meshObject = new GameObject(meshName);
 
             MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
             MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
             meshFilter.mesh = loadedMesh;
-
-            try
-            {
-                int materialsCount = source.ReadInt32();
-                Material loadedMaterial = LoadMaterial(source, fileFolder);
-                meshRenderer.material = loadedMaterial;
-            }
-            catch (Exception ex)
-            {
-                Object.Destroy(meshObject);
-                throw ex;
-            }
-
+            meshRenderer.material = loadedMaterial;
+            
             return meshObject;
         }
 
@@ -239,7 +252,7 @@ namespace Warlander.Deedplanner.Graphics
             Texture2D texture;
             if (location.Substring(location.LastIndexOf(".", StringComparison.Ordinal) + 1) == "dds")
             {
-                texture = LoadTextureDXT(texBytes);
+                texture = LoadTextureDxt(texBytes);
             }
             else
             {
@@ -250,7 +263,7 @@ namespace Warlander.Deedplanner.Graphics
             return texture;
         }
 
-        private static Texture2D LoadTextureDXT(byte[] ddsBytes)
+        private static Texture2D LoadTextureDxt(byte[] ddsBytes)
         {
             byte ddsSizeCheck = ddsBytes[4];
             if (ddsSizeCheck != 124)
