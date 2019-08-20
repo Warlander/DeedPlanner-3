@@ -208,8 +208,13 @@ namespace Warlander.Deedplanner.Graphics
                 bool hasShininess = source.ReadBoolean();
                 if (hasShininess)
                 {
-                    material.SetFloat(Glossiness, source.ReadSingle() / 100);
+                    float glossiness = source.ReadSingle() / 100;
+                    if (glossiness > 1)
+                    {
+                        glossiness = 0;
+                    }
                     
+                    material.SetFloat(Glossiness, glossiness);
                 }
                 else
                 {
