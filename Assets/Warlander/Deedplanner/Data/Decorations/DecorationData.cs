@@ -14,10 +14,12 @@ namespace Warlander.Deedplanner.Data.Decorations
         public bool CenterOnly { get; private set; }
         public bool CornerOnly { get; private set; }
         public bool Floating { get; private set; }
+        public bool Tree { get; private set; }
+        public bool Bush { get; private set; }
 
         public Materials Materials { get; private set; }
 
-        public void Initialize(Model model, string name, string shortName, string type, bool centerOnly, bool cornerOnly, bool floating, Materials materials)
+        public void Initialize(Model model, string name, string shortName, string type, bool centerOnly, bool cornerOnly, bool floating, bool tree, bool bush, Materials materials)
         {
             Model = model;
             Name = name;
@@ -26,6 +28,8 @@ namespace Warlander.Deedplanner.Data.Decorations
             CenterOnly = centerOnly;
             CornerOnly = cornerOnly;
             Floating = floating;
+            Tree = tree;
+            Bush = bush;
 
             if (materials != null)
             {

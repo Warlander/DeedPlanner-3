@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 using UnityEngine;
+using UnityEngine.Assertions.Comparers;
 using Warlander.Deedplanner.Data.Caves;
+using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
@@ -240,7 +242,7 @@ namespace Warlander.Deedplanner.Data
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, floor));
                 return floor;
             }
-            else if (!data && tileEntity)
+            if (!data && tileEntity)
             {
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, null));
                 return null;
@@ -251,7 +253,7 @@ namespace Warlander.Deedplanner.Data
 
         private Floor CreateNewFloor(EntityData entity, FloorData data, FloorOrientation orientation)
         {
-            GameObject floorObject = new GameObject("Floor " + entity.Floor, typeof(Floor));
+            GameObject floorObject = new GameObject("Floor " + data.Name, typeof(Floor));
             Floor floor = floorObject.GetComponent<Floor>();
             floor.Initialize(this, data, orientation);
             Map.AddEntityToMap(floorObject, entity.Floor);
@@ -276,7 +278,7 @@ namespace Warlander.Deedplanner.Data
                 Map.RecalculateRoofs();
                 return roof;
             }
-            else if (!data && tileEntity)
+            if (!data && tileEntity)
             {
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, null));
                 Map.RecalculateRoofs();
@@ -288,7 +290,7 @@ namespace Warlander.Deedplanner.Data
 
         private Roof CreateNewRoof(EntityData entity, RoofData data)
         {
-            GameObject roofObject = new GameObject("Roof " + entity.Floor, typeof(Roof));
+            GameObject roofObject = new GameObject("Roof " + data.Name, typeof(Roof));
             Roof roof = roofObject.GetComponent<Roof>();
             roof.Initialize(this, data);
 
@@ -357,7 +359,7 @@ namespace Warlander.Deedplanner.Data
         private Wall CreateNewVerticalWall(EntityData entity, WallData data, bool reversed)
         {
             int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 0, 1).GetHeightForFloor(entity.Floor);
-            GameObject wallObject = new GameObject("Vertical Wall " + entity.Floor, typeof(Wall));
+            GameObject wallObject = new GameObject("Vertical Wall " + data.Name, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
             wall.Initialize(this, data, reversed, entity.IsGroundFloor, slopeDifference);
             wallObject.transform.rotation = Quaternion.Euler(0, 90, 0);
@@ -426,7 +428,7 @@ namespace Warlander.Deedplanner.Data
         private Wall CreateNewHorizontalWall(EntityData entity, WallData data, bool reversed)
         {
             int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 1, 0).GetHeightForFloor(entity.Floor);
-            GameObject wallObject = new GameObject("Horizontal Wall " + entity.Floor, typeof(Wall));
+            GameObject wallObject = new GameObject("Horizontal Wall " + data.Name, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
             wall.Initialize(this, data, reversed, entity.IsGroundFloor, slopeDifference);
             wallObject.transform.rotation = Quaternion.Euler(0, 180, 0);
@@ -436,6 +438,49 @@ namespace Warlander.Deedplanner.Data
             UpdateSurfaceEntitiesPositions();
 
             return wall;
+        }
+
+        public Decoration SetDecoration(DecorationData data, Vector2 position, float rotation, int floor)
+        {
+            if (position.x < 0 || position.x >= 4 || position.y < 0 || position.y >= 4)
+            {
+                Debug.LogWarning("Attempted placing decoration at X: " + position.x + ", Y: " + position.y);
+                return null;
+            }
+            
+            FreeformEntityData decorationEntityData = new FreeformEntityData(floor, EntityType.Object, position.x, position.y);
+            TileEntity decorationEntity;
+            Entities.TryGetValue(decorationEntityData, out decorationEntity);
+            Decoration currentDecoration = decorationEntity as Decoration;
+            bool needsChange = !currentDecoration || currentDecoration.Data != data ||
+                               currentDecoration.Position != position || Math.Abs(currentDecoration.Rotation - rotation) > float.Epsilon;
+
+            if (data && needsChange)
+            {
+                Decoration decoration = CreateNewDecoration(decorationEntityData, data, position, rotation);
+                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, decorationEntityData, currentDecoration, decoration));
+                return decoration;
+            }
+
+            if (!data && decorationEntity)
+            {
+                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, decorationEntityData, currentDecoration, null));
+                return null;
+            }
+
+            return null;
+        }
+
+        private Decoration CreateNewDecoration(FreeformEntityData entity, DecorationData data, Vector2 position, float rotation)
+        {
+            GameObject decorationObject = new GameObject("Decoration " + data.Name, typeof(Decoration));
+            Decoration decoration = decorationObject.GetComponent<Decoration>();
+            decoration.Initialize(this, data, position, rotation);
+            Entities[entity] = decoration;
+            Map.AddEntityToMap(decorationObject, entity.Floor);
+            UpdateSurfaceEntitiesPositions();
+
+            return decoration;
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
@@ -545,6 +590,9 @@ namespace Warlander.Deedplanner.Data
                     case "roof":
                         DeserializeRoof(childElement, floor);
                         break;
+                    case "object":
+                        DeserializeDecoration(childElement, floor);
+                        break;
                 }
             }
         }
@@ -557,6 +605,7 @@ namespace Warlander.Deedplanner.Data
             if (!data)
             {
                 Debug.LogWarning("Unable to load floor " + id);
+                return;
             }
 
             string orientationString = element.GetAttribute("orientation");
@@ -588,6 +637,7 @@ namespace Warlander.Deedplanner.Data
             if (!data)
             {
                 Debug.LogWarning("Unable to load wall " + id);
+                return;
             }
             
             bool horizontal = (element.Name.Equals("hWall", StringComparison.OrdinalIgnoreCase));
@@ -611,11 +661,45 @@ namespace Warlander.Deedplanner.Data
             if (!data)
             {
                 Debug.LogWarning("Unable to load roof " + id);
+                return;
             }
             
             SetRoof(data, floor);
         }
 
+        public void DeserializeDecoration(XmlElement element, int floor)
+        {
+            string id = element.GetAttribute("id");
+            string positionString = element.GetAttribute("position");
+            string rotationString = element.GetAttribute("rotation");
+            string xString = element.GetAttribute("x");
+            string yString = element.GetAttribute("y");
+            
+            DecorationData data;
+            Database.Decorations.TryGetValue(id, out data);
+            if (!data)
+            {
+                Debug.LogWarning("Unable to load decoration " + id);
+                return;
+            }
+
+            Vector2 position;
+            if (string.IsNullOrEmpty(xString) || string.IsNullOrEmpty(yString))
+            {
+                position = DecorationPositionUtils.ParseDecorationPositionEnum(positionString);
+            }
+            else
+            {
+                float x = float.Parse(xString, CultureInfo.InvariantCulture);
+                float y = float.Parse(yString, CultureInfo.InvariantCulture);
+                position = new Vector2(x, y);
+            }
+
+            float rotation = float.Parse(rotationString, CultureInfo.InvariantCulture);
+
+            SetDecoration(data, position, rotation, floor);
+        }
+        
         public void Refresh()
         {
             RefreshSurfaceMesh();
@@ -677,6 +761,11 @@ namespace Warlander.Deedplanner.Data
 
         private void UpdateSurfaceEntitiesPositions()
         {
+            if (Edge)
+            {
+                return;
+            }
+            
             foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
             {
                 EntityData data = pair.Key;
@@ -691,6 +780,11 @@ namespace Warlander.Deedplanner.Data
 
         private void UpdateCaveEntitiesPositions()
         {
+            if (Edge)
+            {
+                return;
+            }
+            
             foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
             {
                 EntityData data = pair.Key;
@@ -705,7 +799,18 @@ namespace Warlander.Deedplanner.Data
 
         private void UpdateEntityPosition(EntityData data, TileEntity entity)
         {
-            entity.transform.localPosition = new Vector3(X * 4, SurfaceHeight * 0.1f + data.Floor * 3f, Y * 4);
+            if (data is FreeformEntityData freeformData)
+            {
+                float x = X * 4 + freeformData.X;
+                float z = Y * 4 + freeformData.Y;
+                float interpolatedHeight = Map.GetInterpolatedHeight(x, z);
+                entity.transform.localPosition = new Vector3(x, interpolatedHeight + freeformData.Floor * 3f, z);
+            }
+            else
+            {
+                entity.transform.localPosition = new Vector3(X * 4, SurfaceHeight * 0.1f + data.Floor * 3f, Y * 4);
+            }
+            
             if (data.Type == EntityType.Hfence || data.Type == EntityType.Hwall)
             {
                 int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 1, 0).GetHeightForFloor(entity.Floor);

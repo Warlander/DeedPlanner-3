@@ -391,6 +391,8 @@ namespace Warlander.Deedplanner.Data
                 bool centerOnly = type == "centered";
                 bool cornerOnly = type == "corner";
                 bool floating = type == "floating";
+                bool tree = type == "tree";
+                bool bush = type == "bush";
 
                 Debug.Log("Loading object " + name);
 
@@ -410,7 +412,7 @@ namespace Warlander.Deedplanner.Data
                     switch (child.LocalName)
                     {
                         case "model":
-                            model = new Model(child, LayerMasks.ObjectLayer);
+                            model = new Model(child, LayerMasks.DecorationLayer);
                             break;
                         case "materials":
                             materials = new Materials(child);
@@ -422,8 +424,8 @@ namespace Warlander.Deedplanner.Data
                 }
 
                 DecorationData data = ScriptableObject.CreateInstance<DecorationData>();
-                data.Initialize(model, name, shortName, type, centerOnly, cornerOnly, floating, materials);
-                Database.Objects[shortName] = data;
+                data.Initialize(model, name, shortName, type, centerOnly, cornerOnly, floating, tree, bush, materials);
+                Database.Decorations[shortName] = data;
 
                 foreach (string[] category in categories)
                 {

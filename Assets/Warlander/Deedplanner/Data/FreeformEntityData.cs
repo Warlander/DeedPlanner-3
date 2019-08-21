@@ -1,15 +1,15 @@
 ﻿using System.Globalization;
 using System.Xml;
 
-namespace Warlander.Deedplanner.Data.Decorations
+namespace Warlander.Deedplanner.Data
 {
-    public class DecorationEntityData : EntityData
+    public class FreeformEntityData : EntityData
     {
 
         public float X { get; }
         public float Y { get; }
 
-        public DecorationEntityData(int floor, EntityType type, float x, float y) : base(floor, type)
+        public FreeformEntityData(int floor, EntityType type, float x, float y) : base(floor, type)
         {
             X = x;
             Y = y;
@@ -23,7 +23,7 @@ namespace Warlander.Deedplanner.Data.Decorations
         
         public override bool Equals(object other)
         {
-            if (!(other is DecorationEntityData data))
+            if (!(other is FreeformEntityData data))
             {
                 return false;
             }
