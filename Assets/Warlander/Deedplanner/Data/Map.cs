@@ -341,7 +341,7 @@ namespace Warlander.Deedplanner.Data
 
             return 0;
         }
-
+        
         public void Serialize(XmlDocument document, XmlElement localRoot)
         {
             // localRoot for map is always null at start, we create it

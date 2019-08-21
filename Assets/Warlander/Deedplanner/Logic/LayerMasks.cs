@@ -10,7 +10,7 @@ namespace Warlander.Deedplanner.Logic
         public const int GroundLayer = 10;
         public const int FloorRoofLayer = 11;
         public const int WallLayer = 12;
-        public const int ObjectLayer = 13;
+        public const int DecorationLayer = 13;
         public const int BridgeLayer = 14;
 
         // Masks from layers to use in raytracer
@@ -18,7 +18,7 @@ namespace Warlander.Deedplanner.Logic
         public const int GroundMask = 1 << GroundLayer;
         public const int FloorRoofMask = 1 << FloorRoofLayer;
         public const int WallMask = 1 << WallLayer;
-        public const int ObjectMask = 1 << ObjectLayer;
+        public const int DecorationMask = 1 << DecorationLayer;
         public const int BridgeMask = 1 << BridgeLayer;
 
         // Combined masks to toggle what is raytraced for given feature
@@ -28,7 +28,7 @@ namespace Warlander.Deedplanner.Logic
         public const int FloorEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
         public const int RoofEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
         public const int WallEditMask = TileMask | GroundMask | WallMask | BridgeMask;
-        public const int ObjectEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | ObjectMask | BridgeMask;
+        public const int DecorationEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | DecorationMask | BridgeMask;
         public const int LabelEditMask = GroundMask;
         public const int BorderEditMask = GroundMask;
         public const int BridgeEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
@@ -50,7 +50,7 @@ namespace Warlander.Deedplanner.Logic
                 case Tab.Walls:
                     return WallEditMask;
                 case Tab.Objects:
-                    return ObjectEditMask;
+                    return DecorationEditMask;
                 case Tab.Labels:
                     return LabelEditMask;
                 case Tab.Borders:

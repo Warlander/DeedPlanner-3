@@ -9,12 +9,11 @@ namespace Warlander.Deedplanner.Data.Floors
     {
 
         private Tile tile;
+        private GameObject model;
 
         public FloorData Data { get; private set; }
         public FloorOrientation Orientation { get; private set; }
         public override Materials Materials => Data.Materials;
-
-        public GameObject Model { get; private set; }
 
         public override Tile Tile => tile;
 
@@ -27,22 +26,22 @@ namespace Warlander.Deedplanner.Data.Floors
             Data = data;
             Orientation = orientation;
 
-            Model = Data.Model.CreateOrGetModel();
-            Model.transform.SetParent(transform);
+            model = Data.Model.CreateOrGetModel();
+            model.transform.SetParent(transform);
             if (orientation == FloorOrientation.Right)
             {
-                Model.transform.localRotation = Quaternion.Euler(0, 90, 0);
-                Model.transform.localPosition = new Vector3(0, 0, -4);
+                model.transform.localRotation = Quaternion.Euler(0, 90, 0);
+                model.transform.localPosition = new Vector3(0, 0, -4);
             }
             else if (orientation == FloorOrientation.Down)
             {
-                Model.transform.localRotation = Quaternion.Euler(0, 180, 0);
-                Model.transform.localPosition = new Vector3(-4, 0, -4);
+                model.transform.localRotation = Quaternion.Euler(0, 180, 0);
+                model.transform.localPosition = new Vector3(-4, 0, -4);
             }
             else if (orientation == FloorOrientation.Left)
             {
-                Model.transform.localRotation = Quaternion.Euler(0, 270, 0);
-                Model.transform.localPosition = new Vector3(-4, 0, 0);
+                model.transform.localRotation = Quaternion.Euler(0, 270, 0);
+                model.transform.localPosition = new Vector3(-4, 0, 0);
             }
 
             if (!GetComponent<BoxCollider>())
