@@ -471,6 +471,20 @@ namespace Warlander.Deedplanner.Data
             return null;
         }
 
+        public List<Decoration> GetDecorations()
+        {
+            List<Decoration> decorations = new List<Decoration>();
+            foreach (TileEntity tileEntity in Entities.Values)
+            {
+                if (tileEntity is Decoration decoration)
+                {
+                    decorations.Add(decoration);
+                }
+            }
+
+            return decorations;
+        }
+        
         private Decoration CreateNewDecoration(FreeformEntityData entity, DecorationData data, Vector2 position, float rotation)
         {
             GameObject decorationObject = new GameObject("Decoration " + data.Name, typeof(Decoration));

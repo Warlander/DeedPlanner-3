@@ -29928,6 +29928,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5de956b52e0008e49aaa1a53851c9c86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allowedGhostColor: {r: 0, g: 1, b: 0, a: 1}
+  disabledGhostColor: {r: 1, g: 0, b: 0, a: 1}
+  minimumPlacementGap: 0.25
+  rotationEditSensitivity: 1
 --- !u!1 &1604953536
 GameObject:
   m_ObjectHideFlags: 0
