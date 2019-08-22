@@ -73,5 +73,15 @@ namespace Warlander.Deedplanner.Gui
             Application.Quit();
         }
 
+        public void OnPatreon()
+        {
+            Application.OpenURL("https://www.patreon.com/warlander");
+        }
+
+        public void OnPaypal()
+        {
+            Application.OpenURL("https://www.paypal.me/MCyranowicz/10eur");
+        }
+
     }
 }
