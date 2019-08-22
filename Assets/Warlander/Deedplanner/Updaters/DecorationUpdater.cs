@@ -271,7 +271,11 @@ namespace Warlander.Deedplanner.Updaters
             {
                 for (int y = -1; y <= 1; y++)
                 {
-                    decorations.AddRange(centralTile.Map.GetRelativeTile(centralTile, x, y).GetDecorations());
+                    Tile relativeTile = centralTile.Map.GetRelativeTile(centralTile, x, y);
+                    if (relativeTile)
+                    {
+                        decorations.AddRange(relativeTile.GetDecorations());
+                    }
                 }
             }
 
