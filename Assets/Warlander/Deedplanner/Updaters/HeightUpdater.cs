@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
 using UnityEngine;
@@ -56,6 +57,12 @@ namespace Warlander.Deedplanner.Updaters
         {
             anchorPlaneLine = Instantiate(GameManager.Instance.PlaneLinePrefab, transform);
             anchorPlaneLine.gameObject.SetActive(false);
+        }
+
+        private void Start()
+        {
+            dragSensitivityInput.text = Properties.Instance.HeightDragSensitivity.ToString(CultureInfo.InvariantCulture);
+            respectOriginalSlopesToggle.isOn = Properties.Instance.HeightRespectOriginalSlopes;
         }
         
         private void OnEnable()
@@ -183,6 +190,24 @@ namespace Warlander.Deedplanner.Updaters
             float dragSensitivity = 0;
             float.TryParse(dragSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out dragSensitivity);
             bool respectSlopes = respectOriginalSlopesToggle.isOn;
+
+            bool propertiesNeedSaving = false;
+            
+            if (Math.Abs(dragSensitivity - Properties.Instance.HeightDragSensitivity) > float.Epsilon)
+            {
+                Properties.Instance.HeightDragSensitivity = dragSensitivity;
+                propertiesNeedSaving = true;
+            }
+            if (respectSlopes != Properties.Instance.HeightRespectOriginalSlopes)
+            {
+                Properties.Instance.HeightRespectOriginalSlopes = respectSlopes;
+                propertiesNeedSaving = true;
+            }
+
+            if (propertiesNeedSaving)
+            {
+                Properties.Instance.SaveProperties();
+            }
             
             if (Input.GetMouseButtonDown(0))
             {

@@ -70,6 +70,7 @@ namespace Warlander.Deedplanner.Gui
         public void OnQuit()
         {
             // TODO: add auto-saving before quit logic
+            Properties.Instance.SaveProperties();
             Application.Quit();
         }
 
