@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Floors;
@@ -14,11 +17,14 @@ namespace Warlander.Deedplanner.Updaters
 
         private static readonly int ColorPropertyId = Shader.PropertyToID("_Color");
 
+        [SerializeField] private Toggle snapToGridToggle = null;
+        [SerializeField] private Toggle rotationSnappingToggle = null;
+        [SerializeField] private TMP_InputField rotationSensitivityInput = null;
+        
         [SerializeField] private Color allowedGhostColor = Color.green;
         [SerializeField] private Color disabledGhostColor = Color.red;
         [SerializeField] private float minimumPlacementGap = 0.25f;
-        [SerializeField] private float rotationEditSensitivity = 1f;
-        
+
         private DecorationData lastFrameData;
         private GameObject ghostObject;
 
@@ -46,6 +52,11 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Update()
         {
+            bool snapToGrid = snapToGridToggle.isOn;
+            bool rotationSnapping = rotationSnappingToggle.isOn;
+            float rotationEditSensitivity = 1;
+            float.TryParse(rotationSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out rotationEditSensitivity);
+            
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
             if (!raycast.transform)
             {
@@ -82,7 +93,7 @@ namespace Warlander.Deedplanner.Updaters
             
             if (!placingDecoration)
             {
-                position = CalculateCorrectedPosition(raycast.point, data);
+                position = CalculateCorrectedPosition(raycast.point, data, snapToGrid);
                 targetedTile = null;
                 if (gridTile)
                 {
@@ -158,6 +169,10 @@ namespace Warlander.Deedplanner.Updaters
                 Vector2 dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
                 Vector2 difference = dragEndPos - dragStartPos;
                 rotation = -difference.x * rotationEditSensitivity;
+                if (rotationSnapping)
+                {
+                    rotation = Mathf.Round(rotation / 45f) * 45f;
+                }
                 ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
             }
 
@@ -190,26 +205,31 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private Vector3 CalculateCorrectedPosition(Vector3 originalPosition, DecorationData data)
+        private Vector3 CalculateCorrectedPosition(Vector3 originalPosition, DecorationData data, bool snapToGrid)
         {
-            Vector3 position = originalPosition;
+            Vector3 pos = originalPosition;
             if (data.CenterOnly)
             {
-                position.x = Mathf.Floor(originalPosition.x / 4f) * 4f + 2f;
-                position.z = Mathf.Floor(originalPosition.z / 4f) * 4f + 2f;
+                pos.x = Mathf.Floor(originalPosition.x / 4f) * 4f + 2f;
+                pos.z = Mathf.Floor(originalPosition.z / 4f) * 4f + 2f;
             }
             else if (data.CornerOnly)
             {
-                position.x = Mathf.Round(originalPosition.x / 4f) * 4f;
-                position.z = Mathf.Round(originalPosition.z / 4f) * 4f;
+                pos.x = Mathf.Round(originalPosition.x / 4f) * 4f;
+                pos.z = Mathf.Round(originalPosition.z / 4f) * 4f;
+            }
+            else if (snapToGrid)
+            {
+                pos.x = Mathf.Floor(originalPosition.x / (4f / 3f)) * (4f / 3f) + (2f / 3f);
+                pos.z = Mathf.Floor(originalPosition.z / (4f / 3f)) * (4f / 3f) + (2f / 3f);
             }
 
             if (data.Floating)
             {
-                position.y = Mathf.Max(originalPosition.y, 0);
+                pos.y = Mathf.Max(originalPosition.y, 0);
             }
 
-            return position;
+            return pos;
         }
         
         private List<Decoration> GetAllNearbyDecorations(Tile centralTile)
