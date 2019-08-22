@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
 using UnityEngine;
@@ -44,6 +45,13 @@ namespace Warlander.Deedplanner.Updaters
             disabledGhostPropertyBlock = new MaterialPropertyBlock();
             disabledGhostPropertyBlock.SetColor(ColorPropertyId, disabledGhostColor);
         }
+
+        private void Start()
+        {
+            rotationSensitivityInput.text = Properties.Instance.DecorationRotationSensitivity.ToString(CultureInfo.InvariantCulture);
+            snapToGridToggle.isOn = Properties.Instance.DecorationSnapToGrid;
+            rotationSnappingToggle.isOn = Properties.Instance.DecorationRotationSnapping;
+        }
         
         private void OnEnable()
         {
@@ -56,6 +64,29 @@ namespace Warlander.Deedplanner.Updaters
             bool rotationSnapping = rotationSnappingToggle.isOn;
             float rotationEditSensitivity = 1;
             float.TryParse(rotationSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out rotationEditSensitivity);
+            
+            bool propertiesNeedSaving = false;
+            
+            if (Math.Abs(rotationEditSensitivity - Properties.Instance.DecorationRotationSensitivity) > float.Epsilon)
+            {
+                Properties.Instance.DecorationRotationSensitivity = rotationEditSensitivity;
+                propertiesNeedSaving = true;
+            }
+            if (snapToGrid != Properties.Instance.DecorationSnapToGrid)
+            {
+                Properties.Instance.DecorationRotationSnapping = snapToGrid;
+                propertiesNeedSaving = true;
+            }
+            if (rotationSnapping != Properties.Instance.DecorationRotationSnapping)
+            {
+                Properties.Instance.DecorationRotationSnapping = rotationSnapping;
+                propertiesNeedSaving = true;
+            }
+
+            if (propertiesNeedSaving)
+            {
+                Properties.Instance.SaveProperties();
+            }
             
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
             if (!raycast.transform)

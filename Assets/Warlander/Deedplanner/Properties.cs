@@ -52,6 +52,16 @@ namespace Warlander.Deedplanner
         public float IsoMouseSensitivity = 0.2f;
         public float IsoMovementSpeed = 16f;
 
+        public float HeightDragSensitivity = 0.5f;
+        public bool HeightRespectOriginalSlopes = true;
+
+        public bool WallAutomaticReverse = true;
+        public bool WallReverse = false;
+
+        public float DecorationRotationSensitivity = 1f;
+        public bool DecorationSnapToGrid = false;
+        public bool DecorationRotationSnapping = false;
+
         public WaterQuality WaterQuality;
 
         private WaterQuality WaterDefaultQuality {
@@ -81,6 +91,9 @@ namespace Warlander.Deedplanner
                 xmlSerializer.Serialize(writer, this);
             }
             PlayerPrefs.SetString(PropertiesKey, builder.ToString());
+            PlayerPrefs.Save();
+            
+            Debug.Log("Properties saved");
             
             Saved?.Invoke();
         }

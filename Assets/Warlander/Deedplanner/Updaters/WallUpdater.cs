@@ -15,6 +15,12 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private Toggle reverseToggle = null;
         [SerializeField] private Toggle automaticReverseToggle = null;
 
+        private void Start()
+        {
+            automaticReverseToggle.isOn = Properties.Instance.WallAutomaticReverse;
+            reverseToggle.isOn = Properties.Instance.WallReverse;
+        }
+        
         private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Borders;
@@ -44,6 +50,25 @@ namespace Warlander.Deedplanner.Updaters
             int x = -1;
             int y = -1;
             bool horizontal = false;
+            
+            bool propertiesNeedSaving = false;
+            
+            if (automaticReverse != Properties.Instance.WallAutomaticReverse)
+            {
+                Properties.Instance.WallAutomaticReverse = automaticReverse;
+                propertiesNeedSaving = true;
+            }
+            if (reverse != Properties.Instance.WallReverse)
+            {
+                Properties.Instance.WallReverse = reverse;
+                propertiesNeedSaving = true;
+            }
+
+            if (propertiesNeedSaving)
+            {
+                Properties.Instance.SaveProperties();
+            }
+            
             if (wallEntity && wallEntity.Valid)
             {
                 floor = tileEntity.Floor;
