@@ -42,6 +42,7 @@ namespace Warlander.Deedplanner.Gui
             }
             
             GameManager.Instance.LoadMap(result);
+            gameObject.SetActive(false);
         }
 
         private void LoadFileStandalone()
@@ -95,6 +96,7 @@ namespace Warlander.Deedplanner.Gui
             string pasteString = Encoding.Default.GetString(pasteBytes);
 
             GameManager.Instance.LoadMap(pasteString);
+            gameObject.SetActive(false);
         }
         
         private byte[] Decompress(byte[] gzip)
