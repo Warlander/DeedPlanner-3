@@ -8,30 +8,28 @@ namespace Warlander.Deedplanner.Data.Grounds
 {
     public class Ground : TileEntity
     {
-
-        private Tile tile;
+        
         private GroundData data;
         private RoadDirection roadDirection = RoadDirection.Center;
 
         private MeshRenderer meshRenderer;
         public MeshCollider Collider { get; private set; }
-
-        public override Tile Tile => tile;
+        
         public override Materials Materials => null;
 
         public GroundData Data {
             get => data;
-            set => tile.Map.CommandManager.AddToActionAndExecute(new GroundDataChangeCommand(this, data, value));
+            set => Tile.Map.CommandManager.AddToActionAndExecute(new GroundDataChangeCommand(this, data, value));
         }
 
         public RoadDirection RoadDirection {
             get => roadDirection;
-            set => tile.Map.CommandManager.AddToActionAndExecute(new RoadDirectionChangeCommand(this, roadDirection, value));
+            set => Tile.Map.CommandManager.AddToActionAndExecute(new RoadDirectionChangeCommand(this, roadDirection, value));
         }
 
         public void Initialize(Tile tile, GroundData data, Mesh mesh)
         {
-            this.tile = tile;
+            Tile = tile;
 
             gameObject.layer = LayerMasks.GroundLayer;
             if (!meshRenderer)
@@ -65,10 +63,10 @@ namespace Warlander.Deedplanner.Data.Grounds
         private void RefreshAllState()
         {
             RefreshState();
-            tile.Map[tile.X - 1, tile.Y]?.Ground.RefreshState();
-            tile.Map[tile.X + 1, tile.Y]?.Ground.RefreshState();
-            tile.Map[tile.X, tile.Y - 1]?.Ground.RefreshState();
-            tile.Map[tile.X, tile.Y + 1]?.Ground.RefreshState();
+            Tile.Map[Tile.X - 1, Tile.Y]?.Ground.RefreshState();
+            Tile.Map[Tile.X + 1, Tile.Y]?.Ground.RefreshState();
+            Tile.Map[Tile.X, Tile.Y - 1]?.Ground.RefreshState();
+            Tile.Map[Tile.X, Tile.Y + 1]?.Ground.RefreshState();
         }
         
         private void RefreshState()
@@ -83,10 +81,10 @@ namespace Warlander.Deedplanner.Data.Grounds
             }
             else
             {
-                Material matW = GameManager.Instance.Map.GetRelativeTile(tile, -1, 0)?.Ground.Data.Tex3d.Material;
-                Material matE = GameManager.Instance.Map.GetRelativeTile(tile, 1, 0)?.Ground.Data.Tex3d.Material;
-                Material matS = GameManager.Instance.Map.GetRelativeTile(tile, 0, -1)?.Ground.Data.Tex3d.Material;
-                Material matN = GameManager.Instance.Map.GetRelativeTile(tile, 0, 1)?.Ground.Data.Tex3d.Material;
+                Material matW = GameManager.Instance.Map.GetRelativeTile(Tile, -1, 0)?.Ground.Data.Tex3d.Material;
+                Material matE = GameManager.Instance.Map.GetRelativeTile(Tile, 1, 0)?.Ground.Data.Tex3d.Material;
+                Material matS = GameManager.Instance.Map.GetRelativeTile(Tile, 0, -1)?.Ground.Data.Tex3d.Material;
+                Material matN = GameManager.Instance.Map.GetRelativeTile(Tile, 0, 1)?.Ground.Data.Tex3d.Material;
 
                 if (roadDirection == RoadDirection.NW || roadDirection == RoadDirection.SW || !matW)
                 {
@@ -152,7 +150,7 @@ namespace Warlander.Deedplanner.Data.Grounds
         {
             StringBuilder build = new StringBuilder();
 
-            build.Append("X: ").Append(tile.X).Append(" Y: ").Append(tile.Y).AppendLine();
+            build.Append("X: ").Append(Tile.X).Append(" Y: ").Append(Tile.Y).AppendLine();
             build.Append(data.Name);
             
             return build.ToString();

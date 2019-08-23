@@ -8,21 +8,19 @@ namespace Warlander.Deedplanner.Data.Decorations
 {
     public class Decoration : FreeformTileEntity
     {
-        private Tile tile;
         private Vector2 position;
         private GameObject model;
         
         public DecorationData Data { get; private set; }
         public override Materials Materials => null;
         public float Rotation { get; private set; }
-
-        public override Tile Tile => tile;
+        
         public override Vector2 Position => position;
         public override bool AlignToSlope => !Data.Floating && !Data.CenterOnly && !Data.CornerOnly && !Data.Tree && !Data.Bush;
 
         public void Initialize(Tile newTile, DecorationData data, Vector2 newPosition, float newRotation)
         {
-            tile = newTile;
+            Tile = newTile;
             
             gameObject.layer = LayerMasks.DecorationLayer;
 

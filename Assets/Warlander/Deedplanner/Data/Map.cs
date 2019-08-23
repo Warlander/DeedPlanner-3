@@ -73,6 +73,42 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
+        public void Initialize(Map originalMap, int addLeft, int addRight, int addBottom, int addTop)
+        {
+            int finalWidth = originalMap.Width + addLeft + addRight;
+            int finalHeight = originalMap.Height + addTop + addBottom;
+            PreInitialize(finalWidth, finalHeight);
+
+            int pasteBeginX = Math.Max(0, addLeft);
+            int pasteBeginY = Math.Max(0, addBottom);
+            int pasteEndX = Math.Min(Width, originalMap.Width + addLeft);
+            int pasteEndY = Math.Min(Height, originalMap.Height + addBottom);
+            
+            for (int x = pasteBeginX; x <= pasteEndX; x++)
+            {
+                for (int y = pasteBeginY; y <= pasteEndY; y++)
+                {
+                    int copyX = x - addLeft;
+                    int copyY = y - addBottom;
+                    
+                    this[x, y].PasteTile(originalMap[copyX, copyY]);
+                }
+            }
+            
+            for (int i = 0; i <= Width; i++)
+            {
+                for (int i2 = 0; i2 <= Height; i2++)
+                {
+                    this[i, i2].Refresh();
+                    RecalculateSurfaceHeight(i, i2);
+                }
+            }
+            
+            RecalculateHeights();
+            RecalculateRoofs();
+            CommandManager.ForgetAction();
+        }
+        
         public void Initialize(int width, int height)
         {
             PreInitialize(width, height);
