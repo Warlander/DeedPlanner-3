@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Logic;
@@ -8,8 +9,6 @@ namespace Warlander.Deedplanner.Data.Walls
     public class Wall : TileEntity
     {
 
-        private Tile tile;
-
         public WallData Data { get; private set; }
         public bool Reversed { get; private set; }
         public override Materials Materials => Data.Materials;
@@ -17,11 +16,9 @@ namespace Warlander.Deedplanner.Data.Walls
         public GameObject Model { get; private set; }
         private MeshCollider meshCollider;
 
-        public override Tile Tile => tile;
-
         public void Initialize(Tile tile, WallData data, bool reversed, bool firstFloor, int slopeDifference)
         {
-            this.tile = tile;
+            Tile = tile;
             gameObject.layer = LayerMasks.WallLayer;
 
             if (!GetComponent<MeshCollider>())
@@ -134,7 +131,7 @@ namespace Warlander.Deedplanner.Data.Walls
         {
             StringBuilder build = new StringBuilder();
 
-            build.Append("X: ").Append(tile.X).Append(" Y: ").Append(tile.Y).AppendLine();
+            build.Append("X: ").Append(Tile.X).Append(" Y: ").Append(Tile.Y).AppendLine();
             build.Append(Data.Name);
             
             return build.ToString();

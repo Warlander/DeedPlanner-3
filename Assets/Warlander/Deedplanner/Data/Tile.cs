@@ -119,6 +119,35 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
+        public void PasteTile(Tile otherTile)
+        {
+            surfaceHeight = otherTile.surfaceHeight;
+            caveHeight = otherTile.caveHeight;
+            caveSize = otherTile.caveSize;
+
+            Ground.Data = otherTile.Ground.Data;
+            Ground.RoadDirection = otherTile.Ground.RoadDirection;
+
+            Cave.Data = otherTile.Cave.Data;
+
+            foreach (KeyValuePair<EntityData,TileEntity> pair in otherTile.Entities)
+            {
+                EntityData data = pair.Key;
+                TileEntity entity = pair.Value;
+                PasteEntity(data, entity);
+            }
+            
+            UpdateSurfaceEntitiesPositions();
+            UpdateCaveEntitiesPositions();
+        }
+
+        private void PasteEntity(EntityData data, TileEntity entity)
+        {
+            entity.Tile = this;
+            Entities[data] = entity;
+            Map.AddEntityToMap(entity.gameObject, data.Floor);
+        }
+
         private Mesh InitializeHeightMesh()
         {
             Vector3[] vertices = { new Vector3(0, 0, 0), new Vector3(4, 0, 0), new Vector3(0, 0, 4), new Vector3(4, 0, 4), new Vector3(2, 0, 2) };

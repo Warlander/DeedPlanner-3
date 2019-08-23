@@ -79,6 +79,16 @@ namespace Warlander.Deedplanner.Logic
             Map.Initialize(width, height);
         }
 
+        public void ResizeMap(int left, int right, int bottom, int top)
+        {
+            Map.gameObject.SetActive(false);
+            GameObject mapObject = new GameObject("Map", typeof(Map));
+            Map newMap = mapObject.GetComponent<Map>();
+            newMap.Initialize(Map, left, right, bottom, top);
+            Destroy(Map.gameObject);
+            Map = newMap;
+        }
+
         public void ClearMap()
         {
             int width = Map.Width;

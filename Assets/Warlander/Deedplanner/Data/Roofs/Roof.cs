@@ -8,19 +8,15 @@ namespace Warlander.Deedplanner.Data.Roofs
     public class Roof : TileEntity
     {
 
-        private Tile tile;
-
         public RoofData Data { get; private set; }
         public override Materials Materials => Data.Materials;
 
         public int RoofLevel { get; private set; }
         public GameObject Model { get; private set; }
 
-        public override Tile Tile => tile;
-
         public void Initialize(Tile tile, RoofData data)
         {
-            this.tile = tile;
+            Tile = tile;
 
             gameObject.layer = LayerMasks.FloorRoofLayer;
 
@@ -118,7 +114,7 @@ namespace Warlander.Deedplanner.Data.Roofs
         {
             StringBuilder build = new StringBuilder();
 
-            build.Append("X: ").Append(tile.X).Append(" Y: ").Append(tile.Y).AppendLine();
+            build.Append("X: ").Append(Tile.X).Append(" Y: ").Append(Tile.Y).AppendLine();
             build.Append(Data.Name);
             if (Application.isEditor)
             {

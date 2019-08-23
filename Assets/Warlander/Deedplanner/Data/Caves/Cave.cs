@@ -6,11 +6,8 @@ namespace Warlander.Deedplanner.Data.Caves
 {
     public class Cave : TileEntity, IXMLSerializable
     {
-
-        private Tile tile;
-        private CaveData data;
         
-        public override Tile Tile => tile;
+        private CaveData data;
         public override Materials Materials => null;
 
         public CaveData Data {
@@ -20,7 +17,7 @@ namespace Warlander.Deedplanner.Data.Caves
 
         public void Initialize(Tile tile, CaveData data)
         {
-            this.tile = tile;
+            Tile = tile;
             this.data = data;
             gameObject.layer = LayerMasks.GroundLayer;
         }
