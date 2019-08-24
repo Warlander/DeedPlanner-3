@@ -10,15 +10,15 @@ namespace Warlander.Deedplanner.Gui
     public class ResizeWindow : MonoBehaviour
     {
 
-        [SerializeField] private TMP_InputField leftInput;
-        [SerializeField] private TMP_InputField rightInput;
-        [SerializeField] private TMP_InputField bottomInput;
-        [SerializeField] private TMP_InputField topInput;
+        [SerializeField] private TMP_InputField leftInput = null;
+        [SerializeField] private TMP_InputField rightInput = null;
+        [SerializeField] private TMP_InputField bottomInput = null;
+        [SerializeField] private TMP_InputField topInput = null;
         
-        [SerializeField] private TMP_Text originalWidthText;
-        [SerializeField] private TMP_Text originalHeightText;
-        [SerializeField] private TMP_Text newWidthText;
-        [SerializeField] private TMP_Text newHeightText;
+        [SerializeField] private TMP_Text originalWidthText = null;
+        [SerializeField] private TMP_Text originalHeightText = null;
+        [SerializeField] private TMP_Text newWidthText = null;
+        [SerializeField] private TMP_Text newHeightText = null;
 
         private void OnEnable()
         {
