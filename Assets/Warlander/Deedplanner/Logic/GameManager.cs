@@ -113,12 +113,18 @@ namespace Warlander.Deedplanner.Logic
                 Debug.LogError(webRequest.error);
             }
             
+            Debug.Log("Map downloaded, checking if compressed");
             string requestText = webRequest.downloadHandler.text;
-            if (!mapUri.IsFile)
+            try
             {
                 byte[] requestBytes = Convert.FromBase64String(requestText);
                 byte[] decompressedBytes = DecompressGzip(requestBytes);
                 requestText = Encoding.UTF8.GetString(decompressedBytes, 0, decompressedBytes.Length);
+                Debug.Log("Compressed map, decompressed");
+            }
+            catch
+            {
+                Debug.Log("Not compressed map");
             }
 
             LoadMap(requestText);

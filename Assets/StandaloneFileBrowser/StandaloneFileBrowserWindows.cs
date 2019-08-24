@@ -1,9 +1,9 @@
+#if UNITY_STANDALONE_WIN
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Ookii.Dialogs;
-#if UNITY_STANDALONE_WIN
 
 namespace StandaloneFileBrowser {
     // For fullscreen support

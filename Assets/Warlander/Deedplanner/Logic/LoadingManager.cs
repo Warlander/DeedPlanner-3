@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Logic
 {
@@ -37,7 +38,23 @@ namespace Warlander.Deedplanner.Logic
 
             Debug.Log("Creating map");
             loadingBar.value = 0.5f;
-            if (DebugManager.Instance != null && DebugManager.Instance.LoadTestMap)
+
+            string mapLocationString = "";
+            if (Properties.Web)
+            {
+                mapLocationString = JavaScriptUtils.GetMapLocationString();
+                if (!string.IsNullOrEmpty(mapLocationString))
+                {
+                    mapLocationString = LoadingUtils.CreateDirectPastebinLink(mapLocationString);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(mapLocationString))
+            {
+                text.text = "Loading map from web address";
+                yield return GameManager.Instance.LoadMap(new Uri(mapLocationString));
+            }
+            else if (DebugManager.Instance != null && DebugManager.Instance.LoadTestMap)
             {
                 text.text = "Loading debug map";
                 string fullTestMapLocation = Path.Combine(Application.streamingAssetsPath, "./Special/Maps/Test Map.MAP");

@@ -73,21 +73,7 @@ namespace Warlander.Deedplanner.Gui
                 return;
             }
 
-            string requestLink;
-            if (rawLink.Contains("raw"))
-            {
-                requestLink = rawLink;
-            }
-            else
-            {
-                string pasteId = rawLink.Substring(rawLink.LastIndexOf("/") + 1);
-                requestLink = "https://pastebin.com/raw.php?i=" + pasteId;
-            }
-
-            if (Properties.Web)
-            {
-                requestLink = "https://cors-anywhere.herokuapp.com/" + requestLink;
-            }
+            string requestLink = LoadingUtils.CreateDirectPastebinLink(rawLink);
 
             byte[] base64Bytes = WebUtils.ReadUrlToByteArray(requestLink);
             string base64String = Encoding.Default.GetString(base64Bytes);
