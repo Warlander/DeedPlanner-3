@@ -1,6 +1,6 @@
 mergeInto(LibraryManager.library, {
 
-    LoadResourceNative: function (location) {
+    LoadResourceNative: function(location) {
         var locationString = Pointer_stringify(location);
         var request = new XMLHttpRequest();
         request.open('GET', locationString, false);
@@ -19,8 +19,22 @@ mergeInto(LibraryManager.library, {
         return pointer;
     },
     
-    GetLastLoadedResourceLengthNative : function () {
+    GetLastLoadedResourceLengthNative : function() {
         return window.lastLoadedResourceLength;
+    },
+    
+    GetMapLocationString : function() {
+        var urlString = window.location.href;
+        var url = new URL(urlString);
+        var mapLocation = url.searchParams.get("map");
+        if (mapLocation == null) {
+            mapLocation = "";
+        }
+
+        var bufferSize = lengthBytesUTF8(mapLocation) + 1;
+        var buffer = _malloc(bufferSize);
+        stringToUTF8(mapLocation, buffer, bufferSize);
+        return buffer;
     },
 
     DownloadNative : function(name, content) {

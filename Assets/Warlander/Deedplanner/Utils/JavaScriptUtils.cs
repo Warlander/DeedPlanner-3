@@ -12,6 +12,9 @@ namespace Warlander.Deedplanner.Utils
         private static extern int GetLastLoadedResourceLengthNative();
         
         [DllImport("__Internal")]
+        public static extern string GetMapLocationString();
+        
+        [DllImport("__Internal")]
         public static extern void DownloadNative(string name, string content);
 
         [DllImport("__Internal")]
