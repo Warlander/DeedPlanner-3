@@ -295,7 +295,6 @@ namespace Warlander.Deedplanner.Graphics
 
             Texture2D dxtTexture = new Texture2D(width, height, textureFormat, false);
             dxtTexture.LoadRawTextureData(dxtBytes);
-            dxtTexture.Apply();
 
             Texture2D finalTexture = new Texture2D(dxtTexture.width, dxtTexture.height);
             Color[] pixelBuffer = dxtTexture.GetPixels(0, 0, dxtTexture.width, dxtTexture.height);
