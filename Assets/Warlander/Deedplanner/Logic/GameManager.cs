@@ -176,6 +176,8 @@ namespace Warlander.Deedplanner.Logic
             CheckUpdater(borderUpdater, newUpdater);
             CheckUpdater(bridgeUpdater, newUpdater);
             CheckUpdater(mirrorUpdater, newUpdater);
+            
+            Map.RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
         }
 
         private void CheckUpdater(MonoBehaviour updater, MonoBehaviour check)
