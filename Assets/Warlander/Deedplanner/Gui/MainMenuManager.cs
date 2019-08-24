@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
+using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Gui
 {
@@ -26,7 +28,7 @@ namespace Warlander.Deedplanner.Gui
                 fullscreenButton.gameObject.SetActive(false);
             }
         }
-
+        
         public void OnResizeMap()
         {
             GuiManager.Instance.ResizeMapWindow.gameObject.SetActive(true);

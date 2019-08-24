@@ -2,6 +2,7 @@
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Roofs;
+using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
@@ -21,6 +22,7 @@ namespace Warlander.Deedplanner.Data
 
         private int renderedFloor;
         private bool renderEntireMap = true;
+        private bool renderGrid = true;
 
         public GridMesh SurfaceGridMesh { get; private set; }
         public GridMesh CaveGridMesh { get; private set; }
@@ -71,6 +73,16 @@ namespace Warlander.Deedplanner.Data
             set
             {
                 renderEntireMap = value;
+                UpdateFloorsRendering();
+            }
+        }
+
+        public bool RenderGrid
+        {
+            get => renderGrid;
+            set
+            {
+                renderGrid = value;
                 UpdateFloorsRendering();
             }
         }
@@ -215,6 +227,8 @@ namespace Warlander.Deedplanner.Data
 
             SurfaceGridMesh = PrepareGridMesh("Surface grid", surfaceGridRoot, false);
             CaveGridMesh = PrepareGridMesh("Cave grid", caveGridRoot, true);
+
+            RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
         }
 
         private void LateUpdate()
@@ -465,7 +479,7 @@ namespace Warlander.Deedplanner.Data
                 }
 
                 surfaceGridRoot.gameObject.SetActive(false);
-                caveGridRoot.gameObject.SetActive(true);
+                caveGridRoot.gameObject.SetActive(renderGrid);
 
                 caveGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
             }
@@ -495,7 +509,7 @@ namespace Warlander.Deedplanner.Data
                     }
                 }
 
-                surfaceGridRoot.gameObject.SetActive(true);
+                surfaceGridRoot.gameObject.SetActive(renderGrid);
                 caveGridRoot.gameObject.SetActive(false);
 
                 surfaceGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
