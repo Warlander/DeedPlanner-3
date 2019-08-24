@@ -38,6 +38,8 @@ namespace Warlander.Deedplanner.Data
         
         public Transform PlaneLineRoot { get; private set; }
 
+        private bool needsRoofUpdate = false;
+
         public Tile this[int x, int y]
         {
             get
@@ -215,6 +217,48 @@ namespace Warlander.Deedplanner.Data
             CaveGridMesh = PrepareGridMesh("Cave grid", caveGridRoot, true);
         }
 
+        private void LateUpdate()
+        {
+            if (needsRoofUpdate)
+            {
+                needsRoofUpdate = false;
+                RecalculateRoofsInternal();
+            }
+        }
+
+        private void RecalculateRoofsInternal()
+        {
+            for (int i = 0; i <= Width; i++)
+            {
+                for (int i2 = 0; i2 <= Height; i2++)
+                {
+                    for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
+                    {
+                        TileEntity entity = this[i, i2].GetTileContent(i3);
+                        if (entity && entity.GetType() == typeof(Roof))
+                        {
+                            ((Roof) this[i, i2].GetTileContent(i3)).RecalculateRoofLevel();
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i <= Width; i++)
+            {
+                for (int i2 = 0; i2 <= Height; i2++)
+                {
+                    for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
+                    {
+                        TileEntity entity = this[i, i2].GetTileContent(i3);
+                        if (entity && entity.GetType() == typeof(Roof))
+                        {
+                            ((Roof) this[i, i2].GetTileContent(i3)).RecalculateRoofModel();
+                        }
+                    }
+                }
+            }
+        }
+
         private GridMesh PrepareGridMesh(string name, Transform parent, bool cave)
         {
             GameObject gridObject = new GameObject(name, typeof(GridMesh));
@@ -320,35 +364,7 @@ namespace Warlander.Deedplanner.Data
 
         public void RecalculateRoofs()
         {
-            for (int i = 0; i <= Width; i++)
-            {
-                for (int i2 = 0; i2 <= Height; i2++)
-                {
-                    for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
-                    {
-                        TileEntity entity = this[i, i2].GetTileContent(i3);
-                        if (entity && entity.GetType() == typeof(Roof))
-                        {
-                            ((Roof) this[i, i2].GetTileContent(i3)).RecalculateRoofLevel();
-                        }
-                    }
-                }
-            }
-
-            for (int i = 0; i <= Width; i++)
-            {
-                for (int i2 = 0; i2 <= Height; i2++)
-                {
-                    for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
-                    {
-                        TileEntity entity = this[i, i2].GetTileContent(i3);
-                        if (entity && entity.GetType() == typeof(Roof))
-                        {
-                            ((Roof) this[i, i2].GetTileContent(i3)).RecalculateRoofModel();
-                        }
-                    }
-                }
-            }
+            needsRoofUpdate = true;
         }
 
         public Tile GetRelativeTile(Tile tile, int relativeX, int relativeY)
