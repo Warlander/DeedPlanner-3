@@ -54,7 +54,7 @@ namespace Warlander.Deedplanner.Logic
                 text.text = "Loading map from web address";
                 yield return GameManager.Instance.LoadMap(new Uri(mapLocationString));
             }
-            else if (DebugManager.Instance != null && DebugManager.Instance.LoadTestMap)
+            else if ((Application.isEditor || Debug.isDebugBuild) && DebugManager.Instance.LoadTestMap)
             {
                 text.text = "Loading debug map";
                 string fullTestMapLocation = Path.Combine(Application.streamingAssetsPath, "./Special/Maps/Test Map.MAP");
