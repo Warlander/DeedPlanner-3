@@ -67,17 +67,17 @@ mergeInto(LibraryManager.library, {
         
         document.body.removeChild(element);
 
-        element.addEventListener('input', function (evt) {
+        element.addEventListener('input', function(evt) {
             var file = element.files[0];
             if (file) {
                 var reader = new FileReader();
 
-                reader.onload = function (evt) {
+                reader.onload = function(evt) {
                     var result = reader.result;
                     SendMessage(jsObjectCallbackName, jsMethodCallbackName, result);
                 };
 
-                reader.onerror = function (evt) {
+                reader.onerror = function(evt) {
                     SendMessage(jsObjectCallbackName, jsMethodCallbackName, '');
                 };
 

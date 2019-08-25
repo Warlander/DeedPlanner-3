@@ -24,9 +24,8 @@ namespace Warlander.Deedplanner.Gui
             else
             {
                 LoadFileStandalone();
+                gameObject.SetActive(false);
             }
-            
-            gameObject.SetActive(false);
         }
 
         private void LoadFileBrowser()
