@@ -2,8 +2,9 @@
 
 using System;
 using System.Runtime.InteropServices;
+using StandaloneFileBrowser;
 
-namespace SFB {
+namespace StandaloneFileBrowser {
     public class StandaloneFileBrowserMac : IStandaloneFileBrowser {
         private static Action<string[]> _openFileCb;
         private static Action<string[]> _openFolderCb;
