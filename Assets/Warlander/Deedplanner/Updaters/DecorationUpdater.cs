@@ -136,6 +136,12 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
 
+            int targetFloor = LayoutManager.Instance.CurrentCamera.Floor;
+            if (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor))
+            {
+                targetFloor = tileEntity.Floor;
+            }
+
             if (gridTile || (tileEntity && tileEntity.Valid && (tileEntity.Type == EntityType.Ground || tileEntity.GetType() == typeof(Floor))))
             {
                 ghostObject.gameObject.SetActive(true);
@@ -212,7 +218,7 @@ namespace Warlander.Deedplanner.Updaters
                 float decorationPositionX = position.x - targetedTile.X * 4f;
                 float decorationPositionY = position.z - targetedTile.Y * 4f;
                 Vector2 decorationPosition = new Vector2(decorationPositionX, decorationPositionY);
-                targetedTile.SetDecoration(data, decorationPosition, rotation * Mathf.Deg2Rad, LayoutManager.Instance.CurrentCamera.Floor);
+                targetedTile.SetDecoration(data, decorationPosition, rotation * Mathf.Deg2Rad, targetFloor);
                 map.CommandManager.FinishAction();
                 
                 placingDecoration = false;
@@ -230,7 +236,7 @@ namespace Warlander.Deedplanner.Updaters
                 List<Decoration> decorationsOnTile = targetedTile.GetDecorations();
                 foreach (Decoration decoration in decorationsOnTile)
                 {
-                    targetedTile.SetDecoration(null, decoration.Position, decoration.Rotation, LayoutManager.Instance.CurrentCamera.Floor);
+                    targetedTile.SetDecoration(null, decoration.Position, decoration.Rotation, targetFloor);
                 }
                 map.CommandManager.FinishAction();
             }
