@@ -847,6 +847,12 @@ namespace Warlander.Deedplanner.Data
                 float x = X * 4 + freeformData.X;
                 float z = Y * 4 + freeformData.Y;
                 float interpolatedHeight = Map.GetInterpolatedHeight(x, z);
+                const float floorHeight = 0.25f;
+                bool containsFloor = GetTileContent(data.Floor);
+                if (containsFloor)
+                {
+                    interpolatedHeight += floorHeight;
+                }
                 entity.transform.localPosition = new Vector3(x, interpolatedHeight + freeformData.Floor * 3f, z);
             }
             else
