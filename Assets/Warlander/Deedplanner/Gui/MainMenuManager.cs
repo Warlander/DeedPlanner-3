@@ -1,4 +1,5 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Logic;
@@ -8,10 +9,10 @@ namespace Warlander.Deedplanner.Gui
     public class MainMenuManager : MonoBehaviour
     {
 
-        [SerializeField]
-        private Button fullscreenButton = null;
-        [SerializeField]
-        private Button quitButton = null;
+        [SerializeField] private Button fullscreenButton = null;
+        [SerializeField] private Button quitButton = null;
+
+        [SerializeField] private TMP_Text versionText = null;
 
         private void Start()
         {
@@ -27,6 +28,8 @@ namespace Warlander.Deedplanner.Gui
             {
                 fullscreenButton.gameObject.SetActive(false);
             }
+
+            versionText.text = Constants.TitleString;
         }
         
         public void OnResizeMap()
