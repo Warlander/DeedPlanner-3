@@ -136,6 +136,7 @@ namespace Warlander.Deedplanner.Logic
             doc.LoadXml(mapString);
             if (Map)
             {
+                Map.gameObject.SetActive(false);
                 Destroy(Map.gameObject);
             }
             
