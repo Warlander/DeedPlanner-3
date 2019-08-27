@@ -129,7 +129,9 @@ namespace Warlander.Deedplanner.Updaters
                 targetedTile = null;
                 if (gridTile)
                 {
-                    targetedTile = map[gridTile.X, gridTile.Y];
+                    int tileX = Mathf.FloorToInt(position.x / 4f);
+                    int tileY = Mathf.FloorToInt(position.z / 4f);
+                    targetedTile = map[tileX, tileY];
                 }
                 else if (tileEntity && tileEntity.Valid)
                 {
