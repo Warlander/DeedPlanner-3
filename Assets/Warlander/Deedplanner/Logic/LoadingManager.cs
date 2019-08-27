@@ -30,7 +30,7 @@ namespace Warlander.Deedplanner.Logic
         {
             text.text = "Loading database";
             loadingBar.value = 0.0f;
-            
+
             Debug.Log("Loading data");
             yield return DataLoader.LoadData();
             yield return null;

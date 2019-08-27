@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Warlander.Deedplanner.Gui
@@ -6,13 +7,22 @@ namespace Warlander.Deedplanner.Gui
     public class GraphicSettingsWindow : MonoBehaviour
     {
 
-        [SerializeField]
-        private Toggle simpleWaterToggle = null;
-        [SerializeField]
-        private Toggle highWaterToggle = null;
-        [SerializeField]
-        private Toggle ultraWaterToggle = null;
+        [SerializeField] private Toggle simpleWaterToggle = null;
+        [SerializeField] private Toggle highWaterToggle = null;
+        [SerializeField] private Toggle ultraWaterToggle = null;
 
+        [SerializeField] private TMP_Dropdown overallQualityDropdown = null;
+
+        private void Awake()
+        {
+            string[] availableQualitySettings = QualitySettings.names;
+
+            foreach (string qualitySetting in availableQualitySettings)
+            {
+                overallQualityDropdown.options.Add(new TMP_Dropdown.OptionData(qualitySetting));
+            }
+        }
+        
         private void OnEnable()
         {
             ResetState();
@@ -41,12 +51,14 @@ namespace Warlander.Deedplanner.Gui
                     ultraWaterToggle.isOn = true;
                     break;
             }
+            
+            overallQualityDropdown.value = QualitySettings.GetQualityLevel();
         }
 
         public void OnSaveButton()
         {
-            gameObject.SetActive(false);
             SaveProperties();
+            gameObject.SetActive(false);
         }
 
         private void SaveProperties()
@@ -65,6 +77,8 @@ namespace Warlander.Deedplanner.Gui
             }
 
             Properties.Instance.SaveProperties();
+            
+            QualitySettings.SetQualityLevel(overallQualityDropdown.value, true);
         }
 
     }
