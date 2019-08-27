@@ -266,7 +266,10 @@ namespace Warlander.Deedplanner.Logic
         private void PrepareWater()
         {
             Vector3 cameraPosition = AttachedCamera.transform.position;
-            bool renderWater = RenderEntireMap || Floor == 0 || Floor == -1;
+            Tab tab = LayoutManager.Instance.CurrentTab;
+            bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
+            int editingFloor = forceSurfaceEditing ? 0 : Floor;
+            bool renderWater = RenderEntireMap || editingFloor == 0 || editingFloor == -1;
             if (Properties.Instance.WaterQuality == Gui.WaterQuality.ULTRA)
             {
                 ultraQualityWater.gameObject.SetActive(renderWater);
