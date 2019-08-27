@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
@@ -74,7 +74,7 @@ namespace Warlander.Deedplanner.Updaters
             }
             if (snapToGrid != Properties.Instance.DecorationSnapToGrid)
             {
-                Properties.Instance.DecorationRotationSnapping = snapToGrid;
+                Properties.Instance.DecorationSnapToGrid = snapToGrid;
                 propertiesNeedSaving = true;
             }
             if (rotationSnapping != Properties.Instance.DecorationRotationSnapping)
