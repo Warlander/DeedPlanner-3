@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
@@ -25,6 +25,7 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private Color allowedGhostColor = Color.green;
         [SerializeField] private Color disabledGhostColor = Color.red;
         [SerializeField] private float minimumPlacementGap = 0.25f;
+        [SerializeField] private float cornerSnapDistance = 0.25f;
 
         private DecorationData lastFrameData;
         private GameObject ghostObject;
@@ -257,8 +258,20 @@ namespace Warlander.Deedplanner.Updaters
             }
             else if (snapToGrid)
             {
-                pos.x = Mathf.Floor(originalPosition.x / (4f / 3f)) * (4f / 3f) + (2f / 3f);
-                pos.z = Mathf.Floor(originalPosition.z / (4f / 3f)) * (4f / 3f) + (2f / 3f);
+                float distToCornerX = 2f - Mathf.Abs(originalPosition.x % 4f - 2f);
+                float distToCornerZ = 2f - Mathf.Abs(originalPosition.z % 4f - 2f);
+                Vector2 distVector = new Vector2(distToCornerX, distToCornerZ);
+                float magnitude = distVector.magnitude;
+                if (magnitude < cornerSnapDistance)
+                {
+                    pos.x = Mathf.Round(originalPosition.x / 4f) * 4f;
+                    pos.z = Mathf.Round(originalPosition.z / 4f) * 4f;
+                }
+                else
+                {
+                    pos.x = Mathf.Floor(originalPosition.x / (4f / 3f)) * (4f / 3f) + (2f / 3f);
+                    pos.z = Mathf.Floor(originalPosition.z / (4f / 3f)) * (4f / 3f) + (2f / 3f);
+                }
             }
 
             if (data.Floating)
