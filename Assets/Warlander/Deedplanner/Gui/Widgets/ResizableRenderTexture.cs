@@ -9,47 +9,53 @@ namespace Warlander.Deedplanner.Gui.Widgets
     [RequireComponent(typeof(RectTransform))]
     public class ResizableRenderTexture : MonoBehaviour
     {
-
+        
         public Camera renderCamera;
+        
+        private RawImage rawImage;
 
-        private void Start()
+        private void Awake()
         {
-            OnRectTransformDimensionsChange();
+            rawImage = GetComponent<RawImage>();
         }
 
-        private void OnRectTransformDimensionsChange()
+        private void Update()
         {
             RectTransform rectTransform = transform as RectTransform;
             Vector2 size = RectTransformUtility.CalculateRelativeRectTransformBounds(rectTransform).size;
-            RawImage rawImage = GetComponent<RawImage>();
             Vector3 scale = transform.lossyScale;
-            float width = size.x * scale.x;
-            float height = size.y * scale.y;
+            int width = (int) (size.x * scale.x);
+            int height = (int) (size.y * scale.y);
             if (width <= 0 || height <= 0)
             {
                 return;
             }
 
             Texture oldTexture = rawImage.texture;
-            if (oldTexture && Math.Abs(oldTexture.width - width) > 1 && Math.Abs(oldTexture.height - height) > 1)
+            if (oldTexture && (oldTexture.width != width || oldTexture.height != height))
             {
                 Destroy(oldTexture);
-                RenderTexture renderTexture = new RenderTexture((int) width, (int) height, 16, RenderTextureFormat.ARGB32);
+                RenderTexture renderTexture = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
                 rawImage.texture = renderTexture;
+                UpdateRenderCamera();
             }
             else if (!oldTexture)
             {
-                RenderTexture renderTexture = new RenderTexture((int) width, (int) height, 16, RenderTextureFormat.ARGB32);
+                RenderTexture renderTexture = new RenderTexture(width, height, 16, RenderTextureFormat.ARGB32);
                 rawImage.texture = renderTexture;
-            }
-
-            if (renderCamera)
-            {
-                renderCamera.targetTexture = (RenderTexture) rawImage.texture;
-                renderCamera.aspect = width / height;
+                UpdateRenderCamera();
             }
         }
 
+        private void UpdateRenderCamera()
+        {
+            if (renderCamera)
+            {
+                RenderTexture renderTexture = (RenderTexture) rawImage.texture;
+                renderCamera.targetTexture = renderTexture;
+                renderCamera.aspect = (float) renderTexture.width / renderTexture.height;
+            }
+        }
     }
 
 }
