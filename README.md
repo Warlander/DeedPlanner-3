@@ -2,7 +2,8 @@
 
 Deed planner/house calculator for Wurm Online - public repository.
 
-Program official forum thread: http://forum.wurmonline.com/index.php?/topic/79352-deedplanner-3d-house-and-deed-planner/
+Program official forum thread: https://forum.wurmonline.com/index.php?/topic/171432-deedplanner-301-3d-house-and-deed-design-tool/&tab=comments#comment-1748295
+WebGL version: https://warlander.github.io/DeedPlanner-3-web/
 
 This repository is a work in progress version of DeedPlanner 3. DeedPlanner 2 - previous iteration of the application - is available here: https://github.com/Warlander/DeedPlanner-2 .
 
