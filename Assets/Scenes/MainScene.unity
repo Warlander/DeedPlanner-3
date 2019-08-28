@@ -34887,6 +34887,7 @@ MonoBehaviour:
   allowedGhostColor: {r: 0, g: 1, b: 0, a: 1}
   disabledGhostColor: {r: 1, g: 0, b: 0, a: 1}
   minimumPlacementGap: 0.25
+  cornerSnapDistance: 0.25
 --- !u!1 &1604953536
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,28 +11,21 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class GroundUpdater : MonoBehaviour
     {
+        
+        [SerializeField] private Image leftClickImage = null;
+        [SerializeField] private TextMeshProUGUI leftClickText = null;
+        [SerializeField] private Image rightClickImage = null;
+        [SerializeField] private TextMeshProUGUI rightClickText = null;
 
+        [SerializeField] private Toggle leftClickToggle = null;
+
+        [SerializeField] private Toggle pencilToggle = null;
+        [SerializeField] private Toggle fillToggle = null;
+        
         private GroundData leftClickData;
         private GroundData rightClickData;
 
         private bool editCorners = true;
-
-        [SerializeField]
-        private Image leftClickImage = null;
-        [SerializeField]
-        private TextMeshProUGUI leftClickText = null;
-        [SerializeField]
-        private Image rightClickImage = null;
-        [SerializeField]
-        private TextMeshProUGUI rightClickText = null;
-
-        [SerializeField]
-        private Toggle leftClickToggle = null;
-
-        [SerializeField]
-        private Toggle pencilToggle = null;
-        [SerializeField]
-        private Toggle fillToggle = null;
 
         private GroundData LeftClickData {
             get => leftClickData;
@@ -110,15 +103,27 @@ namespace Warlander.Deedplanner.Updaters
             {
                 return;
             }
+            
+            Ground ground = raycast.transform.GetComponent<Ground>();
+            Tile tile = ground.Tile;
 
+            if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    LeftClickData = ground.Data;
+                }
+                else if (Input.GetMouseButtonDown(1))
+                {
+                    RightClickData = ground.Data;
+                }
+            }
+            
             GroundData currentClickData = GetCurrentClickData();
             if (!currentClickData)
             {
                 return;
             }
-
-            Ground ground = raycast.transform.GetComponent<Ground>();
-            Tile tile = ground.Tile;
 
             if (pencilToggle.isOn)
             {
