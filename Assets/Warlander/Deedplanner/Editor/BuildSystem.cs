@@ -94,7 +94,7 @@ namespace Warlander.Deedplanner.Editor
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.WebGL;
             buildOptions.target = BuildTarget.WebGL;
-            buildOptions.locationPathName = "Build/"+ Constants.TitleString + " WebGL";
+            buildOptions.locationPathName = "Build/DeedPlanner 3 WebGL";
             buildOptions.options = BuildOptions.None;
 
             BuildReport report = BuildPipeline.BuildPlayer(buildOptions);
