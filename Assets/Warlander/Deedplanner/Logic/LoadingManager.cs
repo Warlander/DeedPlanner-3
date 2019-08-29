@@ -28,17 +28,39 @@ namespace Warlander.Deedplanner.Logic
 
         private IEnumerator Load()
         {
-            text.text = "Loading database";
             loadingBar.value = 0.0f;
-
             Debug.Log("Loading data");
-            yield return DataLoader.LoadData();
+            yield return LoadDatabase();
             yield return null;
             Debug.Log("Data loaded");
 
+            loadingBar.value = 0.33f;
             Debug.Log("Creating map");
-            loadingBar.value = 0.5f;
+            yield return LoadMap();
+            yield return null;
+            Debug.Log("Map created");
 
+            loadingBar.value = 0.66f;
+            Debug.Log("Initializing application");
+            Initialize();
+            yield return null;
+            Debug.Log("Application initialized");
+            
+            loadingBar.value = 1.0f;
+            text.text = "Loading complete";
+
+            fadeAnimator.enabled = true;
+            Destroy(gameObject);
+        }
+
+        private IEnumerator LoadDatabase()
+        {
+            text.text = "Loading database";
+            yield return DataLoader.LoadData();
+        }
+        
+        private IEnumerator LoadMap()
+        {
             string mapLocationString = "";
             if (Properties.Web)
             {
@@ -65,19 +87,16 @@ namespace Warlander.Deedplanner.Logic
                 text.text = "Creating map";
                 GameManager.Instance.CreateNewMap(25, 25);
             }
-            yield return null;
-            Debug.Log("Map created");
-            
-            text.text = "Loading complete";
-            loadingBar.value = 1.0f;
-            
+        }
+
+        private void Initialize()
+        {
+            text.text = "Initializing application";
             managersRoot.SetActive(true);
             foreach (MultiCamera multiCamera in cameras)
             {
                 multiCamera.enabled = true;
             }
-            fadeAnimator.enabled = true;
-            Destroy(gameObject);
         }
 
     }
