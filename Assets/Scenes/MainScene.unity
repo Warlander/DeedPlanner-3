@@ -9655,11 +9655,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b51aab060646be4191936d5fcea33e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  groundTexturesWidth: 512
+  groundTexturesHeight: 512
+  groundTexturesFormat: 10
   textureDefaultMaterial: {fileID: 2100000, guid: 513745b12b2a57b44b0262587e2cb2c7,
     type: 2}
   womDefaultMaterial: {fileID: 2100000, guid: 2569ae703d907e84ebd14b1703b732fb, type: 2}
   simpleDrawingMaterial: {fileID: 2100000, guid: 2fe49197c8e00db479d9bcddc842c4a5,
     type: 2}
+  terrainMaterial: {fileID: 2100000, guid: 1b1493bc70a6d3740afefc4cda369480, type: 2}
   ghostMaterial: {fileID: 2100000, guid: 8f0ac5ff2be70c9458e974013c318ccc, type: 2}
 --- !u!114 &417295211 stripped
 MonoBehaviour:
@@ -19037,7 +19041,8 @@ MonoBehaviour:
     textures\n<b>Yldrania</b> - program icons\n<b>Xenonpl</b> - ideas, camera icons\n<b>All
     users</b> - feedback and donations :)\n\n<b>Unity Technologies</b> - Unity engine\n<b>gkngkc
     (https://github.com/gkngkc)</b> - Standalone File Browser\nIcons made by <b>Freepik,
-    Gregor Cresnar, Smashicons, Cole Bemis</b> from <b>www.flaticon.com</b>\n\n<align=\"center\"><size=20>Code
+    Gregor Cresnar, Smashicons, Cole Bemis</b> from <b>www.flaticon.com</b>\n\n<align=\"center\"><size=20>Copper
+    Donators</size></align>\n\n<align=\"center\"><b>Steve Lee</b></align>\n\n<align=\"center\"><size=20>Code
     Club AB copyright notice</size></align>\n\nGraphical assets in StreamingAssets
     folder are \xA9 Code Club AB or their respective authors and may not be reused,
     modified or distributed without written permission.\n\n<align=\"center\"><size=20>DeedPlanner
