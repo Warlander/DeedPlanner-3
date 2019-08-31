@@ -44,7 +44,7 @@ namespace Warlander.Deedplanner.Graphics
                     return texture;
                 }
 
-                texture = WomModelLoader.LoadTexture(Application.streamingAssetsPath + "/" + Location);
+                texture = WomModelLoader.LoadTexture(Application.streamingAssetsPath + "/" + Location, false);
                 texture.name = Location;
                 return texture;
             }
