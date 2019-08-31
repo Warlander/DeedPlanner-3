@@ -243,7 +243,7 @@ namespace Warlander.Deedplanner.Graphics
             return material;
         }
 
-        public static Texture2D LoadTexture(string location)
+        public static Texture2D LoadTexture(string location, bool readable)
         {
             if (string.IsNullOrEmpty(location))
             {
@@ -262,7 +262,7 @@ namespace Warlander.Deedplanner.Graphics
             else
             {
                 texture = new Texture2D(0, 0, TextureFormat.DXT1, true);
-                texture.LoadImage(texBytes, true);
+                texture.LoadImage(texBytes, !readable);
             }
 
             return texture;
@@ -310,7 +310,7 @@ namespace Warlander.Deedplanner.Graphics
             }
             finalTexture.SetPixels(flippedPixelBuffer);
             finalTexture.Apply();
-            
+            finalTexture.Compress(true);
             Object.Destroy(dxtTexture);
 
             return finalTexture;
