@@ -21,7 +21,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            GridTile gridTile = raycast.transform.GetComponent<GridTile>();
+            GridMesh gridMesh = raycast.transform.GetComponent<GridMesh>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
 
         }

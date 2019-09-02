@@ -12,9 +12,6 @@ namespace Warlander.Deedplanner.Data.Grounds
         private GroundData data;
         private RoadDirection roadDirection = RoadDirection.Center;
 
-        private MeshRenderer meshRenderer;
-        public MeshCollider Collider { get; private set; }
-        
         public override Materials Materials => null;
 
         public GroundData Data {
@@ -30,86 +27,8 @@ namespace Warlander.Deedplanner.Data.Grounds
         public void Initialize(Tile tile, GroundData data, Mesh mesh)
         {
             Tile = tile;
-
-            gameObject.layer = LayerMasks.GroundLayer;
-            if (!meshRenderer)
-            {
-                meshRenderer = gameObject.AddComponent<MeshRenderer>();
-            }
-            if (!GetComponent<MeshFilter>())
-            {
-                gameObject.AddComponent<MeshFilter>();
-            }
-
-            MeshFilter meshFilter = GetComponent<MeshFilter>();
-            meshFilter.sharedMesh = mesh;
-
-            if (!Collider)
-            {
-                Collider = gameObject.AddComponent<MeshCollider>();
-            }
-            Collider.sharedMesh = mesh;
-
             Data = data;
             RoadDirection = RoadDirection.Center;
-            Material[] materials = new Material[4];
-            for (int i = 0; i < 4; i++)
-            {
-                materials[i] = Data.Tex3d.Material;
-            }
-            meshRenderer.sharedMaterials = materials;
-        }
-
-        private void RefreshAllState()
-        {
-            RefreshState();
-            Tile.Map[Tile.X - 1, Tile.Y]?.Ground.RefreshState();
-            Tile.Map[Tile.X + 1, Tile.Y]?.Ground.RefreshState();
-            Tile.Map[Tile.X, Tile.Y - 1]?.Ground.RefreshState();
-            Tile.Map[Tile.X, Tile.Y + 1]?.Ground.RefreshState();
-        }
-        
-        private void RefreshState()
-        {
-            Material[] materials = new Material[4];
-            if (roadDirection == RoadDirection.Center)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    materials[i] = Data.Tex3d.Material;
-                }
-            }
-            else
-            {
-                Material matW = GameManager.Instance.Map.GetRelativeTile(Tile, -1, 0)?.Ground.Data.Tex3d.Material;
-                Material matE = GameManager.Instance.Map.GetRelativeTile(Tile, 1, 0)?.Ground.Data.Tex3d.Material;
-                Material matS = GameManager.Instance.Map.GetRelativeTile(Tile, 0, -1)?.Ground.Data.Tex3d.Material;
-                Material matN = GameManager.Instance.Map.GetRelativeTile(Tile, 0, 1)?.Ground.Data.Tex3d.Material;
-
-                if (roadDirection == RoadDirection.NW || roadDirection == RoadDirection.SW || !matW)
-                {
-                    matW = Data.Tex3d.Material;
-                }
-                if (roadDirection == RoadDirection.NE || roadDirection == RoadDirection.SE || !matE)
-                {
-                    matE = Data.Tex3d.Material;
-                }
-                if (roadDirection == RoadDirection.SW || roadDirection == RoadDirection.SE || !matS)
-                {
-                    matS = Data.Tex3d.Material;
-                }
-                if (roadDirection == RoadDirection.NW || roadDirection == RoadDirection.NE || !matN)
-                {
-                    matN = Data.Tex3d.Material;
-                }
-
-                materials[0] = matW;
-                materials[1] = matN;
-                materials[2] = matE;
-                materials[3] = matS;
-            }
-
-            meshRenderer.materials = materials;
         }
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)
@@ -175,7 +94,7 @@ namespace Warlander.Deedplanner.Data.Grounds
                 if (newData)
                 {
                     ground.data = newData;
-                    ground.RefreshAllState();
+                    ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection);
                 }
             }
 
@@ -184,7 +103,7 @@ namespace Warlander.Deedplanner.Data.Grounds
                 if (oldData)
                 {
                     ground.data = oldData;
-                    ground.RefreshAllState();
+                    ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection);
                 }
             }
 
@@ -216,13 +135,13 @@ namespace Warlander.Deedplanner.Data.Grounds
             public void Execute()
             {
                 ground.roadDirection = newDirection;
-                ground.RefreshAllState();
+                ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection);
             }
 
             public void Undo()
             {
                 ground.roadDirection = oldDirection;
-                ground.RefreshAllState();
+                ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection);
             }
 
             public void DisposeUndo()

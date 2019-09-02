@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
@@ -23,6 +24,8 @@ namespace Warlander.Deedplanner.Data
         private int renderedFloor;
         private bool renderEntireMap = true;
         private bool renderGrid = true;
+
+        public GroundMesh Ground { get; private set; }
 
         public GridMesh SurfaceGridMesh { get; private set; }
         public GridMesh CaveGridMesh { get; private set; }
@@ -188,7 +191,15 @@ namespace Warlander.Deedplanner.Data
                 caveLevelRoots[i] = root;
             }
 
-            surfaceGridRoot = new GameObject("Surface Grid").transform;
+            GameObject surfaceGridRootObject = new GameObject("Surface Grid", typeof(OverlayMesh));
+            OverlayMesh surfaceOverlayMesh = surfaceGridRootObject.GetComponent<OverlayMesh>();
+            GameObject groundObject = new GameObject("Ground Mesh", typeof(GroundMesh));
+            groundObject.transform.SetParent(transform);
+            Ground = groundObject.GetComponent<GroundMesh>();
+            Ground.Initialize(width, height, surfaceOverlayMesh);
+            surfaceOverlayMesh.Initialize(Ground.ColliderMesh);
+            
+            surfaceGridRoot = surfaceGridRootObject.transform;
             surfaceGridRoot.SetParent(transform);
             caveGridRoot = new GameObject("Cave Grid").transform;
             caveGridRoot.SetParent(transform);
@@ -199,29 +210,9 @@ namespace Warlander.Deedplanner.Data
             {
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
-                    bool edge = i == Width || i2 == Height;
                     Tile tile = ScriptableObject.CreateInstance<Tile>();
-                    
-                    if (!edge)
-                    {
-                        GameObject surfaceGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
-                        surfaceGridObject.transform.SetParent(surfaceGridRoot);
-                        surfaceGridObject.transform.localPosition = new Vector3(i * 4, 0.01f, i2 * 4);
-                        GridTile surfaceGrid = surfaceGridObject.GetComponent<GridTile>();
-
-                        GameObject caveGridObject = new GameObject("Grid " + i + "X" + i2, typeof(GridTile));
-                        caveGridObject.transform.SetParent(caveGridRoot);
-                        caveGridObject.transform.localPosition = new Vector3(i * 4, 0.01f, i2 * 4);
-                        GridTile caveGrid = caveGridObject.GetComponent<GridTile>();
-                        
-                        tile.Initialize(this, surfaceGrid, caveGrid, i, i2, false);
-                        tiles[i, i2] = tile;
-                    }
-                    else
-                    {
-                        tile.Initialize(this, null, null, i, i2, true);
-                        tiles[i, i2] = tile;
-                    }
+                    tile.Initialize(this, i, i2);
+                    tiles[i, i2] = tile;
                 }
             }
 
@@ -512,7 +503,7 @@ namespace Warlander.Deedplanner.Data
                 surfaceGridRoot.gameObject.SetActive(renderGrid);
                 caveGridRoot.gameObject.SetActive(false);
 
-                surfaceGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
+                surfaceGridRoot.localPosition = new Vector3(0, absoluteFloor * 3 + 0.01f, 0);
             }
         }
 

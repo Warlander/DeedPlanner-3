@@ -22,7 +22,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            GridTile gridTile = raycast.transform.GetComponent<GridTile>();
+            GridMesh gridMesh = raycast.transform.GetComponent<GridMesh>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
 
             int floor = 0;
@@ -34,11 +34,11 @@ namespace Warlander.Deedplanner.Updaters
                 x = tileEntity.Tile.X;
                 y = tileEntity.Tile.Y;
             }
-            else if (gridTile)
+            else if (gridMesh)
             {
                 floor = LayoutManager.Instance.CurrentCamera.Floor;
-                x = gridTile.X;
-                y = gridTile.Y;
+                x = Mathf.FloorToInt(raycast.point.x / 4f);
+                y = Mathf.FloorToInt(raycast.point.z / 4f);
             }
 
             if (floor <= 0)
