@@ -217,7 +217,7 @@ namespace Warlander.Deedplanner.Logic
                     
                     GameObject hitObject = raycastHit.transform.gameObject;
                     TileEntity tileEntity = hitObject.GetComponent<TileEntity>();
-                    GridTile gridTile = hitObject.GetComponent<GridTile>();
+                    OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
                     HeightmapHandle heightmapHandle = hitObject.GetComponent<HeightmapHandle>();
                     
                     if (tileEntity)
@@ -249,9 +249,11 @@ namespace Warlander.Deedplanner.Logic
                             tooltipBuild.Append(StringUtils.PaddedNumberString(h00, maxDigits)).Append("   ").Append(StringUtils.PaddedNumberString(h10, maxDigits)).Append("</mspace>");
                         }
                     }
-                    else if (gridTile)
+                    else if (overlayMesh)
                     {
-                        tooltipBuild.Append(gridTile.ToString());
+                        int x = Mathf.FloorToInt(raycastHit.point.x / 4f);
+                        int y = Mathf.FloorToInt(raycastHit.point.z / 4f);
+                        tooltipBuild.Append("X: " + x + " Y: " + y);
                     }
                     else if (heightmapHandle)
                     {
@@ -333,9 +335,13 @@ namespace Warlander.Deedplanner.Logic
         
         private void PrepareProjector()
         {
-            GameObject hitObject = CurrentRaycast.collider?.gameObject;
-            bool gridOrGroundHit = hitObject != null && (hitObject.GetComponent<Ground>() || hitObject.GetComponent<GridTile>());
-
+            if (!CurrentRaycast.collider)
+            {
+                return;
+            }
+            
+            GameObject hitObject = CurrentRaycast.collider.gameObject;
+            bool gridOrGroundHit = hitObject.GetComponent<GroundMesh>() || hitObject.GetComponent<OverlayMesh>();
             if (!gridOrGroundHit)
             {
                 return;
@@ -622,20 +628,19 @@ namespace Warlander.Deedplanner.Logic
             Camera[] waterCameras = ultraQualityWater.GetComponentsInChildren<Camera>();
             bool currentWaterCamera = waterCameras.Contains(Camera.current);
             bool currentAttachedCamera = Camera.current == AttachedCamera;
-            if (!currentWaterCamera && !currentAttachedCamera)
+            if (!currentWaterCamera && !currentAttachedCamera || !CurrentRaycast.collider)
             {
                 return;
             }
             
-            GameObject hitObject = null;
-            if (CurrentRaycast.collider)
-            {
-                hitObject = CurrentRaycast.collider.gameObject;
-            }
-            
-            bool gridOrGroundHit = hitObject != null && (hitObject.GetComponent<Ground>() || hitObject.GetComponent<GridTile>() || hitObject.GetComponent<HeightmapHandle>());
+            GameObject hitObject = CurrentRaycast.collider.gameObject;
+            GroundMesh groundMesh = hitObject.GetComponent<GroundMesh>();
+            OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
+            HeightmapHandle heightmapHandle = hitObject.GetComponent<HeightmapHandle>();
 
-            if (hitObject != null && !gridOrGroundHit)
+            bool gridOrGroundHit = groundMesh || overlayMesh || heightmapHandle;
+
+            if (!gridOrGroundHit)
             {
                 GL.PushMatrix();
                 GraphicsManager.Instance.SimpleDrawingMaterial.SetPass(0);

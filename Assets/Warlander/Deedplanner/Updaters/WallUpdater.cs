@@ -39,10 +39,10 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            GridTile gridTile = raycast.transform.GetComponent<GridTile>();
+            GridMesh gridMesh = raycast.transform.GetComponent<GridMesh>();
+            GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
             Wall wallEntity = tileEntity as Wall;
-            Ground groundEntity = tileEntity as Ground;
 
             bool automaticReverse = automaticReverseToggle.isOn;
             bool reverse = reverseToggle.isOn;
@@ -81,13 +81,13 @@ namespace Warlander.Deedplanner.Updaters
                 EntityType type = tileEntity.Type;
                 horizontal = (type == EntityType.Hwall || type == EntityType.Hfence);
             }
-            else if (gridTile || groundEntity)
+            else if (gridMesh || groundMesh)
             {
-                if (gridTile)
+                if (gridMesh)
                 {
                     floor = LayoutManager.Instance.CurrentCamera.Floor;
                 }
-                else if (groundEntity)
+                else if (groundMesh)
                 {
                     floor = 0;
                 }

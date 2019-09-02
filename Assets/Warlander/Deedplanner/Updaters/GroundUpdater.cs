@@ -103,9 +103,13 @@ namespace Warlander.Deedplanner.Updaters
             {
                 return;
             }
-            
-            Ground ground = raycast.transform.GetComponent<Ground>();
-            Tile tile = ground.Tile;
+
+            Map map = GameManager.Instance.Map;
+            GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
+            int tileX = Mathf.FloorToInt(raycast.point.x / 4f);
+            int tileZ = Mathf.FloorToInt(raycast.point.z / 4f);
+            Tile tile = map[tileX, tileZ];
+            Ground ground = tile.Ground;
 
             if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
             {

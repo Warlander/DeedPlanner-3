@@ -24,12 +24,9 @@ namespace Warlander.Deedplanner.Data
         public Map Map { get; private set; }
         public int X { get; private set; }
         public int Y { get; private set; }
-        private bool Edge { get; set; }
         private Mesh SurfaceHeightMesh { get; set; }
         private Mesh CaveHeightMesh { get; set; }
         private Dictionary<EntityData, TileEntity> Entities { get; set; }
-        private GridTile surfaceGridTile;
-        private GridTile caveGridTile;
 
         public Ground Ground { get; private set; }
         public Cave Cave { get; private set; }
@@ -48,13 +45,10 @@ namespace Warlander.Deedplanner.Data
             get => caveHeight;
             set {
                 caveHeight = value;
-                RefreshCaveMesh();
+                // TODO: add cave mesh handling
                 UpdateCaveEntitiesPositions();
-                Map.GetRelativeTile(this, -1, 0)?.RefreshCaveMesh();
                 Map.GetRelativeTile(this, -1, 0)?.UpdateCaveEntitiesPositions();
-                Map.GetRelativeTile(this, 0, -1)?.RefreshCaveMesh();
                 Map.GetRelativeTile(this, 0, -1)?.UpdateCaveEntitiesPositions();
-                Map.GetRelativeTile(this, -1, -1)?.RefreshCaveMesh();
                 Map.GetRelativeTile(this, -1, -1)?.UpdateCaveEntitiesPositions();
 
                 Map.RecalculateCaveHeight(X, Y);
@@ -65,58 +59,38 @@ namespace Warlander.Deedplanner.Data
             get => caveSize;
             set {
                 caveSize = value;
-                RefreshCaveMesh();
+                // TODO: add cave mesh handling
                 UpdateCaveEntitiesPositions();
-                Map.GetRelativeTile(this, -1, 0)?.RefreshCaveMesh();
                 Map.GetRelativeTile(this, -1, 0)?.UpdateCaveEntitiesPositions();
-                Map.GetRelativeTile(this, 0, -1)?.RefreshCaveMesh();
                 Map.GetRelativeTile(this, 0, -1)?.UpdateCaveEntitiesPositions();
-                Map.GetRelativeTile(this, -1, -1)?.RefreshCaveMesh();
                 Map.GetRelativeTile(this, -1, -1)?.UpdateCaveEntitiesPositions();
 
                 Map.RecalculateCaveHeight(X, Y);
             }
         }
 
-        public void Initialize(Map map, GridTile surfaceGridTile, GridTile caveGridTile, int x, int y, bool edge)
+        public void Initialize(Map map, int x, int y)
         {
             Map = map;
             X = x;
             Y = y;
-            Edge = edge;
 
             SurfaceHeightMesh = InitializeHeightMesh();
             CaveHeightMesh = InitializeHeightMesh();
 
             Entities = new Dictionary<EntityData, TileEntity>();
 
-            if (!edge)
-            {
-                this.surfaceGridTile = surfaceGridTile;
-                surfaceGridTile.Initialize(SurfaceHeightMesh, X, Y);
-                this.caveGridTile = caveGridTile;
-                caveGridTile.Initialize(CaveHeightMesh, X, Y);
-            }
-
             GameObject groundObject = new GameObject("Ground", typeof(Ground));
             groundObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
             Ground = groundObject.GetComponent<Ground>();
             Map.AddEntityToMap(groundObject, 0);
             Ground.Initialize(this, Database.Grounds["gr"], SurfaceHeightMesh);
-            if (edge)
-            {
-                Ground.gameObject.SetActive(false);
-            }
 
             GameObject caveObject = new GameObject("Cave", typeof(Cave));
             caveObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
             Cave = caveObject.GetComponent<Cave>();
             Map.AddEntityToMap(caveObject, -1);
             Cave.Initialize(this, Database.DefaultCaveData);
-            if (edge)
-            {
-                Cave.gameObject.SetActive(false);
-            }
         }
 
         public void PasteTile(Tile otherTile)
@@ -594,10 +568,10 @@ namespace Warlander.Deedplanner.Data
 
         public void Deserialize(XmlElement tileElement)
         {
-            surfaceHeight = (int) Convert.ToSingle(tileElement.GetAttribute("height"), CultureInfo.InvariantCulture);
+            SurfaceHeight = (int) Convert.ToSingle(tileElement.GetAttribute("height"), CultureInfo.InvariantCulture);
             if (tileElement.HasAttribute("caveHeight"))
             {
-                caveHeight = (int) Convert.ToSingle(tileElement.GetAttribute("caveHeight"), CultureInfo.InvariantCulture);
+                CaveHeight = (int) Convert.ToSingle(tileElement.GetAttribute("caveHeight"), CultureInfo.InvariantCulture);
             }
 
             foreach (XmlElement childElement in tileElement)
@@ -745,70 +719,12 @@ namespace Warlander.Deedplanner.Data
         
         public void Refresh()
         {
-            RefreshSurfaceMesh();
-            RefreshCaveMesh();
             UpdateSurfaceEntitiesPositions();
             UpdateCaveEntitiesPositions();
         }
 
-        private void RefreshSurfaceMesh()
-        {
-            if (Edge)
-            {
-                return;
-            }
-
-            float h00 = SurfaceHeight * 0.1f;
-            float h10 = Map.GetRelativeTile(this, 1, 0).SurfaceHeight * 0.1f;
-            float h01 = Map.GetRelativeTile(this, 0, 1).SurfaceHeight * 0.1f;
-            float h11 = Map.GetRelativeTile(this, 1, 1).SurfaceHeight * 0.1f;
-            float hMid = (h00 + h10 + h01 + h11) / 4f;
-            Vector3[] vertices = new Vector3[5];
-            vertices[0] = new Vector3(0, h00, 0);
-            vertices[1] = new Vector3(4, h10, 0);
-            vertices[2] = new Vector3(0, h01, 4);
-            vertices[3] = new Vector3(4, h11, 4);
-            vertices[4] = new Vector3(2, hMid, 2);
-            SurfaceHeightMesh.vertices = vertices;
-            SurfaceHeightMesh.RecalculateNormals();
-            SurfaceHeightMesh.RecalculateBounds();
-
-            surfaceGridTile.Collider.sharedMesh = SurfaceHeightMesh;
-            Ground.Collider.sharedMesh = SurfaceHeightMesh;
-        }
-
-        private void RefreshCaveMesh()
-        {
-            if (Edge)
-            {
-                return;
-            }
-
-            float h00 = CaveHeight * 0.1f;
-            float h10 = Map.GetRelativeTile(this, 1, 0).CaveHeight * 0.1f;
-            float h01 = Map.GetRelativeTile(this, 0, 1).CaveHeight * 0.1f;
-            float h11 = Map.GetRelativeTile(this, 1, 1).CaveHeight * 0.1f;
-            float hMid = (h00 + h10 + h01 + h11) / 4f;
-            Vector3[] vertices = new Vector3[5];
-            vertices[0] = new Vector3(0, h00, 0);
-            vertices[1] = new Vector3(4, h10, 0);
-            vertices[2] = new Vector3(0, h01, 4);
-            vertices[3] = new Vector3(4, h11, 4);
-            vertices[4] = new Vector3(2, hMid, 2);
-            CaveHeightMesh.vertices = vertices;
-            CaveHeightMesh.RecalculateNormals();
-            CaveHeightMesh.RecalculateBounds();
-
-            caveGridTile.Collider.sharedMesh = CaveHeightMesh;
-        }
-
         private void UpdateSurfaceEntitiesPositions()
         {
-            if (Edge)
-            {
-                return;
-            }
-            
             foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
             {
                 EntityData data = pair.Key;
@@ -823,11 +739,6 @@ namespace Warlander.Deedplanner.Data
 
         private void UpdateCaveEntitiesPositions()
         {
-            if (Edge)
-            {
-                return;
-            }
-            
             foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
             {
                 EntityData data = pair.Key;
@@ -999,13 +910,10 @@ namespace Warlander.Deedplanner.Data
 
             private void Refresh()
             {
-                tile.RefreshSurfaceMesh();
+                tile.Map.Ground.SetSlope(tile.X, tile.Y, tile.surfaceHeight);
                 tile.UpdateSurfaceEntitiesPositions();
-                tile.Map.GetRelativeTile(tile, -1, 0)?.RefreshSurfaceMesh();
                 tile.Map.GetRelativeTile(tile, -1, 0)?.UpdateSurfaceEntitiesPositions();
-                tile.Map.GetRelativeTile(tile, 0, -1)?.RefreshSurfaceMesh();
                 tile.Map.GetRelativeTile(tile, 0, -1)?.UpdateSurfaceEntitiesPositions();
-                tile.Map.GetRelativeTile(tile, -1, -1)?.RefreshSurfaceMesh();
                 tile.Map.GetRelativeTile(tile, -1, -1)?.UpdateSurfaceEntitiesPositions();
 
                 tile.Map.RecalculateSurfaceHeight(tile.X, tile.Y);

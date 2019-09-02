@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Floors;
+using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
@@ -107,7 +108,8 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
             
-            GridTile gridTile = raycast.transform.GetComponent<GridTile>();
+            GridMesh gridMesh = raycast.transform.GetComponent<GridMesh>();
+            GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
             
             Material ghostMaterial = GraphicsManager.Instance.GhostMaterial;
@@ -127,7 +129,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 position = CalculateCorrectedPosition(raycast.point, data, snapToGrid);
                 targetedTile = null;
-                if (gridTile)
+                if (gridMesh)
                 {
                     int tileX = Mathf.FloorToInt(position.x / 4f);
                     int tileY = Mathf.FloorToInt(position.z / 4f);
@@ -146,7 +148,7 @@ namespace Warlander.Deedplanner.Updaters
                 targetFloor = tileEntity.Floor;
             }
 
-            if (gridTile || (tileEntity && tileEntity.Valid && (tileEntity.Type == EntityType.Ground || tileEntity.GetType() == typeof(Floor))))
+            if (gridMesh || groundMesh || (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor)))
             {
                 ghostObject.gameObject.SetActive(true);
                 ghostObject.transform.position = position;
@@ -160,7 +162,7 @@ namespace Warlander.Deedplanner.Updaters
             if (data.CenterOnly || data.Tree || data.Bush)
             {
                 int entityFloor = 0;
-                if (gridTile)
+                if (gridMesh)
                 {
                     entityFloor = LayoutManager.Instance.CurrentCamera.Floor;
                 }
