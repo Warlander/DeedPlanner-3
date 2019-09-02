@@ -9655,9 +9655,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b51aab060646be4191936d5fcea33e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundTexturesWidth: 512
-  groundTexturesHeight: 512
-  groundTexturesFormat: 10
   textureDefaultMaterial: {fileID: 2100000, guid: 513745b12b2a57b44b0262587e2cb2c7,
     type: 2}
   womDefaultMaterial: {fileID: 2100000, guid: 2569ae703d907e84ebd14b1703b732fb, type: 2}
@@ -14847,7 +14844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AllowSwitchOff: 1
+  m_AllowSwitchOff: 0
 --- !u!1 &703065525 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
