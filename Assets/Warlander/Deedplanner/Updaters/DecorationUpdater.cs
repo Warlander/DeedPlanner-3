@@ -318,6 +318,17 @@ namespace Warlander.Deedplanner.Updaters
                 render.SetPropertyBlock(propertyBlock);
             }
         }
+        
+        private void OnDisable()
+        {
+            ResetState();
+        }
+        
+        private void ResetState()
+        {
+            placingDecoration = false;
+            dragStartPos = new Vector2();
+        }
 
     }
 }
