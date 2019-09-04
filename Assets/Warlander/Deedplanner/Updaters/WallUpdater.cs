@@ -39,7 +39,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            GridMesh gridMesh = raycast.transform.GetComponent<GridMesh>();
+            OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
             GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
             Wall wallEntity = tileEntity as Wall;
@@ -81,9 +81,9 @@ namespace Warlander.Deedplanner.Updaters
                 EntityType type = tileEntity.Type;
                 horizontal = (type == EntityType.Hwall || type == EntityType.Hfence);
             }
-            else if (gridMesh || groundMesh)
+            else if (overlayMesh || groundMesh)
             {
-                if (gridMesh)
+                if (overlayMesh)
                 {
                     floor = LayoutManager.Instance.CurrentCamera.Floor;
                 }

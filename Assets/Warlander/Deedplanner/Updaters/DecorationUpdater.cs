@@ -108,7 +108,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
             
-            GridMesh gridMesh = raycast.transform.GetComponent<GridMesh>();
+            OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
             GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
             
@@ -129,7 +129,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 position = CalculateCorrectedPosition(raycast.point, data, snapToGrid);
                 targetedTile = null;
-                if (gridMesh)
+                if (overlayMesh)
                 {
                     int tileX = Mathf.FloorToInt(position.x / 4f);
                     int tileY = Mathf.FloorToInt(position.z / 4f);
@@ -148,7 +148,7 @@ namespace Warlander.Deedplanner.Updaters
                 targetFloor = tileEntity.Floor;
             }
 
-            if (gridMesh || groundMesh || (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor)))
+            if (overlayMesh || groundMesh || (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor)))
             {
                 ghostObject.gameObject.SetActive(true);
                 ghostObject.transform.position = position;
@@ -162,7 +162,7 @@ namespace Warlander.Deedplanner.Updaters
             if (data.CenterOnly || data.Tree || data.Bush)
             {
                 int entityFloor = 0;
-                if (gridMesh)
+                if (overlayMesh)
                 {
                     entityFloor = LayoutManager.Instance.CurrentCamera.Floor;
                 }
