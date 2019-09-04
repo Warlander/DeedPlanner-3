@@ -105,7 +105,6 @@ namespace Warlander.Deedplanner.Updaters
             }
 
             Map map = GameManager.Instance.Map;
-            GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             int tileX = Mathf.FloorToInt(raycast.point.x / 4f);
             int tileZ = Mathf.FloorToInt(raycast.point.z / 4f);
             Tile tile = map[tileX, tileZ];

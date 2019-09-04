@@ -37,7 +37,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            GridMesh gridMesh = raycast.transform.GetComponent<GridMesh>();
+            OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
 
             int floor = 0;
@@ -49,7 +49,7 @@ namespace Warlander.Deedplanner.Updaters
                 x = tileEntity.Tile.X;
                 y = tileEntity.Tile.Y;
             }
-            else if (gridMesh)
+            else if (overlayMesh)
             {
                 floor = LayoutManager.Instance.CurrentCamera.Floor;
                 x = Mathf.FloorToInt(raycast.point.x / 4f);
