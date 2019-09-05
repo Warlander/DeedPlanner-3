@@ -17,6 +17,8 @@ namespace Warlander.Deedplanner.Data
     public class Tile : ScriptableObject, IXMLSerializable
     {
 
+        private static readonly int ColorPropertyId = Shader.PropertyToID("_Color");
+        
         private int surfaceHeight = 0;
         private int caveHeight = 0;
         private int caveSize = 0;
@@ -833,6 +835,8 @@ namespace Warlander.Deedplanner.Data
                 {
                     tile.Map.RecalculateRoofs();
                 }
+
+                UpdateEntityRendering(newEntity);
             }
 
             public void Undo()
@@ -867,6 +871,36 @@ namespace Warlander.Deedplanner.Data
                 if (data.Type == EntityType.Floorroof)
                 {
                     tile.Map.RecalculateRoofs();
+                }
+
+                UpdateEntityRendering(oldEntity);
+            }
+
+            private void UpdateEntityRendering(TileEntity entity)
+            {
+                if (!entity)
+                {
+                    return;
+                }
+                
+                int renderedFloor = tile.Map.RenderedFloor;
+                bool renderEntireMap = tile.Map.RenderEntireMap;
+                
+                bool underground = renderedFloor < 0;
+                int absoluteFloor = underground ? -renderedFloor + 1 : renderedFloor;
+                int relativeFloor = entity.Floor - absoluteFloor;
+                bool renderFloor = renderEntireMap || (relativeFloor <= 0 && relativeFloor > -3);
+
+                if (renderFloor)
+                {
+                    float opacity = renderEntireMap ? 1f : tile.Map.GetRelativeFloorOpacity(relativeFloor);
+                    MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+                    propertyBlock.SetColor(ColorPropertyId, new Color(opacity, opacity, opacity));
+                    Renderer[] renderers = entity.GetComponentsInChildren<Renderer>();
+                    foreach (Renderer renderer in renderers)
+                    {
+                        renderer.SetPropertyBlock(propertyBlock);
+                    }
                 }
             }
 
