@@ -421,7 +421,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        private float GetRelativeFloorOpacity(int relativeFloor)
+        public float GetRelativeFloorOpacity(int relativeFloor)
         {
             if (relativeFloor == 0)
             {
@@ -509,7 +509,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-    private void OnDestroy()
+        private void OnDestroy()
         {
             for (int i = 0; i <= Width; i++)
             {
@@ -519,5 +519,6 @@ namespace Warlander.Deedplanner.Data
                 }
             }
         }
+        
     }
 }
