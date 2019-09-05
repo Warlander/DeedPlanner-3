@@ -5195,7 +5195,7 @@
 		
 		<object name="Freedom banner" shortname="bFree" type="normal">
 			<model location="Objects/Banner_main.wom">
-				<override mesh="Cloth1Mesh" texture="Objects/Banner4.png"/>
+				<override mesh="ClothMesh" texture="Objects/Banner4.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5206,7 +5206,7 @@
 		</object>
 		<object name="JK banner" shortname="bJK" type="normal">
 			<model location="Objects/Banner_main.wom">
-				<override mesh="Cloth1Mesh" texture="Objects/Banner3.png"/>
+				<override mesh="ClothMesh" texture="Objects/Banner3.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5217,7 +5217,7 @@
 		</object>
 		<object name="HoTS banner" shortname="bHoTS" type="normal">
 			<model location="Objects/Banner_main.wom">
-				<override mesh="Cloth1Mesh" texture="Objects/Banner2.png"/>
+				<override mesh="ClothMesh" texture="Objects/Banner2.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5228,7 +5228,7 @@
 		</object>
 		<object name="MR banner" shortname="bMR" type="normal">
 			<model location="Objects/Banner_main.wom">
-				<override mesh="Cloth1Mesh" texture="Objects/Banner.png"/>
+				<override mesh="ClothMesh" texture="Objects/Banner.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5239,7 +5239,7 @@
 		</object>
 		<object name="TRR banner" shortname="bTRR" type="normal">
 			<model location="Objects/Banner_main.wom">
-				<override mesh="Cloth1Mesh" texture="Objects/Banner_TRR.png"/>
+				<override mesh="ClothMesh" texture="Objects/Banner_TRR.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5250,7 +5250,7 @@
 		</object>
 		<object name="BL banner" shortname="bBL" type="normal">
 			<model location="Objects/Banner_main.wom">
-				<override mesh="Cloth1Mesh" texture="Objects/blac_banner.png"/>
+				<override mesh="ClothMesh" texture="Objects/blac_banner.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5261,7 +5261,7 @@
 		</object>
 		<object name="Ebonaura banner" shortname="bEbon" type="normal">
 			<model location="Objects/Banner_main.wom">
-				<override mesh="Cloth1Mesh" texture="Objects/ebon_banner.png"/>
+				<override mesh="ClothMesh" texture="Objects/ebon_banner.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5272,7 +5272,7 @@
 		</object>
 		<object name="EMR banner" shortname="bEMR" type="normal">
 			<model location="Objects/Banner_main.wom">
-				<override mesh="Cloth1Mesh" texture="Objects/empi_banner.png"/>
+				<override mesh="ClothMesh" texture="Objects/empi_banner.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5283,7 +5283,7 @@
 		</object>
 		<object name="JK PMK banner" shortname="bJKPMK" type="normal">
 			<model location="Objects/Banner_main.wom">
-				<override mesh="Cloth1Mesh" texture="Objects/jenn_banner.png"/>
+				<override mesh="ClothMesh" texture="Objects/jenn_banner.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5294,7 +5294,7 @@
 		</object>
 		<object name="VD banner" shortname="bVD" type="normal">
 			<model location="Objects/Banner_main.wom">
-				<override mesh="Cloth1Mesh" texture="Objects/valh_banner.png"/>
+				<override mesh="ClothMesh" texture="Objects/valh_banner.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
