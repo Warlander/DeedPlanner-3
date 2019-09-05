@@ -684,9 +684,9 @@ namespace Warlander.Deedplanner.Logic
             }
             else if (hitCollider.GetType() == typeof(BoxCollider))
             {
-                BoxCollider collider = (BoxCollider)hitCollider;
-                Vector3 size = collider.size * 1.01f;
-                Vector3 center = collider.center;
+                BoxCollider boxCollider = (BoxCollider)hitCollider;
+                Vector3 size = boxCollider.size * 1.01f;
+                Vector3 center = boxCollider.center;
 
                 Vector3 v000 = center + new Vector3(-size.x, -size.y, -size.z) / 2f;
                 Vector3 v001 = center + new Vector3(-size.x, -size.y, size.z) / 2f;
@@ -705,14 +705,14 @@ namespace Warlander.Deedplanner.Logic
                 GL.Vertex(v101);
                 GL.Vertex(v001);
                 //top
-                GL.Vertex(v010);
-                GL.Vertex(v110);
                 GL.Vertex(v111);
+                GL.Vertex(v110);
+                GL.Vertex(v010);
                 GL.Vertex(v011);
                 //down
-                GL.Vertex(v000);
-                GL.Vertex(v100);
                 GL.Vertex(v110);
+                GL.Vertex(v100);
+                GL.Vertex(v000);
                 GL.Vertex(v010);
                 //up
                 GL.Vertex(v001);
@@ -725,9 +725,9 @@ namespace Warlander.Deedplanner.Logic
                 GL.Vertex(v011);
                 GL.Vertex(v010);
                 //right
-                GL.Vertex(v100);
-                GL.Vertex(v101);
                 GL.Vertex(v111);
+                GL.Vertex(v101);
+                GL.Vertex(v100);
                 GL.Vertex(v110);
                 GL.End();
             }
