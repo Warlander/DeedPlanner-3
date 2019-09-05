@@ -330,6 +330,11 @@ namespace Warlander.Deedplanner.Data.Grounds
         
         private void LateUpdate()
         {
+            UpdateNow();
+        }
+
+        public void UpdateNow()
+        {
             if (needsVerticesUpdate)
             {
                 RenderMesh.vertices = renderVertices;

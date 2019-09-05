@@ -155,6 +155,8 @@ namespace Warlander.Deedplanner.Data
                 SurfaceGridMesh.SetHeight(x, y, surfaceHeight);
                 CaveGridMesh.SetHeight(x, y, caveHeight);
             }
+            
+            Ground.UpdateNow();
 
             for (int i = 0; i <= Width; i++)
             {
