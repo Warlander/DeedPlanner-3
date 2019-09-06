@@ -107,7 +107,13 @@ namespace Warlander.Deedplanner.Gui
             form.AddField("api_paste_expire_date", ParseExpirationDateIndex(expirationValueIndex));
             form.AddField("api_paste_code", base64String);
 
-            currentPastebinRequest = UnityWebRequest.Post("https://pastebin.com/api/api_post.php", form);
+            string requestLink = "https://pastebin.com/api/api_post.php";
+            if (Properties.Web)
+            {
+                requestLink = "https://cors-anywhere.herokuapp.com/" + requestLink;
+            }
+            
+            currentPastebinRequest = UnityWebRequest.Post(requestLink, form);
             UnityWebRequestAsyncOperation operation = currentPastebinRequest.SendWebRequest();
             operation.completed += completedCallback;
         }
