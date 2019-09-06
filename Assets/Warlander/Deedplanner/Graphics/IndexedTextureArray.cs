@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
 
 namespace Warlander.Deedplanner.Graphics
 {
@@ -51,16 +50,18 @@ namespace Warlander.Deedplanner.Graphics
 
             try
             {
-                if (texture.mipmapCount != TextureArray.mipmapCount)
+                if (texture.mipmapCount == TextureArray.mipmapCount)
                 {
-                    Debug.Log("Resizing texture: " + texture.name);
-                    texture.Resize(TextureArray.width, TextureArray.height, TextureFormat.RGBA32, true);
-                    texture.Apply();
-                    texture.Compress(true);
-                    texture.Apply();
+                    UnityEngine.Graphics.CopyTexture(texture, 0, TextureArray, Length);
                 }
-                
-                UnityEngine.Graphics.CopyTexture(texture, 0, TextureArray, Length);
+                else
+                {
+                    Texture2D tempTexture = Resize(texture, TextureArray.width, TextureArray.height);
+                    tempTexture.Compress(true);
+                    UnityEngine.Graphics.CopyTexture(tempTexture, 0, TextureArray, Length);
+                    UnityEngine.Object.Destroy(tempTexture);
+                }
+
                 indexToSlice[key] = Length;
                 Length++;
                 return true;
@@ -75,6 +76,20 @@ namespace Warlander.Deedplanner.Graphics
         public bool Contains(T key)
         {
             return indexToSlice.ContainsKey(key);
+        }
+        
+        private static Texture2D Resize(Texture2D source, int newWidth, int newHeight)
+        {
+            source.filterMode = FilterMode.Point;
+            RenderTexture rt = RenderTexture.GetTemporary(newWidth, newHeight);
+            rt.filterMode = FilterMode.Bilinear;
+            RenderTexture.active = rt;
+            UnityEngine.Graphics.Blit(source, rt);
+            Texture2D nTex = new Texture2D(newWidth, newHeight);
+            nTex.ReadPixels(new Rect(0, 0, newWidth, newWidth), 0,0);
+            nTex.Apply();
+            RenderTexture.active = null;
+            return nTex;
         }
         
     }
