@@ -1,3 +1,5 @@
+using System;
+
 namespace Warlander.Deedplanner.Logic
 {
     public static class LoadingUtils
@@ -12,7 +14,7 @@ namespace Warlander.Deedplanner.Logic
             }
             else
             {
-                string pasteId = originalLink.Substring(originalLink.LastIndexOf("/") + 1);
+                string pasteId = originalLink.Substring(originalLink.LastIndexOf("/", StringComparison.Ordinal) + 1);
                 requestLink = "https://pastebin.com/raw.php?i=" + pasteId;
             }
 
