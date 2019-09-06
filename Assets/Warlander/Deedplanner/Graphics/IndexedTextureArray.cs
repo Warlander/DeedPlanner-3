@@ -10,6 +10,7 @@ namespace Warlander.Deedplanner.Graphics
         private readonly Dictionary<T, int> indexToSlice;
         
         public Texture2DArray TextureArray { get; private set; }
+        public int MaxLength => TextureArray.depth;
         public int Length { get; private set; }
 
         public IndexedTextureArray(int width, int height, int depth, TextureFormat format, bool mipmaps = true)
@@ -80,7 +81,7 @@ namespace Warlander.Deedplanner.Graphics
         
         private static Texture2D Resize(Texture2D source, int newWidth, int newHeight)
         {
-            source.filterMode = FilterMode.Point;
+            source.filterMode = FilterMode.Bilinear;
             RenderTexture rt = RenderTexture.GetTemporary(newWidth, newHeight);
             rt.filterMode = FilterMode.Bilinear;
             RenderTexture.active = rt;
