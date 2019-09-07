@@ -10,7 +10,8 @@ namespace Warlander.Deedplanner.Data.Grounds
 
         private const int GroundTexturesWidth = 512;
         private const int GroundTexturesHeight = 512;
-        private const TextureFormat GroundTexturesFormat = TextureFormat.DXT5;
+        private const TextureFormat WebGroundTexturesFormat = TextureFormat.ARGB32;
+        private const TextureFormat DefaultGroundTexturesFormat = TextureFormat.DXT5;
         
         private static IndexedTextureArray<string> groundTexturesArray;
         
@@ -48,7 +49,16 @@ namespace Warlander.Deedplanner.Data.Grounds
             if (groundTexturesArray == null)
             {
                 int groundTexturesCount = Database.Grounds.Count;
-                groundTexturesArray = new IndexedTextureArray<string>(GroundTexturesWidth, GroundTexturesHeight, groundTexturesCount, GroundTexturesFormat);
+                
+                if (Properties.Web)
+                {
+                    groundTexturesArray = new IndexedTextureArray<string>(GroundTexturesWidth, GroundTexturesHeight, groundTexturesCount, WebGroundTexturesFormat);
+                }
+                else
+                {
+                    groundTexturesArray = new IndexedTextureArray<string>(GroundTexturesWidth, GroundTexturesHeight, groundTexturesCount, DefaultGroundTexturesFormat);
+                }
+                
             }
             
             gameObject.layer = LayerMasks.GroundLayer;
