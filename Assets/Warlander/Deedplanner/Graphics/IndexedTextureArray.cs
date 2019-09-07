@@ -51,15 +51,21 @@ namespace Warlander.Deedplanner.Graphics
 
             try
             {
-                if (texture.mipmapCount == TextureArray.mipmapCount)
+                if (texture.mipmapCount == TextureArray.mipmapCount && texture.format == TextureArray.format)
                 {
-                    UnityEngine.Graphics.CopyTexture(texture, 0, TextureArray, Length);
+                    AppendTexture(texture, Length);
                 }
                 else
                 {
+                    Debug.Log("Resizing and changing texture format to fit texture array: " + texture.name);
                     Texture2D tempTexture = Resize(texture, TextureArray.width, TextureArray.height);
-                    tempTexture.Compress(true);
-                    UnityEngine.Graphics.CopyTexture(tempTexture, 0, TextureArray, Length);
+                    if (TextureArray.format == TextureFormat.DXT5)
+                    {
+                        tempTexture.Compress(true);
+                    }
+
+                    AppendTexture(tempTexture, Length);
+                    
                     UnityEngine.Object.Destroy(tempTexture);
                 }
 
@@ -74,6 +80,19 @@ namespace Warlander.Deedplanner.Graphics
             }
         }
 
+        private void AppendTexture(Texture2D texture, int index)
+        {
+            if (Properties.Web)
+            {
+                TextureArray.SetPixels(texture.GetPixels(), index);
+                TextureArray.Apply(true);
+            }
+            else
+            {
+                UnityEngine.Graphics.CopyTexture(texture, 0, TextureArray, index);
+            }
+        }
+        
         public bool Contains(T key)
         {
             return indexToSlice.ContainsKey(key);
