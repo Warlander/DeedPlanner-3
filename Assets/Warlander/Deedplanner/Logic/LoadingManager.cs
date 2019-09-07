@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,9 +24,24 @@ namespace Warlander.Deedplanner.Logic
         private void Start()
         {
             splashRoot.SetActive(true);
+            OutputGraphicsCapabilities();
             StartCoroutine(Load());
         }
 
+        private void OutputGraphicsCapabilities()
+        {
+            StringBuilder build = new StringBuilder();
+            
+            build.AppendLine("Graphics capabilities:");
+            build.AppendLine("Graphics device type: " + SystemInfo.graphicsDeviceType);
+            build.AppendLine("Graphics device name: " + SystemInfo.graphicsDeviceName);
+            build.AppendLine("Graphics device vendor: " + SystemInfo.graphicsDeviceVendor);
+            build.AppendLine("Graphics device version: " + SystemInfo.graphicsDeviceVersion);
+            build.AppendLine("Graphics memory size: " + SystemInfo.graphicsMemorySize);
+            
+            Debug.Log(build.ToString());
+        }
+        
         private IEnumerator Load()
         {
             loadingBar.value = 0.0f;
