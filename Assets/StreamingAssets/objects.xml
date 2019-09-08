@@ -4121,7 +4121,7 @@
 			<category>Materials/Wood</category>
 		</object>
 		
-		<object name="Camellia" shortname="cam" type="bush">
+		<object name="Camellia bush" shortname="cam" type="bush">
 			<model location="Objects/camellia.wom" scale="3"/>
 			<category>Bushes</category>
 		</object>
@@ -4129,7 +4129,7 @@
 			<model location="Objects/grapebush.wom" scale="3"/>
 			<category>Bushes</category>
 		</object>
-		<object name="Lavender" shortname="laven" type="bush">
+		<object name="Lavender bush" shortname="laven" type="bush">
 			<model location="Objects/lavenderBush.wom" scale="3"/>
 			<category>Bushes</category>
 		</object>
@@ -4137,208 +4137,208 @@
 			<model location="Objects/rose.wom" scale="3"/>
 			<category>Bushes</category>
 		</object>
-		<object name="Oleander" shortname="olea" type="bush">
+		<object name="Oleander bush" shortname="olea" type="bush">
 			<model location="Objects/oleanderBush.wom" scale="3"/>
 			<category>Bushes</category>
 		</object>
-		<object name="Thorn" shortname="thorn" type="bush">
+		<object name="Thorn bush" shortname="thorn" type="bush">
 			<model location="Objects/thornbush.wom" scale="3"/>
 			<category>Bushes</category>
 		</object>
-		<object name="Blueberry" shortname="blueberry" type="bush">
+		<object name="Blueberry bush" shortname="blueberry" type="bush">
 			<model location="Objects/blueberryBush.wom" scale="3"/>
 			<category>Bushes</category>
 		</object>
-		<object name="Hazel" shortname="hazel" type="bush">
+		<object name="Hazel bush" shortname="hazel" type="bush">
 			<model location="Objects/hazelBush.wom" scale="3"/>
 			<category>Bushes</category>
 		</object>
-		<object name="Lingonberry" shortname="lingonberry" type="bush">
+		<object name="Lingonberry bush" shortname="lingonberry" type="bush">
 			<model location="Objects/lingonberryBush.wom" scale="3"/>
 			<category>Bushes</category>
 		</object>
-		<object name="Raspberry" shortname="raspberry" type="bush">
+		<object name="Raspberry bush" shortname="raspberry" type="bush">
 			<model location="Objects/raspberryBush.wom" scale="3"/>
 			<category>Bushes</category>
 		</object>
 		
-		<object name="Willow (small)" shortname="willS" type="tree">
+		<object name="Willow tree (small)" shortname="willS" type="tree">
 			<model location="Objects/willowTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Willow" shortname="will" type="tree">
+		<object name="Willow tree" shortname="will" type="tree">
 			<model location="Objects/willowTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Willow (big)" shortname="willB" type="tree">
+		<object name="Willow tree (big)" shortname="willB" type="tree">
 			<model location="Objects/willowTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Pine (small)" shortname="pineS" type="tree">
+		<object name="Pine tree (small)" shortname="pineS" type="tree">
 			<model location="Objects/pineTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Pine" shortname="pine" type="tree">
+		<object name="Pine tree" shortname="pine" type="tree">
 			<model location="Objects/pineTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Pine (big)" shortname="pineB" type="tree">
+		<object name="Pine tree (big)" shortname="pineB" type="tree">
 			<model location="Objects/pineTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Oak (small)" shortname="oakS" type="tree">
+		<object name="Oak tree (small)" shortname="oakS" type="tree">
 			<model location="Objects/oakTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Oak" shortname="oak" type="tree">
+		<object name="Oak tree" shortname="oak" type="tree">
 			<model location="Objects/oakTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Oak (big)" shortname="oakB" type="tree">
+		<object name="Oak tree (big)" shortname="oakB" type="tree">
 			<model location="Objects/oakTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Maple (small)" shortname="mapleS" type="tree">
+		<object name="Maple tree (small)" shortname="mapleS" type="tree">
 			<model location="Objects/mapleTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Maple" shortname="maple" type="tree">
+		<object name="Maple tree" shortname="maple" type="tree">
 			<model location="Objects/mapleTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Maple (big)" shortname="mapleB" type="tree">
+		<object name="Maple tree (big)" shortname="mapleB" type="tree">
 			<model location="Objects/mapleTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Cedar (small)" shortname="cedarS" type="tree">
+		<object name="Cedar tree (small)" shortname="cedarS" type="tree">
 			<model location="Objects/cedarTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Cedar" shortname="cedar" type="tree">
+		<object name="Cedar tree" shortname="cedar" type="tree">
 			<model location="Objects/cedarTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Cedar (big)" shortname="cedarB" type="tree">
+		<object name="Cedar tree (big)" shortname="cedarB" type="tree">
 			<model location="Objects/cedarTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Birch (small)" shortname="birchS" type="tree">
+		<object name="Birch tree (small)" shortname="birchS" type="tree">
 			<model location="Objects/birchTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Birch" shortname="birch" type="tree">
+		<object name="Birch tree" shortname="birch" type="tree">
 			<model location="Objects/birchTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Birch (big)" shortname="birchB" type="tree">
+		<object name="Birch tree (big)" shortname="birchB" type="tree">
 			<model location="Objects/birchTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Walnut (small)" shortname="walnutS" type="tree">
+		<object name="Walnut tree (small)" shortname="walnutS" type="tree">
 			<model location="Objects/walnutTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Walnut" shortname="walnut" type="tree">
+		<object name="Walnut tree" shortname="walnut" type="tree">
 			<model location="Objects/walnutTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Walnut (big)" shortname="walnutB" type="tree">
+		<object name="Walnut tree (big)" shortname="walnutB" type="tree">
 			<model location="Objects/walnutTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Linden (small)" shortname="lindenS" type="tree">
+		<object name="Linden tree (small)" shortname="lindenS" type="tree">
 			<model location="Objects/lindenTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Linden" shortname="linden" type="tree">
+		<object name="Linden tree" shortname="linden" type="tree">
 			<model location="Objects/lindenTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Linden (big)" shortname="lindenB" type="tree">
+		<object name="Linden tree (big)" shortname="lindenB" type="tree">
 			<model location="Objects/lindenTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Fir (small)" shortname="firS" type="tree">
+		<object name="Fir tree (small)" shortname="firS" type="tree">
 			<model location="Objects/firTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Fir" shortname="fir" type="tree">
+		<object name="Fir tree" shortname="fir" type="tree">
 			<model location="Objects/firTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Fir (big)" shortname="firB" type="tree">
+		<object name="Fir tree (big)" shortname="firB" type="tree">
 			<model location="Objects/firTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Chestnut (small)" shortname="chestnutS" type="tree">
+		<object name="Chestnut tree (small)" shortname="chestnutS" type="tree">
 			<model location="Objects/chestnutTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Chestnut" shortname="chestnut" type="tree">
+		<object name="Chestnut tree" shortname="chestnut" type="tree">
 			<model location="Objects/chestnutTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Chestnut (big)" shortname="chestnutB" type="tree">
+		<object name="Chestnut tree (big)" shortname="chestnutB" type="tree">
 			<model location="Objects/chestnutTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Apple (small)" shortname="appS" type="tree">
+		<object name="Apple tree (small)" shortname="appS" type="tree">
 			<model location="Objects/AppleTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Apple" shortname="app" type="tree">
+		<object name="Apple tree" shortname="app" type="tree">
 			<model location="Objects/AppleTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Apple (big)" shortname="appB" type="tree">
+		<object name="Apple tree (big)" shortname="appB" type="tree">
 			<model location="Objects/AppleTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Cherry (small)" shortname="cherryS" type="tree">
+		<object name="Cherry tree (small)" shortname="cherryS" type="tree">
 			<model location="Objects/CherryTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Cherry" shortname="cherry" type="tree">
+		<object name="Cherry tree" shortname="cherry" type="tree">
 			<model location="Objects/CherryTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Cherry (big)" shortname="cherryB" type="tree">
+		<object name="Cherry tree (big)" shortname="cherryB" type="tree">
 			<model location="Objects/CherryTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Lemon (small)" shortname="lemonS" type="tree">
+		<object name="Lemon tree (small)" shortname="lemonS" type="tree">
 			<model location="Objects/LemonTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Lemon" shortname="lemon" type="tree">
+		<object name="Lemon tree" shortname="lemon" type="tree">
 			<model location="Objects/LemonTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Lemon (big)" shortname="lemonB" type="tree">
+		<object name="Lemon tree (big)" shortname="lemonB" type="tree">
 			<model location="Objects/LemonTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Olive (small)" shortname="oliveS" type="tree">
+		<object name="Olive tree (small)" shortname="oliveS" type="tree">
 			<model location="Objects/OliveTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Olive" shortname="olive" type="tree">
+		<object name="Olive tree" shortname="olive" type="tree">
 			<model location="Objects/OliveTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Olive (big)" shortname="oliveB" type="tree">
+		<object name="Olive tree (big)" shortname="oliveB" type="tree">
 			<model location="Objects/OliveTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		<object name="Orange (small)" shortname="orangeS" type="tree">
+		<object name="Orange tree (small)" shortname="orangeS" type="tree">
 			<model location="Objects/orangeTree.wom" scale="4"/>
 			<category>Trees</category>
 		</object>
-		<object name="Orange" shortname="orange" type="tree">
+		<object name="Orange tree" shortname="orange" type="tree">
 			<model location="Objects/orangeTree.wom" scale="8"/>
 			<category>Trees</category>
 		</object>
-		<object name="Orange (big)" shortname="orangeB" type="tree">
+		<object name="Orange tree (big)" shortname="orangeB" type="tree">
 			<model location="Objects/orangeTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
