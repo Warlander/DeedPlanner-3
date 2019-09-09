@@ -4343,6 +4343,97 @@
 			<category>Trees</category>
 		</object>
 		
+		<object name="Coral tree (small)" shortname="coralS" type="tree">
+			<model location="Objects/Jackal/Trees/coralTree.wom" scale="4"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Coral tree" shortname="coral" type="tree">
+			<model location="Objects/Jackal/Trees/coralTree.wom" scale="8"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Coral tree (big)" shortname="coralB" type="tree">
+			<model location="Objects/Jackal/Trees/coralTree.wom" scale="16"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Desolate tree (small)" shortname="desoS" type="tree">
+			<model location="Objects/Jackal/Trees/desolateTree.wom" scale="4"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Desolate tree" shortname="deso" type="tree">
+			<model location="Objects/Jackal/Trees/desolateTree.wom" scale="8"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Desolate tree (big)" shortname="desoB" type="tree">
+			<model location="Objects/Jackal/Trees/desolateTree.wom" scale="16"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Frond tree (small)" shortname="frondS" type="tree">
+			<model location="Objects/Jackal/Trees/frondTree.wom" scale="4"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Frond tree" shortname="frond" type="tree">
+			<model location="Objects/Jackal/Trees/frondTree.wom" scale="8"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Frond tree (big)" shortname="frondB" type="tree">
+			<model location="Objects/Jackal/Trees/frondTree.wom" scale="16"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Rock tree (small)" shortname="rocktS" type="tree">
+			<model location="Objects/Jackal/Trees/rockTree.wom" scale="4"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Rock tree" shortname="rockt" type="tree">
+			<model location="Objects/Jackal/Trees/rockTree.wom" scale="8"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Rock tree (big)" shortname="rocktB" type="tree">
+			<model location="Objects/Jackal/Trees/rockTree.wom" scale="16"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Spiky tree (small)" shortname="spikyS" type="tree">
+			<model location="Objects/Jackal/Trees/spikyTree.wom" scale="4"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Spiky tree" shortname="spiky" type="tree">
+			<model location="Objects/Jackal/Trees/spikyTree.wom" scale="8"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Spiky tree (big)" shortname="spikyB" type="tree">
+			<model location="Objects/Jackal/Trees/spikyTree.wom" scale="16"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Tulip tree (small)" shortname="tulipS" type="tree">
+			<model location="Objects/Jackal/Trees/tulipTree.wom" scale="4"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Tulip tree" shortname="tulip" type="tree">
+			<model location="Objects/Jackal/Trees/tulipTree.wom" scale="8"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Tulip tree (big)" shortname="tulipB" type="tree">
+			<model location="Objects/Jackal/Trees/tulipTree.wom" scale="16"/>
+			<category>Trees/Jackal</category>
+			<category>Jackal</category>
+		</object>
+		
 		<object name="Fountain" shortname="foun" type="normal">
 			<model location="Objects/Fountain.wom"/>
 			<category>Water Sources</category>
