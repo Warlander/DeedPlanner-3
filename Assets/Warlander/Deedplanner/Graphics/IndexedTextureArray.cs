@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Warlander.Deedplanner.Graphics
 {
@@ -82,14 +83,14 @@ namespace Warlander.Deedplanner.Graphics
 
         private void AppendTexture(Texture2D texture, int index)
         {
-            if (Properties.Web)
+            if (SystemInfo.copyTextureSupport.HasFlag(CopyTextureSupport.DifferentTypes))
             {
-                TextureArray.SetPixels(texture.GetPixels(), index);
-                TextureArray.Apply(true);
+                UnityEngine.Graphics.CopyTexture(texture, 0, TextureArray, index);
             }
             else
             {
-                UnityEngine.Graphics.CopyTexture(texture, 0, TextureArray, index);
+                TextureArray.SetPixels(texture.GetPixels(), index);
+                TextureArray.Apply(true);
             }
         }
         
