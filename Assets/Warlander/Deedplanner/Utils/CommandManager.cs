@@ -55,8 +55,8 @@ namespace Warlander.Deedplanner.Utils
             if (undoList.Count > MaxUndoCount)
             {
                 IReversibleCommand removedCommand = undoList.Last.Value;
-                removedCommand.DisposeUndo();
                 undoList.RemoveLast();
+                removedCommand.DisposeUndo();
             }
         }
         
