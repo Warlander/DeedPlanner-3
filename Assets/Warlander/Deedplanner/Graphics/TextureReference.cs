@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 using UnityEngine;
 
@@ -14,7 +15,13 @@ namespace Warlander.Deedplanner.Graphics
         public static TextureReference GetTextureReference(string location)
         {
             location = location.Replace(Application.streamingAssetsPath + "/", "");
-                
+
+            if (string.IsNullOrEmpty(Path.GetExtension(location)))
+            {
+                Debug.Log("Attempting to load invalid texture from " + location);
+                return null;
+            }
+            
             if (references.ContainsKey(location))
             {
                 return references[location];
