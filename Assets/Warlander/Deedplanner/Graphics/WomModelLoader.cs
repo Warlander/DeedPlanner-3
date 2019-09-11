@@ -181,7 +181,7 @@ namespace Warlander.Deedplanner.Graphics
 
             string texLocation = Path.Combine(modelFolder, texName);
             TextureReference textureReference = TextureReference.GetTextureReference(texLocation);
-            Texture2D texture = textureReference.Texture;
+            Texture2D texture = textureReference?.Texture;
 
             if (texture)
             {
@@ -245,9 +245,9 @@ namespace Warlander.Deedplanner.Graphics
 
         public static Texture2D LoadTexture(string location, bool readable)
         {
-            if (string.IsNullOrEmpty(location))
+            if (string.IsNullOrEmpty(Path.GetExtension(location)))
             {
-                Debug.LogWarning("Attempting to load texture from empty location");
+                Debug.LogWarning("Attempting to load texture from empty location: " + location);
                 return null;
             }
 
