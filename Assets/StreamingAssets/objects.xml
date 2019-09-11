@@ -5658,6 +5658,35 @@
 			<model location="Objects/dragonSkull_green.wom"/>
 			<category>Misc</category>
 		</object>
+		<object name="Beacon of Freedom" shortname="freedomBeacon" type="centered">
+			<model location="Objects/Jackal/BeaconFreedom.wom"/>
+			<materials>
+				Marble bricks = 10,
+				Mortar = 5,
+				Planks = 5,
+				Small nails = 2,
+				Square pieces of cloth = 5
+			</materials>
+			<category>Misc</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Beacon of Jackal" shortname="jackalBeacon" type="centered">
+			<model location="Objects/Jackal/beaconJackal.wom"/>
+			<category>Misc</category>
+			<category>Jackal</category>
+		</object>
+		<object name="Jackal lodestone" shortname="jackalLode" type="normal">
+			<model location="Objects/Jackal/Lodestone.wom"/>
+			<materials>
+				Stone bricks = 6,
+				Mortar = 6,
+				Rift wood = 10,
+				Rift crystals = 10,
+				Rift stones = 10
+			</materials>
+			<category>Misc</category>
+			<category>Jackal</category>
+		</object>
 		
 		<object name="Forge" shortname="forge" type="normal">
 			<model location="Objects/forge.wom"/>
