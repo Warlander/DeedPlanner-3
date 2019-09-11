@@ -906,12 +906,19 @@ namespace Warlander.Deedplanner.Data
 
             public void DisposeUndo()
             {
-                Destroy(oldEntity.gameObject);
+                if (oldEntity)
+                {
+                    Destroy(oldEntity.gameObject);
+                }
+                
             }
 
             public void DisposeRedo()
             {
-                Destroy(newEntity.gameObject);
+                if (newEntity)
+                {
+                    Destroy(newEntity.gameObject);
+                }
             }
         }
 
