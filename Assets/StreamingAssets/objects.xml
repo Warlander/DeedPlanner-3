@@ -5823,31 +5823,45 @@
 			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (blue flowers)" shortname="marbplantblue" type="normal">
-			<model location="Objects/marblePlanter.wom"/>
+			<model location="Objects/marblePlanter.wom">
+				<override mesh="FlowersMesh" texture="Objects/flower_blue.png"/>
+			</model>
 			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (dotted flowers)" shortname="marbplantdotted" type="normal">
-			<model location="Objects/marblePlanter.wom"/>
+			<model location="Objects/marblePlanter.wom">
+				<override mesh="FlowersMesh" texture="Objects/flower_dotted.png"/>
+			</model>
 			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (greenish flowers)" shortname="marbplantgreen" type="normal">
-			<model location="Objects/marblePlanter.wom"/>
+			<model location="Objects/marblePlanter.wom">
+				<override mesh="FlowersMesh" texture="Objects/flower_greenish.png"/>
+			</model>
 			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (orange flowers)" shortname="marbplantorange" type="normal">
-			<model location="Objects/marblePlanter.wom"/>
+			<model location="Objects/marblePlanter.wom">
+				<override mesh="FlowersMesh" texture="Objects/flower_orange.png"/>
+			</model>
 			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (purple flowers)" shortname="marbplantpurple" type="normal">
-			<model location="Objects/marblePlanter.wom"/>
+			<model location="Objects/marblePlanter.wom">
+				<override mesh="FlowersMesh" texture="Objects/flower_purple.png"/>
+			</model>
 			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (white flowers)" shortname="marbplantwhite" type="normal">
-			<model location="Objects/marblePlanter.wom"/>
+			<model location="Objects/marblePlanter.wom">
+				<override mesh="FlowersMesh" texture="Objects/flower_white.png"/>
+			</model>
 			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (yellow flowers)" shortname="marbplantyellow" type="normal">
-			<model location="Objects/marblePlanter.wom"/>
+			<model location="Objects/marblePlanter.wom">
+				<override mesh="FlowersMesh" texture="Objects/flower_yellow.png"/>
+			</model>
 			<category>Decoration/Marble Planters</category>
 		</object>
 		
