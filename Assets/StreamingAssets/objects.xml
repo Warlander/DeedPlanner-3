@@ -5820,36 +5820,76 @@
 		
 		<object name="Marble Planter (empty)" shortname="marbplantempty" type="normal">
 			<model location="Objects/marblePlanter_empty.wom"/>
-			<category>Decoration</category>
+			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (blue flowers)" shortname="marbplantblue" type="normal">
 			<model location="Objects/marblePlanter.wom"/>
-			<category>Decoration</category>
+			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (dotted flowers)" shortname="marbplantdotted" type="normal">
 			<model location="Objects/marblePlanter.wom"/>
-			<category>Decoration</category>
+			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (greenish flowers)" shortname="marbplantgreen" type="normal">
 			<model location="Objects/marblePlanter.wom"/>
-			<category>Decoration</category>
+			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (orange flowers)" shortname="marbplantorange" type="normal">
 			<model location="Objects/marblePlanter.wom"/>
-			<category>Decoration</category>
+			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (purple flowers)" shortname="marbplantpurple" type="normal">
 			<model location="Objects/marblePlanter.wom"/>
-			<category>Decoration</category>
+			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (white flowers)" shortname="marbplantwhite" type="normal">
 			<model location="Objects/marblePlanter.wom"/>
-			<category>Decoration</category>
+			<category>Decoration/Marble Planters</category>
 		</object>
 		<object name="Marble Planter (yellow flowers)" shortname="marbplantyellow" type="normal">
 			<model location="Objects/marblePlanter.wom"/>
-			<category>Decoration</category>
+			<category>Decoration/Marble Planters</category>
 		</object>
+		
+		<object name="Flowerpot (clay)" shortname="flowerpotClay" type="normal">
+			<model location="Objects/FlowerPots/FlowerpotClay.wom"/>
+			<category>Decoration/Flowerpots</category>
+		</object>
+		<object name="Flowerpot (empty)" shortname="flowerpotEmpty" type="normal">
+			<model location="Objects/FlowerPots/FlowerpotClay.wom">
+				<override mesh="FlowerpotClayMesh" texture="Objects/FlowerPots/Flowerpot_burned.dds"/>
+			</model>
+			<category>Decoration/Flowerpots</category>
+		</object>
+		<object name="Flowerpot (blue flowers)" shortname="flowerpotBlue" type="normal">
+			<model location="Objects/FlowerPots/Flowerpot_blue.wom"/>
+			<category>Decoration/Flowerpots</category>
+		</object>
+		<object name="Flowerpot (dotted flowers)" shortname="flowerpotDotted" type="normal">
+			<model location="Objects/FlowerPots/Flowerpot_dotted.wom"/>
+			<category>Decoration/Flowerpots</category>
+		</object>
+		<object name="Flowerpot (greenish flowers)" shortname="flowerpotGreen" type="normal">
+			<model location="Objects/FlowerPots/Flowerpot_greenish.wom"/>
+			<category>Decoration/Flowerpots</category>
+		</object>
+		<object name="Flowerpot (orange flowers)" shortname="flowerpotOrange" type="normal">
+			<model location="Objects/FlowerPots/Flowerpot_orange.wom"/>
+			<category>Decoration/Flowerpots</category>
+		</object>
+		<object name="Flowerpot (purple flowers)" shortname="flowerpotPurple" type="normal">
+			<model location="Objects/FlowerPots/Flowerpot_purple.wom"/>
+			<category>Decoration/Flowerpots</category>
+		</object>
+		<object name="Flowerpot (white flowers)" shortname="flowerpotWhite" type="normal">
+			<model location="Objects/FlowerPots/Flowerpot_white.wom"/>
+			<category>Decoration/Flowerpots</category>
+		</object>
+		<object name="Flowerpot (yellow flowers)" shortname="flowerpotYellow" type="normal">
+			<model location="Objects/FlowerPots/Flowerpot_yellow.wom"/>
+			<category>Decoration/Flowerpots</category>
+		</object>
+		
 		<object name="Spirit castle" shortname="spiritcastle" type="normal">
 			<model location="Objects/spiritCastle.wom"/>
 			<category>Mailboxes</category>
