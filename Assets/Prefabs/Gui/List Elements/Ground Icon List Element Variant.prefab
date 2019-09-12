@@ -20,7 +20,7 @@ PrefabInstance:
     - target: {fileID: 1396676428500846493, guid: afc2825e450561c41b7f9fceb71e64c3,
         type: 3}
       propertyPath: m_fontSize
-      value: 18
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1396676428500846493, guid: afc2825e450561c41b7f9fceb71e64c3,
         type: 3}
@@ -46,6 +46,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4278190080
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396676428500846493, guid: afc2825e450561c41b7f9fceb71e64c3,
+        type: 3}
+      propertyPath: m_textAlignment
+      value: 513
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396676428500846493, guid: afc2825e450561c41b7f9fceb71e64c3,
+        type: 3}
+      propertyPath: m_fontSizeMin
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396676428500846493, guid: afc2825e450561c41b7f9fceb71e64c3,
+        type: 3}
+      propertyPath: m_margin.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396676428500846493, guid: afc2825e450561c41b7f9fceb71e64c3,
+        type: 3}
+      propertyPath: m_margin.w
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1396676428323667342, guid: afc2825e450561c41b7f9fceb71e64c3,
         type: 3}
