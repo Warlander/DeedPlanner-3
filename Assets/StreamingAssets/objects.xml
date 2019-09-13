@@ -4046,6 +4046,17 @@
 			<category>Containers</category>
 			<category>Materials/Wood</category>
 		</object>
+		<object name="Cupboard" shortname="cupboard" type="normal">
+			<model location="Objects/Cupboard_main.wom"/>
+			<materials>
+				Planks = 5,
+				Small nails = 3,
+				Shafts = 2,
+				Tar = 2
+			</materials>
+			<category>Containers</category>
+			<category>Materials/Wood</category>
+		</object>
 		<object name="Alchemist's cupboard" shortname="aCupboard" type="normal">
 			<model location="Objects/alchemyCupboard.wom"/>
 			<materials>
