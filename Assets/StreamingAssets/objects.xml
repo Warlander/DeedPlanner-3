@@ -4697,7 +4697,12 @@
 		</object>
 		<object name="Archery tower" shortname="archGT" type="centered">
 			<model location="Objects/archeryTower.wom"/>
-			
+			<materials>
+				Logs = 20,
+				Wooden beams = 20,
+				Planks = 201,
+				Large nails = 7
+			</materials>
 			<category>Towers</category>
 			<category>Materials/Stone</category>
 		</object>
@@ -5034,6 +5039,10 @@
 		</object>
 		<object name="Marble brazier pillar" shortname="mBrazier" type="normal">
 			<model location="Objects/BrazierPillar.wom"/>
+			<materials>
+				Mortar = 50,
+				Marble bricks = 50
+			</materials>
 			<category>Braziers</category>
 		</object>
 
