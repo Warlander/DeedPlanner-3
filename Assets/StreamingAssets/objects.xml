@@ -4093,6 +4093,17 @@
 			<category>Containers</category>
 			<category>Materials/Wood</category>
 		</object>
+		<object name="Chicken coop" shortname="coop" type="normal">
+			<model location="Objects/CoopNoEggs.wom"/>
+			<materials>
+				Planks = 30,
+				Small nails = 1,
+				Large nails = 5,
+				Shafts = 8
+			</materials>
+			<category>Containers</category>
+			<category>Materials/Wood</category>
+		</object>
 		
 		<object name="Gold altar" shortname="gAltar" type="normal">
 			<model location="Objects/altar-gold.wom"/>
