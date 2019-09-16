@@ -4104,6 +4104,16 @@
 			<category>Containers</category>
 			<category>Materials/Wood</category>
 		</object>
+		<object name="Small Amphora" shortname="ampSmall" type="normal">
+			<model location="Objects/Amphora02.wom"/>
+			<category>Containers</category>
+			<category>Materials/Pottery</category>
+		</object>
+		<object name="Large Amphora" shortname="ampLarge" type="normal">
+			<model location="Objects/Amphora01.wom"/>
+			<category>Containers</category>
+			<category>Materials/Pottery</category>
+		</object>
 		
 		<object name="Gold altar" shortname="gAltar" type="normal">
 			<model location="Objects/altar-gold.wom"/>
