@@ -5142,7 +5142,9 @@
 		<object name="Tapestry stand" shortname="tStand" type="normal">
 			<model location="Objects/tapestry_stand.wom"/>
 			<materials>
-				Tapestry stand = 1
+				Planks = 1,
+				Shafts = 4,
+				Small nails = 2
 			</materials>
 			<category>Tapestries</category>
 		</object>
@@ -5151,7 +5153,9 @@
 				<override mesh="tapestryMeshMesh" texture="Objects/TapestryComp1.png"/>
 			</model>
 			<materials>
-				Tapestry stand = 1,
+				Planks = 1,
+				Shafts = 4,
+				Small nails = 2,
 				Square piece of wool cloth = 8,
 				Yarn = 6
 			</materials>
@@ -5160,7 +5164,9 @@
 		<object name="Green tapestry" shortname="tGreen" type="normal">
 			<model location="Objects/tapestry.wom"/>
 			<materials>
-				Tapestry stand = 1,
+				Planks = 1,
+				Shafts = 4,
+				Small nails = 2,
 				Square piece of wool cloth = 8,
 				Yarn = 6
 			</materials>
@@ -5171,7 +5177,9 @@
 				<override mesh="tapestryMeshMesh" texture="Objects/Tapestry2.png"/>
 			</model>
 			<materials>
-				Tapestry stand = 1,
+				Planks = 1,
+				Shafts = 4,
+				Small nails = 2,
 				Square piece of wool cloth = 8,
 				Yarn = 6
 			</materials>
@@ -5182,7 +5190,9 @@
 				<override mesh="tapestryMeshMesh" texture="Objects/Tapestry3.png"/>
 			</model>
 			<materials>
-				Tapestry stand = 1,
+				Planks = 1,
+				Shafts = 4,
+				Small nails = 2,
 				Square piece of wool cloth = 8,
 				Yarn = 6
 			</materials>
@@ -5193,7 +5203,9 @@
 				<override mesh="tapestryMeshMesh" texture="Objects/Tapestry4.png"/>
 			</model>
 			<materials>
-				Tapestry stand = 1,
+				Planks = 1,
+				Shafts = 4,
+				Small nails = 2,
 				Square piece of wool cloth = 8,
 				Yarn = 6
 			</materials>
@@ -5204,7 +5216,9 @@
 				<override mesh="tapestryMeshMesh" texture="Objects/Tapestry5.png"/>
 			</model>
 			<materials>
-				Tapestry stand = 1,
+				Planks = 1,
+				Shafts = 4,
+				Small nails = 2,
 				Square piece of wool cloth = 8,
 				Yarn = 6
 			</materials>
@@ -5215,7 +5229,9 @@
 				<override mesh="tapestryMeshMesh" texture="Objects/Tapestry6.png"/>
 			</model>
 			<materials>
-				Tapestry stand = 1,
+				Planks = 1,
+				Shafts = 4,
+				Small nails = 2,
 				Square piece of wool cloth = 8,
 				Yarn = 6
 			</materials>
