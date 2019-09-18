@@ -39,7 +39,7 @@ namespace Warlander.Deedplanner.Data
         public int LowestCaveHeight { get; private set; }
         public int HighestCaveHeight { get; private set; }
 
-        public CommandManager CommandManager { get; set; } = new CommandManager(50);
+        public CommandManager CommandManager { get; set; } = new CommandManager(100);
         
         public Transform PlaneLineRoot { get; private set; }
 
