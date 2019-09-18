@@ -4527,35 +4527,35 @@
 			<category>Statues/HOTA</category>
 		</object>
 		
-		<object name="Eagle statue" shortname="eaglearch" type="normal">
+		<object name="Statue of eagle" shortname="eaglearch" type="normal">
 			<model location="Objects/eagleStatue.wom"/>
 			<category>Statues/Archaeology</category>
 		</object>
-		<object name="Hatchling statue" shortname="hatchlingarch" type="normal">
+		<object name="Statue of drake" shortname="hatchlingarch" type="normal">
 			<model location="Objects/hatchlingStatue.wom"/>
 			<category>Statues/Archaeology</category>
 		</object>
-		<object name="Hell horse statue" shortname="hellhorsearch" type="normal">
+		<object name="Statue of hell horse" shortname="hellhorsearch" type="normal">
 			<model location="Objects/hellHorseStatue.wom"/>
 			<category>Statues/Archaeology</category>
 		</object>
-		<object name="Worg statue" shortname="worgarch" type="normal">
+		<object name="Statue of worg" shortname="worgarch" type="normal">
 			<model location="Objects/worgStatue.wom"/>
 			<category>Statues/Archaeology</category>
 		</object>
-		<object name="Fo statue" shortname="foarch" type="normal">
+		<object name="Statue of Fo" shortname="foarch" type="normal">
 			<model location="Objects/foStatue.wom"/>
 			<category>Statues/Archaeology</category>
 		</object>
-		<object name="Libila statue" shortname="libilaarch" type="normal">
+		<object name="Statue of Libila" shortname="libilaarch" type="normal">
 			<model location="Objects/libilaStatue.wom"/>
 			<category>Statues/Archaeology</category>
 		</object>
-		<object name="Magranon statue" shortname="magarch" type="normal">
+		<object name="Statue of Magranon" shortname="magarch" type="normal">
 			<model location="Objects/magStatue.wom"/>
 			<category>Statues/Archaeology</category>
 		</object>
-		<object name="Vynora statue" shortname="vynarch" type="normal">
+		<object name="Statue of Vynora" shortname="vynarch" type="normal">
 			<model location="Objects/vynStatue.wom"/>
 			<category>Statues/Archaeology</category>
 		</object>
