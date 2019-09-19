@@ -217,12 +217,17 @@ namespace Warlander.Deedplanner.Logic
                     
                     GameObject hitObject = raycastHit.transform.gameObject;
                     TileEntity tileEntity = hitObject.GetComponent<TileEntity>();
+                    GroundMesh groundMesh = hitObject.GetComponent<GroundMesh>();
                     OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
                     HeightmapHandle heightmapHandle = hitObject.GetComponent<HeightmapHandle>();
                     
                     if (tileEntity)
                     {
                         tooltipBuild.Append(tileEntity.ToString());
+                        
+                    }
+                    else if (groundMesh)
+                    {
                         if (isHeightEditing)
                         {
                             Map map = GameManager.Instance.Map;
@@ -241,12 +246,18 @@ namespace Warlander.Deedplanner.Logic
                             int h01Digits = StringUtils.DigitsStringCount(h01);
                             int h11Digits = StringUtils.DigitsStringCount(h11);
                             int maxDigits = Mathf.Max(h00Digits, h10Digits, h01Digits, h11Digits);
-
-                            tooltipBuild.Append("<br>");
-                            tooltipBuild.Append("<br><mspace=0.5em>");
-                            tooltipBuild.Append(StringUtils.PaddedNumberString(h01, maxDigits)).Append("   ").Append(StringUtils.PaddedNumberString(h11, maxDigits)).Append("<br>");
-                            tooltipBuild.Append("<br>");
+                            
+                            tooltipBuild.Append("<mspace=0.5em>");
+                            tooltipBuild.Append(StringUtils.PaddedNumberString(h01, maxDigits)).Append("   ").Append(StringUtils.PaddedNumberString(h11, maxDigits)).AppendLine();
+                            tooltipBuild.AppendLine();
                             tooltipBuild.Append(StringUtils.PaddedNumberString(h00, maxDigits)).Append("   ").Append(StringUtils.PaddedNumberString(h10, maxDigits)).Append("</mspace>");
+                        }
+                        else
+                        {
+                            int x = Mathf.FloorToInt(raycastHit.point.x / 4f);
+                            int y = Mathf.FloorToInt(raycastHit.point.z / 4f);
+                            tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
+                            tooltipBuild.Append(GameManager.Instance.Map[x, y].Ground.Data.Name);
                         }
                     }
                     else if (overlayMesh)
