@@ -4559,6 +4559,36 @@
 			<model location="Objects/vynStatue.wom"/>
 			<category>Statues/Archaeology</category>
 		</object>
+		<object name="Statue of guard" shortname="guardarch" type="normal">
+			<model location="Objects/guardStatue.wom"/>
+			<category>Statues/Archaeology</category>
+		</object>
+		<object name="Statue of kyklops" shortname="kyklopsarch" type="normal">
+			<model location="Objects/kyklopsStatue.wom"/>
+			<category>Statues/Archaeology</category>
+		</object>
+		<object name="Statue of lava fiend" shortname="fiendarch" type="normal">
+			<model location="Objects/fiendStatue.wom"/>
+			<category>Statues/Archaeology</category>
+		</object>
+		<object name="Statue of mountain lion" shortname="lionarch" type="normal">
+			<model location="Objects/lionStatue.wom"/>
+			<category>Statues/Archaeology</category>
+		</object>
+		<object name="Statue of rift beast" shortname="beastarch" type="normal">
+			<model location="Objects/beastStatue.wom"/>
+			<category>Statues/Archaeology</category>
+		</object>
+		<object name="Statue of Tich (metal)" shortname="ticharch" type="normal">
+			<model location="Objects/statuePifa.wom">
+				<override mesh="statuePifaMesh" texture="Objects/pifaStatueMetal.dds"/>
+			</model>
+			<category>Statues/Archaeology</category>
+		</object>
+		<object name="Statue of unicorn" shortname="uniarch" type="normal">
+			<model location="Objects/unicornStatue.wom"/>
+			<category>Statues/Archaeology</category>
+		</object>
 		
 		<object name="Statue of boy" shortname="statBoy" type="normal">
 			<model location="Objects/boyStatue.wom"/>
@@ -4592,6 +4622,11 @@
 		</object>
 		<object name="Statue of troll" shortname="statTroll" type="normal">
 			<model location="Objects/trollStatue.wom"/>
+			<category>Statues</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Statue of Tich (stone)" shortname="statTich" type="normal">
+			<model location="Objects/statuePifa.wom"/>
 			<category>Statues</category>
 			<category>Materials/Stone</category>
 		</object>
