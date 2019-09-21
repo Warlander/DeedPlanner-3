@@ -88,7 +88,7 @@ namespace Warlander.Deedplanner.Graphics
 
             MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
             MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
-            meshFilter.mesh = loadedMesh;
+            meshFilter.sharedMesh = loadedMesh;
             meshRenderer.material = loadedMaterial;
             
             return meshObject;
