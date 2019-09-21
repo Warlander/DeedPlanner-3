@@ -76,12 +76,8 @@ namespace Warlander.Deedplanner.Data
             Y = y;
 
             Entities = new Dictionary<EntityData, TileEntity>();
-
-            GameObject groundObject = new GameObject("Ground", typeof(Ground));
-            groundObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
-            Ground = groundObject.GetComponent<Ground>();
-            Map.AddEntityToMap(groundObject, 0);
-            Ground.Initialize(this, Database.Grounds["gr"]);
+            
+            Ground = new Ground(this, Database.Grounds["gr"]);
 
             GameObject caveObject = new GameObject("Cave", typeof(Cave));
             caveObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
@@ -121,7 +117,7 @@ namespace Warlander.Deedplanner.Data
 
         public bool ContainsEntity(TileEntity entity)
         {
-            if (entity == Ground || entity == Cave)
+            if (entity == Cave)
             {
                 return true;
             }
@@ -141,10 +137,6 @@ namespace Warlander.Deedplanner.Data
         
         public EntityType FindTypeOfEntity(TileEntity entity)
         {
-            if (entity == Ground)
-            {
-                return EntityType.Ground;
-            }
             if (entity == Cave)
             {
                 return EntityType.Cave;
@@ -165,10 +157,6 @@ namespace Warlander.Deedplanner.Data
 
         public int FindFloorOfEntity(TileEntity entity)
         {
-            if (entity == Ground)
-            {
-                return 0;
-            }
             if (entity == Cave)
             {
                 return -1;
