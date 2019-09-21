@@ -298,20 +298,21 @@ namespace Warlander.Deedplanner.Graphics
 
             Texture2D finalTexture = new Texture2D(dxtTexture.width, dxtTexture.height);
             Color[] pixelBuffer = dxtTexture.GetPixels(0, 0, dxtTexture.width, dxtTexture.height);
+            Object.DestroyImmediate(dxtTexture);
+            
             Color[] flippedPixelBuffer = new Color[pixelBuffer.Length];
-            for (int y = 0; y < dxtTexture.height; y++)
+            for (int y = 0; y < finalTexture.height; y++)
             {
-                for (int x = 0; x < dxtTexture.width; x++)
+                for (int x = 0; x < finalTexture.width; x++)
                 {
-                    int originalIndex = y * dxtTexture.width + x;
-                    int flippedIndex = (dxtTexture.height - y - 1) * dxtTexture.width + x;
+                    int originalIndex = y * finalTexture.width + x;
+                    int flippedIndex = (finalTexture.height - y - 1) * finalTexture.width + x;
                     flippedPixelBuffer[flippedIndex] = pixelBuffer[originalIndex];
                 }
             }
             finalTexture.SetPixels(flippedPixelBuffer);
             finalTexture.Apply();
             finalTexture.Compress(true);
-            Object.Destroy(dxtTexture);
 
             return finalTexture;
         }
