@@ -1,18 +1,16 @@
 ﻿using System.Text;
 using System.Xml;
-using UnityEngine;
-using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data.Grounds
 {
-    public class Ground : TileEntity
+    public class Ground : IXMLSerializable
     {
         
         private GroundData data;
         private RoadDirection roadDirection = RoadDirection.Center;
 
-        public override Materials Materials => null;
+        public Tile Tile { get; }
 
         public GroundData Data {
             get => data;
@@ -24,14 +22,14 @@ namespace Warlander.Deedplanner.Data.Grounds
             set => Tile.Map.CommandManager.AddToActionAndExecute(new RoadDirectionChangeCommand(this, roadDirection, value));
         }
 
-        public void Initialize(Tile tile, GroundData data)
+        public Ground(Tile tile, GroundData data)
         {
             Tile = tile;
             Data = data;
             RoadDirection = RoadDirection.Center;
         }
 
-        public override void Serialize(XmlDocument document, XmlElement localRoot)
+        public void Serialize(XmlDocument document, XmlElement localRoot)
         {
             localRoot.SetAttribute("id", data.ShortName);
             if (roadDirection != RoadDirection.Center) {
