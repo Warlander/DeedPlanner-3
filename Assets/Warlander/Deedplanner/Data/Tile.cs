@@ -660,8 +660,8 @@ namespace Warlander.Deedplanner.Data
             }
             
             bool horizontal = (element.Name.Equals("hWall", StringComparison.OrdinalIgnoreCase));
-
-            bool reversed = element.GetAttribute("reversed") == "true";
+            bool reversed = element.GetAttribute("reversed").Equals("true", StringComparison.OrdinalIgnoreCase);
+            
             if (horizontal)
             {
                 SetHorizontalWall(data, reversed, floor);
