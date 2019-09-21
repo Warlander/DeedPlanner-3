@@ -33,7 +33,7 @@ namespace Warlander.Deedplanner.Graphics
                 MeshFilter[] filters = originalModel.GetComponentsInChildren<MeshFilter>();
                 foreach (MeshFilter filter in filters)
                 {
-                    Mesh mesh = filter.mesh;
+                    Mesh mesh = filter.sharedMesh;
                     bounds.Encapsulate(mesh.bounds);
                 }
                 return bounds;

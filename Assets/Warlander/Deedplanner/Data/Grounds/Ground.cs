@@ -24,7 +24,7 @@ namespace Warlander.Deedplanner.Data.Grounds
             set => Tile.Map.CommandManager.AddToActionAndExecute(new RoadDirectionChangeCommand(this, roadDirection, value));
         }
 
-        public void Initialize(Tile tile, GroundData data, Mesh mesh)
+        public void Initialize(Tile tile, GroundData data)
         {
             Tile = tile;
             Data = data;

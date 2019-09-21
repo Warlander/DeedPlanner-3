@@ -26,8 +26,6 @@ namespace Warlander.Deedplanner.Data
         public Map Map { get; private set; }
         public int X { get; private set; }
         public int Y { get; private set; }
-        private Mesh SurfaceHeightMesh { get; set; }
-        private Mesh CaveHeightMesh { get; set; }
         private Dictionary<EntityData, TileEntity> Entities { get; set; }
 
         public Ground Ground { get; private set; }
@@ -77,16 +75,13 @@ namespace Warlander.Deedplanner.Data
             X = x;
             Y = y;
 
-            SurfaceHeightMesh = InitializeHeightMesh();
-            CaveHeightMesh = InitializeHeightMesh();
-
             Entities = new Dictionary<EntityData, TileEntity>();
 
             GameObject groundObject = new GameObject("Ground", typeof(Ground));
             groundObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
             Ground = groundObject.GetComponent<Ground>();
             Map.AddEntityToMap(groundObject, 0);
-            Ground.Initialize(this, Database.Grounds["gr"], SurfaceHeightMesh);
+            Ground.Initialize(this, Database.Grounds["gr"]);
 
             GameObject caveObject = new GameObject("Cave", typeof(Cave));
             caveObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
@@ -122,25 +117,6 @@ namespace Warlander.Deedplanner.Data
             entity.Tile = this;
             Entities[data] = entity;
             Map.AddEntityToMap(entity.gameObject, data.Floor);
-        }
-
-        private Mesh InitializeHeightMesh()
-        {
-            Vector3[] vertices = { new Vector3(0, 0, 0), new Vector3(4, 0, 0), new Vector3(0, 0, 4), new Vector3(4, 0, 4), new Vector3(2, 0, 2) };
-            Vector2[] uv = { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(0.5f, 0.5f) };
-
-            Mesh mesh = new Mesh();
-            mesh.vertices = vertices;
-            mesh.uv = uv;
-            mesh.subMeshCount = 4;
-            mesh.SetTriangles(new int[] { 0, 2, 4 }, 0);
-            mesh.SetTriangles(new int[] { 2, 3, 4 }, 1);
-            mesh.SetTriangles(new int[] { 3, 1, 4 }, 2);
-            mesh.SetTriangles(new int[] { 1, 0, 4 }, 3);
-            mesh.RecalculateNormals();
-            mesh.RecalculateBounds();
-
-            return mesh;
         }
 
         public bool ContainsEntity(TileEntity entity)
