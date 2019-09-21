@@ -123,7 +123,7 @@ namespace Warlander.Deedplanner.Data.Walls
         {
             localRoot.SetAttribute("id", Data.ShortName);
             if (Data.HouseWall) {
-                localRoot.SetAttribute("reversed", Reversed.ToString());
+                localRoot.SetAttribute("reversed", Reversed.ToString().ToLower());
             }
         }
         
