@@ -32,7 +32,7 @@
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
             float3 uv = float3(IN.uv_MainTex.x, IN.uv_MainTex.y, IN.uv2_FillerTex.x);
-            fixed4 c = UNITY_SAMPLE_TEX2DARRAY(_MainTex, uv);
+            fixed4 c = UNITY_SAMPLE_TEX2DARRAY(_MainTex, uv) * _Color;
             o.Albedo = c.rgb;
             o.Metallic = 0.0;
             o.Smoothness = 0.0;
