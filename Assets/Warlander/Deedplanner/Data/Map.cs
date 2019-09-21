@@ -196,10 +196,10 @@ namespace Warlander.Deedplanner.Data
             GameObject surfaceGridRootObject = new GameObject("Surface Grid", typeof(OverlayMesh));
             OverlayMesh surfaceOverlayMesh = surfaceGridRootObject.GetComponent<OverlayMesh>();
             GameObject groundObject = new GameObject("Ground Mesh", typeof(GroundMesh));
-            groundObject.transform.SetParent(transform);
             Ground = groundObject.GetComponent<GroundMesh>();
             Ground.Initialize(width, height, surfaceOverlayMesh);
             surfaceOverlayMesh.Initialize(Ground.ColliderMesh);
+            AddEntityToMap(groundObject, 0);
             
             surfaceGridRoot = surfaceGridRootObject.transform;
             surfaceGridRoot.SetParent(transform);
