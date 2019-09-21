@@ -15,6 +15,7 @@ namespace Warlander.Deedplanner.Data.Walls
 
         public GameObject Model { get; private set; }
         private MeshCollider meshCollider;
+        private Mesh boundsMesh;
 
         public void Initialize(Tile tile, WallData data, bool reversed, bool firstFloor, int slopeDifference)
         {
@@ -53,7 +54,7 @@ namespace Warlander.Deedplanner.Data.Walls
             float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthConfortableMargin);
             bounds.size = new Vector3(bounds.size.x, bounds.size.y, comfortableWallDepth);
                 
-            Mesh boundsMesh = new Mesh();
+            boundsMesh = new Mesh();
             Vector3[] vectors = new Vector3[8];
             float padding = 1.01f;
             vectors[0] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - slopeDifference * 0.1f, -bounds.extents.z) * padding);
@@ -117,6 +118,14 @@ namespace Warlander.Deedplanner.Data.Walls
             boundsMesh.vertices = vectors;
             boundsMesh.triangles = triangles;
             meshCollider.sharedMesh = boundsMesh;
+        }
+
+        private void OnDestroy()
+        {
+            if (boundsMesh)
+            {
+                Destroy(boundsMesh);
+            }
         }
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)
