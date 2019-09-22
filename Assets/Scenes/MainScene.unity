@@ -6567,6 +6567,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: b544816461f324e56a39767fdeb5b114, type: 3}
+      propertyPath: m_Layer
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: b544816461f324e56a39767fdeb5b114, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -6638,6 +6642,10 @@ PrefabInstance:
     - target: {fileID: 11400000, guid: b544816461f324e56a39767fdeb5b114, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100012, guid: b544816461f324e56a39767fdeb5b114, type: 3}
+      propertyPath: m_Layer
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b544816461f324e56a39767fdeb5b114, type: 3}
@@ -10576,7 +10584,7 @@ GameObject:
   - component: {fileID: 474621809}
   - component: {fileID: 474621808}
   - component: {fileID: 474621807}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Simple Quality Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}

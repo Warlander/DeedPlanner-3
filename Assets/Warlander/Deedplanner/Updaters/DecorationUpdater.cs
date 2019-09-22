@@ -135,6 +135,10 @@ namespace Warlander.Deedplanner.Updaters
                     int tileY = Mathf.FloorToInt(position.z / 4f);
                     targetedTile = map[tileX, tileY];
                     position.y = map.GetInterpolatedHeight(position.x, position.z);
+                    if (data.Floating)
+                    {
+                        position.y = Mathf.Max(position.y, 0);
+                    }
                 }
                 else if (tileEntity && tileEntity.Valid)
                 {
