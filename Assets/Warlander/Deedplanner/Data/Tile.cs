@@ -417,7 +417,7 @@ namespace Warlander.Deedplanner.Data
                 return null;
             }
             
-            FreeformEntityData decorationEntityData = new FreeformEntityData(floor, EntityType.Object, position.x, position.y);
+            FreeformEntityData decorationEntityData = new FreeformEntityData(floor, EntityType.Object, position.x, position.y, data.Floating);
             TileEntity decorationEntity;
             Entities.TryGetValue(decorationEntityData, out decorationEntity);
             Decoration currentDecoration = decorationEntity as Decoration;
@@ -724,6 +724,10 @@ namespace Warlander.Deedplanner.Data
                 float x = X * 4 + freeformData.X;
                 float z = Y * 4 + freeformData.Y;
                 float interpolatedHeight = Map.GetInterpolatedHeight(x, z);
+                if (freeformData.FloatOnWater)
+                {
+                    interpolatedHeight = Mathf.Max(interpolatedHeight, 0);
+                }
                 const float floorHeight = 0.25f;
                 bool containsFloor = GetTileContent(data.Floor);
                 if (containsFloor)

@@ -8,11 +8,13 @@ namespace Warlander.Deedplanner.Data
 
         public float X { get; }
         public float Y { get; }
+        public bool FloatOnWater { get; }
 
-        public FreeformEntityData(int floor, EntityType type, float x, float y) : base(floor, type)
+        public FreeformEntityData(int floor, EntityType type, float x, float y, bool floatOnWater) : base(floor, type)
         {
             X = x;
             Y = y;
+            FloatOnWater = floatOnWater;
         }
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)
