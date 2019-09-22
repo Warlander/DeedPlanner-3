@@ -247,6 +247,10 @@ namespace Warlander.Deedplanner.Graphics
                 
                 newMesh.tangents = mesh.tangents;
                 newMesh.RecalculateBounds();
+                if (!modelProperties.IsOriginalModel())
+                {
+                    newMesh.UploadMeshData(true);
+                }
                 filter.sharedMesh = newMesh;
             }
 
@@ -279,6 +283,11 @@ namespace Warlander.Deedplanner.Graphics
                 Skew = skew;
                 MirrorZ = mirrorZ;
                 CustomMaterial = customMaterial;
+            }
+            
+            public bool IsOriginalModel()
+            {
+                return Skew == 0 && !MirrorZ && !CustomMaterial;
             }
             
         }
