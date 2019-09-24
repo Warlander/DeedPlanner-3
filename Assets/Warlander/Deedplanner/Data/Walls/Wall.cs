@@ -2,6 +2,7 @@
 using System.Text;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Walls
@@ -16,6 +17,8 @@ namespace Warlander.Deedplanner.Data.Walls
         public GameObject Model { get; private set; }
         private MeshCollider meshCollider;
         private Mesh boundsMesh;
+
+        private int currentSlopeDifference = 0;
 
         public void Initialize(Tile tile, WallData data, bool reversed, bool firstFloor, int slopeDifference)
         {
@@ -34,22 +37,34 @@ namespace Warlander.Deedplanner.Data.Walls
 
         public void UpdateModel(int slopeDifference, bool firstFloor)
         {
+            if (Model && currentSlopeDifference == slopeDifference)
+            {
+                return;
+            }
+
+            currentSlopeDifference = slopeDifference;
+
+            if (firstFloor)
+            {
+                CoroutineManager.Instance.QueueBlockingCoroutine(Data.BottomModel.CreateOrGetModel(slopeDifference, Reversed, OnModelLoaded));
+            }
+            else
+            {
+                CoroutineManager.Instance.QueueBlockingCoroutine(Data.NormalModel.CreateOrGetModel(slopeDifference, Reversed, OnModelLoaded));
+            }
+        }
+
+        private void OnModelLoaded(GameObject newModel)
+        {
             if (Model)
             {
                 Destroy(Model);
             }
-
-            if (firstFloor)
-            {
-                Model = Data.BottomModel.CreateOrGetModel(slopeDifference, Reversed);
-            }
-            else
-            {
-                Model = Data.NormalModel.CreateOrGetModel(slopeDifference, Reversed);
-            }
+            
+            Model = newModel;
             Model.transform.SetParent(transform, false);
-
-            Bounds bounds = Data.NormalModel.Bounds;
+            
+            Bounds bounds = GetTotalModelBounds(Model);
             const float wallDepthConfortableMargin = 0.75f;
             float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthConfortableMargin);
             bounds.size = new Vector3(bounds.size.x, bounds.size.y, comfortableWallDepth);
@@ -57,12 +72,12 @@ namespace Warlander.Deedplanner.Data.Walls
             boundsMesh = new Mesh();
             Vector3[] vectors = new Vector3[8];
             float padding = 1.01f;
-            vectors[0] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - slopeDifference * 0.1f, -bounds.extents.z) * padding);
-            vectors[1] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - slopeDifference * 0.1f, bounds.extents.z) * padding);
+            vectors[0] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - currentSlopeDifference * 0.1f, -bounds.extents.z) * padding);
+            vectors[1] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - currentSlopeDifference * 0.1f, bounds.extents.z) * padding);
             vectors[2] = (bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, bounds.extents.z) * padding);
             vectors[3] = (bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, -bounds.extents.z) * padding);
-            vectors[4] = (bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y - slopeDifference * 0.1f, -bounds.extents.z) * padding);
-            vectors[5] = (bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y - slopeDifference * 0.1f, bounds.extents.z) * padding);
+            vectors[4] = (bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y - currentSlopeDifference * 0.1f, -bounds.extents.z) * padding);
+            vectors[5] = (bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y - currentSlopeDifference * 0.1f, bounds.extents.z) * padding);
             vectors[6] = (bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z) * padding);
             vectors[7] = (bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, -bounds.extents.z) * padding);
             int[] triangles = new int[36];
@@ -118,6 +133,18 @@ namespace Warlander.Deedplanner.Data.Walls
             boundsMesh.vertices = vectors;
             boundsMesh.triangles = triangles;
             meshCollider.sharedMesh = boundsMesh;
+        }
+
+        private Bounds GetTotalModelBounds(GameObject model)
+        {
+            Bounds bounds = new Bounds();
+            MeshFilter[] filters = model.GetComponentsInChildren<MeshFilter>();
+            foreach (MeshFilter filter in filters)
+            {
+                Mesh mesh = filter.sharedMesh;
+                bounds.Encapsulate(mesh.bounds);
+            }
+            return bounds;
         }
 
         private void OnDestroy()

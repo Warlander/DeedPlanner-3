@@ -31,8 +31,8 @@ namespace Warlander.Deedplanner.Updaters
             get => leftClickData;
             set {
                 leftClickData = value;
-                leftClickImage.sprite = leftClickData.Tex2d.Sprite;
                 leftClickText.text = leftClickData.Name;
+                CoroutineManager.Instance.QueueBlockingCoroutine(leftClickData.Tex2d.LoadOrGetSprite(sprite => leftClickImage.sprite = sprite));
             }
         }
 
@@ -40,8 +40,8 @@ namespace Warlander.Deedplanner.Updaters
             get => rightClickData;
             set {
                 rightClickData = value;
-                rightClickImage.sprite = rightClickData.Tex2d.Sprite;
                 rightClickText.text = rightClickData.Name;
+                CoroutineManager.Instance.QueueBlockingCoroutine(rightClickData.Tex2d.LoadOrGetSprite(sprite => rightClickImage.sprite = sprite));
             }
         }
 

@@ -1,6 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Grounds
@@ -560,8 +562,6 @@ namespace Warlander.Deedplanner.Data.Grounds
             UpdateUV2(x + 1, y);
             UpdateUV2(x, y - 1);
             UpdateUV2(x, y + 1);
-            
-            needsUvUpdate = true;
         }
 
         private void UpdateUV2(int x, int y)
@@ -603,30 +603,29 @@ namespace Warlander.Deedplanner.Data.Grounds
                 dataS = data;
             }
             
-            int texW = groundTexturesArray.PutOrGetTexture(dataW.ShortName, dataW.Tex3d.Texture);
-            int texN = groundTexturesArray.PutOrGetTexture(dataN.ShortName, dataN.Tex3d.Texture);
-            int texE = groundTexturesArray.PutOrGetTexture(dataE.ShortName, dataE.Tex3d.Texture);
-            int texS = groundTexturesArray.PutOrGetTexture(dataS.ShortName, dataS.Tex3d.Texture);
-            Vector2 vecW = new Vector2(texW, 0);
-            Vector2 vecN = new Vector2(texN, 0);
-            Vector2 vecE = new Vector2(texE, 0);
-            Vector2 vecS = new Vector2(texS, 0);
+            CoroutineManager.Instance.QueueBlockingCoroutine(UpdateUV2Coroutine(dataW, vertexIndex));
+            CoroutineManager.Instance.QueueBlockingCoroutine(UpdateUV2Coroutine(dataN, vertexIndex + 3));
+            CoroutineManager.Instance.QueueBlockingCoroutine(UpdateUV2Coroutine(dataE, vertexIndex + 6));
+            CoroutineManager.Instance.QueueBlockingCoroutine(UpdateUV2Coroutine(dataS, vertexIndex + 9));
+        }
+
+        private IEnumerator UpdateUV2Coroutine(GroundData data, int uvIndex)
+        {
+            Texture2D targetTexture = null;
+            yield return data.Tex3d.LoadOrGetTexture(loadedTexture => targetTexture = loadedTexture);
             
-            uv2[vertexIndex] = vecW;
-            uv2[vertexIndex + 1] = vecW;
-            uv2[vertexIndex + 2] = vecW;
-                
-            uv2[vertexIndex + 3] = vecN;
-            uv2[vertexIndex + 4] = vecN;
-            uv2[vertexIndex + 5] = vecN;
-                
-            uv2[vertexIndex + 6] = vecE;
-            uv2[vertexIndex + 7] = vecE;
-            uv2[vertexIndex + 8] = vecE;
-                
-            uv2[vertexIndex + 9] = vecS;
-            uv2[vertexIndex + 10] = vecS;
-            uv2[vertexIndex + 11] = vecS;
+            if (!targetTexture)
+            {
+                yield break;
+            }
+            
+            int texIndex = groundTexturesArray.PutOrGetTexture(data.ShortName, targetTexture);
+            Vector2 texVector = new Vector2(texIndex, 0);
+            uv2[uvIndex] = texVector;
+            uv2[uvIndex + 1] = texVector;
+            uv2[uvIndex + 2] = texVector;
+            
+            needsUvUpdate = true;
         }
         
     }
