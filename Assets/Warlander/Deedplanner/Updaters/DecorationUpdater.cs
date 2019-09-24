@@ -119,8 +119,8 @@ namespace Warlander.Deedplanner.Updaters
                 {
                     Destroy(ghostObject);
                 }
-                ghostObject = data.Model.CreateOrGetModel(ghostMaterial);
-                ghostObject.transform.SetParent(transform);
+                CoroutineManager.Instance.QueueBlockingCoroutine(data.Model.CreateOrGetModel(ghostMaterial, OnGhostCreated));
+                return;
             }
 
             Map map = GameManager.Instance.Map;
@@ -250,6 +250,12 @@ namespace Warlander.Deedplanner.Updaters
                 }
                 map.CommandManager.FinishAction();
             }
+        }
+
+        private void OnGhostCreated(GameObject ghost)
+        {
+            ghostObject = ghost;
+            ghostObject.transform.SetParent(transform);
         }
 
         private Vector3 CalculateCorrectedPosition(Vector3 originalPosition, DecorationData data, bool snapToGrid)

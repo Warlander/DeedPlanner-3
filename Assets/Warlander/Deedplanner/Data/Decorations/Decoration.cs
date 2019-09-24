@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Decorations
@@ -28,8 +29,18 @@ namespace Warlander.Deedplanner.Data.Decorations
             position = newPosition;
             Rotation = newRotation;
             
-            model = Data.Model.CreateOrGetModel();
-            model.transform.SetParent(transform);
+            CoroutineManager.Instance.QueueBlockingCoroutine(Data.Model.CreateOrGetModel(OnModelCreated));
+        }
+
+        private void OnModelCreated(GameObject newModel)
+        {
+            if (model)
+            {
+                Destroy(model);
+            }
+            
+            model = newModel;
+            model.transform.SetParent(transform, false);
             model.transform.rotation = Quaternion.Euler(0, Rotation * Mathf.Rad2Deg, 0);
         }
 

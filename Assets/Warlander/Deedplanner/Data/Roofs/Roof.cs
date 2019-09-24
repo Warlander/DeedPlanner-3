@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Roofs
@@ -13,6 +14,9 @@ namespace Warlander.Deedplanner.Data.Roofs
 
         public int RoofLevel { get; private set; }
         public GameObject Model { get; private set; }
+
+        private RoofType currentRoofType;
+        private int currentRoofMatch = -1;
 
         public void Initialize(Tile tile, RoofData data)
         {
@@ -70,38 +74,44 @@ namespace Warlander.Deedplanner.Data.Roofs
             foreach (RoofType type in RoofType.RoofTypes)
             {
                 int match = type.CheckMatch(Tile, floor);
-                if (match != -1)
+                
+                if (match != -1 && currentRoofType != type && currentRoofMatch != match)
                 {
-                    if (Model)
-                    {
-                        Destroy(Model);
-                    }
-                    Model = type.GetModelForData(Data).CreateOrGetModel();
-                    Model.transform.SetParent(transform, true);
-                    Model.transform.localPosition = new Vector3(-2, RoofLevel * 3.5f, -2);
-                    if (match == 0)
-                    {
-                        Model.transform.rotation = Quaternion.Euler(0, 90, 0);
-                    }
-                    else if (match == 1)
-                    {
-                        Model.transform.rotation = Quaternion.Euler(0, 0, 0);
-                    }
-                    else if (match == 2)
-                    {
-                        Model.transform.rotation = Quaternion.Euler(0, 270, 0);
-                    }
-                    else if (match == 3)
-                    {
-                        Model.transform.rotation = Quaternion.Euler(0, 180, 0);
-                    }
+                    currentRoofType = type;
+                    currentRoofMatch = match;
+
+                    CoroutineManager.Instance.QueueBlockingCoroutine(type.GetModelForData(Data).CreateOrGetModel(OnModelLoaded));
+                    
                     return;
                 }
             }
+        }
 
+        private void OnModelLoaded(GameObject newModel)
+        {
             if (Model)
             {
                 Destroy(Model);
+            }
+            
+            Model = newModel;
+            Model.transform.SetParent(transform, true);
+            Model.transform.localPosition = new Vector3(-2, RoofLevel * 3.5f, -2);
+            if (currentRoofMatch == 0)
+            {
+                Model.transform.rotation = Quaternion.Euler(0, 90, 0);
+            }
+            else if (currentRoofMatch == 1)
+            {
+                Model.transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            else if (currentRoofMatch == 2)
+            {
+                Model.transform.rotation = Quaternion.Euler(0, 270, 0);
+            }
+            else if (currentRoofMatch == 3)
+            {
+                Model.transform.rotation = Quaternion.Euler(0, 180, 0);
             }
         }
 

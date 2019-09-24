@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Floors
@@ -23,23 +24,7 @@ namespace Warlander.Deedplanner.Data.Floors
             Data = data;
             Orientation = orientation;
 
-            model = Data.Model.CreateOrGetModel();
-            model.transform.SetParent(transform);
-            if (orientation == FloorOrientation.Right)
-            {
-                model.transform.localRotation = Quaternion.Euler(0, 90, 0);
-                model.transform.localPosition = new Vector3(0, 0, -4);
-            }
-            else if (orientation == FloorOrientation.Down)
-            {
-                model.transform.localRotation = Quaternion.Euler(0, 180, 0);
-                model.transform.localPosition = new Vector3(-4, 0, -4);
-            }
-            else if (orientation == FloorOrientation.Left)
-            {
-                model.transform.localRotation = Quaternion.Euler(0, 270, 0);
-                model.transform.localPosition = new Vector3(-4, 0, 0);
-            }
+            CoroutineManager.Instance.QueueBlockingCoroutine(Data.Model.CreateOrGetModel(OnModelCreated));
 
             if (!GetComponent<BoxCollider>())
             {
@@ -49,6 +34,32 @@ namespace Warlander.Deedplanner.Data.Floors
             }
 
             transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+        
+        private void OnModelCreated(GameObject newModel)
+        {
+            if (model)
+            {
+                Destroy(model);
+            }
+            
+            model = newModel;
+            model.transform.SetParent(transform, false);
+            if (Orientation == FloorOrientation.Right)
+            {
+                model.transform.localRotation = Quaternion.Euler(0, 90, 0);
+                model.transform.localPosition = new Vector3(0, 0, -4);
+            }
+            else if (Orientation == FloorOrientation.Down)
+            {
+                model.transform.localRotation = Quaternion.Euler(0, 180, 0);
+                model.transform.localPosition = new Vector3(-4, 0, -4);
+            }
+            else if (Orientation == FloorOrientation.Left)
+            {
+                model.transform.localRotation = Quaternion.Euler(0, 270, 0);
+                model.transform.localPosition = new Vector3(-4, 0, 0);
+            }
         }
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)

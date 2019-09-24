@@ -1,87 +1,79 @@
 ﻿﻿using System;
-using System.Collections.Generic;
+ using System.Collections;
+ using System.Collections.Generic;
 using System.IO;
  using System.Text;
  using UnityEngine;
+ using UnityEngine.Networking;
  using Warlander.Deedplanner.Utils;
  using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Graphics
 {
 
-    public static class WomModelLoader
+    public static class WurmAssetsLoader
     {
-        private static readonly int Mode = Shader.PropertyToID("_Mode");
         private static readonly int MainTex = Shader.PropertyToID("_MainTex");
         private static readonly int Color = Shader.PropertyToID("_Color");
         private static readonly int Glossiness = Shader.PropertyToID("_Glossiness");
 
-        public static GameObject LoadModel(string path)
+        public static IEnumerator LoadModel(string path, Action<GameObject> callback)
         {
-            return LoadModel(path, Vector3.one);
+            return LoadModel(path, Vector3.one, callback);
         }
-        
-        public static GameObject LoadModel(string path, Vector3 scale)
+
+        public static IEnumerator LoadModel(string path, Vector3 scale, Action<GameObject> callback)
         {
             Debug.Log("Loading model at " + path);
-            byte[] requestData = WebUtils.ReadUrlToByteArray(path);
             
-            using (MemoryStream memoryStream = new MemoryStream(requestData))
+            UnityWebRequest request = UnityWebRequest.Get(path);
+            yield return request.SendWebRequest();
+            if (request.isHttpError || request.isNetworkError)
             {
-                BinaryReader source = new BinaryReader(memoryStream);
-                
+                Debug.LogWarning("Model loading ended with error: " + request.error);
+                callback.Invoke(null);
+                yield break;
+            }
+            
+            byte[] requestData = request.downloadHandler.data;
+            
+            using (BinaryReader source = new BinaryReader(new MemoryStream(requestData)))
+            {
                 string fileFolder = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
 
                 GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(path));
 
-                try
+                int meshCount = source.ReadInt32();
+                for (int i = 0; i < meshCount; i++)
                 {
-                    int meshCount = source.ReadInt32();
-                    for (int i = 0; i < meshCount; i++)
+                    GameObject meshObject = null;
+                    yield return LoadMeshObject(source, fileFolder, scale, loadedObject => meshObject = loadedObject);
+                        
+                    if (meshObject)
                     {
-                        GameObject meshObject = LoadMeshObject(source, fileFolder, scale);
-                        if (meshObject)
-                        {
-                            meshObject.transform.SetParent(modelGameObject.transform);
-                        }
+                        meshObject.transform.SetParent(modelGameObject.transform);
                     }
-
-                    return modelGameObject;
                 }
-                catch (Exception ex)
-                {
-                    Object.Destroy(modelGameObject);
-                    throw ex;
-                }
-                finally
-                {
-                    source.Close();
-                }
+                
+                callback.Invoke(modelGameObject);
             }
         }
 
-        private static GameObject LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale)
+        private static IEnumerator LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale, Action<GameObject> callback)
         {
             Mesh loadedMesh = LoadMesh(source, scale);
             string meshName = loadedMesh.name;
             
-            Material loadedMaterial;
-            try
-            {
-                int materialsCount = source.ReadInt32();
-                loadedMaterial = LoadMaterial(source, fileFolder);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            Material loadedMaterial = null;
+            int materialsCount = source.ReadInt32(); // there is always only one material per mesh, but we need to load this int anyway
+            yield return LoadMaterial(source, fileFolder, mat => loadedMaterial = mat);
 
             string meshNameLowercase = meshName.ToLower();
             if (meshNameLowercase.Contains("boundingbox") || meshNameLowercase.Contains("pickingbox") || (meshNameLowercase.Contains("lod") && !meshNameLowercase.Contains("lod0")))
             {
                 Object.Destroy(loadedMesh);
                 Object.Destroy(loadedMaterial);
-                return null;
+                yield break;
             }
 
             GameObject meshObject = new GameObject(meshName);
@@ -89,9 +81,9 @@ namespace Warlander.Deedplanner.Graphics
             MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
             MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
             meshFilter.sharedMesh = loadedMesh;
-            meshRenderer.material = loadedMaterial;
+            meshRenderer.sharedMaterial = loadedMaterial;
             
-            return meshObject;
+            callback.Invoke(meshObject);
         }
 
         private static Mesh LoadMesh(BinaryReader source, Vector3 scale)
@@ -150,7 +142,6 @@ namespace Warlander.Deedplanner.Graphics
                     triangles[i] = triangles[i + 2];
                     triangles[i + 2] = temp;
                 }
-                
             }
 
             Mesh mesh = new Mesh();
@@ -171,7 +162,7 @@ namespace Warlander.Deedplanner.Graphics
             return mesh;
         }
 
-        private static Material LoadMaterial(BinaryReader source, string modelFolder)
+        private static IEnumerator LoadMaterial(BinaryReader source, string modelFolder, Action<Material> callback)
         {
             string texName = ReadString(source);
             string matName = ReadString(source);
@@ -181,7 +172,12 @@ namespace Warlander.Deedplanner.Graphics
 
             string texLocation = Path.Combine(modelFolder, texName);
             TextureReference textureReference = TextureReference.GetTextureReference(texLocation);
-            Texture2D texture = textureReference?.Texture;
+            
+            Texture2D texture = null;
+            if (textureReference != null)
+            {
+                yield return textureReference.LoadOrGetTexture(loadedTexture => texture = loadedTexture);
+            }
 
             if (texture)
             {
@@ -240,19 +236,29 @@ namespace Warlander.Deedplanner.Graphics
                 }
             }
             
-            return material;
+            callback.Invoke(material);
         }
 
-        public static Texture2D LoadTexture(string location, bool readable)
+        public static IEnumerator LoadTexture(string location, bool readable, Action<Texture2D> callback)
         {
             if (string.IsNullOrEmpty(Path.GetExtension(location)))
             {
                 Debug.LogWarning("Attempting to load texture from empty location: " + location);
-                return null;
+                callback.Invoke(null);
+                yield break;
             }
 
             Debug.Log("Loading texture at " + location);
-            byte[] texBytes = WebUtils.ReadUrlToByteArray(location);
+            UnityWebRequest request = UnityWebRequest.Get(location);
+            yield return request.SendWebRequest();
+            if (request.isHttpError || request.isNetworkError)
+            {
+                Debug.LogWarning("Texture loading ended with error: " + request.error);
+                callback.Invoke(null);
+                yield break;
+            }
+            
+            byte[] texBytes = request.downloadHandler.data;
 
             Texture2D texture;
             if (location.Substring(location.LastIndexOf(".", StringComparison.Ordinal) + 1) == "dds")
@@ -264,8 +270,8 @@ namespace Warlander.Deedplanner.Graphics
                 texture = new Texture2D(0, 0, TextureFormat.DXT1, true);
                 texture.LoadImage(texBytes, !readable);
             }
-
-            return texture;
+            
+            callback.Invoke(texture);
         }
 
         private static Texture2D LoadTextureDxt(byte[] ddsBytes)

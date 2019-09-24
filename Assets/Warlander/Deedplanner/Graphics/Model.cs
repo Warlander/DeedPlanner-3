@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Logic;
 using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Graphics
@@ -20,25 +23,12 @@ namespace Warlander.Deedplanner.Graphics
         private GameObject modelRoot;
         private GameObject originalModel;
         private readonly Dictionary<ModelProperties, GameObject> modifiedModels;
+        private readonly List<ModelRequest> modelRequests = new List<ModelRequest>();
+        private bool loadingOriginalModel = false;
 
         public string Tag { get; private set; }
         public Vector3 Scale { get; private set; }
         public int Layer { get; private set; }
-
-        public Bounds Bounds {
-            get {
-                ModelProperties properties = new ModelProperties(0, false, null);
-                InitializeModel(properties);
-                Bounds bounds = new Bounds();
-                MeshFilter[] filters = originalModel.GetComponentsInChildren<MeshFilter>();
-                foreach (MeshFilter filter in filters)
-                {
-                    Mesh mesh = filter.sharedMesh;
-                    bounds.Encapsulate(mesh.bounds);
-                }
-                return bounds;
-            }
-        }
 
         public Model(XmlElement element, int layer = int.MaxValue)
         {
@@ -107,37 +97,46 @@ namespace Warlander.Deedplanner.Graphics
             textureOverrides[mesh] = texture;
         }
 
-        private GameObject CreateOrGetModel(ModelProperties properties)
+        private IEnumerator CreateOrGetModel(ModelProperties properties, Action<GameObject> callback)
         {
-            InitializeModel(properties);
-            return Object.Instantiate(modifiedModels[properties]);
+            yield return InitializeModel(properties);
+            if (loadingOriginalModel)
+            {
+                modelRequests.Add(new ModelRequest(callback, properties));
+            }
+            else if (originalModel)
+            {
+                InitializeModifiedModel(properties);
+                GameObject instance = Object.Instantiate(modifiedModels[properties]);
+                callback.Invoke(instance);
+            }
         }
 
-        public GameObject CreateOrGetModel(Material customMaterial)
+        public IEnumerator CreateOrGetModel(Material customMaterial, Action<GameObject> callback)
         {
             ModelProperties properties = new ModelProperties(0, false, customMaterial);
-            return CreateOrGetModel(properties);
+            yield return CreateOrGetModel(properties, callback);
         }
         
-        public GameObject CreateOrGetModel(int skew, bool mirrorZ)
+        public IEnumerator CreateOrGetModel(int skew, bool mirrorZ, Action<GameObject> callback)
         {
             ModelProperties properties = new ModelProperties(skew, mirrorZ, null);
-            return CreateOrGetModel(properties);
+            yield return CreateOrGetModel(properties, callback);
         }
 
-        public GameObject CreateOrGetModel(int skew)
+        public IEnumerator CreateOrGetModel(int skew, Action<GameObject> callback)
         {
             ModelProperties properties = new ModelProperties(skew, false, null);
-            return CreateOrGetModel(properties);
+            yield return CreateOrGetModel(properties, callback);
         }
 
-        public GameObject CreateOrGetModel()
+        public IEnumerator CreateOrGetModel(Action<GameObject> callback)
         {
             ModelProperties properties = new ModelProperties(0, false, null);
-            return CreateOrGetModel(properties);
+            yield return CreateOrGetModel(properties, callback);
         }
 
-        private void InitializeModel(ModelProperties modelProperties)
+        private IEnumerator InitializeModel(ModelProperties modelProperties)
         {
             if (!modelsRoot)
             {
@@ -149,48 +148,80 @@ namespace Warlander.Deedplanner.Graphics
                 modelRoot = new GameObject(location);
                 modelRoot.transform.SetParent(modelsRoot.transform);
             }
-            if (!originalModel)
+            if (!loadingOriginalModel && !originalModel)
             {
+                loadingOriginalModel = true;
                 string fullLocation = Application.streamingAssetsPath + "/" + location;
-                originalModel = WomModelLoader.LoadModel(fullLocation, Scale);
-                originalModel.layer = Layer;
-                foreach (Transform child in originalModel.transform)
-                {
-                    child.gameObject.layer = Layer;
-                    string textureOverride;
-                    textureOverrides.TryGetValue(child.name, out textureOverride);
-                    if (textureOverride == null)
-                    {
-                        textureOverrides.TryGetValue("*", out textureOverride);
-                    }
-                    if (textureOverride != null)
-                    {
-                        MeshRenderer renderer = child.GetComponent<MeshRenderer>();
-                        TextureReference texture = TextureReference.GetTextureReference(textureOverride);
-                        Material newMaterial = new Material(renderer.sharedMaterial);
-                        newMaterial.mainTexture = texture.Texture;
-                        renderer.sharedMaterial = newMaterial;
-                    }
-                }
-                originalModel.transform.SetParent(modelRoot.transform);
-                ModelProperties originalProperties = new ModelProperties(0, false, null);
-                modifiedModels[originalProperties] = originalModel;
+                yield return WurmAssetsLoader.LoadModel(fullLocation, Scale, OnMasterModelLoaded);
             }
-            if (!modifiedModels.ContainsKey(modelProperties))
+            
+            InitializeModifiedModel(modelProperties);
+        }
+
+        private void OnMasterModelLoaded(GameObject masterModel)
+        {
+            loadingOriginalModel = false;
+            if (!masterModel)
             {
-                GameObject skewedModel = CreateModel(modelProperties);
-                skewedModel.name = originalModel.name;
-                if (modelProperties.Skew != 0)
-                {
-                    skewedModel.name += " " + modelProperties.Skew;
-                }
-                if (modelProperties.MirrorZ)
-                {
-                    skewedModel.name += " ZMirrored";
-                }
-                skewedModel.transform.SetParent(modelRoot.transform);
-                modifiedModels[modelProperties] = skewedModel;
+                Debug.LogError("Model failed to load!");
+                return;
             }
+            
+            originalModel = masterModel;
+            originalModel.layer = Layer;
+            foreach (Transform child in originalModel.transform)
+            {
+                child.gameObject.layer = Layer;
+                string textureOverride;
+                textureOverrides.TryGetValue(child.name, out textureOverride);
+                if (textureOverride == null)
+                {
+                    textureOverrides.TryGetValue("*", out textureOverride);
+                }
+                if (textureOverride != null)
+                {
+                    MeshRenderer renderer = child.GetComponent<MeshRenderer>();
+                    TextureReference texture = TextureReference.GetTextureReference(textureOverride);
+                    Material newMaterial = new Material(renderer.sharedMaterial);
+                    renderer.sharedMaterial = newMaterial;
+                    
+                    CoroutineManager.Instance.QueueBlockingCoroutine(texture.LoadOrGetTexture(loadedTexture => newMaterial.mainTexture = loadedTexture));
+                }
+            }
+            originalModel.transform.SetParent(modelRoot.transform);
+            ModelProperties originalProperties = new ModelProperties(0, false, null);
+            modifiedModels[originalProperties] = originalModel;
+
+            foreach (ModelRequest modelRequest in modelRequests)
+            {
+                InitializeModifiedModel(modelRequest.ModelProperties);
+                GameObject instance = Object.Instantiate(modifiedModels[modelRequest.ModelProperties]);
+                modelRequest.Callback.Invoke(instance);
+            }
+            modelRequests.Clear();
+        }
+
+        private void InitializeModifiedModel(ModelProperties modelProperties)
+        {
+            if (!originalModel || modifiedModels.ContainsKey(modelProperties))
+            {
+                return;
+            }
+
+            GameObject skewedModel = CreateModel(modelProperties);
+            skewedModel.name = originalModel.name;
+            if (modelProperties.Skew != 0)
+            {
+                skewedModel.name += " " + modelProperties.Skew;
+            }
+
+            if (modelProperties.MirrorZ)
+            {
+                skewedModel.name += " ZMirrored";
+            }
+
+            skewedModel.transform.SetParent(modelRoot.transform);
+            modifiedModels[modelProperties] = skewedModel;
         }
 
         private GameObject CreateModel(ModelProperties modelProperties)
@@ -272,6 +303,18 @@ namespace Warlander.Deedplanner.Graphics
             return clone;
         }
 
+        private struct ModelRequest
+        {
+            public readonly Action<GameObject> Callback;
+            public readonly ModelProperties ModelProperties;
+
+            public ModelRequest(Action<GameObject> callback, ModelProperties modelProperties)
+            {
+                Callback = callback;
+                ModelProperties = modelProperties;
+            }
+        }
+        
         private struct ModelProperties
         {
             public readonly int Skew;

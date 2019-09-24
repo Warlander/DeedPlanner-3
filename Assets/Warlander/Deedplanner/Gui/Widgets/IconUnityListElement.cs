@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Gui.Widgets
 {
@@ -17,6 +18,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
 
         private TextureReference textureReference;
         private object value;
+        private bool spriteLoading;
 
         public override object Value {
             get => value;
@@ -32,7 +34,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
                 textureReference = value;
                 if (gameObject.activeInHierarchy && image.sprite == null)
                 {
-                    image.sprite = textureReference.Sprite;
+                    LoadSprite();
                 }
             }
         }
@@ -43,8 +45,23 @@ namespace Warlander.Deedplanner.Gui.Widgets
         {
             if (image.sprite == null)
             {
-                image.sprite = textureReference.Sprite;
+                LoadSprite();
             }
+        }
+
+        private void LoadSprite()
+        {
+            if (!spriteLoading && textureReference != null)
+            {
+                spriteLoading = true;
+                CoroutineManager.Instance.QueueBlockingCoroutine(textureReference.LoadOrGetSprite(OnSpriteLoaded));
+            }
+        }
+
+        private void OnSpriteLoaded(Sprite sprite)
+        {
+            spriteLoading = false;
+            image.sprite = sprite;
         }
 
     }

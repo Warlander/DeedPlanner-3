@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using UnityEngine;
@@ -41,51 +43,84 @@ namespace Warlander.Deedplanner.Graphics
         private Texture2D texture;
         private Sprite sprite;
         private Material material;
+        private bool textureLoading = false;
+        private readonly List<Action<Texture2D>> textureWaitingCallbacks = new List<Action<Texture2D>>();
+        private readonly List<Action<Sprite>> spriteWaitingCallbacks = new List<Action<Sprite>>();
 
-        public string Location { get; private set; }
-
-        public Texture2D Texture {
-            get {
-                if (texture)
-                {
-                    return texture;
-                }
-
-                texture = WomModelLoader.LoadTexture(Application.streamingAssetsPath + "/" + Location, false);
-                texture.name = Location;
-                return texture;
-            }
-        }
-
-        public Sprite Sprite {
-            get {
-                if (sprite)
-                {
-                    return sprite;
-                }
-
-                sprite = Sprite.Create(Texture, new Rect(0.0f, 0.0f, Texture.width, Texture.height), new Vector2(0.5f, 0.5f));
-                return sprite;
-            }
-        }
-
-        public Material Material {
-            get {
-                if (material)
-                {
-                    return material;
-                }
-
-                material = new Material(GraphicsManager.Instance.TextureDefaultMaterial);
-                material.SetTexture(MainTex, Texture);
-                
-                return material;
-            }
-        }
+        public string Location { get; }
 
         private TextureReference(string location)
         {
             Location = location;
+        }
+        
+        public IEnumerator LoadOrGetTexture(Action<Texture2D> callback)
+        {
+            if (texture)
+            {
+                callback.Invoke(texture);
+                yield break;
+            }
+            
+            textureWaitingCallbacks.Add(callback);
+
+            if (!textureLoading)
+            {
+                textureLoading = true;
+                yield return WurmAssetsLoader.LoadTexture(Application.streamingAssetsPath + "/" + Location, false, OnTextureLoaded);
+            }
+        }
+        
+        public IEnumerator LoadOrGetSprite(Action<Sprite> callback)
+        {
+            if (sprite)
+            {
+                callback.Invoke(sprite);
+                yield break;
+            }
+
+            if (texture)
+            {
+                sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                callback.Invoke(sprite);
+                yield break;
+            }
+            
+            spriteWaitingCallbacks.Add(callback);
+            
+            if (!textureLoading)
+            {
+                textureLoading = true;
+                yield return WurmAssetsLoader.LoadTexture(Application.streamingAssetsPath + "/" + Location, false, OnTextureLoaded);
+            }
+        }
+
+        private void OnTextureLoaded(Texture2D tex)
+        {
+            textureLoading = false;
+
+            if (tex)
+            {
+                texture = tex;
+                texture.name = Location;
+                
+                foreach (Action<Texture2D> textureWaitingCallback in textureWaitingCallbacks)
+                {
+                    textureWaitingCallback.Invoke(texture);
+                }
+                textureWaitingCallbacks.Clear();
+
+                if (spriteWaitingCallbacks.Count > 0)
+                {
+                    sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                }
+
+                foreach (Action<Sprite> spriteWaitingCallback in spriteWaitingCallbacks)
+                {
+                    spriteWaitingCallback.Invoke(sprite);
+                }
+                spriteWaitingCallbacks.Clear();
+            }
         }
 
     }
