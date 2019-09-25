@@ -25,9 +25,13 @@ namespace Warlander.Deedplanner.Utils
                 if (request.isHttpError || request.isNetworkError)
                 {
                     Debug.LogError(request.error);
+                    request.Dispose();
+                    return null;
                 }
 
-                return request.downloadHandler.data;
+                byte[] data = request.downloadHandler.data;
+                request.Dispose();
+                return data;
             }
         }
         

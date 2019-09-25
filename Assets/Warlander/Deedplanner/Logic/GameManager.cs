@@ -132,6 +132,7 @@ namespace Warlander.Deedplanner.Logic
         
         public void LoadMap(string mapString)
         {
+            CoroutineManager.Instance.BlockInteractionUntilFinished();
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(mapString);
             if (Map)

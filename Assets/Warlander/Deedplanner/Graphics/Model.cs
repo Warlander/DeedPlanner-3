@@ -185,7 +185,7 @@ namespace Warlander.Deedplanner.Graphics
                     Material newMaterial = new Material(renderer.sharedMaterial);
                     renderer.sharedMaterial = newMaterial;
                     
-                    CoroutineManager.Instance.QueueBlockingCoroutine(texture.LoadOrGetTexture(loadedTexture => newMaterial.mainTexture = loadedTexture));
+                    CoroutineManager.Instance.QueueCoroutine(texture.LoadOrGetTexture(loadedTexture => newMaterial.mainTexture = loadedTexture));
                 }
             }
             originalModel.transform.SetParent(modelRoot.transform);

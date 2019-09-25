@@ -603,10 +603,10 @@ namespace Warlander.Deedplanner.Data.Grounds
                 dataS = data;
             }
             
-            CoroutineManager.Instance.QueueBlockingCoroutine(UpdateUV2Coroutine(dataW, vertexIndex));
-            CoroutineManager.Instance.QueueBlockingCoroutine(UpdateUV2Coroutine(dataN, vertexIndex + 3));
-            CoroutineManager.Instance.QueueBlockingCoroutine(UpdateUV2Coroutine(dataE, vertexIndex + 6));
-            CoroutineManager.Instance.QueueBlockingCoroutine(UpdateUV2Coroutine(dataS, vertexIndex + 9));
+            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataW, vertexIndex));
+            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataN, vertexIndex + 3));
+            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataE, vertexIndex + 6));
+            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataS, vertexIndex + 9));
         }
 
         private IEnumerator UpdateUV2Coroutine(GroundData data, int uvIndex)
