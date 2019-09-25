@@ -2,6 +2,7 @@
  using System.Collections;
  using System.Collections.Generic;
 using System.IO;
+ using System.Runtime.InteropServices;
  using System.Text;
  using UnityEngine;
  using UnityEngine.Networking;
@@ -267,6 +268,7 @@ namespace Warlander.Deedplanner.Graphics
             int pitch = ddsBytes[23] * 256 * 256 * 256 + ddsBytes[22] * 256 * 256 + ddsBytes[21] * 256 + ddsBytes[20];
 
             int DDS_HEADER_SIZE = 128;
+            
             byte[] dxtBytes = new byte[ddsBytes.Length - DDS_HEADER_SIZE];
             Buffer.BlockCopy(ddsBytes, DDS_HEADER_SIZE, dxtBytes, 0, ddsBytes.Length - DDS_HEADER_SIZE);
 
@@ -284,20 +286,23 @@ namespace Warlander.Deedplanner.Graphics
             dxtTexture.LoadRawTextureData(dxtBytes);
 
             Texture2D finalTexture = new Texture2D(dxtTexture.width, dxtTexture.height);
-            Color[] pixelBuffer = dxtTexture.GetPixels(0, 0, dxtTexture.width, dxtTexture.height);
+            Color32[] pixelBuffer = dxtTexture.GetPixels32();
             Object.DestroyImmediate(dxtTexture);
-            
-            Color[] flippedPixelBuffer = new Color[pixelBuffer.Length];
-            for (int y = 0; y < finalTexture.height; y++)
+
+            int yScanSize = finalTexture.height / 2;
+            int xScanSize = finalTexture.width;
+            for (int y = 0; y < yScanSize; y++)
             {
-                for (int x = 0; x < finalTexture.width; x++)
+                for (int x = 0; x < xScanSize; x++)
                 {
                     int originalIndex = y * finalTexture.width + x;
                     int flippedIndex = (finalTexture.height - y - 1) * finalTexture.width + x;
-                    flippedPixelBuffer[flippedIndex] = pixelBuffer[originalIndex];
+                    Color32 temp = pixelBuffer[flippedIndex];
+                    pixelBuffer[flippedIndex] = pixelBuffer[originalIndex];
+                    pixelBuffer[originalIndex] = temp;
                 }
             }
-            finalTexture.SetPixels(flippedPixelBuffer);
+            finalTexture.SetPixels32(pixelBuffer);
             finalTexture.Apply();
             finalTexture.Compress(true);
 

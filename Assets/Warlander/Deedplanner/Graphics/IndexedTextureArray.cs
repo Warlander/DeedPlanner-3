@@ -89,7 +89,7 @@ namespace Warlander.Deedplanner.Graphics
             }
             else
             {
-                TextureArray.SetPixels(texture.GetPixels(), index);
+                TextureArray.SetPixels32(texture.GetPixels32(), index);
                 TextureArray.Apply(true);
             }
         }
