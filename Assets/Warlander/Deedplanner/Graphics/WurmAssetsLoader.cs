@@ -25,18 +25,9 @@ namespace Warlander.Deedplanner.Graphics
         public static IEnumerator LoadModel(string path, Vector3 scale, Action<GameObject> callback)
         {
             Debug.Log("Loading model at " + path);
-            
-            UnityWebRequest request = UnityWebRequest.Get(path);
-            yield return request.SendWebRequest();
-            if (request.isHttpError || request.isNetworkError)
-            {
-                Debug.LogWarning("Model loading ended with error: " + request.error);
-                callback.Invoke(null);
-                yield break;
-            }
-            
-            byte[] requestData = request.downloadHandler.data;
-            
+
+            byte[] requestData = WebUtils.ReadUrlToByteArray(path);
+
             using (BinaryReader source = new BinaryReader(new MemoryStream(requestData)))
             {
                 string fileFolder = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
@@ -247,18 +238,8 @@ namespace Warlander.Deedplanner.Graphics
                 callback.Invoke(null);
                 yield break;
             }
-
-            Debug.Log("Loading texture at " + location);
-            UnityWebRequest request = UnityWebRequest.Get(location);
-            yield return request.SendWebRequest();
-            if (request.isHttpError || request.isNetworkError)
-            {
-                Debug.LogWarning("Texture loading ended with error: " + request.error);
-                callback.Invoke(null);
-                yield break;
-            }
             
-            byte[] texBytes = request.downloadHandler.data;
+            byte[] texBytes = WebUtils.ReadUrlToByteArray(location);
 
             Texture2D texture;
             if (location.Substring(location.LastIndexOf(".", StringComparison.Ordinal) + 1) == "dds")

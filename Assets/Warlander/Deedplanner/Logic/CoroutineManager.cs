@@ -7,15 +7,16 @@ namespace Warlander.Deedplanner.Logic
 {
     public class CoroutineManager : MonoBehaviour
     {
-        private const int SimultaneousCoroutinesAllowed = 1000;
-        
+        private const float MaxFrameTime = 0.05f;
+
         public static CoroutineManager Instance { get; private set; }
         
         [SerializeField] private CanvasGroup guiCanvasGroup = null;
         [SerializeField] private GameObject updatersRoot = null;
         private readonly Queue<IEnumerator> enumeratorsWaiting = new Queue<IEnumerator>();
-        private readonly LinkedList<IEnumerator> enumeratorsExecuting = new LinkedList<IEnumerator>();
-        
+        private int enumeratorsExecutingCount = 0;
+        private bool interactionLocked = false;
+
         public CoroutineManager()
         {
             if (Instance)
@@ -29,36 +30,50 @@ namespace Warlander.Deedplanner.Logic
 
         private void Update()
         {
-            int enumeratorsToQueue = Math.Max(0, SimultaneousCoroutinesAllowed - enumeratorsExecuting.Count);
-            for (int i = 0; i < enumeratorsToQueue; i++)
+            while (enumeratorsWaiting.Count > 0)
             {
-                if (enumeratorsWaiting.Count == 0)
-                {
-                    break;
-                }
-
                 IEnumerator newExecutingEnumerator = enumeratorsWaiting.Dequeue();
-                enumeratorsExecuting.AddLast(newExecutingEnumerator);
                 StartCoroutine(WrapCoroutine(newExecutingEnumerator));
+                enumeratorsExecutingCount++;
+            }
+
+            if (interactionLocked && enumeratorsWaiting.Count == 0 && enumeratorsExecutingCount == 0)
+            {
+                interactionLocked = false;
+                guiCanvasGroup.interactable = true;
+                updatersRoot.SetActive(true);
             }
         }
 
-        public void QueueBlockingCoroutine(IEnumerator enumerator)
+        public void BlockInteractionUntilFinished()
         {
-            enumeratorsWaiting.Enqueue(enumerator);
+            interactionLocked = true;
             guiCanvasGroup.interactable = false;
             updatersRoot.SetActive(false);
+        }
+        
+        public void QueueCoroutine(IEnumerator enumerator)
+        {
+            enumeratorsWaiting.Enqueue(enumerator);
         }
 
         private IEnumerator WrapCoroutine(IEnumerator enumerator)
         {
-            yield return enumerator;
-            enumeratorsExecuting.Remove(enumerator);
-            if (enumeratorsWaiting.Count == 0 && enumeratorsExecuting.Count == 0)
+            while (true)
             {
-                guiCanvasGroup.interactable = true;
-                updatersRoot.SetActive(true);
+                float frameTime = Time.realtimeSinceStartup - Time.unscaledTime;
+                if (frameTime > MaxFrameTime)
+                {
+                    yield return null;
+                }
+                else
+                {
+                    break;
+                }
             }
+            
+            yield return enumerator;
+            enumeratorsExecutingCount--;
         }
         
     }

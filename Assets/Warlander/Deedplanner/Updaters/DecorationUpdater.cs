@@ -115,11 +115,12 @@ namespace Warlander.Deedplanner.Updaters
             Material ghostMaterial = GraphicsManager.Instance.GhostMaterial;
             if (dataChanged)
             {
-                if (ghostObject)
-                {
-                    Destroy(ghostObject);
-                }
-                CoroutineManager.Instance.QueueBlockingCoroutine(data.Model.CreateOrGetModel(ghostMaterial, OnGhostCreated));
+                CoroutineManager.Instance.QueueCoroutine(data.Model.CreateOrGetModel(ghostMaterial, OnGhostCreated));
+                return;
+            }
+
+            if (!ghostObject)
+            {
                 return;
             }
 
@@ -254,6 +255,11 @@ namespace Warlander.Deedplanner.Updaters
 
         private void OnGhostCreated(GameObject ghost)
         {
+            if (ghostObject)
+            {
+                Destroy(ghostObject);
+            }
+            
             ghostObject = ghost;
             ghostObject.transform.SetParent(transform);
         }

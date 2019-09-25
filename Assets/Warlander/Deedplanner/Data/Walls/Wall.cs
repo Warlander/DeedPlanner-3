@@ -46,11 +46,11 @@ namespace Warlander.Deedplanner.Data.Walls
 
             if (firstFloor)
             {
-                CoroutineManager.Instance.QueueBlockingCoroutine(Data.BottomModel.CreateOrGetModel(slopeDifference, Reversed, OnModelLoaded));
+                CoroutineManager.Instance.QueueCoroutine(Data.BottomModel.CreateOrGetModel(slopeDifference, Reversed, OnModelLoaded));
             }
             else
             {
-                CoroutineManager.Instance.QueueBlockingCoroutine(Data.NormalModel.CreateOrGetModel(slopeDifference, Reversed, OnModelLoaded));
+                CoroutineManager.Instance.QueueCoroutine(Data.NormalModel.CreateOrGetModel(slopeDifference, Reversed, OnModelLoaded));
             }
         }
 
