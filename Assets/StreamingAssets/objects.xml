@@ -6462,7 +6462,7 @@
 			<category>Ships</category>
 		</object>
 		<object name="Caravel" shortname="boatCara" type="floating">
-			<model location="Objects/caravel.wom"/>
+			<model location="Objects/Caravel.wom"/>
 			<category>Ships</category>
 		</object>
 		
