@@ -678,6 +678,10 @@ namespace Warlander.Deedplanner.Data
             }
 
             float rotation = float.Parse(rotationString, CultureInfo.InvariantCulture);
+            if (Map.OriginalExporter.Contains("DeedPlanner 2"))
+            {
+                rotation = -rotation + 180 * Mathf.Deg2Rad;
+            }
 
             SetDecoration(data, position, rotation, floor);
         }
