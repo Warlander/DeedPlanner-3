@@ -28,7 +28,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
 
         public object[] Values {
             get {
-                return GetComponentsInChildren<UnityListElement>().Select((element) => element.Value).ToArray();
+                return GetComponentsInChildren<UnityListElement>().Select(element => element.Value).ToArray();
             }
         }
 
@@ -83,7 +83,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
             return newElement;
         }
 
-        private UnityTreeNode GetOrCreateNode(Transform parent, List<UnityTreeNode> nodes, string[] tree)
+        private UnityTreeNode GetOrCreateNode(Transform parent, IEnumerable<UnityTreeNode> nodes, string[] tree)
         {
             if (tree == null || tree.Length == 0)
             {

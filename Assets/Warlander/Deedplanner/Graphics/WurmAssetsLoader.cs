@@ -2,10 +2,8 @@
  using System.Collections;
  using System.Collections.Generic;
 using System.IO;
- using System.Runtime.InteropServices;
  using System.Text;
  using UnityEngine;
- using UnityEngine.Networking;
  using Warlander.Deedplanner.Utils;
  using Object = UnityEngine.Object;
 
@@ -267,10 +265,10 @@ namespace Warlander.Deedplanner.Graphics
             int totalSize = width * height;
             int pitch = ddsBytes[23] * 256 * 256 * 256 + ddsBytes[22] * 256 * 256 + ddsBytes[21] * 256 + ddsBytes[20];
 
-            int DDS_HEADER_SIZE = 128;
+            const int ddsHeaderSize = 128;
             
-            byte[] dxtBytes = new byte[ddsBytes.Length - DDS_HEADER_SIZE];
-            Buffer.BlockCopy(ddsBytes, DDS_HEADER_SIZE, dxtBytes, 0, ddsBytes.Length - DDS_HEADER_SIZE);
+            byte[] dxtBytes = new byte[ddsBytes.Length - ddsHeaderSize];
+            Buffer.BlockCopy(ddsBytes, ddsHeaderSize, dxtBytes, 0, ddsBytes.Length - ddsHeaderSize);
 
             TextureFormat textureFormat;
             if (pitch == totalSize)

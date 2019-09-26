@@ -181,7 +181,7 @@ namespace Warlander.Deedplanner.Updaters
             else
             {
                 Vector2 position2d = new Vector2(position.x, position.z);
-                List<Decoration> nearbyDecorations = GetAllNearbyDecorations(targetedTile);
+                IEnumerable<Decoration> nearbyDecorations = GetAllNearbyDecorations(targetedTile);
 
                 placementAllowed = true;
                 foreach (Decoration decoration in nearbyDecorations)
@@ -244,7 +244,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (Input.GetMouseButtonDown(1) && !placingDecoration)
             {
-                List<Decoration> decorationsOnTile = targetedTile.GetDecorations();
+                IEnumerable<Decoration> decorationsOnTile = targetedTile.GetDecorations();
                 foreach (Decoration decoration in decorationsOnTile)
                 {
                     targetedTile.SetDecoration(null, decoration.Position, decoration.Rotation, targetFloor);
@@ -303,7 +303,7 @@ namespace Warlander.Deedplanner.Updaters
             return pos;
         }
         
-        private List<Decoration> GetAllNearbyDecorations(Tile centralTile)
+        private IEnumerable<Decoration> GetAllNearbyDecorations(Tile centralTile)
         {
             List<Decoration> decorations = new List<Decoration>();
             

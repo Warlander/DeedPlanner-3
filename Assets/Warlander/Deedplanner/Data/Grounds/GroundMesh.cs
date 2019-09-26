@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Warlander.Deedplanner.Graphics;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Grounds

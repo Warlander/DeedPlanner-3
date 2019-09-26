@@ -34,8 +34,8 @@ namespace Warlander.Deedplanner.Data
             
             string[] objectFiles = Directory.GetFiles(Application.streamingAssetsPath);
             objectFiles = objectFiles
-                .Where((name) => name.Substring(name.LastIndexOf("\\", StringComparison.Ordinal) + 1).StartsWith("objects"))
-                .Where((name) => name.EndsWith("xml"))
+                .Where(name => name.Substring(name.LastIndexOf("\\", StringComparison.Ordinal) + 1).StartsWith("objects"))
+                .Where(name => name.EndsWith("xml"))
                 .ToArray();
 
             for (int i = 0; i < objectFiles.Length; i++)

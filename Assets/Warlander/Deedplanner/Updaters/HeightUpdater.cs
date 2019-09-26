@@ -157,21 +157,20 @@ namespace Warlander.Deedplanner.Updaters
 
             currentFrameHoveredHandles = UpdateHoveredHandles(raycast);
 
-            if (mode == HeightUpdaterMode.SelectAndDrag)
+            switch (mode)
             {
-                UpdateSelectAndDrag();
-            }
-            else if (mode == HeightUpdaterMode.CreateRamps)
-            {
-                UpdateCreateRamps();
-            }
-            else if (mode == HeightUpdaterMode.LevelArea)
-            {
-                UpdateLevelArea();
-            }
-            else if (mode == HeightUpdaterMode.PaintTerrain)
-            {
-                UpdatePaintTerrain();
+                case HeightUpdaterMode.SelectAndDrag:
+                    UpdateSelectAndDrag();
+                    break;
+                case HeightUpdaterMode.CreateRamps:
+                    UpdateCreateRamps();
+                    break;
+                case HeightUpdaterMode.LevelArea:
+                    UpdateLevelArea();
+                    break;
+                case HeightUpdaterMode.PaintTerrain:
+                    UpdatePaintTerrain();
+                    break;
             }
 
             UpdateHandlesColors();
@@ -454,13 +453,12 @@ namespace Warlander.Deedplanner.Updaters
         {
             if (locked)
             {
-                if (lockedAxis == PlaneAlignment.Horizontal)
+                switch (lockedAxis)
                 {
-                    return new Vector2Int(tileCoords.x, anchorCoords.y);
-                }
-                else if (lockedAxis == PlaneAlignment.Vertical)
-                {
-                    return new Vector2Int(anchorCoords.x, tileCoords.y);
+                    case PlaneAlignment.Horizontal:
+                        return new Vector2Int(tileCoords.x, anchorCoords.y);
+                    case PlaneAlignment.Vertical:
+                        return new Vector2Int(anchorCoords.x, tileCoords.y);
                 }
             }
 
@@ -619,26 +617,25 @@ namespace Warlander.Deedplanner.Updaters
             List<HeightmapHandle> hoveredHandles = new List<HeightmapHandle>();
 
             TileSelectionHit hit = TileSelection.PositionToTileSelectionHit(raycast.point, TileSelectionMode.Everything);
-            if (hit.Target == TileSelectionTarget.InnerTile)
+            switch (hit.Target)
             {
-                hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y));
-                hoveredHandles.Add(gridMesh.GetHandle(hit.X + 1, hit.Y));
-                hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y + 1));
-                hoveredHandles.Add(gridMesh.GetHandle(hit.X + 1, hit.Y + 1));
-            }
-            else if (hit.Target == TileSelectionTarget.Corner)
-            {
-                hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y));
-            }
-            else if (hit.Target == TileSelectionTarget.BottomBorder)
-            {
-                hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y));
-                hoveredHandles.Add(gridMesh.GetHandle(hit.X + 1, hit.Y));
-            }
-            else if (hit.Target == TileSelectionTarget.LeftBorder)
-            {
-                hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y));
-                hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y + 1));
+                case TileSelectionTarget.InnerTile:
+                    hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y));
+                    hoveredHandles.Add(gridMesh.GetHandle(hit.X + 1, hit.Y));
+                    hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y + 1));
+                    hoveredHandles.Add(gridMesh.GetHandle(hit.X + 1, hit.Y + 1));
+                    break;
+                case TileSelectionTarget.Corner:
+                    hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y));
+                    break;
+                case TileSelectionTarget.BottomBorder:
+                    hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y));
+                    hoveredHandles.Add(gridMesh.GetHandle(hit.X + 1, hit.Y));
+                    break;
+                case TileSelectionTarget.LeftBorder:
+                    hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y));
+                    hoveredHandles.Add(gridMesh.GetHandle(hit.X, hit.Y + 1));
+                    break;
             }
 
             return hoveredHandles;

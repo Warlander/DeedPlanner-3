@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Warlander.Deedplanner.Utils
 {
-    [RequireComponent((typeof(TMP_InputField)))]
+    [RequireComponent(typeof(TMP_InputField))]
     public class DecimalInputFieldPositiveAutocorrect : MonoBehaviour
     {
         

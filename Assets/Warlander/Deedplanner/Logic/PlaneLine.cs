@@ -20,17 +20,18 @@ namespace Warlander.Deedplanner.Logic
         {
             Map map = GameManager.Instance.Map;
 
-            if (Alignment == PlaneAlignment.Horizontal)
+            switch (Alignment)
             {
-                projector.transform.localPosition = new Vector3(map.Width * 2f, 10000, TileCoords.y * 4);
-                projector.orthographicSize = 0.25f;
-                projector.aspectRatio = map.Width * 2 / projector.orthographicSize;
-            }
-            else if (Alignment == PlaneAlignment.Vertical)
-            {
-                projector.transform.localPosition = new Vector3(TileCoords.x * 4, 10000, map.Height * 2f);
-                projector.orthographicSize = map.Height * 2;
-                projector.aspectRatio = 0.25f / projector.orthographicSize;
+                case PlaneAlignment.Horizontal:
+                    projector.transform.localPosition = new Vector3(map.Width * 2f, 10000, TileCoords.y * 4);
+                    projector.orthographicSize = 0.25f;
+                    projector.aspectRatio = map.Width * 2 / projector.orthographicSize;
+                    break;
+                case PlaneAlignment.Vertical:
+                    projector.transform.localPosition = new Vector3(TileCoords.x * 4, 10000, map.Height * 2f);
+                    projector.orthographicSize = map.Height * 2;
+                    projector.aspectRatio = 0.25f / projector.orthographicSize;
+                    break;
             }
         }
     }

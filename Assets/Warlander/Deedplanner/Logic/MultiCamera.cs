@@ -96,7 +96,7 @@ namespace Warlander.Deedplanner.Logic
             set => selectionBox.sizeDelta = value;
         }
 
-        void Start()
+        private void Start()
         {
             parentTransform = transform.parent;
             AttachedCamera = GetComponent<Camera>();
@@ -184,7 +184,7 @@ namespace Warlander.Deedplanner.Logic
             UpdateState();
         }
 
-        void OnPreCull()
+        private void OnPreCull()
         {
             PrepareWater();
             PrepareMapState();
@@ -373,37 +373,35 @@ namespace Warlander.Deedplanner.Logic
             int tileX = tileSelectionHit.X;
             int tileY = tileSelectionHit.Y;
 
-            float borderThickness = TileSelection.BorderThickness;
+            const float borderThickness = TileSelection.BorderThickness;
 
-            if (target == TileSelectionTarget.Tile)
+            switch (target)
             {
-                attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4 + 2);
-                attachedProjector.orthographicSize = 2;
-                attachedProjector.aspectRatio = 1;
-            }
-            else if (target == TileSelectionTarget.InnerTile)
-            {
-                attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4 + 2);
-                attachedProjector.orthographicSize = 2 - borderThickness * 4;
-                attachedProjector.aspectRatio = 1;
-            }
-            else if (target == TileSelectionTarget.BottomBorder)
-            {
-                attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4);
-                attachedProjector.orthographicSize = borderThickness * 4;
-                attachedProjector.aspectRatio = 2f / (borderThickness * 4) - (borderThickness * 6);
-            }
-            else if (target == TileSelectionTarget.LeftBorder)
-            {
-                attachedProjector.transform.position = new Vector3(tileX * 4, 10000, tileY * 4 + 2);
-                attachedProjector.orthographicSize = 2 - (borderThickness * 4);
-                attachedProjector.aspectRatio = (borderThickness * 4) / 1.5f;
-            }
-            else if (target == TileSelectionTarget.Corner)
-            {
-                attachedProjector.transform.position = new Vector3(tileX * 4, 10000, tileY * 4);
-                attachedProjector.orthographicSize = borderThickness * 4;
-                attachedProjector.aspectRatio = 1;
+                case TileSelectionTarget.Tile:
+                    attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4 + 2);
+                    attachedProjector.orthographicSize = 2;
+                    attachedProjector.aspectRatio = 1;
+                    break;
+                case TileSelectionTarget.InnerTile:
+                    attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4 + 2);
+                    attachedProjector.orthographicSize = 2 - borderThickness * 4;
+                    attachedProjector.aspectRatio = 1;
+                    break;
+                case TileSelectionTarget.BottomBorder:
+                    attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4);
+                    attachedProjector.orthographicSize = borderThickness * 4;
+                    attachedProjector.aspectRatio = 2f / (borderThickness * 4) - (borderThickness * 6);
+                    break;
+                case TileSelectionTarget.LeftBorder:
+                    attachedProjector.transform.position = new Vector3(tileX * 4, 10000, tileY * 4 + 2);
+                    attachedProjector.orthographicSize = 2 - (borderThickness * 4);
+                    attachedProjector.aspectRatio = (borderThickness * 4) / 1.5f;
+                    break;
+                case TileSelectionTarget.Corner:
+                    attachedProjector.transform.position = new Vector3(tileX * 4, 10000, tileY * 4);
+                    attachedProjector.orthographicSize = borderThickness * 4;
+                    attachedProjector.aspectRatio = 1;
+                    break;
             }
         }
 
@@ -670,7 +668,7 @@ namespace Warlander.Deedplanner.Logic
                 return;
             }
 
-            float raytraceAlpha = 0.25f;
+            const float raytraceAlpha = 0.25f;
 
             if (hitCollider.GetType() == typeof(MeshCollider))
             {

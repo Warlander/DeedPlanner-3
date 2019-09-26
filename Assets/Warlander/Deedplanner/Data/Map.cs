@@ -391,7 +391,7 @@ namespace Warlander.Deedplanner.Data
         {
             Ray ray = new Ray(new Vector3(x, 10000, y), new Vector3(0, -1, 0));
             RaycastHit raycastHit;
-            int mask = LayerMasks.GroundMask;
+            const int mask = LayerMasks.GroundMask;
             bool hit = Physics.Raycast(ray, out raycastHit, 20000, mask);
             if (hit)
             {

@@ -55,7 +55,7 @@ namespace Warlander.Deedplanner.Gui
             else
             {
                 ExtensionFilter[] extensionArray = {
-                    new ExtensionFilter("DeedPlanner 3 save", "MAP"),
+                    new ExtensionFilter("DeedPlanner 3 save", "MAP")
                 };
                 string path = StandaloneFileBrowser.StandaloneFileBrowser.SaveFilePanel("Save Map", "", "Deed plan", extensionArray);
             
