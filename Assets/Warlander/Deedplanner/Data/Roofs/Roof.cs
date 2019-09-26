@@ -125,10 +125,11 @@ namespace Warlander.Deedplanner.Data.Roofs
 
             build.Append("X: ").Append(Tile.X).Append(" Y: ").Append(Tile.Y).AppendLine();
             build.Append(Data.Name);
-            if (Application.isEditor)
+            if (Debug.isDebugBuild)
             {
                 build.AppendLine();
-                build.Append(Model.name);
+                build.Append("Roof level = ").Append(RoofLevel).AppendLine();
+                build.Append("Model = ").Append(Model.name);
             }
             
             return build.ToString();

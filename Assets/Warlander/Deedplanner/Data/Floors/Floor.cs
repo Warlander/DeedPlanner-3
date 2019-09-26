@@ -73,6 +73,11 @@ namespace Warlander.Deedplanner.Data.Floors
 
             build.Append("X: ").Append(Tile.X).Append(" Y: ").Append(Tile.Y).AppendLine();
             build.Append(Data.Name);
+            if (Debug.isDebugBuild)
+            {
+                build.AppendLine();
+                build.Append("Orientation = ").Append(Orientation);
+            }
             
             return build.ToString();
         }
