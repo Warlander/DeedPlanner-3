@@ -44,11 +44,11 @@ namespace Warlander.Deedplanner.Data.Walls
 
             if (firstFloor)
             {
-                CoroutineManager.Instance.QueueCoroutine(Data.BottomModel.CreateOrGetModel(slopeDifference, Reversed, OnModelLoaded));
+                CoroutineManager.Instance.QueueCoroutine(Data.BottomModel.CreateOrGetModel(slopeDifference, OnModelLoaded));
             }
             else
             {
-                CoroutineManager.Instance.QueueCoroutine(Data.NormalModel.CreateOrGetModel(slopeDifference, Reversed, OnModelLoaded));
+                CoroutineManager.Instance.QueueCoroutine(Data.NormalModel.CreateOrGetModel(slopeDifference, OnModelLoaded));
             }
         }
 
@@ -61,6 +61,11 @@ namespace Warlander.Deedplanner.Data.Walls
             
             Model = newModel;
             Model.transform.SetParent(transform, false);
+            if (Reversed)
+            {
+                Model.transform.localRotation = Quaternion.Euler(0, 180, 0);
+                Model.transform.localPosition = new Vector3(-4, 0, 0);
+            }
             
             Bounds bounds = GetTotalModelBounds(Model);
             const float wallDepthConfortableMargin = 0.75f;
@@ -167,6 +172,12 @@ namespace Warlander.Deedplanner.Data.Walls
 
             build.Append("X: ").Append(Tile.X).Append(" Y: ").Append(Tile.Y).AppendLine();
             build.Append(Data.Name);
+            if (Debug.isDebugBuild)
+            {
+                build.AppendLine();
+                build.Append("Reversed = ").Append(Reversed).AppendLine();
+                build.Append("Slope = ").Append(currentSlopeDifference);
+            }
             
             return build.ToString();
         }

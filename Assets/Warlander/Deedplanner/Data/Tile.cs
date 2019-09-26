@@ -624,6 +624,10 @@ namespace Warlander.Deedplanner.Data
             
             bool horizontal = (element.Name.Equals("hWall", StringComparison.OrdinalIgnoreCase));
             bool reversed = element.GetAttribute("reversed").Equals("true", StringComparison.OrdinalIgnoreCase);
+            if (data.Arch && Map.OriginalExporter.Contains("DeedPlanner 2"))
+            {
+                reversed = !reversed;
+            }
             
             if (horizontal)
             {
