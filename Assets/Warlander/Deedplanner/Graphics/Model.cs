@@ -113,25 +113,19 @@ namespace Warlander.Deedplanner.Graphics
 
         public IEnumerator CreateOrGetModel(Material customMaterial, Action<GameObject> callback)
         {
-            ModelProperties properties = new ModelProperties(0, false, customMaterial);
-            yield return CreateOrGetModel(properties, callback);
-        }
-        
-        public IEnumerator CreateOrGetModel(int skew, bool mirrorZ, Action<GameObject> callback)
-        {
-            ModelProperties properties = new ModelProperties(skew, mirrorZ, null);
+            ModelProperties properties = new ModelProperties(0, customMaterial);
             yield return CreateOrGetModel(properties, callback);
         }
 
         public IEnumerator CreateOrGetModel(int skew, Action<GameObject> callback)
         {
-            ModelProperties properties = new ModelProperties(skew, false, null);
+            ModelProperties properties = new ModelProperties(skew, null);
             yield return CreateOrGetModel(properties, callback);
         }
 
         public IEnumerator CreateOrGetModel(Action<GameObject> callback)
         {
-            ModelProperties properties = new ModelProperties(0, false, null);
+            ModelProperties properties = new ModelProperties(0, null);
             yield return CreateOrGetModel(properties, callback);
         }
 
@@ -188,7 +182,7 @@ namespace Warlander.Deedplanner.Graphics
                 }
             }
             originalModel.transform.SetParent(modelRoot.transform);
-            ModelProperties originalProperties = new ModelProperties(0, false, null);
+            ModelProperties originalProperties = new ModelProperties(0, null);
             modifiedModels[originalProperties] = originalModel;
 
             foreach (ModelRequest modelRequest in modelRequests)
@@ -214,11 +208,6 @@ namespace Warlander.Deedplanner.Graphics
                 skewedModel.name += " " + modelProperties.Skew;
             }
 
-            if (modelProperties.MirrorZ)
-            {
-                skewedModel.name += " ZMirrored";
-            }
-
             skewedModel.transform.SetParent(modelRoot.transform);
             modifiedModels[modelProperties] = skewedModel;
         }
@@ -226,8 +215,6 @@ namespace Warlander.Deedplanner.Graphics
         private GameObject CreateModel(ModelProperties modelProperties)
         {
             int skew = modelProperties.Skew;
-            bool mirrorZ = modelProperties.MirrorZ;
-            float mirrorZFactor = mirrorZ ? -1f : 1f;
             // skew is in Wurm units that are 4 Unity units long and 0.1 units high
             float skewPerUnit = skew * 0.1f * 0.25f;
 
@@ -244,37 +231,12 @@ namespace Warlander.Deedplanner.Graphics
                 for (int i = 0; i < originalVertices.Length; i++)
                 {
                     Vector3 vec = originalVertices[i];
-                    newVertices[i] = new Vector3(vec.x, vec.y + skewPerUnit * vec.x, vec.z * mirrorZFactor);
+                    newVertices[i] = new Vector3(vec.x, vec.y + skewPerUnit * vec.x, vec.z);
                 }
                 newMesh.vertices = newVertices;
                 newMesh.uv = mesh.uv;
-                if (mirrorZ)
-                {
-                    int[] oldTriangles = mesh.triangles;
-                    int[] newTriangles = new int[oldTriangles.Length];
-                    for (int i = 0; i < oldTriangles.Length; i += 3)
-                    {
-                        newTriangles[i] = oldTriangles[i + 2];
-                        newTriangles[i + 1] = oldTriangles[i + 1];
-                        newTriangles[i + 2] = oldTriangles[i];
-                    }
-                    newMesh.triangles = newTriangles;
-
-                    Vector3[] oldNormals = mesh.normals;
-                    Vector3[] newNormals = new Vector3[oldNormals.Length];
-                    for (int i = 0; i < oldNormals.Length; i++)
-                    {
-                        Vector3 normal = oldNormals[i];
-                        newNormals[i] = new Vector3(normal.x, normal.y, normal.z * mirrorZFactor);
-                    }
-                    newMesh.normals = newNormals;
-                }
-                else
-                {
-                    newMesh.triangles = mesh.triangles;
-                    newMesh.normals = mesh.normals;
-                }
-                
+                newMesh.triangles = mesh.triangles;
+                newMesh.normals = mesh.normals;
                 newMesh.tangents = mesh.tangents;
                 newMesh.RecalculateBounds();
                 if (!modelProperties.IsOriginalModel())
@@ -317,19 +279,17 @@ namespace Warlander.Deedplanner.Graphics
         private struct ModelProperties
         {
             public readonly int Skew;
-            public readonly bool MirrorZ;
             public readonly Material CustomMaterial;
 
-            public ModelProperties(int skew, bool mirrorZ, Material customMaterial)
+            public ModelProperties(int skew, Material customMaterial)
             {
                 Skew = skew;
-                MirrorZ = mirrorZ;
                 CustomMaterial = customMaterial;
             }
             
             public bool IsOriginalModel()
             {
-                return Skew == 0 && !MirrorZ && !CustomMaterial;
+                return Skew == 0 && !CustomMaterial;
             }
             
         }
