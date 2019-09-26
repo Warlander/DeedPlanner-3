@@ -32,6 +32,7 @@ namespace Warlander.Deedplanner.Data
 
         public int Width { get; private set; }
         public int Height { get; private set; }
+        public string OriginalExporter { get; private set; } = Constants.TitleString;
 
         public int LowestSurfaceHeight { get; private set; }
         public int HighestSurfaceHeight { get; private set; }
@@ -138,6 +139,13 @@ namespace Warlander.Deedplanner.Data
         public void Initialize(XmlDocument document)
         {
             XmlElement mapRoot = document.DocumentElement;
+            if (mapRoot == null || mapRoot.LocalName != "map")
+            {
+                PreInitialize(25, 25);
+                return;
+            }
+            
+            OriginalExporter = mapRoot.GetAttribute("exporter");
             int width = Convert.ToInt32(mapRoot.GetAttribute("width"));
             int height = Convert.ToInt32(mapRoot.GetAttribute("height"));
             PreInitialize(width, height);
@@ -222,6 +230,7 @@ namespace Warlander.Deedplanner.Data
             CaveGridMesh = PrepareGridMesh("Cave grid", caveGridRoot, true);
 
             RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
+            CommandManager.ForgetAction();
         }
 
         private void LateUpdate()
