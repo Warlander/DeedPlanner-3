@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 using UnityEngine;
-using UnityEngine.Assertions.Comparers;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Floors;
@@ -440,7 +439,7 @@ namespace Warlander.Deedplanner.Data
             return null;
         }
 
-        public List<Decoration> GetDecorations()
+        public IEnumerable<Decoration> GetDecorations()
         {
             List<Decoration> decorations = new List<Decoration>();
             foreach (TileEntity tileEntity in Entities.Values)

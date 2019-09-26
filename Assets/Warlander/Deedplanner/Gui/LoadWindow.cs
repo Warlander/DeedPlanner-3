@@ -47,7 +47,7 @@ namespace Warlander.Deedplanner.Gui
         private void LoadFileStandalone()
         {
             ExtensionFilter[] extensionArray = {
-                new ExtensionFilter("DeedPlanner 3 save", "MAP"),
+                new ExtensionFilter("DeedPlanner 3 save", "MAP")
             };
             
             string[] pathArray = StandaloneFileBrowser.StandaloneFileBrowser.OpenFilePanel("Load Map", "", extensionArray, false);

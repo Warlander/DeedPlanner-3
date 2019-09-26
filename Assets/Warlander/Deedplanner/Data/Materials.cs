@@ -58,7 +58,7 @@ namespace Warlander.Deedplanner.Data
             {
                 builder.Append(entry.Key).Append(" = ").AppendLine(entry.Value.ToString());
             }
-            if (this.Count == 0)
+            if (Count == 0)
             {
                 builder.AppendLine("None");
             }

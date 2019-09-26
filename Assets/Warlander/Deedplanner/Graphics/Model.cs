@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Object = UnityEngine.Object;
 
@@ -68,7 +67,7 @@ namespace Warlander.Deedplanner.Graphics
                 oneIncludedMesh = null;
             }
 
-            this.Layer = layer;
+            Layer = layer;
         }
 
         public Model(string location, Vector3 scale, int layer = int.MaxValue) : this(location, layer)
@@ -76,10 +75,10 @@ namespace Warlander.Deedplanner.Graphics
             Scale = scale;
         }
 
-        public Model(string location, int layer = int.MaxValue)
+        public Model(string newLocation, int layer = int.MaxValue)
         {
-            this.location = location;
-            this.Layer = layer;
+            location = newLocation;
+            Layer = layer;
 
             Tag = "";
             Scale = new Vector3(1, 1, 1);

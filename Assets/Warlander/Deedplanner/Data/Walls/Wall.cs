@@ -1,8 +1,6 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Walls
@@ -71,7 +69,7 @@ namespace Warlander.Deedplanner.Data.Walls
                 
             boundsMesh = new Mesh();
             Vector3[] vectors = new Vector3[8];
-            float padding = 1.01f;
+            const float padding = 1.01f;
             vectors[0] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - currentSlopeDifference * 0.1f, -bounds.extents.z) * padding);
             vectors[1] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - currentSlopeDifference * 0.1f, bounds.extents.z) * padding);
             vectors[2] = (bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, bounds.extents.z) * padding);

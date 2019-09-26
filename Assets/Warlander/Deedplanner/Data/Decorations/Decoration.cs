@@ -2,7 +2,6 @@ using System;
 using System.Globalization;
 using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Decorations

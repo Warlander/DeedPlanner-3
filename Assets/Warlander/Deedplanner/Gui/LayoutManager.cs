@@ -3,8 +3,6 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Logic;
 using System.Linq;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Utils;
 

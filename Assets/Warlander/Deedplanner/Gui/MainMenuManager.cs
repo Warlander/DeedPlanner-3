@@ -1,8 +1,6 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Gui
 {

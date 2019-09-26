@@ -1,5 +1,3 @@
-using System;
-using System.Globalization;
 using TMPro;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
