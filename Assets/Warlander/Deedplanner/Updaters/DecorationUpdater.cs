@@ -247,7 +247,7 @@ namespace Warlander.Deedplanner.Updaters
                 IEnumerable<Decoration> decorationsOnTile = targetedTile.GetDecorations();
                 foreach (Decoration decoration in decorationsOnTile)
                 {
-                    targetedTile.SetDecoration(null, decoration.Position, decoration.Rotation, targetFloor, false);
+                    targetedTile.SetDecoration(null, decoration.Position, decoration.Rotation, targetFloor);
                 }
                 map.CommandManager.FinishAction();
             }
