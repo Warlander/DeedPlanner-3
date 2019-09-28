@@ -111,10 +111,13 @@ namespace Warlander.Deedplanner.Logic
             if (webRequest.isHttpError || webRequest.isNetworkError)
             {
                 Debug.LogError(webRequest.error);
+                webRequest.Dispose();
+                yield break;
             }
             
             Debug.Log("Map downloaded, checking if compressed");
             string requestText = webRequest.downloadHandler.text;
+            webRequest.Dispose();
             try
             {
                 byte[] requestBytes = Convert.FromBase64String(requestText);
