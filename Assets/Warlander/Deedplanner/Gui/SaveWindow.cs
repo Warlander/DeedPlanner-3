@@ -124,6 +124,7 @@ namespace Warlander.Deedplanner.Gui
             webVersionButton.interactable = true;
             
             string response = currentPastebinRequest.downloadHandler.text;
+            currentPastebinRequest.Dispose();
             if (response.Contains("Bad API request"))
             {
                 Debug.LogError(response);
