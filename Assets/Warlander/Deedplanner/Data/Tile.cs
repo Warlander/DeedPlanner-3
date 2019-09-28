@@ -408,7 +408,7 @@ namespace Warlander.Deedplanner.Data
             return wall;
         }
 
-        public Decoration SetDecoration(DecorationData data, Vector2 position, float rotation, int floor, bool floatOnWater)
+        public Decoration SetDecoration(DecorationData data, Vector2 position, float rotation, int floor, bool floatOnWater = false)
         {
             if (position.x < 0 || position.x >= 4 || position.y < 0 || position.y >= 4)
             {
