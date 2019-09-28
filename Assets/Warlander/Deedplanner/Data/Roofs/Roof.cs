@@ -73,15 +73,19 @@ namespace Warlander.Deedplanner.Data.Roofs
             foreach (RoofType type in RoofType.RoofTypes)
             {
                 int match = type.CheckMatch(Tile, floor);
-                
-                if (match != -1 && currentRoofType != type && currentRoofMatch != match)
+
+                if (currentRoofType == type && currentRoofMatch == match)
+                {
+                    break;
+                }
+                if (match != -1)
                 {
                     currentRoofType = type;
                     currentRoofMatch = match;
 
                     CoroutineManager.Instance.QueueCoroutine(type.GetModelForData(Data).CreateOrGetModel(OnModelLoaded));
                     
-                    return;
+                    break;
                 }
             }
         }
@@ -94,7 +98,7 @@ namespace Warlander.Deedplanner.Data.Roofs
             }
             
             Model = newModel;
-            Model.transform.SetParent(transform, true);
+            Model.transform.SetParent(transform);
             Model.transform.localPosition = new Vector3(-2, RoofLevel * 3.5f, -2);
             if (currentRoofMatch == 0)
             {
@@ -129,7 +133,11 @@ namespace Warlander.Deedplanner.Data.Roofs
             {
                 build.AppendLine();
                 build.Append("Roof level = ").Append(RoofLevel).AppendLine();
-                build.Append("Model = ").Append(Model.name);
+                build.Append("Roof match = ").Append(currentRoofMatch).AppendLine();
+                if (Model)
+                {
+                    build.Append("Model = ").Append(Model.name);
+                }
             }
             
             return build.ToString();
