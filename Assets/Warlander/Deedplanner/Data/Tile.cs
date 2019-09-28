@@ -408,7 +408,7 @@ namespace Warlander.Deedplanner.Data
             return wall;
         }
 
-        public Decoration SetDecoration(DecorationData data, Vector2 position, float rotation, int floor)
+        public Decoration SetDecoration(DecorationData data, Vector2 position, float rotation, int floor, bool floatOnWater)
         {
             if (position.x < 0 || position.x >= 4 || position.y < 0 || position.y >= 4)
             {
@@ -416,7 +416,7 @@ namespace Warlander.Deedplanner.Data
                 return null;
             }
             
-            FreeformEntityData decorationEntityData = new FreeformEntityData(floor, EntityType.Object, position.x, position.y, data.Floating);
+            FreeformEntityData decorationEntityData = new FreeformEntityData(floor, EntityType.Object, position.x, position.y, floatOnWater);
             TileEntity decorationEntity;
             Entities.TryGetValue(decorationEntityData, out decorationEntity);
             Decoration currentDecoration = decorationEntity as Decoration;
@@ -687,7 +687,7 @@ namespace Warlander.Deedplanner.Data
                 rotation = -rotation + 180 * Mathf.Deg2Rad;
             }
 
-            SetDecoration(data, position, rotation, floor);
+            SetDecoration(data, position, rotation, floor, data.Floating);
         }
         
         public void Refresh()
