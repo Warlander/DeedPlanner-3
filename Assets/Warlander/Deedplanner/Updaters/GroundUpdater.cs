@@ -9,7 +9,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class GroundUpdater : MonoBehaviour
+    public class GroundUpdater : AbstractUpdater
     {
         
         [SerializeField] private Image leftClickImage = null;

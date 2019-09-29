@@ -5,7 +5,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class LabelUpdater : MonoBehaviour
+    public class LabelUpdater : AbstractUpdater
     {
 
         private void OnEnable()

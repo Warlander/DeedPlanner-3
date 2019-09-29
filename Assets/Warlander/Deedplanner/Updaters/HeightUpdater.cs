@@ -10,7 +10,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class HeightUpdater : MonoBehaviour
+    public class HeightUpdater : AbstractUpdater
     {
 
         [SerializeField] private Toggle selectAndDragToggle = null;
