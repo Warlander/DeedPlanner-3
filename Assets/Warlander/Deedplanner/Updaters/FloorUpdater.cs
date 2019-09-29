@@ -7,7 +7,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class FloorUpdater : MonoBehaviour
+    public class FloorUpdater : AbstractUpdater
     {
 
         [SerializeField]

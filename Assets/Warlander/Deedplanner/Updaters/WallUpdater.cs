@@ -9,7 +9,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class WallUpdater : MonoBehaviour
+    public class WallUpdater : AbstractUpdater
     {
 
         [SerializeField] private Toggle reverseToggle = null;

@@ -2239,6 +2239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e13ebb2138ae754e89f5afe9931b92a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTab: 5
 --- !u!1 &108151470
 GameObject:
   m_ObjectHideFlags: 0
@@ -4217,6 +4218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8881d98b33f839b458e83987b4fc30f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTab: 10
 --- !u!1 &206237797
 GameObject:
   m_ObjectHideFlags: 0
@@ -4494,6 +4496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 247d8c9be6bae3c42a25228ccb21c605, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTab: 7
 --- !u!1 &218983207
 GameObject:
   m_ObjectHideFlags: 0
@@ -11018,6 +11021,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2829708a839b4734092b28b6dd6ef94a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTab: 9
 --- !u!1 &476452796
 GameObject:
   m_ObjectHideFlags: 0
@@ -13973,6 +13977,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f63181b4316fbe4f9512799e9c1e814, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTab: 8
 --- !u!1001 &650928270
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15519,6 +15524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66ca5b0068b732345bd96bc28dd6e5fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTab: 2
   southToggle: {fileID: 1532161767}
   westToggle: {fileID: 1503939245}
   northToggle: {fileID: 952311532}
@@ -18016,6 +18022,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f37c10c61d000c74db94c4d192fc03a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTab: 3
   reverseToggle: {fileID: 169382236}
   automaticReverseToggle: {fileID: 987493787}
 --- !u!1 &842417727 stripped
@@ -24695,6 +24702,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff7c0597312e6834fac9054fdca38981, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTab: 1
   selectAndDragToggle: {fileID: 1531541071}
   createRampsToggle: {fileID: 1816352455}
   levelAreaToggle: {fileID: 1238870642}
@@ -25229,6 +25237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28edc207f5bf5644fa32bab4e5eee015, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTab: 0
   leftClickImage: {fileID: 1222685802}
   leftClickText: {fileID: 2012910539}
   rightClickImage: {fileID: 1303508364}
@@ -35310,6 +35319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5de956b52e0008e49aaa1a53851c9c86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTab: 6
   snapToGridToggle: {fileID: 987679741}
   rotationSnappingToggle: {fileID: 39991402}
   rotationSensitivityInput: {fileID: 1586115284}
@@ -37678,18 +37688,19 @@ MonoBehaviour:
     type: 3}
   planeLinePrefab: {fileID: -7788806047085427720, guid: f64e36ee933513e469923504ef8a41e1,
     type: 3}
-  groundUpdater: {fileID: 1200891937}
-  caveUpdater: {fileID: 650922445}
-  heightUpdater: {fileID: 1165461625}
-  floorUpdater: {fileID: 716036715}
-  wallUpdater: {fileID: 835980717}
-  roofUpdater: {fileID: 103496097}
-  decorationUpdater: {fileID: 1604227846}
-  labelUpdater: {fileID: 211449320}
-  borderUpdater: {fileID: 1828645446}
-  bridgeUpdater: {fileID: 475321930}
-  mirrorUpdater: {fileID: 205400789}
-  utilsUpdater: {fileID: 2018367164}
+  updaters:
+  - {fileID: 1200891937}
+  - {fileID: 650922445}
+  - {fileID: 1165461625}
+  - {fileID: 716036715}
+  - {fileID: 835980717}
+  - {fileID: 103496097}
+  - {fileID: 1604227846}
+  - {fileID: 211449320}
+  - {fileID: 1828645446}
+  - {fileID: 475321930}
+  - {fileID: 205400789}
+  - {fileID: 2018367164}
 --- !u!1 &1728524857 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
@@ -40571,6 +40582,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 276c808684646de41bb719ef90cc68c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTab: 4
 --- !u!1 &1830731230
 GameObject:
   m_ObjectHideFlags: 0
@@ -44197,6 +44209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0e7f648ed9a447391f734380541457b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetTab: 12
 --- !u!1001 &2019280476
 PrefabInstance:
   m_ObjectHideFlags: 0
