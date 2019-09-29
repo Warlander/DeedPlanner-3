@@ -44,7 +44,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 4deb1249538649e4bbd99e64ec0e606b, type: 3}
     - {fileID: 10906, guid: 0000000000000000f000000000000000, type: 0}
-    totalSpriteSurfaceArea: 3407240
+    totalSpriteSurfaceArea: 3472776
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -178,6 +178,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: bd6f7a38afa02974aa0f463dab0cb98c, type: 3}
   - {fileID: 21300000, guid: e0adeb1a9e5716d4abb3d740a9da4a52, type: 3}
   - {fileID: 21300000, guid: bc29c65abbb0f6e43b2f5a8787f2c638, type: 3}
+  - {fileID: 21300000, guid: 9955bbdb810401a48bbbe699fbf31c1c, type: 3}
   - {fileID: 21300000, guid: dca7671c147d8c8419e92eaab4b3db92, type: 3}
   - {fileID: 21300000, guid: ca36db4c898a2114ea3e16b957f31b0b, type: 3}
   - {fileID: 21300000, guid: 92e8147c39387364096bbcba4fda2392, type: 3}
@@ -321,6 +322,7 @@ SpriteAtlas:
   - wood background
   - 017-broken-lines-square-border
   - 002-roof
+  - 024-technical-support
   - 003-fence
   - 009-eraser
   - 008-cave
