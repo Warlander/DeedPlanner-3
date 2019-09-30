@@ -63,7 +63,7 @@ namespace Warlander.Deedplanner.Logic
                 case Tab.Menu:
                     return NullEditMask;
                 default:
-                    throw new ArgumentException("Cannot find mask for tab " + tab, "tab");
+                    throw new ArgumentException("Cannot find mask for tab " + tab, nameof(tab));
             }
         }
 
