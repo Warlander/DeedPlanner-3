@@ -286,6 +286,18 @@ namespace Warlander.Deedplanner.Data
             return gridMesh;
         }
 
+        public Materials CalculateMapMaterials()
+        {
+            Materials mapMaterials = new Materials();
+
+            foreach (Tile tile in tiles)
+            {
+                mapMaterials.Add(tile.CalculateTileMaterials(true, true));
+            }
+            
+            return mapMaterials;
+        }
+
         public int CoordinateToIndex(int x, int y)
         {
             return x * (Height + 1) + y;

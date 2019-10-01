@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
@@ -14,6 +15,9 @@ namespace Warlander.Deedplanner.Updaters
         
         [SerializeField] private RectTransform calculateMaterialsPanelTransform = null;
         [SerializeField] private RectTransform mapWarningsPanelTransform = null;
+
+        [SerializeField] private RectTransform materialsWindowTransform = null;
+        [SerializeField] private TMP_InputField materialsInputField = null;
 
         private ToolType currentTool = ToolType.MaterialsCalculator;
         
@@ -62,6 +66,19 @@ namespace Warlander.Deedplanner.Updaters
             OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
             
             
+        }
+
+        public void CalculateMapMaterials()
+        {
+            Materials mapMaterials = GameManager.Instance.Map.CalculateMapMaterials();
+            
+            ShowMaterialsWindow(mapMaterials.ToString());
+        }
+
+        private void ShowMaterialsWindow(string text)
+        {
+            materialsWindowTransform.gameObject.SetActive(true);
+            materialsInputField.text = text;
         }
         
         private enum ToolType
