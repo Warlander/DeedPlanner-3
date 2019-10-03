@@ -15,9 +15,11 @@
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#pragma multi_compile_instancing
 			#include "UnityCG.cginc"
 
 			struct data {
+			    UNITY_VERTEX_INPUT_INSTANCE_ID
 				float4 vertex : POSITION;
 				float4 color : COLOR;
 			};
@@ -26,6 +28,7 @@
 
 			data vert(data d)
 			{
+			    UNITY_SETUP_INSTANCE_ID(d);
 				data newData;
 				newData.vertex = UnityObjectToClipPos(d.vertex);
 				newData.color = d.color;
