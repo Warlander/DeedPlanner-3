@@ -124,6 +124,12 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
+            int targetFloor = LayoutManager.Instance.CurrentCamera.Floor;
+            if (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor))
+            {
+                targetFloor = tileEntity.Floor;
+            }
+            
             Map map = GameManager.Instance.Map;
             
             if (!placingDecoration)
@@ -140,17 +146,16 @@ namespace Warlander.Deedplanner.Updaters
                     {
                         position.y = Mathf.Max(position.y, 0);
                     }
+                    else
+                    {
+                        float floorHeight = 3f;
+                        position.y += targetFloor * floorHeight;
+                    }
                 }
                 else if (tileEntity && tileEntity.Valid)
                 {
                     targetedTile = tileEntity.Tile;
                 }
-            }
-
-            int targetFloor = LayoutManager.Instance.CurrentCamera.Floor;
-            if (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor))
-            {
-                targetFloor = tileEntity.Floor;
             }
 
             if (overlayMesh || groundMesh || (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor)))
@@ -306,6 +311,11 @@ namespace Warlander.Deedplanner.Updaters
         private IEnumerable<Decoration> GetAllNearbyDecorations(Tile centralTile)
         {
             List<Decoration> decorations = new List<Decoration>();
+
+            if (!centralTile)
+            {
+                return decorations;
+            }
             
             for (int x = -1; x <= 1; x++)
             {
