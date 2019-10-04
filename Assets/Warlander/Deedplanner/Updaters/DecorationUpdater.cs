@@ -191,13 +191,13 @@ namespace Warlander.Deedplanner.Updaters
 
             ToggleGhostPropertyBlock(placementAllowed ? allowedGhostPropertyBlock : disabledGhostPropertyBlock);
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && placementAllowed)
             {
                 placingDecoration = true;
                 dragStartPos = LayoutManager.Instance.CurrentCamera.MousePosition;
             }
 
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) && placingDecoration)
             {
                 Vector2 dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
                 Vector2 difference = dragEndPos - dragStartPos;
