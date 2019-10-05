@@ -37374,6 +37374,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd691404c14b57b41a9214d2f71690fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overlayMeshPrefab: {fileID: 3792902265302357509, guid: 1f351ee0d6f835246b4e6c880691257a,
+    type: 3}
   heightmapHandlePrefab: {fileID: 1248268558872816291, guid: a123985caa677d146b457090babca5f8,
     type: 3}
   planeLinePrefab: {fileID: -7788806047085427720, guid: f64e36ee933513e469923504ef8a41e1,
