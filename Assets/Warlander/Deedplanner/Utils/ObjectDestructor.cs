@@ -5,7 +5,7 @@ namespace Warlander.Deedplanner.Utils
     public class ObjectDestructor : MonoBehaviour
     {
 
-        public void DestroyParent()
+        public void DestroyObject()
         {
             Destroy(gameObject);
         }
