@@ -20,6 +20,7 @@ namespace Warlander.Deedplanner.Logic
 
         public Map Map { get; private set; }
 
+        [SerializeField] private OverlayMesh overlayMeshPrefab = null;
         [SerializeField] private HeightmapHandle heightmapHandlePrefab = null;
         [SerializeField] private PlaneLine planeLinePrefab = null;
 
@@ -35,6 +36,7 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField] private BridgesUpdater bridgeUpdater = null;
         [SerializeField] private MirrorUpdater mirrorUpdater = null;
 
+        public OverlayMesh OverlayMeshPrefab => overlayMeshPrefab;
         public HeightmapHandle HeightmapHandlePrefab => heightmapHandlePrefab;
         public PlaneLine PlaneLinePrefab => planeLinePrefab;
 
