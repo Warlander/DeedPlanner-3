@@ -9708,8 +9708,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b51aab060646be4191936d5fcea33e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textureDefaultMaterial: {fileID: 2100000, guid: 513745b12b2a57b44b0262587e2cb2c7,
-    type: 2}
   womDefaultMaterial: {fileID: 2100000, guid: 2569ae703d907e84ebd14b1703b732fb, type: 2}
   simpleDrawingMaterial: {fileID: 2100000, guid: 2fe49197c8e00db479d9bcddc842c4a5,
     type: 2}
@@ -12266,7 +12264,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.4}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.6}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
