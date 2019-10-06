@@ -83,7 +83,7 @@ namespace Warlander.Deedplanner.Logic
                 mapLocationString = JavaScriptUtils.GetMapLocationString();
                 if (!string.IsNullOrEmpty(mapLocationString))
                 {
-                    mapLocationString = LoadingUtils.CreateDirectPastebinLink(mapLocationString);
+                    mapLocationString = WebLinkUtils.AsDirectPastebinLink(mapLocationString);
                 }
             }
 

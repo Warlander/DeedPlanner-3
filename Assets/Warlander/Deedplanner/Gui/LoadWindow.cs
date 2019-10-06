@@ -72,7 +72,7 @@ namespace Warlander.Deedplanner.Gui
                 return;
             }
 
-            string requestLink = LoadingUtils.CreateDirectPastebinLink(rawLink);
+            string requestLink = WebLinkUtils.AsDirectPastebinLink(rawLink);
 
             byte[] base64Bytes = WebUtils.ReadUrlToByteArray(requestLink);
             string base64String = Encoding.Default.GetString(base64Bytes);
