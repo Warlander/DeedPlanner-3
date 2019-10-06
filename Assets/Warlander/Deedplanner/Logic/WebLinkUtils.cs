@@ -2,10 +2,10 @@ using System;
 
 namespace Warlander.Deedplanner.Logic
 {
-    public static class LoadingUtils
+    public static class WebLinkUtils
     {
-
-        public static string CreateDirectPastebinLink(string originalLink)
+        
+        public static string AsDirectPastebinLink(string originalLink)
         {
             string requestLink;
             if (originalLink.Contains("raw"))
@@ -18,13 +18,20 @@ namespace Warlander.Deedplanner.Logic
                 requestLink = "https://pastebin.com/raw.php?i=" + pasteId;
             }
 
-            if (Properties.Web)
-            {
-                requestLink = "https://cors-anywhere.herokuapp.com/" + requestLink;
-            }
+            requestLink = AsCrossOriginLink(requestLink);
 
             return requestLink;
         }
-        
+
+        public static string AsCrossOriginLink(string originalLink)
+        {
+            if (Properties.Web)
+            {
+                return "https://cors-anywhere.herokuapp.com/" + originalLink;
+            }
+
+            return originalLink;
+        }
+
     }
 }
