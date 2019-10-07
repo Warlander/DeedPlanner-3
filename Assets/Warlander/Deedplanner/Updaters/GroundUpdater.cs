@@ -174,20 +174,26 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
             Map map = GameManager.Instance.Map;
-            Stack<Tile> stack = new Stack<Tile>();
-            stack.Push(tile);
+            Stack<Tile> checkStack = new Stack<Tile>();
+            HashSet<Tile> tilesToChange = new HashSet<Tile>();
+            checkStack.Push(tile);
 
-            while (stack.Count != 0)
+            while (checkStack.Count != 0)
             {
-                Tile anchor = stack.Pop();
-                if (anchor.Ground.Data == toReplace)
+                Tile anchor = checkStack.Pop();
+                if (anchor.Ground.Data == toReplace && !tilesToChange.Contains(anchor))
                 {
-                    anchor.Ground.Data = data;
-                    AddTileIfNotNull(stack, map[anchor.X - 1, anchor.Y]);
-                    AddTileIfNotNull(stack, map[anchor.X + 1, anchor.Y]);
-                    AddTileIfNotNull(stack, map[anchor.X, anchor.Y - 1]);
-                    AddTileIfNotNull(stack, map[anchor.X, anchor.Y + 1]);
+                    tilesToChange.Add(anchor);
+                    AddTileIfNotNull(checkStack, map[anchor.X - 1, anchor.Y]);
+                    AddTileIfNotNull(checkStack, map[anchor.X + 1, anchor.Y]);
+                    AddTileIfNotNull(checkStack, map[anchor.X, anchor.Y - 1]);
+                    AddTileIfNotNull(checkStack, map[anchor.X, anchor.Y + 1]);
                 }
+            }
+
+            foreach (Tile tileToChange in tilesToChange)
+            {
+                tileToChange.Ground.Data = data;
             }
         }
 
