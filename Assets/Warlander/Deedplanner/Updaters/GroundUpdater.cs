@@ -160,7 +160,7 @@ namespace Warlander.Deedplanner.Updaters
                 }
                 ground.Data = currentClickData;
             }
-            else if (fillToggle.isOn)
+            else if (fillToggle.isOn && CoroutineManager.Instance.IsIdle)
             {
                 GroundData toReplace = tile.Ground.Data;
                 FloodFill(tile, currentClickData, toReplace);
@@ -175,8 +175,8 @@ namespace Warlander.Deedplanner.Updaters
             }
             Map map = GameManager.Instance.Map;
             Stack<Tile> checkStack = new Stack<Tile>();
-            HashSet<Tile> tilesToChange = new HashSet<Tile>();
             checkStack.Push(tile);
+            HashSet<Tile> tilesToChange = new HashSet<Tile>();
 
             while (checkStack.Count != 0)
             {
