@@ -16,6 +16,8 @@ namespace Warlander.Deedplanner.Logic
         private int enumeratorsExecutingCount = 0;
         private bool interactionLocked = false;
         private bool skipCoroutines = false;
+        
+        public bool IsIdle => enumeratorsExecutingCount == 0 && enumeratorsWaiting.Count == 0;
 
         public CoroutineManager()
         {
