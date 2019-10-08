@@ -13,6 +13,9 @@ namespace Warlander.Deedplanner.Gui
 
         [SerializeField] private TMP_Dropdown overallQualityDropdown = null;
 
+        [SerializeField] private Slider guiScaleSlider = null;
+        [SerializeField] private TMP_Text guiScaleValueText = null;
+
         private void Awake()
         {
             string[] availableQualitySettings = QualitySettings.names;
@@ -53,6 +56,12 @@ namespace Warlander.Deedplanner.Gui
             }
             
             overallQualityDropdown.value = QualitySettings.GetQualityLevel();
+            guiScaleSlider.value = Properties.Instance.guiScale;
+        }
+
+        public void OnGuiScaleChanged()
+        {
+            guiScaleValueText.text = Mathf.RoundToInt(guiScaleSlider.value).ToString();
         }
 
         public void OnSaveButton()
@@ -76,9 +85,12 @@ namespace Warlander.Deedplanner.Gui
                 Properties.Instance.WaterQuality = WaterQuality.ULTRA;
             }
 
+            Properties.Instance.guiScale = Mathf.RoundToInt(guiScaleSlider.value);
+
             Properties.Instance.SaveProperties();
             
             QualitySettings.SetQualityLevel(overallQualityDropdown.value, true);
+            LayoutManager.Instance.UpdateCanvasScale();
         }
 
     }
