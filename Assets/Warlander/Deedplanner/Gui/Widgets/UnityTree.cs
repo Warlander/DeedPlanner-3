@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
 
         [SerializeField] private TMP_InputField searchInputField = null;
         [SerializeField] private GameObject searchBoxRoot = null;
+        [SerializeField] private int searchMinimumCharacters = 3;
 
         public object SelectedValue { get; private set; }
 
@@ -131,6 +133,11 @@ namespace Warlander.Deedplanner.Gui.Widgets
         {
             string text = searchInputField.text;
             text = text.Trim().ToLower();
+            // to avoid change spam in tree, any search shorter than number of characters set in inspector will be ignored
+            if (text.Length < searchMinimumCharacters)
+            {
+                text = String.Empty;
+            }
             
             foreach (UnityTreeNode treeNode in RootBranches)
             {
