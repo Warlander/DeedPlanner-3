@@ -168,17 +168,23 @@ namespace Warlander.Deedplanner.Logic
         {
             Map map = GameManager.Instance.Map;
 
-            if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
+            GameObject focusedObject = EventSystem.current.currentSelectedGameObject;
+            bool shouldUpdateCameras = !focusedObject;
+
+            if (shouldUpdateCameras)
             {
-                UpdatePerspectiveCamera(map);
-            }
-            else if (CameraMode == CameraMode.Top)
-            {
-                UpdateTopCamera(map);
-            }
-            else if (CameraMode == CameraMode.Isometric)
-            {
-                UpdateIsometricCamera(map);
+                if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
+                {
+                    UpdatePerspectiveCamera(map);
+                }
+                else if (CameraMode == CameraMode.Top)
+                {
+                    UpdateTopCamera(map);
+                }
+                else if (CameraMode == CameraMode.Isometric)
+                {
+                    UpdateIsometricCamera(map);
+                }
             }
 
             UpdateState();
