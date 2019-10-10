@@ -179,7 +179,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (activeHandle)
             {
-                LayoutManager.Instance.TooltipText = activeHandle.ToRichString();
+                LayoutManager.Instance.TooltipText += activeHandle.ToRichString();
             }
         }
 

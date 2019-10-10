@@ -43,6 +43,8 @@ namespace Warlander.Deedplanner.Logic
         {
             StringBuilder build = new StringBuilder();
             
+            build.Append("X: " + TileCoords.x + " Y: " + TileCoords.y).AppendLine();
+            
             build.Append("<mspace=0.5em>");
 
             int floor = LayoutManager.Instance.CurrentCamera.Floor;
