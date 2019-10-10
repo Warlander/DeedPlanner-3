@@ -152,7 +152,7 @@ namespace Warlander.Deedplanner.Gui
 
             if (tooltipNeedsClearing)
             {
-                TooltipText = null;
+                TooltipText = "";
             }
         }
         

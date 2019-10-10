@@ -230,10 +230,13 @@ namespace Warlander.Deedplanner.Logic
                     if (tileEntity)
                     {
                         tooltipBuild.Append(tileEntity.ToString());
-                        
                     }
                     else if (groundMesh)
                     {
+                        int x = Mathf.FloorToInt(raycastHit.point.x / 4f);
+                        int y = Mathf.FloorToInt(raycastHit.point.z / 4f);
+                        tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
+                        
                         if (isHeightEditing)
                         {
                             Map map = GameManager.Instance.Map;
@@ -260,9 +263,6 @@ namespace Warlander.Deedplanner.Logic
                         }
                         else
                         {
-                            int x = Mathf.FloorToInt(raycastHit.point.x / 4f);
-                            int y = Mathf.FloorToInt(raycastHit.point.z / 4f);
-                            tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
                             tooltipBuild.Append(GameManager.Instance.Map[x, y].Ground.Data.Name);
                         }
                     }
