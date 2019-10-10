@@ -201,16 +201,15 @@ namespace Warlander.Deedplanner.Data
                 caveLevelRoots[i] = root;
             }
 
-            GameObject surfaceGridRootObject = new GameObject("Surface Grid", typeof(OverlayMesh));
-            OverlayMesh surfaceOverlayMesh = surfaceGridRootObject.GetComponent<OverlayMesh>();
+            OverlayMesh surfaceOverlayMesh = Instantiate(GameManager.Instance.OverlayMeshPrefab, transform);
+            surfaceGridRoot = surfaceOverlayMesh.transform;
+            
             GameObject groundObject = new GameObject("Ground Mesh", typeof(GroundMesh));
             Ground = groundObject.GetComponent<GroundMesh>();
             Ground.Initialize(width, height, surfaceOverlayMesh);
             surfaceOverlayMesh.Initialize(Ground.ColliderMesh);
             AddEntityToMap(groundObject, 0);
             
-            surfaceGridRoot = surfaceGridRootObject.transform;
-            surfaceGridRoot.SetParent(transform);
             caveGridRoot = new GameObject("Cave Grid").transform;
             caveGridRoot.SetParent(transform);
             caveGridRoot.gameObject.SetActive(false);

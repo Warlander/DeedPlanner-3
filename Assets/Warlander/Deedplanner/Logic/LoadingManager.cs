@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Logic
@@ -13,6 +14,7 @@ namespace Warlander.Deedplanner.Logic
     public class LoadingManager : MonoBehaviour
     {
 
+        [SerializeField] private CanvasScaler mainCanvasScaler = null;
         [SerializeField] private GameObject splashRoot = null;
         [SerializeField] private GameObject managersRoot = null;
         [SerializeField] private MultiCamera[] cameras = null;
@@ -24,6 +26,7 @@ namespace Warlander.Deedplanner.Logic
         private void Start()
         {
             splashRoot.SetActive(true);
+            LayoutManager.Instance.UpdateCanvasScale();
             OutputGraphicsCapabilities();
             StartCoroutine(Load());
         }
@@ -83,7 +86,7 @@ namespace Warlander.Deedplanner.Logic
                 mapLocationString = JavaScriptUtils.GetMapLocationString();
                 if (!string.IsNullOrEmpty(mapLocationString))
                 {
-                    mapLocationString = LoadingUtils.CreateDirectPastebinLink(mapLocationString);
+                    mapLocationString = WebLinkUtils.ParseToDirectDownloadLink(mapLocationString);
                 }
             }
 

@@ -124,6 +124,17 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
+            int targetFloor = LayoutManager.Instance.CurrentCamera.Floor;
+            if (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor))
+            {
+                targetFloor = tileEntity.Floor;
+            }
+
+            if (data.CenterOnly || data.Tree || data.Bush)
+            {
+                targetFloor = 0;
+            }
+            
             Map map = GameManager.Instance.Map;
             
             if (!placingDecoration)
@@ -140,17 +151,16 @@ namespace Warlander.Deedplanner.Updaters
                     {
                         position.y = Mathf.Max(position.y, 0);
                     }
+                    else
+                    {
+                        float floorHeight = 3f;
+                        position.y += targetFloor * floorHeight;
+                    }
                 }
                 else if (tileEntity && tileEntity.Valid)
                 {
                     targetedTile = tileEntity.Tile;
                 }
-            }
-
-            int targetFloor = LayoutManager.Instance.CurrentCamera.Floor;
-            if (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor))
-            {
-                targetFloor = tileEntity.Floor;
             }
 
             if (overlayMesh || groundMesh || (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor)))
@@ -163,56 +173,31 @@ namespace Warlander.Deedplanner.Updaters
                 ghostObject.gameObject.SetActive(false);
             }
             
-            bool placementAllowed;
-            if (data.CenterOnly || data.Tree || data.Bush)
-            {
-                int entityFloor = 0;
-                if (overlayMesh)
-                {
-                    entityFloor = LayoutManager.Instance.CurrentCamera.Floor;
-                }
-                else if (tileEntity && tileEntity.Valid)
-                {
-                    entityFloor = tileEntity.Floor;
-                }
-                
-                placementAllowed = entityFloor == 0;
-            }
-            else
-            {
-                Vector2 position2d = new Vector2(position.x, position.z);
-                IEnumerable<Decoration> nearbyDecorations = GetAllNearbyDecorations(targetedTile);
-
-                placementAllowed = true;
-                foreach (Decoration decoration in nearbyDecorations)
-                {
-                    Vector3 decorationPosition3d = decoration.transform.position;
-                    Vector2 decorationPosition2d = new Vector2(decorationPosition3d.x, decorationPosition3d.z);
-                    float distance = Vector2.Distance(position2d, decorationPosition2d);
-                    if (distance < minimumPlacementGap)
-                    {
-                        placementAllowed = false;
-                        break;
-                    }
-                }
-            }
+            bool placementAllowed = true;
+            Vector2 position2d = new Vector2(position.x, position.z);
+            IEnumerable<Decoration> nearbyDecorations = GetAllNearbyDecorations(targetedTile);
             
-            if (placementAllowed)
+            foreach (Decoration decoration in nearbyDecorations)
             {
-                ToggleGhostPropertyBlock(allowedGhostPropertyBlock);
-            }
-            else
-            {
-                ToggleGhostPropertyBlock(disabledGhostPropertyBlock);
+                Vector3 decorationPosition3d = decoration.transform.position;
+                Vector2 decorationPosition2d = new Vector2(decorationPosition3d.x, decorationPosition3d.z);
+                float distance = Vector2.Distance(position2d, decorationPosition2d);
+                if (distance < minimumPlacementGap)
+                {
+                    placementAllowed = false;
+                    break;
+                }
             }
 
-            if (Input.GetMouseButtonDown(0))
+            ToggleGhostPropertyBlock(placementAllowed ? allowedGhostPropertyBlock : disabledGhostPropertyBlock);
+
+            if (Input.GetMouseButtonDown(0) && placementAllowed)
             {
                 placingDecoration = true;
                 dragStartPos = LayoutManager.Instance.CurrentCamera.MousePosition;
             }
 
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) && placingDecoration)
             {
                 Vector2 dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
                 Vector2 difference = dragEndPos - dragStartPos;
@@ -306,6 +291,11 @@ namespace Warlander.Deedplanner.Updaters
         private IEnumerable<Decoration> GetAllNearbyDecorations(Tile centralTile)
         {
             List<Decoration> decorations = new List<Decoration>();
+
+            if (!centralTile)
+            {
+                return decorations;
+            }
             
             for (int x = -1; x <= 1; x++)
             {

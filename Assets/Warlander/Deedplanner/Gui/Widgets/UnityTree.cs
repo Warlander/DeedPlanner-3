@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,19 +15,25 @@ namespace Warlander.Deedplanner.Gui.Widgets
         public event UnityListValueChangedHandler ValueChanged;
 
         // we want these fields to be settable via inspector, but not via code
-        [SerializeField]
-        private ToggleGroup toggleGroup = null;
-        [SerializeField]
-        private RectTransform treeElementsParent = null;
-        [SerializeField]
-        private UnityTreeNode treeElementPrefab = null;
-        [SerializeField]
-        private UnityListElement listElementPrefab = null;
+        [SerializeField] private ToggleGroup toggleGroup = null;
+        [SerializeField] private RectTransform treeElementsParent = null;
+        [SerializeField] private UnityTreeNode treeElementPrefab = null;
+        [SerializeField] private UnityListElement listElementPrefab = null;
+
+        [SerializeField] private TMP_InputField searchInputField = null;
+        [SerializeField] private GameObject searchBoxRoot = null;
+        [SerializeField] private int searchMinimumCharacters = 3;
 
         public object SelectedValue { get; private set; }
 
         public UnityListElement SelectedElement => toggleGroup.ActiveToggles().FirstOrDefault().GetComponent<UnityListElement>();
 
+        public bool SearchBoxActive
+        {
+            get => searchBoxRoot.activeSelf;
+            set => searchBoxRoot.SetActive(value);
+        }
+        
         public object[] Values {
             get {
                 return GetComponentsInChildren<UnityListElement>().Select(element => element.Value).ToArray();
@@ -121,5 +129,77 @@ namespace Warlander.Deedplanner.Gui.Widgets
             }
         }
 
+        private void UpdateSearch()
+        {
+            string text = searchInputField.text;
+            text = text.Trim().ToLower();
+            // to avoid change spam in tree, any search shorter than number of characters set in inspector will be ignored
+            if (text.Length < searchMinimumCharacters)
+            {
+                text = String.Empty;
+            }
+            
+            foreach (UnityTreeNode treeNode in RootBranches)
+            {
+                UpdateSearchRecursively(treeNode, text);
+            }
+        }
+
+        private bool UpdateSearchRecursively(UnityTreeNode currentNode, string text)
+        {
+            if (text == null)
+            {
+                return false;
+            }
+            
+            bool selfContainsElement = false;
+
+            foreach (UnityTreeNode unityTreeNode in currentNode.Branches)
+            {
+                bool childContainsElement = UpdateSearchRecursively(unityTreeNode, text);
+                if (childContainsElement)
+                {
+                    selfContainsElement = true;
+                }
+            }
+
+            // first check if an child contains given text, to expand or collapse the branch
+            foreach (UnityListElement unityListElement in currentNode.Leaves)
+            {
+                string valueString = unityListElement.Value.ToString().ToLower();
+                bool childContainsElement = valueString.Contains(text) && !string.IsNullOrEmpty(text);
+                if (childContainsElement)
+                {
+                    selfContainsElement = true;
+                    break;
+                }
+            }
+            
+            // only alter the tree structure if search box is not empty to avoid changing tree structure once box is cleared
+            if (!string.IsNullOrEmpty(text))
+            {
+                currentNode.Expanded = selfContainsElement;
+            }
+            else
+            {
+                currentNode.Expanded = currentNode.Expanded;
+            }
+            
+            // hide individual leaves for search purposes
+            foreach (UnityListElement unityListElement in currentNode.Leaves)
+            {
+                string valueString = unityListElement.Value.ToString().ToLower();
+                bool childContainsElement = valueString.Contains(text) && !string.IsNullOrEmpty(text);
+                bool noSearchBranchExpanded = currentNode.Expanded && string.IsNullOrEmpty(text);
+                unityListElement.gameObject.SetActive(childContainsElement || noSearchBranchExpanded);
+            }
+
+            return selfContainsElement;
+        }
+
+        public void OnSearchTextUpdated()
+        {
+            UpdateSearch();
+        }
     }
 }
