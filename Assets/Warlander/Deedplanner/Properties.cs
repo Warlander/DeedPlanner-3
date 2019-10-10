@@ -62,6 +62,8 @@ namespace Warlander.Deedplanner
         public bool DecorationSnapToGrid = false;
         public bool DecorationRotationSnapping = false;
 
+        public int guiScale = 10;
+
         public WaterQuality WaterQuality;
 
         private WaterQuality WaterDefaultQuality {

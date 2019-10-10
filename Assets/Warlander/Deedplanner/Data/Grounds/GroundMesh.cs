@@ -602,14 +602,19 @@ namespace Warlander.Deedplanner.Data.Grounds
                 dataS = data;
             }
             
-            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataW, vertexIndex));
-            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataN, vertexIndex + 3));
-            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataE, vertexIndex + 6));
-            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataS, vertexIndex + 9));
+            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataW, vertexIndex, x, y));
+            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataN, vertexIndex + 3, x, y));
+            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataE, vertexIndex + 6, x, y));
+            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataS, vertexIndex + 9, x, y));
         }
 
-        private IEnumerator UpdateUV2Coroutine(GroundData data, int uvIndex)
+        private IEnumerator UpdateUV2Coroutine(GroundData data, int uvIndex, int tileX, int tileY)
         {
+            if (dataArray[tileX, tileY] != data)
+            {
+                yield break;
+            }
+            
             Texture2D targetTexture = null;
             yield return data.Tex3d.LoadOrGetTexture(loadedTexture => targetTexture = loadedTexture);
             

@@ -59,6 +59,7 @@ namespace Warlander.Deedplanner.Updaters
             FloorData data = GuiManager.Instance.FloorsTree.SelectedValue as FloorData;
             if (data.Opening && (floor == 0 || floor == -1))
             {
+                LayoutManager.Instance.TooltipText += "\n<color=red><b>It's not possible to place openings/stairs on ground floor</b></color>";
                 return;
             }
 

@@ -21,6 +21,8 @@ namespace Warlander.Deedplanner.Gui
         private Tab currentTab;
         public TileSelectionMode TileSelectionMode { get; set; }
 
+        [SerializeField] private CanvasScaler mainCanvasScaler = null;
+        
         [SerializeField] private Toggle[] IndicatorButtons = new Toggle[4];
         [SerializeField] private RectTransform HorizontalBottomIndicatorHolder = null;
         [SerializeField] private RawImage[] Screens = new RawImage[4];
@@ -150,7 +152,7 @@ namespace Warlander.Deedplanner.Gui
 
             if (tooltipNeedsClearing)
             {
-                TooltipText = null;
+                TooltipText = "";
             }
         }
         
@@ -161,6 +163,13 @@ namespace Warlander.Deedplanner.Gui
             simpleQualityWaterObject.SetActive(waterQuality == WaterQuality.SIMPLE);
         }
 
+        public void UpdateCanvasScale()
+        {
+            float referenceWidth = Constants.DefaultGuiWidth;
+            float referenceHeight = Constants.DefaultGuiHeight * (Properties.Instance.guiScale * Constants.GuiScaleUnitsToRealScale);
+            mainCanvasScaler.referenceResolution = new Vector2(referenceWidth, referenceHeight);
+        }
+        
         public void OnLayoutChange(LayoutReference layoutReference)
         {
             Layout layout = layoutReference.Layout;

@@ -63,25 +63,43 @@ namespace Warlander.Deedplanner.Gui
             GameManager.Instance.LoadMap(mapString);
         }
 
-        public void OnPastebinLoad()
+        public void OnWebLoad()
         {
             string rawLink = pastebinInput.text;
 
-            if (!rawLink.Contains("pastebin") || !rawLink.Contains("/"))
+            try
             {
-                return;
+                string requestLink = WebLinkUtils.ParseToDirectDownloadLink(rawLink);
+
+                byte[] downloadedBytes = WebUtils.ReadUrlToByteArray(requestLink);
+                string downloadedString = Encoding.Default.GetString(downloadedBytes);
+                
+                // try to decompress the map, or load directly if it's not compressed
+                try
+                {
+                    byte[] compressedBytes = Convert.FromBase64String(downloadedString);
+                    byte[] pasteBytes = Decompress(compressedBytes);
+                    string pasteString = Encoding.Default.GetString(pasteBytes);
+
+                    GameManager.Instance.LoadMap(pasteString);
+                }
+                catch
+                {
+                    GameManager.Instance.LoadMap(downloadedString);
+                }
             }
-
-            string requestLink = LoadingUtils.CreateDirectPastebinLink(rawLink);
-
-            byte[] base64Bytes = WebUtils.ReadUrlToByteArray(requestLink);
-            string base64String = Encoding.Default.GetString(base64Bytes);
-            byte[] compressedBytes = Convert.FromBase64String(base64String);
-            byte[] pasteBytes = Decompress(compressedBytes);
-            string pasteString = Encoding.Default.GetString(pasteBytes);
-
-            GameManager.Instance.LoadMap(pasteString);
-            gameObject.SetActive(false);
+            catch (Exception ex)
+            {
+                Debug.LogWarning("Unable to load map from: " + rawLink);
+                if (Debug.isDebugBuild)
+                {
+                    Debug.LogError(ex);
+                }
+            }
+            finally
+            {
+                gameObject.SetActive(false);
+            }
         }
         
         private byte[] Decompress(byte[] gzip)

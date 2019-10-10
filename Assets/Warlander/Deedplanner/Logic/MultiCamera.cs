@@ -168,17 +168,23 @@ namespace Warlander.Deedplanner.Logic
         {
             Map map = GameManager.Instance.Map;
 
-            if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
+            GameObject focusedObject = EventSystem.current.currentSelectedGameObject;
+            bool shouldUpdateCameras = !focusedObject;
+
+            if (shouldUpdateCameras)
             {
-                UpdatePerspectiveCamera(map);
-            }
-            else if (CameraMode == CameraMode.Top)
-            {
-                UpdateTopCamera(map);
-            }
-            else if (CameraMode == CameraMode.Isometric)
-            {
-                UpdateIsometricCamera(map);
+                if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
+                {
+                    UpdatePerspectiveCamera(map);
+                }
+                else if (CameraMode == CameraMode.Top)
+                {
+                    UpdateTopCamera(map);
+                }
+                else if (CameraMode == CameraMode.Isometric)
+                {
+                    UpdateIsometricCamera(map);
+                }
             }
 
             UpdateState();
@@ -224,10 +230,13 @@ namespace Warlander.Deedplanner.Logic
                     if (tileEntity)
                     {
                         tooltipBuild.Append(tileEntity.ToString());
-                        
                     }
                     else if (groundMesh)
                     {
+                        int x = Mathf.FloorToInt(raycastHit.point.x / 4f);
+                        int y = Mathf.FloorToInt(raycastHit.point.z / 4f);
+                        tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
+                        
                         if (isHeightEditing)
                         {
                             Map map = GameManager.Instance.Map;
@@ -254,9 +263,6 @@ namespace Warlander.Deedplanner.Logic
                         }
                         else
                         {
-                            int x = Mathf.FloorToInt(raycastHit.point.x / 4f);
-                            int y = Mathf.FloorToInt(raycastHit.point.z / 4f);
-                            tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
                             tooltipBuild.Append(GameManager.Instance.Map[x, y].Ground.Data.Name);
                         }
                     }

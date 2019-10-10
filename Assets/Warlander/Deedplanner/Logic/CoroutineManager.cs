@@ -15,6 +15,9 @@ namespace Warlander.Deedplanner.Logic
         private readonly Queue<IEnumerator> enumeratorsWaiting = new Queue<IEnumerator>();
         private int enumeratorsExecutingCount = 0;
         private bool interactionLocked = false;
+        private bool skipCoroutines = false;
+        
+        public bool IsIdle => enumeratorsExecutingCount == 0 && enumeratorsWaiting.Count == 0;
 
         public CoroutineManager()
         {
@@ -29,6 +32,8 @@ namespace Warlander.Deedplanner.Logic
 
         private void Update()
         {
+            skipCoroutines = false;
+            
             while (enumeratorsWaiting.Count > 0)
             {
                 IEnumerator newExecutingEnumerator = enumeratorsWaiting.Dequeue();
@@ -60,9 +65,15 @@ namespace Warlander.Deedplanner.Logic
         {
             while (true)
             {
+                if (skipCoroutines)
+                {
+                    yield return null;
+                }
+                
                 float frameTime = Time.realtimeSinceStartup - Time.unscaledTime;
                 if (frameTime > MaxFrameTime)
                 {
+                    skipCoroutines = true;
                     yield return null;
                 }
                 else

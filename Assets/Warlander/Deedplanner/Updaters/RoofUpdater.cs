@@ -41,8 +41,9 @@ namespace Warlander.Deedplanner.Updaters
                 y = Mathf.FloorToInt(raycast.point.z / 4f);
             }
 
-            if (floor <= 0)
+            if (floor == 0 || floor == -1)
             {
+                LayoutManager.Instance.TooltipText += "\n<color=red><b>It's not possible to place roofs on ground floor</b></color>";
                 return;
             }
 

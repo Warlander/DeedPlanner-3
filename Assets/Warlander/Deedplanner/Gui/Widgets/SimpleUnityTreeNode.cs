@@ -27,6 +27,16 @@ namespace Warlander.Deedplanner.Gui.Widgets
             }
         }
 
+        public override bool Expanded
+        {
+            get => toggle.isOn;
+            set
+            {
+                toggle.isOn = value;
+                OnToggle();
+            }
+        }
+
         public override List<UnityListElement> Leaves {
             get {
                 List<UnityListElement> elements = new List<UnityListElement>();
