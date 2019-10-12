@@ -179,7 +179,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (activeHandle)
             {
-                LayoutManager.Instance.TooltipText += activeHandle.ToRichString();
+                LayoutManager.Instance.TooltipText = activeHandle.ToRichString();
             }
         }
 
@@ -334,13 +334,21 @@ namespace Warlander.Deedplanner.Updaters
             {
                 if (state == HeightUpdaterState.Manipulating)
                 {
-                    if (activeHandle)
+                    if (activeHandle && anchorHandle)
                     {
                         map.CommandManager.UndoAction();
                         bool locked = anchorPlaneLine.gameObject.activeSelf;
                         PlaneAlignment lockedAxis = anchorPlaneLine.Alignment;
-                        int originalHeight = map[activeHandle.TileCoords].SurfaceHeight;
+                        int originalHeight = map[anchorHandle.TileCoords].SurfaceHeight;
                         int heightDelta = (int) ((dragEndPos.y - dragStartPos.y) * dragSensitivity);
+                        
+                        // instantly make smooth ramp from anchor handle to active handle if original slopes are not respected
+                        // turned off if original slopes are respected, because instantly making ramp is impractical in such case
+                        if (!respectSlopes)
+                        {
+                            heightDelta += map[activeHandle.TileCoords].SurfaceHeight - originalHeight;
+                        }
+                        
                         Vector2Int manipulatedTileCoords = activeHandle.TileCoords;
                         Vector2Int manipulatedAnchorCoords = GetAxisCorrectedAnchor(manipulatedTileCoords, anchorHandle.TileCoords, locked, lockedAxis);
                         Vector2Int manipulatedDifference = manipulatedTileCoords - manipulatedAnchorCoords;
@@ -408,7 +416,7 @@ namespace Warlander.Deedplanner.Updaters
                 {
                     selectedHandles.AddRange(lastFrameHoveredHandles);
                 }
-                else if (state != HeightUpdaterState.Manipulating && state != HeightUpdaterState.Recovering)
+                else if (state == HeightUpdaterState.Dragging)
                 {
                     deselectedHandles = selectedHandles;
                     selectedHandles = lastFrameHoveredHandles;
