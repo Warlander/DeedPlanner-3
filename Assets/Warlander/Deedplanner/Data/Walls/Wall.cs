@@ -16,7 +16,7 @@ namespace Warlander.Deedplanner.Data.Walls
         private MeshCollider meshCollider;
         private Mesh boundsMesh;
 
-        private int currentSlopeDifference = 0;
+        private int currentSlopeDifference = int.MinValue;
 
         public void Initialize(Tile tile, WallData data, bool reversed, bool firstFloor, int slopeDifference)
         {
@@ -30,12 +30,14 @@ namespace Warlander.Deedplanner.Data.Walls
 
             Data = data;
             Reversed = reversed;
+            boundsMesh = CreateBoundsMesh(slopeDifference);
+            meshCollider.sharedMesh = boundsMesh;
             UpdateModel(slopeDifference, firstFloor);
         }
 
         public void UpdateModel(int slopeDifference, bool firstFloor)
         {
-            if (Model && currentSlopeDifference == slopeDifference)
+            if (currentSlopeDifference == slopeDifference)
             {
                 return;
             }
@@ -58,7 +60,7 @@ namespace Warlander.Deedplanner.Data.Walls
             {
                 Destroy(Model);
             }
-            
+
             Model = newModel;
             Model.transform.SetParent(transform, false);
             if (Reversed)
@@ -71,18 +73,24 @@ namespace Warlander.Deedplanner.Data.Walls
             const float wallDepthConfortableMargin = 0.75f;
             float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthConfortableMargin);
             bounds.size = new Vector3(bounds.size.x, bounds.size.y, comfortableWallDepth);
-                
-            boundsMesh = new Mesh();
-            Vector3[] vectors = new Vector3[8];
-            const float padding = 1.01f;
-            vectors[0] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - currentSlopeDifference * 0.1f, -bounds.extents.z) * padding);
-            vectors[1] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - currentSlopeDifference * 0.1f, bounds.extents.z) * padding);
-            vectors[2] = (bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, bounds.extents.z) * padding);
-            vectors[3] = (bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, -bounds.extents.z) * padding);
-            vectors[4] = (bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y - currentSlopeDifference * 0.1f, -bounds.extents.z) * padding);
-            vectors[5] = (bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y - currentSlopeDifference * 0.1f, bounds.extents.z) * padding);
-            vectors[6] = (bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z) * padding);
-            vectors[7] = (bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, -bounds.extents.z) * padding);
+            
+            Vector3[] vectors = CreateBoundsVerticesArray(bounds, currentSlopeDifference);
+            
+            boundsMesh.vertices = vectors;
+            // turning collider off and on to force it to update
+            meshCollider.enabled = false;
+            // ReSharper disable once Unity.InefficientPropertyAccess
+            meshCollider.enabled = true;
+        }
+
+        private static Mesh CreateBoundsMesh(int slopeDifference)
+        {
+            // temporary bounds for new wall before it is initialized with final model
+            Bounds bounds = new Bounds(new Vector3(-2, 1.5f, 0), new Vector3(4, 3, 0.75f));
+            
+            Mesh mesh = new Mesh();
+
+            Vector3[] vectors = CreateBoundsVerticesArray(bounds, slopeDifference);
             int[] triangles = new int[36];
 
             // bottom
@@ -133,9 +141,26 @@ namespace Warlander.Deedplanner.Data.Walls
             triangles[34] = 6;
             triangles[35] = 5;
 
-            boundsMesh.vertices = vectors;
-            boundsMesh.triangles = triangles;
-            meshCollider.sharedMesh = boundsMesh;
+            mesh.vertices = vectors;
+            mesh.triangles = triangles;
+
+            return mesh;
+        }
+
+        private static Vector3[] CreateBoundsVerticesArray(Bounds bounds, int slopeDifference)
+        {
+            Vector3[] vectors = new Vector3[8];
+            const float padding = 1.01f;
+            vectors[0] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - slopeDifference * 0.1f, -bounds.extents.z) * padding);
+            vectors[1] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - slopeDifference * 0.1f, bounds.extents.z) * padding);
+            vectors[2] = (bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, bounds.extents.z) * padding);
+            vectors[3] = (bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, -bounds.extents.z) * padding);
+            vectors[4] = (bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y - slopeDifference * 0.1f, -bounds.extents.z) * padding);
+            vectors[5] = (bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y - slopeDifference * 0.1f, bounds.extents.z) * padding);
+            vectors[6] = (bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z) * padding);
+            vectors[7] = (bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, -bounds.extents.z) * padding);
+
+            return vectors;
         }
 
         private Bounds GetTotalModelBounds(GameObject model)
