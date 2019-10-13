@@ -13,9 +13,9 @@ namespace Warlander.Deedplanner.Utils
             {
                 return JavaScriptUtils.LoadUrlToBytes(location);
             }
-            else
+
+            using (UnityWebRequest request = UnityWebRequest.Get(location))
             {
-                UnityWebRequest request = UnityWebRequest.Get(location);
                 request.SendWebRequest();
                 while (!request.isDone && !request.isHttpError && !request.isNetworkError)
                 {
@@ -25,15 +25,13 @@ namespace Warlander.Deedplanner.Utils
                 if (request.isHttpError || request.isNetworkError)
                 {
                     Debug.LogError(request.error);
-                    request.Dispose();
                     return null;
                 }
 
                 byte[] data = request.downloadHandler.data;
-                request.Dispose();
                 return data;
             }
         }
-        
+
     }
 }
