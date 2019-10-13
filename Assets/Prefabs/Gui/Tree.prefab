@@ -753,7 +753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 874c5f2aeb844724895bee5028d70658, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toggleGroup: {fileID: 0}
+  toggleGroup: {fileID: 622772490470574588}
   treeElementsParent: {fileID: 2600117704252054051}
   treeElementPrefab: {fileID: 2152025522377335370, guid: 1ebdfcb8328818f428a3bd9c586ba94d,
     type: 3}
@@ -761,6 +761,7 @@ MonoBehaviour:
     type: 3}
   searchInputField: {fileID: 4327475247415106049}
   searchBoxRoot: {fileID: 4307562424663513474}
+  searchMinimumCharacters: 3
 --- !u!114 &5535727049773370418
 MonoBehaviour:
   m_ObjectHideFlags: 0
