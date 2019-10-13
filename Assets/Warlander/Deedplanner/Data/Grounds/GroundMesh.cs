@@ -556,14 +556,14 @@ namespace Warlander.Deedplanner.Data.Grounds
             dataArray[x, y] = data;
             directionsArray[x, y] = direction;
             
-            UpdateUV2(x, y);
-            UpdateUV2(x - 1, y);
-            UpdateUV2(x + 1, y);
-            UpdateUV2(x, y - 1);
-            UpdateUV2(x, y + 1);
+            UpdateUV2(x, y, true);
+            UpdateUV2(x - 1, y, false);
+            UpdateUV2(x + 1, y, false);
+            UpdateUV2(x, y - 1, false);
+            UpdateUV2(x, y + 1, false);
         }
 
-        private void UpdateUV2(int x, int y)
+        private void UpdateUV2(int x, int y, bool primaryChangedTile)
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height)
             {
@@ -575,42 +575,47 @@ namespace Warlander.Deedplanner.Data.Grounds
             {
                 return;
             }
+
+            // if tile cannot be diagonal and is neighbor of changed tile, no operations need to be done
+            if (!primaryChangedTile && (!data.Diagonal || directionsArray[x, y] == RoadDirection.Center))
+            {
+                return;
+            }
             
             int index = x * Height + y;
             int vertexIndex = index * VerticesPerRenderTile;
 
             RoadDirection roadDirection = directionsArray[x, y];
-            GroundData dataW = GetGroundData(x - 1, y);
-            GroundData dataN = GetGroundData(x, y + 1);
-            GroundData dataE = GetGroundData(x + 1, y);
-            GroundData dataS = GetGroundData(x, y - 1);
+            Vector2Int selfCoords = new Vector2Int(x, y);
             
-            if (roadDirection == RoadDirection.Center || roadDirection == RoadDirection.NW || roadDirection == RoadDirection.SW || !dataW)
-            {
-                dataW = data;
-            }
-            if (roadDirection == RoadDirection.Center || roadDirection == RoadDirection.NW || roadDirection == RoadDirection.NE || !dataN)
-            {
-                dataN = data;
-            }
-            if (roadDirection == RoadDirection.Center || roadDirection == RoadDirection.NE || roadDirection == RoadDirection.SE || !dataE)
-            {
-                dataE = data;
-            }
-            if (roadDirection == RoadDirection.Center || roadDirection == RoadDirection.SW || roadDirection == RoadDirection.SE || !dataS)
-            {
-                dataS = data;
-            }
-            
-            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataW, vertexIndex, x, y));
-            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataN, vertexIndex + 3, x, y));
-            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataE, vertexIndex + 6, x, y));
-            CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(dataS, vertexIndex + 9, x, y));
+            bool forceSelfDataWest = roadDirection.IsCenter() || roadDirection.IsWest();
+            UpdateUV2Triangle(selfCoords, new Vector2Int(x - 1, y), vertexIndex, forceSelfDataWest);
+            bool forceSelfDataNorth = roadDirection.IsCenter() || roadDirection.IsNorth();
+            UpdateUV2Triangle(selfCoords, new Vector2Int(x, y + 1), vertexIndex + 3, forceSelfDataNorth);
+            bool forceSelfDataEast = roadDirection.IsCenter() || roadDirection.IsEast();
+            UpdateUV2Triangle(selfCoords, new Vector2Int(x + 1, y), vertexIndex + 6, forceSelfDataEast);
+            bool forceSelfDataSouth = roadDirection.IsCenter() || roadDirection.IsSouth();
+            UpdateUV2Triangle(selfCoords, new Vector2Int(x, y - 1), vertexIndex + 9, forceSelfDataSouth);
         }
 
-        private IEnumerator UpdateUV2Coroutine(GroundData data, int uvIndex, int tileX, int tileY)
+        private void UpdateUV2Triangle(Vector2Int selfCoords, Vector2Int diagonalCoords, int uvIndex, bool forceSelfData)
         {
-            if (dataArray[tileX, tileY] != data)
+            GroundData selfData = dataArray[selfCoords.x, selfCoords.y];
+            GroundData diagonalData = GetGroundData(diagonalCoords.x, diagonalCoords.y);
+
+            if (forceSelfData || !diagonalData)
+            {
+                CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(selfData, uvIndex, selfCoords));
+            }
+            else
+            {
+                CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(diagonalData, uvIndex, diagonalCoords));
+            }
+        }
+
+        private IEnumerator UpdateUV2Coroutine(GroundData data, int uvIndex, Vector2Int tileCoords)
+        {
+            if (dataArray[tileCoords.x, tileCoords.y] != data)
             {
                 yield break;
             }
