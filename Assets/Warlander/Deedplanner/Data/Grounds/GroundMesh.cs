@@ -589,20 +589,26 @@ namespace Warlander.Deedplanner.Data.Grounds
             Vector2Int selfCoords = new Vector2Int(x, y);
             
             bool forceSelfDataWest = roadDirection.IsCenter() || roadDirection.IsWest();
-            UpdateUV2Triangle(selfCoords, new Vector2Int(x - 1, y), vertexIndex, forceSelfDataWest);
+            UpdateUV2Triangle(selfCoords, new Vector2Int(x - 1, y), vertexIndex, primaryChangedTile, forceSelfDataWest);
             bool forceSelfDataNorth = roadDirection.IsCenter() || roadDirection.IsNorth();
-            UpdateUV2Triangle(selfCoords, new Vector2Int(x, y + 1), vertexIndex + 3, forceSelfDataNorth);
+            UpdateUV2Triangle(selfCoords, new Vector2Int(x, y + 1), vertexIndex + 3, primaryChangedTile, forceSelfDataNorth);
             bool forceSelfDataEast = roadDirection.IsCenter() || roadDirection.IsEast();
-            UpdateUV2Triangle(selfCoords, new Vector2Int(x + 1, y), vertexIndex + 6, forceSelfDataEast);
+            UpdateUV2Triangle(selfCoords, new Vector2Int(x + 1, y), vertexIndex + 6, primaryChangedTile, forceSelfDataEast);
             bool forceSelfDataSouth = roadDirection.IsCenter() || roadDirection.IsSouth();
-            UpdateUV2Triangle(selfCoords, new Vector2Int(x, y - 1), vertexIndex + 9, forceSelfDataSouth);
+            UpdateUV2Triangle(selfCoords, new Vector2Int(x, y - 1), vertexIndex + 9, primaryChangedTile, forceSelfDataSouth);
         }
 
-        private void UpdateUV2Triangle(Vector2Int selfCoords, Vector2Int diagonalCoords, int uvIndex, bool forceSelfData)
+        private void UpdateUV2Triangle(Vector2Int selfCoords, Vector2Int diagonalCoords, int uvIndex, bool primaryChangedTile, bool forceSelfData)
         {
             GroundData selfData = dataArray[selfCoords.x, selfCoords.y];
             GroundData diagonalData = GetGroundData(diagonalCoords.x, diagonalCoords.y);
 
+            // tile cannot change if using self data for triangle is forced and it's not primary tile being changed
+            if (!primaryChangedTile && forceSelfData)
+            {
+                return;
+            }
+            
             if (forceSelfData || !diagonalData)
             {
                 CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(selfData, uvIndex, selfCoords));
