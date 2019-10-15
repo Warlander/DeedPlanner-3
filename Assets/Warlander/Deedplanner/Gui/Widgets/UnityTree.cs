@@ -63,7 +63,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
         {
             Transform currentParent = treeElementsParent;
             UnityTreeNode node = GetOrCreateNode(currentParent, RootBranches, tree);
-            if (node != null)
+            if (node)
             {
                 currentParent = node.transform;
             }
