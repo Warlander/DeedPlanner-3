@@ -44,10 +44,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
                 if (toggled)
                 {
                     SelectedValue = newElement.Value;
-                }
-                if (toggled && ValueChanged != null)
-                {
-                    ValueChanged(this, newElement.Value);
+                    ValueChanged?.Invoke(this, newElement.Value);
                 }
             });
 
