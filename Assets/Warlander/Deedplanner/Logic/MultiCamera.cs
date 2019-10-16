@@ -19,26 +19,20 @@ namespace Warlander.Deedplanner.Logic
         private Transform parentTransform;
         public Camera AttachedCamera { get; private set; }
         public Vector2 MousePosition { get; private set; }
-        [SerializeField]
-        private int screenId = 0;
-        [SerializeField]
-        private GameObject screen = null;
-        [SerializeField]
-        private CameraMode cameraMode = CameraMode.Top;
-        [SerializeField]
-        private int floor = 0;
+        
+        [SerializeField] private int screenId = 0;
+        [SerializeField] private GameObject screen = null;
+        [SerializeField] private CameraMode cameraMode = CameraMode.Top;
+        [SerializeField] private int floor = 0;
 
-        [SerializeField]
-        private Water ultraQualityWater = null;
-        [SerializeField]
-        private GameObject highQualityWater = null;
-        [SerializeField]
-        private GameObject simpleQualityWater = null;
+        [SerializeField] private Water ultraQualityWater = null;
+        [SerializeField] private GameObject highQualityWater = null;
+        [SerializeField] private GameObject simpleQualityWater = null;
 
-        [SerializeField]
-        private RectTransform selectionBox = null;
-        [SerializeField]
-        private Projector attachedProjector = null;
+        [SerializeField] private RectTransform selectionBox = null;
+        [SerializeField] private Projector attachedProjector = null;
+
+        [SerializeField] private Color pickerColor = new Color(1f, 1f, 0, 0.3f);
 
         private Vector3 fppPosition = new Vector3(-3, 4, -3);
         private Vector3 fppRotation = new Vector3(15, 45, 0);
@@ -674,8 +668,6 @@ namespace Warlander.Deedplanner.Logic
                 return;
             }
 
-            const float raytraceAlpha = 0.25f;
-
             if (hitCollider.GetType() == typeof(MeshCollider))
             {
                 MeshCollider collider = (MeshCollider)hitCollider;
@@ -688,7 +680,7 @@ namespace Warlander.Deedplanner.Logic
                 }
                 int[] triangles = mesh.triangles;
                 GL.Begin(GL.TRIANGLES);
-                GL.Color(new Color(1, 1, 0, raytraceAlpha));
+                GL.Color(pickerColor);
                 for (int i = 0; i < triangles.Length; i += 3)
                 {
                     GL.Vertex(vertices[triangles[i]] + normals[triangles[i]] * 0.05f);
@@ -713,7 +705,7 @@ namespace Warlander.Deedplanner.Logic
                 Vector3 v111 = center + new Vector3(size.x, size.y, size.z) / 2f;
 
                 GL.Begin(GL.QUADS);
-                GL.Color(new Color(1, 1, 0, raytraceAlpha));
+                GL.Color(pickerColor);
                 //bottom
                 GL.Vertex(v000);
                 GL.Vertex(v100);
