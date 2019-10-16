@@ -35,6 +35,7 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField] private BorderUpdater borderUpdater = null;
         [SerializeField] private BridgesUpdater bridgeUpdater = null;
         [SerializeField] private MirrorUpdater mirrorUpdater = null;
+        [SerializeField] private MenuUpdater menuUpdater = null;
 
         public OverlayMesh OverlayMeshPrefab => overlayMeshPrefab;
         public HeightmapHandle HeightmapHandlePrefab => heightmapHandlePrefab;
@@ -189,6 +190,7 @@ namespace Warlander.Deedplanner.Logic
             CheckUpdater(borderUpdater, newUpdater);
             CheckUpdater(bridgeUpdater, newUpdater);
             CheckUpdater(mirrorUpdater, newUpdater);
+            CheckUpdater(menuUpdater, newUpdater);
             
             Map.RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
         }
@@ -224,6 +226,8 @@ namespace Warlander.Deedplanner.Logic
                     return bridgeUpdater;
                 case Tab.Mirror:
                     return mirrorUpdater;
+                case Tab.Menu:
+                    return menuUpdater;
                 default:
                     return null;
             }
