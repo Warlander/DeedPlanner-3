@@ -99,19 +99,21 @@ namespace Warlander.Deedplanner.Logic
 
             eventCatcher.OnDragEvent.AddListener(data =>
             {
+                if (data.button != PointerEventData.InputButton.Middle)
+                {
+                    return;
+                }
+                
                 if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
                 {
-                    if (data.button == PointerEventData.InputButton.Middle)
-                    {
-                        fppRotation += new Vector3(-data.delta.y * Properties.Instance.FppMouseSensitivity, data.delta.x * Properties.Instance.FppMouseSensitivity, 0);
-                        fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
-                    }
+                    fppRotation += new Vector3(-data.delta.y * Properties.Instance.FppMouseSensitivity, data.delta.x * Properties.Instance.FppMouseSensitivity, 0);
+                    fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
                 }
-                else if (CameraMode == CameraMode.Top && Input.GetMouseButton(2))
+                else if (CameraMode == CameraMode.Top)
                 {
                     topPosition += new Vector2(-data.delta.x * Properties.Instance.TopMouseSensitivity, -data.delta.y * Properties.Instance.TopMouseSensitivity);
                 }
-                else if (CameraMode == CameraMode.Isometric && Input.GetMouseButton(2))
+                else if (CameraMode == CameraMode.Isometric)
                 {
                     isoPosition += new Vector2(-data.delta.x * Properties.Instance.IsoMouseSensitivity, -data.delta.y * Properties.Instance.IsoMouseSensitivity);
                 }

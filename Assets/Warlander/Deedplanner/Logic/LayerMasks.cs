@@ -22,7 +22,6 @@ namespace Warlander.Deedplanner.Logic
         public const int BridgeMask = 1 << BridgeLayer;
 
         // Combined masks to toggle what is raytraced for given feature
-        public const int NullEditMask = 0;
         public const int GroundEditMask = GroundMask;
         public const int HeightEditMask = GroundMask;
         public const int FloorEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
@@ -32,6 +31,7 @@ namespace Warlander.Deedplanner.Logic
         public const int LabelEditMask = GroundMask;
         public const int BorderEditMask = GroundMask;
         public const int BridgeEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
+        public const int MenuEditMask = GroundMask;
 
         public static int GetMaskForTab(Tab tab)
         {
@@ -58,9 +58,9 @@ namespace Warlander.Deedplanner.Logic
                 case Tab.Bridges:
                     return BridgeEditMask;
                 case Tab.Menu:
-                    return NullEditMask;
+                    return MenuEditMask;
                 default:
-                    throw new ArgumentException("Cannot find mask for tab " + tab, "tab");
+                    throw new ArgumentException("Cannot find mask for tab " + tab, nameof(tab));
             }
         }
 
