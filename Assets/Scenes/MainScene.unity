@@ -2746,6 +2746,49 @@ MonoBehaviour:
   selectionBox: {fileID: 1615102299}
   attachedProjector: {fileID: 821904609}
   pickerColor: {r: 0.8, g: 0.8, b: 0, a: 0.25}
+--- !u!1 &115050053
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 115050054}
+  - component: {fileID: 115050055}
+  m_Layer: 0
+  m_Name: Steam Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &115050054
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115050053}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1002259781}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &115050055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115050053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef4bffeda13d7a748973ff9204401c07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &130674506
 GameObject:
   m_ObjectHideFlags: 0
@@ -19988,13 +20031,13 @@ MonoBehaviour:
     - ideas, help with figuring out roof algorithm\n<b>Aum</b> - program logo used
     in standalone launcher\n<b>Malena</b> - program logo used in loading screen, farm
     textures\n<b>Yldrania</b> - program icons\n<b>Xenonpl</b> - ideas, camera icons\n<b>All
-    users</b> - feedback and donations :)\n\n<b>Unity Technologies</b> - Unity engine\n<b>gkngkc
-    (https://github.com/gkngkc)</b> - Standalone File Browser\nIcons made by <b>Freepik,
-    Gregor Cresnar, Smashicons, Cole Bemis</b> from <b>www.flaticon.com</b>\n\n<align=\"center\"><size=20>Copper
-    Donators</size></align>\n\n<align=\"center\"><b>Steve Lee</b></align>\n\n<align=\"center\"><size=20>Code
-    Club AB copyright notice</size></align>\n\nGraphical assets in StreamingAssets
-    folder are \xA9 Code Club AB or their respective authors and may not be reused,
-    modified or distributed without written permission.\n\n<align=\"center\"><size=20>DeedPlanner
+    users</b> - feedback and donations :)\n\n<b>Unity Technologies</b> - Unity engine\n<b>Steamworks.NET</b>
+    - Steam API support\n<b>gkngkc (https://github.com/gkngkc)</b> - Standalone File
+    Browser\nIcons made by <b>Freepik, Gregor Cresnar, Smashicons, Cole Bemis</b>
+    from <b>www.flaticon.com</b>\n\n<align=\"center\"><size=20>Copper Donators</size></align>\n\n<align=\"center\"><b>Steve
+    Lee</b></align>\n\n<align=\"center\"><size=20>Code Club AB copyright notice</size></align>\n\nGraphical
+    assets in StreamingAssets folder are \xA9 Code Club AB or their respective authors
+    and may not be reused, modified or distributed without written permission.\n\n<align=\"center\"><size=20>DeedPlanner
     3 license</size></align>\n\n<align=\"center\">Apache License\r\nVersion 2.0, January
     2004\r\nhttp://www.apache.org/licenses/\r</align>\n\r\n   TERMS AND CONDITIONS
     FOR USE, REPRODUCTION, AND DISTRIBUTION\r\n\r\n   1. Definitions.\r\n\r\n      \"License\"
