@@ -5,6 +5,7 @@
     {
         public const string VersionString = "3.0.5 ALPHA";
         public const string TitleString = "DeedPlanner " + VersionString;
+        public const string SimpleTitleString = "DeedPlanner";
         public const int SteamAppId = 1179760;
 
         public const string WebVersionLink = "https://warlander.github.io/DeedPlanner-3-web";
