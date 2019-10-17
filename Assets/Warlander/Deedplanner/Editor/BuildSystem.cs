@@ -8,32 +8,41 @@ namespace Warlander.Deedplanner.Editor
     public static class BuildSystem
     {
         
-        [MenuItem("Build/All Platforms")]
+        [MenuItem("Build/All Platforms", false, 0)]
         public static bool BuildAllPlatforms()
+        {
+            bool standaloneSuccess = BuildAllStandalone();
+            bool webSuccess = BuildWeb();
+
+            bool totalSuccess = standaloneSuccess && webSuccess;
+            return totalSuccess;
+        }
+        
+        [MenuItem("Build/All Standalone", false, 1)]
+        public static bool BuildAllStandalone()
         {
             bool windowsSuccess = BuildWindows64();
             bool linuxSuccess = BuildLinux();
             bool macSuccess = BuildMac();
-            bool webSuccess = BuildWeb();
 
-            bool totalSuccess = windowsSuccess && linuxSuccess && macSuccess && webSuccess;
+            bool totalSuccess = windowsSuccess && linuxSuccess && macSuccess;
             return totalSuccess;
         }
         
-        [MenuItem("Build/Windows")]
+        [MenuItem("Build/Windows", false, 50)]
         public static bool BuildWindows64()
         {
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.Standalone;
             buildOptions.target = BuildTarget.StandaloneWindows64;
-            buildOptions.locationPathName = "Build/"+ Constants.TitleString + " Windows/DeedPlanner.exe";
+            buildOptions.locationPathName = "Build/"+ Constants.SimpleTitleString + " Windows/DeedPlanner.exe";
             buildOptions.options = BuildOptions.None;
 
             BuildReport report = BuildPipeline.BuildPlayer(buildOptions);
             BuildSummary summary = report.summary;
             if (summary.result == BuildResult.Succeeded)
             {
-                CreateSteamAppId("Build/"+ Constants.TitleString + " Windows/");
+                CreateSteamAppId("Build/"+ Constants.SimpleTitleString + " Windows/");
                 Debug.Log("SUCCESS BUILD Windows");
                 return true;
             } 
@@ -44,20 +53,20 @@ namespace Warlander.Deedplanner.Editor
             }
         }
         
-        [MenuItem("Build/Linux")]
+        [MenuItem("Build/Linux", false, 51)]
         public static bool BuildLinux()
         {
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.Standalone;
             buildOptions.target = BuildTarget.StandaloneLinux64;
-            buildOptions.locationPathName = "Build/"+ Constants.TitleString + " Linux/DeedPlanner.x86_64";
+            buildOptions.locationPathName = "Build/"+ Constants.SimpleTitleString + " Linux/DeedPlanner.x86_64";
             buildOptions.options = BuildOptions.None;
 
             BuildReport report = BuildPipeline.BuildPlayer(buildOptions);
             BuildSummary summary = report.summary;
             if (summary.result == BuildResult.Succeeded)
             {
-                CreateSteamAppId("Build/"+ Constants.TitleString + " Linux/");
+                CreateSteamAppId("Build/"+ Constants.SimpleTitleString + " Linux/");
                 Debug.Log("SUCCESS BUILD Linux");
                 return true;
             } 
@@ -68,20 +77,20 @@ namespace Warlander.Deedplanner.Editor
             }
         }
         
-        [MenuItem("Build/Mac (experimental)")]
+        [MenuItem("Build/Mac (experimental)", false, 52)]
         public static bool BuildMac()
         {
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.Standalone;
             buildOptions.target = BuildTarget.StandaloneOSX;
-            buildOptions.locationPathName = "Build/"+ Constants.TitleString + " Mac.app";
+            buildOptions.locationPathName = "Build/"+ Constants.SimpleTitleString + " Mac.app";
             buildOptions.options = BuildOptions.None;
 
             BuildReport report = BuildPipeline.BuildPlayer(buildOptions);
             BuildSummary summary = report.summary;
             if (summary.result == BuildResult.Succeeded)
             {
-                CreateSteamAppId("Build/"+ Constants.TitleString + " Mac.app/");
+                CreateSteamAppId("Build/"+ Constants.SimpleTitleString + " Mac.app/");
                 Debug.Log("SUCCESS BUILD Mac");
                 return true;
             } 
@@ -92,7 +101,7 @@ namespace Warlander.Deedplanner.Editor
             }
         }
         
-        [MenuItem("Build/WebGL")]
+        [MenuItem("Build/WebGL", false, 100)]
         public static bool BuildWeb()
         {
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
