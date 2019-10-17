@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
@@ -32,6 +33,7 @@ namespace Warlander.Deedplanner.Editor
             BuildSummary summary = report.summary;
             if (summary.result == BuildResult.Succeeded)
             {
+                CreateSteamAppId("Build/"+ Constants.TitleString + " Windows/");
                 Debug.Log("SUCCESS BUILD Windows");
                 return true;
             } 
@@ -55,6 +57,7 @@ namespace Warlander.Deedplanner.Editor
             BuildSummary summary = report.summary;
             if (summary.result == BuildResult.Succeeded)
             {
+                CreateSteamAppId("Build/"+ Constants.TitleString + " Linux/");
                 Debug.Log("SUCCESS BUILD Linux");
                 return true;
             } 
@@ -65,7 +68,7 @@ namespace Warlander.Deedplanner.Editor
             }
         }
         
-        [MenuItem("Build/Mac")]
+        [MenuItem("Build/Mac (experimental)")]
         public static bool BuildMac()
         {
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
@@ -78,6 +81,7 @@ namespace Warlander.Deedplanner.Editor
             BuildSummary summary = report.summary;
             if (summary.result == BuildResult.Succeeded)
             {
+                CreateSteamAppId("Build/"+ Constants.TitleString + " Mac.app/");
                 Debug.Log("SUCCESS BUILD Mac");
                 return true;
             } 
@@ -117,6 +121,17 @@ namespace Warlander.Deedplanner.Editor
             options.scenes = new[] {"Assets/Scenes/MainScene.unity" };
 
             return options;
+        }
+
+        private static void CreateSteamAppId(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Debug.LogError("Invalid directory for Steam app ID: " + path);
+                return;
+            }
+            
+            File.WriteAllText(Path.Combine(path, "steam_appid.txt"), Constants.SteamAppId.ToString());
         }
 
     }
