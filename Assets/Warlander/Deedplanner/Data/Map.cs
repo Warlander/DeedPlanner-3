@@ -156,12 +156,20 @@ namespace Warlander.Deedplanner.Data
                 int x = Convert.ToInt32(tileElement.GetAttribute("x"));
                 int y = Convert.ToInt32(tileElement.GetAttribute("y"));
 
-                this[x, y].Deserialize(tileElement);
+                this[x, y].DeserializeHeightmap(tileElement);
 
                 int surfaceHeight = this[x, y].SurfaceHeight;
                 int caveHeight = this[x, y].CaveHeight;
                 SurfaceGridMesh.SetHeight(x, y, surfaceHeight);
                 CaveGridMesh.SetHeight(x, y, caveHeight);
+            }
+            
+            foreach (XmlElement tileElement in tilesList)
+            {
+                int x = Convert.ToInt32(tileElement.GetAttribute("x"));
+                int y = Convert.ToInt32(tileElement.GetAttribute("y"));
+
+                this[x, y].DeserializeEntities(tileElement);
             }
             
             Ground.UpdateNow();

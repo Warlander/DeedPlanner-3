@@ -531,14 +531,17 @@ namespace Warlander.Deedplanner.Data
                 }
         }
 
-        public void Deserialize(XmlElement tileElement)
+        public void DeserializeHeightmap(XmlElement tileElement)
         {
             SurfaceHeight = (int) Convert.ToSingle(tileElement.GetAttribute("height"), CultureInfo.InvariantCulture);
             if (tileElement.HasAttribute("caveHeight"))
             {
                 CaveHeight = (int) Convert.ToSingle(tileElement.GetAttribute("caveHeight"), CultureInfo.InvariantCulture);
             }
-
+        }
+        
+        public void DeserializeEntities(XmlElement tileElement)
+        {
             foreach (XmlElement childElement in tileElement)
             {
                 string tag = childElement.Name;

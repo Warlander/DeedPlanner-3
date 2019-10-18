@@ -32,7 +32,6 @@ namespace Warlander.Deedplanner.Data.Walls
             Reversed = reversed;
             boundsMesh = CreateBoundsMesh(slopeDifference);
             meshCollider.sharedMesh = boundsMesh;
-            UpdateModel(slopeDifference, firstFloor);
         }
 
         public void UpdateModel(int slopeDifference, bool firstFloor)
