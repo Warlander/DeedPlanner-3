@@ -9,36 +9,24 @@ namespace Warlander.Deedplanner.Gui
 
         public static GuiManager Instance { get; private set; }
 
-        [SerializeField]
-        private Window windowPrefab = null;
+        [SerializeField] private RectTransform sidePanelTransform;
+        
+        [SerializeField] private Window windowPrefab = null;
 
-        [SerializeField]
-        private UnityTree groundsTree = null;
-        [SerializeField]
-        private UnityTree cavesTree = null;
-        [SerializeField]
-        private UnityTree floorsTree = null;
-        [SerializeField]
-        private UnityTree wallsTree = null;
-        [SerializeField]
-        private UnityList roofsList = null;
-        [SerializeField]
-        private UnityTree objectsTree = null;
+        [SerializeField] private UnityTree groundsTree = null;
+        [SerializeField] private UnityTree cavesTree = null;
+        [SerializeField] private UnityTree floorsTree = null;
+        [SerializeField] private UnityTree wallsTree = null;
+        [SerializeField] private UnityList roofsList = null;
+        [SerializeField] private UnityTree objectsTree = null;
 
-        [SerializeField]
-        private Window resizeMapWindow = null;
-        [SerializeField]
-        private Window clearMapWindow = null;
-        [SerializeField]
-        private Window saveMapWindow = null;
-        [SerializeField]
-        private Window loadMapWindow = null;
-        [SerializeField]
-        private Window graphicsSettingsWindow = null;
-        [SerializeField]
-        private Window inputSettingsWindow = null;
-        [SerializeField]
-        private Window aboutWindow = null;
+        [SerializeField] private Window resizeMapWindow = null;
+        [SerializeField] private Window clearMapWindow = null;
+        [SerializeField] private Window saveMapWindow = null;
+        [SerializeField] private Window loadMapWindow = null;
+        [SerializeField] private Window graphicsSettingsWindow = null;
+        [SerializeField] private Window inputSettingsWindow = null;
+        [SerializeField] private Window aboutWindow = null;
 
         public UnityTree GroundsTree => groundsTree;
         public UnityTree CavesTree => cavesTree;
@@ -64,6 +52,14 @@ namespace Warlander.Deedplanner.Gui
             }
 
             Instance = this;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F10))
+            {
+                sidePanelTransform.gameObject.SetActive(!sidePanelTransform.gameObject.activeSelf);
+            }
         }
 
         public Window CreateWindow(string title, RectTransform content, bool closeable)
