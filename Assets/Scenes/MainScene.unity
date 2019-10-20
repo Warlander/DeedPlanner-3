@@ -12074,6 +12074,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03134ab2813131742810fc39a8ad2d5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sidePanelTransform: {fileID: 1845217158}
   windowPrefab: {fileID: 1937894905981870343, guid: 7cca77f05c96fde48981a1284c9f0a65,
     type: 3}
   groundsTree: {fileID: 16709742}
