@@ -9,7 +9,7 @@ namespace Warlander.Deedplanner.Gui
 
         public static GuiManager Instance { get; private set; }
 
-        [SerializeField] private RectTransform sidePanelTransform;
+        [SerializeField] private RectTransform sidePanelTransform = null;
         
         [SerializeField] private Window windowPrefab = null;
 

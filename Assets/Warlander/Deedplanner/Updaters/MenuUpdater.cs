@@ -13,7 +13,7 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private Button fullscreenButton = null;
         [SerializeField] private Button quitButton = null;
         
-        [SerializeField] private TMP_Text steamConnectionText;
+        [SerializeField] private TMP_Text steamConnectionText = null;
         [SerializeField] private TMP_Text versionText = null;
         
         private void Start()

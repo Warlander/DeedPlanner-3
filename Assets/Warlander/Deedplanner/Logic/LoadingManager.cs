@@ -14,7 +14,6 @@ namespace Warlander.Deedplanner.Logic
     public class LoadingManager : MonoBehaviour
     {
 
-        [SerializeField] private CanvasScaler mainCanvasScaler = null;
         [SerializeField] private GameObject splashRoot = null;
         [SerializeField] private GameObject managersRoot = null;
         [SerializeField] private MultiCamera[] cameras = null;
