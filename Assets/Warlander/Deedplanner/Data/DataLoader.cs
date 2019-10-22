@@ -42,7 +42,7 @@ namespace Warlander.Deedplanner.Data
             {
                 string oldFile = objectFiles[i];
                 oldFile = Path.GetFileName(oldFile);
-                objectFiles[i] = Application.streamingAssetsPath + "/" + oldFile;
+                objectFiles[i] = "file://" + Application.streamingAssetsPath + "/" + oldFile;
             }
             
             return LoadData(objectFiles);

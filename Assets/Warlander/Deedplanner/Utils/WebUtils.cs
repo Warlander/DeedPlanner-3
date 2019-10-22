@@ -14,6 +14,12 @@ namespace Warlander.Deedplanner.Utils
                 return JavaScriptUtils.LoadUrlToBytes(location);
             }
 
+            // required for Linux and Mac compatibility, have no effect on Windows
+            if (Application.platform.IsDesktopPlatform())
+            {
+                location = "file://" + location;
+            }
+            
             using (UnityWebRequest request = UnityWebRequest.Get(location))
             {
                 request.SendWebRequest();
