@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using Steamworks;
 using UnityEngine;
+using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Logic
 {
@@ -66,7 +67,7 @@ namespace Warlander.Deedplanner.Logic
             }
             
             // checks to check if Steam connection should be initialized
-            if (!IsSteamCompatiblePlatform(Application.platform))
+            if (!Application.platform.IsDesktopPlatform())
             {
                 Debug.Log("Current platform is not Steam compatible, destroying SteamManager.", this);
                 return false;
@@ -98,15 +99,6 @@ namespace Warlander.Deedplanner.Logic
             return true;
         }
 
-        private static bool IsSteamCompatiblePlatform(RuntimePlatform platform)
-        {
-            bool isWindows = platform == RuntimePlatform.WindowsPlayer || platform == RuntimePlatform.WindowsEditor;
-            bool isLinux = platform == RuntimePlatform.LinuxPlayer || platform == RuntimePlatform.LinuxEditor;
-            bool isMac = platform == RuntimePlatform.OSXPlayer || platform == RuntimePlatform.OSXEditor;
-
-            return isWindows || isLinux || isMac;
-        }
-        
         private void OnDestroy()
         {
             if (!Instance)
