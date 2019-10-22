@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -14,8 +15,12 @@ namespace Warlander.Deedplanner.Utils
                 return JavaScriptUtils.LoadUrlToBytes(location);
             }
 
+            Uri uri;
+            Uri.TryCreate(location, UriKind.Absolute, out uri);
+            bool isWebUri = uri != null && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+            
             // required for Linux and Mac compatibility, have no effect on Windows
-            if (Application.platform.IsDesktopPlatform())
+            if (!isWebUri && Application.platform.IsDesktopPlatform())
             {
                 location = "file://" + location;
             }
