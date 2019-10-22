@@ -1,5 +1,7 @@
 #if UNITY_ANDROID || UNITY_IOS || UNITY_TIZEN || UNITY_TVOS || UNITY_WEBGL || UNITY_WSA || UNITY_PS4 || UNITY_WII || UNITY_XBOXONE || UNITY_SWITCH
     #define DISABLESTEAMWORKS
+#else
+    #undef DISABLESTEAMWORKS
 #endif
 
 using System;
@@ -22,7 +24,7 @@ namespace Warlander.Deedplanner.Logic
             {
                 bool connected = Instance;
 #if !DISABLESTEAMWORKS
-                connected |= SteamAPI.IsSteamRunning();
+                connected = connected && SteamAPI.IsSteamRunning();
 #endif
                 return connected;
             }
@@ -87,6 +89,11 @@ namespace Warlander.Deedplanner.Logic
             }
             
             // checks to check if Steam connection should be initialized
+#if DISABLESTEAMWORKS
+            // project compiled or editor target set for Steamworks-incompatible platform
+            return false;
+#endif
+            
             if (!Application.platform.IsDesktopPlatform())
             {
                 Debug.Log("Current platform is not Steam compatible, destroying SteamManager.", this);
