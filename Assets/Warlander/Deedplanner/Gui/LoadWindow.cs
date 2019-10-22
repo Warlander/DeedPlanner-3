@@ -57,6 +57,11 @@ namespace Warlander.Deedplanner.Gui
             }
 
             string path = pathArray[0];
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+            
             byte[] mapBytes = File.ReadAllBytes(path);
             string mapString = Encoding.Default.GetString(mapBytes);
 

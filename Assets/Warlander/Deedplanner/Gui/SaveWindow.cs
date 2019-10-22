@@ -63,6 +63,11 @@ namespace Warlander.Deedplanner.Gui
                 {
                     return;
                 }
+
+                if (!path.EndsWith(".MAP"))
+                {
+                    path += ".MAP";
+                }
             
                 byte[] bytes = Encoding.Default.GetBytes(build.ToString());
                 File.WriteAllBytes(path, bytes);
