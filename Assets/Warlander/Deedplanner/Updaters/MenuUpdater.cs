@@ -1,4 +1,10 @@
+#if UNITY_ANDROID || UNITY_IOS || UNITY_TIZEN || UNITY_TVOS || UNITY_WEBGL || UNITY_WSA || UNITY_PS4 || UNITY_WII || UNITY_XBOXONE || UNITY_SWITCH
+    #define DISABLESTEAMWORKS
+#endif
+
+#if !DISABLESTEAMWORKS
 using Steamworks;
+#endif
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -40,10 +46,12 @@ namespace Warlander.Deedplanner.Updaters
 
             bool connectedToSteam = SteamManager.ConnectedToSteam;
             steamConnectionText.gameObject.SetActive(connectedToSteam);
+#if !DISABLESTEAMWORKS
             if (connectedToSteam)
             {
                 steamConnectionText.text = "Connected to Steam as " + SteamFriends.GetPersonaName();
             }
+#endif
         }
 
         public void OnResizeMap()
