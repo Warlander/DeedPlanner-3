@@ -78,6 +78,12 @@ namespace Warlander.Deedplanner.Logic
                 return false;
             }
 
+            if (!SteamAPI.IsSteamRunning())
+            {
+                Debug.Log("Steam is not running, destroying SteamManager.", this);
+                return false;
+            }
+
             // sanity checks to ensure Steamworks.NET is setup correctly
             if (!Packsize.Test()) {
                 Debug.LogError("[Steamworks.NET] Packsize Test returned false, the wrong version of Steamworks.NET is being run in this platform.", this);
