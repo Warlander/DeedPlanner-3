@@ -237,7 +237,8 @@ namespace Warlander.Deedplanner.Graphics
                 callback.Invoke(null);
                 yield break;
             }
-            
+
+            Debug.Log("Loading texture at " + location);
             byte[] texBytes = WebUtils.ReadUrlToByteArray(location);
 
             Texture2D texture;
