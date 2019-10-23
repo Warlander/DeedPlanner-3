@@ -3924,6 +3924,26 @@
 			<category>Containers/Racks and Stands</category>
 			<category>Materials/Wood</category>
 		</object>
+		<object name="Fishing rod rack (empty)" shortname="fRackE" type="normal">
+			<model location="Objects/spearrackempty.wom"/>
+			<materials>
+				Planks = 10,
+				Small nails = 1,
+				Pegs = 7
+			</materials>
+			<category>Containers/Racks and Stands</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Fishing rod rack (full)" shortname="fRackF" type="normal">
+			<model location="Objects/rodRack_Full.wom"/>
+			<materials>
+				Planks = 10,
+				Small nails = 1,
+				Pegs = 7
+			</materials>
+			<category>Containers/Racks and Stands</category>
+			<category>Materials/Wood</category>
+		</object>
 		
 		<object name="Coffer" shortname="coffer" type="normal">
 			<model location="Objects/Coffer.wom"/>
