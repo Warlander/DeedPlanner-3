@@ -89,11 +89,6 @@ namespace Warlander.Deedplanner.Logic
             }
             
             // checks to check if Steam connection should be initialized
-#if DISABLESTEAMWORKS
-            // project compiled or editor target set for Steamworks-incompatible platform
-            return false;
-#endif
-            
             if (!Application.platform.IsDesktopPlatform())
             {
                 Debug.Log("Current platform is not Steam compatible, destroying SteamManager.", this);
@@ -125,7 +120,12 @@ namespace Warlander.Deedplanner.Logic
             }
 #endif
 
+#if !DISABLESTEAMWORKS
             return true;
+#else
+            // project compiled or editor target set for Steamworks-incompatible platform
+            return false;
+#endif
         }
 
         private void OnDestroy()
