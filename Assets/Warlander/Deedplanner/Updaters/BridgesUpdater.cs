@@ -5,7 +5,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class BridgesUpdater : MonoBehaviour
+    public class BridgesUpdater : AbstractUpdater
     {
 
         private void OnEnable()

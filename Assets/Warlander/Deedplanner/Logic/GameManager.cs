@@ -24,18 +24,7 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField] private HeightmapHandle heightmapHandlePrefab = null;
         [SerializeField] private PlaneLine planeLinePrefab = null;
 
-        [SerializeField] private GroundUpdater groundUpdater = null;
-        [SerializeField] private CaveUpdater caveUpdater = null;
-        [SerializeField] private HeightUpdater heightUpdater = null;
-        [SerializeField] private FloorUpdater floorUpdater = null;
-        [SerializeField] private WallUpdater wallUpdater = null;
-        [SerializeField] private RoofUpdater roofUpdater = null;
-        [SerializeField] private DecorationUpdater decorationUpdater = null;
-        [SerializeField] private LabelUpdater labelUpdater = null;
-        [SerializeField] private BorderUpdater borderUpdater = null;
-        [SerializeField] private BridgesUpdater bridgeUpdater = null;
-        [SerializeField] private MirrorUpdater mirrorUpdater = null;
-        [SerializeField] private MenuUpdater menuUpdater = null;
+        [SerializeField] private AbstractUpdater[] updaters = null;
 
         public OverlayMesh OverlayMeshPrefab => overlayMeshPrefab;
         public HeightmapHandle HeightmapHandlePrefab => heightmapHandlePrefab;
@@ -54,7 +43,7 @@ namespace Warlander.Deedplanner.Logic
 
         private void Start()
         {
-            groundUpdater.gameObject.SetActive(true);
+            updaters[0].gameObject.SetActive(true);
             LayoutManager.Instance.TabChanged += OnTabChange;
         }
 
@@ -176,63 +165,19 @@ namespace Warlander.Deedplanner.Logic
         }
 
         private void OnTabChange(Tab tab)
-        {
-            MonoBehaviour newUpdater = GetUpdaterForTab(tab);
+        { 
+            foreach (AbstractUpdater updater in updaters)
+            {
+                CheckUpdater(updater, tab);
+            }
 
-            CheckUpdater(groundUpdater, newUpdater);
-            CheckUpdater(caveUpdater, newUpdater);
-            CheckUpdater(heightUpdater, newUpdater);
-            CheckUpdater(floorUpdater, newUpdater);
-            CheckUpdater(roofUpdater, newUpdater);
-            CheckUpdater(wallUpdater, newUpdater);
-            CheckUpdater(decorationUpdater, newUpdater);
-            CheckUpdater(labelUpdater, newUpdater);
-            CheckUpdater(borderUpdater, newUpdater);
-            CheckUpdater(bridgeUpdater, newUpdater);
-            CheckUpdater(mirrorUpdater, newUpdater);
-            CheckUpdater(menuUpdater, newUpdater);
-            
             Map.RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
         }
 
-        private void CheckUpdater(MonoBehaviour updater, MonoBehaviour check)
+        private void CheckUpdater(AbstractUpdater updater, Tab tab)
         {
-            updater.gameObject.SetActive(updater == check);
+            updater.gameObject.SetActive(updater.TargetTab == tab);
         }
-
-        private MonoBehaviour GetUpdaterForTab(Tab tab)
-        {
-            switch (tab)
-            {
-                case Tab.Ground:
-                    return groundUpdater;
-                case Tab.Caves:
-                    return caveUpdater;
-                case Tab.Height:
-                    return heightUpdater;
-                case Tab.Floors:
-                    return floorUpdater;
-                case Tab.Roofs:
-                    return roofUpdater;
-                case Tab.Walls:
-                    return wallUpdater;
-                case Tab.Objects:
-                    return decorationUpdater;
-                case Tab.Labels:
-                    return labelUpdater;
-                case Tab.Borders:
-                    return borderUpdater;
-                case Tab.Bridges:
-                    return bridgeUpdater;
-                case Tab.Mirror:
-                    return mirrorUpdater;
-                case Tab.Menu:
-                    return menuUpdater;
-                default:
-                    return null;
-            }
-        }
-
     }
 
 }

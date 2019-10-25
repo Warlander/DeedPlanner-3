@@ -15,7 +15,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class MenuUpdater : MonoBehaviour
+    public class MenuUpdater : AbstractUpdater
     {
 
         [SerializeField] private Button fullscreenButton = null;

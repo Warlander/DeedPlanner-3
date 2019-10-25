@@ -14,7 +14,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class DecorationUpdater : MonoBehaviour
+    public class DecorationUpdater : AbstractUpdater
     {
 
         private static readonly int ColorPropertyId = Shader.PropertyToID("_Color");

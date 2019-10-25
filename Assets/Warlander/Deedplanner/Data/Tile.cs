@@ -186,6 +186,28 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
+        public Materials CalculateTileMaterials(bool includeHorizontalWalls, bool includeVerticalWalls)
+        {
+            Materials tileMaterials = new Materials();
+            
+            foreach (KeyValuePair<EntityData,TileEntity> pair in Entities)
+            {
+                EntityData key = pair.Key;
+                if (!includeHorizontalWalls && key.Type.IsHorizontalTileBorder())
+                {
+                    continue;
+                }
+                if (!includeVerticalWalls && key.Type.IsVerticalTileBorder())
+                {
+                    continue;
+                }
+                
+                tileMaterials.Add(pair.Value.Materials);
+            }
+
+            return tileMaterials;
+        }
+
         public TileEntity GetTileContent(int level)
         {
             EntityData entityData = new EntityData(level, EntityType.Floorroof);

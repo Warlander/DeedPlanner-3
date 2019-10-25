@@ -5,7 +5,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class CaveUpdater : MonoBehaviour
+    public class CaveUpdater : AbstractUpdater
     {
 
         public void OnEnable()

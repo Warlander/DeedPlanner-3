@@ -5,7 +5,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class MirrorUpdater : MonoBehaviour
+    public class MirrorUpdater : AbstractUpdater
     {
 
         private void OnEnable()
