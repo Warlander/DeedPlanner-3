@@ -6,7 +6,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class RoofUpdater : MonoBehaviour
+    public class RoofUpdater : AbstractUpdater
     {
 
         private void OnEnable()

@@ -31,6 +31,7 @@ namespace Warlander.Deedplanner.Logic
         public const int LabelEditMask = GroundMask;
         public const int BorderEditMask = GroundMask;
         public const int BridgeEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
+        public const int ToolsEditMask = TileMask;
         public const int MenuEditMask = GroundMask;
 
         public static int GetMaskForTab(Tab tab)
@@ -57,6 +58,8 @@ namespace Warlander.Deedplanner.Logic
                     return BorderEditMask;
                 case Tab.Bridges:
                     return BridgeEditMask;
+                case Tab.Tools:
+                    return ToolsEditMask;
                 case Tab.Menu:
                     return MenuEditMask;
                 default:

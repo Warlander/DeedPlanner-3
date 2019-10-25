@@ -40,7 +40,9 @@ namespace Warlander.Deedplanner.Data
         {
             if (ContainsKey(name))
             {
-                base.Add(name, this[name] + count);
+                int newCount = this[name] + count;
+                Remove(name);
+                base.Add(name, newCount);
             }
             else
             {
