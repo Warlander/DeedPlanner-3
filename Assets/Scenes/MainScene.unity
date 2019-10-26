@@ -16088,6 +16088,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadTestMap: 1
+  preloadAllDecorations: 0
   overrideStartingTileSelectionMode: 0
   tileSelectionMode: 5
   drawDebugPlaneLines: 0
