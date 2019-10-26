@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Gui;
 
 namespace Warlander.Deedplanner.Logic
@@ -9,6 +12,7 @@ namespace Warlander.Deedplanner.Logic
         public static DebugManager Instance { get; private set; }
         
         [SerializeField] private bool loadTestMap = false;
+        [SerializeField] private bool preloadAllDecorations = false;
 
         [SerializeField] private bool overrideStartingTileSelectionMode = false;
         [SerializeField] private TileSelectionMode tileSelectionMode = TileSelectionMode.Nothing;
@@ -43,6 +47,15 @@ namespace Warlander.Deedplanner.Logic
                 PlaneLine secondVerticalLine = Instantiate(GameManager.Instance.PlaneLinePrefab);
                 secondVerticalLine.Alignment = PlaneAlignment.Vertical;
                 secondVerticalLine.TileCoords = new Vector2Int(15, 15);
+            }
+
+            if (preloadAllDecorations)
+            {
+                foreach (KeyValuePair<string,DecorationData> pair in Database.Decorations)
+                {
+                    DecorationData data = pair.Value;
+                    CoroutineManager.Instance.QueueCoroutine(data.Model.CreateOrGetModel(Destroy));
+                }
             }
         }
         
