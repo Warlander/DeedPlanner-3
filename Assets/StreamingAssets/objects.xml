@@ -5312,7 +5312,7 @@
 		</object>
 
 		<object name="Freedom tall banner" shortname="tbFree" type="normal">
-			<model location="Objects/freedom_tall_banner.wom"/>
+			<model location="Objects/TallBanners/freedom_tall_banner.wom"/>
 			<materials>
 				Shaft = 1,
 				Square piece of cloth = 1
@@ -5320,8 +5320,8 @@
 			<category>Banners/Tall Banners</category>
 			<category>Kingdoms/Freedom</category>
 		</object>
-		<object name="JK tall banner" shortname="tbJK" type="normal">
-			<model location="Objects/jk_tall_banner.wom"/>
+		<object name="Jenn-Kellon tall banner" shortname="tbJK" type="normal">
+			<model location="Objects/TallBanners/jk_tall_banner.wom"/>
 			<materials>
 				Shaft = 1,
 				Square piece of cloth = 1
@@ -5329,8 +5329,8 @@
 			<category>Banners/Tall Banners</category>
 			<category>Kingdoms/Jenn-Kellon</category>
 		</object>
-		<object name="HoTS tall banner" shortname="tbHoTS" type="normal">
-			<model location="Objects/hots_tall_banner.wom"/>
+		<object name="Horde of the Summoned tall banner" shortname="tbHoTS" type="normal">
+			<model location="Objects/TallBanners/hots_tall_banner.wom"/>
 			<materials>
 				Shaft = 1,
 				Square piece of cloth = 1
@@ -5338,8 +5338,8 @@
 			<category>Banners/Tall Banners</category>
 			<category>Kingdoms/Horde of The Summoned</category>
 		</object>
-		<object name="MR tall banner" shortname="tbMR" type="normal">
-			<model location="Objects/mr_tall_banner.wom"/>
+		<object name="Mol-Rehan tall banner" shortname="tbMR" type="normal">
+			<model location="Objects/TallBanners/mr_tall_banner.wom"/>
 			<materials>
 				Shaft = 1,
 				Square piece of cloth = 1
@@ -5347,9 +5347,9 @@
 			<category>Banners/Tall Banners</category>
 			<category>Kingdoms/Mol-Rehan</category>
 		</object>
-		<object name="TRR tall banner" shortname="tbTRR" type="normal">
-			<model location="Objects/jk_tall_banner.wom">
-				<override mesh="jk_tall_BannerMesh" texture="Objects/Tall_Banner_TRR.png"/>
+		<object name="The Roman Republic tall banner" shortname="tbTRR" type="normal">
+			<model location="Objects/TallBanners/jk_tall_banner.wom">
+				<override mesh="jk_tall_BannerMesh" texture="Objects/TallBanners/Tall_Banner_TRR.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5358,9 +5358,9 @@
 			<category>Banners/Tall Banners</category>
 			<category>Kingdoms/The Roman Republic</category>
 		</object>
-		<object name="BL tall banner" shortname="tbBL" type="normal">
-			<model location="Objects/hots_tall_banner.wom">
-				<override mesh="hots_tall_bannerMesh" texture="Objects/tall_Banner_blac.png"/>
+		<object name="Black Legion tall banner" shortname="tbBL" type="normal">
+			<model location="Objects/TallBanners/hots_tall_banner.wom">
+				<override mesh="hots_tall_bannerMesh" texture="Objects/TallBanners/tall_Banner_blac.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5370,8 +5370,8 @@
 			<category>Kingdoms/Black Legion</category>
 		</object>
 		<object name="Ebonaura tall banner" shortname="tbEbon" type="normal">
-			<model location="Objects/hots_tall_banner.wom">
-				<override mesh="hots_tall_bannerMesh" texture="Objects/tall_Banner_ebon.png"/>
+			<model location="Objects/TallBanners/hots_tall_banner.wom">
+				<override mesh="hots_tall_bannerMesh" texture="Objects/TallBanners/tall_Banner_ebon.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5380,9 +5380,9 @@
 			<category>Banners/Tall Banners</category>
 			<category>Kingdoms/Ebonaura</category>
 		</object>
-		<object name="EMR tall banner" shortname="tbEMR" type="normal">
-			<model location="Objects/mr_tall_banner.wom">
-				<override mesh="mr_tall_BannerMesh" texture="Objects/tall_Banner_empi.png"/>
+		<object name="Empire of Mol Rehan tall banner" shortname="tbEMR" type="normal">
+			<model location="Objects/TallBanners/mr_tall_banner.wom">
+				<override mesh="mr_tall_BannerMesh" texture="Objects/TallBanners/tall_Banner_empi.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5391,9 +5391,9 @@
 			<category>Banners/Tall Banners</category>
 			<category>Kingdoms/Empire of MR</category>
 		</object>
-		<object name="JK PMK tall banner" shortname="tbJKPMK" type="normal">
-			<model location="Objects/jk_tall_banner.wom">
-				<override mesh="jk_tall_BannerMesh" texture="Objects/tall_Banner_zjen.png"/>
+		<object name="Jenn-Kellon PMK tall banner" shortname="tbJKPMK" type="normal">
+			<model location="Objects/TallBanners/jk_tall_banner.wom">
+				<override mesh="jk_tall_BannerMesh" texture="Objects/TallBanners/tall_Banner_zjen.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5402,9 +5402,9 @@
 			<category>Banners/Tall Banners</category>
 			<category>Kingdoms/Jenn-Kellon PMK</category>
 		</object>
-		<object name="VD tall banner" shortname="tbVD" type="normal">
-			<model location="Objects/jk_tall_banner.wom">
-				<override mesh="jk_tall_BannerMesh" texture="Objects/tall_Banner_valh.png"/>
+		<object name="Valhalla Descendants tall banner" shortname="tbVD" type="normal">
+			<model location="Objects/TallBanners/jk_tall_banner.wom">
+				<override mesh="jk_tall_BannerMesh" texture="Objects/TallBanners/tall_Banner_yval.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5413,10 +5413,119 @@
 			<category>Banners/Tall Banners</category>
 			<category>Kingdoms/Valhalla Descendants</category>
 		</object>
+		<object name="Valhalla Descendants tall banner (old)" shortname="tbVDold" type="normal">
+			<model location="Objects/TallBanners/jk_tall_banner.wom">
+				<override mesh="jk_tall_BannerMesh" texture="Objects/TallBanners/tall_Banner_valh.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners/Tall Banners</category>
+			<category>Kingdoms/Valhalla Descendants</category>
+		</object>
+		<object name="Legion of Anubis tall banner" shortname="tbLA" type="normal">
+			<model location="Objects/TallBanners/hots_tall_banner.wom">
+				<override mesh="hots_tall_bannerMesh" texture="Objects/TallBanners/tall_banner_legi.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners/Tall Banners</category>
+			<category>Kingdoms/Legion of Anubis</category>
+		</object>
+		<object name="Apocalypse Order tall banner" shortname="tbAO" type="normal">
+			<model location="Objects/TallBanners/hots_tall_banner.wom">
+				<override mesh="hots_tall_bannerMesh" texture="Objects/TallBanners/tall_banner_apoc.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners/Tall Banners</category>
+			<category>Kingdoms/Apocalypse Order</category>
+		</object>
+		<object name="The Crusaders tall banner" shortname="tbTC" type="normal">
+			<model location="Objects/TallBanners/mr_tall_banner.wom">
+				<override mesh="mr_tall_BannerMesh" texture="Objects/TallBanners/tall_banner_crus.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners/Tall Banners</category>
+			<category>Kingdoms/The Crusaders</category>
+		</object>
+		<object name="Dreadnaught Dynasty tall banner" shortname="tbDD" type="normal">
+			<model location="Objects/TallBanners/hots_tall_banner.wom">
+				<override mesh="hots_tall_bannerMesh" texture="Objects/TallBanners/tall_banner_drea.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners/Tall Banners</category>
+			<category>Kingdoms/Dreadnaught Dynasty</category>
+		</object>
+		<object name="Crow Kingdom tall banner" shortname="tbCK" type="normal">
+			<model location="Objects/TallBanners/mr_tall_banner.wom">
+				<override mesh="mr_tall_BannerMesh" texture="Objects/TallBanners/tall_banner_crow.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners/Tall Banners</category>
+			<category>Kingdoms/Crow Kingdom</category>
+		</object>
+		<object name="Wurm University tall banner" shortname="tbWU" type="normal">
+			<model location="Objects/TallBanners/jk_tall_banner.wom">
+				<override mesh="jk_tall_BannerMesh" texture="Objects/TallBanners/tall_banner_wurm.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners/Tall Banners</category>
+			<category>Kingdoms/Wurm University</category>
+		</object>
+		<object name="Macedon tall banner" shortname="tbMace" type="normal">
+			<model location="Objects/TallBanners/hots_tall_banner.wom">
+				<override mesh="hots_tall_bannerMesh" texture="Objects/TallBanners/tall_banner_mace.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners/Tall Banners</category>
+			<category>Kingdoms/Macedon</category>
+		</object>
+		<object name="Pandemonium tall banner" shortname="tbPand" type="normal">
+			<model location="Objects/TallBanners/mr_tall_banner.wom">
+				<override mesh="mr_tall_BannerMesh" texture="Objects/TallBanners/tall_banner_pand.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners/Tall Banners</category>
+			<category>Kingdoms/Pandemonium</category>
+		</object>
 		
+		<object name="Blank banner" shortname="bBlank" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/Banner5.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+		</object>
 		<object name="Freedom banner" shortname="bFree" type="normal">
-			<model location="Objects/Banner_main.wom">
-				<override mesh="ClothMesh" texture="Objects/Banner4.png"/>
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/Banner4.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5425,9 +5534,9 @@
 			<category>Banners</category>
 			<category>Kingdoms/Freedom</category>
 		</object>
-		<object name="JK banner" shortname="bJK" type="normal">
-			<model location="Objects/Banner_main.wom">
-				<override mesh="ClothMesh" texture="Objects/Banner3.png"/>
+		<object name="Jenn-Kellon banner" shortname="bJK" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/Banner3.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5436,9 +5545,9 @@
 			<category>Banners</category>
 			<category>Kingdoms/Jenn-Kellon</category>
 		</object>
-		<object name="HoTS banner" shortname="bHoTS" type="normal">
-			<model location="Objects/Banner_main.wom">
-				<override mesh="ClothMesh" texture="Objects/Banner2.png"/>
+		<object name="Horde of the Summoned banner" shortname="bHoTS" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/Banner2.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5447,9 +5556,9 @@
 			<category>Banners</category>
 			<category>Kingdoms/Horde of The Summoned</category>
 		</object>
-		<object name="MR banner" shortname="bMR" type="normal">
-			<model location="Objects/Banner_main.wom">
-				<override mesh="ClothMesh" texture="Objects/Banner.png"/>
+		<object name="Mol-Rehan banner" shortname="bMR" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/Banner.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5458,9 +5567,9 @@
 			<category>Banners</category>
 			<category>Kingdoms/Mol-Rehan</category>
 		</object>
-		<object name="TRR banner" shortname="bTRR" type="normal">
-			<model location="Objects/Banner_main.wom">
-				<override mesh="ClothMesh" texture="Objects/Banner_TRR.png"/>
+		<object name="The Roman Republic banner" shortname="bTRR" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/Banner_TRR.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5469,9 +5578,9 @@
 			<category>Banners</category>
 			<category>Kingdoms/The Roman Republic</category>
 		</object>
-		<object name="BL banner" shortname="bBL" type="normal">
-			<model location="Objects/Banner_main.wom">
-				<override mesh="ClothMesh" texture="Objects/blac_banner.png"/>
+		<object name="Black Legion banner" shortname="bBL" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/blac_banner.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5481,8 +5590,8 @@
 			<category>Kingdoms/Black Legion</category>
 		</object>
 		<object name="Ebonaura banner" shortname="bEbon" type="normal">
-			<model location="Objects/Banner_main.wom">
-				<override mesh="ClothMesh" texture="Objects/ebon_banner.png"/>
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/ebon_banner.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5491,9 +5600,9 @@
 			<category>Banners</category>
 			<category>Kingdoms/Ebonaura</category>
 		</object>
-		<object name="EMR banner" shortname="bEMR" type="normal">
-			<model location="Objects/Banner_main.wom">
-				<override mesh="ClothMesh" texture="Objects/empi_banner.png"/>
+		<object name="Empire of Mol Rehan banner" shortname="bEMR" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/empi_banner.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5502,9 +5611,9 @@
 			<category>Banners</category>
 			<category>Kingdoms/Empire of MR</category>
 		</object>
-		<object name="JK PMK banner" shortname="bJKPMK" type="normal">
-			<model location="Objects/Banner_main.wom">
-				<override mesh="ClothMesh" texture="Objects/jenn_banner.png"/>
+		<object name="Jenn-Kellon PMK banner" shortname="bJKPMK" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/jenn_banner.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5513,9 +5622,9 @@
 			<category>Banners</category>
 			<category>Kingdoms/Jenn-Kellon PMK</category>
 		</object>
-		<object name="VD banner" shortname="bVD" type="normal">
-			<model location="Objects/Banner_main.wom">
-				<override mesh="ClothMesh" texture="Objects/valh_banner.png"/>
+		<object name="Valhalla Descendants banner" shortname="bVD" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/yval_banner.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5524,10 +5633,141 @@
 			<category>Banners</category>
 			<category>Kingdoms/Valhalla Descendants</category>
 		</object>
+		<object name="Valhalla Descendants banner (old)" shortname="bVDold" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/valh_banner.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+			<category>Kingdoms/Valhalla Descendants</category>
+		</object>
+		<object name="Legion of Anubis banner" shortname="bLA" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/anub_banner.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+			<category>Kingdoms/Legion of Anubis</category>
+		</object>
+		<object name="Apocalypse Order banner" shortname="bAO" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/apoc_banner.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+			<category>Kingdoms/Apocalypse Order</category>
+		</object>
+		<object name="The Crusaders banner" shortname="bTC" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/crus_banner.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+			<category>Kingdoms/The Crusaders</category>
+		</object>
+		<object name="Dreadnaught Dynasty banner" shortname="bDD" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/drea_banner.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+			<category>Kingdoms/Dreadnaught Dynasty</category>
+		</object>
+		<object name="Crow Kingdom banner" shortname="bCK" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/crow_banner.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+			<category>Kingdoms/Crow Kingdom</category>
+		</object>
+		<object name="Wurm University banner" shortname="bWU" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/banner_wurm.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+			<category>Kingdoms/Wurm University</category>
+		</object>
+		<object name="Teutonic Knights banner" shortname="bTK" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/fluf_banner.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+			<category>Kingdoms/Teutonic Knights</category>
+		</object>
+		<object name="Kingdom of Sol banner" shortname="bKoS" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/kos_banner.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+			<category>Kingdoms/Kingdom of Sol</category>
+		</object>
+		<object name="Macedon banner" shortname="bMace" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/mace_banner.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+			<category>Kingdoms/Macedon</category>
+		</object>
+		<object name="Pandemonium banner" shortname="bPand" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/pand_banner.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+			<category>Kingdoms/Pandemonium</category>
+		</object>
 
+		<object name="Blank flag" shortname="fBlank" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/Flag5.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+		</object>
 		<object name="Freedom flag" shortname="fFree" type="normal">
-			<model location="Objects/Flag_main.wom">
-				<override mesh="Flag_flagMesh" texture="Objects/Flag4.png"/>
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/Flag4.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5536,9 +5776,9 @@
 			<category>Flags</category>
 			<category>Kingdoms/Freedom</category>
 		</object>
-		<object name="JK flag" shortname="fJK" type="normal">
-			<model location="Objects/Flag_main.wom">
-				<override mesh="Flag_flagMesh" texture="Objects/Flag3.png"/>
+		<object name="Jenn-Kellon flag" shortname="fJK" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/Flag3.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5547,9 +5787,9 @@
 			<category>Flags</category>
 			<category>Kingdoms/Jenn-Kellon</category>
 		</object>
-		<object name="HoTS flag" shortname="fHoTS" type="normal">
-			<model location="Objects/Flag_main.wom">
-				<override mesh="Flag_flagMesh" texture="Objects/Flag2.png"/>
+		<object name="Horde of the Summoned flag" shortname="fHoTS" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/Flag2.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5558,9 +5798,9 @@
 			<category>Flags</category>
 			<category>Kingdoms/Horde of The Summoned</category>
 		</object>
-		<object name="MR flag" shortname="fMR" type="normal">
-			<model location="Objects/Flag_main.wom">
-				<override mesh="Flag_flagMesh" texture="Objects/Flag.png"/>
+		<object name="Mol-Rehan flag" shortname="fMR" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/Flag.png"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5569,9 +5809,9 @@
 			<category>Flags</category>
 			<category>Kingdoms/Mol-Rehan</category>
 		</object>
-		<object name="TRR flag" shortname="fTRR" type="normal">
-			<model location="Objects/Flag_main.wom">
-				<override mesh="Flag_flagMesh" texture="Objects/Flag_TRR.png"/>
+		<object name="The Roman Republic flag" shortname="fTRR" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/Flag_TRR.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5580,9 +5820,9 @@
 			<category>Flags</category>
 			<category>Kingdoms/The Roman Republic</category>
 		</object>
-		<object name="BL flag" shortname="fBL" type="normal">
-			<model location="Objects/Flag_main.wom">
-				<override mesh="Flag_flagMesh" texture="Objects/blac_flag.png"/>
+		<object name="Black Legion flag" shortname="fBL" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/blac_flag.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5592,8 +5832,8 @@
 			<category>Kingdoms/Black Legion</category>
 		</object>
 		<object name="Ebonaura flag" shortname="fEbon" type="normal">
-			<model location="Objects/Flag_main.wom">
-				<override mesh="Flag_flagMesh" texture="Objects/ebon_flag.png"/>
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/ebon_flag.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5602,9 +5842,9 @@
 			<category>Flags</category>
 			<category>Kingdoms/Ebonaura</category>
 		</object>
-		<object name="EMR flag" shortname="fEMR" type="normal">
-			<model location="Objects/Flag_main.wom">
-				<override mesh="Flag_flagMesh" texture="Objects/empi_flag.png"/>
+		<object name="Empire of Mol Rehan flag" shortname="fEMR" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/empi_flag.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5613,9 +5853,9 @@
 			<category>Flags</category>
 			<category>Kingdoms/Empire of MR</category>
 		</object>
-		<object name="JK PMK flag" shortname="fJKPMK" type="normal">
-			<model location="Objects/Flag_main.wom">
-				<override mesh="Flag_flagMesh" texture="Objects/jenn_flag.png"/>
+		<object name="Jenn-Kellon PMK flag" shortname="fJKPMK" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/jenn_flag.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5624,9 +5864,9 @@
 			<category>Flags</category>
 			<category>Kingdoms/Jenn-Kellon PMK</category>
 		</object>
-		<object name="VD flag" shortname="fVD" type="normal">
-			<model location="Objects/Flag_main.wom">
-				<override mesh="Flag_flagMesh" texture="Objects/valh_flag.png"/>
+		<object name="Valhalla Descendants flag" shortname="fVD" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/yval_flag.dds"/>
 			</model>
 			<materials>
 				Shaft = 1,
@@ -5634,6 +5874,127 @@
 			</materials>
 			<category>Flags</category>
 			<category>Kingdoms/Valhalla Descendants</category>
+		</object>
+		<object name="Valhalla Descendants flag (old)" shortname="fVDold" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/valh_flag.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+			<category>Kingdoms/Valhalla Descendants</category>
+		</object>
+		<object name="Legion of Anubis flag" shortname="fLA" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/anub_flag.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+			<category>Kingdoms/Legion of Anubis</category>
+		</object>
+		<object name="Apocalypse Order flag" shortname="fAO" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/apoc_flag.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+			<category>Kingdoms/Apocalypse Order</category>
+		</object>
+		<object name="The Crusaders flag" shortname="fTC" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/crus_flag.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+			<category>Kingdoms/The Crusaders</category>
+		</object>
+		<object name="Dreadnaught Dynasty flag" shortname="fDD" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/drea_flag.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+			<category>Kingdoms/Dreadnaught Dynasty</category>
+		</object>
+		<object name="Crow Kingdom flag" shortname="fCK" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/flag_crow.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+			<category>Kingdoms/Crow Kingdom</category>
+		</object>
+		<object name="Wurm University flag" shortname="fWU" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/flag_wurm.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+			<category>Kingdoms/Wurm University</category>
+		</object>
+		<object name="Teutonic Knights flag" shortname="fTK" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/fluf_flag.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+			<category>Kingdoms/Teutonic Knights</category>
+		</object>
+		<object name="Kingdom of Sol flag" shortname="fKoS" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/kos_flag.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+			<category>Kingdoms/Kingdom of Sol</category>
+		</object>
+		<object name="Macedon flag" shortname="fMace" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/mace_flag.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+			<category>Kingdoms/Macedon</category>
+		</object>
+		<object name="Pandemonium flag" shortname="fPand" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/pand_flag.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+			<category>Kingdoms/Pandemonium</category>
 		</object>
 		
 		<object name="Bee hive" shortname="hive" type="normal">
