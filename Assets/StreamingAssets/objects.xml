@@ -3822,6 +3822,43 @@
 			<category>Containers/Barrels</category>
 			<category>Materials/Wood</category>
 		</object>
+		
+		<object name="Small barrel rack (empty)" shortname="barRackE" type="normal">
+			<model location="Objects/barrelRackEmpty.wom"/>
+			<materials>
+				Large nails = 1,
+				Wooden beams = 2
+			</materials>
+			<category>Containers/Racks and Stands</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Small barrel rack" shortname="barRack" type="normal">
+			<model location="Objects/barrelRack.wom"/>
+			<materials>
+				Large nails = 1,
+				Wooden beams = 2
+			</materials>
+			<category>Containers/Racks and Stands</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Wine barrel rack (empty)" shortname="wineRackE" type="normal">
+			<model location="Objects/wineRackEmpty.wom"/>
+			<materials>
+				Large nails = 1,
+				Wooden beams = 2
+			</materials>
+			<category>Containers/Racks and Stands</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Wine barrel rack" shortname="wineRack" type="normal">
+			<model location="Objects/wineRack.wom"/>
+			<materials>
+				Large nails = 1,
+				Wooden beams = 2
+			</materials>
+			<category>Containers/Racks and Stands</category>
+			<category>Materials/Wood</category>
+		</object>
 		<object name="Amphora rack" shortname="aRack" type="normal">
 			<model location="Objects/shelfAmphora.wom"/>
 			<materials>
