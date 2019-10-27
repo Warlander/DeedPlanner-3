@@ -5250,7 +5250,7 @@
 		</object>
 		
 		<object name="Tapestry stand" shortname="tStand" type="normal">
-			<model location="Objects/tapestry_stand.wom"/>
+			<model location="Objects/Tapestries/tapestry_stand.wom"/>
 			<materials>
 				Planks = 1,
 				Shafts = 4,
@@ -5258,9 +5258,46 @@
 			</materials>
 			<category>Tapestries</category>
 		</object>
+		<object name="Tapestry of Ehizellbob" shortname="tEhizellbob" type="normal">
+			<model location="Objects/Tapestries/tapestry2.wom"/>
+			<materials>
+				Planks = 1,
+				Shafts = 4,
+				Small nails = 2,
+				Square piece of wool cloth = 8,
+				Yarn = 6
+			</materials>
+			<category>Tapestries</category>
+		</object>
+		<object name="Tapestry of Evening" shortname="tEvening" type="normal">
+			<model location="Objects/Tapestries/tapestry.wom">
+				<override mesh="tapestryMeshMesh" texture="Objects/Tapestries/TapestryEve.dds"/>
+			</model>
+			<materials>
+				Planks = 1,
+				Shafts = 4,
+				Small nails = 2,
+				Square piece of wool cloth = 8,
+				Yarn = 6
+			</materials>
+			<category>Tapestries</category>
+		</object>
 		<object name="Tapestry of Faeldray" shortname="tFaeldray" type="normal">
-			<model location="Objects/tapestry.wom">
-				<override mesh="tapestryMeshMesh" texture="Objects/TapestryComp1.png"/>
+			<model location="Objects/Tapestries/tapestry.wom">
+				<override mesh="tapestryMeshMesh" texture="Objects/Tapestries/TapestryComp1.dds"/>
+			</model>
+			<materials>
+				Planks = 1,
+				Shafts = 4,
+				Small nails = 2,
+				Square piece of wool cloth = 8,
+				Yarn = 6
+			</materials>
+			<category>Tapestries</category>
+		</object>
+		<object name="Tapestry of Mclavin" shortname="tMclavin" type="normal">
+			<model location="Objects/Tapestries/tapestry.wom">
+				<override mesh="tapestryMeshMesh" texture="Objects/Tapestries/TapestryMc.dds"/>
 			</model>
 			<materials>
 				Planks = 1,
@@ -5272,7 +5309,7 @@
 			<category>Tapestries</category>
 		</object>
 		<object name="Green tapestry" shortname="tGreen" type="normal">
-			<model location="Objects/tapestry.wom"/>
+			<model location="Objects/Tapestries/tapestry.wom"/>
 			<materials>
 				Planks = 1,
 				Shafts = 4,
@@ -5283,8 +5320,8 @@
 			<category>Tapestries</category>
 		</object>
 		<object name="Beige tapestry" shortname="tBeige" type="normal">
-			<model location="Objects/tapestry.wom">
-				<override mesh="tapestryMeshMesh" texture="Objects/Tapestry2.png"/>
+			<model location="Objects/Tapestries/tapestry.wom">
+				<override mesh="tapestryMeshMesh" texture="Objects/Tapestries/Tapestry2.dds"/>
 			</model>
 			<materials>
 				Planks = 1,
@@ -5296,8 +5333,8 @@
 			<category>Tapestries</category>
 		</object>
 		<object name="Orange tapestry" shortname="tOrange" type="normal">
-			<model location="Objects/tapestry.wom">
-				<override mesh="tapestryMeshMesh" texture="Objects/Tapestry3.png"/>
+			<model location="Objects/Tapestries/tapestry.wom">
+				<override mesh="tapestryMeshMesh" texture="Objects/Tapestries/Tapestry3.dds"/>
 			</model>
 			<materials>
 				Planks = 1,
@@ -5309,8 +5346,8 @@
 			<category>Tapestries</category>
 		</object>
 		<object name="Cavalry motif tapestry" shortname="tCavalry" type="normal">
-			<model location="Objects/tapestry.wom">
-				<override mesh="tapestryMeshMesh" texture="Objects/Tapestry4.png"/>
+			<model location="Objects/Tapestries/tapestry.wom">
+				<override mesh="tapestryMeshMesh" texture="Objects/Tapestries/Tapestry4.dds"/>
 			</model>
 			<materials>
 				Planks = 1,
@@ -5322,8 +5359,8 @@
 			<category>Tapestries</category>
 		</object>
 		<object name="Festivities motif tapestry" shortname="tFestivities" type="normal">
-			<model location="Objects/tapestry.wom">
-				<override mesh="tapestryMeshMesh" texture="Objects/Tapestry5.png"/>
+			<model location="Objects/Tapestries/tapestry.wom">
+				<override mesh="tapestryMeshMesh" texture="Objects/Tapestries/Tapestry5.dds"/>
 			</model>
 			<materials>
 				Planks = 1,
@@ -5335,8 +5372,8 @@
 			<category>Tapestries</category>
 		</object>
 		<object name="Battle of Kyara tapestry" shortname="tKyara" type="normal">
-			<model location="Objects/tapestry.wom">
-				<override mesh="tapestryMeshMesh" texture="Objects/Tapestry6.png"/>
+			<model location="Objects/Tapestries/tapestry.wom">
+				<override mesh="tapestryMeshMesh" texture="Objects/Tapestries/Tapestry6.dds"/>
 			</model>
 			<materials>
 				Planks = 1,
