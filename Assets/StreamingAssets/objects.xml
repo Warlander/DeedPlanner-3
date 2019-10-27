@@ -5063,7 +5063,7 @@
 			</materials>
 			<category>Fires</category>
 		</object>
-		<object name="Fireplace" shortname="fPlace" type="normal">
+		<object name="Open fireplace" shortname="fPlace" type="normal">
 			<model location="Objects/Fireplace.wom"/>
 			<materials>
 				Planks = 2,
