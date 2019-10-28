@@ -4694,23 +4694,26 @@
 			</model>
 			<category>Vehicles/Wagons</category>
 		</object>
-		<object name="JK wagon" shortname="wagonJK" type="normal">
+		<object name="Jenn-Kellon wagon" shortname="wagonJK" type="normal">
 			<model location="Objects/Wagon_main.wom">
 				<override mesh="TentMesh" texture="Objects/wagon_cloth_jenn.dds"/>
 			</model>
 			<category>Vehicles/Wagons</category>
+			<category>Kingdoms/Jenn-Kellon</category>
 		</object>
-		<object name="HoTS wagon" shortname="wagonHoTS" type="normal">
+		<object name="Horde of The Summoned wagon" shortname="wagonHoTS" type="normal">
 			<model location="Objects/Wagon_main.wom">
 				<override mesh="TentMesh" texture="Objects/wagon_cloth_hots.dds"/>
 			</model>
 			<category>Vehicles/Wagons</category>
+			<category>Kingdoms/Horde of The Summoned</category>
 		</object>
-		<object name="MR wagon" shortname="wagonMR" type="normal">
+		<object name="Mol-Rehan wagon" shortname="wagonMR" type="normal">
 			<model location="Objects/Wagon_main.wom">
 				<override mesh="TentMesh" texture="Objects/wagon_cloth_molr.dds"/>
 			</model>
 			<category>Vehicles/Wagons</category>
+			<category>Kingdoms/Mol-Rehan</category>
 		</object>
 		
 		<object name="Small cart" shortname="sCart" type="normal">
