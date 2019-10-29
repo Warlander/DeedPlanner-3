@@ -163,7 +163,8 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
 
-            if (overlayMesh || groundMesh || (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor)))
+            bool canPlaceNewObject = overlayMesh || groundMesh || (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor));
+            if (canPlaceNewObject || placingDecoration)
             {
                 ghostObject.gameObject.SetActive(true);
                 ghostObject.transform.position = position;
