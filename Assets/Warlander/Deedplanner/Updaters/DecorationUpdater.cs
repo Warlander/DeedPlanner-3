@@ -335,6 +335,8 @@ namespace Warlander.Deedplanner.Updaters
         {
             placingDecoration = false;
             dragStartPos = new Vector2();
+            
+            GameManager.Instance.Map.CommandManager.UndoAction();
         }
 
     }
