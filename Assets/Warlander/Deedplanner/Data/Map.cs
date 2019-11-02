@@ -46,9 +46,24 @@ namespace Warlander.Deedplanner.Data
 
         private bool needsRoofUpdate = false;
 
+        private bool renderDecorations = true;
         private bool renderTrees = true;
         private bool renderBushes = true;
 
+        public bool RenderDecorations
+        {
+            get => renderDecorations;
+            set
+            {
+                if (renderDecorations == value)
+                {
+                    return;
+                }
+                renderDecorations = value;
+                RefreshAllTiles();
+            }
+        }
+        
         public bool RenderTrees
         {
             get => renderTrees;

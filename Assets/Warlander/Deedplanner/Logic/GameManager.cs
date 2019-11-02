@@ -30,6 +30,7 @@ namespace Warlander.Deedplanner.Logic
         public HeightmapHandle HeightmapHandlePrefab => heightmapHandlePrefab;
         public PlaneLine PlaneLinePrefab => planeLinePrefab;
 
+        private bool renderDecorations = true;
         private bool renderTrees = true;
         private bool renderBushes = true;
 
@@ -150,6 +151,7 @@ namespace Warlander.Deedplanner.Logic
 
         private void ApplyPropertiesToMap(Map map)
         {
+            map.RenderDecorations = renderDecorations;
             map.RenderTrees = renderTrees;
             map.RenderBushes = renderBushes;
         }
@@ -190,6 +192,12 @@ namespace Warlander.Deedplanner.Logic
             }
 
             Map.RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
+        }
+
+        public void OnDecorationsVisibilityChange(bool enable)
+        {
+            renderDecorations = enable;
+            Map.RenderDecorations = renderDecorations;
         }
 
         public void OnTreeVisibilityChange(bool enable)
