@@ -30,6 +30,8 @@ namespace Warlander.Deedplanner.Logic
         public HeightmapHandle HeightmapHandlePrefab => heightmapHandlePrefab;
         public PlaneLine PlaneLinePrefab => planeLinePrefab;
 
+        private bool renderTrees = true;
+
         public GameManager()
         {
             if (Instance)
@@ -69,6 +71,7 @@ namespace Warlander.Deedplanner.Logic
             GameObject mapObject = new GameObject("Map", typeof(Map));
             Map = mapObject.GetComponent<Map>();
             Map.Initialize(width, height);
+            ApplyPropertiesToMap(Map);
         }
 
         public void ResizeMap(int left, int right, int bottom, int top)
@@ -79,6 +82,7 @@ namespace Warlander.Deedplanner.Logic
             newMap.Initialize(Map, left, right, bottom, top);
             Destroy(Map.gameObject);
             Map = newMap;
+            ApplyPropertiesToMap(Map);
         }
 
         public void ClearMap()
@@ -94,6 +98,7 @@ namespace Warlander.Deedplanner.Logic
             GameObject mapObject = new GameObject("Map", typeof(Map));
             Map = mapObject.GetComponent<Map>();
             Map.Initialize(width, height);
+            ApplyPropertiesToMap(Map);
         }
 
         public IEnumerator LoadMap(Uri mapUri)
@@ -139,6 +144,12 @@ namespace Warlander.Deedplanner.Logic
             GameObject mapObject = new GameObject("Map", typeof(Map));
             Map = mapObject.GetComponent<Map>();
             Map.Initialize(doc);
+            ApplyPropertiesToMap(Map);
+        }
+
+        private void ApplyPropertiesToMap(Map map)
+        {
+            map.RenderTrees = renderTrees;
         }
 
         private byte[] DecompressGzip(byte[] gzip)
@@ -164,6 +175,11 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
+        private void CheckUpdater(AbstractUpdater updater, Tab tab)
+        {
+            updater.gameObject.SetActive(updater.TargetTab == tab);
+        }
+        
         private void OnTabChange(Tab tab)
         { 
             foreach (AbstractUpdater updater in updaters)
@@ -174,9 +190,10 @@ namespace Warlander.Deedplanner.Logic
             Map.RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
         }
 
-        private void CheckUpdater(AbstractUpdater updater, Tab tab)
+        public void OnTreeVisibilityChange(bool enabled)
         {
-            updater.gameObject.SetActive(updater.TargetTab == tab);
+            renderTrees = enabled;
+            Map.RenderTrees = renderTrees;
         }
     }
 
