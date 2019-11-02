@@ -794,14 +794,13 @@ namespace Warlander.Deedplanner.Data
 
         private void CheckDecorationRendering(Decoration decoration)
         {
-            if (decoration.Data.Tree)
-            {
-                decoration.gameObject.SetActive(Map.RenderTrees);
-            }
-            else if (decoration.Data.Bush)
-            {
-                decoration.gameObject.SetActive(Map.RenderBushes);
-            }
+            bool renderDecorations = Map.RenderDecorations;
+            bool renderTrees = !decoration.Data.Tree || Map.RenderTrees;
+            bool renderBushes = !decoration.Data.Bush || Map.RenderBushes;
+
+            bool shouldRender = renderDecorations && renderTrees && renderBushes;
+            
+            decoration.gameObject.SetActive(shouldRender);
         }
 
         private class TileEntityChangeCommand : IReversibleCommand
