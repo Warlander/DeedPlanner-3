@@ -52300,7 +52300,7 @@ PrefabInstance:
     - target: {fileID: 8287329788751124829, guid: ffb307af5151930498f501dbc528e313,
         type: 3}
       propertyPath: m_Name
-      value: Top Down Menu
+      value: Visibility Menu
       objectReference: {fileID: 0}
     - target: {fileID: 8287329788751124829, guid: ffb307af5151930498f501dbc528e313,
         type: 3}
@@ -52442,6 +52442,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8287329788222144743, guid: ffb307af5151930498f501dbc528e313,
+        type: 3}
+      propertyPath: m_Name
+      value: Tree Visibility
+      objectReference: {fileID: 0}
     - target: {fileID: 8287329788222144746, guid: ffb307af5151930498f501dbc528e313,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -52476,6 +52481,36 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8287329788222144744, guid: ffb307af5151930498f501dbc528e313,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8287329788222144744, guid: ffb307af5151930498f501dbc528e313,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8287329788222144744, guid: ffb307af5151930498f501dbc528e313,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8287329788222144744, guid: ffb307af5151930498f501dbc528e313,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1727024745}
+    - target: {fileID: 8287329788222144744, guid: ffb307af5151930498f501dbc528e313,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnTreeVisibilityChange
+      objectReference: {fileID: 0}
+    - target: {fileID: 8287329788222144744, guid: ffb307af5151930498f501dbc528e313,
+        type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8287329787742834519, guid: ffb307af5151930498f501dbc528e313,
         type: 3}

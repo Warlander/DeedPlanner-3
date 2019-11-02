@@ -46,6 +46,22 @@ namespace Warlander.Deedplanner.Data
 
         private bool needsRoofUpdate = false;
 
+        private bool renderTrees = true;
+
+        public bool RenderTrees
+        {
+            get => renderTrees;
+            set
+            {
+                if (renderTrees == value)
+                {
+                    return;
+                }
+                renderTrees = value;
+                RefreshAllTiles();
+            }
+        }
+
         public Tile this[int x, int y]
         {
             get
@@ -173,14 +189,8 @@ namespace Warlander.Deedplanner.Data
             }
             
             Ground.UpdateNow();
-
-            for (int i = 0; i <= Width; i++)
-            {
-                for (int i2 = 0; i2 <= Height; i2++)
-                {
-                    this[i, i2].Refresh();
-                }
-            }
+            
+            RefreshAllTiles();
 
             RecalculateHeights();
             RecalculateRoofs();
@@ -249,6 +259,14 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
+        private void RefreshAllTiles()
+        {
+            foreach (Tile tile in tiles)
+            {
+                tile.Refresh();
+            }
+        }
+        
         private void RecalculateRoofsInternal()
         {
             for (int i = 0; i <= Width; i++)

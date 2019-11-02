@@ -18,7 +18,7 @@ namespace Warlander.Deedplanner.Data.Walls
 
         private int currentSlopeDifference = int.MinValue;
 
-        public void Initialize(Tile tile, WallData data, bool reversed, bool firstFloor, int slopeDifference)
+        public void Initialize(Tile tile, WallData data, bool reversed, int slopeDifference)
         {
             Tile = tile;
             gameObject.layer = LayerMasks.WallLayer;

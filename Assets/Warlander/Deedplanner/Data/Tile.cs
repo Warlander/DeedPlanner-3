@@ -45,10 +45,10 @@ namespace Warlander.Deedplanner.Data
             set {
                 caveHeight = value;
                 // TODO: add cave mesh handling
-                UpdateCaveEntitiesPositions();
-                Map.GetRelativeTile(this, -1, 0)?.UpdateCaveEntitiesPositions();
-                Map.GetRelativeTile(this, 0, -1)?.UpdateCaveEntitiesPositions();
-                Map.GetRelativeTile(this, -1, -1)?.UpdateCaveEntitiesPositions();
+                RefreshCaveEntities();
+                Map.GetRelativeTile(this, -1, 0)?.RefreshCaveEntities();
+                Map.GetRelativeTile(this, 0, -1)?.RefreshCaveEntities();
+                Map.GetRelativeTile(this, -1, -1)?.RefreshCaveEntities();
 
                 Map.RecalculateCaveHeight(X, Y);
             }
@@ -59,10 +59,10 @@ namespace Warlander.Deedplanner.Data
             set {
                 caveSize = value;
                 // TODO: add cave mesh handling
-                UpdateCaveEntitiesPositions();
-                Map.GetRelativeTile(this, -1, 0)?.UpdateCaveEntitiesPositions();
-                Map.GetRelativeTile(this, 0, -1)?.UpdateCaveEntitiesPositions();
-                Map.GetRelativeTile(this, -1, -1)?.UpdateCaveEntitiesPositions();
+                RefreshCaveEntities();
+                Map.GetRelativeTile(this, -1, 0)?.RefreshCaveEntities();
+                Map.GetRelativeTile(this, 0, -1)?.RefreshCaveEntities();
+                Map.GetRelativeTile(this, -1, -1)?.RefreshCaveEntities();
 
                 Map.RecalculateCaveHeight(X, Y);
             }
@@ -103,8 +103,8 @@ namespace Warlander.Deedplanner.Data
                 PasteEntity(data, entity);
             }
             
-            UpdateSurfaceEntitiesPositions();
-            UpdateCaveEntitiesPositions();
+            RefreshSurfaceEntities();
+            RefreshCaveEntities();
         }
 
         private void PasteEntity(EntityData data, TileEntity entity)
@@ -286,7 +286,7 @@ namespace Warlander.Deedplanner.Data
 
             Entities[entity] = roof;
             Map.AddEntityToMap(roofObject, entity.Floor);
-            UpdateSurfaceEntitiesPositions();
+            RefreshSurfaceEntities();
 
             return roof;
         }
@@ -351,12 +351,12 @@ namespace Warlander.Deedplanner.Data
             int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 0, 1).GetHeightForFloor(entity.Floor);
             GameObject wallObject = new GameObject("Vertical Wall " + data.Name, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
-            wall.Initialize(this, data, reversed, entity.IsGroundFloor, slopeDifference);
+            wall.Initialize(this, data, reversed, slopeDifference);
             wallObject.transform.rotation = Quaternion.Euler(0, 90, 0);
 
             Entities[entity] = wall;
             Map.AddEntityToMap(wallObject, entity.Floor);
-            UpdateSurfaceEntitiesPositions();
+            RefreshSurfaceEntities();
 
             return wall;
         }
@@ -420,12 +420,12 @@ namespace Warlander.Deedplanner.Data
             int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 1, 0).GetHeightForFloor(entity.Floor);
             GameObject wallObject = new GameObject("Horizontal Wall " + data.Name, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
-            wall.Initialize(this, data, reversed, entity.IsGroundFloor, slopeDifference);
+            wall.Initialize(this, data, reversed, slopeDifference);
             wallObject.transform.rotation = Quaternion.Euler(0, 180, 0);
 
             Entities[entity] = wall;
             Map.AddEntityToMap(wallObject, entity.Floor);
-            UpdateSurfaceEntitiesPositions();
+            RefreshSurfaceEntities();
 
             return wall;
         }
@@ -482,7 +482,7 @@ namespace Warlander.Deedplanner.Data
             decoration.Initialize(this, data, position, rotation);
             Entities[entity] = decoration;
             Map.AddEntityToMap(decorationObject, entity.Floor);
-            UpdateSurfaceEntitiesPositions();
+            RefreshSurfaceEntities();
 
             return decoration;
         }
@@ -717,11 +717,11 @@ namespace Warlander.Deedplanner.Data
         
         public void Refresh()
         {
-            UpdateSurfaceEntitiesPositions();
-            UpdateCaveEntitiesPositions();
+            RefreshSurfaceEntities();
+            RefreshCaveEntities();
         }
 
-        private void UpdateSurfaceEntitiesPositions()
+        private void RefreshSurfaceEntities()
         {
             foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
             {
@@ -731,11 +731,11 @@ namespace Warlander.Deedplanner.Data
                     continue;
                 }
                 TileEntity tileEntity = pair.Value;
-                UpdateEntityPosition(data, tileEntity);
+                RefreshEntity(data, tileEntity);
             }
         }
 
-        private void UpdateCaveEntitiesPositions()
+        private void RefreshCaveEntities()
         {
             foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
             {
@@ -745,11 +745,11 @@ namespace Warlander.Deedplanner.Data
                     continue;
                 }
                 TileEntity tileEntity = pair.Value;
-                UpdateEntityPosition(data, tileEntity);
+                RefreshEntity(data, tileEntity);
             }
         }
 
-        private void UpdateEntityPosition(EntityData data, TileEntity entity)
+        private void RefreshEntity(EntityData data, TileEntity entity)
         {
             if (data is FreeformEntityData freeformData)
             {
@@ -784,6 +784,19 @@ namespace Warlander.Deedplanner.Data
                 int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 0, 1).GetHeightForFloor(entity.Floor);
                 Wall wall = (Wall) entity;
                 wall.UpdateModel(slopeDifference, data.IsGroundFloor);
+            }
+
+            if (entity is Decoration decoration)
+            {
+                CheckDecorationRendering(decoration);
+            }
+        }
+
+        private void CheckDecorationRendering(Decoration decoration)
+        {
+            if (decoration.Data.Tree)
+            {
+                decoration.gameObject.SetActive(Map.RenderTrees);
             }
         }
 
@@ -824,11 +837,11 @@ namespace Warlander.Deedplanner.Data
 
                 if (data.IsSurface)
                 {
-                    tile.UpdateSurfaceEntitiesPositions();
+                    tile.RefreshSurfaceEntities();
                 }
                 else
                 {
-                    tile.UpdateCaveEntitiesPositions();
+                    tile.RefreshCaveEntities();
                 }
 
                 if (data.Type == EntityType.Floorroof)
@@ -857,15 +870,15 @@ namespace Warlander.Deedplanner.Data
                     newEntity.gameObject.SetActive(false);
                 }
                 
-                tile.UpdateSurfaceEntitiesPositions();
+                tile.RefreshSurfaceEntities();
                 
                 if (data.IsSurface)
                 {
-                    tile.UpdateSurfaceEntitiesPositions();
+                    tile.RefreshSurfaceEntities();
                 }
                 else
                 {
-                    tile.UpdateCaveEntitiesPositions();
+                    tile.RefreshCaveEntities();
                 }
                 
                 if (data.Type == EntityType.Floorroof)
@@ -952,10 +965,10 @@ namespace Warlander.Deedplanner.Data
             private void Refresh()
             {
                 tile.Map.Ground.SetSlope(tile.X, tile.Y, tile.surfaceHeight);
-                tile.UpdateSurfaceEntitiesPositions();
-                tile.Map.GetRelativeTile(tile, -1, 0)?.UpdateSurfaceEntitiesPositions();
-                tile.Map.GetRelativeTile(tile, 0, -1)?.UpdateSurfaceEntitiesPositions();
-                tile.Map.GetRelativeTile(tile, -1, -1)?.UpdateSurfaceEntitiesPositions();
+                tile.RefreshSurfaceEntities();
+                tile.Map.GetRelativeTile(tile, -1, 0)?.RefreshSurfaceEntities();
+                tile.Map.GetRelativeTile(tile, 0, -1)?.RefreshSurfaceEntities();
+                tile.Map.GetRelativeTile(tile, -1, -1)?.RefreshSurfaceEntities();
 
                 tile.Map.RecalculateSurfaceHeight(tile.X, tile.Y);
             }
