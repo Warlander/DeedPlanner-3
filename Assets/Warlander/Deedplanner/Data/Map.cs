@@ -47,6 +47,7 @@ namespace Warlander.Deedplanner.Data
         private bool needsRoofUpdate = false;
 
         private bool renderTrees = true;
+        private bool renderBushes = true;
 
         public bool RenderTrees
         {
@@ -58,6 +59,20 @@ namespace Warlander.Deedplanner.Data
                     return;
                 }
                 renderTrees = value;
+                RefreshAllTiles();
+            }
+        }
+        
+        public bool RenderBushes
+        {
+            get => renderBushes;
+            set
+            {
+                if (renderBushes == value)
+                {
+                    return;
+                }
+                renderBushes = value;
                 RefreshAllTiles();
             }
         }

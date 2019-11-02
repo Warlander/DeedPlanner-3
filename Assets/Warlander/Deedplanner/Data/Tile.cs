@@ -798,6 +798,10 @@ namespace Warlander.Deedplanner.Data
             {
                 decoration.gameObject.SetActive(Map.RenderTrees);
             }
+            else if (decoration.Data.Bush)
+            {
+                decoration.gameObject.SetActive(Map.RenderBushes);
+            }
         }
 
         private class TileEntityChangeCommand : IReversibleCommand

@@ -31,6 +31,7 @@ namespace Warlander.Deedplanner.Logic
         public PlaneLine PlaneLinePrefab => planeLinePrefab;
 
         private bool renderTrees = true;
+        private bool renderBushes = true;
 
         public GameManager()
         {
@@ -150,6 +151,7 @@ namespace Warlander.Deedplanner.Logic
         private void ApplyPropertiesToMap(Map map)
         {
             map.RenderTrees = renderTrees;
+            map.RenderBushes = renderBushes;
         }
 
         private byte[] DecompressGzip(byte[] gzip)
@@ -190,10 +192,16 @@ namespace Warlander.Deedplanner.Logic
             Map.RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
         }
 
-        public void OnTreeVisibilityChange(bool enabled)
+        public void OnTreeVisibilityChange(bool enable)
         {
-            renderTrees = enabled;
+            renderTrees = enable;
             Map.RenderTrees = renderTrees;
+        }
+
+        public void OnBushVisibilityChange(bool enable)
+        {
+            renderBushes = enable;
+            Map.RenderBushes = renderBushes;
         }
     }
 
