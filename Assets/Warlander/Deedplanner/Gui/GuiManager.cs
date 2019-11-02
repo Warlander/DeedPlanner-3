@@ -9,8 +9,8 @@ namespace Warlander.Deedplanner.Gui
 
         public static GuiManager Instance { get; private set; }
 
-        [SerializeField] private RectTransform sidePanelTransform = null;
-        
+        [SerializeField] private RectTransform[] interfaceTransforms = null;
+
         [SerializeField] private Window windowPrefab = null;
 
         [SerializeField] private UnityTree groundsTree = null;
@@ -58,7 +58,10 @@ namespace Warlander.Deedplanner.Gui
         {
             if (Input.GetKeyDown(KeyCode.F10))
             {
-                sidePanelTransform.gameObject.SetActive(!sidePanelTransform.gameObject.activeSelf);
+                foreach (RectTransform interfaceTransform in interfaceTransforms)
+                {
+                    interfaceTransform.gameObject.SetActive(!interfaceTransform.gameObject.activeSelf);
+                }
             }
         }
 
