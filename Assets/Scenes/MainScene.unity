@@ -13026,7 +13026,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03134ab2813131742810fc39a8ad2d5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sidePanelTransform: {fileID: 1845217158}
+  interfaceTransforms:
+  - {fileID: 2077539212}
+  - {fileID: 704808008}
+  - {fileID: 1845217158}
   windowPrefab: {fileID: 1937894905981870343, guid: 7cca77f05c96fde48981a1284c9f0a65,
     type: 3}
   groundsTree: {fileID: 16709742}
@@ -52307,6 +52310,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8287329788222144743, guid: ffb307af5151930498f501dbc528e313,
+        type: 3}
+      propertyPath: m_Name
+      value: Tree Visibility
+      objectReference: {fileID: 0}
+    - target: {fileID: 8287329789054741164, guid: ffb307af5151930498f501dbc528e313,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8287329788751124830, guid: ffb307af5151930498f501dbc528e313,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -52412,11 +52425,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 8287329789054741164, guid: ffb307af5151930498f501dbc528e313,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8287329789054741165, guid: ffb307af5151930498f501dbc528e313,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -52441,11 +52449,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8287329788222144743, guid: ffb307af5151930498f501dbc528e313,
-        type: 3}
-      propertyPath: m_Name
-      value: Tree Visibility
       objectReference: {fileID: 0}
     - target: {fileID: 8287329788222144746, guid: ffb307af5151930498f501dbc528e313,
         type: 3}
