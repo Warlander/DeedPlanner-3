@@ -49180,7 +49180,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 4
-    m_Right: 8
+    m_Right: 10
     m_Top: 4
     m_Bottom: 10
   m_ChildAlignment: 2
@@ -52752,11 +52752,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8287329788222144743, guid: ffb307af5151930498f501dbc528e313,
-        type: 3}
-      propertyPath: m_Name
-      value: Objects Visibility
-      objectReference: {fileID: 0}
     - target: {fileID: 8287329789054741164, guid: ffb307af5151930498f501dbc528e313,
         type: 3}
       propertyPath: m_IsActive
@@ -52871,6 +52866,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8287329788222144743, guid: ffb307af5151930498f501dbc528e313,
+        type: 3}
+      propertyPath: m_Name
+      value: Objects Visibility
       objectReference: {fileID: 0}
     - target: {fileID: 8287329788500057954, guid: ffb307af5151930498f501dbc528e313,
         type: 3}
