@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Warlander.Deedplanner.Graphics;
@@ -49,7 +50,7 @@ namespace Warlander.Deedplanner.Data.Grounds
             gameObject.layer = LayerMasks.GroundLayer;
             if (groundTexturesArray == null)
             {
-                int groundTexturesCount = Database.Grounds.Count;
+                int groundTexturesCount = CalculateGroundTexturesCount();
                 
                 if (Properties.Web)
                 {
@@ -106,6 +107,18 @@ namespace Warlander.Deedplanner.Data.Grounds
             
             needsVerticesUpdate = true;
             needsUvUpdate = true;
+        }
+
+        private int CalculateGroundTexturesCount()
+        {
+            HashSet<TextureReference> textures = new HashSet<TextureReference>();
+
+            foreach (KeyValuePair<string, GroundData> pair in Database.Grounds)
+            {
+                textures.Add(pair.Value.Tex3d);
+            }
+
+            return textures.Count;
         }
 
         private void InitializeRenderMesh()
