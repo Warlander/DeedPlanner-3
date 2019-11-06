@@ -26,8 +26,13 @@ namespace Warlander.Deedplanner.Graphics
 
             if (index == -1)
             {
-                PutTexture(key, texture);
+                bool textureAdded = PutTexture(key, texture);
                 index = GetTextureIndex(key);
+
+                if (!textureAdded)
+                {
+                    Debug.LogWarning("Trying to add new texture to full Texture2DArray");
+                }
             }
 
             return index;

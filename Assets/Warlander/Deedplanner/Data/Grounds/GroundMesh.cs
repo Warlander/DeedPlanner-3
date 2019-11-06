@@ -15,7 +15,7 @@ namespace Warlander.Deedplanner.Data.Grounds
         private const TextureFormat WebGroundTexturesFormat = TextureFormat.ARGB32;
         private const TextureFormat DefaultGroundTexturesFormat = TextureFormat.DXT5;
         
-        private static IndexedTextureArray<string> groundTexturesArray;
+        private static IndexedTextureArray<TextureReference> groundTexturesArray;
         
         private const int VerticesPerRenderTile = 12;
         private const int TrianglesPerTile = 12; // 4 triangles, 4*3
@@ -54,11 +54,11 @@ namespace Warlander.Deedplanner.Data.Grounds
                 
                 if (Properties.Web)
                 {
-                    groundTexturesArray = new IndexedTextureArray<string>(GroundTexturesWidth, GroundTexturesHeight, groundTexturesCount, WebGroundTexturesFormat);
+                    groundTexturesArray = new IndexedTextureArray<TextureReference>(GroundTexturesWidth, GroundTexturesHeight, groundTexturesCount, WebGroundTexturesFormat);
                 }
                 else
                 {
-                    groundTexturesArray = new IndexedTextureArray<string>(GroundTexturesWidth, GroundTexturesHeight, groundTexturesCount, DefaultGroundTexturesFormat);
+                    groundTexturesArray = new IndexedTextureArray<TextureReference>(GroundTexturesWidth, GroundTexturesHeight, groundTexturesCount, DefaultGroundTexturesFormat);
                 }
                 
             }
@@ -647,7 +647,7 @@ namespace Warlander.Deedplanner.Data.Grounds
                 yield break;
             }
             
-            int texIndex = groundTexturesArray.PutOrGetTexture(data.ShortName, targetTexture);
+            int texIndex = groundTexturesArray.PutOrGetTexture(data.Tex3d, targetTexture);
             Vector2 texVector = new Vector2(texIndex, 0);
             uv2[uvIndex] = texVector;
             uv2[uvIndex + 1] = texVector;
