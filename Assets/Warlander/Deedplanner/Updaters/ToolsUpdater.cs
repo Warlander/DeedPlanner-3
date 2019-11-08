@@ -24,6 +24,9 @@ namespace Warlander.Deedplanner.Updaters
         private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+            
+            RefreshMode();
+            RefreshGui();
         }
 
         public void OnModeChange(bool toggledOn)
