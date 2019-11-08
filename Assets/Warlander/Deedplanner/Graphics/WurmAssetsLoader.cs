@@ -38,7 +38,7 @@ namespace Warlander.Deedplanner.Graphics
                 {
                     GameObject meshObject = null;
                     yield return LoadMeshObject(source, fileFolder, scale, loadedObject => meshObject = loadedObject);
-                        
+                    
                     if (meshObject)
                     {
                         meshObject.transform.SetParent(modelGameObject.transform);
