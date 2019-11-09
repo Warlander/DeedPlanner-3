@@ -25,7 +25,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
 
         public object[] Values {
             get {
-                return GetComponentsInChildren<UnityListElement>().Select(element => element.Value).ToArray();
+                return listElementsParent.GetComponentsInChildren<UnityListElement>().Select(element => element.Value).ToArray();
             }
         }
 
@@ -55,6 +55,14 @@ namespace Warlander.Deedplanner.Gui.Widgets
             }
 
             return newElement;
+        }
+
+        public void Clear()
+        {
+            foreach (Transform childTransform in listElementsParent.transform)
+            {
+                Destroy(childTransform.gameObject);
+            }
         }
 
     }

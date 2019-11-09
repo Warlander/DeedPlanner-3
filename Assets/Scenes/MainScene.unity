@@ -11223,6 +11223,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 19574092408115b4393b449b1e80f5db, type: 3}
+--- !u!114 &406117968 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7927132958388007750, guid: cac0499942292f24696aee92983ece80,
+    type: 3}
+  m_PrefabInstance: {fileID: 1120677918}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16fe2af633ae7014c93e84822782ad0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &412287672
 GameObject:
   m_ObjectHideFlags: 0
@@ -26552,7 +26564,7 @@ PrefabInstance:
     - target: {fileID: 4875529236647746010, guid: cac0499942292f24696aee92983ece80,
         type: 3}
       propertyPath: m_Name
-      value: List
+      value: Warnings List
       objectReference: {fileID: 0}
     - target: {fileID: 4875529236647746021, guid: cac0499942292f24696aee92983ece80,
         type: 3}
@@ -26689,12 +26701,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7927132958388007750, guid: cac0499942292f24696aee92983ece80,
-        type: 3}
-      propertyPath: listElementPrefab
-      value: 
-      objectReference: {fileID: 1396676428323667334, guid: afc2825e450561c41b7f9fceb71e64c3,
-        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cac0499942292f24696aee92983ece80, type: 3}
 --- !u!224 &1120677919 stripped
@@ -48035,6 +48041,7 @@ MonoBehaviour:
   mapWarningsPanelTransform: {fileID: 1493980051}
   materialsWindowTransform: {fileID: 651684777}
   materialsInputField: {fileID: 1893566690}
+  warningsList: {fileID: 406117968}
 --- !u!1001 &2019280476
 PrefabInstance:
   m_ObjectHideFlags: 0

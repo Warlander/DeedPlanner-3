@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
@@ -19,6 +20,8 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private RectTransform materialsWindowTransform = null;
         [SerializeField] private TMP_InputField materialsInputField = null;
 
+        [SerializeField] private UnityList warningsList = null;
+
         private ToolType currentTool = ToolType.MaterialsCalculator;
         
         private void OnEnable()
@@ -29,17 +32,19 @@ namespace Warlander.Deedplanner.Updaters
             RefreshGui();
         }
 
-        public void OnModeChange(bool toggledOn)
+        private void Update()
         {
-            if (!toggledOn)
+            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
+            if (!raycast.transform)
             {
                 return;
             }
-
-            RefreshMode();
-            RefreshGui();
+            
+            OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
+            
+            
         }
-
+        
         private void RefreshMode()
         {
             if (calculateMaterialsToggle.isOn)
@@ -56,21 +61,29 @@ namespace Warlander.Deedplanner.Updaters
         {
             calculateMaterialsPanelTransform.gameObject.SetActive(currentTool == ToolType.MaterialsCalculator);
             mapWarningsPanelTransform.gameObject.SetActive(currentTool == ToolType.MapWarnings);
-        }
-        
-        private void Update()
-        {
-            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
-            if (!raycast.transform)
+            
+            if (mapWarningsPanelTransform.gameObject.activeSelf)
             {
-                return;
+                RefreshMapWarnings();
             }
-            
-            OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
-            
+        }
+
+        private void RefreshMapWarnings()
+        {
             
         }
 
+        public void OnModeChange(bool toggledOn)
+        {
+            if (!toggledOn)
+            {
+                return;
+            }
+
+            RefreshMode();
+            RefreshGui();
+        }
+        
         public void CalculateMapMaterials()
         {
             Materials mapMaterials = GameManager.Instance.Map.CalculateMapMaterials();
