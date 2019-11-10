@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
@@ -17,6 +18,11 @@ namespace Warlander.Deedplanner.Data
         {
             Floor = floor;
             Type = type;
+        }
+
+        public virtual void Apply(Tile tile, Transform targetTransform)
+        {
+            targetTransform.localPosition = new Vector3(tile.X * 4, tile.SurfaceHeight * 0.1f + Floor * 3f, tile.Y * 4);
         }
 
         public virtual void Serialize(XmlDocument document, XmlElement localRoot)
