@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Xml;
+using UnityEngine;
 
 namespace Warlander.Deedplanner.Data
 {
@@ -15,6 +16,24 @@ namespace Warlander.Deedplanner.Data
             X = x;
             Y = y;
             FloatOnWater = floatOnWater;
+        }
+
+        public override void Apply(Tile tile, Transform targetTransform)
+        {
+            float x = tile.X * 4 + X;
+            float z = tile.Y * 4 + Y;
+            float interpolatedHeight = tile.Map.GetInterpolatedHeight(x, z);
+            if (FloatOnWater)
+            {
+                interpolatedHeight = Mathf.Max(interpolatedHeight, 0);
+            }
+            const float floorHeight = 0.25f;
+            bool containsFloor = tile.GetTileContent(Floor);
+            if (containsFloor)
+            {
+                interpolatedHeight += floorHeight;
+            }
+            targetTransform.localPosition = new Vector3(x, interpolatedHeight + Floor * 3f, z);
         }
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)

@@ -751,27 +751,7 @@ namespace Warlander.Deedplanner.Data
 
         private void RefreshEntity(EntityData data, TileEntity entity)
         {
-            if (data is FreeformEntityData freeformData)
-            {
-                float x = X * 4 + freeformData.X;
-                float z = Y * 4 + freeformData.Y;
-                float interpolatedHeight = Map.GetInterpolatedHeight(x, z);
-                if (freeformData.FloatOnWater)
-                {
-                    interpolatedHeight = Mathf.Max(interpolatedHeight, 0);
-                }
-                const float floorHeight = 0.25f;
-                bool containsFloor = GetTileContent(data.Floor);
-                if (containsFloor)
-                {
-                    interpolatedHeight += floorHeight;
-                }
-                entity.transform.localPosition = new Vector3(x, interpolatedHeight + freeformData.Floor * 3f, z);
-            }
-            else
-            {
-                entity.transform.localPosition = new Vector3(X * 4, SurfaceHeight * 0.1f + data.Floor * 3f, Y * 4);
-            }
+            data.Apply(this, entity.transform);
             
             if (data.Type == EntityType.Hfence || data.Type == EntityType.Hwall)
             {
