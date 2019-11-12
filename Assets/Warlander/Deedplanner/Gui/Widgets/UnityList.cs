@@ -61,7 +61,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
         {
             foreach (Transform childTransform in listElementsParent.transform)
             {
-                Destroy(childTransform.gameObject);
+                DestroyImmediate(childTransform.gameObject);
             }
         }
 
