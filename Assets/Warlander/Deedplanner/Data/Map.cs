@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Grounds;
@@ -9,7 +11,7 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class Map : MonoBehaviour, IXMLSerializable
+    public class Map : MonoBehaviour, IXMLSerializable, IEnumerable<Tile>
     {
 
         private static readonly int Color = Shader.PropertyToID("_Color");
@@ -477,6 +479,16 @@ namespace Warlander.Deedplanner.Data
             return 0;
         }
         
+        public IEnumerator<Tile> GetEnumerator()
+        {
+            return (IEnumerator<Tile>) tiles.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+        
         public void Serialize(XmlDocument document, XmlElement localRoot)
         {
             // localRoot for map is always null at start, we create it
@@ -595,6 +607,5 @@ namespace Warlander.Deedplanner.Data
                 }
             }
         }
-        
     }
 }

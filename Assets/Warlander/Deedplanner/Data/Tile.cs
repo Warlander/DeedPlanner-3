@@ -291,6 +291,37 @@ namespace Warlander.Deedplanner.Data
             return roof;
         }
 
+        public Wall GetVerticalWall(int level)
+        {
+            EntityData wallEntityData = new EntityData(level, EntityType.Vwall);
+            TileEntity wallEntity;
+            Entities.TryGetValue(wallEntityData, out wallEntity);
+            Wall currentWall = wallEntity as Wall;
+
+            return currentWall;
+        }
+        
+        public Wall GetVerticalFence(int level)
+        {
+            EntityData fenceEntityData = new EntityData(level, EntityType.Vfence);
+            TileEntity fenceEntity;
+            Entities.TryGetValue(fenceEntityData, out fenceEntity);
+            Wall currentFence = fenceEntity as Wall;
+
+            return currentFence;
+        }
+
+        public Wall GetVerticalWallOrFence(int level)
+        {
+            Wall wall = GetVerticalWall(level);
+            if (wall)
+            {
+                return wall;
+            }
+
+            return GetVerticalFence(level);
+        }
+        
         public Wall SetVerticalWall(WallData data, bool reversed, int level)
         {
             EntityData wallEntityData = new EntityData(level, EntityType.Vwall);
@@ -359,6 +390,37 @@ namespace Warlander.Deedplanner.Data
             RefreshSurfaceEntities();
 
             return wall;
+        }
+        
+        public Wall GetHorizontalWall(int level)
+        {
+            EntityData wallEntityData = new EntityData(level, EntityType.Hwall);
+            TileEntity wallEntity;
+            Entities.TryGetValue(wallEntityData, out wallEntity);
+            Wall currentWall = wallEntity as Wall;
+
+            return currentWall;
+        }
+        
+        public Wall GetHorizontalFence(int level)
+        {
+            EntityData fenceEntityData = new EntityData(level, EntityType.Hfence);
+            TileEntity fenceEntity;
+            Entities.TryGetValue(fenceEntityData, out fenceEntity);
+            Wall currentFence = fenceEntity as Wall;
+
+            return currentFence;
+        }
+
+        public Wall GetHorizontalWallOrFence(int level)
+        {
+            Wall wall = GetHorizontalWall(level);
+            if (wall)
+            {
+                return wall;
+            }
+
+            return GetHorizontalFence(level);
         }
 
         public Wall SetHorizontalWall(WallData data, bool reversed, int level)
