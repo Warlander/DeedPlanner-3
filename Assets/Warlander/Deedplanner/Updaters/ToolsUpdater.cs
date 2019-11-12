@@ -73,8 +73,11 @@ namespace Warlander.Deedplanner.Updaters
         private void RefreshMapWarnings()
         {
             warningsList.Clear();
-            
-            
+
+            if (warningsList.Values.Length == 0)
+            {
+                warningsList.Add("No warnings for this map");
+            }
         }
 
         private string CreateWarningString(Tile tile, string text)
