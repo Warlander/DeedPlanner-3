@@ -1,8 +1,10 @@
 using System;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
@@ -70,7 +72,16 @@ namespace Warlander.Deedplanner.Updaters
 
         private void RefreshMapWarnings()
         {
+            warningsList.Clear();
             
+            
+        }
+
+        private string CreateWarningString(Tile tile, string text)
+        {
+            StringBuilder build = new StringBuilder();
+            build.Append("(").Append(tile.X).Append(", ").Append(tile.Y).Append(") ").Append(text);
+            return build.ToString();
         }
 
         public void OnModeChange(bool toggledOn)
