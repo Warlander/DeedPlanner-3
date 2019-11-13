@@ -13,10 +13,9 @@ namespace Warlander.Deedplanner.Data.Walls
         public override Materials Materials => Data.Materials;
 
         public GameObject Model { get; private set; }
+        public int SlopeDifference { get; private set; } = int.MinValue;
         private MeshCollider meshCollider;
         private Mesh boundsMesh;
-
-        private int currentSlopeDifference = int.MinValue;
 
         public void Initialize(Tile tile, WallData data, bool reversed, int slopeDifference)
         {
@@ -36,12 +35,12 @@ namespace Warlander.Deedplanner.Data.Walls
 
         public void UpdateModel(int slopeDifference, bool firstFloor)
         {
-            if (currentSlopeDifference == slopeDifference)
+            if (SlopeDifference == slopeDifference)
             {
                 return;
             }
 
-            currentSlopeDifference = slopeDifference;
+            SlopeDifference = slopeDifference;
 
             if (firstFloor)
             {
@@ -73,7 +72,7 @@ namespace Warlander.Deedplanner.Data.Walls
             float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthConfortableMargin);
             bounds.size = new Vector3(bounds.size.x, bounds.size.y, comfortableWallDepth);
             
-            Vector3[] vectors = CreateBoundsVerticesArray(bounds, currentSlopeDifference);
+            Vector3[] vectors = CreateBoundsVerticesArray(bounds, SlopeDifference);
             
             boundsMesh.vertices = vectors;
             // turning collider off and on to force it to update
@@ -200,7 +199,7 @@ namespace Warlander.Deedplanner.Data.Walls
             {
                 build.AppendLine();
                 build.Append("Reversed = ").Append(Reversed).AppendLine();
-                build.Append("Slope = ").Append(currentSlopeDifference);
+                build.Append("Slope = ").Append(SlopeDifference);
             }
             
             return build.ToString();
