@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Grounds;
@@ -481,7 +482,7 @@ namespace Warlander.Deedplanner.Data
         
         public IEnumerator<Tile> GetEnumerator()
         {
-            return (IEnumerator<Tile>) tiles.GetEnumerator();
+            return tiles.Cast<Tile>().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

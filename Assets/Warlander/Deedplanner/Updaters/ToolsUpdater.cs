@@ -74,9 +74,41 @@ namespace Warlander.Deedplanner.Updaters
         {
             warningsList.Clear();
 
+            RefreshSlopedWallsWarnings();
+            
             if (warningsList.Values.Length == 0)
             {
                 warningsList.Add("No warnings for this map");
+            }
+        }
+
+        private void RefreshSlopedWallsWarnings()
+        {
+            Map map = GameManager.Instance.Map;
+
+            foreach (Tile tile in map)
+            {
+                RefreshSlopedWallsWarningsTile(tile);
+            }
+        }
+
+        private void RefreshSlopedWallsWarningsTile(Tile tile)
+        {
+            for (int i = Constants.NegativeFloorLimit; i < Constants.FloorLimit; i++)
+            {
+                Wall vWall = tile.GetVerticalWall(i);
+                if (vWall && vWall.Data.HouseWall && vWall.SlopeDifference != 0)
+                {
+                    warningsList.Add(CreateWarningString(tile, "Building wall on sloped terrain"));
+                    break;
+                }
+                
+                Wall hWall = tile.GetHorizontalWall(i);
+                if (hWall && hWall.Data.HouseWall && hWall.SlopeDifference != 0)
+                {
+                    warningsList.Add(CreateWarningString(tile, "Building wall on sloped terrain"));
+                    break;
+                }
             }
         }
 
