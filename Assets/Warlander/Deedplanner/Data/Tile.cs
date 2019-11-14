@@ -13,7 +13,7 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class Tile : ScriptableObject, IXMLSerializable
+    public class Tile : ScriptableObject, IXmlSerializable
     {
 
         private static readonly int ColorPropertyId = Shader.PropertyToID("_Color");

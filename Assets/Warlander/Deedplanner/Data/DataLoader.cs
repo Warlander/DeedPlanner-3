@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -23,7 +22,7 @@ namespace Warlander.Deedplanner.Data
     public static class DataLoader
     {
 
-        private static readonly List<string> shortNames = new List<string>();
+        private static readonly List<string> ShortNames = new List<string>();
 
         public static IEnumerator LoadData()
         {
@@ -66,22 +65,22 @@ namespace Warlander.Deedplanner.Data
             {
                 Debug.Log("Loading grounds");
                 LoadGrounds(document);
-                shortNames.Clear();
+                ShortNames.Clear();
                 Debug.Log("Loading caves");
                 LoadCaves(document);
-                shortNames.Clear();
+                ShortNames.Clear();
                 Debug.Log("Loading floors");
                 LoadFloors(document);
-                shortNames.Clear();
+                ShortNames.Clear();
                 Debug.Log("Loading walls");
                 LoadWalls(document);
-                shortNames.Clear();
+                ShortNames.Clear();
                 Debug.Log("Loading roofs");
                 LoadRoofs(document);
-                shortNames.Clear();
+                ShortNames.Clear();
                 Debug.Log("Loading objects");
                 LoadObjects(document);
-                shortNames.Clear();
+                ShortNames.Clear();
                 Debug.Log("XML file loading complete");
             }
         }
@@ -436,12 +435,12 @@ namespace Warlander.Deedplanner.Data
 
         private static bool VerifyShortName(string shortName)
         {
-            if (shortNames.Contains(shortName))
+            if (ShortNames.Contains(shortName))
             {
                 return false;
             }
 
-            shortNames.Add(shortName);
+            ShortNames.Add(shortName);
             return true;
         }
 

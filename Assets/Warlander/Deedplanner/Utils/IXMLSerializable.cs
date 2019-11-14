@@ -2,7 +2,7 @@
 
 namespace Warlander.Deedplanner.Utils
 {
-    public interface IXMLSerializable
+    public interface IXmlSerializable
     {
 
         void Serialize(XmlDocument document, XmlElement localRoot);

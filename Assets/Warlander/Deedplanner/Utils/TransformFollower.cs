@@ -5,25 +5,25 @@ namespace Warlander.Deedplanner.Utils
     public class TransformFollower : MonoBehaviour
     {
 
-        public Transform FollowedTransform;
-        public bool FollowX;
-        public bool FollowY;
-        public bool FollowZ;
+        [SerializeField] private Transform followedTransform = null;
+        [SerializeField] private bool followX = true;
+        [SerializeField] private bool followY = true;
+        [SerializeField] private bool followZ = true;
 
         private void Update()
         {
-            if (!FollowedTransform)
+            if (!followedTransform)
             {
                 return;
             }
 
             Transform currentTransform = transform;
             Vector3 currentTransformPosition = currentTransform.position;
-            Vector3 followedTransformPosition = FollowedTransform.position;
+            Vector3 followedTransformPosition = followedTransform.position;
 
-            float x = FollowX ? followedTransformPosition.x : currentTransformPosition.x;
-            float y = FollowY ? followedTransformPosition.y : currentTransformPosition.y;
-            float z = FollowZ ? followedTransformPosition.z : currentTransformPosition.z;
+            float x = followX ? followedTransformPosition.x : currentTransformPosition.x;
+            float y = followY ? followedTransformPosition.y : currentTransformPosition.y;
+            float z = followZ ? followedTransformPosition.z : currentTransformPosition.z;
             currentTransform.position = new Vector3(x, y, z);
         }
 

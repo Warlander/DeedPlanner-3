@@ -12,7 +12,7 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class Map : MonoBehaviour, IXMLSerializable, IEnumerable<Tile>
+    public class Map : MonoBehaviour, IXmlSerializable, IEnumerable<Tile>
     {
 
         private static readonly int Color = Shader.PropertyToID("_Color");

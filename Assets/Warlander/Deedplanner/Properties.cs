@@ -62,7 +62,7 @@ namespace Warlander.Deedplanner
         public bool DecorationSnapToGrid = false;
         public bool DecorationRotationSnapping = false;
 
-        public int guiScale = 10;
+        public int GuiScale = 10;
 
         public WaterQuality WaterQuality;
 
@@ -70,11 +70,11 @@ namespace Warlander.Deedplanner
             get {
                 if (Mobile || Web)
                 {
-                    return WaterQuality.SIMPLE;
+                    return WaterQuality.Simple;
                 }
                 else
                 {
-                    return WaterQuality.HIGH;
+                    return WaterQuality.High;
                 }
             }
         }

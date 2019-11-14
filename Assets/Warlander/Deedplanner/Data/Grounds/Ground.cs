@@ -4,7 +4,7 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data.Grounds
 {
-    public class Ground : IXMLSerializable
+    public class Ground : IXmlSerializable
     {
         
         private GroundData data;
