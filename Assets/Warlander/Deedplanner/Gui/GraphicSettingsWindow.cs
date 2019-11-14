@@ -44,19 +44,19 @@ namespace Warlander.Deedplanner.Gui
             WaterQuality waterQuality = Properties.Instance.WaterQuality;
             switch (waterQuality)
             {
-                case WaterQuality.SIMPLE:
+                case WaterQuality.Simple:
                     simpleWaterToggle.isOn = true;
                     break;
-                case WaterQuality.HIGH:
+                case WaterQuality.High:
                     highWaterToggle.isOn = true;
                     break;
-                case WaterQuality.ULTRA:
+                case WaterQuality.Ultra:
                     ultraWaterToggle.isOn = true;
                     break;
             }
             
             overallQualityDropdown.value = QualitySettings.GetQualityLevel();
-            guiScaleSlider.value = Properties.Instance.guiScale;
+            guiScaleSlider.value = Properties.Instance.GuiScale;
         }
 
         public void OnGuiScaleChanged()
@@ -74,18 +74,18 @@ namespace Warlander.Deedplanner.Gui
         {
             if (simpleWaterToggle.isOn)
             {
-                Properties.Instance.WaterQuality = WaterQuality.SIMPLE;
+                Properties.Instance.WaterQuality = WaterQuality.Simple;
             }
             else if (highWaterToggle.isOn)
             {
-                Properties.Instance.WaterQuality = WaterQuality.HIGH;
+                Properties.Instance.WaterQuality = WaterQuality.High;
             }
             else if (ultraWaterToggle.isOn)
             {
-                Properties.Instance.WaterQuality = WaterQuality.ULTRA;
+                Properties.Instance.WaterQuality = WaterQuality.Ultra;
             }
 
-            Properties.Instance.guiScale = Mathf.RoundToInt(guiScaleSlider.value);
+            Properties.Instance.GuiScale = Mathf.RoundToInt(guiScaleSlider.value);
 
             Properties.Instance.SaveProperties();
             

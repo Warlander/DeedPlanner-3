@@ -2,7 +2,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using StandaloneFileBrowser;
 
 namespace StandaloneFileBrowser {
     public class StandaloneFileBrowserMac : IStandaloneFileBrowser {

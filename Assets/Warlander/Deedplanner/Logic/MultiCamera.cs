@@ -36,7 +36,7 @@ namespace Warlander.Deedplanner.Logic
 
         private Vector3 fppPosition = new Vector3(-3, 4, -3);
         private Vector3 fppRotation = new Vector3(15, 45, 0);
-        private const float wurmianHeight = 1.4f;
+        private const float WurmianHeight = 1.4f;
 
         private Vector2 topPosition;
         private float topScale = 40;
@@ -154,7 +154,7 @@ namespace Warlander.Deedplanner.Logic
         private void ValidateState()
         {
             Gui.WaterQuality waterQuality = Properties.Instance.WaterQuality;
-            if (waterQuality != Gui.WaterQuality.ULTRA)
+            if (waterQuality != Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(false);
             }
@@ -285,7 +285,7 @@ namespace Warlander.Deedplanner.Logic
             bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
             int editingFloor = forceSurfaceEditing ? 0 : Floor;
             bool renderWater = RenderEntireMap || editingFloor == 0 || editingFloor == -1;
-            if (Properties.Instance.WaterQuality == Gui.WaterQuality.ULTRA)
+            if (Properties.Instance.WaterQuality == Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(renderWater);
                 if (cameraMode != CameraMode.Isometric)
@@ -298,7 +298,7 @@ namespace Warlander.Deedplanner.Logic
                 }
                 ultraQualityWater.Update();
             }
-            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.HIGH)
+            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.High)
             {
                 highQualityWater.gameObject.SetActive(renderWater);
                 if (cameraMode != CameraMode.Isometric)
@@ -310,7 +310,7 @@ namespace Warlander.Deedplanner.Logic
                     highQualityWater.transform.position = new Vector3(isoPosition.x, ultraQualityWater.transform.position.y, isoPosition.y);
                 }
             }
-            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.SIMPLE)
+            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.Simple)
             {
                 simpleQualityWater.gameObject.SetActive(renderWater);
             }
@@ -484,7 +484,7 @@ namespace Warlander.Deedplanner.Logic
                 float x1 = (h01 * xPartRev + h11 * xPart);
 
                 float height = (x0 * yPartRev + x1 * yPart);
-                height += wurmianHeight;
+                height += WurmianHeight;
                 if (height < 0.3f)
                 {
                     height = 0.3f;
@@ -672,8 +672,8 @@ namespace Warlander.Deedplanner.Logic
 
             if (hitCollider.GetType() == typeof(MeshCollider))
             {
-                MeshCollider collider = (MeshCollider)hitCollider;
-                Mesh mesh = collider.sharedMesh;
+                MeshCollider meshCollider = (MeshCollider)hitCollider;
+                Mesh mesh = meshCollider.sharedMesh;
                 Vector3[] vertices = mesh.vertices;
                 Vector3[] normals = mesh.normals;
                 if (normals == null || normals.Length == 0)
@@ -745,7 +745,7 @@ namespace Warlander.Deedplanner.Logic
         private void OnPostRender()
         {
             attachedProjector.gameObject.SetActive(false);
-            if (Properties.Instance.WaterQuality == Gui.WaterQuality.ULTRA)
+            if (Properties.Instance.WaterQuality == Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(false);
             }

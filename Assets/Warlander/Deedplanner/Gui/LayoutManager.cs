@@ -23,11 +23,11 @@ namespace Warlander.Deedplanner.Gui
 
         [SerializeField] private CanvasScaler mainCanvasScaler = null;
         
-        [SerializeField] private Toggle[] IndicatorButtons = new Toggle[4];
-        [SerializeField] private RectTransform HorizontalBottomIndicatorHolder = null;
-        [SerializeField] private RawImage[] Screens = new RawImage[4];
-        [SerializeField] private RectTransform HorizontalBottomScreenHolder = null;
-        [SerializeField] private RectTransform[] Splits = new RectTransform[5];
+        [SerializeField] private Toggle[] indicatorButtons = new Toggle[4];
+        [SerializeField] private RectTransform horizontalBottomIndicatorHolder = null;
+        [SerializeField] private RawImage[] screens = new RawImage[4];
+        [SerializeField] private RectTransform horizontalBottomScreenHolder = null;
+        [SerializeField] private RectTransform[] splits = new RectTransform[5];
         [SerializeField] private MultiCamera[] cameras = new MultiCamera[4];
         [SerializeField] private ToggleGroup cameraModeGroup = null;
         [SerializeField] private Toggle[] cameraModeToggles = new Toggle[4];
@@ -68,7 +68,7 @@ namespace Warlander.Deedplanner.Gui
             set => tooltip.Value = value;
         }
 
-        public RectTransform ActiveWindowTransform => Screens[activeWindow].gameObject.GetComponent<RectTransform>();
+        public RectTransform ActiveWindowTransform => screens[activeWindow].gameObject.GetComponent<RectTransform>();
 
         public int ActiveWindow {
             get => activeWindow;
@@ -159,14 +159,14 @@ namespace Warlander.Deedplanner.Gui
         private void ValidateState()
         {
             WaterQuality waterQuality = Properties.Instance.WaterQuality;
-            highQualityWaterObject.SetActive(waterQuality == WaterQuality.HIGH);
-            simpleQualityWaterObject.SetActive(waterQuality == WaterQuality.SIMPLE);
+            highQualityWaterObject.SetActive(waterQuality == WaterQuality.High);
+            simpleQualityWaterObject.SetActive(waterQuality == WaterQuality.Simple);
         }
 
         public void UpdateCanvasScale()
         {
             float referenceWidth = Constants.DefaultGuiWidth;
-            float referenceHeight = Constants.DefaultGuiHeight * (Properties.Instance.guiScale * Constants.GuiScaleUnitsToRealScale);
+            float referenceHeight = Constants.DefaultGuiHeight * (Properties.Instance.GuiScale * Constants.GuiScaleUnitsToRealScale);
             mainCanvasScaler.referenceResolution = new Vector2(referenceWidth, referenceHeight);
         }
         
@@ -182,26 +182,26 @@ namespace Warlander.Deedplanner.Gui
                     cameras[1].gameObject.SetActive(false);
                     cameras[2].gameObject.SetActive(false);
                     cameras[3].gameObject.SetActive(false);
-                    IndicatorButtons[0].gameObject.SetActive(true);
-                    IndicatorButtons[1].gameObject.SetActive(false);
-                    IndicatorButtons[2].gameObject.SetActive(false);
-                    IndicatorButtons[3].gameObject.SetActive(false);
-                    HorizontalBottomIndicatorHolder.gameObject.SetActive(false);
-                    Screens[0].gameObject.SetActive(true);
-                    Screens[1].gameObject.SetActive(false);
-                    Screens[2].gameObject.SetActive(false);
-                    Screens[3].gameObject.SetActive(false);
-                    HorizontalBottomScreenHolder.gameObject.SetActive(false);
-                    Splits[0].gameObject.SetActive(false);
-                    Splits[1].gameObject.SetActive(false);
-                    Splits[2].gameObject.SetActive(false);
-                    Splits[3].gameObject.SetActive(false);
-                    Splits[4].gameObject.SetActive(false);
+                    indicatorButtons[0].gameObject.SetActive(true);
+                    indicatorButtons[1].gameObject.SetActive(false);
+                    indicatorButtons[2].gameObject.SetActive(false);
+                    indicatorButtons[3].gameObject.SetActive(false);
+                    horizontalBottomIndicatorHolder.gameObject.SetActive(false);
+                    screens[0].gameObject.SetActive(true);
+                    screens[1].gameObject.SetActive(false);
+                    screens[2].gameObject.SetActive(false);
+                    screens[3].gameObject.SetActive(false);
+                    horizontalBottomScreenHolder.gameObject.SetActive(false);
+                    splits[0].gameObject.SetActive(false);
+                    splits[1].gameObject.SetActive(false);
+                    splits[2].gameObject.SetActive(false);
+                    splits[3].gameObject.SetActive(false);
+                    splits[4].gameObject.SetActive(false);
                     if (ActiveWindow != 0)
                     {
-                        IndicatorButtons[ActiveWindow].isOn = false;
+                        indicatorButtons[ActiveWindow].isOn = false;
                         ActiveWindow = 0;
-                        IndicatorButtons[0].isOn = true;
+                        indicatorButtons[0].isOn = true;
                     }
                     break;
                 case Layout.HorizontalSplit:
@@ -209,26 +209,26 @@ namespace Warlander.Deedplanner.Gui
                     cameras[1].gameObject.SetActive(false);
                     cameras[2].gameObject.SetActive(true);
                     cameras[3].gameObject.SetActive(false);
-                    IndicatorButtons[0].gameObject.SetActive(true);
-                    IndicatorButtons[1].gameObject.SetActive(false);
-                    IndicatorButtons[2].gameObject.SetActive(true);
-                    IndicatorButtons[3].gameObject.SetActive(false);
-                    HorizontalBottomIndicatorHolder.gameObject.SetActive(true);
-                    Screens[0].gameObject.SetActive(true);
-                    Screens[1].gameObject.SetActive(false);
-                    Screens[2].gameObject.SetActive(true);
-                    Screens[3].gameObject.SetActive(false);
-                    HorizontalBottomScreenHolder.gameObject.SetActive(true);
-                    Splits[0].gameObject.SetActive(true);
-                    Splits[1].gameObject.SetActive(false);
-                    Splits[2].gameObject.SetActive(false);
-                    Splits[3].gameObject.SetActive(false);
-                    Splits[4].gameObject.SetActive(false);
+                    indicatorButtons[0].gameObject.SetActive(true);
+                    indicatorButtons[1].gameObject.SetActive(false);
+                    indicatorButtons[2].gameObject.SetActive(true);
+                    indicatorButtons[3].gameObject.SetActive(false);
+                    horizontalBottomIndicatorHolder.gameObject.SetActive(true);
+                    screens[0].gameObject.SetActive(true);
+                    screens[1].gameObject.SetActive(false);
+                    screens[2].gameObject.SetActive(true);
+                    screens[3].gameObject.SetActive(false);
+                    horizontalBottomScreenHolder.gameObject.SetActive(true);
+                    splits[0].gameObject.SetActive(true);
+                    splits[1].gameObject.SetActive(false);
+                    splits[2].gameObject.SetActive(false);
+                    splits[3].gameObject.SetActive(false);
+                    splits[4].gameObject.SetActive(false);
                     if (ActiveWindow != 0 && ActiveWindow != 2)
                     {
-                        IndicatorButtons[ActiveWindow].isOn = false;
+                        indicatorButtons[ActiveWindow].isOn = false;
                         ActiveWindow = 0;
-                        IndicatorButtons[0].isOn = true;
+                        indicatorButtons[0].isOn = true;
                     }
                     break;
                 case Layout.VerticalSplit:
@@ -236,26 +236,26 @@ namespace Warlander.Deedplanner.Gui
                     cameras[1].gameObject.SetActive(true);
                     cameras[2].gameObject.SetActive(false);
                     cameras[3].gameObject.SetActive(false);
-                    IndicatorButtons[0].gameObject.SetActive(true);
-                    IndicatorButtons[1].gameObject.SetActive(true);
-                    IndicatorButtons[2].gameObject.SetActive(false);
-                    IndicatorButtons[3].gameObject.SetActive(false);
-                    HorizontalBottomIndicatorHolder.gameObject.SetActive(false);
-                    Screens[0].gameObject.SetActive(true);
-                    Screens[1].gameObject.SetActive(true);
-                    Screens[2].gameObject.SetActive(false);
-                    Screens[3].gameObject.SetActive(false);
-                    HorizontalBottomScreenHolder.gameObject.SetActive(false);
-                    Splits[0].gameObject.SetActive(false);
-                    Splits[1].gameObject.SetActive(true);
-                    Splits[2].gameObject.SetActive(false);
-                    Splits[3].gameObject.SetActive(false);
-                    Splits[4].gameObject.SetActive(false);
+                    indicatorButtons[0].gameObject.SetActive(true);
+                    indicatorButtons[1].gameObject.SetActive(true);
+                    indicatorButtons[2].gameObject.SetActive(false);
+                    indicatorButtons[3].gameObject.SetActive(false);
+                    horizontalBottomIndicatorHolder.gameObject.SetActive(false);
+                    screens[0].gameObject.SetActive(true);
+                    screens[1].gameObject.SetActive(true);
+                    screens[2].gameObject.SetActive(false);
+                    screens[3].gameObject.SetActive(false);
+                    horizontalBottomScreenHolder.gameObject.SetActive(false);
+                    splits[0].gameObject.SetActive(false);
+                    splits[1].gameObject.SetActive(true);
+                    splits[2].gameObject.SetActive(false);
+                    splits[3].gameObject.SetActive(false);
+                    splits[4].gameObject.SetActive(false);
                     if (ActiveWindow != 0 && ActiveWindow != 1)
                     {
-                        IndicatorButtons[ActiveWindow].isOn = false;
+                        indicatorButtons[ActiveWindow].isOn = false;
                         ActiveWindow = 0;
-                        IndicatorButtons[0].isOn = true;
+                        indicatorButtons[0].isOn = true;
                     }
                     break;
                 case Layout.HorizontalTop:
@@ -263,26 +263,26 @@ namespace Warlander.Deedplanner.Gui
                     cameras[1].gameObject.SetActive(false);
                     cameras[2].gameObject.SetActive(true);
                     cameras[3].gameObject.SetActive(true);
-                    IndicatorButtons[0].gameObject.SetActive(true);
-                    IndicatorButtons[1].gameObject.SetActive(false);
-                    IndicatorButtons[2].gameObject.SetActive(true);
-                    IndicatorButtons[3].gameObject.SetActive(true);
-                    HorizontalBottomIndicatorHolder.gameObject.SetActive(true);
-                    Screens[0].gameObject.SetActive(true);
-                    Screens[1].gameObject.SetActive(false);
-                    Screens[2].gameObject.SetActive(true);
-                    Screens[3].gameObject.SetActive(true);
-                    HorizontalBottomScreenHolder.gameObject.SetActive(true);
-                    Splits[0].gameObject.SetActive(false);
-                    Splits[1].gameObject.SetActive(false);
-                    Splits[2].gameObject.SetActive(true);
-                    Splits[3].gameObject.SetActive(false);
-                    Splits[4].gameObject.SetActive(false);
+                    indicatorButtons[0].gameObject.SetActive(true);
+                    indicatorButtons[1].gameObject.SetActive(false);
+                    indicatorButtons[2].gameObject.SetActive(true);
+                    indicatorButtons[3].gameObject.SetActive(true);
+                    horizontalBottomIndicatorHolder.gameObject.SetActive(true);
+                    screens[0].gameObject.SetActive(true);
+                    screens[1].gameObject.SetActive(false);
+                    screens[2].gameObject.SetActive(true);
+                    screens[3].gameObject.SetActive(true);
+                    horizontalBottomScreenHolder.gameObject.SetActive(true);
+                    splits[0].gameObject.SetActive(false);
+                    splits[1].gameObject.SetActive(false);
+                    splits[2].gameObject.SetActive(true);
+                    splits[3].gameObject.SetActive(false);
+                    splits[4].gameObject.SetActive(false);
                     if (ActiveWindow != 0 && ActiveWindow != 2 && ActiveWindow != 3)
                     {
-                        IndicatorButtons[ActiveWindow].isOn = false;
+                        indicatorButtons[ActiveWindow].isOn = false;
                         ActiveWindow = 0;
-                        IndicatorButtons[0].isOn = true;
+                        indicatorButtons[0].isOn = true;
                     }
                     break;
                 case Layout.HorizontalBottom:
@@ -290,26 +290,26 @@ namespace Warlander.Deedplanner.Gui
                     cameras[1].gameObject.SetActive(true);
                     cameras[2].gameObject.SetActive(true);
                     cameras[3].gameObject.SetActive(false);
-                    IndicatorButtons[0].gameObject.SetActive(true);
-                    IndicatorButtons[1].gameObject.SetActive(true);
-                    IndicatorButtons[2].gameObject.SetActive(true);
-                    IndicatorButtons[3].gameObject.SetActive(false);
-                    HorizontalBottomIndicatorHolder.gameObject.SetActive(true);
-                    Screens[0].gameObject.SetActive(true);
-                    Screens[1].gameObject.SetActive(true);
-                    Screens[2].gameObject.SetActive(true);
-                    Screens[3].gameObject.SetActive(false);
-                    HorizontalBottomScreenHolder.gameObject.SetActive(true);
-                    Splits[0].gameObject.SetActive(false);
-                    Splits[1].gameObject.SetActive(false);
-                    Splits[2].gameObject.SetActive(false);
-                    Splits[3].gameObject.SetActive(true);
-                    Splits[4].gameObject.SetActive(false);
+                    indicatorButtons[0].gameObject.SetActive(true);
+                    indicatorButtons[1].gameObject.SetActive(true);
+                    indicatorButtons[2].gameObject.SetActive(true);
+                    indicatorButtons[3].gameObject.SetActive(false);
+                    horizontalBottomIndicatorHolder.gameObject.SetActive(true);
+                    screens[0].gameObject.SetActive(true);
+                    screens[1].gameObject.SetActive(true);
+                    screens[2].gameObject.SetActive(true);
+                    screens[3].gameObject.SetActive(false);
+                    horizontalBottomScreenHolder.gameObject.SetActive(true);
+                    splits[0].gameObject.SetActive(false);
+                    splits[1].gameObject.SetActive(false);
+                    splits[2].gameObject.SetActive(false);
+                    splits[3].gameObject.SetActive(true);
+                    splits[4].gameObject.SetActive(false);
                     if (ActiveWindow != 0 && ActiveWindow != 1 && ActiveWindow != 2)
                     {
-                        IndicatorButtons[ActiveWindow].isOn = false;
+                        indicatorButtons[ActiveWindow].isOn = false;
                         ActiveWindow = 0;
-                        IndicatorButtons[0].isOn = true;
+                        indicatorButtons[0].isOn = true;
                     }
                     break;
                 case Layout.Quad:
@@ -317,21 +317,21 @@ namespace Warlander.Deedplanner.Gui
                     cameras[1].gameObject.SetActive(true);
                     cameras[2].gameObject.SetActive(true);
                     cameras[3].gameObject.SetActive(true);
-                    IndicatorButtons[0].gameObject.SetActive(true);
-                    IndicatorButtons[1].gameObject.SetActive(true);
-                    IndicatorButtons[2].gameObject.SetActive(true);
-                    IndicatorButtons[3].gameObject.SetActive(true);
-                    HorizontalBottomIndicatorHolder.gameObject.SetActive(true);
-                    Screens[0].gameObject.SetActive(true);
-                    Screens[1].gameObject.SetActive(true);
-                    Screens[2].gameObject.SetActive(true);
-                    Screens[3].gameObject.SetActive(true);
-                    HorizontalBottomScreenHolder.gameObject.SetActive(true);
-                    Splits[0].gameObject.SetActive(false);
-                    Splits[1].gameObject.SetActive(false);
-                    Splits[2].gameObject.SetActive(false);
-                    Splits[3].gameObject.SetActive(false);
-                    Splits[4].gameObject.SetActive(true);
+                    indicatorButtons[0].gameObject.SetActive(true);
+                    indicatorButtons[1].gameObject.SetActive(true);
+                    indicatorButtons[2].gameObject.SetActive(true);
+                    indicatorButtons[3].gameObject.SetActive(true);
+                    horizontalBottomIndicatorHolder.gameObject.SetActive(true);
+                    screens[0].gameObject.SetActive(true);
+                    screens[1].gameObject.SetActive(true);
+                    screens[2].gameObject.SetActive(true);
+                    screens[3].gameObject.SetActive(true);
+                    horizontalBottomScreenHolder.gameObject.SetActive(true);
+                    splits[0].gameObject.SetActive(false);
+                    splits[1].gameObject.SetActive(false);
+                    splits[2].gameObject.SetActive(false);
+                    splits[3].gameObject.SetActive(false);
+                    splits[4].gameObject.SetActive(true);
                     break;
             }
         }
@@ -343,7 +343,7 @@ namespace Warlander.Deedplanner.Gui
                 return;
             }
 
-            if (IndicatorButtons[window].isOn)
+            if (indicatorButtons[window].isOn)
             {
                 ActiveWindow = window;
                 Debug.Log("Active window changed to " + ActiveWindow);
@@ -357,8 +357,8 @@ namespace Warlander.Deedplanner.Gui
                 return;
             }
 
-            IndicatorButtons[ActiveWindow].isOn = false;
-            IndicatorButtons[window].isOn = true;
+            indicatorButtons[ActiveWindow].isOn = false;
+            indicatorButtons[window].isOn = true;
             ActiveWindow = window;
             Debug.Log("Active window changed to " + ActiveWindow);
         }

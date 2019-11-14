@@ -4,7 +4,7 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class EntityData : IXMLSerializable
+    public class EntityData : IXmlSerializable
     {
 
         public int Floor { get; private set; }
