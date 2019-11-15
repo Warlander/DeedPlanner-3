@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
@@ -24,6 +25,7 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private UnityList warningsList = null;
 
         private ToolType currentTool = ToolType.MaterialsCalculator;
+        private MapSummary mapSummary;
         
         private void OnEnable()
         {
@@ -51,6 +53,7 @@ namespace Warlander.Deedplanner.Updaters
             if (calculateMaterialsToggle.isOn)
             {
                 currentTool = ToolType.MaterialsCalculator;
+                mapSummary = new MapSummary(GameManager.Instance.Map);
             }
             else if (mapWarningsToggle.isOn)
             {
