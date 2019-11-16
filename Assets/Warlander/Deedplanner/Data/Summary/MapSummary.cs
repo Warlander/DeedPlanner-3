@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Data.Summary
@@ -12,46 +11,57 @@ namespace Warlander.Deedplanner.Data.Summary
         {
             bool[,] tilesChecked = new bool[map.Width + 1, map.Height + 1];
 
+            List<Room> rooms = new List<Room>();
+            
             for (int x = 0; x <= map.Width; x++)
             {
                 for (int y = 0; y <= map.Height; y++)
                 {
-                    ScanTileForBuildings(map, tilesChecked, x, y);
+                    Room room = ScanTileForRoom(map, tilesChecked, x, y);
+                    if (room != null)
+                    {
+                        rooms.Add(room);
+                    }
                 }
             }
         }
 
-        private void ScanTileForBuildings(Map map, bool[,] tilesChecked, int x, int y)
+        private Room ScanTileForRoom(Map map, bool[,] tilesChecked, int x, int y)
         {
             if (tilesChecked[x, y])
             {
-                return;
+                return null;
             }
             
             HashSet<Tile> checkedTiles = new HashSet<Tile>();
             Stack<Tile> tilesToCheck = new Stack<Tile>();
+            List<TileSummary> tilesInRoom = new List<TileSummary>();
+            checkedTiles.Add(map[x, y]);
             tilesToCheck.Push(map[x, y]);
-            bool noBuilding = false;
+            bool noRoom = false;
 
-            while (checkedTiles.Count <= 100 && tilesToCheck.Count >= 1)
+            while (checkedTiles.Count <= 100 && tilesToCheck.Count > 0)
             {
                 Tile checkedTile = tilesToCheck.Pop();
-                checkedTiles.Add(checkedTile);
+                tilesInRoom.Add(new TileSummary(checkedTile.X, checkedTile.Y, TilePart.Everything));
+                
                 if (!checkedTile.GetHorizontalWall(0))
                 {
                     Tile nearbyTile = map.GetRelativeTile(checkedTile, 0, -1);
                     if (!nearbyTile)
                     {
-                        noBuilding = true;
+                        noRoom = true;
                         break;
                     }
-                    if (!tilesChecked[nearbyTile.X, nearbyTile.Y] && !checkedTiles.Contains(nearbyTile) && !tilesToCheck.Contains(nearbyTile))
+                    if (!tilesChecked[nearbyTile.X, nearbyTile.Y] && !checkedTiles.Contains(nearbyTile))
                     {
+                        checkedTiles.Add(nearbyTile);
                         tilesToCheck.Push(nearbyTile);
+                        
                     }
                     else if (tilesChecked[nearbyTile.X, nearbyTile.Y])
                     {
-                        noBuilding = true;
+                        noRoom = true;
                         break;
                     }
                 }
@@ -61,16 +71,17 @@ namespace Warlander.Deedplanner.Data.Summary
                     Tile nearbyTile = map.GetRelativeTile(checkedTile, -1, 0);
                     if (!nearbyTile)
                     {
-                        noBuilding = true;
+                        noRoom = true;
                         break;
                     }
-                    if (!tilesChecked[nearbyTile.X, nearbyTile.Y] && !checkedTiles.Contains(nearbyTile) && !tilesToCheck.Contains(nearbyTile))
+                    if (!tilesChecked[nearbyTile.X, nearbyTile.Y] && !checkedTiles.Contains(nearbyTile))
                     {
+                        checkedTiles.Add(nearbyTile);
                         tilesToCheck.Push(nearbyTile);
                     }
                     else if (tilesChecked[nearbyTile.X, nearbyTile.Y])
                     {
-                        noBuilding = true;
+                        noRoom = true;
                         break;
                     }
                 }
@@ -78,56 +89,62 @@ namespace Warlander.Deedplanner.Data.Summary
                 Tile leftTile = map.GetRelativeTile(checkedTile, 0, 1);
                 if (!leftTile)
                 {
-                    noBuilding = true;
+                    noRoom = true;
                     break;
                 }
-                if (!tilesChecked[leftTile.X, leftTile.Y] && !leftTile.GetHorizontalWall(0) && !checkedTiles.Contains(leftTile) && !tilesToCheck.Contains(leftTile))
+                if (!tilesChecked[leftTile.X, leftTile.Y] && !leftTile.GetHorizontalWall(0) && !checkedTiles.Contains(leftTile))
                 {
+                    checkedTiles.Add(leftTile);
                     tilesToCheck.Push(leftTile);
+                }
+                else if (leftTile.GetHorizontalWall(0))
+                {
+                    tilesInRoom.Add(new TileSummary(leftTile.X, leftTile.Y, TilePart.HorizontalWallOnly));
                 }
                 else if (tilesChecked[leftTile.X, leftTile.Y])
                 {
-                    noBuilding = true;
+                    noRoom = true;
                     break;
                 }
-                
+
                 Tile rightTile = map.GetRelativeTile(checkedTile, 1, 0);
                 if (!rightTile)
                 {
-                    noBuilding = true;
+                    noRoom = true;
                     break;
                 }
-                if (!tilesChecked[rightTile.X, rightTile.Y] && !rightTile.GetVerticalWall(0) && !checkedTiles.Contains(rightTile) && !tilesToCheck.Contains(rightTile))
+                if (!tilesChecked[rightTile.X, rightTile.Y] && !rightTile.GetVerticalWall(0) && !checkedTiles.Contains(rightTile))
                 {
+                    checkedTiles.Add(rightTile);
                     tilesToCheck.Push(rightTile);
+                }
+                else if (rightTile.GetVerticalWall(0))
+                {
+                    tilesInRoom.Add(new TileSummary(rightTile.X, rightTile.Y, TilePart.VerticalWallOnly));
                 }
                 else if (tilesChecked[rightTile.X, rightTile.Y])
                 {
-                    noBuilding = true;
+                    noRoom = true;
                     break;
                 }
-                
             }
 
-            if (checkedTiles.Count > 100 || noBuilding)
+            if (checkedTiles.Count > 100 || tilesToCheck.Count > 0)
             {
-                Debug.Log("Flood fill didn't found a building");
-            }
-            else
-            {
-                StringBuilder build = new StringBuilder();
-                build.AppendLine("There is a building!");
-                foreach (Tile tile in checkedTiles)
-                {
-                    build.Append('(').Append(tile.X).Append(' ').Append(tile.Y).Append(')').AppendLine();
-                }
-                Debug.Log(build.ToString());
+                noRoom = true;
             }
 
             foreach (Tile tile in checkedTiles)
             {
                 tilesChecked[tile.X, tile.Y] = true;
             }
+
+            if (noRoom)
+            {
+                return null;
+            }
+            
+            return new Room(tilesInRoom);
         }
     }
 }
