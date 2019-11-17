@@ -7,6 +7,8 @@ namespace Warlander.Deedplanner.Data.Summary
     {
         private List<TileSummary> tiles;
 
+        public IReadOnlyList<TileSummary> Tiles => tiles.AsReadOnly();
+        
         public Room(List<TileSummary> newTiles)
         {
             tiles = newTiles;
