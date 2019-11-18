@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Warlander.Deedplanner.Data.Summary
@@ -14,6 +15,11 @@ namespace Warlander.Deedplanner.Data.Summary
             tiles = newTiles;
         }
 
+        public bool BordersRoom(Room room)
+        {
+            return tiles.Intersect(room.tiles, new TileSummaryComparer()).Any();
+        }
+        
         public string CreateSummary()
         {
             StringBuilder build = new StringBuilder();
@@ -27,5 +33,6 @@ namespace Warlander.Deedplanner.Data.Summary
 
             return build.ToString();
         }
+
     }
 }
