@@ -11,7 +11,7 @@ namespace Warlander.Deedplanner.Data.Summary
         {
             bool[,] tilesChecked = new bool[map.Width + 1, map.Height + 1];
 
-            List<Room> rooms = new List<Room>();
+            LinkedList<Room> rooms = new LinkedList<Room>();
             
             for (int x = 0; x <= map.Width; x++)
             {
@@ -20,9 +20,37 @@ namespace Warlander.Deedplanner.Data.Summary
                     Room room = ScanTileForRoom(map, tilesChecked, x, y);
                     if (room != null)
                     {
-                        rooms.Add(room);
+                        rooms.AddLast(room);
                     }
                 }
+            }
+
+            List<Building> buildings = new List<Building>();
+            
+            while (rooms.Count > 0)
+            {
+                List<Room> roomsInBuilding = new List<Room>();
+
+                Room firstRoom = rooms.First.Value;
+                roomsInBuilding.Add(firstRoom);
+                foreach (Room roomToCheck in rooms)
+                {
+                    foreach (Room buildingRoom in roomsInBuilding)
+                    {
+                        if (buildingRoom.BordersRoom(roomToCheck))
+                        {
+                            roomsInBuilding.Add(roomToCheck);
+                            break;
+                        }
+                    }
+                }
+
+                foreach (Room room in roomsInBuilding)
+                {
+                    rooms.Remove(room);
+                }
+                
+                buildings.Add(new Building(roomsInBuilding));
             }
         }
 

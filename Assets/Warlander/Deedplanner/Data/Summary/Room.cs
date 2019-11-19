@@ -17,6 +17,12 @@ namespace Warlander.Deedplanner.Data.Summary
 
         public bool BordersRoom(Room room)
         {
+            if (this == room)
+            {
+                // we assume room cannot border itself
+                return false;
+            }
+            
             return tiles.Intersect(room.tiles, new TileSummaryComparer()).Any();
         }
         
