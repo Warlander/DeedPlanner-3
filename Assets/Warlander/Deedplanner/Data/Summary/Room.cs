@@ -6,13 +6,11 @@ namespace Warlander.Deedplanner.Data.Summary
 {
     public class Room
     {
-        private List<TileSummary> tiles;
-
-        public IReadOnlyList<TileSummary> Tiles => tiles.AsReadOnly();
+        public HashSet<TileSummary> Tiles { get; }
         
-        public Room(List<TileSummary> newTiles)
+        public Room(HashSet<TileSummary> newTiles)
         {
-            tiles = newTiles;
+            Tiles = newTiles;
         }
 
         public bool BordersRoom(Room room)
@@ -23,7 +21,7 @@ namespace Warlander.Deedplanner.Data.Summary
                 return false;
             }
             
-            return tiles.Intersect(room.tiles, new TileSummaryComparer()).Any();
+            return Tiles.Intersect(room.Tiles, new TileSummaryComparer()).Any();
         }
         
         public string CreateSummary()
@@ -31,7 +29,7 @@ namespace Warlander.Deedplanner.Data.Summary
             StringBuilder build = new StringBuilder();
             build.AppendLine("Room summary");
             
-            foreach (TileSummary tileSummary in tiles)
+            foreach (TileSummary tileSummary in Tiles)
             {
                 build.Append('(').Append(tileSummary.X).Append(' ').Append(tileSummary.Y).Append(')');
                 build.Append(' ').Append(tileSummary.TilePart).AppendLine();
