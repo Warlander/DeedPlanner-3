@@ -5,8 +5,8 @@ namespace Warlander.Deedplanner.Data.Summary
 {
     public class MapSummary
     {
-        private List<Building> buildings = new List<Building>();
-        
+        public HashSet<Building> Buildings { get; } = new HashSet<Building>();
+
         public MapSummary(Map map)
         {
             bool[,] tilesChecked = new bool[map.Width + 1, map.Height + 1];
@@ -25,8 +25,6 @@ namespace Warlander.Deedplanner.Data.Summary
                 }
             }
 
-            List<Building> buildings = new List<Building>();
-            
             while (rooms.Count > 0)
             {
                 List<Room> roomsInBuilding = new List<Room>();
@@ -50,7 +48,7 @@ namespace Warlander.Deedplanner.Data.Summary
                     rooms.Remove(room);
                 }
                 
-                buildings.Add(new Building(roomsInBuilding));
+                Buildings.Add(new Building(roomsInBuilding));
             }
         }
 
@@ -63,7 +61,7 @@ namespace Warlander.Deedplanner.Data.Summary
             
             HashSet<Tile> checkedTiles = new HashSet<Tile>();
             Stack<Tile> tilesToCheck = new Stack<Tile>();
-            List<TileSummary> tilesInRoom = new List<TileSummary>();
+            HashSet<TileSummary> tilesInRoom = new HashSet<TileSummary>();
             checkedTiles.Add(map[x, y]);
             tilesToCheck.Push(map[x, y]);
             bool noRoom = false;
