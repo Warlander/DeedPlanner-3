@@ -12,5 +12,18 @@ namespace Warlander.Deedplanner.Data.Summary
         {
             rooms = newRooms;
         }
+
+        public bool ContainsTile(TileSummary summary)
+        {
+            for (int i = 0; i < rooms.Count; i++)
+            {
+                if (rooms[i].Tiles.Contains(summary))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
