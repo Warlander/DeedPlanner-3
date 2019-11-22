@@ -218,7 +218,10 @@ namespace Warlander.Deedplanner.Data
                 int x = Convert.ToInt32(tileElement.GetAttribute("x"));
                 int y = Convert.ToInt32(tileElement.GetAttribute("y"));
 
-                this[x, y].DeserializeEntities(tileElement);
+                if (x != Width && y != Height)
+                {
+                    this[x, y].DeserializeEntities(tileElement);
+                }
             }
             
             Ground.UpdateNow();
