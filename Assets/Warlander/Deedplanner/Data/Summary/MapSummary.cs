@@ -172,5 +172,33 @@ namespace Warlander.Deedplanner.Data.Summary
             
             return new Room(tilesInRoom);
         }
+
+        public bool ContainsTile(TileSummary summary)
+        {
+            foreach (Building building in Buildings)
+            {
+                if (building.ContainsTile(summary))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool ContainsFloor(Tile tile)
+        {
+            return ContainsTile(new TileSummary(tile.X, tile.Y, TilePart.Everything));
+        }
+
+        public bool ContainsVerticalWall(Tile tile)
+        {
+            return ContainsTile(new TileSummary(tile.X, tile.Y, TilePart.Everything)) || ContainsTile(new TileSummary(tile.X, tile.Y, TilePart.VerticalWallOnly));
+        }
+        
+        public bool ContainsHorizontalWall(Tile tile)
+        {
+            return ContainsTile(new TileSummary(tile.X, tile.Y, TilePart.Everything)) || ContainsTile(new TileSummary(tile.X, tile.Y, TilePart.HorizontalWallOnly));
+        }
     }
 }
