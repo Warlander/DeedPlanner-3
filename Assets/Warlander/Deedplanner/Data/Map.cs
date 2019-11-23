@@ -204,7 +204,11 @@ namespace Warlander.Deedplanner.Data
             {
                 int x = Convert.ToInt32(tileElement.GetAttribute("x"));
                 int y = Convert.ToInt32(tileElement.GetAttribute("y"));
-
+                if (x < 0 || x > Width || y < 0 || y > Height)
+                {
+                    continue;
+                }
+                
                 this[x, y].DeserializeHeightmap(tileElement);
 
                 int surfaceHeight = this[x, y].SurfaceHeight;
@@ -217,11 +221,12 @@ namespace Warlander.Deedplanner.Data
             {
                 int x = Convert.ToInt32(tileElement.GetAttribute("x"));
                 int y = Convert.ToInt32(tileElement.GetAttribute("y"));
-
-                if (x != Width && y != Height)
+                if (x < 0 || x >= Width || y < 0 || y >= Height)
                 {
-                    this[x, y].DeserializeEntities(tileElement);
+                    continue;
                 }
+                
+                this[x, y].DeserializeEntities(tileElement);
             }
             
             Ground.UpdateNow();
