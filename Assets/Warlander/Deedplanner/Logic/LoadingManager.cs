@@ -8,23 +8,23 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Utils;
+using DG.Tweening;
 
 namespace Warlander.Deedplanner.Logic
 {
     public class LoadingManager : MonoBehaviour
     {
 
-        [SerializeField] private GameObject splashRoot = null;
+        [SerializeField] private CanvasGroup splashGroup = null;
         [SerializeField] private GameObject managersRoot = null;
         [SerializeField] private MultiCamera[] cameras = null;
 
         [SerializeField] private TMP_Text text = null;
         [SerializeField] private Slider loadingBar = null;
-        [SerializeField] private Animator fadeAnimator = null;
-        
+
         private void Start()
         {
-            splashRoot.SetActive(true);
+            splashGroup.gameObject.SetActive(true);
             LayoutManager.Instance.UpdateCanvasScale();
             OutputGraphicsCapabilities();
             StartCoroutine(Load());
@@ -67,7 +67,7 @@ namespace Warlander.Deedplanner.Logic
             loadingBar.value = 1.0f;
             text.text = "Loading complete";
 
-            fadeAnimator.enabled = true;
+            splashGroup.DOFade(0, 1f).OnComplete(() => Destroy(splashGroup.gameObject));
             Destroy(gameObject);
         }
 
