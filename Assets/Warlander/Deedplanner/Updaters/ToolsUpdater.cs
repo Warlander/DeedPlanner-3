@@ -25,7 +25,7 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private UnityList warningsList = null;
 
         private ToolType currentTool = ToolType.MaterialsCalculator;
-        private MapSummary mapSummary;
+        private BuildingsSummary buildingsSummary;
         
         private void OnEnable()
         {
@@ -53,7 +53,7 @@ namespace Warlander.Deedplanner.Updaters
             if (calculateMaterialsToggle.isOn)
             {
                 currentTool = ToolType.MaterialsCalculator;
-                mapSummary = new MapSummary(GameManager.Instance.Map);
+                buildingsSummary = new BuildingsSummary(GameManager.Instance.Map);
             }
             else if (mapWarningsToggle.isOn)
             {
@@ -76,39 +76,72 @@ namespace Warlander.Deedplanner.Updaters
         {
             warningsList.Clear();
 
-            RefreshSlopedWallsWarnings();
+            RefreshTileWarnings();
             
             if (warningsList.Values.Length == 0)
             {
-                warningsList.Add("No warnings for this map");
+                warningsList.Add("No warnings for this map.\nIf this message is missing, some of checks failed.");
             }
         }
 
-        private void RefreshSlopedWallsWarnings()
+        private void RefreshTileWarnings()
         {
             Map map = GameManager.Instance.Map;
 
             foreach (Tile tile in map)
             {
                 RefreshSlopedWallsWarningsTile(tile);
+                RefreshWallOutsideBuildingWarningsTile(tile);
             }
         }
 
         private void RefreshSlopedWallsWarningsTile(Tile tile)
         {
+            const string warningText = "\nBuilding wall on sloped terrain.";
+            
             for (int i = Constants.NegativeFloorLimit; i < Constants.FloorLimit; i++)
             {
                 Wall vWall = tile.GetVerticalWall(i);
                 if (vWall && vWall.Data.HouseWall && vWall.SlopeDifference != 0)
                 {
-                    warningsList.Add(CreateWarningString(tile, "Building wall on sloped terrain"));
+                    warningsList.Add(CreateWarningString(tile, warningText));
                     break;
                 }
                 
                 Wall hWall = tile.GetHorizontalWall(i);
                 if (hWall && hWall.Data.HouseWall && hWall.SlopeDifference != 0)
                 {
-                    warningsList.Add(CreateWarningString(tile, "Building wall on sloped terrain"));
+                    warningsList.Add(CreateWarningString(tile, warningText));
+                    break;
+                }
+            }
+        }
+
+        private void RefreshWallOutsideBuildingWarningsTile(Tile tile)
+        {
+            const string warningText = "Wall outside known building.\nPlease make sure all ground level walls are built.";
+            
+            bool containsVerticalWall = buildingsSummary.ContainsVerticalWall(tile);
+            bool containsHorizontalWall = buildingsSummary.ContainsHorizontalWall(tile);
+
+            if (containsHorizontalWall && containsVerticalWall)
+            {
+                return;
+            }
+            
+            for (int i = Constants.NegativeFloorLimit; i < Constants.FloorLimit; i++)
+            {
+                Wall vWall = tile.GetVerticalWall(i);
+                if (!containsVerticalWall && vWall && vWall.Data.HouseWall)
+                {
+                    warningsList.Add(CreateWarningString(tile, warningText));
+                    break;
+                }
+                
+                Wall hWall = tile.GetHorizontalWall(i);
+                if (!containsHorizontalWall && hWall && hWall.Data.HouseWall)
+                {
+                    warningsList.Add(CreateWarningString(tile, warningText));
                     break;
                 }
             }
