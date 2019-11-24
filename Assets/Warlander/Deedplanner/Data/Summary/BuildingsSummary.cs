@@ -1,13 +1,12 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Warlander.Deedplanner.Data.Summary
 {
-    public class MapSummary
+    public class BuildingsSummary
     {
         public HashSet<Building> Buildings { get; } = new HashSet<Building>();
 
-        public MapSummary(Map map)
+        public BuildingsSummary(Map map)
         {
             bool[,] tilesChecked = new bool[map.Width + 1, map.Height + 1];
 
@@ -173,7 +172,7 @@ namespace Warlander.Deedplanner.Data.Summary
             return new Room(tilesInRoom);
         }
 
-        public bool ContainsTile(TileSummary summary)
+        private bool ContainsTile(TileSummary summary)
         {
             foreach (Building building in Buildings)
             {

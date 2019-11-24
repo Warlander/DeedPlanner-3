@@ -26496,6 +26496,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Warnings List
       objectReference: {fileID: 0}
+    - target: {fileID: 7927132958388007750, guid: cac0499942292f24696aee92983ece80,
+        type: 3}
+      propertyPath: listElementPrefab
+      value: 
+      objectReference: {fileID: 2169059978472977978, guid: 898a0d7649d6f404d879c52bd5382209,
+        type: 3}
     - target: {fileID: 4875529236647746021, guid: cac0499942292f24696aee92983ece80,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -26639,6 +26645,16 @@ PrefabInstance:
     - target: {fileID: 4875529237151216022, guid: cac0499942292f24696aee92983ece80,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875529235919272935, guid: cac0499942292f24696aee92983ece80,
+        type: 3}
+      propertyPath: m_ChildForceExpandHeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4875529235919272935, guid: cac0499942292f24696aee92983ece80,
+        type: 3}
+      propertyPath: m_ChildControlHeight
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
