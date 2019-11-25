@@ -91,7 +91,7 @@ namespace Warlander.Deedplanner.Updaters
             foreach (Tile tile in map)
             {
                 RefreshSlopedWallsWarningsTile(tile);
-                RefreshWallOutsideBuildingWarningsTile(tile);
+                RefreshEntityOutsideBuildingWarningsTile(tile);
             }
         }
 
@@ -117,10 +117,12 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void RefreshWallOutsideBuildingWarningsTile(Tile tile)
+        private void RefreshEntityOutsideBuildingWarningsTile(Tile tile)
         {
-            const string warningText = "Wall outside known building.\nPlease make sure all ground level walls are built.";
-            
+            const string tileWarningText = "Floor or roof outside known building.\nPlease make sure all ground level walls are built.";
+            const string wallWarningText = "Wall outside known building.\nPlease make sure all ground level walls are built.";
+
+            bool containsFloor = buildingsSummary.ContainsFloor(tile);
             bool containsVerticalWall = buildingsSummary.ContainsVerticalWall(tile);
             bool containsHorizontalWall = buildingsSummary.ContainsHorizontalWall(tile);
 
@@ -131,17 +133,23 @@ namespace Warlander.Deedplanner.Updaters
             
             for (int i = Constants.NegativeFloorLimit; i < Constants.FloorLimit; i++)
             {
+                TileEntity floorRoof = tile.GetTileContent(i);
+                if (!containsFloor && floorRoof)
+                {
+                    warningsList.Add(CreateWarningString(tile, tileWarningText));
+                }
+                
                 Wall vWall = tile.GetVerticalWall(i);
                 if (!containsVerticalWall && vWall && vWall.Data.HouseWall)
                 {
-                    warningsList.Add(CreateWarningString(tile, warningText));
+                    warningsList.Add(CreateWarningString(tile, wallWarningText));
                     break;
                 }
                 
                 Wall hWall = tile.GetHorizontalWall(i);
                 if (!containsHorizontalWall && hWall && hWall.Data.HouseWall)
                 {
-                    warningsList.Add(CreateWarningString(tile, warningText));
+                    warningsList.Add(CreateWarningString(tile, wallWarningText));
                     break;
                 }
             }
