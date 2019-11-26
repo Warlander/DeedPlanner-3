@@ -56,8 +56,8 @@ namespace Warlander.Deedplanner.Updaters
         private void Start()
         {
             GuiManager.Instance.GroundsTree.ValueChanged += OnGroundsTreeValueChanged;
-            LeftClickData = Database.Grounds["gr"];
-            RightClickData = Database.Grounds["di"];
+            LeftClickData = Database.DefaultGroundData;
+            RightClickData = Database.DefaultSecondaryGroundData;
         }
 
         private void OnEnable()

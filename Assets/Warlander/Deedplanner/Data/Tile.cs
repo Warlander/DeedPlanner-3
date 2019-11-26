@@ -76,7 +76,7 @@ namespace Warlander.Deedplanner.Data
 
             Entities = new Dictionary<EntityData, TileEntity>();
             
-            Ground = new Ground(this, Database.Grounds["gr"]);
+            Ground = new Ground(this, Database.DefaultGroundData);
 
             GameObject caveObject = new GameObject("Cave", typeof(Cave));
             caveObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
