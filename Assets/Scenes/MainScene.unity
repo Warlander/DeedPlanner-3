@@ -3161,7 +3161,7 @@ PrefabInstance:
     - target: {fileID: 3640077888067744007, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
       propertyPath: m_Name
-      value: Building Current Floors Radio
+      value: Building Current Floor Radio
       objectReference: {fileID: 0}
     - target: {fileID: 3640077888067744006, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
@@ -3273,6 +3273,11 @@ PrefabInstance:
       propertyPath: m_IsOn
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3640077888067744011, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 218086808}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a32902b751ab3e541b86447361bbb148, type: 3}
 --- !u!224 &124614394 stripped
@@ -3281,6 +3286,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 124614393}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &124614395 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3640077888067744011, guid: a32902b751ab3e541b86447361bbb148,
+    type: 3}
+  m_PrefabInstance: {fileID: 124614393}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &130674506
 GameObject:
   m_ObjectHideFlags: 0
@@ -5668,6 +5685,7 @@ GameObject:
   m_Component:
   - component: {fileID: 218086806}
   - component: {fileID: 218086807}
+  - component: {fileID: 218086808}
   m_Layer: 5
   m_Name: Calculate Materials Panel
   m_TagString: Untagged
@@ -5725,6 +5743,19 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &218086808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218086805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AllowSwitchOff: 0
 --- !u!1 &218983207
 GameObject:
   m_ObjectHideFlags: 0
@@ -18909,7 +18940,7 @@ PrefabInstance:
     - target: {fileID: 3640077888067744007, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
       propertyPath: m_Name
-      value: Room Current Floors Radio
+      value: Room Current Floor Radio
       objectReference: {fileID: 0}
     - target: {fileID: 3640077888067744006, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
@@ -19021,6 +19052,11 @@ PrefabInstance:
       propertyPath: m_IsOn
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3640077888067744011, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 218086808}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a32902b751ab3e541b86447361bbb148, type: 3}
 --- !u!224 &732479350 stripped
@@ -19029,6 +19065,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 732479349}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &732479351 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3640077888067744011, guid: a32902b751ab3e541b86447361bbb148,
+    type: 3}
+  m_PrefabInstance: {fileID: 732479349}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &735796910 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
@@ -22786,6 +22834,11 @@ PrefabInstance:
       propertyPath: m_IsOn
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3640077888067744011, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 218086808}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a32902b751ab3e541b86447361bbb148, type: 3}
 --- !u!224 &895665956 stripped
@@ -22794,6 +22847,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 895665955}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &895665957 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3640077888067744011, guid: a32902b751ab3e541b86447361bbb148,
+    type: 3}
+  m_PrefabInstance: {fileID: 895665955}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &902817448
 GameObject:
   m_ObjectHideFlags: 0
@@ -49403,6 +49468,9 @@ MonoBehaviour:
   materialsWindowTransform: {fileID: 651684777}
   materialsInputField: {fileID: 1893566690}
   warningsList: {fileID: 406117968}
+  buildingAllLevelsMaterialsToggle: {fileID: 895665957}
+  buildingCurrentLevelMaterialsToggle: {fileID: 124614395}
+  roomCurrentLevelMaterialsToggle: {fileID: 732479351}
 --- !u!1001 &2019280476
 PrefabInstance:
   m_ObjectHideFlags: 0

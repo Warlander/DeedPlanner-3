@@ -24,6 +24,10 @@ namespace Warlander.Deedplanner.Updaters
 
         [SerializeField] private UnityList warningsList = null;
 
+        [SerializeField] private Toggle buildingAllLevelsMaterialsToggle;
+        [SerializeField] private Toggle buildingCurrentLevelMaterialsToggle;
+        [SerializeField] private Toggle roomCurrentLevelMaterialsToggle;
+        
         private ToolType currentTool = ToolType.MaterialsCalculator;
         private BuildingsSummary buildingsSummary;
         
