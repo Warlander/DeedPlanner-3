@@ -29,8 +29,7 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private Toggle roomCurrentLevelMaterialsToggle;
         
         private ToolType currentTool = ToolType.MaterialsCalculator;
-        private BuildingsSummary buildingsSummary;
-        
+
         private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
@@ -57,7 +56,6 @@ namespace Warlander.Deedplanner.Updaters
             if (calculateMaterialsToggle.isOn)
             {
                 currentTool = ToolType.MaterialsCalculator;
-                buildingsSummary = new BuildingsSummary(GameManager.Instance.Map);
             }
             else if (mapWarningsToggle.isOn)
             {
@@ -90,16 +88,17 @@ namespace Warlander.Deedplanner.Updaters
 
         private void RefreshTileWarnings()
         {
+            BuildingsSummary surfaceGroundSummary = new BuildingsSummary(GameManager.Instance.Map, 0);
             Map map = GameManager.Instance.Map;
 
             foreach (Tile tile in map)
             {
-                RefreshSlopedWallsWarningsTile(tile);
-                RefreshEntityOutsideBuildingWarningsTile(tile);
+                RefreshSlopedWallsWarningsTile(surfaceGroundSummary, tile);
+                RefreshEntityOutsideBuildingWarningsTile(surfaceGroundSummary, tile);
             }
         }
 
-        private void RefreshSlopedWallsWarningsTile(Tile tile)
+        private void RefreshSlopedWallsWarningsTile(BuildingsSummary buildingsSummary, Tile tile)
         {
             const string warningText = "\nBuilding wall on sloped terrain.";
             
@@ -121,7 +120,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void RefreshEntityOutsideBuildingWarningsTile(Tile tile)
+        private void RefreshEntityOutsideBuildingWarningsTile(BuildingsSummary buildingsSummary, Tile tile)
         {
             const string tileWarningText = "Floor or roof outside known building.\nPlease make sure all ground level walls are built.";
             const string wallWarningText = "Wall outside known building.\nPlease make sure all ground level walls are built.";
