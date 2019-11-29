@@ -6,7 +6,7 @@ namespace Warlander.Deedplanner.Data.Summary
     {
         public HashSet<Building> Buildings { get; } = new HashSet<Building>();
 
-        public BuildingsSummary(Map map)
+        public BuildingsSummary(Map map, int level)
         {
             bool[,] tilesChecked = new bool[map.Width + 1, map.Height + 1];
 
@@ -16,7 +16,7 @@ namespace Warlander.Deedplanner.Data.Summary
             {
                 for (int y = 0; y <= map.Height; y++)
                 {
-                    Room room = ScanTileForRoom(map, tilesChecked, x, y);
+                    Room room = ScanTileForRoom(map, tilesChecked, x, y, level);
                     if (room != null)
                     {
                         rooms.AddLast(room);
@@ -51,7 +51,7 @@ namespace Warlander.Deedplanner.Data.Summary
             }
         }
 
-        private Room ScanTileForRoom(Map map, bool[,] tilesChecked, int x, int y)
+        private Room ScanTileForRoom(Map map, bool[,] tilesChecked, int x, int y, int level)
         {
             if (tilesChecked[x, y])
             {
@@ -70,7 +70,7 @@ namespace Warlander.Deedplanner.Data.Summary
                 Tile checkedTile = tilesToCheck.Pop();
                 tilesInRoom.Add(new TileSummary(checkedTile.X, checkedTile.Y, TilePart.Everything));
                 
-                if (!checkedTile.GetHorizontalWall(0))
+                if (!checkedTile.GetHorizontalWall(level))
                 {
                     Tile nearbyTile = map.GetRelativeTile(checkedTile, 0, -1);
                     if (!nearbyTile)
@@ -91,7 +91,7 @@ namespace Warlander.Deedplanner.Data.Summary
                     }
                 }
 
-                if (!checkedTile.GetVerticalWall(0))
+                if (!checkedTile.GetVerticalWall(level))
                 {
                     Tile nearbyTile = map.GetRelativeTile(checkedTile, -1, 0);
                     if (!nearbyTile)
@@ -117,12 +117,12 @@ namespace Warlander.Deedplanner.Data.Summary
                     noRoom = true;
                     break;
                 }
-                if (!tilesChecked[leftTile.X, leftTile.Y] && !leftTile.GetHorizontalWall(0) && !checkedTiles.Contains(leftTile))
+                if (!tilesChecked[leftTile.X, leftTile.Y] && !leftTile.GetHorizontalWall(level) && !checkedTiles.Contains(leftTile))
                 {
                     checkedTiles.Add(leftTile);
                     tilesToCheck.Push(leftTile);
                 }
-                else if (leftTile.GetHorizontalWall(0))
+                else if (leftTile.GetHorizontalWall(level))
                 {
                     tilesInRoom.Add(new TileSummary(leftTile.X, leftTile.Y, TilePart.HorizontalWallOnly));
                 }
@@ -138,12 +138,12 @@ namespace Warlander.Deedplanner.Data.Summary
                     noRoom = true;
                     break;
                 }
-                if (!tilesChecked[rightTile.X, rightTile.Y] && !rightTile.GetVerticalWall(0) && !checkedTiles.Contains(rightTile))
+                if (!tilesChecked[rightTile.X, rightTile.Y] && !rightTile.GetVerticalWall(level) && !checkedTiles.Contains(rightTile))
                 {
                     checkedTiles.Add(rightTile);
                     tilesToCheck.Push(rightTile);
                 }
-                else if (rightTile.GetVerticalWall(0))
+                else if (rightTile.GetVerticalWall(level))
                 {
                     tilesInRoom.Add(new TileSummary(rightTile.X, rightTile.Y, TilePart.VerticalWallOnly));
                 }
