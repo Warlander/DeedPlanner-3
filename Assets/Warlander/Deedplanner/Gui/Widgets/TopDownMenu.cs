@@ -26,13 +26,13 @@ namespace Warlander.Deedplanner.Gui.Widgets
             }
         }
 
-        private void ShowMenu()
+        public void ShowMenu()
         {
             CreateBlocker();
             contentTransform.gameObject.SetActive(true);
         }
 
-        private void HideMenu()
+        public void HideMenu()
         {
             contentTransform.gameObject.SetActive(false);
             Destroy(blockerButton.gameObject);
