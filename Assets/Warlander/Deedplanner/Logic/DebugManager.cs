@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using StandaloneFileBrowser;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
+using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 
 namespace Warlander.Deedplanner.Logic
@@ -65,6 +69,30 @@ namespace Warlander.Deedplanner.Logic
             {
                 LayoutManager.Instance.TileSelectionMode = tileSelectionMode;
             }
+        }
+
+        public void LoadModelDebug()
+        {
+            ExtensionFilter[] extensions = new[] {
+                new ExtensionFilter("WOM Models", "wom"),
+                new ExtensionFilter("All Files", "*" ),
+            };
+            
+            string[] selection = StandaloneFileBrowser.StandaloneFileBrowser.OpenFilePanel("Open Model", "", extensions, false);
+            
+            if (selection == null || selection.Length == 0)
+            {
+                return;
+            }
+
+            string modelFilePath = selection[0];
+            
+            CoroutineManager.Instance.QueueCoroutine(WurmAssetsLoader.LoadModel(modelFilePath, OnModelLoaded));
+        }
+
+        private void OnModelLoaded(GameObject model)
+        {
+            
         }
 
     }

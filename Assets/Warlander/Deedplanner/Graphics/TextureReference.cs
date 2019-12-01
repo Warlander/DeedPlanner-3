@@ -67,7 +67,16 @@ namespace Warlander.Deedplanner.Graphics
             if (!textureLoading)
             {
                 textureLoading = true;
-                yield return WurmAssetsLoader.LoadTexture(Application.streamingAssetsPath + "/" + Location, false, OnTextureLoaded);
+                string location;
+                if (Path.IsPathRooted(Location))
+                {
+                    location = Location;
+                }
+                else
+                {
+                    location = Application.streamingAssetsPath + "/" + Location;
+                }
+                yield return WurmAssetsLoader.LoadTexture(location, false, OnTextureLoaded);
             }
         }
         
