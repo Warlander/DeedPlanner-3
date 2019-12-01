@@ -2,7 +2,6 @@
 // Created: 2018/07/13
 
 #if true && (UNITY_4_6 || UNITY_5 || UNITY_2017_1_OR_NEWER) // MODULE_MARKER
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening.Core;
