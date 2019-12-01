@@ -288,14 +288,17 @@ namespace Warlander.Deedplanner.Logic
             if (Properties.Instance.WaterQuality == Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(renderWater);
+                Vector3 ultraQualityWaterPosition;
                 if (cameraMode != CameraMode.Isometric)
                 {
-                    ultraQualityWater.transform.position = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
+                    ultraQualityWaterPosition = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
                 }
                 else
                 {
-                    ultraQualityWater.transform.position = new Vector3(isoPosition.x, ultraQualityWater.transform.position.y, isoPosition.y);
+                    ultraQualityWaterPosition = new Vector3(isoPosition.x, ultraQualityWater.transform.position.y, isoPosition.y);
                 }
+
+                ultraQualityWater.transform.position = ultraQualityWaterPosition;
                 ultraQualityWater.Update();
             }
             else if (Properties.Instance.WaterQuality == Gui.WaterQuality.High)
@@ -443,9 +446,10 @@ namespace Warlander.Deedplanner.Logic
                     fppPosition += new Vector3(0, -Time.deltaTime * Properties.Instance.FppMovementSpeed, 0);
                 }
 
-                AttachedCamera.transform.localPosition = fppPosition;
-                AttachedCamera.transform.Translate(movement, Space.Self);
-                fppPosition = AttachedCamera.transform.position;
+                Transform attachedCameraTransform = AttachedCamera.transform;
+                attachedCameraTransform.localPosition = fppPosition;
+                attachedCameraTransform.Translate(movement, Space.Self);
+                fppPosition = attachedCameraTransform.position;
             }
 
             if (CameraMode == CameraMode.Wurmian)
