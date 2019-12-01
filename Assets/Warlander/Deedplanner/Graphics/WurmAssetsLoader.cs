@@ -24,6 +24,7 @@ namespace Warlander.Deedplanner.Graphics
         public static IEnumerator LoadModel(string path, Vector3 scale, Action<GameObject> callback)
         {
             Debug.Log("Loading model at " + path);
+            path = path.Replace('\\', '/'); // making sure all paths have uniform format
 
             byte[] requestData = WebUtils.ReadUrlToByteArray(path);
 
