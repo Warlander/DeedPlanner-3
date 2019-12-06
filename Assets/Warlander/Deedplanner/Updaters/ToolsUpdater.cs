@@ -40,6 +40,12 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Update()
         {
+            if (currentTool != ToolType.MaterialsCalculator)
+            {
+                // we need to react to actions on map only when calculating materials
+                return;
+            }
+            
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
             if (!raycast.transform)
             {
@@ -47,8 +53,19 @@ namespace Warlander.Deedplanner.Updaters
             }
             
             OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
+            if (!overlayMesh)
+            {
+                return;
+            }
             
+            int floor = LayoutManager.Instance.CurrentCamera.Floor;
+            int x = Mathf.FloorToInt(raycast.point.x / 4f);
+            int y = Mathf.FloorToInt(raycast.point.z / 4f);
             
+            if (Input.GetMouseButtonDown(0))
+            {
+                
+            }
         }
         
         private void RefreshMode()
