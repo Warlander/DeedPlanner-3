@@ -6,13 +6,18 @@ namespace Warlander.Deedplanner.Data.Summary
 {
     public class Room
     {
-        public HashSet<TileSummary> Tiles { get; }
+        private HashSet<TileSummary> Tiles { get; }
         
         public Room(HashSet<TileSummary> newTiles)
         {
             Tiles = newTiles;
         }
 
+        public bool ContainsTile(TileSummary summary)
+        {
+            return Tiles.Contains(summary);
+        }
+        
         public bool BordersRoom(Room room)
         {
             if (this == room)
