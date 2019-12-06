@@ -4,7 +4,8 @@ namespace Warlander.Deedplanner.Data.Summary
 {
     public class BuildingsSummary
     {
-        public HashSet<Building> Buildings { get; } = new HashSet<Building>();
+        private HashSet<Building> Buildings { get; } = new HashSet<Building>();
+        private HashSet<Room> Rooms { get; } = new HashSet<Room>();
 
         public BuildingsSummary(Map map, int level)
         {
@@ -23,6 +24,8 @@ namespace Warlander.Deedplanner.Data.Summary
                     }
                 }
             }
+            
+            Rooms = new HashSet<Room>(rooms);
 
             while (rooms.Count > 0)
             {
@@ -183,6 +186,36 @@ namespace Warlander.Deedplanner.Data.Summary
             }
 
             return false;
+        }
+
+        public Building GetBuildingAtTile(Tile tile)
+        {
+            TileSummary summary = new TileSummary(tile.X, tile.Y, TilePart.Everything);
+            
+            foreach (Building building in Buildings)
+            {
+                if (building.ContainsTile(summary))
+                {
+                    return building;
+                }
+            }
+
+            return null;
+        }
+
+        public Room GetRoomAtTile(Tile tile)
+        {
+            TileSummary summary = new TileSummary(tile.X, tile.Y, TilePart.Everything);
+            
+            foreach (Room room in Rooms)
+            {
+                if (room.ContainsTile(summary))
+                {
+                    return room;
+                }
+            }
+
+            return null;
         }
 
         public bool ContainsFloor(Tile tile)
