@@ -6,7 +6,7 @@ namespace Warlander.Deedplanner.Data.Summary
 {
     public class Room
     {
-        private HashSet<TileSummary> Tiles { get; }
+        public HashSet<TileSummary> Tiles { get; }
         
         public Room(HashSet<TileSummary> newTiles)
         {

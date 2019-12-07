@@ -8,6 +8,7 @@ using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
+using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Utils;
 
@@ -186,23 +187,22 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        public Materials CalculateTileMaterials(bool includeHorizontalWalls, bool includeVerticalWalls)
+        public Materials CalculateTileMaterials(TilePart tilePart)
         {
             Materials tileMaterials = new Materials();
             
             foreach (KeyValuePair<EntityData,TileEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
-                if (!includeHorizontalWalls && key.Type.IsHorizontalTileBorder())
-                {
-                    continue;
-                }
-                if (!includeVerticalWalls && key.Type.IsVerticalTileBorder())
-                {
-                    continue;
-                }
                 
-                tileMaterials.Add(pair.Value.Materials);
+                bool addAlways = tilePart == TilePart.Everything;
+                bool addHorizontalWalls = tilePart == TilePart.HorizontalWallOnly && key.Type.IsHorizontalTileBorder();
+                bool addVerticalWalls = tilePart == TilePart.VerticalWallOnly && key.Type.IsVerticalTileBorder();
+                
+                if (addAlways || addHorizontalWalls || addVerticalWalls)
+                {
+                    tileMaterials.Add(pair.Value.Materials);
+                }
             }
 
             return tileMaterials;
