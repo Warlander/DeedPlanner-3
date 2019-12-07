@@ -57,17 +57,37 @@ namespace Warlander.Deedplanner.Updaters
             {
                 return;
             }
-            
-            int floor = LayoutManager.Instance.CurrentCamera.Floor;
-            int x = Mathf.FloorToInt(raycast.point.x / 4f);
-            int y = Mathf.FloorToInt(raycast.point.z / 4f);
-            
+
             if (Input.GetMouseButtonDown(0))
             {
-                
+                int floor = LayoutManager.Instance.CurrentCamera.Floor;
+                int x = Mathf.FloorToInt(raycast.point.x / 4f);
+                int y = Mathf.FloorToInt(raycast.point.z / 4f);
+                Map map = GameManager.Instance.Map;
+                Tile clickedTile = map[x, y];
+
+                if (buildingAllLevelsMaterialsToggle.isOn)
+                {
+                    BuildingsSummary surfaceGroundSummary = new BuildingsSummary(GameManager.Instance.Map, 0);
+                    Materials materials = new Materials();
+                    Building building = surfaceGroundSummary.GetBuildingAtTile(clickedTile);
+                    if (building == null)
+                    {
+                        ShowMaterialsWindow("No valid building on clicked tile");
+                        return;
+                    }
+                    
+                    foreach (TileSummary tileSummary in building.GetAllTiles())
+                    {
+                        Tile tile = map[tileSummary.X, tileSummary.Y];
+                        materials.Add(tile.CalculateTileMaterials(tileSummary.TilePart));
+                    }
+                    
+                    ShowMaterialsWindow(materials.ToString());
+                }
             }
         }
-        
+
         private void RefreshMode()
         {
             if (calculateMaterialsToggle.isOn)

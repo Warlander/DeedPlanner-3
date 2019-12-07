@@ -6,6 +6,7 @@ using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
+using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
@@ -358,7 +359,7 @@ namespace Warlander.Deedplanner.Data
 
             foreach (Tile tile in tiles)
             {
-                mapMaterials.Add(tile.CalculateTileMaterials(true, true));
+                mapMaterials.Add(tile.CalculateTileMaterials(TilePart.Everything));
             }
             
             return mapMaterials;
