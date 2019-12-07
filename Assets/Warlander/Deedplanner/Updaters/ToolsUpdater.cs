@@ -85,6 +85,25 @@ namespace Warlander.Deedplanner.Updaters
                     
                     ShowMaterialsWindow(materials.ToString());
                 }
+                else if (buildingCurrentLevelMaterialsToggle.isOn)
+                {
+                    BuildingsSummary surfaceGroundSummary = new BuildingsSummary(GameManager.Instance.Map, 0);
+                    Materials materials = new Materials();
+                    Building building = surfaceGroundSummary.GetBuildingAtTile(clickedTile);
+                    if (building == null)
+                    {
+                        ShowMaterialsWindow("No valid building on clicked tile");
+                        return;
+                    }
+                    
+                    foreach (TileSummary tileSummary in building.GetAllTiles())
+                    {
+                        Tile tile = map[tileSummary.X, tileSummary.Y];
+                        materials.Add(tile.CalculateFloorMaterials(floor, tileSummary.TilePart));
+                    }
+                    
+                    ShowMaterialsWindow(materials.ToString());
+                }
             }
         }
 
