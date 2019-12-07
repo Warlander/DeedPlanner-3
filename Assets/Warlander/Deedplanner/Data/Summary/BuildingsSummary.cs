@@ -73,7 +73,7 @@ namespace Warlander.Deedplanner.Data.Summary
                 Tile checkedTile = tilesToCheck.Pop();
                 tilesInRoom.Add(new TileSummary(checkedTile.X, checkedTile.Y, TilePart.Everything));
                 
-                if (!checkedTile.GetHorizontalWall(level))
+                if (!checkedTile.GetHorizontalHouseWall(level))
                 {
                     Tile nearbyTile = map.GetRelativeTile(checkedTile, 0, -1);
                     if (!nearbyTile)
@@ -94,7 +94,7 @@ namespace Warlander.Deedplanner.Data.Summary
                     }
                 }
 
-                if (!checkedTile.GetVerticalWall(level))
+                if (!checkedTile.GetVerticalHouseWall(level))
                 {
                     Tile nearbyTile = map.GetRelativeTile(checkedTile, -1, 0);
                     if (!nearbyTile)
@@ -120,12 +120,12 @@ namespace Warlander.Deedplanner.Data.Summary
                     noRoom = true;
                     break;
                 }
-                if (!tilesChecked[leftTile.X, leftTile.Y] && !leftTile.GetHorizontalWall(level) && !checkedTiles.Contains(leftTile))
+                if (!tilesChecked[leftTile.X, leftTile.Y] && !leftTile.GetHorizontalHouseWall(level) && !checkedTiles.Contains(leftTile))
                 {
                     checkedTiles.Add(leftTile);
                     tilesToCheck.Push(leftTile);
                 }
-                else if (leftTile.GetHorizontalWall(level))
+                else if (leftTile.GetHorizontalHouseWall(level))
                 {
                     tilesInRoom.Add(new TileSummary(leftTile.X, leftTile.Y, TilePart.HorizontalWallOnly));
                 }
@@ -141,12 +141,12 @@ namespace Warlander.Deedplanner.Data.Summary
                     noRoom = true;
                     break;
                 }
-                if (!tilesChecked[rightTile.X, rightTile.Y] && !rightTile.GetVerticalWall(level) && !checkedTiles.Contains(rightTile))
+                if (!tilesChecked[rightTile.X, rightTile.Y] && !rightTile.GetVerticalHouseWall(level) && !checkedTiles.Contains(rightTile))
                 {
                     checkedTiles.Add(rightTile);
                     tilesToCheck.Push(rightTile);
                 }
-                else if (rightTile.GetVerticalWall(level))
+                else if (rightTile.GetVerticalHouseWall(level))
                 {
                     tilesInRoom.Add(new TileSummary(rightTile.X, rightTile.Y, TilePart.VerticalWallOnly));
                 }
