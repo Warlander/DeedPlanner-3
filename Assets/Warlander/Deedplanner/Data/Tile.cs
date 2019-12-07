@@ -291,6 +291,22 @@ namespace Warlander.Deedplanner.Data
             return roof;
         }
 
+        public Wall GetVerticalHouseWall(int level)
+        {
+            Wall wall = GetVerticalWall(level);
+            if (!wall)
+            {
+                return null;
+            }
+
+            if (!wall.Data.HouseWall)
+            {
+                return null;
+            }
+
+            return wall;
+        }
+        
         public Wall GetVerticalWall(int level)
         {
             EntityData wallEntityData = new EntityData(level, EntityType.Vwall);
@@ -388,6 +404,22 @@ namespace Warlander.Deedplanner.Data
             Entities[entity] = wall;
             Map.AddEntityToMap(wallObject, entity.Floor);
             RefreshSurfaceEntities();
+
+            return wall;
+        }
+
+        public Wall GetHorizontalHouseWall(int level)
+        {
+            Wall wall = GetHorizontalWall(level);
+            if (!wall)
+            {
+                return null;
+            }
+
+            if (!wall.Data.HouseWall)
+            {
+                return null;
+            }
 
             return wall;
         }
