@@ -24,9 +24,9 @@ namespace Warlander.Deedplanner.Updaters
 
         [SerializeField] private UnityList warningsList = null;
 
-        [SerializeField] private Toggle buildingAllLevelsMaterialsToggle;
-        [SerializeField] private Toggle buildingCurrentLevelMaterialsToggle;
-        [SerializeField] private Toggle roomCurrentLevelMaterialsToggle;
+        [SerializeField] private Toggle buildingAllLevelsMaterialsToggle = null;
+        [SerializeField] private Toggle buildingCurrentLevelMaterialsToggle = null;
+        [SerializeField] private Toggle roomCurrentLevelMaterialsToggle = null;
         
         private ToolType currentTool = ToolType.MaterialsCalculator;
 
@@ -97,6 +97,25 @@ namespace Warlander.Deedplanner.Updaters
                     }
                     
                     foreach (TileSummary tileSummary in building.GetAllTiles())
+                    {
+                        Tile tile = map[tileSummary.X, tileSummary.Y];
+                        materials.Add(tile.CalculateFloorMaterials(floor, tileSummary.TilePart));
+                    }
+                    
+                    ShowMaterialsWindow(materials.ToString());
+                }
+                else if (roomCurrentLevelMaterialsToggle.isOn)
+                {
+                    BuildingsSummary surfaceGroundSummary = new BuildingsSummary(GameManager.Instance.Map, 0);
+                    Materials materials = new Materials();
+                    Room room = surfaceGroundSummary.GetRoomAtTile(clickedTile);
+                    if (room == null)
+                    {
+                        ShowMaterialsWindow("No valid room on clicked tile");
+                        return;
+                    }
+                    
+                    foreach (TileSummary tileSummary in room.Tiles)
                     {
                         Tile tile = map[tileSummary.X, tileSummary.Y];
                         materials.Add(tile.CalculateFloorMaterials(floor, tileSummary.TilePart));
