@@ -84,6 +84,10 @@ namespace Warlander.Deedplanner.Updaters
                     }
                     
                     ShowMaterialsWindow(materials.ToString());
+                    if (Debug.isDebugBuild)
+                    {
+                        Debug.Log(building.CreateSummary());
+                    }
                 }
                 else if (buildingCurrentLevelMaterialsToggle.isOn)
                 {
@@ -103,6 +107,10 @@ namespace Warlander.Deedplanner.Updaters
                     }
                     
                     ShowMaterialsWindow(materials.ToString());
+                    if (Debug.isDebugBuild)
+                    {
+                        Debug.Log(building.CreateSummary());
+                    }
                 }
                 else if (roomCurrentLevelMaterialsToggle.isOn)
                 {
@@ -122,6 +130,10 @@ namespace Warlander.Deedplanner.Updaters
                     }
                     
                     ShowMaterialsWindow(materials.ToString());
+                    if (Debug.isDebugBuild)
+                    {
+                        Debug.Log(room.CreateSummary());
+                    }
                 }
             }
         }
