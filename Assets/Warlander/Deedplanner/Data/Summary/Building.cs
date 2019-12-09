@@ -1,12 +1,11 @@
 using System.Collections.Generic;
+using System.Text;
 
 namespace Warlander.Deedplanner.Data.Summary
 {
     public class Building
     {
         private List<Room> rooms;
-        
-        public IReadOnlyList<Room> Rooms => rooms.AsReadOnly();
 
         public Building(List<Room> newRooms)
         {
@@ -59,6 +58,19 @@ namespace Warlander.Deedplanner.Data.Summary
             }
 
             return false;
+        }
+
+        public string CreateSummary()
+        {
+            StringBuilder build = new StringBuilder();
+            build.AppendLine("Building summary");
+            build.Append("Total rooms: ").Append(rooms.Count).AppendLine();
+            foreach (Room room in rooms)
+            {
+                build.AppendLine(room.CreateSummary());
+            }
+
+            return build.ToString();
         }
     }
 }
