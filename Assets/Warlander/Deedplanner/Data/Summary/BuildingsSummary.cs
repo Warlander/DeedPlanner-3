@@ -33,14 +33,27 @@ namespace Warlander.Deedplanner.Data.Summary
 
                 Room firstRoom = rooms.First.Value;
                 roomsInBuilding.Add(firstRoom);
-                foreach (Room roomToCheck in rooms)
+                bool addedRoom = true;
+
+                while (addedRoom)
                 {
-                    foreach (Room buildingRoom in roomsInBuilding)
+                    addedRoom = false;
+                    
+                    foreach (Room roomToCheck in rooms)
                     {
-                        if (buildingRoom.BordersRoom(roomToCheck))
+                        if (roomsInBuilding.Contains(roomToCheck))
                         {
-                            roomsInBuilding.Add(roomToCheck);
-                            break;
+                            continue;
+                        }
+                        
+                        foreach (Room buildingRoom in roomsInBuilding)
+                        {
+                            if (buildingRoom.BordersRoom(roomToCheck))
+                            {
+                                roomsInBuilding.Add(roomToCheck);
+                                addedRoom = true;
+                                break;
+                            }
                         }
                     }
                 }
