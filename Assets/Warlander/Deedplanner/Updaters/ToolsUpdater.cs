@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -165,11 +166,19 @@ namespace Warlander.Deedplanner.Updaters
         {
             warningsList.Clear();
 
-            RefreshTileWarnings();
-            
-            if (warningsList.Values.Length == 0)
+            try
             {
-                warningsList.Add("No warnings for this map.\nIf this message is missing, some of checks failed.");
+                RefreshTileWarnings();
+                if (warningsList.Values.Length == 0)
+                {
+                    warningsList.Add("No warnings for this map.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+                warningsList.Clear();
+                warningsList.Add("Some of warning checks failed. Please check program logs for errors.");
             }
         }
 
