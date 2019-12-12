@@ -287,7 +287,7 @@ namespace Warlander.Deedplanner.Graphics
 
             Texture2D finalTexture = new Texture2D(dxtTexture.width, dxtTexture.height);
             Color32[] pixelBuffer = dxtTexture.GetPixels32();
-            Object.DestroyImmediate(dxtTexture);
+            Object.Destroy(dxtTexture);
 
             int yScanSize = finalTexture.height / 2;
             int xScanSize = finalTexture.width;
