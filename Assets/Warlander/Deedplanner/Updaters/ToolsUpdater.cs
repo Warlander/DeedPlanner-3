@@ -189,12 +189,12 @@ namespace Warlander.Deedplanner.Updaters
 
             foreach (Tile tile in map)
             {
-                RefreshSlopedWallsWarningsTile(surfaceGroundSummary, tile);
+                RefreshSlopedWallsWarningsTile(tile);
                 RefreshEntityOutsideBuildingWarningsTile(surfaceGroundSummary, tile);
             }
         }
 
-        private void RefreshSlopedWallsWarningsTile(BuildingsSummary buildingsSummary, Tile tile)
+        private void RefreshSlopedWallsWarningsTile(Tile tile)
         {
             const string warningText = "\nBuilding wall on sloped terrain.";
             
