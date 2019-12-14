@@ -53,6 +53,7 @@ namespace Warlander.Deedplanner.Data
         private bool renderDecorations = true;
         private bool renderTrees = true;
         private bool renderBushes = true;
+        private bool renderShips = true;
 
         public bool RenderDecorations
         {
@@ -92,6 +93,21 @@ namespace Warlander.Deedplanner.Data
                     return;
                 }
                 renderBushes = value;
+                RefreshAllTiles();
+            }
+        }
+
+        public bool RenderShips
+        {
+            get => renderShips;
+            set
+            {
+                if (renderShips == value)
+                {
+                    return;
+                }
+
+                renderShips = value;
                 RefreshAllTiles();
             }
         }

@@ -896,8 +896,9 @@ namespace Warlander.Deedplanner.Data
             bool renderDecorations = Map.RenderDecorations;
             bool renderTrees = !decoration.Data.Tree || Map.RenderTrees;
             bool renderBushes = !decoration.Data.Bush || Map.RenderBushes;
+            bool renderShips = !decoration.Data.Floating || Map.RenderShips;
 
-            bool shouldRender = renderDecorations && renderTrees && renderBushes;
+            bool shouldRender = renderDecorations && renderTrees && renderBushes && renderShips;
             
             decoration.gameObject.SetActive(shouldRender);
         }
