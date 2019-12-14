@@ -33,6 +33,7 @@ namespace Warlander.Deedplanner.Logic
         private bool renderDecorations = true;
         private bool renderTrees = true;
         private bool renderBushes = true;
+        private bool renderShips = true;
 
         public GameManager()
         {
@@ -155,6 +156,7 @@ namespace Warlander.Deedplanner.Logic
             map.RenderDecorations = renderDecorations;
             map.RenderTrees = renderTrees;
             map.RenderBushes = renderBushes;
+            map.RenderShips = renderShips;
         }
 
         private byte[] DecompressGzip(byte[] gzip)
@@ -211,6 +213,12 @@ namespace Warlander.Deedplanner.Logic
         {
             renderBushes = enable;
             Map.RenderBushes = renderBushes;
+        }
+
+        public void OnShipsVisibilityChange(bool enable)
+        {
+            renderShips = enable;
+            Map.RenderShips = renderShips;
         }
     }
 
