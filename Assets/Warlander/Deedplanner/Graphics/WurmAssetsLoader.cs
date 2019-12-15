@@ -15,6 +15,8 @@ namespace Warlander.Deedplanner.Graphics
         private static readonly int MainTex = Shader.PropertyToID("_MainTex");
         private static readonly int Color = Shader.PropertyToID("_Color");
         private static readonly int Glossiness = Shader.PropertyToID("_Glossiness");
+        
+        private static readonly Dictionary<MaterialKey, Material> cachedMaterials = new Dictionary<MaterialKey, Material>();
 
         public static IEnumerator LoadModel(string path, Action<GameObject> callback)
         {
@@ -156,30 +158,13 @@ namespace Warlander.Deedplanner.Graphics
         private static IEnumerator LoadMaterial(BinaryReader source, string modelFolder, Action<Material> callback)
         {
             string texName = ReadString(source);
-            string matName = ReadString(source);
-
-            Material material = new Material(GraphicsManager.Instance.WomDefaultMaterial);
-            material.name = matName;
-
             string texLocation = Path.Combine(modelFolder, texName);
-            TextureReference textureReference = TextureReference.GetTextureReference(texLocation);
+            string matName = ReadString(source);
             
-            Texture2D texture = null;
-            if (textureReference != null)
-            {
-                yield return textureReference.LoadOrGetTexture(loadedTexture => texture = loadedTexture);
-            }
+            MaterialKey materialKey = new MaterialKey(matName, texLocation);
 
-            if (texture)
-            {
-                material.SetTexture(MainTex, texture);
-            }
-            else
-            {
-                material.SetColor(Color, new Color(1, 1, 1, 0));
-            }
+            float glossiness = 0;
 
-            
             bool hasMaterialProperties = source.ReadBoolean();
             if (hasMaterialProperties)
             {
@@ -195,17 +180,11 @@ namespace Warlander.Deedplanner.Graphics
                 bool hasShininess = source.ReadBoolean();
                 if (hasShininess)
                 {
-                    float glossiness = source.ReadSingle() / 100;
+                    glossiness = source.ReadSingle() / 100;
                     if (glossiness > 1)
                     {
                         glossiness = 0;
                     }
-                    
-                    material.SetFloat(Glossiness, glossiness);
-                }
-                else
-                {
-                    material.SetFloat(Glossiness, 0);
                 }
 
                 bool hasSpecular = source.ReadBoolean();
@@ -227,7 +206,38 @@ namespace Warlander.Deedplanner.Graphics
                 }
             }
             
-            callback.Invoke(material);
+            if (cachedMaterials.ContainsKey(materialKey))
+            {
+                Debug.Log("Loading material from cache");
+                callback.Invoke(cachedMaterials[materialKey]);
+            }
+            else
+            {
+                Material material = new Material(GraphicsManager.Instance.WomDefaultMaterial);
+                material.name = matName;
+                
+                TextureReference textureReference = TextureReference.GetTextureReference(texLocation);
+            
+                Texture2D texture = null;
+                if (textureReference != null)
+                {
+                    yield return textureReference.LoadOrGetTexture(loadedTexture => texture = loadedTexture);
+                }
+
+                if (texture)
+                {
+                    material.SetTexture(MainTex, texture);
+                }
+                else
+                {
+                    material.SetColor(Color, new Color(1, 1, 1, 0));
+                }
+                
+                material.SetFloat(Glossiness, glossiness);
+                
+                cachedMaterials[materialKey] = material;
+                callback.Invoke(material);
+            }
         }
 
         public static IEnumerator LoadTexture(string location, bool readable, Action<Texture2D> callback)
@@ -316,6 +326,16 @@ namespace Warlander.Deedplanner.Graphics
             return Encoding.ASCII.GetString(bytes);
         }
 
-    }
+        private struct MaterialKey
+        {
+            public string Name { get; }
+            public string TextureLocation { get; }
 
+            public MaterialKey(string name, string textureLocation)
+            {
+                Name = name;
+                TextureLocation = textureLocation;
+            }
+        }
+    }
 }
