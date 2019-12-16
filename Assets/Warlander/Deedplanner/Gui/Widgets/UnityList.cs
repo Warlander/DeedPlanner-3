@@ -1,15 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Warlander.Deedplanner.Gui.Widgets
 {
-    public delegate void UnityListValueChangedHandler(object sender, object value);
-
     public class UnityList : MonoBehaviour
     {
 
-        public event UnityListValueChangedHandler ValueChanged;
+        public event Action<object> ValueChanged;
 
         // we want these fields to be settable via inspector, but not via code
         [SerializeField]
@@ -44,7 +43,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
                 if (toggled)
                 {
                     SelectedValue = newElement.Value;
-                    ValueChanged?.Invoke(this, newElement.Value);
+                    ValueChanged?.Invoke(newElement.Value);
                 }
             });
 

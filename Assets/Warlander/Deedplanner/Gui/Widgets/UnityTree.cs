@@ -7,12 +7,10 @@ using UnityEngine.UI;
 
 namespace Warlander.Deedplanner.Gui.Widgets
 {
-    public delegate void UnityTreeValueChangedHandler(object sender, object value);
-
     public class UnityTree : MonoBehaviour
     {
 
-        public event UnityListValueChangedHandler ValueChanged;
+        public event Action<object> ValueChanged;
 
         // we want these fields to be settable via inspector, but not via code
         [SerializeField] private ToggleGroup toggleGroup = null;
@@ -76,7 +74,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
                 if (toggled)
                 {
                     SelectedValue = newElement.Value;
-                    ValueChanged?.Invoke(this, newElement.Value);
+                    ValueChanged?.Invoke(newElement.Value);
                 }
             });
             bool rootElement = tree == null || tree.Length == 0;
