@@ -77,7 +77,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void OnGroundsTreeValueChanged(object sender, object value)
+        private void OnGroundsTreeValueChanged(object value)
         {
             bool leftClick = leftClickToggle.isOn;
             GroundData groundData = value as GroundData;
