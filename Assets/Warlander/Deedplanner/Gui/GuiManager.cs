@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Warlander.Deedplanner.Gui.Widgets;
 
 namespace Warlander.Deedplanner.Gui
@@ -20,28 +21,14 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField] private UnityList roofsList = null;
         [SerializeField] private UnityTree objectsTree = null;
 
-        [SerializeField] private Window resizeMapWindow = null;
-        [SerializeField] private Window clearMapWindow = null;
-        [SerializeField] private Window saveMapWindow = null;
-        [SerializeField] private Window loadMapWindow = null;
-        [SerializeField] private Window graphicsSettingsWindow = null;
-        [SerializeField] private Window inputSettingsWindow = null;
-        [SerializeField] private Window aboutWindow = null;
-
+        [SerializeField] private WindowMapping[] windows = null;
+        
         public UnityTree GroundsTree => groundsTree;
         public UnityTree CavesTree => cavesTree;
         public UnityTree FloorsTree => floorsTree;
         public UnityTree WallsTree => wallsTree;
         public UnityList RoofsList => roofsList;
         public UnityTree ObjectsTree => objectsTree;
-
-        public Window ResizeMapWindow => resizeMapWindow;
-        public Window ClearMapWindow => clearMapWindow;
-        public Window SaveMapWindow => saveMapWindow;
-        public Window LoadMapWindow => loadMapWindow;
-        public Window GraphicsSettingsWindow => graphicsSettingsWindow;
-        public Window InputSettingsWindow => inputSettingsWindow;
-        public Window AboutWindow => aboutWindow;
 
         public GuiManager()
         {
@@ -65,6 +52,20 @@ namespace Warlander.Deedplanner.Gui
             }
         }
 
+        public Window ShowWindow(WindowId id)
+        {
+            foreach (WindowMapping windowMapping in windows)
+            {
+                if (windowMapping.Id == id)
+                {
+                    windowMapping.Window.ShowWindow();
+                    return windowMapping.Window;
+                }
+            }
+
+            throw new ArgumentException("Unable to find window for ID " + id);
+        }
+
         public Window CreateWindow(string title, RectTransform content, bool closeable)
         {
             Window windowClone = Instantiate(windowPrefab);
@@ -75,6 +76,21 @@ namespace Warlander.Deedplanner.Gui
             return windowClone;
         }
 
+        [Serializable]
+        private struct WindowMapping
+        {
+            [SerializeField] private WindowId id;
+            [SerializeField] private Window window;
+
+            public WindowId Id => id;
+            public Window Window => window;
+
+            private WindowMapping(WindowId newId, Window newWindow)
+            {
+                id = newId;
+                window = newWindow;
+            }
+        }
     }
 
 }
