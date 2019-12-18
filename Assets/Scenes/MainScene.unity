@@ -13725,13 +13725,21 @@ MonoBehaviour:
   wallsTree: {fileID: 349014249}
   roofsList: {fileID: 4875529235959106886}
   objectsTree: {fileID: 428208118}
-  resizeMapWindow: {fileID: 1876807362}
-  clearMapWindow: {fileID: 718291457}
-  saveMapWindow: {fileID: 886154281}
-  loadMapWindow: {fileID: 2094929630}
-  graphicsSettingsWindow: {fileID: 90416652}
-  inputSettingsWindow: {fileID: 1263939092}
-  aboutWindow: {fileID: 1247781485}
+  windows:
+  - id: 0
+    window: {fileID: 1876807362}
+  - id: 1
+    window: {fileID: 718291457}
+  - id: 2
+    window: {fileID: 886154281}
+  - id: 3
+    window: {fileID: 2094929630}
+  - id: 4
+    window: {fileID: 90416652}
+  - id: 5
+    window: {fileID: 1263939092}
+  - id: 6
+    window: {fileID: 1247781485}
 --- !u!1 &500953200
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,6 +11,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Updaters
@@ -58,37 +59,37 @@ namespace Warlander.Deedplanner.Updaters
 
         public void OnResizeMap()
         {
-            GuiManager.Instance.ResizeMapWindow.gameObject.SetActive(true);
+            GuiManager.Instance.ShowWindow(WindowId.ResizeMap);
         }
 
         public void OnClearMap()
         {
-            GuiManager.Instance.ClearMapWindow.gameObject.SetActive(true);
+            GuiManager.Instance.ShowWindow(WindowId.ClearMap);
         }
 
         public void OnSaveMap()
         {
-            GuiManager.Instance.SaveMapWindow.gameObject.SetActive(true);
+            GuiManager.Instance.ShowWindow(WindowId.SaveMap);
         }
 
         public void OnLoadMap()
         {
-            GuiManager.Instance.LoadMapWindow.gameObject.SetActive(true);
+            GuiManager.Instance.ShowWindow(WindowId.LoadMap);
         }
 
         public void OnGraphicsSettings()
         {
-            GuiManager.Instance.GraphicsSettingsWindow.gameObject.SetActive(true);
+            GuiManager.Instance.ShowWindow(WindowId.GraphicsSettings);
         }
 
         public void OnInputSettings()
         {
-            GuiManager.Instance.InputSettingsWindow.gameObject.SetActive(true);
+            GuiManager.Instance.ShowWindow(WindowId.InputSettings);
         }
 
         public void OnAbout()
         {
-            GuiManager.Instance.AboutWindow.gameObject.SetActive(true);
+            GuiManager.Instance.ShowWindow(WindowId.About);
         }
 
         public void OnToggleFullscreen()
