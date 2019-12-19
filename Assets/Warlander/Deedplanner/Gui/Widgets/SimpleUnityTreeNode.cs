@@ -8,14 +8,10 @@ namespace Warlander.Deedplanner.Gui.Widgets
     public class SimpleUnityTreeNode : UnityTreeNode
     {
 
-        [SerializeField]
-        private TextMeshProUGUI text = null;
-        [SerializeField]
-        private Toggle toggle = null;
-        [SerializeField]
-        private Image expandButtonImage = null;
-        [SerializeField]
-        private Image collapseButtonImage = null;
+        [SerializeField] private TextMeshProUGUI text = null;
+        [SerializeField] private Toggle toggle = null;
+        [SerializeField] private Image expandButtonImage = null;
+        [SerializeField] private Image collapseButtonImage = null;
 
         private string value;
 
