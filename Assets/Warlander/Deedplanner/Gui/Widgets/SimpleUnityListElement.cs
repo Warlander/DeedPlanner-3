@@ -7,10 +7,8 @@ namespace Warlander.Deedplanner.Gui.Widgets
     public class SimpleUnityListElement : UnityListElement
     {
 
-        [SerializeField]
-        private TextMeshProUGUI text = null;
-        [SerializeField]
-        private Toggle toggle = null;
+        [SerializeField] private TextMeshProUGUI text = null;
+        [SerializeField] private Toggle toggle = null;
 
         private object value;
 

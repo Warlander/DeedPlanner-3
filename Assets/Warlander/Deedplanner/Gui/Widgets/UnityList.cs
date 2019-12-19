@@ -11,12 +11,9 @@ namespace Warlander.Deedplanner.Gui.Widgets
         public event Action<object> ValueChanged;
 
         // we want these fields to be settable via inspector, but not via code
-        [SerializeField]
-        private ToggleGroup toggleGroup = null;
-        [SerializeField]
-        private RectTransform listElementsParent = null;
-        [SerializeField]
-        private UnityListElement listElementPrefab = null;
+        [SerializeField] private ToggleGroup toggleGroup = null;
+        [SerializeField] private RectTransform listElementsParent = null;
+        [SerializeField] private UnityListElement listElementPrefab = null;
 
         public object SelectedValue { get; private set; }
 

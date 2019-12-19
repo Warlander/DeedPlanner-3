@@ -9,12 +9,9 @@ namespace Warlander.Deedplanner.Gui.Widgets
     public class IconUnityListElement : UnityListElement
     {
 
-        [SerializeField]
-        private TextMeshProUGUI text = null;
-        [SerializeField]
-        private Toggle toggle = null;
-        [SerializeField]
-        private Image image = null;
+        [SerializeField] private TextMeshProUGUI text = null;
+        [SerializeField] private Toggle toggle = null;
+        [SerializeField] private Image image = null;
 
         private TextureReference textureReference;
         private object value;
