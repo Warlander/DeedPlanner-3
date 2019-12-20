@@ -10,14 +10,10 @@ namespace Warlander.Deedplanner.Updaters
     public class FloorUpdater : AbstractUpdater
     {
 
-        [SerializeField]
-        private Toggle southToggle = null;
-        [SerializeField]
-        private Toggle westToggle = null;
-        [SerializeField]
-        private Toggle northToggle = null;
-        [SerializeField]
-        private Toggle eastToggle = null;
+        [SerializeField] private Toggle southToggle = null;
+        [SerializeField] private Toggle westToggle = null;
+        [SerializeField] private Toggle northToggle = null;
+        [SerializeField] private Toggle eastToggle = null;
 
         private void OnEnable()
         {
