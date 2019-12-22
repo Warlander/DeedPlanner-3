@@ -66,6 +66,14 @@ namespace Warlander.Deedplanner.Gui
             throw new ArgumentException("Unable to find window for ID " + id);
         }
 
+        /// <summary>
+        /// Utility function to be called from inspector-bound event callbacks
+        /// </summary>
+        public void ShowLayoutsWindow()
+        {
+            ShowWindow(WindowId.Layouts);
+        }
+
         public Window CreateWindow(string title, RectTransform content, bool closeable)
         {
             Window windowClone = Instantiate(windowPrefab);

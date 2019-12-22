@@ -1,4 +1,4 @@
-namespace Warlander.Deedplanner.Gui.Widgets
+namespace Warlander.Deedplanner.Gui
 {
     public enum WindowId
     {
@@ -8,6 +8,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
         LoadMap = 3,
         GraphicsSettings = 4,
         InputSettings = 5,
-        About = 6
+        About = 6,
+        Layouts = 7
     }
 }
