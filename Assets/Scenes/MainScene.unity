@@ -13742,6 +13742,8 @@ MonoBehaviour:
     window: {fileID: 1247781485}
   - id: 7
     window: {fileID: 1587100698}
+  - id: 8
+    window: {fileID: 651684779}
 --- !u!1 &500953200
 GameObject:
   m_ObjectHideFlags: 0
@@ -17188,6 +17190,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 651684776}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &651684779 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1937894905981870343, guid: 7cca77f05c96fde48981a1284c9f0a65,
+    type: 3}
+  m_PrefabInstance: {fileID: 651684776}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9361b4477f60ba14686d281ebc8fd09f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &654469713
 GameObject:
   m_ObjectHideFlags: 0
@@ -50157,7 +50171,6 @@ MonoBehaviour:
   mapWarningsToggle: {fileID: 600140280}
   calculateMaterialsPanelTransform: {fileID: 218086806}
   mapWarningsPanelTransform: {fileID: 1493980051}
-  materialsWindowTransform: {fileID: 651684777}
   materialsInputField: {fileID: 1893566690}
   warningsList: {fileID: 406117968}
   buildingAllLevelsMaterialsToggle: {fileID: 895665957}
