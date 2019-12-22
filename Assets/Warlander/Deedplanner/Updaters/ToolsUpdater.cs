@@ -19,8 +19,7 @@ namespace Warlander.Deedplanner.Updaters
         
         [SerializeField] private RectTransform calculateMaterialsPanelTransform = null;
         [SerializeField] private RectTransform mapWarningsPanelTransform = null;
-
-        [SerializeField] private RectTransform materialsWindowTransform = null;
+        
         [SerializeField] private TMP_InputField materialsInputField = null;
 
         [SerializeField] private UnityList warningsList = null;
@@ -281,7 +280,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void ShowMaterialsWindow(string text)
         {
-            materialsWindowTransform.gameObject.SetActive(true);
+            GuiManager.Instance.ShowWindow(WindowId.Materials);
             materialsInputField.text = text;
         }
         

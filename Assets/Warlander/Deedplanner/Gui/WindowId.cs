@@ -9,6 +9,7 @@ namespace Warlander.Deedplanner.Gui
         GraphicsSettings = 4,
         InputSettings = 5,
         About = 6,
-        Layouts = 7
+        Layouts = 7,
+        Materials = 8
     }
 }
