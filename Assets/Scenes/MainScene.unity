@@ -13740,6 +13740,8 @@ MonoBehaviour:
     window: {fileID: 1263939092}
   - id: 6
     window: {fileID: 1247781485}
+  - id: 7
+    window: {fileID: 1587100698}
 --- !u!1 &500953200
 GameObject:
   m_ObjectHideFlags: 0
@@ -40119,6 +40121,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 609748247}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1587100698 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1937894905981870343, guid: 7cca77f05c96fde48981a1284c9f0a65,
+    type: 3}
+  m_PrefabInstance: {fileID: 609748247}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587100696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9361b4477f60ba14686d281ebc8fd09f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1591854642
 GameObject:
   m_ObjectHideFlags: 0
@@ -52783,9 +52797,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1587100696}
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 496878107}
+        m_MethodName: ShowLayoutsWindow
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
