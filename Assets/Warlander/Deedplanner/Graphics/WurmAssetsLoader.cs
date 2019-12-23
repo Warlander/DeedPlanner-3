@@ -4,6 +4,7 @@
 using System.IO;
  using System.Text;
  using UnityEngine;
+ using UnityEngine.Networking;
  using Warlander.Deedplanner.Utils;
  using Object = UnityEngine.Object;
 
@@ -28,7 +29,17 @@ namespace Warlander.Deedplanner.Graphics
             Debug.Log("Loading model at " + path);
             path = path.Replace('\\', '/'); // making sure all paths have uniform format
 
-            byte[] requestData = WebUtils.ReadUrlToByteArray(path);
+            UnityWebRequest www = UnityWebRequest.Get(path);
+            yield return www.SendWebRequest();
+            
+            if (www.isHttpError || www.isNetworkError)
+            {
+                Debug.LogError(www.error);
+                callback.Invoke(null);
+                yield break;
+            }
+
+            byte[] requestData = www.downloadHandler.data;
 
             using (BinaryReader source = new BinaryReader(new MemoryStream(requestData)))
             {
@@ -250,8 +261,18 @@ namespace Warlander.Deedplanner.Graphics
             }
 
             Debug.Log("Loading texture at " + location);
-            byte[] texBytes = WebUtils.ReadUrlToByteArray(location);
+            UnityWebRequest www = UnityWebRequest.Get(location);
+            yield return www.SendWebRequest();
+            
+            if (www.isHttpError || www.isNetworkError)
+            {
+                Debug.LogError(www.error);
+                callback.Invoke(null);
+                yield break;
+            }
 
+            byte[] texBytes = www.downloadHandler.data;
+            
             Texture2D texture;
             if (location.Substring(location.LastIndexOf(".", StringComparison.Ordinal) + 1) == "dds")
             {
