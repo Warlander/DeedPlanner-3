@@ -77,13 +77,18 @@ namespace Warlander.Deedplanner.Updaters
                         return;
                     }
                     
-                    foreach (TileSummary tileSummary in building.GetAllTiles())
+                    foreach (TileSummary tileSummary in building.AllTiles)
                     {
                         Tile tile = map[tileSummary.X, tileSummary.Y];
                         materials.Add(tile.CalculateTileMaterials(tileSummary.TilePart));
                     }
                     
-                    ShowMaterialsWindow(materials.ToString());
+                    StringBuilder summary = new StringBuilder();
+                    summary.Append("Carpentry needed: ").Append(building.GetCarpentryRequired()).AppendLine();
+                    summary.AppendLine();
+                    summary.Append(materials);
+                    
+                    ShowMaterialsWindow(summary.ToString());
                     if (Debug.isDebugBuild)
                     {
                         Debug.Log(building.CreateSummary());
@@ -100,13 +105,25 @@ namespace Warlander.Deedplanner.Updaters
                         return;
                     }
                     
-                    foreach (TileSummary tileSummary in building.GetAllTiles())
+                    foreach (TileSummary tileSummary in building.AllTiles)
                     {
                         Tile tile = map[tileSummary.X, tileSummary.Y];
                         materials.Add(tile.CalculateFloorMaterials(floor, tileSummary.TilePart));
                     }
                     
-                    ShowMaterialsWindow(materials.ToString());
+                    StringBuilder summary = new StringBuilder();
+                    if (floor == 0 || floor == -1)
+                    {
+                        summary.Append("Carpentry needed: ").Append(building.GetCarpentryRequired()).AppendLine();
+                    }
+                    else
+                    {
+                        summary.AppendLine("To calculate carpentry needed, please use this option on a ground floor");
+                    }
+                    summary.AppendLine();
+                    summary.Append(materials);
+                    
+                    ShowMaterialsWindow(summary.ToString());
                     if (Debug.isDebugBuild)
                     {
                         Debug.Log(building.CreateSummary());
