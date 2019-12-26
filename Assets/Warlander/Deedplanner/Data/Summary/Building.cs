@@ -1,12 +1,26 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Warlander.Deedplanner.Data.Summary
 {
     public class Building
     {
-        private List<Room> rooms;
+        private readonly List<Room> rooms;
+        private IEnumerable<TileSummary> allTiles;
 
+        public IEnumerable<TileSummary> AllTiles {
+            get
+            {
+                if (allTiles == null)
+                {
+                    allTiles = GetAllTiles();
+                }
+
+                return allTiles;
+            }
+        }
+        
         public Building(List<Room> newRooms)
         {
             rooms = newRooms;
@@ -15,7 +29,7 @@ namespace Warlander.Deedplanner.Data.Summary
         /// <summary>
         /// Returns all tiles without the duplicates (for example, interior walls between rooms)
         /// </summary>
-        public IEnumerable<TileSummary> GetAllTiles()
+        private IEnumerable<TileSummary> GetAllTiles()
         {
             foreach (Room room in rooms)
             {
@@ -58,6 +72,40 @@ namespace Warlander.Deedplanner.Data.Summary
             }
 
             return false;
+        }
+
+        public int GetCarpentryRequired()
+        {
+            int carpentryRequired = 0;
+            
+            foreach (TileSummary tileSummary in AllTiles)
+            {
+                if (tileSummary.TilePart != TilePart.Everything)
+                {
+                    continue;
+                }
+                
+                carpentryRequired++;
+
+                if (!AllTiles.Contains(new TileSummary(tileSummary.X - 1, tileSummary.Y, TilePart.Everything)))
+                {
+                    carpentryRequired++;
+                }
+                if (!AllTiles.Contains(new TileSummary(tileSummary.X + 1, tileSummary.Y, TilePart.Everything)))
+                {
+                    carpentryRequired++;
+                }
+                if (!AllTiles.Contains(new TileSummary(tileSummary.X, tileSummary.Y - 1, TilePart.Everything)))
+                {
+                    carpentryRequired++;
+                }
+                if (!AllTiles.Contains(new TileSummary(tileSummary.X, tileSummary.Y + 1, TilePart.Everything)))
+                {
+                    carpentryRequired++;
+                }
+            }
+            
+            return carpentryRequired;
         }
 
         public string CreateSummary()
