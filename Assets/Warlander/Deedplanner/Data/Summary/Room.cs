@@ -26,7 +26,7 @@ namespace Warlander.Deedplanner.Data.Summary
                 return false;
             }
             
-            return Tiles.Intersect(room.Tiles, new TileSummaryComparer()).Any();
+            return Tiles.Intersect(room.Tiles, new RoomBorderingComparer()).Any();
         }
         
         public string CreateSummary()
