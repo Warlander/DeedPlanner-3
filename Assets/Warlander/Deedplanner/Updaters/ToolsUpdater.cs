@@ -207,6 +207,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 RefreshSlopedWallsWarningsTile(tile);
                 RefreshEntityOutsideBuildingWarningsTile(surfaceGroundSummary, tile);
+                RefreshBuildingsTouchingWarningsTile(surfaceGroundSummary, tile);
             }
         }
 
@@ -267,6 +268,29 @@ namespace Warlander.Deedplanner.Updaters
                     warningsList.Add(CreateWarningString(tile, wallWarningText));
                     break;
                 }
+            }
+        }
+
+        private void RefreshBuildingsTouchingWarningsTile(BuildingsSummary buildingsSummary, Tile tile)
+        {
+            const string buildingsTouchingWarningText = "Buildings sharing corner.\nTwo buildings cannot share any corner.";
+
+            Building building = buildingsSummary.GetBuildingAtTile(tile);
+            if (building == null)
+            {
+                return;
+            }
+
+            Building leftTop = buildingsSummary.GetBuildingAtCoords(tile.X - 1, tile.Y + 1);
+            if (leftTop != null && building != leftTop)
+            {
+                warningsList.Add(CreateWarningString(tile, buildingsTouchingWarningText));
+            }
+            
+            Building rightTop = buildingsSummary.GetBuildingAtCoords(tile.X + 1, tile.Y + 1);
+            if (rightTop != null && building != rightTop)
+            {
+                warningsList.Add(CreateWarningString(tile, buildingsTouchingWarningText));
             }
         }
 
