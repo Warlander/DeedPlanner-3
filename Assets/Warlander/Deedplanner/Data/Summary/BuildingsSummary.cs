@@ -203,7 +203,12 @@ namespace Warlander.Deedplanner.Data.Summary
 
         public Building GetBuildingAtTile(Tile tile)
         {
-            TileSummary summary = new TileSummary(tile.X, tile.Y, TilePart.Everything);
+            return GetBuildingAtCoords(tile.X, tile.Y);
+        }
+        
+        public Building GetBuildingAtCoords(int x, int y)
+        {
+            TileSummary summary = new TileSummary(x, y, TilePart.Everything);
             
             foreach (Building building in Buildings)
             {
@@ -212,7 +217,7 @@ namespace Warlander.Deedplanner.Data.Summary
                     return building;
                 }
             }
-
+            
             return null;
         }
 
