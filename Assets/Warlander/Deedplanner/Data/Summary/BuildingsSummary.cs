@@ -5,7 +5,10 @@ namespace Warlander.Deedplanner.Data.Summary
     public class BuildingsSummary
     {
         private HashSet<Building> Buildings { get; } = new HashSet<Building>();
-        private HashSet<Room> Rooms { get; } = new HashSet<Room>();
+        private HashSet<Room> Rooms { get; }
+
+        public int BuildingsCount => Buildings.Count;
+        public int RoomsCount => Rooms.Count;
 
         public BuildingsSummary(Map map, int level)
         {
