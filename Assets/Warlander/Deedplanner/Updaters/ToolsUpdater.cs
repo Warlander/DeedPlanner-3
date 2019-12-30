@@ -316,7 +316,15 @@ namespace Warlander.Deedplanner.Updaters
         {
             Materials mapMaterials = GameManager.Instance.Map.CalculateMapMaterials();
             
-            ShowMaterialsWindow(mapMaterials.ToString());
+            BuildingsSummary surfaceGroundSummary = new BuildingsSummary(GameManager.Instance.Map, 0);
+            
+            StringBuilder build = new StringBuilder();
+            build.Append("Total buildings: ").Append(surfaceGroundSummary.BuildingsCount).AppendLine();
+            build.Append("Total rooms: ").Append(surfaceGroundSummary.RoomsCount).AppendLine();
+            build.AppendLine();
+            build.Append(mapMaterials);
+            
+            ShowMaterialsWindow(build.ToString());
         }
 
         private void ShowMaterialsWindow(string text)
