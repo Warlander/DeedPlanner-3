@@ -415,16 +415,18 @@ namespace Warlander.Deedplanner.Logic
             int activeWindow = LayoutManager.Instance.ActiveWindow;
             if (activeWindow == screenId)
             {
-                Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                movement *= Properties.Instance.FppMovementSpeed * Time.deltaTime;
+                float movementMultiplier = 1;
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    movement *= Properties.Instance.FppShiftModifier;
+                    movementMultiplier *= Properties.Instance.FppShiftModifier;
                 }
                 else if (Input.GetKey(KeyCode.LeftControl))
                 {
-                    movement *= Properties.Instance.FppControlModifier;
+                    movementMultiplier *= Properties.Instance.FppControlModifier;
                 }
+                
+                Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                movement *= Properties.Instance.FppMovementSpeed * Time.deltaTime * movementMultiplier;
 
                 if (Input.GetKey(KeyCode.Q))
                 {
@@ -439,11 +441,11 @@ namespace Warlander.Deedplanner.Logic
 
                 if (Input.GetKey(KeyCode.R))
                 {
-                    fppPosition += new Vector3(0, Time.deltaTime * Properties.Instance.FppMovementSpeed, 0);
+                    fppPosition += new Vector3(0, Time.deltaTime * Properties.Instance.FppMovementSpeed * movementMultiplier, 0);
                 }
                 if (Input.GetKey(KeyCode.F))
                 {
-                    fppPosition += new Vector3(0, -Time.deltaTime * Properties.Instance.FppMovementSpeed, 0);
+                    fppPosition += new Vector3(0, -Time.deltaTime * Properties.Instance.FppMovementSpeed * movementMultiplier, 0);
                 }
 
                 Transform attachedCameraTransform = AttachedCamera.transform;
