@@ -120,6 +120,7 @@ namespace Warlander.Deedplanner.Updaters
                     {
                         summary.AppendLine("To calculate carpentry needed, please use this option on a ground floor");
                     }
+                    summary.Append("Rooms on this level: ").Append(building.RoomsCount).AppendLine();
                     summary.AppendLine();
                     summary.Append(materials);
                     

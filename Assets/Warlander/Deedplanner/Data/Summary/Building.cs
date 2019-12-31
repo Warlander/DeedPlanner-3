@@ -9,6 +9,8 @@ namespace Warlander.Deedplanner.Data.Summary
         private readonly List<Room> rooms;
         private IEnumerable<TileSummary> allTiles;
 
+        public int RoomsCount => rooms.Count;
+        
         public IEnumerable<TileSummary> AllTiles {
             get
             {
