@@ -85,6 +85,7 @@ namespace Warlander.Deedplanner.Updaters
                     
                     StringBuilder summary = new StringBuilder();
                     summary.Append("Carpentry needed: ").Append(building.GetCarpentryRequired()).AppendLine();
+                    summary.Append("Total tiles: ").Append(building.TilesCount).AppendLine();
                     summary.AppendLine();
                     summary.Append(materials);
                     
@@ -121,6 +122,7 @@ namespace Warlander.Deedplanner.Updaters
                         summary.AppendLine("To calculate carpentry needed, please use this option on a ground floor");
                     }
                     summary.Append("Rooms on this level: ").Append(building.RoomsCount).AppendLine();
+                    summary.Append("Tiles on this level: ").Append(building.TilesCount).AppendLine();
                     summary.AppendLine();
                     summary.Append(materials);
                     
@@ -140,14 +142,19 @@ namespace Warlander.Deedplanner.Updaters
                         ShowMaterialsWindow("No valid room on clicked tile");
                         return;
                     }
-                    
+
                     foreach (TileSummary tileSummary in room.Tiles)
                     {
                         Tile tile = map[tileSummary.X, tileSummary.Y];
                         materials.Add(tile.CalculateFloorMaterials(floor, tileSummary.TilePart));
                     }
                     
-                    ShowMaterialsWindow(materials.ToString());
+                    StringBuilder summary = new StringBuilder();
+                    summary.Append("Tiles in this room: ").Append(room.Tiles.Count).AppendLine();
+                    summary.AppendLine();
+                    summary.Append(materials);
+                    
+                    ShowMaterialsWindow(summary.ToString());
                     if (Debug.isDebugBuild)
                     {
                         Debug.Log(room.CreateSummary());
