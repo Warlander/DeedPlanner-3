@@ -617,6 +617,7 @@ namespace Warlander.Deedplanner.Logic
             Transform cameraTransform = AttachedCamera.transform;
             if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
             {
+                AttachedCamera.clearFlags = CameraClearFlags.Skybox;
                 AttachedCamera.orthographic = false;
                 cameraTransform.localPosition = fppPosition;
                 cameraTransform.localRotation = Quaternion.Euler(fppRotation);
@@ -624,6 +625,7 @@ namespace Warlander.Deedplanner.Logic
             }
             else if (cameraMode == CameraMode.Top)
             {
+                AttachedCamera.clearFlags = CameraClearFlags.SolidColor;
                 AttachedCamera.orthographic = true;
                 AttachedCamera.orthographicSize = topScale;
                 cameraTransform.localPosition = new Vector3(topPosition.x, 10000, topPosition.y);
@@ -632,6 +634,7 @@ namespace Warlander.Deedplanner.Logic
             }
             else if (cameraMode == CameraMode.Isometric)
             {
+                AttachedCamera.clearFlags = CameraClearFlags.SolidColor;
                 AttachedCamera.orthographic = true;
                 AttachedCamera.orthographicSize = isoScale;
                 cameraTransform.localPosition = new Vector3(isoPosition.x, isoPosition.y, -10000);
