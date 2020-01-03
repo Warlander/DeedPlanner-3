@@ -290,13 +290,11 @@ namespace Warlander.Deedplanner.Data
             {
                 Roof roof = CreateNewRoof(entityData, data);
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, roof));
-                Map.RecalculateRoofs();
                 return roof;
             }
             if (!data && tileEntity)
             {
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, null));
-                Map.RecalculateRoofs();
                 return null;
             }
 
