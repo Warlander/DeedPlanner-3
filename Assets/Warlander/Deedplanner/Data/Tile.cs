@@ -17,8 +17,6 @@ namespace Warlander.Deedplanner.Data
     public class Tile : ScriptableObject, IXmlSerializable
     {
 
-        private static readonly int ColorPropertyId = Shader.PropertyToID("_Color");
-        
         private int surfaceHeight = 0;
         private int caveHeight = 0;
         private int caveSize = 0;
@@ -1009,7 +1007,7 @@ namespace Warlander.Deedplanner.Data
                 {
                     float opacity = renderEntireMap ? 1f : tile.Map.GetRelativeFloorOpacity(relativeFloor);
                     MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                    propertyBlock.SetColor(ColorPropertyId, new Color(opacity, opacity, opacity));
+                    propertyBlock.SetColor(ShaderPropertyIds.Color, new Color(opacity, opacity, opacity));
                     Renderer[] renderers = entity.GetComponentsInChildren<Renderer>();
                     foreach (Renderer renderer in renderers)
                     {
