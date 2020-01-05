@@ -8,9 +8,6 @@ namespace Warlander.Deedplanner.Logic
 {
     public class HeightmapHandle : MonoBehaviour
     {
-
-        private static readonly int ColorPropertyId = Shader.PropertyToID("_Color");
-        
         public Vector2Int TileCoords { get; private set; }
 
         private Renderer commonRenderer;
@@ -24,7 +21,7 @@ namespace Warlander.Deedplanner.Logic
                     return;
                 }
                 MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                propertyBlock.SetColor(ColorPropertyId, value);
+                propertyBlock.SetColor(ShaderPropertyIds.Color, value);
                 commonRenderer.SetPropertyBlock(propertyBlock);
                 color = value;
             }

@@ -16,9 +16,6 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class DecorationUpdater : AbstractUpdater
     {
-
-        private static readonly int ColorPropertyId = Shader.PropertyToID("_Color");
-
         [SerializeField] private Toggle snapToGridToggle = null;
         [SerializeField] private Toggle rotationSnappingToggle = null;
         [SerializeField] private TMP_InputField rotationSensitivityInput = null;
@@ -43,9 +40,9 @@ namespace Warlander.Deedplanner.Updaters
         private void Awake()
         {
             allowedGhostPropertyBlock = new MaterialPropertyBlock();
-            allowedGhostPropertyBlock.SetColor(ColorPropertyId, allowedGhostColor);
+            allowedGhostPropertyBlock.SetColor(ShaderPropertyIds.Color, allowedGhostColor);
             disabledGhostPropertyBlock = new MaterialPropertyBlock();
-            disabledGhostPropertyBlock.SetColor(ColorPropertyId, disabledGhostColor);
+            disabledGhostPropertyBlock.SetColor(ShaderPropertyIds.Color, disabledGhostColor);
         }
 
         private void Start()
