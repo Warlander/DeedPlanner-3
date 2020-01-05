@@ -13,10 +13,6 @@ namespace Warlander.Deedplanner.Graphics
 
     public static class WurmAssetsLoader
     {
-        private static readonly int MainTex = Shader.PropertyToID("_MainTex");
-        private static readonly int Color = Shader.PropertyToID("_Color");
-        private static readonly int Glossiness = Shader.PropertyToID("_Glossiness");
-        
         private static readonly Dictionary<MaterialKey, Material> cachedMaterials = new Dictionary<MaterialKey, Material>();
 
         public static IEnumerator LoadModel(string path, Action<GameObject> callback)
@@ -237,14 +233,14 @@ namespace Warlander.Deedplanner.Graphics
 
                 if (texture)
                 {
-                    material.SetTexture(MainTex, texture);
+                    material.SetTexture(ShaderPropertyIds.MainTex, texture);
                 }
                 else
                 {
-                    material.SetColor(Color, new Color(1, 1, 1, 0));
+                    material.SetColor(ShaderPropertyIds.Color, new Color(1, 1, 1, 0));
                 }
                 
-                material.SetFloat(Glossiness, glossiness);
+                material.SetFloat(ShaderPropertyIds.Glossiness, glossiness);
                 
                 cachedMaterials[materialKey] = material;
                 callback.Invoke(material);

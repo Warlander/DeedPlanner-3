@@ -9,10 +9,7 @@ namespace Warlander.Deedplanner.Graphics
 {
     public class TextureReference
     {
-
-        private static readonly int MainTex = Shader.PropertyToID("_MainTex");
-
-        private static Dictionary<string, TextureReference> references = new Dictionary<string, TextureReference>();
+        private static readonly Dictionary<string, TextureReference> references = new Dictionary<string, TextureReference>();
 
         public static TextureReference GetTextureReference(string location)
         {
