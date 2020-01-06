@@ -77,7 +77,7 @@ namespace Warlander.Deedplanner.Editor
             }
         }
         
-        [MenuItem("Build/Mac (experimental)", false, 52)]
+        [MenuItem("Build/Mac", false, 52)]
         public static bool BuildMac()
         {
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
