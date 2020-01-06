@@ -68,8 +68,8 @@ namespace Warlander.Deedplanner.Data.Walls
             }
             
             Bounds bounds = GetTotalModelBounds(Model);
-            const float wallDepthConfortableMargin = 0.75f;
-            float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthConfortableMargin);
+            const float wallDepthComfortableMargin = 0.75f;
+            float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthComfortableMargin);
             bounds.size = new Vector3(bounds.size.x, bounds.size.y, comfortableWallDepth);
             
             Vector3[] vectors = CreateBoundsVerticesArray(bounds, SlopeDifference);
