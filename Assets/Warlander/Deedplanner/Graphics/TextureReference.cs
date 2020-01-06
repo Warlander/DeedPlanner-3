@@ -75,6 +75,11 @@ namespace Warlander.Deedplanner.Graphics
                 }
                 yield return WurmAssetsLoader.LoadTexture(location, false, OnTextureLoaded);
             }
+
+            while (textureLoading)
+            {
+                yield return null;
+            }
         }
         
         public IEnumerator LoadOrGetSprite(Action<Sprite> callback)
