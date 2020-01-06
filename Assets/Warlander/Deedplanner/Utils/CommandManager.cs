@@ -92,7 +92,7 @@ namespace Warlander.Deedplanner.Utils
             currentActionStack.Clear();
         }
 
-        private struct ReversibleCommandAction : IReversibleCommand
+        private class ReversibleCommandAction : IReversibleCommand
         {
 
             private readonly IReversibleCommand[] containedReversibleCommands;
