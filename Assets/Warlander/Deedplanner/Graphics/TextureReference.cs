@@ -41,8 +41,7 @@ namespace Warlander.Deedplanner.Graphics
         private Sprite sprite;
         private Material material;
         private bool textureLoading = false;
-        private readonly List<Action<Texture2D>> textureWaitingCallbacks = new List<Action<Texture2D>>();
-        private readonly List<Action<Sprite>> spriteWaitingCallbacks = new List<Action<Sprite>>();
+        private bool spriteRequested = false;
 
         public string Location { get; }
 
@@ -58,8 +57,6 @@ namespace Warlander.Deedplanner.Graphics
                 callback.Invoke(texture);
                 yield break;
             }
-            
-            textureWaitingCallbacks.Add(callback);
 
             if (!textureLoading)
             {
@@ -80,6 +77,8 @@ namespace Warlander.Deedplanner.Graphics
             {
                 yield return null;
             }
+            
+            callback.Invoke(texture);
         }
         
         public IEnumerator LoadOrGetSprite(Action<Sprite> callback)
@@ -96,43 +95,38 @@ namespace Warlander.Deedplanner.Graphics
                 callback.Invoke(sprite);
                 yield break;
             }
-            
-            spriteWaitingCallbacks.Add(callback);
-            
+
             if (!textureLoading)
             {
                 textureLoading = true;
                 yield return WurmAssetsLoader.LoadTexture(Application.streamingAssetsPath + "/" + Location, false, OnTextureLoaded);
             }
+            
+            while (textureLoading)
+            {
+                yield return null;
+            }
+            
+            callback.Invoke(sprite);
         }
 
         private void OnTextureLoaded(Texture2D tex)
         {
-            textureLoading = false;
-
-            if (tex)
+            if (!tex)
             {
-                texture = tex;
-                texture.name = Location;
-                
-                foreach (Action<Texture2D> textureWaitingCallback in textureWaitingCallbacks)
-                {
-                    textureWaitingCallback.Invoke(texture);
-                }
-                textureWaitingCallbacks.Clear();
-
-                if (spriteWaitingCallbacks.Count > 0)
-                {
-                    sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-                }
-
-                foreach (Action<Sprite> spriteWaitingCallback in spriteWaitingCallbacks)
-                {
-                    spriteWaitingCallback.Invoke(sprite);
-                }
-                spriteWaitingCallbacks.Clear();
+                textureLoading = false;
+                return;
             }
-        }
 
+            texture = tex;
+            texture.name = Location;
+
+            if (spriteRequested)
+            {
+                sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+            }
+            
+            textureLoading = false;
+        }
     }
 }
