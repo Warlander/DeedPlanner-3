@@ -5,7 +5,7 @@ namespace Warlander.Deedplanner.Gui
 {
     public class HoverTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private string text;
+        [SerializeField] private string text = null;
         
         public void OnPointerEnter(PointerEventData eventData)
         {
