@@ -9821,6 +9821,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: 
+  showDelay: 0
 --- !u!1 &366716150
 GameObject:
   m_ObjectHideFlags: 0
@@ -17993,6 +17994,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: Feature not available<br>in current alpha version
+  showDelay: 0
 --- !u!224 &676416736 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1937894905538731076, guid: 7cca77f05c96fde48981a1284c9f0a65,
@@ -25441,6 +25443,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: 
+  showDelay: 0
 --- !u!224 &995267340 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
@@ -30219,6 +30222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: Feature not available<br>in current alpha version
+  showDelay: 0
 --- !u!1 &1222685799
 GameObject:
   m_ObjectHideFlags: 0
@@ -31733,6 +31737,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: 
+  showDelay: 0
 --- !u!1001 &1263939090
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33845,6 +33850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: 
+  showDelay: 0
 --- !u!1 &1368613864
 GameObject:
   m_ObjectHideFlags: 0
@@ -39819,6 +39825,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: Feature not available<br>in current alpha version
+  showDelay: 0
 --- !u!1 &1583208483
 GameObject:
   m_ObjectHideFlags: 0
@@ -40473,6 +40480,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: Feature not available<br>in current alpha version
+  showDelay: 0
 --- !u!1 &1600840091
 GameObject:
   m_ObjectHideFlags: 0
@@ -52733,6 +52741,7 @@ GameObject:
   - component: {fileID: 1652071403132846311}
   - component: {fileID: 1652071403132846310}
   - component: {fileID: 1652071403132846306}
+  - component: {fileID: 1652071403132846307}
   m_Layer: 5
   m_Name: Layouts
   m_TagString: Untagged
@@ -52814,6 +52823,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &1652071403132846307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652071403132846304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Change current camera layout
+  showDelay: 1
 --- !u!114 &1652071403132846310
 MonoBehaviour:
   m_ObjectHideFlags: 0
