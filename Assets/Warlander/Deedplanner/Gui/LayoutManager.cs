@@ -14,13 +14,6 @@ namespace Warlander.Deedplanner.Gui
 
         public static LayoutManager Instance { get; private set; }
 
-        public event GenericEventArgs<Tab> TabChanged;
-
-        private int activeWindow;
-        private Layout currentLayout = Layout.Single;
-        private Tab currentTab;
-        public TileSelectionMode TileSelectionMode { get; set; }
-
         [SerializeField] private CanvasScaler mainCanvasScaler = null;
         
         [SerializeField] private Toggle[] indicatorButtons = new Toggle[4];
@@ -44,6 +37,13 @@ namespace Warlander.Deedplanner.Gui
 
         [SerializeField] private Tooltip tooltip = null;
 
+        public event GenericEventArgs<Tab> TabChanged;
+
+        private int activeWindow;
+        private Layout currentLayout = Layout.Single;
+        private Tab currentTab;
+        public TileSelectionMode TileSelectionMode { get; set; }
+        
         public MultiCamera CurrentCamera => cameras[ActiveWindow];
 
         public MultiCamera HoveredCamera
@@ -139,23 +139,6 @@ namespace Warlander.Deedplanner.Gui
             ValidateState();
         }
 
-        private void Update()
-        {
-            bool tooltipNeedsClearing = true;
-            foreach (MultiCamera multiCamera in cameras)
-            {
-                if (multiCamera.MouseOver)
-                {
-                    tooltipNeedsClearing = false;
-                }
-            }
-
-            if (tooltipNeedsClearing)
-            {
-                TooltipText = "";
-            }
-        }
-        
         private void ValidateState()
         {
             WaterQuality waterQuality = Properties.Instance.WaterQuality;

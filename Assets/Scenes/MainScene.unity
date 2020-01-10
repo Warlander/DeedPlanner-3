@@ -1059,7 +1059,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 42500068}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1599263357}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
@@ -9673,6 +9673,7 @@ GameObject:
   - component: {fileID: 365908950}
   - component: {fileID: 365908949}
   - component: {fileID: 365908953}
+  - component: {fileID: 365908954}
   m_Layer: 5
   m_Name: Screen 4
   m_TagString: Untagged
@@ -9807,6 +9808,19 @@ MonoBehaviour:
   OnPointerExitEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &365908954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 365908947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: 
 --- !u!1 &366716150
 GameObject:
   m_ObjectHideFlags: 0
@@ -17724,7 +17738,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 661367297}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1215131534}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
@@ -17960,6 +17974,25 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!1 &673811833 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5575850793526680609, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+    type: 3}
+  m_PrefabInstance: {fileID: 1827277262}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &673811834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673811833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Feature not available<br>in current alpha version
 --- !u!224 &676416736 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1937894905538731076, guid: 7cca77f05c96fde48981a1284c9f0a65,
@@ -25260,6 +25293,7 @@ GameObject:
   - component: {fileID: 993503045}
   - component: {fileID: 993503044}
   - component: {fileID: 993503048}
+  - component: {fileID: 993503049}
   m_Layer: 5
   m_Name: Screen 2
   m_TagString: Untagged
@@ -25394,6 +25428,19 @@ MonoBehaviour:
   OnPointerExitEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &993503049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 993503042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: 
 --- !u!224 &995267340 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
@@ -26393,7 +26440,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1033958642}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1583187015}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
@@ -30153,6 +30200,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Layout: 5
+--- !u!1 &1215131534 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5575850793526680609, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+    type: 3}
+  m_PrefabInstance: {fileID: 661367297}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1215131535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215131534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Feature not available<br>in current alpha version
 --- !u!1 &1222685799
 GameObject:
   m_ObjectHideFlags: 0
@@ -31519,6 +31585,7 @@ GameObject:
   - component: {fileID: 1258137614}
   - component: {fileID: 1258137613}
   - component: {fileID: 1258137617}
+  - component: {fileID: 1258137618}
   m_Layer: 5
   m_Name: Screen 3
   m_TagString: Untagged
@@ -31653,6 +31720,19 @@ MonoBehaviour:
   OnPointerExitEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1258137618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1258137611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: 
 --- !u!1001 &1263939090
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33617,6 +33697,7 @@ GameObject:
   - component: {fileID: 1366631610}
   - component: {fileID: 1366631613}
   - component: {fileID: 1366631614}
+  - component: {fileID: 1366631615}
   m_Layer: 5
   m_Name: Screen 1
   m_TagString: Untagged
@@ -33751,6 +33832,19 @@ MonoBehaviour:
   OnPointerExitEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1366631615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1366631608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: 
 --- !u!1 &1368613864
 GameObject:
   m_ObjectHideFlags: 0
@@ -39706,6 +39800,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1580177016}
   m_CullTransparentMesh: 0
+--- !u!1 &1583187015 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5575850793526680609, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+    type: 3}
+  m_PrefabInstance: {fileID: 1033958642}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1583187016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583187015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Feature not available<br>in current alpha version
 --- !u!1 &1583208483
 GameObject:
   m_ObjectHideFlags: 0
@@ -40341,6 +40454,25 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!1 &1599263357 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5575850793526680609, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+    type: 3}
+  m_PrefabInstance: {fileID: 42500068}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1599263358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1599263357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Feature not available<br>in current alpha version
 --- !u!1 &1600840091
 GameObject:
   m_ObjectHideFlags: 0
@@ -45763,7 +45895,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1827277262}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 673811833}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
