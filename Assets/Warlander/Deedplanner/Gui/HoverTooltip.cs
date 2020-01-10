@@ -27,12 +27,17 @@ namespace Warlander.Deedplanner.Gui
         {
             yield return new WaitForSeconds(showDelay);
             LayoutManager.Instance.TooltipText = text;
+            delayCoroutine = null;
         }
         
         public void OnPointerExit(PointerEventData eventData)
         {
             LayoutManager.Instance.TooltipText = "";
-            StopCoroutine(delayCoroutine);
+            if (delayCoroutine != null)
+            {
+                StopCoroutine(delayCoroutine);
+            }
+            
         }
     }
 }
