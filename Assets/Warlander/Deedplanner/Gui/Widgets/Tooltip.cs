@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -30,8 +31,18 @@ namespace Warlander.Deedplanner.Gui.Widgets
         {
             rectTransform = GetComponent<RectTransform>();
         }
-        
+
+        private void OnEnable()
+        {
+            UpdatePosition();
+        }
+
         private void Update()
+        {
+            UpdatePosition();
+        }
+
+        private void UpdatePosition()
         {
             Vector2 mousePos = Input.mousePosition;
             Vector2 cursorCorrection = new Vector2(0, -20);
