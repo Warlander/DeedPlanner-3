@@ -1,6 +1,6 @@
-using System;
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Warlander.Deedplanner.Gui.Widgets
 {
@@ -8,6 +8,8 @@ namespace Warlander.Deedplanner.Gui.Widgets
     {
 
         [SerializeField] private TMP_Text text = null;
+        [SerializeField] private CanvasGroup canvasGroup = null;
+        [SerializeField] private float animationSpeed = 10f;
 
         private RectTransform rectTransform;
 
@@ -18,10 +20,13 @@ namespace Warlander.Deedplanner.Gui.Widgets
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    gameObject.SetActive(false);
+                    canvasGroup.DOKill();
+                    canvasGroup.DOFade(0, animationSpeed).SetEase(Ease.Linear).SetSpeedBased();
                     return;
                 }
                 
+                canvasGroup.DOKill();
+                canvasGroup.DOFade(1, animationSpeed).SetEase(Ease.Linear).SetSpeedBased();
                 gameObject.SetActive(true);
                 text.text = value;
             }
@@ -30,6 +35,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
         private void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
+            canvasGroup.alpha = 0;
         }
 
         private void OnEnable()
