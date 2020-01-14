@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
@@ -33,6 +34,20 @@ namespace Warlander.Deedplanner.Gui.Widgets
 
         private bool windowShown = false;
 
+        private void Awake()
+        {
+            windowShown = gameObject.activeSelf;
+        }
+
+        private void OnEnable()
+        {
+            if (!windowShown)
+            {
+                Debug.LogWarning("\nwindowShown\" flag was disabled when enabling the window - please make sure window is shown using \"ShowWindow()\" instead of enabling directly.");
+            }
+            windowShown = false;
+        }
+
         public void ShowWindow()
         {
             if (windowShown)
@@ -57,6 +72,14 @@ namespace Warlander.Deedplanner.Gui.Widgets
             canvasGroup.DOFade(0, 0.15f).SetEase(Ease.Linear).OnComplete(() => gameObject.SetActive(false));
         }
 
+        private void OnDisable()
+        {
+            if (windowShown)
+            {
+                Debug.LogWarning("\nwindowShown\" flag was active when disabling the window - please make sure window is hidden using \"HideWindow()\" instead of disabling directly.");
+            }
+            windowShown = false;
+        }
     }
 
 }
