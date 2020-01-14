@@ -2353,6 +2353,7 @@ GameObject:
   - component: {fileID: 101370994}
   - component: {fileID: 101370992}
   - component: {fileID: 101370995}
+  - component: {fileID: 101370997}
   m_Layer: 5
   m_Name: Right Input
   m_TagString: Untagged
@@ -2535,6 +2536,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 101370991}
   m_CullTransparentMesh: 0
+--- !u!114 &101370997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 101370991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Add/Remove tiles to the east
+  showDelay: 0.5
 --- !u!1 &101726715 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
@@ -8290,6 +8305,7 @@ GameObject:
   - component: {fileID: 301285733}
   - component: {fileID: 301285731}
   - component: {fileID: 301285734}
+  - component: {fileID: 301285736}
   m_Layer: 5
   m_Name: Bottom Input
   m_TagString: Untagged
@@ -8472,6 +8488,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 301285730}
   m_CullTransparentMesh: 0
+--- !u!114 &301285736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301285730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Add/Remove tiles to the south
+  showDelay: 0.5
 --- !u!1001 &306953710
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22745,6 +22775,7 @@ GameObject:
   - component: {fileID: 885967488}
   - component: {fileID: 885967486}
   - component: {fileID: 885967489}
+  - component: {fileID: 885967491}
   m_Layer: 5
   m_Name: Left Input
   m_TagString: Untagged
@@ -22927,6 +22958,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 885967485}
   m_CullTransparentMesh: 0
+--- !u!114 &885967491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 885967485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Add/Remove tiles to the west
+  showDelay: 0.5
 --- !u!1001 &886154279
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25854,6 +25899,7 @@ GameObject:
   - component: {fileID: 1025332762}
   - component: {fileID: 1025332760}
   - component: {fileID: 1025332763}
+  - component: {fileID: 1025332765}
   m_Layer: 5
   m_Name: Top Input
   m_TagString: Untagged
@@ -26036,6 +26082,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1025332759}
   m_CullTransparentMesh: 0
+--- !u!114 &1025332765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1025332759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Add/Remove tiles to the north
+  showDelay: 0.5
 --- !u!1 &1029858942
 GameObject:
   m_ObjectHideFlags: 0
