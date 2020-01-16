@@ -5,7 +5,6 @@ namespace Warlander.Deedplanner.Data.Decorations
 {
     public class DecorationData : ScriptableObject
     {
-
         public Model Model { get; private set; }
         public string Name { get; private set; }
         public string ShortName { get; private set; }
@@ -45,6 +44,5 @@ namespace Warlander.Deedplanner.Data.Decorations
         {
             return Name;
         }
-
     }
 }

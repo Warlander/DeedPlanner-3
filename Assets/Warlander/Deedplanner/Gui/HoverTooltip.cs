@@ -37,7 +37,6 @@ namespace Warlander.Deedplanner.Gui
             {
                 StopCoroutine(delayCoroutine);
             }
-            
         }
     }
 }

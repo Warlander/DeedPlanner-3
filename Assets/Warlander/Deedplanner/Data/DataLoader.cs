@@ -21,7 +21,6 @@ namespace Warlander.Deedplanner.Data
 {
     public static class DataLoader
     {
-
         private static readonly List<string> ShortNames = new List<string>();
 
         public static IEnumerator LoadData()
@@ -443,6 +442,5 @@ namespace Warlander.Deedplanner.Data
             ShortNames.Add(shortName);
             return true;
         }
-
     }
 }

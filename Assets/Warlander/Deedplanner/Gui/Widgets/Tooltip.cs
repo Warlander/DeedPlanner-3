@@ -6,7 +6,6 @@ namespace Warlander.Deedplanner.Gui.Widgets
 {
     public class Tooltip : MonoBehaviour
     {
-
         [SerializeField] private TMP_Text text = null;
         [SerializeField] private CanvasGroup canvasGroup = null;
         [SerializeField] private float animationSpeed = 10f;

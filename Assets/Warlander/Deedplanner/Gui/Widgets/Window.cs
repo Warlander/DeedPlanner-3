@@ -1,14 +1,11 @@
-﻿using System;
-using DG.Tweening;
+﻿using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Gui.Widgets
 {
-
     public class Window : MonoBehaviour
     {
-
         [SerializeField] private CanvasGroup canvasGroup = null;
         [SerializeField] private GameObject closeButton = null;
         [SerializeField] private RectTransform contentAnchor = null;
@@ -81,5 +78,4 @@ namespace Warlander.Deedplanner.Gui.Widgets
             windowShown = false;
         }
     }
-
 }

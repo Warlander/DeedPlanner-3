@@ -7,7 +7,6 @@ namespace Warlander.Deedplanner.Data.Walls
 {
     public class Wall : TileEntity
     {
-
         public WallData Data { get; private set; }
         public bool Reversed { get; private set; }
         public override Materials Materials => Data.Materials;

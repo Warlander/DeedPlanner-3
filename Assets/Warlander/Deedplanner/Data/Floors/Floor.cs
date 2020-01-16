@@ -7,7 +7,6 @@ namespace Warlander.Deedplanner.Data.Floors
 {
     public class Floor : TileEntity
     {
-        
         private GameObject model;
 
         public FloorData Data { get; private set; }

@@ -7,7 +7,6 @@ namespace Warlander.Deedplanner.Editor
 {
     public static class BuildSystem
     {
-        
         [MenuItem("Build/All Platforms", false, 0)]
         public static bool BuildAllPlatforms()
         {
@@ -142,6 +141,5 @@ namespace Warlander.Deedplanner.Editor
             
             File.WriteAllText(Path.Combine(path, "steam_appid.txt"), Constants.SteamAppId.ToString());
         }
-
     }
 }

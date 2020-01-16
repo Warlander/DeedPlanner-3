@@ -6,7 +6,6 @@ namespace Warlander.Deedplanner.Data.Caves
 {
     public class Cave : TileEntity, IXmlSerializable
     {
-        
         private CaveData data;
         public override Materials Materials => null;
 

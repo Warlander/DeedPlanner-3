@@ -10,7 +10,6 @@ using System.IO;
 
 namespace Warlander.Deedplanner.Graphics
 {
-
     public static class WurmAssetsLoader
     {
         private static readonly Dictionary<MaterialKey, Material> cachedMaterials = new Dictionary<MaterialKey, Material>();

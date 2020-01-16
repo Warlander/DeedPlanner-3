@@ -5,7 +5,6 @@ namespace Warlander.Deedplanner.Data.Walls
 {
     public class WallData : ScriptableObject
     {
-
         public Model BottomModel { get; private set; }
         public Model NormalModel { get; private set; }
         public string Name { get; private set; }
@@ -46,6 +45,5 @@ namespace Warlander.Deedplanner.Data.Walls
         {
             return Name;
         }
-
     }
 }

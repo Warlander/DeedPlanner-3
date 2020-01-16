@@ -6,7 +6,6 @@ namespace Warlander.Deedplanner.Data
 {
     public sealed class Materials : Dictionary<string, int>
     {
-
         public Materials()
         { }
 
@@ -67,6 +66,5 @@ namespace Warlander.Deedplanner.Data
 
             return builder.ToString();
         }
-
     }
 }

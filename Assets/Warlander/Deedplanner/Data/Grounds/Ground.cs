@@ -6,7 +6,6 @@ namespace Warlander.Deedplanner.Data.Grounds
 {
     public class Ground : IXmlSerializable
     {
-        
         private GroundData data;
         private RoadDirection roadDirection = RoadDirection.Center;
 
@@ -152,6 +151,5 @@ namespace Warlander.Deedplanner.Data.Grounds
                 // no operation needed
             }
         }
-
     }
 }

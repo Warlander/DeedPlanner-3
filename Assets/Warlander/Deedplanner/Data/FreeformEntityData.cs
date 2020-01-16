@@ -6,7 +6,6 @@ namespace Warlander.Deedplanner.Data
 {
     public class FreeformEntityData : EntityData
     {
-
         public float X { get; }
         public float Y { get; }
         public bool FloatOnWater { get; }
@@ -61,6 +60,5 @@ namespace Warlander.Deedplanner.Data
         {
             return "Entity floor " + Floor + " type " + Type + " X " + X + " Y " + Y;
         }
-
     }
 }

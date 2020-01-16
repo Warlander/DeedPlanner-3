@@ -6,7 +6,6 @@ namespace Warlander.Deedplanner.Data
     [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter), typeof(MeshCollider))]
     public class OverlayMesh : MonoBehaviour
     {
-        
         private MeshFilter meshFilter;
         private MeshCollider meshCollider;
 
@@ -28,6 +27,5 @@ namespace Warlander.Deedplanner.Data
             // ReSharper disable once Unity.InefficientPropertyAccess
             meshCollider.enabled = true;
         }
-
     }
 }

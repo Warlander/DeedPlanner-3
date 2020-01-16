@@ -5,7 +5,6 @@ namespace Warlander.Deedplanner.Data.Roofs
 {
     public class RoofData : ScriptableObject
     {
-
         public string Name { get; private set; }
         public string ShortName { get; private set; }
         public TextureReference Texture { get; private set; }
@@ -30,6 +29,5 @@ namespace Warlander.Deedplanner.Data.Roofs
         {
             return Name;
         }
-
     }
 }

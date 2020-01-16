@@ -7,7 +7,6 @@ namespace Warlander.Deedplanner.Data.Roofs
 {
     public sealed class RoofType
     {
-
         public static RoofType[] RoofTypes { get; private set; }
 
         static RoofType()
@@ -250,6 +249,5 @@ namespace Warlander.Deedplanner.Data.Roofs
         {
             return models[data];
         }
-
     }
 }

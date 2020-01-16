@@ -4,7 +4,6 @@ namespace Warlander.Deedplanner.Graphics
 {
     public class GraphicsManager : MonoBehaviour
     {
-
         public static GraphicsManager Instance;
         
         [SerializeField] private Material womDefaultMaterial = null;
@@ -27,6 +26,5 @@ namespace Warlander.Deedplanner.Graphics
 
             Instance = this;
         }
-
     }
 }

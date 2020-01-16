@@ -8,10 +8,8 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Gui
 {
-
     public class LayoutManager : MonoBehaviour
     {
-
         public static LayoutManager Instance { get; private set; }
 
         [SerializeField] private CanvasScaler mainCanvasScaler = null;

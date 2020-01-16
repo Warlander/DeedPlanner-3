@@ -5,7 +5,6 @@ namespace Warlander.Deedplanner.Data.Floors
 {
     public class FloorData : ScriptableObject
     {
-
         public string Name { get; private set; }
         public string ShortName { get; private set; }
         public Model Model { get; private set; }
@@ -32,6 +31,5 @@ namespace Warlander.Deedplanner.Data.Floors
         {
             return Name;
         }
-
     }
 }
