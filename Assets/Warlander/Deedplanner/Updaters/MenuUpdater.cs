@@ -18,7 +18,6 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class MenuUpdater : AbstractUpdater
     {
-
         [SerializeField] private Button fullscreenButton = null;
         [SerializeField] private Button quitButton = null;
         

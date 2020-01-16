@@ -7,7 +7,6 @@ namespace Warlander.Deedplanner.Data
     
     public abstract class TileEntity : MonoBehaviour, IXmlSerializable
     {
-
         public Tile Tile { get; set; }
         public abstract Materials Materials { get; }
         public int Floor => Tile.FindFloorOfEntity(this);
@@ -15,7 +14,5 @@ namespace Warlander.Deedplanner.Data
         public bool Valid => Tile.ContainsEntity(this);
 
         public abstract void Serialize(XmlDocument document, XmlElement localRoot);
-
     }
-
 }

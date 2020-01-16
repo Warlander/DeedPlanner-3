@@ -5,7 +5,6 @@ namespace Warlander.Deedplanner.Data.Grounds
 {
     public class GroundData : ScriptableObject
     {
-
         public string Name { get; private set; }
         public string ShortName { get; private set; }
 
@@ -27,6 +26,5 @@ namespace Warlander.Deedplanner.Data.Grounds
         {
             return Name;
         }
-
     }
 }

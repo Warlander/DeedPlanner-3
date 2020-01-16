@@ -5,7 +5,6 @@ namespace Warlander.Deedplanner.Data.Caves
 {
     public class CaveData : ScriptableObject
     {
-
         public string Name { get; private set; }
         public string ShortName { get; private set; }
 
@@ -29,6 +28,5 @@ namespace Warlander.Deedplanner.Data.Caves
         {
             return Name;
         }
-
     }
 }

@@ -7,7 +7,6 @@ namespace Warlander.Deedplanner.Data.Roofs
 {
     public class Roof : TileEntity
     {
-
         public RoofData Data { get; private set; }
         public override Materials Materials => Data.Materials;
 

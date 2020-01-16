@@ -8,10 +8,8 @@ using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Graphics
 {
-
     public class Model
     {
-
         private static GameObject modelsRoot;
 
         private readonly string location;
@@ -291,8 +289,6 @@ namespace Warlander.Deedplanner.Graphics
             {
                 return Skew == 0 && !CustomMaterial;
             }
-            
         }
-
     }
 }

@@ -9,7 +9,6 @@ namespace Warlander.Deedplanner.Data.Grounds
 {
     public class GroundMesh : MonoBehaviour
     {
-
         private const int GroundTexturesWidth = 512;
         private const int GroundTexturesHeight = 512;
         private const TextureFormat WebGroundTexturesFormat = TextureFormat.ARGB32;
@@ -655,6 +654,5 @@ namespace Warlander.Deedplanner.Data.Grounds
             
             needsUvUpdate = true;
         }
-        
     }
 }

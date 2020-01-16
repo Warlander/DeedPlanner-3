@@ -16,7 +16,6 @@ namespace Warlander.Deedplanner.Data
 {
     public class Tile : ScriptableObject, IXmlSerializable
     {
-
         private int surfaceHeight = 0;
         private int caveHeight = 0;
         private int caveSize = 0;
@@ -901,7 +900,6 @@ namespace Warlander.Deedplanner.Data
 
         private class TileEntityChangeCommand : IReversibleCommand
         {
-
             private readonly Tile tile;
             private readonly EntityData data;
             
@@ -1036,7 +1034,6 @@ namespace Warlander.Deedplanner.Data
 
         private class SurfaceHeightChangeCommand : IReversibleCommand
         {
-
             private readonly Tile tile;
 
             private readonly int oldHeight;
@@ -1082,6 +1079,5 @@ namespace Warlander.Deedplanner.Data
                 // no operation needed
             }
         }
-
     }
 }

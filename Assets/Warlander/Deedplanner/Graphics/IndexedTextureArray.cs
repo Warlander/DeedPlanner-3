@@ -7,7 +7,6 @@ namespace Warlander.Deedplanner.Graphics
 {
     public class IndexedTextureArray<T>
     {
-        
         private readonly Dictionary<T, int> indexToSlice;
         
         public Texture2DArray TextureArray { get; private set; }
@@ -117,6 +116,5 @@ namespace Warlander.Deedplanner.Graphics
             RenderTexture.active = null;
             return nTex;
         }
-        
     }
 }

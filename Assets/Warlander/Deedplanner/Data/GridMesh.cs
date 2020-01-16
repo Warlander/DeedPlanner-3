@@ -6,7 +6,6 @@ namespace Warlander.Deedplanner.Data
 {
     public class GridMesh : MonoBehaviour
     {
-
         private Map map;
         private bool cave;
 
@@ -175,6 +174,5 @@ namespace Warlander.Deedplanner.Data
             dirty = false;
             verticesChanged = false;
         }
-
     }
 }

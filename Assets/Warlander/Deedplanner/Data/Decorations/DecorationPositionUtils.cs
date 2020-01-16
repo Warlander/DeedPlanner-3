@@ -4,7 +4,6 @@ namespace Warlander.Deedplanner.Data.Decorations
 {
     public static class DecorationPositionUtils
     {
-
         private const float BottomAlign = 2f/3f;
         private const float MiddleAlign = 2f;
         private const float TopAlign = 10f/3f;
@@ -44,6 +43,5 @@ namespace Warlander.Deedplanner.Data.Decorations
                     return Vector2.zero;
             }
         }
-        
     }
 }

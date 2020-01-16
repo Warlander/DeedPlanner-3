@@ -6,7 +6,6 @@ namespace Warlander.Deedplanner.Data
 {
     public class EntityData : IXmlSerializable
     {
-
         public int Floor { get; private set; }
         public EntityType Type { get; private set; }
 
