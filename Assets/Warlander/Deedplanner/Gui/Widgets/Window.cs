@@ -1,10 +1,11 @@
 ﻿using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Warlander.Deedplanner.Gui.Widgets
 {
-    public class Window : MonoBehaviour
+    public class Window : MonoBehaviour, IPointerDownHandler
     {
         [SerializeField] private CanvasGroup canvasGroup = null;
         [SerializeField] private GameObject closeButton = null;
@@ -55,6 +56,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
             gameObject.SetActive(true);
             canvasGroup.alpha = 0;
             canvasGroup.DOFade(1, 0.15f).SetEase(Ease.Linear);
+            transform.SetAsLastSibling();
         }
 
         public void HideWindow()
@@ -66,6 +68,11 @@ namespace Warlander.Deedplanner.Gui.Widgets
 
             windowShown = false;
             canvasGroup.DOFade(0, 0.15f).SetEase(Ease.Linear).OnComplete(() => gameObject.SetActive(false));
+        }
+        
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            transform.SetAsLastSibling();
         }
 
         private void OnDisable()
