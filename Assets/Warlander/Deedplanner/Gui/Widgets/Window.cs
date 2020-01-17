@@ -42,7 +42,6 @@ namespace Warlander.Deedplanner.Gui.Widgets
             {
                 Debug.LogWarning("\nwindowShown\" flag was disabled when enabling the window - please make sure window is shown using \"ShowWindow()\" instead of enabling directly.");
             }
-            windowShown = false;
         }
 
         public void ShowWindow()
