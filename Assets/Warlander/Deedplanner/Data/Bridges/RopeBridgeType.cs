@@ -5,8 +5,8 @@ namespace Warlander.Deedplanner.Data.Bridges
 {
     public class RopeBridgeType : IBridgeType
     {
-        public int[] ExtraArguments { get; } = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
         public string Name => "rope";
+        public int[] ExtraArguments { get; } = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 
         public int CalculateAddedHeight(int currentSegment, int bridgeLength, int startHeight, int endHeight, int extraArgument)
         {
