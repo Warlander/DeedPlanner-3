@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
@@ -216,6 +217,7 @@ namespace Warlander.Deedplanner.Updaters
                 RefreshSlopedWallsWarningsTile(tile);
                 RefreshEntityOutsideBuildingWarningsTile(surfaceGroundSummary, tile);
                 RefreshBuildingsTouchingWarningsTile(surfaceGroundSummary, tile);
+                RefreshTokenInsideBuildingWarningsTile(surfaceGroundSummary, tile);
             }
         }
 
@@ -299,6 +301,19 @@ namespace Warlander.Deedplanner.Updaters
             if (rightTop != null && building != rightTop)
             {
                 warningsList.Add(CreateWarningString(tile, buildingsTouchingWarningText));
+            }
+        }
+
+        private void RefreshTokenInsideBuildingWarningsTile(BuildingsSummary buildingsSummary, Tile tile)
+        {
+            const string tokenInsideBuildingWarningText = "Deed token inside building.\nTokens must be placed outside.";
+
+            Decoration centralDecoration = tile.GetCentralDecoration();
+            
+            // TODO: update the objects.xml schema to not require ShortName lookup here
+            if (centralDecoration && centralDecoration.Data.ShortName == "token" && buildingsSummary.GetBuildingAtTile(tile) != null)
+            {
+                warningsList.Add(CreateWarningString(tile, tokenInsideBuildingWarningText));
             }
         }
 

@@ -544,6 +544,36 @@ namespace Warlander.Deedplanner.Data
             return wall;
         }
 
+        /// <summary>
+        /// Returns decoration on tile center or null if it doesn't exist
+        /// </summary>
+        public Decoration GetCentralDecoration()
+        {
+            foreach (TileEntity tileEntity in Entities.Values)
+            {
+                if (tileEntity is Decoration decoration && decoration.Data.CenterOnly)
+                {
+                    return decoration;
+                }
+            }
+
+            return null;
+        }
+        
+        public IEnumerable<Decoration> GetDecorations()
+        {
+            List<Decoration> decorations = new List<Decoration>();
+            foreach (TileEntity tileEntity in Entities.Values)
+            {
+                if (tileEntity is Decoration decoration)
+                {
+                    decorations.Add(decoration);
+                }
+            }
+
+            return decorations;
+        }
+        
         public Decoration SetDecoration(DecorationData data, Vector2 position, float rotation, int floor, bool floatOnWater = false)
         {
             if (position.x < 0 || position.x >= 4 || position.y < 0 || position.y >= 4)
@@ -575,20 +605,6 @@ namespace Warlander.Deedplanner.Data
             return null;
         }
 
-        public IEnumerable<Decoration> GetDecorations()
-        {
-            List<Decoration> decorations = new List<Decoration>();
-            foreach (TileEntity tileEntity in Entities.Values)
-            {
-                if (tileEntity is Decoration decoration)
-                {
-                    decorations.Add(decoration);
-                }
-            }
-
-            return decorations;
-        }
-        
         private Decoration CreateNewDecoration(FreeformEntityData entity, DecorationData data, Vector2 position, float rotation)
         {
             GameObject decorationObject = new GameObject("Decoration " + data.Name, typeof(Decoration));
