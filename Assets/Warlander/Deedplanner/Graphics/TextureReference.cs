@@ -100,6 +100,7 @@ namespace Warlander.Deedplanner.Graphics
             {
                 textureLoading = true;
                 yield return WurmAssetsLoader.LoadTexture(Application.streamingAssetsPath + "/" + Location, false, OnTextureLoaded);
+                sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
             }
             
             while (textureLoading)
