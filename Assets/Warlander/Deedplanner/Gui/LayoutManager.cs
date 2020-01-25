@@ -23,8 +23,8 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField] private ToggleGroup cameraModeGroup = null;
         [SerializeField] private Toggle[] cameraModeToggles = new Toggle[4];
         [SerializeField] private ToggleGroup floorGroup = null;
-        [SerializeField] private Toggle[] positiveFloorToggles = new Toggle[16];
-        [SerializeField] private Toggle[] negativeFloorToggles = new Toggle[6];
+        [SerializeField] private FloorToggle[] positiveFloorToggles = new FloorToggle[16];
+        [SerializeField] private FloorToggle[] negativeFloorToggles = new FloorToggle[6];
 
         [SerializeField] private TabObject[] tabs = new TabObject[12];
         [SerializeField] private Toggle groundToggle = null;
@@ -74,23 +74,23 @@ namespace Warlander.Deedplanner.Gui
                 activeWindow = value;
 
                 int floor = cameras[ActiveWindow].Floor;
-                foreach (Toggle toggle in positiveFloorToggles)
+                foreach (FloorToggle toggle in positiveFloorToggles)
                 {
-                    toggle.isOn = false;
+                    toggle.Toggle.isOn = false;
                 }
-                foreach (Toggle toggle in negativeFloorToggles)
+                foreach (FloorToggle toggle in negativeFloorToggles)
                 {
-                    toggle.isOn = false;
+                    toggle.Toggle.isOn = false;
                 }
 
                 if (floor < 0)
                 {
                     floor++;
-                    negativeFloorToggles[floor].isOn = true;
+                    negativeFloorToggles[floor].Toggle.isOn = true;
                 }
                 else
                 {
-                    positiveFloorToggles[floor].isOn = true;
+                    positiveFloorToggles[floor].Toggle.isOn = true;
                 }
 
                 CameraMode cameraMode = cameras[ActiveWindow].CameraMode;
@@ -360,8 +360,8 @@ namespace Warlander.Deedplanner.Gui
 
         public void OnFloorChange()
         {
-            FloorReference floorReference = floorGroup.ActiveToggles().First().GetComponent<FloorReference>();
-            int floor = floorReference.Floor;
+            FloorToggle floorToggle = floorGroup.ActiveToggles().First().GetComponent<FloorToggle>();
+            int floor = floorToggle.Floor;
 
             if (cameras[ActiveWindow].Floor == floor)
             {
@@ -382,7 +382,7 @@ namespace Warlander.Deedplanner.Gui
 
         private void UpdateTabs()
         {
-            int floor = floorGroup.ActiveToggles().First().GetComponent<FloorReference>().Floor;
+            int floor = floorGroup.ActiveToggles().First().GetComponent<FloorToggle>().Floor;
             if (floor < 0)
             {
                 groundToggle.gameObject.SetActive(false);
