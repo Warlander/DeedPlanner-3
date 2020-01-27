@@ -117,6 +117,8 @@ namespace Warlander.Deedplanner.Gui
             }
         }
 
+        private FloorToggle CurrentFloorToggle => floorGroup.ActiveToggles().First().GetComponent<FloorToggle>();
+
         public LayoutManager()
         {
             if (Instance)
@@ -360,8 +362,7 @@ namespace Warlander.Deedplanner.Gui
 
         public void OnFloorChange()
         {
-            FloorToggle floorToggle = floorGroup.ActiveToggles().First().GetComponent<FloorToggle>();
-            int floor = floorToggle.Floor;
+            int floor = CurrentFloorToggle.Floor;
 
             if (cameras[ActiveWindow].Floor == floor)
             {
@@ -382,7 +383,7 @@ namespace Warlander.Deedplanner.Gui
 
         private void UpdateTabs()
         {
-            int floor = floorGroup.ActiveToggles().First().GetComponent<FloorToggle>().Floor;
+            int floor = CurrentFloorToggle.Floor;
             if (floor < 0)
             {
                 groundToggle.gameObject.SetActive(false);
