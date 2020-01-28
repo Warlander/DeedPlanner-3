@@ -4208,29 +4208,29 @@ MonoBehaviour:
   - {fileID: 1316969092}
   floorGroup: {fileID: 1447324769}
   positiveFloorToggles:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 703065527}
+  - {fileID: 433957012}
+  - {fileID: 82256062}
+  - {fileID: 1403010390}
+  - {fileID: 357130113}
+  - {fileID: 319871311}
+  - {fileID: 460407320}
+  - {fileID: 842417729}
+  - {fileID: 1528293159}
+  - {fileID: 1955146651}
+  - {fileID: 986424935}
+  - {fileID: 2010542046}
+  - {fileID: 101726717}
+  - {fileID: 735796912}
+  - {fileID: 743265076}
+  - {fileID: 519591011}
   negativeFloorToggles:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 361609164}
+  - {fileID: 289544436}
+  - {fileID: 2035573455}
+  - {fileID: 1401626360}
+  - {fileID: 1728524859}
+  - {fileID: 948240262}
   tabs:
   - Tab: 0
     Object: {fileID: 1130172338}
@@ -15609,7 +15609,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 1
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -41816,7 +41816,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 1
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
