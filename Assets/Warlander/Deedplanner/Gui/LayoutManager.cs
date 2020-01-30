@@ -161,161 +161,66 @@ namespace Warlander.Deedplanner.Gui
             switch (layout)
             {
                 case Layout.Single:
-                    cameras[0].gameObject.SetActive(true);
-                    cameras[1].gameObject.SetActive(false);
-                    cameras[2].gameObject.SetActive(false);
-                    cameras[3].gameObject.SetActive(false);
-                    indicatorButtons[0].gameObject.SetActive(true);
-                    indicatorButtons[1].gameObject.SetActive(false);
-                    indicatorButtons[2].gameObject.SetActive(false);
-                    indicatorButtons[3].gameObject.SetActive(false);
-                    horizontalBottomIndicatorHolder.gameObject.SetActive(false);
-                    screens[0].gameObject.SetActive(true);
-                    screens[1].gameObject.SetActive(false);
-                    screens[2].gameObject.SetActive(false);
-                    screens[3].gameObject.SetActive(false);
-                    horizontalBottomScreenHolder.gameObject.SetActive(false);
-                    splits[0].gameObject.SetActive(false);
-                    splits[1].gameObject.SetActive(false);
-                    splits[2].gameObject.SetActive(false);
-                    splits[3].gameObject.SetActive(false);
-                    splits[4].gameObject.SetActive(false);
-                    if (ActiveWindow != 0)
-                    {
-                        indicatorButtons[ActiveWindow].isOn = false;
-                        ActiveWindow = 0;
-                        indicatorButtons[0].isOn = true;
-                    }
+                    ToggleMainScreenObjects(true, false, false, false);
                     break;
                 case Layout.HorizontalSplit:
-                    cameras[0].gameObject.SetActive(true);
-                    cameras[1].gameObject.SetActive(false);
-                    cameras[2].gameObject.SetActive(true);
-                    cameras[3].gameObject.SetActive(false);
-                    indicatorButtons[0].gameObject.SetActive(true);
-                    indicatorButtons[1].gameObject.SetActive(false);
-                    indicatorButtons[2].gameObject.SetActive(true);
-                    indicatorButtons[3].gameObject.SetActive(false);
-                    horizontalBottomIndicatorHolder.gameObject.SetActive(true);
-                    screens[0].gameObject.SetActive(true);
-                    screens[1].gameObject.SetActive(false);
-                    screens[2].gameObject.SetActive(true);
-                    screens[3].gameObject.SetActive(false);
-                    horizontalBottomScreenHolder.gameObject.SetActive(true);
-                    splits[0].gameObject.SetActive(true);
-                    splits[1].gameObject.SetActive(false);
-                    splits[2].gameObject.SetActive(false);
-                    splits[3].gameObject.SetActive(false);
-                    splits[4].gameObject.SetActive(false);
-                    if (ActiveWindow != 0 && ActiveWindow != 2)
-                    {
-                        indicatorButtons[ActiveWindow].isOn = false;
-                        ActiveWindow = 0;
-                        indicatorButtons[0].isOn = true;
-                    }
+                    ToggleMainScreenObjects(true, false, true, false);
                     break;
                 case Layout.VerticalSplit:
-                    cameras[0].gameObject.SetActive(true);
-                    cameras[1].gameObject.SetActive(true);
-                    cameras[2].gameObject.SetActive(false);
-                    cameras[3].gameObject.SetActive(false);
-                    indicatorButtons[0].gameObject.SetActive(true);
-                    indicatorButtons[1].gameObject.SetActive(true);
-                    indicatorButtons[2].gameObject.SetActive(false);
-                    indicatorButtons[3].gameObject.SetActive(false);
-                    horizontalBottomIndicatorHolder.gameObject.SetActive(false);
-                    screens[0].gameObject.SetActive(true);
-                    screens[1].gameObject.SetActive(true);
-                    screens[2].gameObject.SetActive(false);
-                    screens[3].gameObject.SetActive(false);
-                    horizontalBottomScreenHolder.gameObject.SetActive(false);
-                    splits[0].gameObject.SetActive(false);
-                    splits[1].gameObject.SetActive(true);
-                    splits[2].gameObject.SetActive(false);
-                    splits[3].gameObject.SetActive(false);
-                    splits[4].gameObject.SetActive(false);
-                    if (ActiveWindow != 0 && ActiveWindow != 1)
-                    {
-                        indicatorButtons[ActiveWindow].isOn = false;
-                        ActiveWindow = 0;
-                        indicatorButtons[0].isOn = true;
-                    }
+                    ToggleMainScreenObjects(true, true, false, false);
                     break;
                 case Layout.HorizontalTop:
-                    cameras[0].gameObject.SetActive(true);
-                    cameras[1].gameObject.SetActive(false);
-                    cameras[2].gameObject.SetActive(true);
-                    cameras[3].gameObject.SetActive(true);
-                    indicatorButtons[0].gameObject.SetActive(true);
-                    indicatorButtons[1].gameObject.SetActive(false);
-                    indicatorButtons[2].gameObject.SetActive(true);
-                    indicatorButtons[3].gameObject.SetActive(true);
-                    horizontalBottomIndicatorHolder.gameObject.SetActive(true);
-                    screens[0].gameObject.SetActive(true);
-                    screens[1].gameObject.SetActive(false);
-                    screens[2].gameObject.SetActive(true);
-                    screens[3].gameObject.SetActive(true);
-                    horizontalBottomScreenHolder.gameObject.SetActive(true);
-                    splits[0].gameObject.SetActive(false);
-                    splits[1].gameObject.SetActive(false);
-                    splits[2].gameObject.SetActive(true);
-                    splits[3].gameObject.SetActive(false);
-                    splits[4].gameObject.SetActive(false);
-                    if (ActiveWindow != 0 && ActiveWindow != 2 && ActiveWindow != 3)
-                    {
-                        indicatorButtons[ActiveWindow].isOn = false;
-                        ActiveWindow = 0;
-                        indicatorButtons[0].isOn = true;
-                    }
+                    ToggleMainScreenObjects(true, false, true, true);
                     break;
                 case Layout.HorizontalBottom:
-                    cameras[0].gameObject.SetActive(true);
-                    cameras[1].gameObject.SetActive(true);
-                    cameras[2].gameObject.SetActive(true);
-                    cameras[3].gameObject.SetActive(false);
-                    indicatorButtons[0].gameObject.SetActive(true);
-                    indicatorButtons[1].gameObject.SetActive(true);
-                    indicatorButtons[2].gameObject.SetActive(true);
-                    indicatorButtons[3].gameObject.SetActive(false);
-                    horizontalBottomIndicatorHolder.gameObject.SetActive(true);
-                    screens[0].gameObject.SetActive(true);
-                    screens[1].gameObject.SetActive(true);
-                    screens[2].gameObject.SetActive(true);
-                    screens[3].gameObject.SetActive(false);
-                    horizontalBottomScreenHolder.gameObject.SetActive(true);
-                    splits[0].gameObject.SetActive(false);
-                    splits[1].gameObject.SetActive(false);
-                    splits[2].gameObject.SetActive(false);
-                    splits[3].gameObject.SetActive(true);
-                    splits[4].gameObject.SetActive(false);
-                    if (ActiveWindow != 0 && ActiveWindow != 1 && ActiveWindow != 2)
-                    {
-                        indicatorButtons[ActiveWindow].isOn = false;
-                        ActiveWindow = 0;
-                        indicatorButtons[0].isOn = true;
-                    }
+                    ToggleMainScreenObjects(true, true, true, false);
                     break;
                 case Layout.Quad:
-                    cameras[0].gameObject.SetActive(true);
-                    cameras[1].gameObject.SetActive(true);
-                    cameras[2].gameObject.SetActive(true);
-                    cameras[3].gameObject.SetActive(true);
-                    indicatorButtons[0].gameObject.SetActive(true);
-                    indicatorButtons[1].gameObject.SetActive(true);
-                    indicatorButtons[2].gameObject.SetActive(true);
-                    indicatorButtons[3].gameObject.SetActive(true);
-                    horizontalBottomIndicatorHolder.gameObject.SetActive(true);
-                    screens[0].gameObject.SetActive(true);
-                    screens[1].gameObject.SetActive(true);
-                    screens[2].gameObject.SetActive(true);
-                    screens[3].gameObject.SetActive(true);
-                    horizontalBottomScreenHolder.gameObject.SetActive(true);
-                    splits[0].gameObject.SetActive(false);
-                    splits[1].gameObject.SetActive(false);
-                    splits[2].gameObject.SetActive(false);
-                    splits[3].gameObject.SetActive(false);
-                    splits[4].gameObject.SetActive(true);
+                    ToggleMainScreenObjects(true, true, true, true);
                     break;
+            }
+        }
+
+        private void ToggleMainScreenObjects(bool topRightWindowVisible, bool topLeftWindowVisible, bool bottomRightWindowVisible, bool bottomLeftWindowVisible)
+        {
+            ToggleSharedMainScreenObjects(0, topRightWindowVisible);
+            ToggleSharedMainScreenObjects(1, topLeftWindowVisible);
+            ToggleSharedMainScreenObjects(2, bottomRightWindowVisible);
+            ToggleSharedMainScreenObjects(3, bottomLeftWindowVisible);
+
+            bool bottomRowVisible = bottomRightWindowVisible || bottomLeftWindowVisible;
+            horizontalBottomIndicatorHolder.gameObject.SetActive(bottomRowVisible);
+            horizontalBottomScreenHolder.gameObject.SetActive(bottomRowVisible);
+
+            bool onlyOneTopActive = topRightWindowVisible ^ topLeftWindowVisible;
+            bool onlyOneBottomActive = bottomRightWindowVisible ^ bottomLeftWindowVisible;
+            bool onlyOneLeftActive = topLeftWindowVisible ^ bottomLeftWindowVisible;
+            bool onlyOneRightActive = topRightWindowVisible ^ bottomRightWindowVisible;
+            
+            // "-" shaped split
+            splits[0].gameObject.SetActive(onlyOneTopActive && onlyOneBottomActive);
+            // "|" shaped split
+            splits[1].gameObject.SetActive(onlyOneLeftActive && onlyOneRightActive);
+            // "T" shaped split
+            splits[2].gameObject.SetActive(onlyOneTopActive && bottomRightWindowVisible && bottomLeftWindowVisible);
+            // Reverse "T" shaped split
+            splits[3].gameObject.SetActive(topRightWindowVisible && topLeftWindowVisible && onlyOneBottomActive);
+            // "+" shaped split
+            splits[4].gameObject.SetActive(topRightWindowVisible && topLeftWindowVisible && bottomRightWindowVisible && bottomLeftWindowVisible);
+        }
+
+        private void ToggleSharedMainScreenObjects(int index, bool enable)
+        {
+            cameras[index].gameObject.SetActive(enable);
+            indicatorButtons[index].gameObject.SetActive(enable);
+            screens[index].gameObject.SetActive(enable);
+            
+            // if screen is being toggled off, focus primary screen instead
+            if (!enable && ActiveWindow == index)
+            {
+                indicatorButtons[ActiveWindow].isOn = false;
+                ActiveWindow = 0;
+                indicatorButtons[0].isOn = true;
             }
         }
 
