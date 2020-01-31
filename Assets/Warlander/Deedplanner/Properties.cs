@@ -9,7 +9,6 @@ namespace Warlander.Deedplanner
 {
     public class Properties
     {
-
         private const string PropertiesKey = "properties";
         
         public static readonly bool Mobile = Application.isMobilePlatform;
@@ -99,6 +98,5 @@ namespace Warlander.Deedplanner
             
             Saved?.Invoke();
         }
-
     }
 }

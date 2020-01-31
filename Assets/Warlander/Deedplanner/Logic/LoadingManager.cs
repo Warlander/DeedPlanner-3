@@ -14,7 +14,6 @@ namespace Warlander.Deedplanner.Logic
 {
     public class LoadingManager : MonoBehaviour
     {
-
         [SerializeField] private CanvasGroup splashGroup = null;
         [SerializeField] private GameObject managersRoot = null;
         [SerializeField] private MultiCamera[] cameras = null;
@@ -116,6 +115,5 @@ namespace Warlander.Deedplanner.Logic
                 multiCamera.enabled = true;
             }
         }
-
     }
 }

@@ -15,7 +15,6 @@ namespace Warlander.Deedplanner.Logic
     [RequireComponent(typeof(Camera))]
     public class MultiCamera : MonoBehaviour
     {
-
         private Transform parentTransform;
         public Camera AttachedCamera { get; private set; }
         public Vector2 MousePosition { get; private set; }
@@ -759,6 +758,5 @@ namespace Warlander.Deedplanner.Logic
                 ultraQualityWater.gameObject.SetActive(false);
             }
         }
-
     }
 }

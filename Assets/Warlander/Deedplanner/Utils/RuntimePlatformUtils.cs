@@ -4,7 +4,6 @@ namespace Warlander.Deedplanner.Utils
 {
     public static class RuntimePlatformUtils
     {
-        
         public static bool IsDesktopPlatform(this RuntimePlatform platform)
         {
             bool isWindows = platform == RuntimePlatform.WindowsPlayer || platform == RuntimePlatform.WindowsEditor;
@@ -13,6 +12,5 @@ namespace Warlander.Deedplanner.Utils
 
             return isWindows || isLinux || isMac;
         }
-        
     }
 }

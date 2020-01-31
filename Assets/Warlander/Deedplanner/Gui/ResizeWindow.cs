@@ -7,7 +7,6 @@ namespace Warlander.Deedplanner.Gui
 {
     public class ResizeWindow : MonoBehaviour
     {
-
         [SerializeField] private TMP_InputField leftInput = null;
         [SerializeField] private TMP_InputField rightInput = null;
         [SerializeField] private TMP_InputField bottomInput = null;
@@ -68,6 +67,5 @@ namespace Warlander.Deedplanner.Gui
             GameManager.Instance.ResizeMap(left, right, bottom, top);
             gameObject.SetActive(false);
         }
-        
     }
 }

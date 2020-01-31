@@ -85,6 +85,5 @@ namespace Warlander.Deedplanner.Logic
             enumeratorsExecutingCount--;
             yield return enumerator;
         }
-        
     }
 }

@@ -4,7 +4,6 @@ namespace Warlander.Deedplanner.Utils
 {
     public class TransformFollower : MonoBehaviour
     {
-
         [SerializeField] private Transform followedTransform = null;
         [SerializeField] private bool followX = true;
         [SerializeField] private bool followY = true;
@@ -26,6 +25,5 @@ namespace Warlander.Deedplanner.Utils
             float z = followZ ? followedTransformPosition.z : currentTransformPosition.z;
             currentTransform.position = new Vector3(x, y, z);
         }
-
     }
 }

@@ -4,10 +4,8 @@ using Warlander.Deedplanner.Gui.Widgets;
 
 namespace Warlander.Deedplanner.Gui
 {
-
     public class GuiManager : MonoBehaviour
     {
-
         public static GuiManager Instance { get; private set; }
 
         [SerializeField] private RectTransform[] interfaceTransforms = null;
@@ -100,5 +98,4 @@ namespace Warlander.Deedplanner.Gui
             }
         }
     }
-
 }

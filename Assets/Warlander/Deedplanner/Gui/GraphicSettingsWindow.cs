@@ -6,7 +6,6 @@ namespace Warlander.Deedplanner.Gui
 {
     public class GraphicSettingsWindow : MonoBehaviour
     {
-
         [SerializeField] private Toggle simpleWaterToggle = null;
         [SerializeField] private Toggle highWaterToggle = null;
         [SerializeField] private Toggle ultraWaterToggle = null;
@@ -92,6 +91,5 @@ namespace Warlander.Deedplanner.Gui
             QualitySettings.SetQualityLevel(overallQualityDropdown.value, true);
             LayoutManager.Instance.UpdateCanvasScale();
         }
-
     }
 }

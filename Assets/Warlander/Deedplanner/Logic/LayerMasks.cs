@@ -4,7 +4,6 @@ namespace Warlander.Deedplanner.Logic
 {
     public static class LayerMasks
     {
-
         // Unity layers for all distinct raytraceable entities
         public const int TileLayer = 9;
         public const int GroundLayer = 10;
@@ -66,6 +65,5 @@ namespace Warlander.Deedplanner.Logic
                     throw new ArgumentException("Cannot find mask for tab " + tab, nameof(tab));
             }
         }
-
     }
 }

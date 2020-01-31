@@ -83,6 +83,5 @@ namespace Warlander.Deedplanner.Logic
         {
             return tile ? tile.GetHeightForFloor(floor) : defaultHeight;
         }
-
     }
 }

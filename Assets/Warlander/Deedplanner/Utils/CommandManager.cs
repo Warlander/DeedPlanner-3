@@ -4,7 +4,6 @@ namespace Warlander.Deedplanner.Utils
 {
     public class CommandManager
     {
-
         private readonly LinkedList<IReversibleCommand> undoList = new LinkedList<IReversibleCommand>();
         private readonly LinkedList<IReversibleCommand> redoList = new LinkedList<IReversibleCommand>();
 
@@ -94,7 +93,6 @@ namespace Warlander.Deedplanner.Utils
 
         private class ReversibleCommandAction : IReversibleCommand
         {
-
             private readonly IReversibleCommand[] containedReversibleCommands;
 
             public ReversibleCommandAction(IReversibleCommand[] reversibleCommands)
@@ -134,7 +132,5 @@ namespace Warlander.Deedplanner.Utils
                 }
             }
         }
-        
     }
-
 }

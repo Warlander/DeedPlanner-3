@@ -5,7 +5,6 @@ namespace Warlander.Deedplanner.Logic
 {
     public class PlaneLine : MonoBehaviour
     {
-
         public Vector2Int TileCoords { get; set; }
         public PlaneAlignment Alignment { get; set; }
         [SerializeField] private Projector projector = null;

@@ -86,7 +86,6 @@ namespace Warlander.Deedplanner.Logic
 
     public struct TileSelectionHit
     {
-
         public TileSelectionTarget Target { get; private set; }
         public int X { get; private set; }
         public int Y { get; private set; }
@@ -97,6 +96,5 @@ namespace Warlander.Deedplanner.Logic
             X = x;
             Y = y;
         }
-        
     }
 }

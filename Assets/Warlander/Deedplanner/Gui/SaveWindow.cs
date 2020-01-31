@@ -16,7 +16,6 @@ namespace Warlander.Deedplanner.Gui
 {
     public class SaveWindow : MonoBehaviour
     {
-
         [SerializeField] private Button pastebinButton = null;
         [SerializeField] private TMP_Dropdown pastebinDropdown = null;
 
@@ -192,6 +191,5 @@ namespace Warlander.Deedplanner.Gui
                     return "N";
             }
         }
-
     }
 }

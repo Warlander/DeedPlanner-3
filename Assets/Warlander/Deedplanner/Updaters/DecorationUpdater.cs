@@ -335,6 +335,5 @@ namespace Warlander.Deedplanner.Updaters
             
             GameManager.Instance.Map.CommandManager.UndoAction();
         }
-
     }
 }

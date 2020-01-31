@@ -120,6 +120,5 @@ namespace Warlander.Deedplanner.Updaters
         {
             Application.OpenURL("https://www.paypal.me/MCyranowicz/10eur");
         }
-        
     }
 }

@@ -4,7 +4,6 @@ namespace Warlander.Deedplanner.Logic
 {
     public static class WebLinkUtils
     {
-
         /// <summary>
         /// Turn link supplied by user into downloadable link. Supplied formats: Pastebin, Google Drive, Dropbox
         /// </summary>
@@ -106,6 +105,5 @@ namespace Warlander.Deedplanner.Logic
 
             return originalLink;
         }
-
     }
 }

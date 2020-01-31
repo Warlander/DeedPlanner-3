@@ -11,7 +11,6 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class GroundUpdater : AbstractUpdater
     {
-        
         [SerializeField] private Image leftClickImage = null;
         [SerializeField] private TextMeshProUGUI leftClickText = null;
         [SerializeField] private Image rightClickImage = null;
@@ -218,6 +217,5 @@ namespace Warlander.Deedplanner.Updaters
 
             return null;
         }
-
     }
 }

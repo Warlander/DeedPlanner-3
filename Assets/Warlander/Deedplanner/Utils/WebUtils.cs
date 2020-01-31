@@ -7,7 +7,6 @@ namespace Warlander.Deedplanner.Utils
 {
     public static class WebUtils
     {
-        
         public static byte[] ReadUrlToByteArray(string location)
         {
             if (Properties.Web)
@@ -43,6 +42,5 @@ namespace Warlander.Deedplanner.Utils
                 return data;
             }
         }
-
     }
 }

@@ -8,7 +8,6 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class RoofUpdater : AbstractUpdater
     {
-
         private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
@@ -62,6 +61,5 @@ namespace Warlander.Deedplanner.Updaters
                 GameManager.Instance.Map.CommandManager.FinishAction();
             }
         }
-
     }
 }

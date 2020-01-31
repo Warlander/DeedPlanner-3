@@ -2,7 +2,6 @@ namespace Warlander.Deedplanner.Utils
 {
     public static class StringUtils
     {
-        
         public static int DigitsStringCount(int number)
         {
             return number.ToString().Length;
@@ -21,6 +20,5 @@ namespace Warlander.Deedplanner.Utils
         {
             return new string(' ', count);
         }
-        
     }
 }
