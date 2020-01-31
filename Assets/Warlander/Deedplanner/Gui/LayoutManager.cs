@@ -96,11 +96,7 @@ namespace Warlander.Deedplanner.Gui
                 CameraMode cameraMode = cameras[ActiveWindow].CameraMode;
                 foreach (Toggle toggle in cameraModeToggles)
                 {
-                    toggle.isOn = false;
-                    if (toggle.GetComponent<CameraModeReference>().CameraMode == cameraMode)
-                    {
-                        toggle.isOn = true;
-                    }
+                    toggle.isOn = toggle.GetComponent<CameraModeReference>().CameraMode == cameraMode;
                 }
             }
         }
