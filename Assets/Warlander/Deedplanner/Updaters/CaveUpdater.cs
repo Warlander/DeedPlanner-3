@@ -7,7 +7,6 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class CaveUpdater : AbstractUpdater
     {
-
         public void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
@@ -25,6 +24,5 @@ namespace Warlander.Deedplanner.Updaters
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
 
         }
-
     }
 }

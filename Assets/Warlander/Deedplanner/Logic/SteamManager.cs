@@ -17,7 +17,6 @@ namespace Warlander.Deedplanner.Logic
 {
     public class SteamManager : MonoBehaviour
     {
-
         public static bool ConnectedToSteam
         {
             get
@@ -140,6 +139,5 @@ namespace Warlander.Deedplanner.Logic
             SteamAPI.Shutdown();
 #endif
         }
-
     }
 }

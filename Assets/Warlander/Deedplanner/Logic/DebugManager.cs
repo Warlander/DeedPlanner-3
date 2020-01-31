@@ -10,7 +10,6 @@ namespace Warlander.Deedplanner.Logic
 {
     public class DebugManager : MonoBehaviour
     {
-
         public static DebugManager Instance { get; private set; }
         
         [SerializeField] private bool loadTestMap = false;
@@ -92,6 +91,5 @@ namespace Warlander.Deedplanner.Logic
         {
             
         }
-
     }
 }

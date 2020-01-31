@@ -12,7 +12,6 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class HeightUpdater : AbstractUpdater
     {
-
         [SerializeField] private Toggle selectAndDragToggle = null;
         [SerializeField] private Toggle createRampsToggle = null;
         [SerializeField] private Toggle levelAreaToggle = null;
@@ -707,7 +706,5 @@ namespace Warlander.Deedplanner.Updaters
         {
             SelectAndDrag, CreateRamps, LevelArea, PaintTerrain
         }
-        
     }
-
 }

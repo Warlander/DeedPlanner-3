@@ -6,7 +6,6 @@ namespace Warlander.Deedplanner.Utils
     [RequireComponent(typeof(TMP_InputField))]
     public class DecimalInputFieldPositiveAutocorrect : MonoBehaviour
     {
-        
         private TMP_InputField inputField;
         
         private void Awake()

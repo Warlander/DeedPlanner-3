@@ -11,7 +11,6 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class WallUpdater : AbstractUpdater
     {
-
         [SerializeField] private Toggle reverseToggle = null;
         [SerializeField] private Toggle automaticReverseToggle = null;
 
@@ -148,6 +147,5 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
         }
-
     }
 }

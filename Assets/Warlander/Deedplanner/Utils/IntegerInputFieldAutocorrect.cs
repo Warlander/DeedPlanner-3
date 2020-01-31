@@ -6,7 +6,6 @@ namespace Warlander.Deedplanner.Utils
     [RequireComponent(typeof(TMP_InputField))]
     public class IntegerInputFieldAutocorrect : MonoBehaviour
     {
-
         private TMP_InputField inputField;
         
         private void Awake()
@@ -39,6 +38,5 @@ namespace Warlander.Deedplanner.Utils
                 inputField.text = result.ToString();
             }
         }
-        
     }
 }

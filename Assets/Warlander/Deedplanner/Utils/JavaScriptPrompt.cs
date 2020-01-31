@@ -6,7 +6,6 @@ namespace Warlander.Deedplanner.Utils
     [RequireComponent(typeof(TMP_InputField))]
     public class JavaScriptPrompt : MonoBehaviour
     {
-
         [SerializeField] private string message = "Paste the content";
         [SerializeField] private string defaultInput = "";
 
@@ -29,6 +28,5 @@ namespace Warlander.Deedplanner.Utils
             string result = JavaScriptUtils.PromptNative(message, defaultInput);
             inputField.text = result;
         }
-
     }
 }

@@ -12,10 +12,8 @@ using Warlander.Deedplanner.Updaters;
 
 namespace Warlander.Deedplanner.Logic
 {
-
     public class GameManager : MonoBehaviour
     {
-
         public static GameManager Instance { get; private set; }
 
         public Map Map { get; private set; }
@@ -221,5 +219,4 @@ namespace Warlander.Deedplanner.Logic
             Map.RenderShips = renderShips;
         }
     }
-
 }

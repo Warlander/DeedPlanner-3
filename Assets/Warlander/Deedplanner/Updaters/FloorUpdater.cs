@@ -9,7 +9,6 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class FloorUpdater : AbstractUpdater
     {
-
         [SerializeField] private Toggle southToggle = null;
         [SerializeField] private Toggle westToggle = null;
         [SerializeField] private Toggle northToggle = null;
@@ -86,6 +85,5 @@ namespace Warlander.Deedplanner.Updaters
                 GameManager.Instance.Map[x, y].SetFloor(null, orientation, floor);
             }
         }
-
     }
 }
