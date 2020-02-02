@@ -7,7 +7,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
     [RequireComponent(typeof(Toggle))]
     public class FloorToggle : MonoBehaviour
     {
-        [SerializeField] private int floor;
+        [SerializeField] private int floor = 0;
 
         private Toggle toggle;
         
