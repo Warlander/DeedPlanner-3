@@ -12,6 +12,8 @@ namespace Warlander.Deedplanner.Logic
         
         [SerializeField] private CanvasGroup guiCanvasGroup = null;
         [SerializeField] private GameObject updatersRoot = null;
+        [SerializeField] private int maxEnumeratorsExecuting = 5000;
+        
         private readonly Queue<IEnumerator> enumeratorsWaiting = new Queue<IEnumerator>();
         private int enumeratorsExecutingCount = 0;
         private bool interactionLocked = false;
@@ -34,7 +36,12 @@ namespace Warlander.Deedplanner.Logic
         {
             skipCoroutines = false;
             
-            while (enumeratorsWaiting.Count > 0)
+            if (Debug.isDebugBuild && (enumeratorsWaiting.Count > 0 || enumeratorsExecutingCount > 0))
+            {
+                Debug.Log($"[Coroutine Manager] Enumerators waiting: {enumeratorsWaiting.Count}, enumerators executing: {enumeratorsExecutingCount}");
+            }
+            
+            while (enumeratorsWaiting.Count > 0 && enumeratorsExecutingCount < maxEnumeratorsExecuting)
             {
                 IEnumerator newExecutingEnumerator = enumeratorsWaiting.Dequeue();
                 StartCoroutine(WrapCoroutine(newExecutingEnumerator));
