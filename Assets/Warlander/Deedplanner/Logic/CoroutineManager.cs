@@ -53,6 +53,7 @@ namespace Warlander.Deedplanner.Logic
                 interactionLocked = false;
                 guiCanvasGroup.interactable = true;
                 updatersRoot.SetActive(true);
+                Application.runInBackground = false;
             }
         }
 
@@ -61,6 +62,7 @@ namespace Warlander.Deedplanner.Logic
             interactionLocked = true;
             guiCanvasGroup.interactable = false;
             updatersRoot.SetActive(false);
+            Application.runInBackground = true;
         }
         
         public void QueueCoroutine(IEnumerator enumerator)
