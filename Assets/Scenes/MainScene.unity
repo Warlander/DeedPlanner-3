@@ -4521,6 +4521,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guiCanvasGroup: {fileID: 615544191}
   updatersRoot: {fileID: 825856257}
+  maxEnumeratorsExecuting: 5000
 --- !u!1 &176266273
 GameObject:
   m_ObjectHideFlags: 0
@@ -52222,7 +52223,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 168050, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 177638, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_Name
