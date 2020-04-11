@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
@@ -16,6 +17,8 @@ namespace Warlander.Deedplanner.Gui
 {
     public class SaveWindow : MonoBehaviour
     {
+        [SerializeField] private Window window = null;
+        
         [SerializeField] private Button pastebinButton = null;
         [SerializeField] private TMP_Dropdown pastebinDropdown = null;
 
@@ -72,7 +75,7 @@ namespace Warlander.Deedplanner.Gui
                 File.WriteAllBytes(path, bytes);
             }
 
-            gameObject.SetActive(false);
+            window.HideWindow();
         }
 
         public void OnPastebinSave()
@@ -135,7 +138,7 @@ namespace Warlander.Deedplanner.Gui
                 Application.OpenURL(response);
             }
             
-            gameObject.SetActive(false);
+            window.HideWindow();
         }
 
         private void OnWebVersionUploadComplete(AsyncOperation obj)
@@ -154,7 +157,7 @@ namespace Warlander.Deedplanner.Gui
                 Application.OpenURL(webVersionUrl);
             }
 
-            gameObject.SetActive(false);
+            window.HideWindow();
         }
 
         private byte[] Compress(byte[] raw)

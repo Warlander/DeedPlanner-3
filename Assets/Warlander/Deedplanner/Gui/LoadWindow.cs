@@ -5,6 +5,7 @@ using System.Text;
 using StandaloneFileBrowser;
 using TMPro;
 using UnityEngine;
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
@@ -12,6 +13,8 @@ namespace Warlander.Deedplanner.Gui
 {
     public class LoadWindow : MonoBehaviour
     {
+        
+        [SerializeField] private Window window = null;
         [SerializeField] private TMP_InputField pastebinInput = null;
 
         public void OnFileLoad()
@@ -23,7 +26,7 @@ namespace Warlander.Deedplanner.Gui
             else
             {
                 LoadFileStandalone();
-                gameObject.SetActive(false);
+                window.HideWindow();
             }
         }
 
@@ -40,7 +43,7 @@ namespace Warlander.Deedplanner.Gui
             }
             
             GameManager.Instance.LoadMap(result);
-            gameObject.SetActive(false);
+            window.HideWindow();
         }
 
         private void LoadFileStandalone()
@@ -102,7 +105,7 @@ namespace Warlander.Deedplanner.Gui
             }
             finally
             {
-                gameObject.SetActive(false);
+                window.HideWindow();
             }
         }
         
