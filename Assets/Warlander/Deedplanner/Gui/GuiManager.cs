@@ -1,5 +1,7 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Warlander.Deedplanner.Gui.Widgets;
 
 namespace Warlander.Deedplanner.Gui
@@ -10,8 +12,10 @@ namespace Warlander.Deedplanner.Gui
 
         [SerializeField] private RectTransform[] interfaceTransforms = null;
 
+        [SerializeField] private RectTransform windowsRoot = null;
         [SerializeField] private Window windowPrefab = null;
-
+        [SerializeField] private TextWindow textWindowPrefab = null;
+        
         [SerializeField] private UnityTree groundsTree = null;
         [SerializeField] private UnityTree cavesTree = null;
         [SerializeField] private UnityTree floorsTree = null;
@@ -74,12 +78,22 @@ namespace Warlander.Deedplanner.Gui
 
         public Window CreateWindow(string title, RectTransform content, bool closeable)
         {
-            Window windowClone = Instantiate(windowPrefab);
+            Window windowClone = Instantiate(windowPrefab, windowsRoot);
             windowClone.Title = title;
             windowClone.Content = content;
             windowClone.CloseButtonVisible = closeable;
+            windowClone.gameObject.SetActive(false);
+            windowClone.DestroyOnClose = true;
 
             return windowClone;
+        }
+
+        public Window CreateTextWindow(string title, string text)
+        {
+            TextWindow textWindow = Instantiate(textWindowPrefab);
+            textWindow.Text.text = text;
+
+            return CreateWindow(title, textWindow.GetComponent<RectTransform>(), true);
         }
 
         [Serializable]

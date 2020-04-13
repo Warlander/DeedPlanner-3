@@ -5,6 +5,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Widgets;
 
 namespace Warlander.Deedplanner.Logic
 {
@@ -85,6 +86,12 @@ namespace Warlander.Deedplanner.Logic
             string modelFilePath = selection[0];
             
             CoroutineManager.Instance.QueueCoroutine(WurmAssetsLoader.LoadModel(modelFilePath, OnModelLoaded));
+        }
+
+        public void ShowTextWindowDebug()
+        {
+            Window window = GuiManager.Instance.CreateTextWindow("Test Window", "Testing\nTesting Longer Text");
+            window.ShowWindow();
         }
 
         private void OnModelLoaded(GameObject model)

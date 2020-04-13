@@ -29,6 +29,8 @@ namespace Warlander.Deedplanner.Gui.Widgets
             get => titleGui.text;
             set => titleGui.text = value;
         }
+        
+        public bool DestroyOnClose { get; set; } = false;
 
         private bool windowShown = false;
 
@@ -67,7 +69,14 @@ namespace Warlander.Deedplanner.Gui.Widgets
             }
 
             windowShown = false;
-            canvasGroup.DOFade(0, 0.15f).SetEase(Ease.Linear).OnComplete(() => gameObject.SetActive(false));
+            canvasGroup.DOFade(0, 0.15f).SetEase(Ease.Linear).OnComplete(() =>
+            {
+                gameObject.SetActive(false);
+                if (DestroyOnClose)
+                {
+                    Destroy(gameObject);
+                }
+            });
         }
         
         public void OnPointerDown(PointerEventData eventData)
