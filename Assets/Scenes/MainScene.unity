@@ -7546,6 +7546,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floor: -2
+--- !u!114 &289544439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 289544434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Cave editing not available<br>in current alpha version
+  showDelay: 0
 --- !u!1001 &291301580
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9536,6 +9550,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floor: -1
+--- !u!114 &361609167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 361609162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Cave editing not available<br>in current alpha version
+  showDelay: 0
 --- !u!1 &365067048
 GameObject:
   m_ObjectHideFlags: 0
@@ -23582,6 +23610,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floor: -6
+--- !u!114 &948240265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948240260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Cave editing not available<br>in current alpha version
+  showDelay: 0
 --- !u!1 &951556654
 GameObject:
   m_ObjectHideFlags: 0
@@ -34779,6 +34821,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floor: -4
+--- !u!114 &1401626363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401626358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Cave editing not available<br>in current alpha version
+  showDelay: 0
 --- !u!1 &1403010388 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
@@ -42926,6 +42982,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floor: -5
+--- !u!114 &1728524862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728524857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Cave editing not available<br>in current alpha version
+  showDelay: 0
 --- !u!1 &1731037931
 GameObject:
   m_ObjectHideFlags: 0
@@ -50597,6 +50667,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floor: -3
+--- !u!114 &2035573458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035573453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: Cave editing not available<br>in current alpha version
+  showDelay: 0
 --- !u!1 &2039501101
 GameObject:
   m_ObjectHideFlags: 0
