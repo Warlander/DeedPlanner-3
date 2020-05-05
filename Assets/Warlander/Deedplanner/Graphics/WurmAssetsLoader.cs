@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
  using System.Collections;
  using System.Collections.Generic;
 using System.IO;
@@ -61,7 +61,7 @@ namespace Warlander.Deedplanner.Graphics
             if (meshNameLowercase.Contains("boundingbox") || meshNameLowercase.Contains("pickingbox") || (meshNameLowercase.Contains("lod") && !meshNameLowercase.Contains("lod0")))
             {
                 Object.Destroy(loadedMesh);
-                Object.Destroy(loadedMaterial);
+                // TODO: possible leak of materials
                 yield break;
             }
 
@@ -205,7 +205,8 @@ namespace Warlander.Deedplanner.Graphics
             if (cachedMaterials.ContainsKey(materialKey))
             {
                 Debug.Log("Loading material from cache");
-                callback.Invoke(cachedMaterials[materialKey]);
+                Material cachedMaterial = cachedMaterials[materialKey];
+                callback.Invoke(cachedMaterial);
             }
             else
             {
