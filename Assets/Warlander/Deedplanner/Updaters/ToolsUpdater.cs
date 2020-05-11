@@ -69,7 +69,7 @@ namespace Warlander.Deedplanner.Updaters
 
                 if (buildingAllLevelsMaterialsToggle.isOn)
                 {
-                    BuildingsSummary surfaceGroundSummary = new BuildingsSummary(GameManager.Instance.Map, 0);
+                    BuildingsSummary surfaceGroundSummary = new BuildingsSummary(map, 0);
                     Materials materials = new Materials();
                     Building building = surfaceGroundSummary.GetBuildingAtTile(clickedTile);
                     if (building == null)
@@ -98,7 +98,7 @@ namespace Warlander.Deedplanner.Updaters
                 }
                 else if (buildingCurrentLevelMaterialsToggle.isOn)
                 {
-                    BuildingsSummary surfaceGroundSummary = new BuildingsSummary(GameManager.Instance.Map, 0);
+                    BuildingsSummary surfaceGroundSummary = new BuildingsSummary(map, floor);
                     Materials materials = new Materials();
                     Building building = surfaceGroundSummary.GetBuildingAtTile(clickedTile);
                     if (building == null)
@@ -135,7 +135,7 @@ namespace Warlander.Deedplanner.Updaters
                 }
                 else if (roomCurrentLevelMaterialsToggle.isOn)
                 {
-                    BuildingsSummary surfaceGroundSummary = new BuildingsSummary(GameManager.Instance.Map, 0);
+                    BuildingsSummary surfaceGroundSummary = new BuildingsSummary(map, floor);
                     Materials materials = new Materials();
                     Room room = surfaceGroundSummary.GetRoomAtTile(clickedTile);
                     if (room == null)
