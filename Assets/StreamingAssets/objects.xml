@@ -2859,7 +2859,7 @@
 			<materials>
 				Felled trees = 10
 			</materials>
-			<icon location="Walls/Icons/palisadeGatePlan.png"/>
+			<icon location="Walls/Icons/PalisadeGatePlan.png"/>
 			<category>Fences</category>
 			<category>Materials/Wood</category>
 		</wall>
