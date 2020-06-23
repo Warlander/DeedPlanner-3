@@ -1,12 +1,11 @@
-
-
 #if UNITY_STANDALONE_LINUX
+
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-namespace StandaloneFileBrowser {
+namespace SFB {
 
     public class StandaloneFileBrowserLinux : IStandaloneFileBrowser {
         

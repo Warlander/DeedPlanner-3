@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Xml;
-using StandaloneFileBrowser;
+using SFB;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -59,7 +59,7 @@ namespace Warlander.Deedplanner.Gui
                 ExtensionFilter[] extensionArray = {
                     new ExtensionFilter("DeedPlanner 3 save", "MAP")
                 };
-                string path = StandaloneFileBrowser.StandaloneFileBrowser.SaveFilePanel("Save Map", "", "Deed plan", extensionArray);
+                string path = StandaloneFileBrowser.SaveFilePanel("Save Map", "", "Deed plan", extensionArray);
             
                 if (string.IsNullOrEmpty(path))
                 {

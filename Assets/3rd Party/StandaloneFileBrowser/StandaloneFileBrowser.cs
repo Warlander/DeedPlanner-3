@@ -1,6 +1,6 @@
 using System;
 
-namespace StandaloneFileBrowser {
+namespace SFB {
     public struct ExtensionFilter {
         public string Name;
         public string[] Extensions;

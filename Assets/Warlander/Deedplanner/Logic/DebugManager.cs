@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using StandaloneFileBrowser;
+using SFB;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
@@ -76,7 +76,7 @@ namespace Warlander.Deedplanner.Logic
                 new ExtensionFilter("All Files", "*" ),
             };
             
-            string[] selection = StandaloneFileBrowser.StandaloneFileBrowser.OpenFilePanel("Open Model", "", extensions, false);
+            string[] selection = StandaloneFileBrowser.OpenFilePanel("Open Model", "", extensions, false);
             
             if (selection == null || selection.Length == 0)
             {

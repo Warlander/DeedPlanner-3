@@ -1,10 +1,9 @@
-
-
-using UnityEditor;
 #if UNITY_EDITOR
-using System;
 
-namespace StandaloneFileBrowser {
+using System;
+using UnityEditor;
+
+namespace SFB {
     public class StandaloneFileBrowserEditor : IStandaloneFileBrowser  {
         public string[] OpenFilePanel(string title, string directory, ExtensionFilter[] extensions, bool multiselect) {
             string path = "";
