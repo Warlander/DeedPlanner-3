@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
-using StandaloneFileBrowser;
+using SFB;
 using TMPro;
 using UnityEngine;
 using Warlander.Deedplanner.Gui.Widgets;
@@ -52,7 +52,7 @@ namespace Warlander.Deedplanner.Gui
                 new ExtensionFilter("DeedPlanner 3 save", "MAP")
             };
             
-            string[] pathArray = StandaloneFileBrowser.StandaloneFileBrowser.OpenFilePanel("Load Map", "", extensionArray, false);
+            string[] pathArray = StandaloneFileBrowser.OpenFilePanel("Load Map", "", extensionArray, false);
             if (pathArray == null || pathArray.Length != 1)
             {
                 return;
