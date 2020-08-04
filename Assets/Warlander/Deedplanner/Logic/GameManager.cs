@@ -19,13 +19,13 @@ namespace Warlander.Deedplanner.Logic
         public Map Map { get; private set; }
 
         [SerializeField] private OverlayMesh overlayMeshPrefab = null;
-        [SerializeField] private HeightmapHandle heightmapHandlePrefab = null;
+        [SerializeField] private Mesh heightmapHandleMesh = null;
         [SerializeField] private PlaneLine planeLinePrefab = null;
 
         [SerializeField] private AbstractUpdater[] updaters = null;
 
         public OverlayMesh OverlayMeshPrefab => overlayMeshPrefab;
-        public HeightmapHandle HeightmapHandlePrefab => heightmapHandlePrefab;
+        public Mesh HeightmapHandleMesh => heightmapHandleMesh;
         public PlaneLine PlaneLinePrefab => planeLinePrefab;
 
         private bool renderDecorations = true;

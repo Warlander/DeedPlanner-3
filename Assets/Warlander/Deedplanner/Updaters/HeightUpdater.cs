@@ -176,7 +176,7 @@ namespace Warlander.Deedplanner.Updaters
             deselectedHandles = new List<HeightmapHandle>();
             lastFrameHoveredHandles = currentFrameHoveredHandles;
 
-            if (activeHandle)
+            if (activeHandle != null)
             {
                 LayoutManager.Instance.TooltipText = activeHandle.ToRichString();
             }
@@ -305,7 +305,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
                 {
-                    if (anchorHandle && anchorHandle != currentFrameHoveredHandles[0])
+                    if (anchorHandle != null && anchorHandle != currentFrameHoveredHandles[0])
                     {
                         activeHandle = currentFrameHoveredHandles[0];
                     }
@@ -333,7 +333,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 if (state == HeightUpdaterState.Manipulating)
                 {
-                    if (activeHandle && anchorHandle)
+                    if (activeHandle != null && anchorHandle != null)
                     {
                         map.CommandManager.UndoAction();
                         bool locked = anchorPlaneLine.gameObject.activeSelf;
@@ -384,7 +384,7 @@ namespace Warlander.Deedplanner.Updaters
                             }
                         }
                     }
-                    else if (anchorHandle)
+                    else if (anchorHandle != null)
                     {
                         float anchorPositionX = anchorHandle.TileCoords.x * 4;
                         float anchorPositionY = anchorHandle.TileCoords.y * 4;
@@ -430,13 +430,13 @@ namespace Warlander.Deedplanner.Updaters
 
             if (Input.GetMouseButtonDown(1))
             {
-                if (state == HeightUpdaterState.Manipulating && activeHandle)
+                if (state == HeightUpdaterState.Manipulating && activeHandle != null)
                 {
                     map.CommandManager.UndoAction();
                     activeHandle = null;
                     state = HeightUpdaterState.Recovering;
                 }
-                else if (anchorHandle)
+                else if (anchorHandle != null)
                 {
                     anchorHandle = null;
                     anchorPlaneLine.gameObject.SetActive(false);
@@ -607,8 +607,8 @@ namespace Warlander.Deedplanner.Updaters
             
             if (hoveredHandles.Count == 0)
             {
-                HeightmapHandle heightmapHandle = raycast.transform ? raycast.transform.GetComponent<HeightmapHandle>() : null;
-                if (heightmapHandle)
+                HeightmapHandle heightmapHandle = raycast.transform ? GameManager.Instance.Map.SurfaceGridMesh.RaycastHandles() : null;
+                if (heightmapHandle != null)
                 {
                     hoveredHandles.Add(heightmapHandle);
                 }
