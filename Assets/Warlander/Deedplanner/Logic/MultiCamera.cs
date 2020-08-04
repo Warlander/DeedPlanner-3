@@ -199,12 +199,7 @@ namespace Warlander.Deedplanner.Logic
             
             if (MouseOver)
             {
-                Vector2 local;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(screen.GetComponent<RectTransform>(), Input.mousePosition, null, out local);
-                MousePosition = local + (screen.GetComponent<RectTransform>().sizeDelta / 2);
-                local /= screen.GetComponent<RectTransform>().sizeDelta;
-                local += new Vector2(0.5f, 0.5f);
-                Ray ray = AttachedCamera.ViewportPointToRay(local);
+                Ray ray = CreateMouseRay();
                 RaycastHit raycastHit;
                 int mask = LayerMasks.GetMaskForTab(LayoutManager.Instance.CurrentTab);
                 bool hit = Physics.Raycast(ray, out raycastHit, 20000, mask);
@@ -220,7 +215,7 @@ namespace Warlander.Deedplanner.Logic
                     TileEntity tileEntity = hitObject.GetComponent<TileEntity>();
                     GroundMesh groundMesh = hitObject.GetComponent<GroundMesh>();
                     OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
-                    HeightmapHandle heightmapHandle = hitObject.GetComponent<HeightmapHandle>();
+                    HeightmapHandle heightmapHandle = GameManager.Instance.Map.SurfaceGridMesh.RaycastHandles();
                     
                     if (tileEntity)
                     {
@@ -267,7 +262,7 @@ namespace Warlander.Deedplanner.Logic
                         int y = Mathf.FloorToInt(raycastHit.point.z / 4f);
                         tooltipBuild.Append("X: " + x + " Y: " + y);
                     }
-                    else if (heightmapHandle)
+                    else if (heightmapHandle != null)
                     {
                         tooltipBuild.Append(heightmapHandle.ToRichString());
                     }
@@ -275,6 +270,17 @@ namespace Warlander.Deedplanner.Logic
 
                 LayoutManager.Instance.TooltipText = tooltipBuild.ToString();
             }
+        }
+
+        public Ray CreateMouseRay()
+        {
+            Vector2 local;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(screen.GetComponent<RectTransform>(), Input.mousePosition, null, out local);
+            MousePosition = local + (screen.GetComponent<RectTransform>().sizeDelta / 2);
+            local /= screen.GetComponent<RectTransform>().sizeDelta;
+            local += new Vector2(0.5f, 0.5f);
+            Ray ray = AttachedCamera.ViewportPointToRay(local);
+            return ray;
         }
 
         private void PrepareWater()
@@ -655,9 +661,9 @@ namespace Warlander.Deedplanner.Logic
             GameObject hitObject = CurrentRaycast.collider.gameObject;
             GroundMesh groundMesh = hitObject.GetComponent<GroundMesh>();
             OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
-            HeightmapHandle heightmapHandle = hitObject.GetComponent<HeightmapHandle>();
+            HeightmapHandle heightmapHandle = GameManager.Instance.Map.SurfaceGridMesh.RaycastHandles();
 
-            bool gridOrGroundHit = groundMesh || overlayMesh || heightmapHandle;
+            bool gridOrGroundHit = groundMesh || overlayMesh || heightmapHandle != null;
 
             if (!gridOrGroundHit)
             {

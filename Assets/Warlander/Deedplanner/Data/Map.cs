@@ -33,6 +33,8 @@ namespace Warlander.Deedplanner.Data
 
         public int Width { get; private set; }
         public int Height { get; private set; }
+        public int VisibleTilesCount => Width * Height;
+        public int AllTilesCount => (Width + 1) * (Height + 1);
         public string OriginalExporter { get; private set; } = Constants.TitleString;
 
         public int LowestSurfaceHeight { get; private set; }
