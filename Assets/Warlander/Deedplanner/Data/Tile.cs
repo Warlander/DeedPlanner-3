@@ -76,11 +76,11 @@ namespace Warlander.Deedplanner.Data
             
             Ground = new Ground(this, Database.DefaultGroundData);
 
-            GameObject caveObject = new GameObject("Cave", typeof(Cave));
-            caveObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
-            Cave = caveObject.GetComponent<Cave>();
-            Map.AddEntityToMap(caveObject, -1);
-            Cave.Initialize(this, Database.DefaultCaveData);
+            // GameObject caveObject = new GameObject("Cave", typeof(Cave));
+            // caveObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
+            // Cave = caveObject.GetComponent<Cave>();
+            // Map.AddEntityToMap(caveObject, -1);
+            // Cave.Initialize(this, Database.DefaultCaveData);
         }
 
         public void PasteTile(Tile otherTile)
@@ -92,7 +92,7 @@ namespace Warlander.Deedplanner.Data
             Ground.Data = otherTile.Ground.Data;
             Ground.RoadDirection = otherTile.Ground.RoadDirection;
 
-            Cave.Data = otherTile.Cave.Data;
+            // Cave.Data = otherTile.Cave.Data;
 
             foreach (KeyValuePair<EntityData,TileEntity> pair in otherTile.Entities)
             {
@@ -629,9 +629,9 @@ namespace Warlander.Deedplanner.Data
             Ground.Serialize(document, ground);
             localRoot.AppendChild(ground);
             
-            XmlElement cave = document.CreateElement("cave");
-            Cave.Serialize(document, cave);
-            localRoot.AppendChild(cave);
+            // XmlElement cave = document.CreateElement("cave");
+            // Cave.Serialize(document, cave);
+            // localRoot.AppendChild(cave);
 
             Dictionary<int, XmlElement> levels = new Dictionary<int, XmlElement>();
             foreach (KeyValuePair<EntityData, TileEntity> e in Entities)
