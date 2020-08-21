@@ -1,4 +1,4 @@
-﻿namespace Warlander.Deedplanner.Logic
+﻿namespace Warlander.Deedplanner.Logic.Cameras
 {
     public enum CameraMode
     {

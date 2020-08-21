@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Logic.Cameras
 {
     public class CameraModeReference : MonoBehaviour
     {

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,12 +11,13 @@ using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Logic.Cameras
 {
     [RequireComponent(typeof(Camera))]
     public class MultiCamera : MonoBehaviour
     {
         private Transform parentTransform;
+        private readonly List<ICameraController> cameraControllers = new List<ICameraController>();
         public Camera AttachedCamera { get; private set; }
         public Vector2 MousePosition { get; private set; }
         
@@ -33,20 +35,26 @@ namespace Warlander.Deedplanner.Logic
 
         [SerializeField] private Color pickerColor = new Color(1f, 1f, 0, 0.3f);
 
-        private Vector3 fppPosition = new Vector3(-3, 4, -3);
-        private Vector3 fppRotation = new Vector3(15, 45, 0);
-        private const float WurmianHeight = 1.4f;
-
-        private Vector2 topPosition;
-        private float topScale = 40;
-
-        private Vector2 isoPosition;
-        private float isoScale = 40;
-
         public bool MouseOver { get; private set; } = false;
 
         public RaycastHit CurrentRaycast { get; private set; }
 
+        public ICameraController CameraController
+        {
+            get
+            {
+                foreach (ICameraController controller in cameraControllers)
+                {
+                    if (controller.SupportsMode(CameraMode))
+                    {
+                        return controller;
+                    }
+                }
+
+                return null;
+            }
+        }
+        
         public CameraMode CameraMode {
             get => cameraMode;
             set {
@@ -91,6 +99,10 @@ namespace Warlander.Deedplanner.Logic
 
         private void Start()
         {
+            cameraControllers.Add(new FppCameraController());
+            cameraControllers.Add(new IsoCameraController());
+            cameraControllers.Add(new TopCameraController());
+            
             parentTransform = transform.parent;
             AttachedCamera = GetComponent<Camera>();
 
@@ -103,19 +115,7 @@ namespace Warlander.Deedplanner.Logic
                     return;
                 }
                 
-                if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
-                {
-                    fppRotation += new Vector3(-data.delta.y * Properties.Instance.FppMouseSensitivity, data.delta.x * Properties.Instance.FppMouseSensitivity, 0);
-                    fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
-                }
-                else if (CameraMode == CameraMode.Top)
-                {
-                    topPosition += new Vector2(-data.delta.x * Properties.Instance.TopMouseSensitivity, -data.delta.y * Properties.Instance.TopMouseSensitivity);
-                }
-                else if (CameraMode == CameraMode.Isometric)
-                {
-                    isoPosition += new Vector2(-data.delta.x * Properties.Instance.IsoMouseSensitivity, -data.delta.y * Properties.Instance.IsoMouseSensitivity);
-                }
+                CameraController.UpdateDrag(data);
             });
 
             eventCatcher.OnBeginDragEvent.AddListener(data =>
@@ -134,15 +134,8 @@ namespace Warlander.Deedplanner.Logic
                 }
             });
 
-            eventCatcher.OnPointerEnterEvent.AddListener(data =>
-            {
-                MouseOver = true;
-            });
-
-            eventCatcher.OnPointerExitEvent.AddListener(data =>
-            {
-                MouseOver = false;
-            });
+            eventCatcher.OnPointerEnterEvent.AddListener(data => MouseOver = true);
+            eventCatcher.OnPointerExitEvent.AddListener(data => MouseOver = false);
 
             CameraMode = cameraMode;
 
@@ -168,18 +161,9 @@ namespace Warlander.Deedplanner.Logic
 
             if (shouldUpdateCameras)
             {
-                if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
-                {
-                    UpdatePerspectiveCamera(map);
-                }
-                else if (CameraMode == CameraMode.Top)
-                {
-                    UpdateTopCamera(map);
-                }
-                else if (CameraMode == CameraMode.Isometric)
-                {
-                    UpdateIsometricCamera(map);
-                }
+                Vector3 focusedPoint = CurrentRaycast.point;
+                bool focusedWindow = LayoutManager.Instance.ActiveWindow == screenId;
+                CameraController.UpdateInput(map, cameraMode, focusedPoint, AttachedCamera.aspect, floor, focusedWindow, MouseOver);
             }
 
             UpdateState();
@@ -285,38 +269,24 @@ namespace Warlander.Deedplanner.Logic
 
         private void PrepareWater()
         {
-            Vector3 cameraPosition = AttachedCamera.transform.position;
             Tab tab = LayoutManager.Instance.CurrentTab;
             bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
             int editingFloor = forceSurfaceEditing ? 0 : Floor;
             bool renderWater = RenderEntireMap || editingFloor == 0 || editingFloor == -1;
+            Vector2 waterPosition = CameraController.CalculateWaterTablePosition(AttachedCamera.transform.position);
+            
             if (Properties.Instance.WaterQuality == Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(renderWater);
                 Vector3 ultraQualityWaterPosition;
-                if (cameraMode != CameraMode.Isometric)
-                {
-                    ultraQualityWaterPosition = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
-                }
-                else
-                {
-                    ultraQualityWaterPosition = new Vector3(isoPosition.x, ultraQualityWater.transform.position.y, isoPosition.y);
-                }
-
+                ultraQualityWaterPosition = new Vector3(waterPosition.x, ultraQualityWater.transform.position.y, waterPosition.y);
                 ultraQualityWater.transform.position = ultraQualityWaterPosition;
                 ultraQualityWater.Update();
             }
             else if (Properties.Instance.WaterQuality == Gui.WaterQuality.High)
             {
                 highQualityWater.gameObject.SetActive(renderWater);
-                if (cameraMode != CameraMode.Isometric)
-                {
-                    highQualityWater.transform.position = new Vector3(cameraPosition.x, ultraQualityWater.transform.position.y, cameraPosition.z);
-                }
-                else
-                {
-                    highQualityWater.transform.position = new Vector3(isoPosition.x, ultraQualityWater.transform.position.y, isoPosition.y);
-                }
+                highQualityWater.transform.position = new Vector3(waterPosition.x, highQualityWater.transform.position.y, waterPosition.y);
             }
             else if (Properties.Instance.WaterQuality == Gui.WaterQuality.Simple)
             {
@@ -415,237 +385,9 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
-        private void UpdatePerspectiveCamera(Map map)
-        {
-            int activeWindow = LayoutManager.Instance.ActiveWindow;
-            if (activeWindow == screenId)
-            {
-                float movementMultiplier = 1;
-                if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    movementMultiplier *= Properties.Instance.FppShiftModifier;
-                }
-                else if (Input.GetKey(KeyCode.LeftControl))
-                {
-                    movementMultiplier *= Properties.Instance.FppControlModifier;
-                }
-                
-                Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                movement *= Properties.Instance.FppMovementSpeed * Time.deltaTime * movementMultiplier;
-
-                if (Input.GetKey(KeyCode.Q))
-                {
-                    fppRotation += new Vector3(0, -Time.deltaTime * Properties.Instance.FppKeyboardRotationSensitivity, 0);
-                    fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
-                }
-                if (Input.GetKey(KeyCode.E))
-                {
-                    fppRotation += new Vector3(0, Time.deltaTime * Properties.Instance.FppKeyboardRotationSensitivity, 0);
-                    fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
-                }
-
-                if (Input.GetKey(KeyCode.R))
-                {
-                    fppPosition += new Vector3(0, Time.deltaTime * Properties.Instance.FppMovementSpeed * movementMultiplier, 0);
-                }
-                if (Input.GetKey(KeyCode.F))
-                {
-                    fppPosition += new Vector3(0, -Time.deltaTime * Properties.Instance.FppMovementSpeed * movementMultiplier, 0);
-                }
-
-                Transform attachedCameraTransform = AttachedCamera.transform;
-                attachedCameraTransform.localPosition = fppPosition;
-                attachedCameraTransform.Translate(movement, Space.Self);
-                fppPosition = attachedCameraTransform.position;
-            }
-
-            if (CameraMode == CameraMode.Wurmian)
-            {
-                if (fppPosition.x < 0)
-                {
-                    fppPosition.x = 0;
-                }
-                if (fppPosition.z < 0)
-                {
-                    fppPosition.z = 0;
-                }
-                if (fppPosition.x > map.Width * 4)
-                {
-                    fppPosition.x = map.Width * 4;
-                }
-                if (fppPosition.z > map.Height * 4)
-                {
-                    fppPosition.z = map.Height * 4;
-                }
-
-                int currentTileX = (int) (fppPosition.x / 4f);
-                int currentTileY = (int) (fppPosition.z / 4f);
-
-                float xPart = (fppPosition.x % 4f) / 4f;
-                float yPart = (fppPosition.z % 4f) / 4f;
-                float xPartRev = 1f - xPart;
-                float yPartRev = 1f - yPart;
-
-                float h00 = map[currentTileX, currentTileY].GetHeightForFloor(floor) * 0.1f;
-                float h10 = map[currentTileX + 1, currentTileY].GetHeightForFloor(floor) * 0.1f;
-                float h01 = map[currentTileX, currentTileY + 1].GetHeightForFloor(floor) * 0.1f;
-                float h11 = map[currentTileX + 1, currentTileY + 1].GetHeightForFloor(floor) * 0.1f;
-
-                float x0 = (h00 * xPartRev + h10 * xPart);
-                float x1 = (h01 * xPartRev + h11 * xPart);
-
-                float height = (x0 * yPartRev + x1 * yPart);
-                height += WurmianHeight;
-                if (height < 0.3f)
-                {
-                    height = 0.3f;
-                }
-                fppPosition.y = height;
-            }
-        }
-
-        private void UpdateTopCamera(Map map)
-        {
-            int activeWindow = LayoutManager.Instance.ActiveWindow;
-            if (activeWindow == screenId)
-            {
-                if (MouseOver)
-                {
-                    Vector3 raycastPoint = CurrentRaycast.point;
-                    Vector2 topPoint = new Vector2(raycastPoint.x, raycastPoint.z);
-                    
-                    float scroll = Input.mouseScrollDelta.y;
-                    if (scroll > 0 && topScale > 10)
-                    {
-                        topPosition += (topPoint - topPosition) / topScale * 4;
-                        topScale -= 4;
-                    }
-                    else if (scroll < 0)
-                    {
-                        topPosition -= (topPoint - topPosition) / topScale * 4;
-                        topScale += 4;
-                    }
-                }
-
-                Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-                movement *= Properties.Instance.TopMovementSpeed * Time.deltaTime;
-                topPosition += movement;
-            }
-
-            if (topPosition.x < topScale * AttachedCamera.aspect)
-            {
-                topPosition.x = topScale * AttachedCamera.aspect;
-            }
-            if (topPosition.y < topScale)
-            {
-                topPosition.y = topScale;
-            }
-
-            if (topPosition.x > map.Width * 4 - topScale * AttachedCamera.aspect)
-            {
-                topPosition.x = map.Width * 4 - topScale * AttachedCamera.aspect;
-            }
-            if (topPosition.y > map.Height * 4 - topScale)
-            {
-                topPosition.y = map.Height * 4 - topScale;
-            }
-
-            bool fitsHorizontally = map.Width * 2 < topScale * AttachedCamera.aspect;
-            bool fitsVertically = map.Height * 2 < topScale;
-
-            if (fitsHorizontally)
-            {
-                topPosition.x = map.Width * 2;
-            }
-            if (fitsVertically)
-            {
-                topPosition.y = map.Height * 2;
-            }
-        }
-
-        private void UpdateIsometricCamera(Map map)
-        {
-            int activeWindow = LayoutManager.Instance.ActiveWindow;
-            if (activeWindow == screenId)
-            {
-                if (MouseOver)
-                {
-                    float scroll = Input.mouseScrollDelta.y;
-                    if (scroll > 0 && isoScale > 10)
-                    {
-                        isoScale -= 4;
-                    }
-                    else if (scroll < 0)
-                    {
-                        isoScale += 4;
-                    }
-                }
-
-                Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-                movement *= Properties.Instance.IsoMovementSpeed * Time.deltaTime;
-                isoPosition += movement;
-            }
-
-            if (isoPosition.x < -(map.Width * 4 / Mathf.Sqrt(2) - isoScale * AttachedCamera.aspect))
-            {
-                isoPosition.x = -(map.Width * 4 / Mathf.Sqrt(2) - isoScale * AttachedCamera.aspect);
-            }
-            if (isoPosition.y < isoScale)
-            {
-                isoPosition.y = isoScale;
-            }
-
-            if (isoPosition.x > map.Width * 4 / Mathf.Sqrt(2) - isoScale * AttachedCamera.aspect)
-            {
-                isoPosition.x = map.Width * 4 / Mathf.Sqrt(2) - isoScale * AttachedCamera.aspect;
-            }
-            if (isoPosition.y > map.Height * 4 / Mathf.Sqrt(2) - isoScale)
-            {
-                isoPosition.y = map.Height * 4 / Mathf.Sqrt(2) - isoScale;
-            }
-
-            bool fitsHorizontally = map.Width * 2 * Mathf.Sqrt(2) < isoScale * AttachedCamera.aspect;
-            bool fitsVertically = map.Height * 2 / Mathf.Sqrt(2) < isoScale;
-
-            if (fitsHorizontally)
-            {
-                isoPosition.x = 0;
-            }
-            if (fitsVertically)
-            {
-                isoPosition.y = map.Height * 2 / Mathf.Sqrt(2);
-            }
-        }
-
         private void UpdateState()
         {
-            Transform cameraTransform = AttachedCamera.transform;
-            if (CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian)
-            {
-                AttachedCamera.clearFlags = CameraClearFlags.Skybox;
-                AttachedCamera.orthographic = false;
-                cameraTransform.localPosition = fppPosition;
-                cameraTransform.localRotation = Quaternion.Euler(fppRotation);
-                parentTransform.localRotation = Quaternion.identity;
-            }
-            else if (cameraMode == CameraMode.Top)
-            {
-                AttachedCamera.clearFlags = CameraClearFlags.SolidColor;
-                AttachedCamera.orthographic = true;
-                AttachedCamera.orthographicSize = topScale;
-                cameraTransform.localPosition = new Vector3(topPosition.x, 10000, topPosition.y);
-                cameraTransform.localRotation = Quaternion.Euler(90, 0, 0);
-                parentTransform.localRotation = Quaternion.identity;
-            }
-            else if (cameraMode == CameraMode.Isometric)
-            {
-                AttachedCamera.clearFlags = CameraClearFlags.SolidColor;
-                AttachedCamera.orthographic = true;
-                AttachedCamera.orthographicSize = isoScale;
-                cameraTransform.localPosition = new Vector3(isoPosition.x, isoPosition.y, -10000);
-                cameraTransform.localRotation = Quaternion.identity;
-                parentTransform.localRotation = Quaternion.Euler(30, 45, 0);
-            }
+            CameraController.UpdateState(AttachedCamera, AttachedCamera.transform, parentTransform);
         }
 
         private void OnRenderObject()
