@@ -4,6 +4,7 @@ using Warlander.Deedplanner.Logic;
 using System.Linq;
 using System;
 using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Gui

@@ -9,6 +9,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Utils;
 using DG.Tweening;
+using Warlander.Deedplanner.Logic.Cameras;
 
 namespace Warlander.Deedplanner.Logic
 {
