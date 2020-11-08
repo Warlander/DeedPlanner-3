@@ -24,10 +24,10 @@ namespace Warlander.Deedplanner.Logic.Projectors
             renderCameraId = id;
         }
 
-        public void ProjectTile(Tile tile, TileSelectionTarget target = TileSelectionTarget.Tile)
+        public void ProjectTile(Vector2Int tileCoord, TileSelectionTarget target = TileSelectionTarget.Tile)
         {
-            int tileX = tile.X;
-            int tileY = tile.Y;
+            int tileX = tileCoord.x;
+            int tileY = tileCoord.y;
             const float borderThickness = TileSelection.BorderThickness;
             
             switch (target)
