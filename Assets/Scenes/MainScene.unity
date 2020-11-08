@@ -3107,7 +3107,7 @@ MonoBehaviour:
   highQualityWater: {fileID: 166770693}
   simpleQualityWater: {fileID: 474621805}
   selectionBox: {fileID: 1615102299}
-  attachedProjector: {fileID: 821904609}
+  attachedProjector: {fileID: 0}
   pickerColor: {r: 0.8, g: 0.8, b: 0, a: 0.25}
 --- !u!1 &115050053
 GameObject:
@@ -13128,7 +13128,7 @@ MonoBehaviour:
   highQualityWater: {fileID: 166770693}
   simpleQualityWater: {fileID: 474621805}
   selectionBox: {fileID: 2069332195}
-  attachedProjector: {fileID: 1824418884}
+  attachedProjector: {fileID: 0}
   pickerColor: {r: 0.8, g: 0.8, b: 0, a: 0.25}
 --- !u!1001 &479189262
 PrefabInstance:
@@ -17281,7 +17281,7 @@ MonoBehaviour:
   preloadAllDecorations: 0
   overrideStartingTileSelectionMode: 0
   tileSelectionMode: 5
-  drawDebugPlaneLines: 1
+  drawDebugPlaneLines: 0
 --- !u!1 &655927508
 GameObject:
   m_ObjectHideFlags: 0
@@ -21689,12 +21689,6 @@ PrefabInstance:
 --- !u!4 &821904608 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400002, guid: 28a5e79925e3ce04a82856c16a572cbe,
-    type: 3}
-  m_PrefabInstance: {fileID: 1800081667}
-  m_PrefabAsset: {fileID: 0}
---- !u!119 &821904609 stripped
-Projector:
-  m_CorrespondingSourceObject: {fileID: 11900000, guid: 28a5e79925e3ce04a82856c16a572cbe,
     type: 3}
   m_PrefabInstance: {fileID: 1800081667}
   m_PrefabAsset: {fileID: 0}
@@ -27616,12 +27610,6 @@ RectTransform:
 --- !u!4 &1110908782 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400002, guid: 28a5e79925e3ce04a82856c16a572cbe,
-    type: 3}
-  m_PrefabInstance: {fileID: 341474956}
-  m_PrefabAsset: {fileID: 0}
---- !u!119 &1110908783 stripped
-Projector:
-  m_CorrespondingSourceObject: {fileID: 11900000, guid: 28a5e79925e3ce04a82856c16a572cbe,
     type: 3}
   m_PrefabInstance: {fileID: 341474956}
   m_PrefabAsset: {fileID: 0}
@@ -35221,7 +35209,7 @@ MonoBehaviour:
   highQualityWater: {fileID: 166770693}
   simpleQualityWater: {fileID: 474621805}
   selectionBox: {fileID: 2025413718}
-  attachedProjector: {fileID: 1110908783}
+  attachedProjector: {fileID: 0}
   pickerColor: {r: 0.8, g: 0.8, b: 0, a: 0.25}
 --- !u!1001 &1422412214
 PrefabInstance:
@@ -45545,12 +45533,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 252903189}
   m_PrefabAsset: {fileID: 0}
---- !u!119 &1824418884 stripped
-Projector:
-  m_CorrespondingSourceObject: {fileID: 11900000, guid: 28a5e79925e3ce04a82856c16a572cbe,
-    type: 3}
-  m_PrefabInstance: {fileID: 252903189}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1825229218 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5575850793526680608, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
@@ -49898,12 +49880,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 869401102}
   m_PrefabAsset: {fileID: 0}
---- !u!119 &2004696088 stripped
-Projector:
-  m_CorrespondingSourceObject: {fileID: 11900000, guid: 28a5e79925e3ce04a82856c16a572cbe,
-    type: 3}
-  m_PrefabInstance: {fileID: 869401102}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2005762264 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4004065367148079115, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
@@ -50937,7 +50913,7 @@ MonoBehaviour:
   highQualityWater: {fileID: 166770693}
   simpleQualityWater: {fileID: 474621805}
   selectionBox: {fileID: 98636951}
-  attachedProjector: {fileID: 2004696088}
+  attachedProjector: {fileID: 0}
   pickerColor: {r: 0.8, g: 0.8, b: 0, a: 0.25}
 --- !u!1 &2046297082
 GameObject:
