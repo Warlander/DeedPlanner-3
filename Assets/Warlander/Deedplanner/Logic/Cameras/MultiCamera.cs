@@ -71,6 +71,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             }
         }
 
+        public int ScreenId => screenId;
         public bool RenderEntireMap => CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian;
 
         public GameObject Screen => screen;

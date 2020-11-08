@@ -6,6 +6,7 @@ using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Logic.Projectors;
 
 namespace Warlander.Deedplanner.Logic
 {
@@ -40,15 +41,12 @@ namespace Warlander.Deedplanner.Logic
         {
             if (drawDebugPlaneLines)
             {
-                PlaneLine horizontalLine = Instantiate(GameManager.Instance.PlaneLinePrefab);
-                horizontalLine.Alignment = PlaneAlignment.Horizontal;
-                horizontalLine.TileCoords = new Vector2Int(5, 5);
-                PlaneLine firstVerticalLine = Instantiate(GameManager.Instance.PlaneLinePrefab);
-                firstVerticalLine.Alignment = PlaneAlignment.Vertical;
-                firstVerticalLine.TileCoords = new Vector2Int(5, 5);
-                PlaneLine secondVerticalLine = Instantiate(GameManager.Instance.PlaneLinePrefab);
-                secondVerticalLine.Alignment = PlaneAlignment.Vertical;
-                secondVerticalLine.TileCoords = new Vector2Int(15, 15);
+                MapProjector horizontalLine = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Green);
+                horizontalLine.ProjectLine(new Vector2Int(5, 5), PlaneAlignment.Horizontal);
+                MapProjector firstVerticalLine = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Red);
+                firstVerticalLine.ProjectLine(new Vector2Int(5, 5), PlaneAlignment.Vertical);
+                MapProjector secondVerticalLine = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Yellow);
+                secondVerticalLine.ProjectLine(new Vector2Int(15, 15), PlaneAlignment.Vertical);
             }
 
             if (preloadAllDecorations)

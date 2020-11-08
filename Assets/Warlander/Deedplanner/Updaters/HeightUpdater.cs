@@ -8,6 +8,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Logic.Projectors;
 
 namespace Warlander.Deedplanner.Updaters
 {
@@ -44,7 +45,8 @@ namespace Warlander.Deedplanner.Updaters
         private List<HeightmapHandle> deselectedHandles = new List<HeightmapHandle>();
         private HeightmapHandle activeHandle;
         private HeightmapHandle anchorHandle;
-        private PlaneLine anchorPlaneLine;
+        private MapProjector anchorProjector;
+        private PlaneAlignment anchorAlignment;
 
         private HeightUpdaterMode mode = HeightUpdaterMode.SelectAndDrag;
         private HeightUpdaterState state = HeightUpdaterState.Idle;
@@ -52,13 +54,7 @@ namespace Warlander.Deedplanner.Updaters
         private Vector2 dragEndPos;
 
         private bool ComplexSelectionEnabled => mode != HeightUpdaterMode.PaintTerrain;
-
-        private void Awake()
-        {
-            anchorPlaneLine = Instantiate(GameManager.Instance.PlaneLinePrefab, transform);
-            anchorPlaneLine.gameObject.SetActive(false);
-        }
-
+        
         private void Start()
         {
             dragSensitivityInput.text = Properties.Instance.HeightDragSensitivity.ToString(CultureInfo.InvariantCulture);
@@ -68,6 +64,8 @@ namespace Warlander.Deedplanner.Updaters
         private void OnEnable()
         {
             RefreshTileSelectionMode();
+            anchorProjector = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Red);
+            anchorProjector.gameObject.SetActive(false);
         }
 
         public void OnModeChange(bool toggledOn)
@@ -135,9 +133,9 @@ namespace Warlander.Deedplanner.Updaters
             selectedHandles.Clear();
             activeHandle = null;
             anchorHandle = null;
-            if (anchorPlaneLine)
+            if (anchorProjector)
             {
-                anchorPlaneLine.gameObject.SetActive(false);
+                anchorProjector.gameObject.SetActive(false);
             }
             state = HeightUpdaterState.Idle;
             GameManager.Instance.Map.CommandManager.UndoAction();
@@ -325,7 +323,7 @@ namespace Warlander.Deedplanner.Updaters
                     deselectedHandles = selectedHandles;
                     selectedHandles = new List<HeightmapHandle>();
                     anchorHandle = null;
-                    anchorPlaneLine.gameObject.SetActive(false);
+                    anchorProjector.gameObject.SetActive(false);
                     state = HeightUpdaterState.Dragging;
                 }
             }
@@ -337,8 +335,7 @@ namespace Warlander.Deedplanner.Updaters
                     if (activeHandle != null && anchorHandle != null)
                     {
                         map.CommandManager.UndoAction();
-                        bool locked = anchorPlaneLine.gameObject.activeSelf;
-                        PlaneAlignment lockedAxis = anchorPlaneLine.Alignment;
+                        bool locked = anchorProjector.gameObject.activeSelf;
                         int originalHeight = map[anchorHandle.TileCoords].SurfaceHeight;
                         int heightDelta = (int) ((dragEndPos.y - dragStartPos.y) * dragSensitivity);
                         
@@ -350,13 +347,13 @@ namespace Warlander.Deedplanner.Updaters
                         }
                         
                         Vector2Int manipulatedTileCoords = activeHandle.TileCoords;
-                        Vector2Int manipulatedAnchorCoords = GetAxisCorrectedAnchor(manipulatedTileCoords, anchorHandle.TileCoords, locked, lockedAxis);
+                        Vector2Int manipulatedAnchorCoords = GetAxisCorrectedAnchor(manipulatedTileCoords, anchorHandle.TileCoords, locked, anchorAlignment);
                         Vector2Int manipulatedDifference = manipulatedTileCoords - manipulatedAnchorCoords;
                         
                         foreach (HeightmapHandle heightmapHandle in selectedHandles)
                         {
                             Vector2Int tileCoords = heightmapHandle.TileCoords;
-                            Vector2Int anchorCoords = GetAxisCorrectedAnchor(tileCoords, anchorHandle.TileCoords, locked, lockedAxis);
+                            Vector2Int anchorCoords = GetAxisCorrectedAnchor(tileCoords, anchorHandle.TileCoords, locked, anchorAlignment);
                             Vector2Int difference = tileCoords - anchorCoords;
                             float deltaX = (float) difference.x / manipulatedDifference.x;
                             if (float.IsNaN(deltaX) || float.IsInfinity(deltaX))
@@ -397,14 +394,14 @@ namespace Warlander.Deedplanner.Updaters
                         Vector2 positionDelta = raycastPosition - anchorPosition;
                         if (positionDelta.magnitude > 4)
                         {
-                            anchorPlaneLine.gameObject.SetActive(true);
-                            anchorPlaneLine.TileCoords = anchorHandle.TileCoords;
+                            anchorProjector.gameObject.SetActive(true);
                             bool horizontal = Mathf.Abs(positionDelta.x) > Mathf.Abs(positionDelta.y);
-                            anchorPlaneLine.Alignment = horizontal ? PlaneAlignment.Vertical : PlaneAlignment.Horizontal;
+                            anchorAlignment = horizontal ? PlaneAlignment.Vertical : PlaneAlignment.Horizontal;
+                            anchorProjector.ProjectLine(anchorHandle.TileCoords, anchorAlignment);
                         }
                         else
                         {
-                            anchorPlaneLine.gameObject.SetActive(false);
+                            anchorProjector.gameObject.SetActive(false);
                         }
                     }
                 }
@@ -440,7 +437,7 @@ namespace Warlander.Deedplanner.Updaters
                 else if (anchorHandle != null)
                 {
                     anchorHandle = null;
-                    anchorPlaneLine.gameObject.SetActive(false);
+                    anchorProjector.gameObject.SetActive(false);
                     state = HeightUpdaterState.Recovering;
                 }
                 else if (state == HeightUpdaterState.Idle)
@@ -695,6 +692,8 @@ namespace Warlander.Deedplanner.Updaters
 
         private void OnDisable()
         {
+            MapProjectorManager.Instance.FreeProjector(anchorProjector);
+            anchorProjector = null;
             ResetState();
         }
 

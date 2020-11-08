@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Logic.Projectors;
 using Warlander.Deedplanner.Updaters;
 
 namespace Warlander.Deedplanner.Logic
@@ -20,13 +21,11 @@ namespace Warlander.Deedplanner.Logic
 
         [SerializeField] private OverlayMesh overlayMeshPrefab = null;
         [SerializeField] private Mesh heightmapHandleMesh = null;
-        [SerializeField] private PlaneLine planeLinePrefab = null;
 
         [SerializeField] private AbstractUpdater[] updaters = null;
 
         public OverlayMesh OverlayMeshPrefab => overlayMeshPrefab;
         public Mesh HeightmapHandleMesh => heightmapHandleMesh;
-        public PlaneLine PlaneLinePrefab => planeLinePrefab;
 
         private bool renderDecorations = true;
         private bool renderTrees = true;
