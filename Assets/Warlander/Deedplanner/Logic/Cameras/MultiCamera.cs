@@ -9,6 +9,7 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Logic.Projectors;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Logic.Cameras
@@ -31,7 +32,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [SerializeField] private GameObject simpleQualityWater = null;
 
         [SerializeField] private RectTransform selectionBox = null;
-        [SerializeField] private Projector attachedProjector = null;
+        [SerializeField] private MapProjector attachedProjector = null;
 
         [SerializeField] private Color pickerColor = new Color(1f, 1f, 0, 0.3f);
 
@@ -106,6 +107,9 @@ namespace Warlander.Deedplanner.Logic.Cameras
             
             parentTransform = transform.parent;
             AttachedCamera = GetComponent<Camera>();
+            attachedProjector = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Yellow);
+            attachedProjector.SetRenderCameraId(screenId);
+            attachedProjector.gameObject.SetActive(false);
 
             MouseEventCatcher eventCatcher = screen.GetComponent<MouseEventCatcher>();
 
@@ -346,44 +350,13 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
             if (target == TileSelectionTarget.Nothing)
             {
+                attachedProjector.gameObject.SetActive(false);
                 return;
             }
 
             attachedProjector.gameObject.SetActive(true);
-
-            int tileX = tileSelectionHit.X;
-            int tileY = tileSelectionHit.Y;
-
-            const float borderThickness = TileSelection.BorderThickness;
-
-            switch (target)
-            {
-                case TileSelectionTarget.Tile:
-                    attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4 + 2);
-                    attachedProjector.orthographicSize = 2;
-                    attachedProjector.aspectRatio = 1;
-                    break;
-                case TileSelectionTarget.InnerTile:
-                    attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4 + 2);
-                    attachedProjector.orthographicSize = 2 - borderThickness * 4;
-                    attachedProjector.aspectRatio = 1;
-                    break;
-                case TileSelectionTarget.BottomBorder:
-                    attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4);
-                    attachedProjector.orthographicSize = borderThickness * 4;
-                    attachedProjector.aspectRatio = 2f / (borderThickness * 4) - (borderThickness * 6);
-                    break;
-                case TileSelectionTarget.LeftBorder:
-                    attachedProjector.transform.position = new Vector3(tileX * 4, 10000, tileY * 4 + 2);
-                    attachedProjector.orthographicSize = 2 - (borderThickness * 4);
-                    attachedProjector.aspectRatio = (borderThickness * 4) / 1.5f;
-                    break;
-                case TileSelectionTarget.Corner:
-                    attachedProjector.transform.position = new Vector3(tileX * 4, 10000, tileY * 4);
-                    attachedProjector.orthographicSize = borderThickness * 4;
-                    attachedProjector.aspectRatio = 1;
-                    break;
-            }
+            Vector2Int tileCoords = new Vector2Int(tileSelectionHit.X, tileSelectionHit.Y);
+            attachedProjector.ProjectTile(tileCoords, target);
         }
 
         private void UpdateState()
