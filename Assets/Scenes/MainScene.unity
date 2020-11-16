@@ -17277,7 +17277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be0d147f0bed66c4099ce115670f3792, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadTestMap: 1
+  testMap: 3
   preloadAllDecorations: 0
   overrideStartingTileSelectionMode: 0
   tileSelectionMode: 5
