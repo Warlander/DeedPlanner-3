@@ -54,6 +54,10 @@ namespace Warlander.Deedplanner.Logic
                 guiCanvasGroup.interactable = true;
                 updatersRoot.SetActive(true);
                 Application.runInBackground = false;
+                if (Debug.isDebugBuild)
+                {
+                    Debug.Log("[CoroutineManager] All coroutines complete!");
+                }
             }
         }
 
