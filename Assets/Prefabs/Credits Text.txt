@@ -11,6 +11,7 @@
 <b>Unity Technologies</b> - Unity engine
 <b>Steamworks.NET</b> - Steam API support
 <b>gkngkc (https://github.com/gkngkc)</b> - Standalone File Browser
+<b>Bunny83 (https://github.com/Bunny83)</b> - UnityWindowsFileDrag-Drop
 Icons made by <b>Freepik, Gregor Cresnar, Smashicons, Cole Bemis</b> from <b>www.flaticon.com</b>
 
 <align="center"><size=20>Silver Supporters</size></align>
