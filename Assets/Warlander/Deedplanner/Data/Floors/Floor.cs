@@ -10,10 +10,10 @@ namespace Warlander.Deedplanner.Data.Floors
         private GameObject model;
 
         public FloorData Data { get; private set; }
-        public FloorOrientation Orientation { get; private set; }
+        public EntityOrientation Orientation { get; private set; }
         public override Materials Materials => Data.Materials;
 
-        public void Initialize(Tile tile, FloorData data, FloorOrientation orientation)
+        public void Initialize(Tile tile, FloorData data, EntityOrientation orientation)
         {
             Tile = tile;
 
@@ -43,17 +43,17 @@ namespace Warlander.Deedplanner.Data.Floors
             
             model = newModel;
             model.transform.SetParent(transform, false);
-            if (Orientation == FloorOrientation.Right)
+            if (Orientation == EntityOrientation.Right)
             {
                 model.transform.localRotation = Quaternion.Euler(0, 90, 0);
                 model.transform.localPosition = new Vector3(0, 0, -4);
             }
-            else if (Orientation == FloorOrientation.Down)
+            else if (Orientation == EntityOrientation.Down)
             {
                 model.transform.localRotation = Quaternion.Euler(0, 180, 0);
                 model.transform.localPosition = new Vector3(-4, 0, -4);
             }
-            else if (Orientation == FloorOrientation.Left)
+            else if (Orientation == EntityOrientation.Left)
             {
                 model.transform.localRotation = Quaternion.Euler(0, 270, 0);
                 model.transform.localPosition = new Vector3(-4, 0, 0);

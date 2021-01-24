@@ -58,22 +58,22 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            FloorOrientation orientation = FloorOrientation.Down;
+            EntityOrientation orientation = EntityOrientation.Down;
             if (southToggle.isOn)
             {
-                orientation = FloorOrientation.Down;
+                orientation = EntityOrientation.Down;
             }
             else if (westToggle.isOn)
             {
-                orientation = FloorOrientation.Right;
+                orientation = EntityOrientation.Right;
             }
             else if (northToggle.isOn)
             {
-                orientation = FloorOrientation.Up;
+                orientation = EntityOrientation.Up;
             }
             else if (eastToggle.isOn)
             {
-                orientation = FloorOrientation.Left;
+                orientation = EntityOrientation.Left;
             }
 
             if (Input.GetMouseButton(0))
