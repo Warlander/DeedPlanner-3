@@ -238,7 +238,7 @@ namespace Warlander.Deedplanner.Data
             return tileEntity;
         }
 
-        public Floor SetFloor(FloorData data, FloorOrientation orientation, int level)
+        public Floor SetFloor(FloorData data, EntityOrientation orientation, int level)
         {
             EntityData entityData = new EntityData(level, EntityType.Floorroof);
             TileEntity tileEntity;
@@ -263,7 +263,7 @@ namespace Warlander.Deedplanner.Data
             return null;
         }
 
-        private Floor CreateNewFloor(EntityData entity, FloorData data, FloorOrientation orientation)
+        private Floor CreateNewFloor(EntityData entity, FloorData data, EntityOrientation orientation)
         {
             GameObject floorObject = new GameObject("Floor " + data.Name, typeof(Floor));
             Floor floor = floorObject.GetComponent<Floor>();
@@ -746,20 +746,20 @@ namespace Warlander.Deedplanner.Data
             }
 
             string orientationString = element.GetAttribute("orientation");
-            FloorOrientation orientation = FloorOrientation.Down;
+            EntityOrientation orientation = EntityOrientation.Down;
             switch (orientationString.ToUpperInvariant())
             {
                 case "UP":
-                    orientation = FloorOrientation.Up;
+                    orientation = EntityOrientation.Up;
                     break;
                 case "LEFT":
-                    orientation = FloorOrientation.Left;
+                    orientation = EntityOrientation.Left;
                     break;
                 case "DOWN":
-                    orientation = FloorOrientation.Down;
+                    orientation = EntityOrientation.Down;
                     break;
                 case "RIGHT":
-                    orientation = FloorOrientation.Right;
+                    orientation = EntityOrientation.Right;
                     break;
             }
             
