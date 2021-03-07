@@ -33,6 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+#pragma warning disable 67
 
 namespace B83.Win32
 {
