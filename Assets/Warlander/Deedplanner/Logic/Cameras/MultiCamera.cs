@@ -214,10 +214,15 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     {
                         int x = Mathf.FloorToInt(raycastHit.point.x / 4f);
                         int y = Mathf.FloorToInt(raycastHit.point.z / 4f);
-                        tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
-                        
-                        if (isHeightEditing)
+
+                        if (heightmapHandle != null)
                         {
+                            tooltipBuild.Append(heightmapHandle.ToRichString());
+                        }
+                        else if (isHeightEditing)
+                        {
+                            tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
+                            
                             Map map = GameManager.Instance.Map;
                             Vector3 raycastPoint = raycastHit.point;
                             Vector2Int tileCoords = new Vector2Int(Mathf.FloorToInt(raycastPoint.x / 4), Mathf.FloorToInt(raycastPoint.z / 4));
