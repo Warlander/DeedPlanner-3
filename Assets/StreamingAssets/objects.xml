@@ -6255,6 +6255,18 @@
 			<category>Misc</category>
 			<category>Jackal</category>
 		</object>
+		<object name="Hitching post" shortname="hitchingpost" type="normal">
+			<model location="Objects/hitchingPost.wom"/>
+			<materials>
+				Large nails = 4,
+				Planks = 8,
+				Ribbons = 2,
+				Small nails = 8,
+				Wooden beams = 3
+			</materials>
+			<category>Misc</category>
+			<category>Materials/Wood</category>
+		</object>
 		
 		<object name="Forge" shortname="forge" type="normal">
 			<model location="Objects/forge.wom"/>
