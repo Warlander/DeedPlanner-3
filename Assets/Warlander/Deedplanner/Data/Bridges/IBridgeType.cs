@@ -4,6 +4,7 @@ namespace Warlander.Deedplanner.Data.Bridges
     {
         string Name { get; }
         int[] ExtraArguments { get; }
+        BridgeType Type { get; }
         int CalculateAddedHeight(int currentSegment, int bridgeLength, int startHeight, int endHeight, int extraArgument);
     }
 }
