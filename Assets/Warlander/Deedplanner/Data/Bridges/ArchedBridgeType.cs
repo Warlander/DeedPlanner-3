@@ -69,6 +69,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             Height46, Height47, Height48, Height49, Height50};
     
         public string Name => "arched";
+        public BridgeType Type => BridgeType.Arched;
         public int[] ExtraArguments { get; } = {5, 10, 15, 20};
         
         public int CalculateAddedHeight(int currentSegment, int bridgeLength, int startHeight, int endHeight, int extraArgument)
