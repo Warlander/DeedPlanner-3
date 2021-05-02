@@ -126,7 +126,12 @@ namespace Warlander.Deedplanner.Gui
         {
             pastebinButton.interactable = true;
             webVersionButton.interactable = true;
-            
+
+            if (!string.IsNullOrEmpty(currentPastebinRequest.error))
+            {
+                Debug.LogError(currentPastebinRequest.error);
+            }
+
             string response = currentPastebinRequest.downloadHandler.text;
             currentPastebinRequest.Dispose();
             if (response.Contains("Bad API request"))
