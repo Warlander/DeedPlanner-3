@@ -7381,4 +7381,99 @@
 		</rock>
 		
 	</caves>
+	
+	
+	
+	<bridges>
+		<bridge name="rope" supportheight="0" maxwidth="1">
+			<type name="rope"/>
+			<lane type="narrow"/>
+			<part type="crown">
+				<model location="Bridges/Rope/RopeBridgeCrown.wom"/>
+				<materials>
+					Planks = 10,
+					Mooring ropes = 6,
+					Cordage ropes = 4
+				</materials>
+			</part>
+			<part type="abutment">
+				<model location="Bridges/Rope/RopeBridgeCrown.wom"/>
+				<materials>
+					Planks = 10,
+					Mooring ropes = 6,
+					Cordage ropes = 2,
+					Thick ropes = 2,
+					Logs = 4
+				</materials>
+			</part>
+			<part type="doubleAbutment">
+				<model location="Bridges/Rope/RopeBridgeCrown.wom"/>
+				<materials>
+					Planks = 10,
+					Mooring ropes = 6,
+					Cordage ropes = 2,
+					Thick ropes = 4,
+					Logs = 8
+				</materials>
+			</part>
+		</bridge>
+		
+		<bridge name="wood" supportheight="60" maxwidth="2">
+			<type name="flat"/>
+			<type name="arched"/>
+			<lane type="narrow">
+				<materials>
+					Planks = 4,
+					Shafts = 4,
+					Small nails = 2
+				</materials>
+			</lane>
+			<lane type="side">
+				<materials>
+					Planks = 2,
+					Shafts = 2,
+					Small nails = 1
+				</materials>
+			</lane>
+			<part type="crown">
+				<model location="Bridges/Wooden/WoodBridge.wom" tag="narrow"/>
+				<model location="Bridges/Wooden/WoodBridgeRight.wom" tag="side"/>
+				<materials>
+					Wooden beams = 4,
+					Planks = 20,
+					Iron ribbons = 2,
+					Large nails = 3
+				</materials>
+			</part>
+			<part type="abutment">
+				<model location="Bridges/Wooden/WoodBridgeAbutmentNarrow.wom" tag="narrow"/>
+				<model location="Bridges/Wooden/WoodBridgeAbutmentRight.wom" tag="side"/>
+				<materials>
+					Wooden beams = 8,
+					Planks = 20,
+					Iron ribbons = 4,
+					Large nails = 4
+				</materials>
+			</part>
+			<part type="support">
+				<model location="Bridges/Wooden/WoodBridgeSupport.wom" tag="narrow"/>
+				<model location="Bridges/Wooden/WoodBridgeSupportRight.wom" tag="side"/>
+				<materials>
+					Wooden beams = 12,
+					Planks = 20,
+					Iron ribbons = 6,
+					Large nails = 5
+				</materials>
+			</part>
+			<part type="extension">
+				<model location="Bridges/Wooden/WoodBridgeExtension.wom" tag="narrow"/>
+				<model location="Bridges/Wooden/WoodBridgeExtension.wom" tag="side"/>
+				<materials>
+					Wooden beams = 4,
+					Iron ribbons = 2,
+					Large nails = 1
+				</materials>
+			</part>
+		</bridge>
+	</bridges>
 </entities>
