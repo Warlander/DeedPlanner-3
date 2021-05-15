@@ -7475,5 +7475,171 @@
 				</materials>
 			</part>
 		</bridge>
+		
+		<bridge name="stone" supportheight="80" maxwidth="3">
+			<type name="flat"/>
+			<type name="arched"/>
+			<lane type="narrow">
+				<materials>
+					Stone bricks = 20
+				</materials>
+			</lane>
+			<lane type="side">
+				<materials>
+					Stone bricks = 10
+				</materials>
+			</lane>
+			<lane type="center"/>
+			<part type="crown">
+				<model location="Bridges/Stone/StoneBridgeCrown.wom" tag="narrow">
+					<override mesh="Crown10_Support_sep23_BridgeMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="Crown10_Support_sep23_Bridge_TilingMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_CrownDouble.wom" tag="side">
+					<override mesh="CrownDoubleWMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="CrownDoubleTMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_CrownCenter.wom" tag="center">
+					<override mesh="StoneBridgeCrownCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="StoneBridgeCrownCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<materials>
+					Stone bricks = 12,
+					Mortar = 10,
+					Rock shards = 4,
+					Stone keystones = 1
+				</materials>
+			</part>
+			<part type="abutment">
+				<model location="Bridges/Stone/StoneBridgeAbutment.wom" tag="narrow">
+					<override mesh="Abutment10_Support_sep36_BridgeMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="Abutment10_Support_sep36_Bridge_TilingMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
+					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_AbutmentCenter.wom" tag="center">
+					<override mesh="AbutmentDoubleCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="StoneBridgeAbutmentCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<materials>
+					Stone bricks = 42,
+					Mortar = 40,
+					Rock shards = 16
+				</materials>
+			</part>
+			<part type="doubleAbutment">
+				<model location="Bridges/Stone/StoneBridgeEnd.wom" tag="narrow">
+					<override mesh="EndWMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="DoubleAbutmentMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
+					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_DoubleAbutmentCenter.wom" tag="center">
+					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="DoubleAbutmentCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<materials>
+					Stone bricks = 62,
+					Mortar = 60,
+					Rock shards = 24
+				</materials>
+			</part>
+			<part type="bracing">
+				<model location="Bridges/Stone/StoneBridgeBracing.wom" tag="narrow">
+					<override mesh="Bracing10_Support_sep35_BridgeMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="Bracing10_Support_sep35_Bridge_TilingMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="side">
+					<override mesh="BracingDoubleRightWMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="BracingDoubleRightTMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_BracingCenter.wom" tag="center">
+					<override mesh="BracingDoubleCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="BracingDoubleCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<materials>
+					Stone bricks = 27,
+					Mortar = 25,
+					Rock shards = 8
+				</materials>
+			</part>
+			<part type="doubleBracing">
+				<model location="Bridges/Stone/StoneBridgeDoubleBracing.wom" tag="narrow">
+					<override mesh="DoubleBracingWMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="DoubleBracingMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleSide.wom" tag="side">
+					<override mesh="DoubleBracingSideWMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="DoubleBracingSideMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_DoubleBracingCenter.wom" tag="center">
+					<override mesh="DoubleBracingCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="DoubleBracingCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<materials>
+					Stone bricks = 32,
+					Mortar = 30,
+					Rock shards = 12
+				</materials>
+			</part>
+			<part type="support">
+				<model location="Bridges/Stone/StoneBridgeSupport.wom" tag="narrow">
+					<override mesh="Support10_Support_sep34_BridgeMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="Support10_Support_sep34_Bridge_TilingMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_SupportDoubleSide.wom" tag="side">
+					<override mesh="SupportDoubleRightWMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="SupportDoubleRightTMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_SupportCenter.wom" tag="center">
+					<override mesh="SupportDoubleCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="SupportDoubleCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<materials>
+					Stone bricks = 92,
+					Mortar = 90,
+					Rock shards = 36
+				</materials>
+			</part>
+			<part type="extension">
+				<model location="Bridges/Stone/StoneBridgeExtension.wom" tag="narrow">
+					<override mesh="ExtensionMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_ExtensionSide.wom" tag="side">
+					<override mesh="ExtensionDoubleTMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_ExtensionCenter.wom" tag="center">
+					<override mesh="ExtensionCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<materials>
+					Stone bricks = 30,
+					Mortar = 30,
+					Rock shards = 12
+				</materials>
+			</part>
+			<part type="floating">
+				<model location="Bridges/Stone/StoneBridgeFloating.wom" tag="narrow">
+					<override mesh="BridgeFloatingWMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="BridgeFloatingMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_FloatingSide.wom" tag="side">
+					<override mesh="FloatingSideWMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="BridgeFloatingSideMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_FloatingCenter.wom" tag="center">
+					<override mesh="FloatingDoubleCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="FloatingDoubleCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<materials>
+					Stone bricks = 12,
+					Mortar = 10,
+					Rock shards = 4
+				</materials>
+			</part>
+		</bridge>
 	</bridges>
 </entities>
