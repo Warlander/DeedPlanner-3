@@ -31,6 +31,15 @@ namespace Warlander.Deedplanner.Editor
         [MenuItem("Build/Windows", false, 50)]
         public static bool BuildWindows64()
         {
+            if (Application.platform == RuntimePlatform.WindowsEditor)
+            {
+                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+            }
+            else
+            {
+                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+            }
+            
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.Standalone;
             buildOptions.target = BuildTarget.StandaloneWindows64;
@@ -55,6 +64,15 @@ namespace Warlander.Deedplanner.Editor
         [MenuItem("Build/Linux", false, 51)]
         public static bool BuildLinux()
         {
+            if (Application.platform == RuntimePlatform.LinuxEditor)
+            {
+                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+            }
+            else
+            {
+                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+            }
+
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.Standalone;
             buildOptions.target = BuildTarget.StandaloneLinux64;
@@ -79,6 +97,17 @@ namespace Warlander.Deedplanner.Editor
         [MenuItem("Build/Mac", false, 52)]
         public static bool BuildMac()
         {
+            if (Application.platform == RuntimePlatform.OSXEditor)
+            {
+                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+            }
+            else
+            {
+                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+            }
+            
+            PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+            
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.Standalone;
             buildOptions.target = BuildTarget.StandaloneOSX;

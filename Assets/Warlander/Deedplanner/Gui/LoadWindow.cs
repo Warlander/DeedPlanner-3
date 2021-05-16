@@ -32,7 +32,9 @@ namespace Warlander.Deedplanner.Gui
 
         private void LoadFileBrowser()
         {
+#if UNITY_WEBGL
             JavaScriptUtils.UploadNative(gameObject.name, nameof(LoadFileBrowserCallback));
+#endif
         }
 
         public void LoadFileBrowserCallback(string result)

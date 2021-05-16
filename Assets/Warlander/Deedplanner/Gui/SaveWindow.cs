@@ -50,31 +50,27 @@ namespace Warlander.Deedplanner.Gui
 
             string mapString = build.ToString();
             
-            if (Properties.Web)
+#if UNITY_WEBGL
+            JavaScriptUtils.DownloadNative("Deed plan.MAP", mapString);
+#else
+            ExtensionFilter[] extensionArray = {
+                new ExtensionFilter("DeedPlanner 3 save", "MAP")
+            };
+            string path = StandaloneFileBrowser.SaveFilePanel("Save Map", "", "Deed plan", extensionArray);
+        
+            if (string.IsNullOrEmpty(path))
             {
-                JavaScriptUtils.DownloadNative("Deed plan.MAP", mapString);
-            }
-            else
-            {
-                ExtensionFilter[] extensionArray = {
-                    new ExtensionFilter("DeedPlanner 3 save", "MAP")
-                };
-                string path = StandaloneFileBrowser.SaveFilePanel("Save Map", "", "Deed plan", extensionArray);
-            
-                if (string.IsNullOrEmpty(path))
-                {
-                    return;
-                }
-
-                if (!path.EndsWith(".MAP"))
-                {
-                    path += ".MAP";
-                }
-            
-                byte[] bytes = Encoding.Default.GetBytes(build.ToString());
-                File.WriteAllBytes(path, bytes);
+                return;
             }
 
+            if (!path.EndsWith(".MAP"))
+            {
+                path += ".MAP";
+            }
+        
+            byte[] bytes = Encoding.Default.GetBytes(build.ToString());
+            File.WriteAllBytes(path, bytes);
+#endif
             window.HideWindow();
         }
 

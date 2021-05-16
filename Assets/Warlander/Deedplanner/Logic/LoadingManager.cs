@@ -80,6 +80,7 @@ namespace Warlander.Deedplanner.Logic
         private IEnumerator LoadMap()
         {
             string mapLocationString = "";
+#if UNITY_WEBGL
             if (Properties.Web)
             {
                 mapLocationString = JavaScriptUtils.GetMapLocationString();
@@ -88,6 +89,7 @@ namespace Warlander.Deedplanner.Logic
                     mapLocationString = WebLinkUtils.ParseToDirectDownloadLink(mapLocationString);
                 }
             }
+#endif
 
             if (!string.IsNullOrEmpty(mapLocationString))
             {

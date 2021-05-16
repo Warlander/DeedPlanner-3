@@ -10,11 +10,13 @@ namespace Warlander.Deedplanner.Utils
     {
         public static byte[] ReadUrlToByteArray(string location)
         {
+#if UNITY_WEBGL
             // native JavaScript loading
             if (Properties.Web)
             {
                 return JavaScriptUtils.LoadUrlToBytes(location);
             }
+#endif
 
             location = FixLocalPath(location);
             
