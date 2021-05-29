@@ -8481,5 +8481,102 @@
 				</materials>
 			</part>
 		</bridge>
+		
+		<bridge name="marble" supportheight="80" maxwidth="3">
+			<type name="flat"/>
+			<type name="arched"/>
+			<lane type="narrow">
+				<materials>
+					Marble bricks = 20
+				</materials>
+			</lane>
+			<lane type="side">
+				<materials>
+					Marble bricks = 10
+				</materials>
+			</lane>
+			<lane type="center"/>
+			<part type="crown">
+				<model location="Bridges/Marble/CrownMarble.wom" tag="narrow"/>
+				<model location="Bridges/Marble/CrownMarbleDouble.wom" tag="side"/>
+				<model location="Bridges/Marble/CrownMarbleCenter.wom" tag="center"/>
+				<materials>
+					Marble bricks = 12,
+					Mortar = 10,
+					Rock shards = 4,
+					Marble keystones = 1
+				</materials>
+			</part>
+			<part type="abutment">
+				<model location="Bridges/Marble/AbutmentMarble.wom" tag="narrow"/>
+				<model location="Bridges/Marble/AbutmentMarbleRight.wom" tag="side"/>
+				<model location="Bridges/Marble/AbutmentMarbleCenter.wom" tag="center"/>
+				<materials>
+					Marble bricks = 42,
+					Mortar = 40,
+					Rock shards = 16
+				</materials>
+			</part>
+			<part type="doubleAbutment">
+				<model location="Bridges/Marble/DoubleAbutmentMarble.wom" tag="narrow"/>
+				<model location="Bridges/Marble/DoubleAbutmentDouble.wom" tag="side"/>
+				<model location="Bridges/Marble/AbutmentDoubleCenter.wom" tag="center"/>
+				<materials>
+					Marble bricks = 62,
+					Mortar = 60,
+					Rock shards = 24
+				</materials>
+			</part>
+			<part type="bracing">
+				<model location="Bridges/Marble/BracingMarble.wom" tag="narrow"/>
+				<model location="Bridges/Marble/BracingMarbleRight.wom" tag="side"/>
+				<model location="Bridges/Marble/BracingMarbleCenter.wom" tag="center"/>
+				<materials>
+					Marble bricks = 27,
+					Mortar = 25,
+					Rock shards = 8
+				</materials>
+			</part>
+			<part type="doubleBracing">
+				<model location="Bridges/Marble/DoubleBracingMarble.wom" tag="narrow"/>
+				<model location="Bridges/Marble/DoubleBracingDouble.wom" tag="side"/>
+				<model location="Bridges/Marble/BracingDoubleCenter.wom" tag="center"/>
+				<materials>
+					Marble bricks = 32,
+					Mortar = 30,
+					Rock shards = 12
+				</materials>
+			</part>
+			<part type="support">
+				<model location="Bridges/Marble/SupportMarble.wom" tag="narrow"/>
+				<model location="Bridges/Marble/SupportMarbleRight.wom" tag="side"/>
+				<model location="Bridges/Marble/SupportMarbleCenter.wom" tag="center"/>
+				<materials>
+					Marble bricks = 92,
+					Mortar = 90,
+					Rock shards = 36
+				</materials>
+			</part>
+			<part type="extension">
+				<model location="Bridges/Marble/ExtensionMarble.wom" tag="narrow"/>
+				<model location="Bridges/Marble/ExtensionMarbleDouble.wom" tag="side"/>
+				<model location="Bridges/Marble/ExtensionMarbleCenter.wom" tag="center"/>
+				<materials>
+					Marble bricks = 30,
+					Mortar = 30,
+					Rock shards = 12
+				</materials>
+			</part>
+			<part type="floating">
+				<model location="Bridges/Marble/FloatingMarble.wom" tag="narrow"/>
+				<model location="Bridges/Marble/FloatingMarbleDouble.wom" tag="side"/>
+				<model location="Bridges/Marble/FloatingMarbleCenter.wom" tag="center"/>
+				<materials>
+					Marble bricks = 12,
+					Mortar = 10,
+					Rock shards = 4
+				</materials>
+			</part>
+		</bridge>
 	</bridges>
 </entities>
