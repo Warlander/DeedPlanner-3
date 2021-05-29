@@ -39,7 +39,7 @@ namespace Warlander.Deedplanner.Graphics
             {
                 scaleFloat = 1;
             }
-            Scale = new Vector3(scaleFloat, scaleFloat, scaleFloat);
+            Scale = new Vector3(-scaleFloat, scaleFloat, scaleFloat);
             loadTextures = element.GetAttribute("loadTextures") != "false";
 
             textureOverrides = new Dictionary<string, string>();
@@ -79,7 +79,7 @@ namespace Warlander.Deedplanner.Graphics
             Layer = layer;
 
             Tag = "";
-            Scale = new Vector3(1, 1, 1);
+            Scale = new Vector3(-1, 1, 1);
             textureOverrides = new Dictionary<string, string>();
             modifiedModels = new Dictionary<ModelProperties, GameObject>();
         }
@@ -145,7 +145,7 @@ namespace Warlander.Deedplanner.Graphics
                 string fullLocation = Application.streamingAssetsPath + "/" + location;
                 yield return WurmAssetsLoader.LoadModel(fullLocation, Scale, OnMasterModelLoaded);
             }
-            
+
             InitializeModifiedModel(modelProperties);
         }
 
@@ -157,7 +157,7 @@ namespace Warlander.Deedplanner.Graphics
                 Debug.LogError("Model failed to load!");
                 return;
             }
-            
+
             originalModel = masterModel;
             originalModel.layer = Layer;
             foreach (Transform child in originalModel.transform)
@@ -175,7 +175,7 @@ namespace Warlander.Deedplanner.Graphics
                     TextureReference texture = TextureReference.GetTextureReference(textureOverride);
                     Material newMaterial = new Material(renderer.sharedMaterial);
                     renderer.sharedMaterial = newMaterial;
-                    
+
                     CoroutineManager.Instance.QueueCoroutine(texture.LoadOrGetTexture(loadedTexture => newMaterial.mainTexture = loadedTexture));
                 }
             }
@@ -226,10 +226,11 @@ namespace Warlander.Deedplanner.Graphics
                 newMesh.name = mesh.name;
                 Vector3[] originalVertices = mesh.vertices;
                 Vector3[] newVertices = new Vector3[originalVertices.Length];
+                float reduction = skew * .1f;
                 for (int i = 0; i < originalVertices.Length; i++)
                 {
                     Vector3 vec = originalVertices[i];
-                    newVertices[i] = new Vector3(vec.x, vec.y + skewPerUnit * vec.x, vec.z);
+                    newVertices[i] = new Vector3(vec.x, vec.y - reduction + (skewPerUnit * vec.x), vec.z);
                 }
                 newMesh.vertices = newVertices;
                 newMesh.uv = mesh.uv;
@@ -273,7 +274,7 @@ namespace Warlander.Deedplanner.Graphics
                 ModelProperties = modelProperties;
             }
         }
-        
+
         private struct ModelProperties
         {
             public readonly int Skew;
@@ -284,7 +285,7 @@ namespace Warlander.Deedplanner.Graphics
                 Skew = skew;
                 CustomMaterial = customMaterial;
             }
-            
+
             public bool IsOriginalModel()
             {
                 return Skew == 0 && !CustomMaterial;

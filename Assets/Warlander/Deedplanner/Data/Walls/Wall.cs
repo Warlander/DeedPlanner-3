@@ -63,16 +63,18 @@ namespace Warlander.Deedplanner.Data.Walls
             if (Reversed)
             {
                 Model.transform.localRotation = Quaternion.Euler(0, 180, 0);
-                Model.transform.localPosition = new Vector3(-4, 0, 0);
             }
-            
+            else {
+                Model.transform.localPosition = new Vector3(-4f, 0, 0);
+            }
+
             Bounds bounds = GetTotalModelBounds(Model);
             const float wallDepthComfortableMargin = 0.75f;
             float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthComfortableMargin);
-            bounds.size = new Vector3(bounds.size.x, bounds.size.y, comfortableWallDepth);
-            
+            bounds.size = new Vector3(-bounds.size.x, bounds.size.y, comfortableWallDepth);
+
             Vector3[] vectors = CreateBoundsVerticesArray(bounds, SlopeDifference);
-            
+
             boundsMesh.vertices = vectors;
             // turning collider off and on to force it to update
             meshCollider.enabled = false;
@@ -84,7 +86,7 @@ namespace Warlander.Deedplanner.Data.Walls
         {
             // temporary bounds for new wall before it is initialized with final model
             Bounds bounds = new Bounds(new Vector3(-2, 1.5f, 0), new Vector3(4, 3, 0.75f));
-            
+
             Mesh mesh = new Mesh();
 
             Vector3[] vectors = CreateBoundsVerticesArray(bounds, slopeDifference);
@@ -148,14 +150,14 @@ namespace Warlander.Deedplanner.Data.Walls
         {
             Vector3[] vectors = new Vector3[8];
             const float padding = 1.01f;
-            vectors[0] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - slopeDifference * 0.1f, -bounds.extents.z) * padding);
-            vectors[1] = (bounds.center + new Vector3(-bounds.extents.x, -bounds.extents.y - slopeDifference * 0.1f, bounds.extents.z) * padding);
-            vectors[2] = (bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, bounds.extents.z) * padding);
-            vectors[3] = (bounds.center + new Vector3(bounds.extents.x, -bounds.extents.y, -bounds.extents.z) * padding);
-            vectors[4] = (bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y - slopeDifference * 0.1f, -bounds.extents.z) * padding);
-            vectors[5] = (bounds.center + new Vector3(-bounds.extents.x, bounds.extents.y - slopeDifference * 0.1f, bounds.extents.z) * padding);
-            vectors[6] = (bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z) * padding);
-            vectors[7] = (bounds.center + new Vector3(bounds.extents.x, bounds.extents.y, -bounds.extents.z) * padding);
+            vectors[0] = (bounds.center - new Vector3(bounds.extents.x + 4f, bounds.extents.y - slopeDifference * 0.1f, -bounds.extents.z) * padding);
+            vectors[1] = (bounds.center - new Vector3(bounds.extents.x + 4f, bounds.extents.y - slopeDifference * 0.1f, bounds.extents.z) * padding);
+            vectors[2] = (bounds.center - new Vector3(-bounds.extents.x + 4f, bounds.extents.y, bounds.extents.z) * padding);
+            vectors[3] = (bounds.center - new Vector3(-bounds.extents.x + 4f, bounds.extents.y, -bounds.extents.z) * padding);
+            vectors[4] = (bounds.center - new Vector3(bounds.extents.x + 4f, -bounds.extents.y - slopeDifference * 0.1f, -bounds.extents.z) * padding);
+            vectors[5] = (bounds.center - new Vector3(bounds.extents.x + 4f, -bounds.extents.y - slopeDifference * 0.1f, bounds.extents.z) * padding);
+            vectors[6] = (bounds.center - new Vector3(-bounds.extents.x + 4f, -bounds.extents.y, bounds.extents.z) * padding);
+            vectors[7] = (bounds.center - new Vector3(-bounds.extents.x + 4f, -bounds.extents.y, -bounds.extents.z) * padding);
 
             return vectors;
         }
@@ -187,7 +189,7 @@ namespace Warlander.Deedplanner.Data.Walls
                 localRoot.SetAttribute("reversed", Reversed.ToString().ToLower());
             }
         }
-        
+
         public override string ToString()
         {
             StringBuilder build = new StringBuilder();
@@ -200,7 +202,7 @@ namespace Warlander.Deedplanner.Data.Walls
                 build.Append("Reversed = ").Append(Reversed).AppendLine();
                 build.Append("Slope = ").Append(SlopeDifference);
             }
-            
+
             return build.ToString();
         }
     }
