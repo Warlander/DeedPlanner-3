@@ -50,7 +50,7 @@ namespace Warlander.Deedplanner.Gui
 
             string mapString = build.ToString();
             
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
             JavaScriptUtils.DownloadNative("Deed plan.MAP", mapString);
 #else
             ExtensionFilter[] extensionArray = {
