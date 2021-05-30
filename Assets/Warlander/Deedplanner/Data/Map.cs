@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
@@ -36,6 +37,7 @@ namespace Warlander.Deedplanner.Data
         public int VisibleTilesCount => Width * Height;
         public int AllTilesCount => (Width + 1) * (Height + 1);
         public string OriginalExporter { get; private set; } = Constants.TitleString;
+        public Version OriginalExporterVersion { get; private set; }
 
         public int LowestSurfaceHeight { get; private set; }
         public int HighestSurfaceHeight { get; private set; }
@@ -44,7 +46,7 @@ namespace Warlander.Deedplanner.Data
         public int HighestCaveHeight { get; private set; }
 
         public CommandManager CommandManager { get; set; } = new CommandManager(100);
-        
+
         public Transform PlaneLineRoot { get; private set; }
 
         private bool needsRoofUpdate = false;
@@ -67,7 +69,7 @@ namespace Warlander.Deedplanner.Data
                 RefreshAllTiles();
             }
         }
-        
+
         public bool RenderTrees
         {
             get => renderTrees;
@@ -81,7 +83,7 @@ namespace Warlander.Deedplanner.Data
                 RefreshAllTiles();
             }
         }
-        
+
         public bool RenderBushes
         {
             get => renderBushes;
@@ -166,18 +168,18 @@ namespace Warlander.Deedplanner.Data
             int pasteBeginY = Math.Max(0, addBottom);
             int pasteEndX = Math.Min(Width, originalMap.Width + addLeft);
             int pasteEndY = Math.Min(Height, originalMap.Height + addBottom);
-            
+
             for (int x = pasteBeginX; x <= pasteEndX; x++)
             {
                 for (int y = pasteBeginY; y <= pasteEndY; y++)
                 {
                     int copyX = x - addLeft;
                     int copyY = y - addBottom;
-                    
+
                     this[x, y].PasteTile(originalMap[copyX, copyY]);
                 }
             }
-            
+
             for (int i = 0; i <= Width; i++)
             {
                 for (int i2 = 0; i2 <= Height; i2++)
@@ -186,12 +188,12 @@ namespace Warlander.Deedplanner.Data
                     RecalculateSurfaceHeight(i, i2);
                 }
             }
-            
+
             RecalculateHeights();
             RecalculateRoofs();
             CommandManager.ForgetAction();
         }
-        
+
         public void Initialize(int width, int height)
         {
             PreInitialize(width, height);
@@ -209,8 +211,15 @@ namespace Warlander.Deedplanner.Data
                 PreInitialize(25, 25);
                 return;
             }
-            
+
             OriginalExporter = mapRoot.GetAttribute("exporter");
+            Regex versionRegex = new Regex(@"\d+\.\d+\.\d+");
+            Match versionMatch = versionRegex.Match(OriginalExporter);
+            if (versionMatch.Value != "")
+            {
+                OriginalExporterVersion = new Version(versionMatch.Value);
+            }
+
             int width = Convert.ToInt32(mapRoot.GetAttribute("width"));
             int height = Convert.ToInt32(mapRoot.GetAttribute("height"));
             PreInitialize(width, height);
@@ -224,7 +233,7 @@ namespace Warlander.Deedplanner.Data
                 {
                     continue;
                 }
-                
+
                 this[x, y].DeserializeHeightmap(tileElement);
 
                 int surfaceHeight = this[x, y].SurfaceHeight;
@@ -232,7 +241,7 @@ namespace Warlander.Deedplanner.Data
                 SurfaceGridMesh.SetHeight(x, y, surfaceHeight);
                 CaveGridMesh.SetHeight(x, y, caveHeight);
             }
-            
+
             foreach (XmlElement tileElement in tilesList)
             {
                 int x = Convert.ToInt32(tileElement.GetAttribute("x"));
@@ -241,12 +250,12 @@ namespace Warlander.Deedplanner.Data
                 {
                     continue;
                 }
-                
+
                 this[x, y].DeserializeEntities(tileElement);
             }
-            
+
             Ground.UpdateNow();
-            
+
             RefreshAllTiles();
 
             RecalculateHeights();
@@ -278,13 +287,13 @@ namespace Warlander.Deedplanner.Data
 
             OverlayMesh surfaceOverlayMesh = Instantiate(GameManager.Instance.OverlayMeshPrefab, transform);
             surfaceGridRoot = surfaceOverlayMesh.transform;
-            
+
             GameObject groundObject = new GameObject("Ground Mesh", typeof(GroundMesh));
             Ground = groundObject.GetComponent<GroundMesh>();
             Ground.Initialize(width, height, surfaceOverlayMesh);
             surfaceOverlayMesh.Initialize(Ground.ColliderMesh);
             AddEntityToMap(groundObject, 0);
-            
+
             caveGridRoot = new GameObject("Cave Grid").transform;
             caveGridRoot.SetParent(transform);
             caveGridRoot.gameObject.SetActive(false);
@@ -323,7 +332,7 @@ namespace Warlander.Deedplanner.Data
                 tile.Refresh();
             }
         }
-        
+
         private void RecalculateRoofsInternal()
         {
             for (int i = 0; i <= Width; i++)
@@ -376,7 +385,7 @@ namespace Warlander.Deedplanner.Data
             {
                 mapMaterials.Add(tile.CalculateTileMaterials(TilePart.Everything));
             }
-            
+
             return mapMaterials;
         }
 
@@ -503,7 +512,7 @@ namespace Warlander.Deedplanner.Data
 
             return 0;
         }
-        
+
         public IEnumerator<Tile> GetEnumerator()
         {
             return tiles.Cast<Tile>().GetEnumerator();
@@ -513,7 +522,7 @@ namespace Warlander.Deedplanner.Data
         {
             return GetEnumerator();
         }
-        
+
         public void Serialize(XmlDocument document, XmlElement localRoot)
         {
             // localRoot for map is always null at start, we create it
@@ -564,7 +573,7 @@ namespace Warlander.Deedplanner.Data
                 {
                     root.gameObject.SetActive(false);
                 }
-                
+
                 for (int i = 0; i < caveLevelRoots.Length; i++)
                 {
                     Transform root = caveLevelRoots[i];
@@ -582,7 +591,7 @@ namespace Warlander.Deedplanner.Data
                 {
                     root.gameObject.SetActive(false);
                 }
-                
+
                 for (int i = 0; i < surfaceLevelRoots.Length; i++)
                 {
                     Transform root = surfaceLevelRoots[i];
