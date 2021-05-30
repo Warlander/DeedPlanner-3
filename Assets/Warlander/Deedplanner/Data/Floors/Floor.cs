@@ -33,29 +33,32 @@ namespace Warlander.Deedplanner.Data.Floors
 
             transform.rotation = Quaternion.Euler(0, 180, 0);
         }
-        
+
         private void OnModelCreated(GameObject newModel)
         {
             if (model)
             {
                 Destroy(model);
             }
-            
+
             model = newModel;
             model.transform.SetParent(transform, false);
             if (Orientation == EntityOrientation.Right)
             {
                 model.transform.localRotation = Quaternion.Euler(0, 90, 0);
-                model.transform.localPosition = new Vector3(0, 0, -4);
             }
             else if (Orientation == EntityOrientation.Down)
             {
                 model.transform.localRotation = Quaternion.Euler(0, 180, 0);
-                model.transform.localPosition = new Vector3(-4, 0, -4);
+                model.transform.localPosition = new Vector3(0, 0, -4);
             }
             else if (Orientation == EntityOrientation.Left)
             {
                 model.transform.localRotation = Quaternion.Euler(0, 270, 0);
+                model.transform.localPosition = new Vector3(-4, 0, -4);
+            }
+            else if (Orientation == EntityOrientation.Up)
+            {
                 model.transform.localPosition = new Vector3(-4, 0, 0);
             }
         }
@@ -65,7 +68,7 @@ namespace Warlander.Deedplanner.Data.Floors
             localRoot.SetAttribute("id", Data.ShortName);
             localRoot.SetAttribute("orientation", Orientation.ToString().ToUpperInvariant());
         }
-        
+
         public override string ToString()
         {
             StringBuilder build = new StringBuilder();
@@ -77,7 +80,7 @@ namespace Warlander.Deedplanner.Data.Floors
                 build.AppendLine();
                 build.Append("Orientation = ").Append(Orientation);
             }
-            
+
             return build.ToString();
         }
     }

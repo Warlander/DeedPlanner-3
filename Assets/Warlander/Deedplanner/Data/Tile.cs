@@ -73,7 +73,7 @@ namespace Warlander.Deedplanner.Data
             Y = y;
 
             Entities = new Dictionary<EntityData, TileEntity>();
-            
+
             Ground = new Ground(this, Database.DefaultGroundData);
 
             // GameObject caveObject = new GameObject("Cave", typeof(Cave));
@@ -100,7 +100,7 @@ namespace Warlander.Deedplanner.Data
                 TileEntity entity = pair.Value;
                 PasteEntity(data, entity);
             }
-            
+
             RefreshSurfaceEntities();
             RefreshCaveEntities();
         }
@@ -118,7 +118,7 @@ namespace Warlander.Deedplanner.Data
             {
                 return true;
             }
-            
+
             foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
@@ -131,7 +131,7 @@ namespace Warlander.Deedplanner.Data
 
             return false;
         }
-        
+
         public EntityType FindTypeOfEntity(TileEntity entity)
         {
             if (entity == Cave)
@@ -158,7 +158,7 @@ namespace Warlander.Deedplanner.Data
             {
                 return -1;
             }
-            
+
             foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
@@ -187,7 +187,7 @@ namespace Warlander.Deedplanner.Data
         public Materials CalculateFloorMaterials(int floor, TilePart tilePart)
         {
             Materials tileMaterials = new Materials();
-            
+
             foreach (KeyValuePair<EntityData,TileEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
@@ -195,11 +195,11 @@ namespace Warlander.Deedplanner.Data
                 {
                     continue;
                 }
-                
+
                 bool addAlways = tilePart == TilePart.Everything;
                 bool addHorizontalWalls = tilePart == TilePart.HorizontalWallOnly && key.Type.IsHorizontalTileBorder();
                 bool addVerticalWalls = tilePart == TilePart.VerticalWallOnly && key.Type.IsVerticalTileBorder();
-                
+
                 if (addAlways || addHorizontalWalls || addVerticalWalls)
                 {
                     tileMaterials.Add(pair.Value.Materials);
@@ -208,19 +208,19 @@ namespace Warlander.Deedplanner.Data
 
             return tileMaterials;
         }
-        
+
         public Materials CalculateTileMaterials(TilePart tilePart)
         {
             Materials tileMaterials = new Materials();
-            
+
             foreach (KeyValuePair<EntityData,TileEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
-                
+
                 bool addAlways = tilePart == TilePart.Everything;
                 bool addHorizontalWalls = tilePart == TilePart.HorizontalWallOnly && key.Type.IsHorizontalTileBorder();
                 bool addVerticalWalls = tilePart == TilePart.VerticalWallOnly && key.Type.IsVerticalTileBorder();
-                
+
                 if (addAlways || addHorizontalWalls || addVerticalWalls)
                 {
                     tileMaterials.Add(pair.Value.Materials);
@@ -247,7 +247,7 @@ namespace Warlander.Deedplanner.Data
             Roof currentRoof = tileEntity as Roof;
 
             bool needsChange = !tileEntity || (currentFloor && (currentFloor.Data != data || currentFloor.Orientation != orientation)) || currentRoof;
-            
+
             if (data && needsChange)
             {
                 Floor floor = CreateNewFloor(entityData, data, orientation);
@@ -259,7 +259,7 @@ namespace Warlander.Deedplanner.Data
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, null));
                 return null;
             }
-            
+
             return null;
         }
 
@@ -326,7 +326,7 @@ namespace Warlander.Deedplanner.Data
 
             return wall;
         }
-        
+
         public Wall GetVerticalWall(int level)
         {
             EntityData wallEntityData = new EntityData(level, EntityType.Vwall);
@@ -336,7 +336,7 @@ namespace Warlander.Deedplanner.Data
 
             return currentWall;
         }
-        
+
         public Wall GetVerticalFence(int level)
         {
             EntityData fenceEntityData = new EntityData(level, EntityType.Vfence);
@@ -357,7 +357,7 @@ namespace Warlander.Deedplanner.Data
 
             return GetVerticalFence(level);
         }
-        
+
         public Wall SetVerticalWall(WallData data, bool reversed, int level)
         {
             EntityData wallEntityData = new EntityData(level, EntityType.Vwall);
@@ -394,7 +394,7 @@ namespace Warlander.Deedplanner.Data
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
                     return null;
                 }
-                
+
             }
             else if (!data)
             {
@@ -443,7 +443,7 @@ namespace Warlander.Deedplanner.Data
 
             return wall;
         }
-        
+
         public Wall GetHorizontalWall(int level)
         {
             EntityData wallEntityData = new EntityData(level, EntityType.Hwall);
@@ -453,7 +453,7 @@ namespace Warlander.Deedplanner.Data
 
             return currentWall;
         }
-        
+
         public Wall GetHorizontalFence(int level)
         {
             EntityData fenceEntityData = new EntityData(level, EntityType.Hfence);
@@ -492,7 +492,7 @@ namespace Warlander.Deedplanner.Data
                 bool wallNeedsChange = !data.ArchBuildable && (!currentWall || currentWall.Data != data || currentWall.Reversed != reversed);
                 bool fenceNeedsChange = data.ArchBuildable && (!currentFence || currentFence.Data != data || currentFence.Reversed != reversed);
                 bool wallNeedsRemoval = (wallNeedsChange && !data.ArchBuildable && currentWall) || (data.ArchBuildable && currentWall && !currentWall.Data.Arch);
-                
+
                 if (wallNeedsChange)
                 {
                     Wall wall = CreateNewHorizontalWall(wallEntityData, data, reversed);
@@ -505,7 +505,7 @@ namespace Warlander.Deedplanner.Data
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, fence));
                     return fence;
                 }
-                
+
                 if (wallNeedsRemoval)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
@@ -559,7 +559,7 @@ namespace Warlander.Deedplanner.Data
 
             return null;
         }
-        
+
         public IEnumerable<Decoration> GetDecorations()
         {
             List<Decoration> decorations = new List<Decoration>();
@@ -573,7 +573,7 @@ namespace Warlander.Deedplanner.Data
 
             return decorations;
         }
-        
+
         public Decoration SetDecoration(DecorationData data, Vector2 position, float rotation, int floor, bool floatOnWater = false)
         {
             if (position.x < 0 || position.x >= 4 || position.y < 0 || position.y >= 4)
@@ -581,7 +581,7 @@ namespace Warlander.Deedplanner.Data
                 Debug.LogWarning("Attempted placing decoration at X: " + position.x + ", Y: " + position.y);
                 return null;
             }
-            
+
             FreeformEntityData decorationEntityData = new FreeformEntityData(floor, EntityType.Object, position.x, position.y, floatOnWater);
             TileEntity decorationEntity;
             Entities.TryGetValue(decorationEntityData, out decorationEntity);
@@ -628,7 +628,7 @@ namespace Warlander.Deedplanner.Data
             XmlElement ground = document.CreateElement("ground");
             Ground.Serialize(document, ground);
             localRoot.AppendChild(ground);
-            
+
             // XmlElement cave = document.CreateElement("cave");
             // Cave.Serialize(document, cave);
             // localRoot.AppendChild(cave);
@@ -691,7 +691,7 @@ namespace Warlander.Deedplanner.Data
                 CaveHeight = (int) Convert.ToSingle(tileElement.GetAttribute("caveHeight"), CultureInfo.InvariantCulture);
             }
         }
-        
+
         public void DeserializeEntities(XmlElement tileElement)
         {
             foreach (XmlElement childElement in tileElement)
@@ -762,7 +762,7 @@ namespace Warlander.Deedplanner.Data
                     orientation = EntityOrientation.Right;
                     break;
             }
-            
+
             SetFloor(data, orientation, floor);
         }
 
@@ -776,14 +776,14 @@ namespace Warlander.Deedplanner.Data
                 Debug.LogWarning("Unable to load wall " + id);
                 return;
             }
-            
+
             bool horizontal = (element.Name.Equals("hWall", StringComparison.OrdinalIgnoreCase));
             bool reversed = element.GetAttribute("reversed").Equals("true", StringComparison.OrdinalIgnoreCase);
-            if (data.Arch && Map.OriginalExporter.Contains("DeedPlanner 2"))
+            if (data.Arch && !Map.OriginalExporter.Contains("DeedPlanner 2") && Map.OriginalExporterVersion != null && Map.OriginalExporterVersion.CompareTo(new Version("3.1.2")) < 0)
             {
                 reversed = !reversed;
             }
-            
+
             if (horizontal)
             {
                 SetHorizontalWall(data, reversed, floor);
@@ -804,7 +804,7 @@ namespace Warlander.Deedplanner.Data
                 Debug.LogWarning("Unable to load roof " + id);
                 return;
             }
-            
+
             SetRoof(data, floor);
         }
 
@@ -815,7 +815,7 @@ namespace Warlander.Deedplanner.Data
             string rotationString = element.GetAttribute("rotation");
             string xString = element.GetAttribute("x");
             string yString = element.GetAttribute("y");
-            
+
             DecorationData data;
             Database.Decorations.TryGetValue(id, out data);
             if (!data)
@@ -844,7 +844,7 @@ namespace Warlander.Deedplanner.Data
 
             SetDecoration(data, position, rotation, floor, data.Floating);
         }
-        
+
         public void Refresh()
         {
             RefreshSurfaceEntities();
@@ -882,7 +882,7 @@ namespace Warlander.Deedplanner.Data
         private void RefreshEntity(EntityData data, TileEntity entity)
         {
             data.Apply(this, entity.transform);
-            
+
             if (data.Type == EntityType.Hfence || data.Type == EntityType.Hwall)
             {
                 int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 1, 0).GetHeightForFloor(entity.Floor);
@@ -910,7 +910,7 @@ namespace Warlander.Deedplanner.Data
             bool renderShips = !decoration.Data.Floating || Map.RenderShips;
 
             bool shouldRender = renderDecorations && renderTrees && renderBushes && renderShips;
-            
+
             decoration.gameObject.SetActive(shouldRender);
         }
 
@@ -918,10 +918,10 @@ namespace Warlander.Deedplanner.Data
         {
             private readonly Tile tile;
             private readonly EntityData data;
-            
+
             private readonly TileEntity oldEntity;
             private readonly TileEntity newEntity;
-            
+
             public TileEntityChangeCommand(Tile tile, EntityData data, TileEntity oldEntity, TileEntity newEntity)
             {
                 this.tile = tile;
@@ -929,7 +929,7 @@ namespace Warlander.Deedplanner.Data
                 this.oldEntity = oldEntity;
                 this.newEntity = newEntity;
             }
-            
+
             public void Execute()
             {
                 tile.Entities.Remove(data);
@@ -942,7 +942,7 @@ namespace Warlander.Deedplanner.Data
                 {
                     oldEntity.gameObject.SetActive(false);
                 }
-                
+
                 if (newEntity)
                 {
                     newEntity.gameObject.SetActive(true);
@@ -972,19 +972,19 @@ namespace Warlander.Deedplanner.Data
                 {
                     tile.Entities[data] = oldEntity;
                 }
-                
+
                 if (oldEntity)
                 {
                     oldEntity.gameObject.SetActive(true);
                 }
-                
+
                 if (newEntity)
                 {
                     newEntity.gameObject.SetActive(false);
                 }
-                
+
                 tile.RefreshSurfaceEntities();
-                
+
                 if (data.IsSurface)
                 {
                     tile.RefreshSurfaceEntities();
@@ -993,7 +993,7 @@ namespace Warlander.Deedplanner.Data
                 {
                     tile.RefreshCaveEntities();
                 }
-                
+
                 if (data.Type == EntityType.Floorroof)
                 {
                     tile.Map.RecalculateRoofs();
@@ -1008,10 +1008,10 @@ namespace Warlander.Deedplanner.Data
                 {
                     return;
                 }
-                
+
                 int renderedFloor = tile.Map.RenderedFloor;
                 bool renderEntireMap = tile.Map.RenderEntireMap;
-                
+
                 bool underground = renderedFloor < 0;
                 int absoluteFloor = underground ? -renderedFloor + 1 : renderedFloor;
                 int relativeFloor = entity.Floor - absoluteFloor;
@@ -1036,7 +1036,7 @@ namespace Warlander.Deedplanner.Data
                 {
                     Destroy(oldEntity.gameObject);
                 }
-                
+
             }
 
             public void DisposeRedo()
