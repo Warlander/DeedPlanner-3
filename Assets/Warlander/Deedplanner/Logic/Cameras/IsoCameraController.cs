@@ -8,7 +8,9 @@ namespace Warlander.Deedplanner.Logic.Cameras
     {
         private Vector2 isoPosition;
         private float isoScale = 40;
-        
+
+        private int rotation = 45;
+
         public bool SupportsMode(CameraMode mode)
         {
             return mode == CameraMode.Isometric;
@@ -41,22 +43,30 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 isoPosition += movement;
             }
 
-            if (isoPosition.x < -(map.Width * 4 / Mathf.Sqrt(2) - isoScale * aspect))
+            float padding = 4f;
+
+            if (isoPosition.x < -(map.Height * 4 / Mathf.Sqrt(2) - isoScale * aspect + padding))
             {
-                isoPosition.x = -(map.Width * 4 / Mathf.Sqrt(2) - isoScale * aspect);
+                isoPosition.x = -(map.Height * 4 / Mathf.Sqrt(2) - isoScale * aspect + padding);
             }
-            if (isoPosition.y < isoScale)
+            if (isoPosition.y < isoScale - padding)
             {
-                isoPosition.y = isoScale;
+                isoPosition.y = isoScale - padding;
             }
 
-            if (isoPosition.x > map.Width * 4 / Mathf.Sqrt(2) - isoScale * aspect)
+            if (isoPosition.x > map.Width * 4 / Mathf.Sqrt(2) - isoScale * aspect + padding)
             {
-                isoPosition.x = map.Width * 4 / Mathf.Sqrt(2) - isoScale * aspect;
+                isoPosition.x = map.Width * 4 / Mathf.Sqrt(2) - isoScale * aspect + padding;
             }
-            if (isoPosition.y > map.Height * 4 / Mathf.Sqrt(2) - isoScale)
+            if (map.Height >= map.Width)
             {
-                isoPosition.y = map.Height * 4 / Mathf.Sqrt(2) - isoScale;
+                if (isoPosition.y > map.Height * 4 / Mathf.Sqrt(2) - isoScale + padding)
+                {
+                    isoPosition.y = map.Height * 4 / Mathf.Sqrt(2) - isoScale + padding;
+                }
+            }
+            else if (isoPosition.y > map.Width * 4 / Mathf.Sqrt(2) - isoScale + padding) {
+                isoPosition.y = map.Width * 4 / Mathf.Sqrt(2) - isoScale + padding;
             }
 
             bool fitsHorizontally = map.Width * 2 * Mathf.Sqrt(2) < isoScale * aspect;
@@ -79,9 +89,9 @@ namespace Warlander.Deedplanner.Logic.Cameras
             camera.orthographicSize = isoScale;
             cameraTransform.localPosition = new Vector3(isoPosition.x, isoPosition.y, -10000);
             cameraTransform.localRotation = Quaternion.identity;
-            cameraParentTransform.localRotation = Quaternion.Euler(30, 45, 0);
+            cameraParentTransform.localRotation = Quaternion.Euler(30, rotation, 0);
         }
-        
+
         public Vector2 CalculateWaterTablePosition(Vector3 cameraPosition)
         {
             return new Vector2(isoPosition.x, isoPosition.y);
