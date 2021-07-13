@@ -88,7 +88,7 @@ namespace Warlander.Deedplanner.Logic
                     }
                     else
                     {
-                        int heightDifference = centralHeight - TileHeightOrDefault(map[TileCoords.x + i2, TileCoords.y + i], centralHeight, floor);
+                        int heightDifference = TileHeightOrDefault(map[TileCoords.x + i2, TileCoords.y + i], centralHeight, floor) - centralHeight;
                         build.Append(StringUtils.PaddedNumberString(heightDifference, 5));
                     }
 
