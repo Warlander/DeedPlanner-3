@@ -2951,6 +2951,8 @@ GameObject:
   m_Component:
   - component: {fileID: 111401816}
   - component: {fileID: 111401817}
+  - component: {fileID: 111401819}
+  - component: {fileID: 111401818}
   m_Layer: 5
   m_Name: Height Tab
   m_TagString: Untagged
@@ -3005,6 +3007,31 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &111401818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111401815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 1
+--- !u!225 &111401819
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111401815}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &112517481
 GameObject:
   m_ObjectHideFlags: 0
@@ -4398,32 +4425,19 @@ MonoBehaviour:
   - {fileID: 1728524859}
   - {fileID: 948240262}
   tabs:
-  - Tab: 0
-    Object: {fileID: 1130172338}
-  - Tab: 8
-    Object: {fileID: 906200445}
-  - Tab: 1
-    Object: {fileID: 111401815}
-  - Tab: 2
-    Object: {fileID: 862384716}
-  - Tab: 3
-    Object: {fileID: 1137131233}
-  - Tab: 4
-    Object: {fileID: 1733045798}
-  - Tab: 5
-    Object: {fileID: 1112553181}
-  - Tab: 6
-    Object: {fileID: 489687823}
-  - Tab: 7
-    Object: {fileID: 211449318}
-  - Tab: 9
-    Object: {fileID: 1731037931}
-  - Tab: 10
-    Object: {fileID: 977984557}
-  - Tab: 11
-    Object: {fileID: 500953200}
-  - Tab: 12
-    Object: {fileID: 1236941207}
+  - {fileID: 1130172341}
+  - {fileID: 906200447}
+  - {fileID: 111401818}
+  - {fileID: 862384719}
+  - {fileID: 1137131236}
+  - {fileID: 1112553183}
+  - {fileID: 489687826}
+  - {fileID: 1327938658}
+  - {fileID: 1733045800}
+  - {fileID: 1731037933}
+  - {fileID: 977984559}
+  - {fileID: 1236941210}
+  - {fileID: 500953203}
   groundToggle: {fileID: 417295211}
   cavesToggle: {fileID: 660700862}
   highQualityWaterObject: {fileID: 166770693}
@@ -13752,6 +13766,8 @@ GameObject:
   m_Component:
   - component: {fileID: 489687824}
   - component: {fileID: 489687825}
+  - component: {fileID: 489687827}
+  - component: {fileID: 489687826}
   m_Layer: 5
   m_Name: Objects Tab
   m_TagString: Untagged
@@ -13809,6 +13825,31 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &489687826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 489687823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 6
+--- !u!225 &489687827
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 489687823}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &491428518
 GameObject:
   m_ObjectHideFlags: 0
@@ -13980,6 +14021,8 @@ GameObject:
   m_Component:
   - component: {fileID: 500953201}
   - component: {fileID: 500953202}
+  - component: {fileID: 500953204}
+  - component: {fileID: 500953203}
   m_Layer: 5
   m_Name: Menu Tab
   m_TagString: Untagged
@@ -14048,6 +14091,31 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &500953203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 500953200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 11
+--- !u!225 &500953204
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 500953200}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!224 &502586781 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
@@ -22789,6 +22857,8 @@ GameObject:
   m_Component:
   - component: {fileID: 862384717}
   - component: {fileID: 862384718}
+  - component: {fileID: 862384720}
+  - component: {fileID: 862384719}
   m_Layer: 5
   m_Name: Floors Tab
   m_TagString: Untagged
@@ -22843,6 +22913,31 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &862384719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862384716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 2
+--- !u!225 &862384720
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862384716}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &865333031
 GameObject:
   m_ObjectHideFlags: 0
@@ -23707,6 +23802,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 906200446}
+  - component: {fileID: 906200447}
+  - component: {fileID: 906200449}
+  - component: {fileID: 906200448}
   m_Layer: 5
   m_Name: Caves Tab
   m_TagString: Untagged
@@ -23734,6 +23832,44 @@ RectTransform:
   m_AnchoredPosition: {x: 7, y: 0}
   m_SizeDelta: {x: -24, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &906200447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906200445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 8
+--- !u!114 &906200448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906200445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 8
+--- !u!225 &906200449
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906200445}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!224 &906919903 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9220848330087614003, guid: 5e144ec137108d04a8df14e4f780d6d1,
@@ -24336,6 +24472,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 977984558}
+  - component: {fileID: 977984560}
+  - component: {fileID: 977984559}
   m_Layer: 5
   m_Name: Mirror Tab
   m_TagString: Untagged
@@ -24362,6 +24500,31 @@ RectTransform:
   m_AnchoredPosition: {x: 7, y: 0}
   m_SizeDelta: {x: -24, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &977984559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 977984557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 10
+--- !u!225 &977984560
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 977984557}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!224 &979983141 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
@@ -27912,6 +28075,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1112553182}
+  - component: {fileID: 1112553184}
+  - component: {fileID: 1112553183}
   m_Layer: 5
   m_Name: Roofs Tab
   m_TagString: Untagged
@@ -27939,6 +28104,31 @@ RectTransform:
   m_AnchoredPosition: {x: 7, y: 0}
   m_SizeDelta: {x: -24, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1112553183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1112553181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 5
+--- !u!225 &1112553184
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1112553181}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1113546215
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28661,6 +28851,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1130172339}
   - component: {fileID: 1130172340}
+  - component: {fileID: 1130172341}
+  - component: {fileID: 1130172342}
   m_Layer: 5
   m_Name: Ground Tab
   m_TagString: Untagged
@@ -28718,6 +28910,31 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &1130172341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130172338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 0
+--- !u!225 &1130172342
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130172338}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1137131233
 GameObject:
   m_ObjectHideFlags: 0
@@ -28728,6 +28945,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1137131234}
   - component: {fileID: 1137131235}
+  - component: {fileID: 1137131237}
+  - component: {fileID: 1137131236}
   m_Layer: 5
   m_Name: Walls Tab
   m_TagString: Untagged
@@ -28783,6 +29002,31 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &1137131236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137131233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 3
+--- !u!225 &1137131237
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137131233}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1139300398
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31017,6 +31261,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1236941208}
   - component: {fileID: 1236941209}
+  - component: {fileID: 1236941211}
+  - component: {fileID: 1236941210}
   m_Layer: 5
   m_Name: Tools Tab
   m_TagString: Untagged
@@ -31071,6 +31317,31 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &1236941210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1236941207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 12
+--- !u!225 &1236941211
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1236941207}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1237968876
 GameObject:
   m_ObjectHideFlags: 0
@@ -33358,6 +33629,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1327938657}
+  - component: {fileID: 1327938659}
+  - component: {fileID: 1327938658}
   m_Layer: 5
   m_Name: Labels Tab
   m_TagString: Untagged
@@ -33384,6 +33657,31 @@ RectTransform:
   m_AnchoredPosition: {x: 7, y: 0}
   m_SizeDelta: {x: -24, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1327938658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327938656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 7
+--- !u!225 &1327938659
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327938656}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1329430376
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -43380,6 +43678,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1731037932}
+  - component: {fileID: 1731037934}
+  - component: {fileID: 1731037933}
   m_Layer: 5
   m_Name: Bridges Tab
   m_TagString: Untagged
@@ -43406,6 +43706,31 @@ RectTransform:
   m_AnchoredPosition: {x: 7, y: 0}
   m_SizeDelta: {x: -24, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1731037933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731037931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 9
+--- !u!225 &1731037934
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731037931}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1733045798
 GameObject:
   m_ObjectHideFlags: 0
@@ -43415,6 +43740,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1733045799}
+  - component: {fileID: 1733045801}
+  - component: {fileID: 1733045800}
   m_Layer: 5
   m_Name: Borders Tab
   m_TagString: Untagged
@@ -43442,6 +43769,31 @@ RectTransform:
   m_AnchoredPosition: {x: 7, y: 0}
   m_SizeDelta: {x: -24, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1733045800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1733045798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b78345668b63492bb138770511ac7b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tab: 4
+--- !u!225 &1733045801
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1733045798}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1738410445
 GameObject:
   m_ObjectHideFlags: 0

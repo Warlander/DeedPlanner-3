@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Logic;
 using System.Linq;
 using System;
+using DG.Tweening;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Utils;
@@ -27,7 +28,7 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField] private FloorToggle[] positiveFloorToggles = new FloorToggle[16];
         [SerializeField] private FloorToggle[] negativeFloorToggles = new FloorToggle[6];
 
-        [SerializeField] private TabObject[] tabs = new TabObject[12];
+        [SerializeField] private UIContentTab[] tabs = new UIContentTab[12];
         [SerializeField] private Toggle groundToggle = null;
         [SerializeField] private Toggle cavesToggle = null;
 
@@ -41,6 +42,9 @@ namespace Warlander.Deedplanner.Gui
         private int activeWindow;
         private Layout currentLayout = Layout.Single;
         private Tab currentTab;
+
+        private Sequence tabFadeSequence;
+        
         public TileSelectionMode TileSelectionMode { get; set; }
         
         public MultiCamera CurrentCamera => cameras[ActiveWindow];
@@ -66,8 +70,6 @@ namespace Warlander.Deedplanner.Gui
             get => tooltip.Value;
             set => tooltip.Value = value;
         }
-
-        public RectTransform ActiveWindowTransform => screens[activeWindow].gameObject.GetComponent<RectTransform>();
 
         public int ActiveWindow {
             get => activeWindow;
@@ -104,12 +106,11 @@ namespace Warlander.Deedplanner.Gui
 
         public Tab CurrentTab {
             get => currentTab;
-            set {
+            set
+            {
+                CreateAndStartTabFadeAnimation(currentTab, value);
+                
                 currentTab = value;
-                foreach (TabObject tabObject in tabs)
-                {
-                    tabObject.Object.SetActive(tabObject.Tab == currentTab);
-                }
                 TabChanged?.Invoke(currentTab);
             }
         }
@@ -136,6 +137,42 @@ namespace Warlander.Deedplanner.Gui
             ValidateState();
         }
 
+        private void CreateAndStartTabFadeAnimation(Tab previousTab, Tab newTab)
+        {
+            // If tabs are the same and there is no animation running, perform sanity check and force update the state without playing animation.
+            if (previousTab == newTab)
+            {
+                if (tabFadeSequence == null)
+                {
+                    foreach (UIContentTab tab in tabs)
+                    {
+                        tab.gameObject.SetActive(tab.Tab == newTab);
+                    }
+                }
+
+                return;
+            }
+
+            tabFadeSequence?.Complete(true);
+
+            UIContentTab previousTabObject = FindObjectForTab(previousTab);
+            UIContentTab newTabObject = FindObjectForTab(newTab);
+            
+            newTabObject.FadeGroup.alpha = 0;
+            
+            Sequence newSequence = DOTween.Sequence();
+            newSequence.Append(previousTabObject.FadeGroup.DOFade(0, 0.15f));
+            newSequence.AppendCallback(() =>
+            {
+                previousTabObject.gameObject.SetActive(false);
+                newTabObject.gameObject.SetActive(true);
+            });
+            newSequence.Append(newTabObject.FadeGroup.DOFade(1, 0.2f));
+            newSequence.OnKill(() => tabFadeSequence = null);
+
+            tabFadeSequence = newSequence;
+        }
+        
         private void ValidateState()
         {
             WaterQuality waterQuality = Properties.Instance.WaterQuality;
@@ -292,8 +329,8 @@ namespace Warlander.Deedplanner.Gui
                 cavesToggle.gameObject.SetActive(true);
                 if (groundToggle.isOn)
                 {
-                    FindObjectForTab(Tab.Ground).SetActive(false);
-                    FindObjectForTab(Tab.Caves).SetActive(true);
+                    FindObjectForTab(Tab.Ground).gameObject.SetActive(false);
+                    FindObjectForTab(Tab.Caves).gameObject.SetActive(true);
                     groundToggle.isOn = false;
                     cavesToggle.isOn = true;
                     CurrentTab = Tab.Caves;
@@ -305,8 +342,8 @@ namespace Warlander.Deedplanner.Gui
                 cavesToggle.gameObject.SetActive(false);
                 if (cavesToggle.isOn)
                 {
-                    FindObjectForTab(Tab.Ground).SetActive(true);
-                    FindObjectForTab(Tab.Caves).SetActive(false);
+                    FindObjectForTab(Tab.Ground).gameObject.SetActive(true);
+                    FindObjectForTab(Tab.Caves).gameObject.SetActive(false);
                     groundToggle.isOn = true;
                     cavesToggle.isOn = false;
                     CurrentTab = Tab.Ground;
@@ -314,26 +351,19 @@ namespace Warlander.Deedplanner.Gui
             }
         }
 
-        private GameObject FindObjectForTab(Tab tab)
+        private UIContentTab FindObjectForTab(Tab tab)
         {
-            foreach (TabObject tabObject in tabs)
+            foreach (UIContentTab uiTab in tabs)
             {
-                if (tabObject.Tab == tab)
+                if (uiTab.Tab == tab)
                 {
-                    return tabObject.Object;
+                    return uiTab;
                 }
             }
 
             return null;
         }
 
-    }
-
-    [Serializable]
-    public struct TabObject
-    {
-        public Tab Tab;
-        public GameObject Object;
     }
 
 }
