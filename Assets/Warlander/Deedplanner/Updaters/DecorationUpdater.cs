@@ -17,9 +17,7 @@ namespace Warlander.Deedplanner.Updaters
     public class DecorationUpdater : AbstractUpdater
     {
         [SerializeField] private Toggle snapToGridToggle = null;
-        [SerializeField] private Toggle rotationSnappingToggle = null;
-        [SerializeField] private TMP_InputField rotationSensitivityInput = null;
-        
+
         [SerializeField] private Color allowedGhostColor = Color.green;
         [SerializeField] private Color disabledGhostColor = Color.red;
         [SerializeField] private float minimumPlacementGap = 0.25f;
@@ -47,11 +45,9 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Start()
         {
-            rotationSensitivityInput.text = Properties.Instance.DecorationRotationSensitivity.ToString(CultureInfo.InvariantCulture);
             snapToGridToggle.isOn = Properties.Instance.DecorationSnapToGrid;
-            rotationSnappingToggle.isOn = Properties.Instance.DecorationRotationSnapping;
         }
-        
+
         private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
@@ -60,25 +56,12 @@ namespace Warlander.Deedplanner.Updaters
         private void Update()
         {
             bool snapToGrid = snapToGridToggle.isOn;
-            bool rotationSnapping = rotationSnappingToggle.isOn;
-            float rotationEditSensitivity = 1;
-            float.TryParse(rotationSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out rotationEditSensitivity);
-            
+
             bool propertiesNeedSaving = false;
-            
-            if (Math.Abs(rotationEditSensitivity - Properties.Instance.DecorationRotationSensitivity) > float.Epsilon)
-            {
-                Properties.Instance.DecorationRotationSensitivity = rotationEditSensitivity;
-                propertiesNeedSaving = true;
-            }
+
             if (snapToGrid != Properties.Instance.DecorationSnapToGrid)
             {
                 Properties.Instance.DecorationSnapToGrid = snapToGrid;
-                propertiesNeedSaving = true;
-            }
-            if (rotationSnapping != Properties.Instance.DecorationRotationSnapping)
-            {
-                Properties.Instance.DecorationRotationSnapping = rotationSnapping;
                 propertiesNeedSaving = true;
             }
 
@@ -86,7 +69,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 Properties.Instance.SaveProperties();
             }
-            
+
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
             if (!raycast.transform)
             {
@@ -104,11 +87,11 @@ namespace Warlander.Deedplanner.Updaters
             {
                 return;
             }
-            
+
             OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
             GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
-            
+
             Material ghostMaterial = GraphicsManager.Instance.GhostMaterial;
             if (dataChanged)
             {
@@ -131,9 +114,9 @@ namespace Warlander.Deedplanner.Updaters
             {
                 targetFloor = 0;
             }
-            
+
             Map map = GameManager.Instance.Map;
-            
+
             if (!placingDecoration)
             {
                 position = CalculateCorrectedPosition(raycast.point, data, snapToGrid);
@@ -187,24 +170,41 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
 
-            ToggleGhostPropertyBlock(placementAllowed ? allowedGhostPropertyBlock : disabledGhostPropertyBlock);
+            ToggleGhostPropertyBlock(placementOverlap ? allowedGhostPropertyBlock : disabledGhostPropertyBlock);
+
+            if (Input.GetAxis("Mouse ScrollWheel") != 0f)
+            {
+                if (Input.GetKey(KeyCode.LeftControl))
+                {
+                    if (Input.GetAxis("Mouse ScrollWheel") > 0f) {
+                        rotation += 45f;
+                    }
+                    else {
+                        rotation -= 45f;
+                    }
+                    rotation = Mathf.Round(rotation / 45f) * 45f;
+                }
+                else if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    rotation += Input.GetAxis("Mouse ScrollWheel");
+                }
+                else {
+                    if (Input.GetAxis("Mouse ScrollWheel") > 0f) {
+                        rotation += 11.25f;
+                    }
+                    else {
+                        rotation -= 11.25f;
+                    }
+                    rotation = Mathf.Round(rotation / 11.25f) * 11.25f;
+                }
+
+                ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
+            }
 
             if (Input.GetMouseButtonDown(0) && placementAllowed)
             {
                 placingDecoration = true;
                 dragStartPos = LayoutManager.Instance.CurrentCamera.MousePosition;
-            }
-
-            if (Input.GetMouseButton(0) && placingDecoration)
-            {
-                Vector2 dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
-                Vector2 difference = dragEndPos - dragStartPos;
-                rotation = -difference.x * rotationEditSensitivity;
-                if (rotationSnapping)
-                {
-                    rotation = Mathf.Round(rotation / 45f) * 45f;
-                }
-                ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
             }
 
             if (Input.GetMouseButtonUp(0) && placingDecoration)
@@ -214,7 +214,7 @@ namespace Warlander.Deedplanner.Updaters
                 Vector2 decorationPosition = new Vector2(decorationPositionX, decorationPositionY);
                 targetedTile.SetDecoration(data, decorationPosition, rotation * Mathf.Deg2Rad, targetFloor, data.Floating);
                 map.CommandManager.FinishAction();
-                
+
                 placingDecoration = false;
                 ghostObject.transform.localRotation = Quaternion.identity;
             }
@@ -242,7 +242,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 Destroy(ghostObject);
             }
-            
+
             ghostObject = ghost;
             ghostObject.transform.SetParent(transform);
         }
@@ -285,7 +285,7 @@ namespace Warlander.Deedplanner.Updaters
 
             return pos;
         }
-        
+
         private IEnumerable<Decoration> GetAllNearbyDecorations(Tile centralTile)
         {
             List<Decoration> decorations = new List<Decoration>();
@@ -294,7 +294,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 return decorations;
             }
-            
+
             for (int x = -1; x <= 1; x++)
             {
                 for (int y = -1; y <= 1; y++)
@@ -309,30 +309,30 @@ namespace Warlander.Deedplanner.Updaters
 
             return decorations;
         }
-        
+
         private void ToggleGhostPropertyBlock(MaterialPropertyBlock propertyBlock)
         {
             if (!ghostObject)
             {
                 return;
             }
-            
+
             foreach (Renderer render in ghostObject.GetComponentsInChildren<Renderer>())
             {
                 render.SetPropertyBlock(propertyBlock);
             }
         }
-        
+
         private void OnDisable()
         {
             ResetState();
         }
-        
+
         private void ResetState()
         {
             placingDecoration = false;
             dragStartPos = new Vector2();
-            
+
             GameManager.Instance.Map.CommandManager.UndoAction();
         }
     }
