@@ -18,7 +18,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         public void UpdateDrag(PointerEventData eventData)
         {
-            float factor = (isoScale * 0.0028f);
+            float factor = (isoScale * 0.0031f);
             isoPosition += new Vector2(-eventData.delta.x * factor, -eventData.delta.y * factor);
         }
 
