@@ -25,7 +25,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         {
             if (focusedWindow)
             {
-                if (mouseOver)
+                if (mouseOver && !Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift))
                 {
                     float scroll = Input.mouseScrollDelta.y;
                     if (scroll > 0 && isoScale > 10)

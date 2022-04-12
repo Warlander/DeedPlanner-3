@@ -8,7 +8,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
     {
         private Vector2 topPosition;
         private float topScale = 40;
-        
+
         public bool SupportsMode(CameraMode mode)
         {
             return mode == CameraMode.Top;
@@ -23,10 +23,10 @@ namespace Warlander.Deedplanner.Logic.Cameras
         {
             if (focusedWindow)
             {
-                if (mouseOver)
+                if (mouseOver && !Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift))
                 {
                     Vector2 topPoint = new Vector2(focusedPoint.x, focusedPoint.z);
-                    
+
                     float scroll = Input.mouseScrollDelta.y;
                     if (scroll > 0 && topScale > 10)
                     {
@@ -85,7 +85,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             cameraTransform.localRotation = Quaternion.Euler(90, 0, 0);
             cameraParentTransform.localRotation = Quaternion.identity;
         }
-        
+
         public Vector2 CalculateWaterTablePosition(Vector3 cameraPosition)
         {
             return new Vector2(cameraPosition.x, cameraPosition.z);
