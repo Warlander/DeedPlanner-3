@@ -171,7 +171,7 @@ namespace Warlander.Deedplanner.Updaters
                 ghostObject.gameObject.SetActive(false);
             }
             
-            bool placementAllowed = true;
+            bool placementOverlap = true;
             Vector2 position2d = new Vector2(position.x, position.z);
             IEnumerable<Decoration> nearbyDecorations = GetAllNearbyDecorations(targetedTile);
             
@@ -182,14 +182,14 @@ namespace Warlander.Deedplanner.Updaters
                 float distance = Vector2.Distance(position2d, decorationPosition2d);
                 if (distance < minimumPlacementGap)
                 {
-                    placementAllowed = false;
+                    placementOverlap = false;
                     break;
                 }
             }
 
-            ToggleGhostPropertyBlock(placementAllowed ? allowedGhostPropertyBlock : disabledGhostPropertyBlock);
+            ToggleGhostPropertyBlock(placementOverlap ? allowedGhostPropertyBlock : disabledGhostPropertyBlock);
 
-            if (Input.GetMouseButtonDown(0) && placementAllowed)
+            if (Input.GetMouseButtonDown(0))
             {
                 placingDecoration = true;
                 dragStartPos = LayoutManager.Instance.CurrentCamera.MousePosition;
