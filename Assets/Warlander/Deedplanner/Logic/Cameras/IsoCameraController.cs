@@ -18,7 +18,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         public void UpdateDrag(PointerEventData eventData)
         {
-            isoPosition += new Vector2(-eventData.delta.x * Properties.Instance.IsoMouseSensitivity, -eventData.delta.y * Properties.Instance.IsoMouseSensitivity);
+            float factor = (isoScale * 0.0028f);
+            isoPosition += new Vector2(-eventData.delta.x * factor, -eventData.delta.y * factor);
         }
 
         public void UpdateInput(Map map, CameraMode mode, Vector3 focusedPoint, float aspect, int currentFloor, bool focusedWindow, bool mouseOver)
