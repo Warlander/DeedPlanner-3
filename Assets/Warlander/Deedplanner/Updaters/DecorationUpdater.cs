@@ -234,6 +234,22 @@ namespace Warlander.Deedplanner.Updaters
                 }
                 map.CommandManager.FinishAction();
             }
+
+            if (Input.GetKeyDown("delete") && !placingDecoration)
+            {
+                foreach (Decoration decoration in nearbyDecorations)
+                {
+                    Vector3 decorationPosition3d = decoration.transform.position;
+                    Vector2 decorationPosition2d = new Vector2(decorationPosition3d.x, decorationPosition3d.z);
+                    float distance = Vector2.Distance(position2d, decorationPosition2d);
+                    if (distance < minimumPlacementGap)
+                    {
+                        decoration.Tile.SetDecoration(null, decoration.Position, decoration.Rotation, targetFloor);
+                        break;
+                    }
+                }
+                map.CommandManager.FinishAction();
+            }
         }
 
         private void OnGhostCreated(GameObject ghost)
