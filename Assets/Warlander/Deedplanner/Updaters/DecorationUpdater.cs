@@ -180,11 +180,11 @@ namespace Warlander.Deedplanner.Updaters
 
             if (Input.GetAxis("Mouse ScrollWheel") != 0f)
             {
-                if (!Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.LeftControl))
+                if (Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftControl))
                 {
                     rotation += Input.GetAxis("Mouse ScrollWheel");
                 }
-                else if (Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftControl))
+                else if (!Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.LeftControl))
                 {
                     if (Input.GetAxis("Mouse ScrollWheel") > 0f) {
                         rotation += 11.25f;
