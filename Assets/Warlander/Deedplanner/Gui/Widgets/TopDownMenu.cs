@@ -37,15 +37,15 @@ namespace Warlander.Deedplanner.Gui.Widgets
             contentTransform.gameObject.SetActive(false);
             Destroy(blockerButton.gameObject);
         }
-        
+
         private void CreateBlocker()
         {
-            Canvas parentCanvas = GetComponentInParent<Canvas>();
+            Canvas[] parentCanvas = GetComponentsInParent<Canvas>();
 
-            blockerButton = Instantiate(blockerPrefab, parentCanvas.transform, false);
+            blockerButton = Instantiate(blockerPrefab, parentCanvas[parentCanvas.Length - 1].transform, false);
             blockerButton.onClick.AddListener(OnBlockerButtonPressed);
         }
-        
+
         private void OnMenuButtonPressed()
         {
             ShowMenu();
@@ -55,7 +55,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
         {
             HideMenu();
         }
-        
+
         private void OnDestroy()
         {
             if (menuButton)
