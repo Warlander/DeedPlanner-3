@@ -16,9 +16,9 @@ namespace Warlander.Deedplanner.Logic.Cameras
             return mode == CameraMode.Isometric;
         }
 
-        public void UpdateDrag(PointerEventData eventData)
+        public void UpdateDrag(Camera attachedCamera, PointerEventData eventData)
         {
-            float factor = (isoScale * 0.0031f);
+            float factor = isoScale * Mathf.Pow(attachedCamera.scaledPixelHeight, -1f) * 2f;
             isoPosition += new Vector2(-eventData.delta.x * factor, -eventData.delta.y * factor);
         }
 
