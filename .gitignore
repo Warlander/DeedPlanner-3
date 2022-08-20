@@ -38,3 +38,4 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+UserSettings/
