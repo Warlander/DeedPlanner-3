@@ -14,65 +14,73 @@ namespace Warlander.Deedplanner.Graphics
     {
         private static readonly Dictionary<MaterialKey, Material> cachedMaterials = new Dictionary<MaterialKey, Material>();
 
-        public static IEnumerator LoadModel(string path, Action<GameObject> callback)
+        public static void LoadModel(string path, Action<GameObject> onLoaded)
         {
-            return LoadModel(path, Vector3.one, callback);
+            LoadModel(path, Vector3.one, onLoaded);
         }
 
-        public static IEnumerator LoadModel(string path, Vector3 scale, Action<GameObject> callback)
+        public static void LoadModel(string path, Vector3 scale, Action<GameObject> onLoaded)
         {
             Debug.Log("Loading model at " + path);
-
-            byte[] requestData = null;
-            yield return WebUtils.ReadUrlToByteArray(path, data => requestData = data);
-
-            using (BinaryReader source = new BinaryReader(new MemoryStream(requestData)))
+            
+            WebUtils.ReadUrlToByteArray(path, data =>
             {
+                using BinaryReader source = new BinaryReader(new MemoryStream(data));
                 string fileFolder = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
 
                 GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(path));
 
                 int meshCount = source.ReadInt32();
+                int loadedMeshes = 0;
                 for (int i = 0; i < meshCount; i++)
                 {
-                    GameObject meshObject = null;
-                    yield return LoadMeshObject(source, fileFolder, scale, loadedObject => meshObject = loadedObject);
-                    
-                    if (meshObject)
+                    LoadMeshObject(source, fileFolder, scale, loadedMesh =>
                     {
-                        meshObject.transform.SetParent(modelGameObject.transform);
-                    }
+                        if (loadedMesh)
+                        {
+                            loadedMesh.transform.SetParent(modelGameObject.transform);
+                        }
+
+                        loadedMeshes++;
+
+                        if (loadedMeshes == meshCount)
+                        {
+                            onLoaded.Invoke(modelGameObject);
+                        }
+                    });
                 }
-                
-                callback.Invoke(modelGameObject);
-            }
+
+                if (meshCount == 0)
+                {
+                    onLoaded.Invoke(modelGameObject);
+                }
+            });
         }
 
-        private static IEnumerator LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale, Action<GameObject> callback)
+        private static void LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale, Action<GameObject> onLoaded)
         {
             Mesh loadedMesh = LoadMesh(source, scale);
             string meshName = loadedMesh.name;
             
-            Material loadedMaterial = null;
-            int materialsCount = source.ReadInt32(); // there is always only one material per mesh, but we need to load this int anyway
-            yield return LoadMaterial(source, fileFolder, mat => loadedMaterial = mat);
-
             string meshNameLowercase = meshName.ToLower();
             if (meshNameLowercase.Contains("boundingbox") || meshNameLowercase.Contains("pickingbox") || (meshNameLowercase.Contains("lod") && !meshNameLowercase.Contains("lod0")))
             {
                 Object.Destroy(loadedMesh);
-                // TODO: possible leak of materials
-                yield break;
+                return;
             }
-
-            GameObject meshObject = new GameObject(meshName);
-
-            MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
-            MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
-            meshFilter.sharedMesh = loadedMesh;
-            meshRenderer.sharedMaterial = loadedMaterial;
             
-            callback.Invoke(meshObject);
+            int materialsCount = source.ReadInt32(); // there is always only one material per mesh, but we need to load this int anyway
+            LoadMaterial(source, fileFolder, mat =>
+            {
+                GameObject meshObject = new GameObject(meshName);
+
+                MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
+                MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
+                meshFilter.sharedMesh = loadedMesh;
+                meshRenderer.sharedMaterial = mat;
+            
+                onLoaded.Invoke(meshObject);
+            });
         }
 
         private static Mesh LoadMesh(BinaryReader source, Vector3 scale)
@@ -151,7 +159,7 @@ namespace Warlander.Deedplanner.Graphics
             return mesh;
         }
 
-        private static IEnumerator LoadMaterial(BinaryReader source, string modelFolder, Action<Material> callback)
+        private static void LoadMaterial(BinaryReader source, string modelFolder, Action<Material> onLoaded)
         {
             string texName = ReadString(source);
             string texLocation = Path.Combine(modelFolder, texName);
@@ -206,7 +214,7 @@ namespace Warlander.Deedplanner.Graphics
             {
                 Debug.Log("Loading material from cache");
                 Material cachedMaterial = cachedMaterials[materialKey];
-                callback.Invoke(cachedMaterial);
+                onLoaded.Invoke(cachedMaterial);
             }
             else
             {
@@ -214,54 +222,51 @@ namespace Warlander.Deedplanner.Graphics
                 material.name = matName;
                 
                 TextureReference textureReference = TextureReference.GetTextureReference(texLocation);
-            
-                Texture2D texture = null;
-                if (textureReference != null)
-                {
-                    yield return textureReference.LoadOrGetTexture(loadedTexture => texture = loadedTexture);
-                }
 
-                if (texture)
+                textureReference?.LoadOrGetTexture(texture =>
                 {
-                    material.SetTexture(ShaderPropertyIds.MainTex, texture);
-                }
-                else
-                {
-                    material.SetColor(ShaderPropertyIds.Color, new Color(1, 1, 1, 0));
-                }
+                    if (texture)
+                    {
+                        material.SetTexture(ShaderPropertyIds.MainTex, texture);
+                    }
+                    else
+                    {
+                        material.SetColor(ShaderPropertyIds.Color, new Color(1, 1, 1, 0));
+                    }
                 
-                material.SetFloat(ShaderPropertyIds.Glossiness, glossiness);
+                    material.SetFloat(ShaderPropertyIds.Glossiness, glossiness);
                 
-                cachedMaterials[materialKey] = material;
-                callback.Invoke(material);
+                    cachedMaterials[materialKey] = material;
+                    onLoaded.Invoke(material);
+                });
             }
         }
 
-        public static IEnumerator LoadTexture(string location, bool readable, Action<Texture2D> callback)
+        public static void LoadTexture(string location, bool readable, Action<Texture2D> onLoaded)
         {
             if (string.IsNullOrEmpty(Path.GetExtension(location)))
             {
                 Debug.LogWarning("Attempting to load texture from empty location: " + location);
-                callback.Invoke(null);
-                yield break;
+                onLoaded.Invoke(null);
+                return;
             }
 
             Debug.Log("Loading texture at " + location);
-            byte[] texBytes = null;
-            yield return WebUtils.ReadUrlToByteArray(location, data => texBytes = data);
-
-            Texture2D texture;
-            if (location.Substring(location.LastIndexOf(".", StringComparison.Ordinal) + 1) == "dds")
+            WebUtils.ReadUrlToByteArray(location, data =>
             {
-                texture = LoadTextureDxt(texBytes);
-            }
-            else
-            {
-                texture = new Texture2D(0, 0, TextureFormat.DXT1, true);
-                texture.LoadImage(texBytes, !readable);
-            }
+                Texture2D texture;
+                if (location.Substring(location.LastIndexOf(".", StringComparison.Ordinal) + 1) == "dds")
+                {
+                    texture = LoadTextureDxt(data);
+                }
+                else
+                {
+                    texture = new Texture2D(0, 0, TextureFormat.DXT1, true);
+                    texture.LoadImage(data, !readable);
+                }
             
-            callback.Invoke(texture);
+                onLoaded.Invoke(texture);
+            });
         }
 
         private static Texture2D LoadTextureDxt(byte[] ddsBytes)

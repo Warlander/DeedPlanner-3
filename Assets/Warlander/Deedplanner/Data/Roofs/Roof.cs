@@ -82,7 +82,7 @@ namespace Warlander.Deedplanner.Data.Roofs
                     currentRoofType = type;
                     currentRoofMatch = match;
 
-                    CoroutineManager.Instance.QueueCoroutine(type.GetModelForData(Data).CreateOrGetModel(OnModelLoaded));
+                    type.GetModelForData(Data).CreateOrGetModel(OnModelLoaded);
                     
                     break;
                 }

@@ -105,7 +105,7 @@ namespace Warlander.Deedplanner.Logic
         {
             UnityWebRequest webRequest = UnityWebRequest.Get(mapUri);
             yield return webRequest.SendWebRequest();
-            if (webRequest.isHttpError || webRequest.isNetworkError)
+            if (webRequest.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError(webRequest.error);
                 webRequest.Dispose();
@@ -132,7 +132,6 @@ namespace Warlander.Deedplanner.Logic
         
         public void LoadMap(string mapString)
         {
-            CoroutineManager.Instance.BlockInteractionUntilFinished();
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(mapString);
             if (Map)

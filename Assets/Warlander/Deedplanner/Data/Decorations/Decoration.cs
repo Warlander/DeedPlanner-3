@@ -28,7 +28,7 @@ namespace Warlander.Deedplanner.Data.Decorations
             position = newPosition;
             Rotation = newRotation;
             
-            CoroutineManager.Instance.QueueCoroutine(Data.Model.CreateOrGetModel(OnModelCreated));
+            Data.Model.CreateOrGetModel(OnModelCreated);
         }
 
         private void OnModelCreated(GameObject newModel)

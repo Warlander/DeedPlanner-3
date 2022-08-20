@@ -31,7 +31,7 @@ namespace Warlander.Deedplanner.Updaters
             set {
                 leftClickData = value;
                 leftClickText.text = leftClickData.Name;
-                CoroutineManager.Instance.QueueCoroutine(leftClickData.Tex2d.LoadOrGetSprite(sprite => leftClickImage.sprite = sprite));
+                leftClickData.Tex2d.LoadOrGetSprite(sprite => leftClickImage.sprite = sprite);
             }
         }
 
@@ -40,7 +40,7 @@ namespace Warlander.Deedplanner.Updaters
             set {
                 rightClickData = value;
                 rightClickText.text = rightClickData.Name;
-                CoroutineManager.Instance.QueueCoroutine(rightClickData.Tex2d.LoadOrGetSprite(sprite => rightClickImage.sprite = sprite));
+                rightClickData.Tex2d.LoadOrGetSprite(sprite => rightClickImage.sprite = sprite);
             }
         }
 
@@ -159,7 +159,7 @@ namespace Warlander.Deedplanner.Updaters
                 }
                 ground.Data = currentClickData;
             }
-            else if (fillToggle.isOn && CoroutineManager.Instance.IsIdle)
+            else if (fillToggle.isOn)
             {
                 GroundData toReplace = tile.Ground.Data;
                 FloodFill(tile, currentClickData, toReplace);

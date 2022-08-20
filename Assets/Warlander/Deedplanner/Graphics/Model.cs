@@ -94,40 +94,42 @@ namespace Warlander.Deedplanner.Graphics
             textureOverrides[mesh] = texture;
         }
 
-        private IEnumerator CreateOrGetModel(ModelProperties properties, Action<GameObject> callback)
+        private void CreateOrGetModel(ModelProperties properties, Action<GameObject> callback)
         {
-            yield return InitializeModel(properties);
-            if (loadingOriginalModel)
+            InitializeModel(properties, () =>
             {
-                modelRequests.Add(new ModelRequest(callback, properties));
-            }
-            else if (originalModel)
-            {
-                InitializeModifiedModel(properties);
-                GameObject instance = Object.Instantiate(modifiedModels[properties]);
-                callback.Invoke(instance);
-            }
+                if (loadingOriginalModel)
+                {
+                    modelRequests.Add(new ModelRequest(callback, properties));
+                }
+                else if (originalModel)
+                {
+                    InitializeModifiedModel(properties);
+                    GameObject instance = Object.Instantiate(modifiedModels[properties]);
+                    callback.Invoke(instance);
+                }
+            });
         }
 
-        public IEnumerator CreateOrGetModel(Material customMaterial, Action<GameObject> callback)
+        public void CreateOrGetModel(Material customMaterial, Action<GameObject> callback)
         {
             ModelProperties properties = new ModelProperties(0, customMaterial);
-            yield return CreateOrGetModel(properties, callback);
+            CreateOrGetModel(properties, callback);
         }
 
-        public IEnumerator CreateOrGetModel(int skew, Action<GameObject> callback)
+        public void CreateOrGetModel(int skew, Action<GameObject> callback)
         {
             ModelProperties properties = new ModelProperties(skew, null);
-            yield return CreateOrGetModel(properties, callback);
+            CreateOrGetModel(properties, callback);
         }
 
-        public IEnumerator CreateOrGetModel(Action<GameObject> callback)
+        public void CreateOrGetModel(Action<GameObject> callback)
         {
             ModelProperties properties = new ModelProperties(0, null);
-            yield return CreateOrGetModel(properties, callback);
+            CreateOrGetModel(properties, callback);
         }
 
-        private IEnumerator InitializeModel(ModelProperties modelProperties)
+        private void InitializeModel(ModelProperties modelProperties, Action onDone)
         {
             if (!modelsRoot)
             {
@@ -143,10 +145,18 @@ namespace Warlander.Deedplanner.Graphics
             {
                 loadingOriginalModel = true;
                 string fullLocation = Application.streamingAssetsPath + "/" + location;
-                yield return WurmAssetsLoader.LoadModel(fullLocation, Scale, OnMasterModelLoaded);
+                WurmAssetsLoader.LoadModel(fullLocation, Scale, model =>
+                {
+                    OnMasterModelLoaded(model);
+                    InitializeModifiedModel(modelProperties);
+                    onDone();
+                });
             }
-
-            InitializeModifiedModel(modelProperties);
+            else
+            {
+                InitializeModifiedModel(modelProperties);
+                onDone();
+            }
         }
 
         private void OnMasterModelLoaded(GameObject masterModel)
@@ -176,7 +186,7 @@ namespace Warlander.Deedplanner.Graphics
                     Material newMaterial = new Material(renderer.sharedMaterial);
                     renderer.sharedMaterial = newMaterial;
 
-                    CoroutineManager.Instance.QueueCoroutine(texture.LoadOrGetTexture(loadedTexture => newMaterial.mainTexture = loadedTexture));
+                    texture.LoadOrGetTexture(loadedTexture => newMaterial.mainTexture = loadedTexture);
                 }
             }
             originalModel.transform.SetParent(modelRoot.transform);

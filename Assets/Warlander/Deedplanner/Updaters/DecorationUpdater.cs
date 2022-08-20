@@ -112,7 +112,7 @@ namespace Warlander.Deedplanner.Updaters
             Material ghostMaterial = GraphicsManager.Instance.GhostMaterial;
             if (dataChanged)
             {
-                CoroutineManager.Instance.QueueCoroutine(data.Model.CreateOrGetModel(ghostMaterial, OnGhostCreated));
+                data.Model.CreateOrGetModel(ghostMaterial, OnGhostCreated);
                 return;
             }
 

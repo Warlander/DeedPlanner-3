@@ -623,36 +623,36 @@ namespace Warlander.Deedplanner.Data.Grounds
             
             if (forceSelfData || !diagonalData)
             {
-                CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(selfData, uvIndex, selfCoords));
+                UpdateUV2(selfData, uvIndex, selfCoords);
             }
             else
             {
-                CoroutineManager.Instance.QueueCoroutine(UpdateUV2Coroutine(diagonalData, uvIndex, diagonalCoords));
+                UpdateUV2(diagonalData, uvIndex, diagonalCoords);
             }
         }
 
-        private IEnumerator UpdateUV2Coroutine(GroundData data, int uvIndex, Vector2Int tileCoords)
+        private void UpdateUV2(GroundData data, int uvIndex, Vector2Int tileCoords)
         {
             if (dataArray[tileCoords.x, tileCoords.y] != data)
             {
-                yield break;
+                return;
             }
             
-            Texture2D targetTexture = null;
-            yield return data.Tex3d.LoadOrGetTexture(loadedTexture => targetTexture = loadedTexture);
-            
-            if (!targetTexture)
+            data.Tex3d.LoadOrGetTexture(loadedTexture =>
             {
-                yield break;
-            }
+                if (!loadedTexture)
+                {
+                    return;
+                }
             
-            int texIndex = groundTexturesArray.PutOrGetTexture(data.Tex3d, targetTexture);
-            Vector2 texVector = new Vector2(texIndex, 0);
-            uv2[uvIndex] = texVector;
-            uv2[uvIndex + 1] = texVector;
-            uv2[uvIndex + 2] = texVector;
+                int texIndex = groundTexturesArray.PutOrGetTexture(data.Tex3d, loadedTexture);
+                Vector2 texVector = new Vector2(texIndex, 0);
+                uv2[uvIndex] = texVector;
+                uv2[uvIndex + 1] = texVector;
+                uv2[uvIndex + 2] = texVector;
             
-            needsUvUpdate = true;
+                needsUvUpdate = true;
+            });
         }
     }
 }

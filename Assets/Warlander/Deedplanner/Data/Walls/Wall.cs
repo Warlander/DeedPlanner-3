@@ -43,11 +43,11 @@ namespace Warlander.Deedplanner.Data.Walls
 
             if (firstFloor)
             {
-                CoroutineManager.Instance.QueueCoroutine(Data.BottomModel.CreateOrGetModel(slopeDifference, OnModelLoaded));
+                Data.BottomModel.CreateOrGetModel(slopeDifference, OnModelLoaded);
             }
             else
             {
-                CoroutineManager.Instance.QueueCoroutine(Data.NormalModel.CreateOrGetModel(slopeDifference, OnModelLoaded));
+                Data.NormalModel.CreateOrGetModel(slopeDifference, OnModelLoaded);
             }
         }
 
@@ -64,7 +64,8 @@ namespace Warlander.Deedplanner.Data.Walls
             {
                 Model.transform.localRotation = Quaternion.Euler(0, 180, 0);
             }
-            else {
+            else
+            {
                 Model.transform.localPosition = new Vector3(-4f, 0, 0);
             }
 

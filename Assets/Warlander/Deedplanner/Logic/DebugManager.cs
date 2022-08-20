@@ -57,7 +57,7 @@ namespace Warlander.Deedplanner.Logic
                 foreach (KeyValuePair<string,DecorationData> pair in Database.Decorations)
                 {
                     DecorationData data = pair.Value;
-                    CoroutineManager.Instance.QueueCoroutine(data.Model.CreateOrGetModel(Destroy));
+                    data.Model.CreateOrGetModel(Destroy);
                 }
             }
         }
@@ -86,7 +86,7 @@ namespace Warlander.Deedplanner.Logic
 
             string modelFilePath = selection[0];
             
-            CoroutineManager.Instance.QueueCoroutine(WurmAssetsLoader.LoadModel(modelFilePath, OnModelLoaded));
+            WurmAssetsLoader.LoadModel(modelFilePath, OnModelLoaded);
         }
 
         public void ShowTextWindowDebug()

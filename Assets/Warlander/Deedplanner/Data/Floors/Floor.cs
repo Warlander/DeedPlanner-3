@@ -22,7 +22,7 @@ namespace Warlander.Deedplanner.Data.Floors
             Data = data;
             Orientation = orientation;
 
-            CoroutineManager.Instance.QueueCoroutine(Data.Model.CreateOrGetModel(OnModelCreated));
+            Data.Model.CreateOrGetModel(OnModelCreated);
 
             if (!GetComponent<BoxCollider>())
             {

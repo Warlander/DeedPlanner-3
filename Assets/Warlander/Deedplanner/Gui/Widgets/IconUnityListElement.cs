@@ -51,7 +51,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
             if (!spriteLoading && textureReference != null)
             {
                 spriteLoading = true;
-                CoroutineManager.Instance.QueueCoroutine(textureReference.LoadOrGetSprite(OnSpriteLoaded));
+                textureReference.LoadOrGetSprite(OnSpriteLoaded);
             }
         }
 

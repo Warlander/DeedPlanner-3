@@ -23,12 +23,12 @@ namespace Warlander.Deedplanner.Utils
             using (UnityWebRequest request = UnityWebRequest.Get(location))
             {
                 request.SendWebRequest();
-                while (!request.isDone && !request.isHttpError && !request.isNetworkError)
+                while (!request.isDone && request.result != UnityWebRequest.Result.Success)
                 {
                     Thread.Sleep(1);
                 }
 
-                if (request.isHttpError || request.isNetworkError)
+                if (request.result != UnityWebRequest.Result.Success)
                 {
                     Debug.LogError(request.error + "\nLocation: " + location);
                     return null;
@@ -39,22 +39,24 @@ namespace Warlander.Deedplanner.Utils
             }
         }
 
-        public static IEnumerator ReadUrlToByteArray(string location, Action<byte[]> callback)
+        public static void ReadUrlToByteArray(string location, Action<byte[]> onLoaded)
         {
             location = location.Replace('\\', '/'); // making sure all paths have uniform format
             location = FixLocalPath(location);
 
             UnityWebRequest www = UnityWebRequest.Get(location);
-            yield return www.SendWebRequest();
-            
-            if (www.isHttpError || www.isNetworkError)
+            www.SendWebRequest().completed += operation =>
             {
-                Debug.LogError(www.error + "\nLocation: " + location);
-                callback.Invoke(null);
-                yield break;
-            }
-            
-            callback.Invoke(www.downloadHandler.data);
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError(www.error + "\nLocation: " + location);
+                    onLoaded.Invoke(null);
+                }
+                else
+                {
+                    onLoaded.Invoke(www.downloadHandler.data);
+                }
+            };
         }
 
         private static string FixLocalPath(string path)

@@ -43,6 +43,9 @@ namespace Warlander.Deedplanner.Graphics
         private bool textureLoading = false;
         private bool spriteRequested = false;
 
+        private List<Action<Texture2D>> textureLoadRequests = null;
+        private List<Action<Sprite>> spriteLoadRequests = null;
+
         public string Location { get; }
 
         private TextureReference(string location)
@@ -50,12 +53,12 @@ namespace Warlander.Deedplanner.Graphics
             Location = location;
         }
         
-        public IEnumerator LoadOrGetTexture(Action<Texture2D> callback)
+        public void LoadOrGetTexture(Action<Texture2D> onLoaded)
         {
             if (texture)
             {
-                callback.Invoke(texture);
-                yield break;
+                onLoaded.Invoke(texture);
+                return;
             }
 
             if (!textureLoading)
@@ -70,30 +73,36 @@ namespace Warlander.Deedplanner.Graphics
                 {
                     location = Application.streamingAssetsPath + "/" + Location;
                 }
-                yield return WurmAssetsLoader.LoadTexture(location, false, OnTextureLoaded);
+                WurmAssetsLoader.LoadTexture(location, false, tex =>
+                {
+                    OnTextureLoaded(tex);
+                    onLoaded.Invoke(tex);
+                });
             }
-
-            while (textureLoading)
+            else
             {
-                yield return null;
+                if (textureLoadRequests == null)
+                {
+                    textureLoadRequests = new List<Action<Texture2D>>();
+                }
+                
+                textureLoadRequests.Add(onLoaded);
             }
-            
-            callback.Invoke(texture);
         }
         
-        public IEnumerator LoadOrGetSprite(Action<Sprite> callback)
+        public void LoadOrGetSprite(Action<Sprite> callback)
         {
             if (sprite)
             {
                 callback.Invoke(sprite);
-                yield break;
+                return;
             }
 
             if (texture)
             {
                 sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
                 callback.Invoke(sprite);
-                yield break;
+                return;
             }
 
             if (!textureLoading)
@@ -109,16 +118,24 @@ namespace Warlander.Deedplanner.Graphics
                 {
                     location = Application.streamingAssetsPath + "/" + Location;
                 }
-                yield return WurmAssetsLoader.LoadTexture(location, false, OnTextureLoaded);
-                sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                WurmAssetsLoader.LoadTexture(location, false, texture =>
+                {
+                    OnTextureLoaded(texture);
+                    sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                    callback.Invoke(sprite);
+                    
+                    if (spriteLoadRequests != null)
+                    {
+                        foreach (Action<Sprite> loadRequest in spriteLoadRequests)
+                        {
+                            loadRequest(sprite);
+                        }
+                
+                        spriteLoadRequests.Clear();
+                        spriteLoadRequests = null;
+                    }
+                });
             }
-            
-            while (textureLoading)
-            {
-                yield return null;
-            }
-            
-            callback.Invoke(sprite);
         }
 
         private void OnTextureLoaded(Texture2D tex)
@@ -138,6 +155,17 @@ namespace Warlander.Deedplanner.Graphics
             }
             
             textureLoading = false;
+
+            if (textureLoadRequests != null)
+            {
+                foreach (Action<Texture2D> loadRequest in textureLoadRequests)
+                {
+                    loadRequest(texture);
+                }
+                
+                textureLoadRequests.Clear();
+                textureLoadRequests = null;
+            }
         }
     }
 }
