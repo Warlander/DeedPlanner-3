@@ -2,6 +2,9 @@
 {
     public enum BridgePartSide
     {
-        NARROW, CENTER, LEFT, RIGHT
+        NARROW,
+        CENTER,
+        LEFT,
+        RIGHT
     }
 }

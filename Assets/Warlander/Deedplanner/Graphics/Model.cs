@@ -27,6 +27,11 @@ namespace Warlander.Deedplanner.Graphics
         public Vector3 Scale { get; private set; }
         public int Layer { get; private set; }
 
+        public Model(XmlElement element, Vector3 scale, int layer = int.MaxValue) : this(element, layer)
+        {
+            Scale = scale;
+        }
+        
         public Model(XmlElement element, int layer = int.MaxValue)
         {
             modifiedModels = new Dictionary<ModelProperties, GameObject>();

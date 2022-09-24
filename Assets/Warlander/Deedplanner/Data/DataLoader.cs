@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Xml;
 using UnityEngine;
 using UnityEngine.Networking;
+using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Floors;
@@ -79,6 +81,9 @@ namespace Warlander.Deedplanner.Data
                 ShortNames.Clear();
                 Debug.Log("Loading objects");
                 LoadObjects(document);
+                ShortNames.Clear();
+                Debug.Log("Loading bridges");
+                LoadBridges(document);
                 ShortNames.Clear();
                 Debug.Log("XML file loading complete");
             }
@@ -429,6 +434,86 @@ namespace Warlander.Deedplanner.Data
                 {
                     GuiManager.Instance.ObjectsTree.Add(data, category);
                 }
+            }
+        }
+
+        private static void LoadBridges(XmlDocument document)
+        {
+            XmlNodeList entities = document.GetElementsByTagName("bridge");
+            
+            foreach (XmlElement element in entities)
+            {
+                string name = element.GetAttribute("name");
+                string shortName = element.GetAttribute("shortname");
+                int supportHeight = int.Parse(element.GetAttribute("supportheight"));
+                int maxWidth = int.Parse(element.GetAttribute("maxwidth"));
+
+                Debug.Log("Loading object " + name);
+
+                bool unique = VerifyShortName(shortName);
+                if (!unique)
+                {
+                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    continue;
+                }
+
+                List<BridgeType> allowedTypes = new List<BridgeType>();
+                Dictionary<BridgePartSide, Materials> sidesCost = new Dictionary<BridgePartSide, Materials>();
+                List<BridgePartData> partsData = new List<BridgePartData>();
+
+                foreach (XmlElement child in element)
+                {
+                    switch (child.LocalName)
+                    {
+                        case "type":
+                            string typeString = child.GetAttribute("name");
+                            bool typeParseSuccess = Enum.TryParse(typeString, true, out BridgeType type);
+                            
+                            if (typeParseSuccess)
+                            {
+                                allowedTypes.Add(type);
+                            }
+                            else
+                            {
+                                Debug.LogError($"Bridge type enum parsing fail for bridge {name}, type: {typeString}");
+                            }
+                            break;
+                        case "lane":
+                            string sideString = child.GetAttribute("type");
+                            bool sideParseSuccess = Enum.TryParse(sideString, true, out BridgePartSide side);
+                            Materials sideMaterials;
+                            if (child.HasChildNodes)
+                            {
+                                sideMaterials = new Materials(child.GetElementsByTagName("materials")[0]);
+                            }
+                            else
+                            {
+                                sideMaterials = new Materials();
+                            }
+
+                            if (sideString.Equals("side", StringComparison.OrdinalIgnoreCase))
+                            {
+                                sidesCost.Add(BridgePartSide.LEFT, sideMaterials);
+                                sidesCost.Add(BridgePartSide.RIGHT, sideMaterials);
+                            }
+                            else if (sideParseSuccess)
+                            {
+                                sidesCost.Add(side, sideMaterials);
+                            }
+                            else
+                            {
+                                Debug.LogError($"Bridge side enum parsing fail for bridge {name}, type: {sideString}");
+                            }
+                            break;
+                        case "part":
+                            partsData.Add(new BridgePartData(child));
+                            break;
+                    }
+                }
+
+                BridgeData data = new BridgeData(name, shortName, maxWidth, supportHeight, partsData.ToArray(),
+                    allowedTypes.ToArray(), sidesCost);
+                Database.Bridges[shortName] = data;
             }
         }
 
