@@ -7385,7 +7385,7 @@
 	
 	
 	<bridges>
-		<bridge name="rope" shortname="rope" supportheight="0" maxwidth="1">
+		<bridge name="rope" supportheight="0" maxwidth="1">
 			<type name="rope"/>
 			<lane type="narrow"/>
 			<part type="crown">
@@ -7418,7 +7418,7 @@
 			</part>
 		</bridge>
 		
-		<bridge name="wood" shortname="wood" supportheight="60" maxwidth="2">
+		<bridge name="wood" supportheight="60" maxwidth="2">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -7476,7 +7476,7 @@
 			</part>
 		</bridge>
 		
-		<bridge name="stone" shortname="stone" supportheight="80" maxwidth="3">
+		<bridge name="stone" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -7642,7 +7642,7 @@
 			</part>
 		</bridge>
 		
-		<bridge name="slate" shortname="slate" supportheight="80" maxwidth="3">
+		<bridge name="slate" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -7808,7 +7808,7 @@
 			</part>
 		</bridge>
 		
-		<bridge name="sandstone" shortname="sandstone" supportheight="80" maxwidth="3">
+		<bridge name="sandstone" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -7974,7 +7974,7 @@
 			</part>
 		</bridge>
 		
-		<bridge name="rounded stone" shortname="roundedStone" supportheight="80" maxwidth="3">
+		<bridge name="rounded stone" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -8140,7 +8140,7 @@
 			</part>
 		</bridge>
 		
-		<bridge name="rendered" shortname="rendered" supportheight="80" maxwidth="3">
+		<bridge name="rendered" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -8316,7 +8316,7 @@
 			</part>
 		</bridge>
 		
-		<bridge name="pottery" shortname="pottery" supportheight="80" maxwidth="3">
+		<bridge name="pottery" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -8482,7 +8482,7 @@
 			</part>
 		</bridge>
 		
-		<bridge name="marble" shortname="marble" supportheight="80" maxwidth="3">
+		<bridge name="marble" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">

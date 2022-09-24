@@ -444,16 +444,15 @@ namespace Warlander.Deedplanner.Data
             foreach (XmlElement element in entities)
             {
                 string name = element.GetAttribute("name");
-                string shortName = element.GetAttribute("shortname");
                 int supportHeight = int.Parse(element.GetAttribute("supportheight"));
                 int maxWidth = int.Parse(element.GetAttribute("maxwidth"));
 
                 Debug.Log("Loading object " + name);
 
-                bool unique = VerifyShortName(shortName);
+                bool unique = VerifyShortName(name);
                 if (!unique)
                 {
-                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    Debug.LogWarning("Name " + name + " already exists, aborting");
                     continue;
                 }
 
@@ -511,9 +510,9 @@ namespace Warlander.Deedplanner.Data
                     }
                 }
 
-                BridgeData data = new BridgeData(name, shortName, maxWidth, supportHeight, partsData.ToArray(),
+                BridgeData data = new BridgeData(name, maxWidth, supportHeight, partsData.ToArray(),
                     allowedTypes.ToArray(), sidesCost);
-                Database.Bridges[shortName] = data;
+                Database.Bridges[name] = data;
             }
         }
 

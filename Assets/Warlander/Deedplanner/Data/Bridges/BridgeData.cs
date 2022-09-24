@@ -7,7 +7,6 @@ namespace Warlander.Deedplanner.Data.Bridges
     public class BridgeData
     {
         public string Name { get; }
-        public string ShortName { get; }
         public int MaxWidth { get; }
         public int SupportHeight { get; }
 
@@ -15,11 +14,10 @@ namespace Warlander.Deedplanner.Data.Bridges
         private readonly BridgeType[] allowedTypes;
         private Dictionary<BridgePartSide, Materials> sidesCost;
         
-        public BridgeData(string name, string shortName, int maxWidth, int supportHeight, 
+        public BridgeData(string name, int maxWidth, int supportHeight, 
             BridgePartData[] partsData, BridgeType[] allowedTypes, Dictionary<BridgePartSide, Materials> sidesCost)
         {
             Name = name;
-            ShortName = shortName;
             MaxWidth = maxWidth;
             SupportHeight = supportHeight;
 
