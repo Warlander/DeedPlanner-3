@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Warlander.Deedplanner.Graphics;
 
 namespace Warlander.Deedplanner.Data.Bridges
 {
@@ -24,6 +26,32 @@ namespace Warlander.Deedplanner.Data.Bridges
             this.partsData = partsData;
             this.allowedTypes = allowedTypes;
             this.sidesCost = sidesCost;
+        }
+
+        public Model GetModelForPart(BridgePartType type, BridgePartSide side)
+        {
+            return GetDataForType(type).GetModel(side);
+        }
+        
+        public Materials GetMaterialsForPart(BridgePartType type, BridgePartSide side)
+        {
+            BridgePartData data = GetDataForType(type);
+
+            Materials materials = new Materials();
+            data.AddCost(materials);
+            materials.Add(sidesCost[side]);
+
+            return materials;
+        }
+
+        public bool IsTypeAllowed(BridgeType type)
+        {
+            return allowedTypes.Contains(type);
+        }
+
+        private BridgePartData GetDataForType(BridgePartType type)
+        {
+            return partsData.First(part => part.PartType == type);
         }
     }
 }
