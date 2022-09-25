@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Summary;
@@ -49,6 +50,8 @@ namespace Warlander.Deedplanner.Data
 
         public Transform PlaneLineRoot { get; private set; }
 
+        private List<Bridge> bridges = new List<Bridge>();
+        
         private bool needsRoofUpdate = false;
 
         private bool renderDecorations = true;
@@ -252,6 +255,13 @@ namespace Warlander.Deedplanner.Data
                 }
 
                 this[x, y].DeserializeEntities(tileElement);
+            }
+            
+            XmlNodeList bridgesList = mapRoot.GetElementsByTagName("bridge");
+            foreach (XmlElement bridgeElement in bridgesList)
+            {
+                Bridge bridge = new Bridge(this, bridgeElement);
+                bridges.Add(bridge);
             }
 
             Ground.UpdateNow();

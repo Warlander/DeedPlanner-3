@@ -41,9 +41,21 @@ namespace Warlander.Deedplanner.Data.Bridges
                     return 'e';
                 case BridgePartType.Support:
                     return 's';
+                case BridgePartType.Extension:
+                    return '\n'; // It should never appear in actual save files
             }
             
-            throw new ArgumentException("No letter for bridge part type" + type);
+            throw new ArgumentException("No letter for bridge part type: " + type);
+        }
+
+        public static BridgePartType[] DecodeSegments(string segmentsString)
+        {
+            return segmentsString.ToCharArray().Select(FromChar).ToArray();
+        }
+
+        public static string EncodeSegments(BridgePartType[] segments)
+        {
+            return new string(segments.Select(ToChar).ToArray());
         }
     }
 }

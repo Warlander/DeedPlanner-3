@@ -1,10 +1,11 @@
 using System;
+using UnityEngine;
 
 namespace Warlander.Deedplanner.Data.Bridges
 {
     public class ArchedBridgeType : IBridgeType
     {
-        private static readonly int[] Height0 = {};
+        private static readonly int[] Height0 = {0};
         private static readonly int[] Height1 = {20};
         private static readonly int[] Height2 = {15, 30};
         private static readonly int[] Height3 = {10, 30, 40};
@@ -74,7 +75,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         
         public int CalculateAddedHeight(int currentSegment, int bridgeLength, int startHeight, int endHeight, int extraArgument)
         {
-            int[] archHeights = Heights[bridgeLength / 2];
+            int[] archHeights = Heights[Mathf.CeilToInt((float)bridgeLength / 2)];
 
             int currentSegmentRelative = Math.Abs(currentSegment / 2);
             return archHeights[currentSegmentRelative];

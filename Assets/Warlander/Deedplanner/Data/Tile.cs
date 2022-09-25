@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Floors;
@@ -20,6 +21,8 @@ namespace Warlander.Deedplanner.Data
         private int caveHeight = 0;
         private int caveSize = 0;
 
+        private BridgePart surfaceBridgePart;
+        
         public Map Map { get; private set; }
         public int X { get; private set; }
         public int Y { get; private set; }
@@ -615,6 +618,11 @@ namespace Warlander.Deedplanner.Data
             RefreshSurfaceEntities();
 
             return decoration;
+        }
+
+        public void RegisterBridgePart(BridgePart bridgePart)
+        {
+            surfaceBridgePart = bridgePart;
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
