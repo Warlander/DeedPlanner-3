@@ -22,6 +22,10 @@ namespace Warlander.Deedplanner.Graphics
         public static void LoadModel(string path, Vector3 scale, Action<GameObject> onLoaded)
         {
             Debug.Log("Loading model at " + path);
+            if (path.Contains("RopeBridge"))
+            {
+                Debug.Log("");
+            }
             
             WebUtils.ReadUrlToByteArray(path, data =>
             {
@@ -63,24 +67,31 @@ namespace Warlander.Deedplanner.Graphics
             string meshName = loadedMesh.name;
             
             string meshNameLowercase = meshName.ToLower();
-            if (meshNameLowercase.Contains("boundingbox") || meshNameLowercase.Contains("pickingbox") || (meshNameLowercase.Contains("lod") && !meshNameLowercase.Contains("lod0")))
-            {
-                Object.Destroy(loadedMesh);
-                return;
-            }
-            
+            bool discardMesh = meshNameLowercase.Contains("boundingbox") || meshNameLowercase.Contains("pickingbox") ||
+                               (meshNameLowercase.Contains("lod") && !meshNameLowercase.Contains("lod0"));
+
             int materialsCount = source.ReadInt32(); // there is always only one material per mesh, but we need to load this int anyway
             LoadMaterial(source, fileFolder, mat =>
             {
-                GameObject meshObject = new GameObject(meshName);
+                if (!discardMesh)
+                {
+                    GameObject meshObject = new GameObject(meshName);
 
-                MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
-                MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
-                meshFilter.sharedMesh = loadedMesh;
-                meshRenderer.sharedMaterial = mat;
+                    MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
+                    MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
+                    meshFilter.sharedMesh = loadedMesh;
+                    meshRenderer.sharedMaterial = mat;
             
-                onLoaded.Invoke(meshObject);
+                    onLoaded.Invoke(meshObject);
+                }
             });
+            
+            if (discardMesh)
+            {
+                Object.Destroy(loadedMesh);
+                onLoaded.Invoke(null);
+                return;
+            }
         }
 
         private static Mesh LoadMesh(BinaryReader source, Vector3 scale)
