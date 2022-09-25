@@ -3,22 +3,22 @@ using Warlander.Deedplanner.Graphics;
 
 namespace Warlander.Deedplanner.Data.Decorations
 {
-    public class DecorationData : ScriptableObject
+    public class DecorationData
     {
-        public Model Model { get; private set; }
-        public string Name { get; private set; }
-        public string ShortName { get; private set; }
-        public string Type { get; private set; }
+        public Model Model { get; }
+        public string Name { get; }
+        public string ShortName { get; }
+        public string Type { get; }
 
-        public bool CenterOnly { get; private set; }
-        public bool CornerOnly { get; private set; }
-        public bool Floating { get; private set; }
-        public bool Tree { get; private set; }
-        public bool Bush { get; private set; }
+        public bool CenterOnly { get; }
+        public bool CornerOnly { get; }
+        public bool Floating { get; }
+        public bool Tree { get; }
+        public bool Bush { get; }
 
-        public Materials Materials { get; private set; }
+        public Materials Materials { get; }
 
-        public void Initialize(Model model, string name, string shortName, string type, bool centerOnly, bool cornerOnly, bool floating, bool tree, bool bush, Materials materials)
+        public DecorationData(Model model, string name, string shortName, string type, bool centerOnly, bool cornerOnly, bool floating, bool tree, bool bush, Materials materials)
         {
             Model = model;
             Name = name;

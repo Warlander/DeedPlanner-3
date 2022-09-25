@@ -3,23 +3,24 @@ using Warlander.Deedplanner.Graphics;
 
 namespace Warlander.Deedplanner.Data.Walls
 {
-    public class WallData : ScriptableObject
+    public class WallData
     {
-        public Model BottomModel { get; private set; }
-        public Model NormalModel { get; private set; }
-        public string Name { get; private set; }
-        public string ShortName { get; private set; }
-        public Color Color { get; private set; }
-        public float Scale { get; private set; }
-        public bool HouseWall { get; private set; }
-        public bool Arch { get; private set; }
-        public bool ArchBuildable { get; private set; }
+        public Model BottomModel { get; }
+        public Model NormalModel { get; }
+        public string Name { get; }
+        public string ShortName { get; }
+        public Color Color { get; }
+        public float Scale { get; }
+        public bool HouseWall { get; }
+        public bool Arch { get; }
+        public bool ArchBuildable { get;}
     
-        public TextureReference Icon { get; private set; }
+        public TextureReference Icon { get; }
 
-        public Materials Materials { get; private set; }
+        public Materials Materials { get; }
 
-        public void Initialize(Model bottomModel, Model normalModel, string name, string shortName, Color color, float scale, bool houseWall, bool arch, bool archBuildable, Materials materials, TextureReference icon)
+        public WallData(Model bottomModel, Model normalModel, string name, string shortName, Color color, float scale,
+            bool houseWall, bool arch, bool archBuildable, Materials materials, TextureReference icon)
         {
             BottomModel = bottomModel;
             NormalModel = normalModel;

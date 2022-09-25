@@ -583,7 +583,7 @@ namespace Warlander.Deedplanner.Data.Grounds
             }
             
             GroundData data = dataArray[x, y];
-            if (!data)
+            if (data == null)
             {
                 return;
             }
@@ -621,7 +621,7 @@ namespace Warlander.Deedplanner.Data.Grounds
                 return;
             }
             
-            if (forceSelfData || !diagonalData)
+            if (forceSelfData || diagonalData == null)
             {
                 UpdateUV2(selfData, uvIndex, selfCoords);
             }

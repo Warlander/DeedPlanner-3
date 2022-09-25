@@ -111,7 +111,7 @@ namespace Warlander.Deedplanner.Logic
         
         private static int TileHeightOrDefault(Tile tile, int defaultHeight, int floor)
         {
-            return tile ? tile.GetHeightForFloor(floor) : defaultHeight;
+            return tile?.GetHeightForFloor(floor) ?? defaultHeight;
         }
     }
 }

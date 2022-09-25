@@ -88,7 +88,7 @@ namespace Warlander.Deedplanner.Data.Grounds
             
             public void Execute()
             {
-                if (newData)
+                if (newData != null)
                 {
                     ground.data = newData;
                     ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection);
@@ -97,7 +97,7 @@ namespace Warlander.Deedplanner.Data.Grounds
 
             public void Undo()
             {
-                if (oldData)
+                if (oldData != null)
                 {
                     ground.data = oldData;
                     ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection);

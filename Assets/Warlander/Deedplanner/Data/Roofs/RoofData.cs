@@ -3,14 +3,14 @@ using Warlander.Deedplanner.Graphics;
 
 namespace Warlander.Deedplanner.Data.Roofs
 {
-    public class RoofData : ScriptableObject
+    public class RoofData
     {
-        public string Name { get; private set; }
-        public string ShortName { get; private set; }
-        public TextureReference Texture { get; private set; }
-        public Materials Materials { get; private set; }
+        public string Name { get; }
+        public string ShortName { get; }
+        public TextureReference Texture { get; }
+        public Materials Materials { get; }
 
-        public void Initialize(TextureReference texture, string name, string shortName, Materials materials)
+        public RoofData(TextureReference texture, string name, string shortName, Materials materials)
         {
             Texture = texture;
             Name = name;

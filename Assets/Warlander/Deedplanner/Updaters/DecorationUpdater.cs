@@ -100,7 +100,7 @@ namespace Warlander.Deedplanner.Updaters
             DecorationData data = (DecorationData) GuiManager.Instance.ObjectsTree.SelectedValue;
             bool dataChanged = data != lastFrameData;
             lastFrameData = data;
-            if (!data)
+            if (data == null)
             {
                 return;
             }
@@ -306,7 +306,7 @@ namespace Warlander.Deedplanner.Updaters
         {
             List<Decoration> decorations = new List<Decoration>();
 
-            if (!centralTile)
+            if (centralTile == null)
             {
                 return decorations;
             }
@@ -316,7 +316,7 @@ namespace Warlander.Deedplanner.Updaters
                 for (int y = -1; y <= 1; y++)
                 {
                     Tile relativeTile = centralTile.Map.GetRelativeTile(centralTile, x, y);
-                    if (relativeTile)
+                    if (relativeTile != null)
                     {
                         decorations.AddRange(relativeTile.GetDecorations());
                     }

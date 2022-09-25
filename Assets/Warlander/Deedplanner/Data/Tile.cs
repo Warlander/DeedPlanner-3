@@ -12,10 +12,11 @@ using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Utils;
+using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class Tile : ScriptableObject, IXmlSerializable
+    public class Tile : IXmlSerializable
     {
         private int surfaceHeight = 0;
         private int caveHeight = 0;
@@ -23,9 +24,9 @@ namespace Warlander.Deedplanner.Data
 
         private BridgePart surfaceBridgePart;
         
-        public Map Map { get; private set; }
-        public int X { get; private set; }
-        public int Y { get; private set; }
+        public Map Map { get; }
+        public int X { get; }
+        public int Y { get; }
         private Dictionary<EntityData, TileEntity> Entities { get; set; }
 
         public Ground Ground { get; private set; }
@@ -69,7 +70,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        public void Initialize(Map map, int x, int y)
+        public Tile(Map map, int x, int y)
         {
             Map = map;
             X = x;
@@ -251,13 +252,13 @@ namespace Warlander.Deedplanner.Data
 
             bool needsChange = !tileEntity || (currentFloor && (currentFloor.Data != data || currentFloor.Orientation != orientation)) || currentRoof;
 
-            if (data && needsChange)
+            if (data != null && needsChange)
             {
                 Floor floor = CreateNewFloor(entityData, data, orientation);
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, floor));
                 return floor;
             }
-            if (!data && tileEntity)
+            if (data == null && tileEntity)
             {
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, null));
                 return null;
@@ -286,13 +287,13 @@ namespace Warlander.Deedplanner.Data
 
             bool needsChange = !tileEntity || (currentRoof && (currentRoof.Data != data)) || currentFloor;
 
-            if (data && needsChange)
+            if (data != null && needsChange)
             {
                 Roof roof = CreateNewRoof(entityData, data);
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, roof));
                 return roof;
             }
-            if (!data && tileEntity)
+            if (data == null && tileEntity)
             {
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, null));
                 return null;
@@ -373,7 +374,7 @@ namespace Warlander.Deedplanner.Data
             Entities.TryGetValue(fenceEntityData, out fenceEntity);
             Wall currentFence = fenceEntity as Wall;
 
-            if (data)
+            if (data != null)
             {
                 bool wallNeedsChange = !data.ArchBuildable && (!currentWall || currentWall.Data != data || currentWall.Reversed != reversed);
                 bool fenceNeedsChange = data.ArchBuildable && (!currentFence || currentFence.Data != data || currentFence.Reversed != reversed);
@@ -399,7 +400,7 @@ namespace Warlander.Deedplanner.Data
                 }
 
             }
-            else if (!data)
+            else
             {
                 if (currentWall)
                 {
@@ -490,7 +491,7 @@ namespace Warlander.Deedplanner.Data
             Entities.TryGetValue(fenceEntityData, out fenceEntity);
             Wall currentFence = fenceEntity as Wall;
 
-            if (data)
+            if (data != null)
             {
                 bool wallNeedsChange = !data.ArchBuildable && (!currentWall || currentWall.Data != data || currentWall.Reversed != reversed);
                 bool fenceNeedsChange = data.ArchBuildable && (!currentFence || currentFence.Data != data || currentFence.Reversed != reversed);
@@ -515,7 +516,7 @@ namespace Warlander.Deedplanner.Data
                     return null;
                 }
             }
-            else if (!data)
+            else
             {
                 if (currentWall)
                 {
@@ -592,14 +593,14 @@ namespace Warlander.Deedplanner.Data
             bool needsChange = !currentDecoration || currentDecoration.Data != data ||
                                currentDecoration.Position != position || Math.Abs(currentDecoration.Rotation - rotation) > float.Epsilon;
 
-            if (data && needsChange)
+            if (data != null && needsChange)
             {
                 Decoration decoration = CreateNewDecoration(decorationEntityData, data, position, rotation);
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, decorationEntityData, currentDecoration, decoration));
                 return decoration;
             }
 
-            if (!data && decorationEntity)
+            if (data == null && decorationEntity)
             {
                 Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, decorationEntityData, currentDecoration, null));
                 return null;
@@ -747,7 +748,7 @@ namespace Warlander.Deedplanner.Data
             string id = element.GetAttribute("id");
             FloorData data;
             Database.Floors.TryGetValue(id, out data);
-            if (!data)
+            if (data == null)
             {
                 Debug.LogWarning("Unable to load floor " + id);
                 return;
@@ -779,7 +780,7 @@ namespace Warlander.Deedplanner.Data
             string id = element.GetAttribute("id");
             WallData data;
             Database.Walls.TryGetValue(id, out data);
-            if (!data)
+            if (data == null)
             {
                 Debug.LogWarning("Unable to load wall " + id);
                 return;
@@ -807,7 +808,7 @@ namespace Warlander.Deedplanner.Data
             string id = element.GetAttribute("id");
             RoofData data;
             Database.Roofs.TryGetValue(id, out data);
-            if (!data)
+            if (data == null)
             {
                 Debug.LogWarning("Unable to load roof " + id);
                 return;
@@ -826,7 +827,7 @@ namespace Warlander.Deedplanner.Data
 
             DecorationData data;
             Database.Decorations.TryGetValue(id, out data);
-            if (!data)
+            if (data == null)
             {
                 Debug.LogWarning("Unable to load decoration " + id);
                 return;
@@ -1042,7 +1043,7 @@ namespace Warlander.Deedplanner.Data
             {
                 if (oldEntity)
                 {
-                    Destroy(oldEntity.gameObject);
+                    Object.Destroy(oldEntity.gameObject);
                 }
 
             }
@@ -1051,7 +1052,7 @@ namespace Warlander.Deedplanner.Data
             {
                 if (newEntity)
                 {
-                    Destroy(newEntity.gameObject);
+                    Object.Destroy(newEntity.gameObject);
                 }
             }
         }

@@ -57,7 +57,7 @@ namespace Warlander.Deedplanner.Data.Roofs
 
         private bool ContainsRoof(Tile t, int floor)
         {
-            if (t)
+            if (t != null)
             {
                 TileEntity entity = t.GetTileContent(floor);
                 return entity && entity.GetType() == typeof(Roof);

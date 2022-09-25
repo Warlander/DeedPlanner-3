@@ -313,8 +313,7 @@ namespace Warlander.Deedplanner.Data
             {
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
-                    Tile tile = ScriptableObject.CreateInstance<Tile>();
-                    tile.Initialize(this, i, i2);
+                    Tile tile = new Tile(this, i, i2);
                     tiles[i, i2] = tile;
                 }
             }
@@ -628,17 +627,6 @@ namespace Warlander.Deedplanner.Data
                 foreach (Renderer renderer in renderers)
                 {
                     renderer.SetPropertyBlock(propertyBlock);
-                }
-            }
-        }
-
-        private void OnDestroy()
-        {
-            for (int i = 0; i <= Width; i++)
-            {
-                for (int i2 = 0; i2 <= Height; i2++)
-                {
-                    Destroy(this[i, i2]);
                 }
             }
         }

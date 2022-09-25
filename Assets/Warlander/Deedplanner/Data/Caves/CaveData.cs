@@ -3,18 +3,18 @@ using Warlander.Deedplanner.Graphics;
 
 namespace Warlander.Deedplanner.Data.Caves
 {
-    public class CaveData : ScriptableObject
+    public class CaveData
     {
-        public string Name { get; private set; }
-        public string ShortName { get; private set; }
+        public string Name { get; }
+        public string ShortName { get; }
 
-        public TextureReference Texture { get; private set; }
+        public TextureReference Texture { get; }
 
-        public bool Wall { get; private set; }
-        public bool Show { get; private set; }
-        public bool Entrance { get; private set; }
+        public bool Wall { get; }
+        public bool Show { get; }
+        public bool Entrance { get; }
 
-        public void Initialize(TextureReference texture, string name, string shortName, bool wall, bool show, bool entrance)
+        public CaveData(TextureReference texture, string name, string shortName, bool wall, bool show, bool entrance)
         {
             Texture = texture;
             Name = name;

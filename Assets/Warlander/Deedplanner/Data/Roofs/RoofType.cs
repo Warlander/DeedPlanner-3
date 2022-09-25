@@ -142,7 +142,7 @@ namespace Warlander.Deedplanner.Data.Roofs
             {
                 for (int y = -1; y <= 1; y++)
                 {
-                    if (!map.GetRelativeTile(tile, x, y))
+                    if (map.GetRelativeTile(tile, x, y) == null)
                     {
                         roof = -1;
                     }

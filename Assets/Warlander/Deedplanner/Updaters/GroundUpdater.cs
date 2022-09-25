@@ -122,7 +122,7 @@ namespace Warlander.Deedplanner.Updaters
             }
             
             GroundData currentClickData = GetCurrentClickData();
-            if (!currentClickData)
+            if (currentClickData == null)
             {
                 return;
             }
@@ -198,7 +198,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void AddTileIfNotNull(Stack<Tile> stack, Tile tile)
         {
-            if (tile)
+            if (tile != null)
             {
                 stack.Push(tile);
             }

@@ -92,7 +92,7 @@ namespace Warlander.Deedplanner.Data.Summary
                 if (!checkedTile.GetHorizontalHouseWall(level))
                 {
                     Tile nearbyTile = map.GetRelativeTile(checkedTile, 0, -1);
-                    if (!nearbyTile)
+                    if (nearbyTile == null)
                     {
                         noRoom = true;
                         break;
@@ -113,7 +113,7 @@ namespace Warlander.Deedplanner.Data.Summary
                 if (!checkedTile.GetVerticalHouseWall(level))
                 {
                     Tile nearbyTile = map.GetRelativeTile(checkedTile, -1, 0);
-                    if (!nearbyTile)
+                    if (nearbyTile == null)
                     {
                         noRoom = true;
                         break;
@@ -131,7 +131,7 @@ namespace Warlander.Deedplanner.Data.Summary
                 }
 
                 Tile leftTile = map.GetRelativeTile(checkedTile, 0, 1);
-                if (!leftTile)
+                if (leftTile == null)
                 {
                     noRoom = true;
                     break;
@@ -152,7 +152,7 @@ namespace Warlander.Deedplanner.Data.Summary
                 }
 
                 Tile rightTile = map.GetRelativeTile(checkedTile, 1, 0);
-                if (!rightTile)
+                if (rightTile == null)
                 {
                     noRoom = true;
                     break;

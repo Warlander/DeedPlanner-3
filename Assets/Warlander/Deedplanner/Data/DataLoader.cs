@@ -146,8 +146,7 @@ namespace Warlander.Deedplanner.Data
                     Debug.LogWarning("No textures loaded, aborting");
                 }
 
-                GroundData data = ScriptableObject.CreateInstance<GroundData>();
-                data.Initialize(name, shortName, tex2d, tex3d, diagonal);
+                GroundData data = new GroundData(name, shortName, tex2d, tex3d, diagonal);
                 Database.Grounds[shortName] = data;
                 foreach (string[] category in categories)
                 {
@@ -197,8 +196,7 @@ namespace Warlander.Deedplanner.Data
                     }
                 }
 
-                CaveData data = ScriptableObject.CreateInstance<CaveData>();
-                data.Initialize(texture, name, shortName, wall, show, entrance);
+                CaveData data = new CaveData(texture, name, shortName, wall, show, entrance);
                 Database.Caves[shortName] = data;
                 foreach (string[] category in categories)
                 {
@@ -254,8 +252,7 @@ namespace Warlander.Deedplanner.Data
                     Debug.LogWarning("No model loaded, aborting");
                 }
 
-                FloorData data = ScriptableObject.CreateInstance<FloorData>();
-                data.Initialize(model, name, shortName, opening, materials);
+                FloorData data = new FloorData(model, name, shortName, opening, materials);
                 Database.Floors[shortName] = data;
                 foreach (string[] category in categories)
                 {
@@ -332,8 +329,7 @@ namespace Warlander.Deedplanner.Data
                     bottomModel = normalModel;
                 }
 
-                WallData data = ScriptableObject.CreateInstance<WallData>();
-                data.Initialize(bottomModel, normalModel, name, shortName, color, scale, houseWall, arch, archBuildable, materials, icon);
+                WallData data = new WallData(bottomModel, normalModel, name, shortName, color, scale, houseWall, arch, archBuildable, materials, icon);
                 Database.Walls[shortName] = data;
                 foreach (string[] category in categories)
                 {
@@ -374,8 +370,7 @@ namespace Warlander.Deedplanner.Data
                     }
                 }
 
-                RoofData data = ScriptableObject.CreateInstance<RoofData>();
-                data.Initialize(texture, name, shortName, materials);
+                RoofData data = new RoofData(texture, name, shortName, materials);
                 Database.Roofs[shortName] = data;
 
                 GuiManager.Instance.RoofsList.Add(data);
@@ -426,8 +421,8 @@ namespace Warlander.Deedplanner.Data
                     }
                 }
 
-                DecorationData data = ScriptableObject.CreateInstance<DecorationData>();
-                data.Initialize(model, name, shortName, type, centerOnly, cornerOnly, floating, tree, bush, materials);
+                DecorationData data = new DecorationData(model, name, shortName, type, centerOnly, cornerOnly, floating,
+                    tree, bush, materials);
                 Database.Decorations[shortName] = data;
 
                 foreach (string[] category in categories)

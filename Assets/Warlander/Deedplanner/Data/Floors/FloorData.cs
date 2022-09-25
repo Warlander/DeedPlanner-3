@@ -3,15 +3,15 @@ using Warlander.Deedplanner.Graphics;
 
 namespace Warlander.Deedplanner.Data.Floors
 {
-    public class FloorData : ScriptableObject
+    public class FloorData
     {
-        public string Name { get; private set; }
-        public string ShortName { get; private set; }
-        public Model Model { get; private set; }
-        public bool Opening { get; private set; }
-        public Materials Materials { get; private set; }
+        public string Name { get; }
+        public string ShortName { get; }
+        public Model Model { get; }
+        public bool Opening { get; }
+        public Materials Materials { get; }
 
-        public void Initialize(Model model, string name, string shortName, bool opening, Materials materials)
+        public FloorData(Model model, string name, string shortName, bool opening, Materials materials)
         {
             Model = model;
             Name = name;
