@@ -118,19 +118,25 @@ namespace Warlander.Deedplanner.Graphics
 
         public void CreateOrGetModel(Material customMaterial, Action<GameObject> callback)
         {
-            ModelProperties properties = new ModelProperties(0, customMaterial);
+            ModelProperties properties = new ModelProperties(Vector2.zero, customMaterial);
             CreateOrGetModel(properties, callback);
         }
 
-        public void CreateOrGetModel(int skew, Action<GameObject> callback)
+        public void CreateOrGetModel(Vector2 skew, Action<GameObject> callback)
         {
             ModelProperties properties = new ModelProperties(skew, null);
+            CreateOrGetModel(properties, callback);
+        }
+        
+        public void CreateOrGetModel(int skew, Action<GameObject> callback)
+        {
+            ModelProperties properties = new ModelProperties(new Vector2(skew, 0), null);
             CreateOrGetModel(properties, callback);
         }
 
         public void CreateOrGetModel(Action<GameObject> callback)
         {
-            ModelProperties properties = new ModelProperties(0, null);
+            ModelProperties properties = new ModelProperties(Vector2.zero, null);
             CreateOrGetModel(properties, callback);
         }
 
@@ -195,7 +201,7 @@ namespace Warlander.Deedplanner.Graphics
                 }
             }
             originalModel.transform.SetParent(modelRoot.transform);
-            ModelProperties originalProperties = new ModelProperties(0, null);
+            ModelProperties originalProperties = new ModelProperties(Vector2.zero, null);
             modifiedModels[originalProperties] = originalModel;
 
             foreach (ModelRequest modelRequest in modelRequests)
@@ -216,7 +222,7 @@ namespace Warlander.Deedplanner.Graphics
 
             GameObject skewedModel = CreateModel(modelProperties);
             skewedModel.name = originalModel.name;
-            if (modelProperties.Skew != 0)
+            if (modelProperties.Skew != Vector2.zero)
             {
                 skewedModel.name += " " + modelProperties.Skew;
             }
@@ -227,10 +233,11 @@ namespace Warlander.Deedplanner.Graphics
 
         private GameObject CreateModel(ModelProperties modelProperties)
         {
-            int skew = modelProperties.Skew;
+            Vector2 skew = modelProperties.Skew;
             // skew is in Wurm units that are 4 Unity units long and 0.1 units high
-            float skewPerUnit = skew * 0.1f * 0.25f;
-
+            float skewXPerUnit = skew.x * 0.1f * 0.25f;
+            float skewZPerUnit = skew.y * 0.1f * 0.25f;
+            
             GameObject clone = Object.Instantiate(originalModel);
 
             MeshFilter[] filters = clone.GetComponentsInChildren<MeshFilter>();
@@ -241,11 +248,11 @@ namespace Warlander.Deedplanner.Graphics
                 newMesh.name = mesh.name;
                 Vector3[] originalVertices = mesh.vertices;
                 Vector3[] newVertices = new Vector3[originalVertices.Length];
-                float reduction = skew * .1f;
+                float reduction = (skew.x - skew.y) * .1f;
                 for (int i = 0; i < originalVertices.Length; i++)
                 {
                     Vector3 vec = originalVertices[i];
-                    newVertices[i] = new Vector3(vec.x, vec.y - reduction + (skewPerUnit * vec.x), vec.z);
+                    newVertices[i] = new Vector3(vec.x, vec.y - reduction + (skewXPerUnit * vec.x + skewZPerUnit * vec.z), vec.z);
                 }
                 newMesh.vertices = newVertices;
                 newMesh.uv = mesh.uv;
@@ -292,10 +299,10 @@ namespace Warlander.Deedplanner.Graphics
 
         private struct ModelProperties
         {
-            public readonly int Skew;
+            public readonly Vector2 Skew;
             public readonly Material CustomMaterial;
 
-            public ModelProperties(int skew, Material customMaterial)
+            public ModelProperties(Vector2 skew, Material customMaterial)
             {
                 Skew = skew;
                 CustomMaterial = customMaterial;
@@ -303,7 +310,7 @@ namespace Warlander.Deedplanner.Graphics
 
             public bool IsOriginalModel()
             {
-                return Skew == 0 && !CustomMaterial;
+                return Skew == Vector2.zero && !CustomMaterial;
             }
         }
     }
