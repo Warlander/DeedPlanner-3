@@ -93,30 +93,50 @@ namespace Warlander.Deedplanner.Data.Bridges
 
             IBridgeType bridgeTypeCalc = GetTypeForBridge(bridgeType);
 
-            int bridgeLength = Mathf.Max(endX - startX, endY - startY) + 1;
-            float startHeight = GetAbsoluteHeight(map[startX, startY], firstFloor);
-            float endHeight = GetAbsoluteHeight(map[endX + 1, endY + 1], secondFloor);
-            float heightStep = (endHeight - startHeight) / bridgeWidth;
+            int bridgeLength = Mathf.Max(endX - startX, endY - startY) + 2;
+            int startHeight = GetAbsoluteHeight(map[startX, startY], firstFloor);
+            int endHeight = GetAbsoluteHeight(map[endX + 1, endY + 1], secondFloor);
+            float heightStep = (float)(endHeight - startHeight) / bridgeWidth;
         
             for (int x = startX; x <= endX; x++) {
                 for (int y = startY; y <= endY; y++) {
                     int currentSegment = verticalOrientation ? y - startY : x - startX;
-                    float currentHeight = startHeight + heightStep * currentSegment;
-                    float currentExtraData = bridgeTypeCalc.CalculateAddedHeight(currentSegment, bridgeLength,
-                        (int)startHeight, (int)endHeight, additionalData);
-                    float totalHeight = currentHeight + currentExtraData;
+                    float totalHeight = CalculateHeightAtPoint(currentSegment, bridgeTypeCalc, bridgeLength,
+                        startHeight, endHeight, heightStep);
+                    float totalHeightAfter = CalculateHeightAtPoint(currentSegment + 1, bridgeTypeCalc, bridgeLength,
+                        startHeight, endHeight, heightStep);
+                    int delta = Mathf.RoundToInt(totalHeightAfter - totalHeight);
                     BridgePartType segment = segments[currentSegment];
                     BridgePartSide side = GetPartSide(startX, startY, endX, endY, x, y, verticalOrientation);
                     EntityOrientation orientation = GetPartOrientation(verticalOrientation, currentSegment);
 
                     GameObject bridgePartObject = new GameObject("Bridge Part " + Data.Name, typeof(BridgePart));
                     BridgePart bridgePart = bridgePartObject.GetComponent<BridgePart>();
-                    bridgePart.Initialise(this, segment, side, orientation, x, y, totalHeight);
+                    bridgePart.Initialise(this, segment, side, orientation, x, y, totalHeight, delta);
                     
                     bridgeParts.Add(bridgePart);
                     map[x, y].RegisterBridgePart(bridgePart);
                 }
             }
+        }
+
+        private float CalculateHeightAtPoint(int segment, IBridgeType bridgeTypeCalc, int bridgeLength,
+            int startHeight, int endHeight, float heightStep)
+        {
+            if (segment < 0)
+            {
+                return startHeight;
+            }
+            if (segment >= bridgeLength)
+            {
+                return endHeight;
+            }
+            
+            float currentHeight = startHeight + heightStep * segment;
+            float currentExtraData = bridgeTypeCalc.CalculateAddedHeight(segment, bridgeLength,
+                startHeight, endHeight, additionalData);
+            float totalHeight = currentHeight + currentExtraData;
+            return totalHeight;
         }
         
         private int GetAbsoluteHeight(Tile tile, int floor) {
