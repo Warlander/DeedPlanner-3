@@ -22,11 +22,7 @@ namespace Warlander.Deedplanner.Graphics
         public static void LoadModel(string path, Vector3 scale, Action<GameObject> onLoaded)
         {
             Debug.Log("Loading model at " + path);
-            if (path.Contains("RopeBridge"))
-            {
-                Debug.Log("");
-            }
-            
+
             WebUtils.ReadUrlToByteArray(path, data =>
             {
                 using BinaryReader source = new BinaryReader(new MemoryStream(data));
