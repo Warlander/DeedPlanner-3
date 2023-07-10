@@ -17,6 +17,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         public void UpdateDrag(Camera attachedCamera, PointerEventData eventData)
         {
             float factor = topScale * Mathf.Pow(attachedCamera.scaledPixelHeight, -1f) * 2f;
+
             topPosition += new Vector2(-eventData.delta.x * factor, -eventData.delta.y * factor);
         }
 
