@@ -10,7 +10,7 @@ namespace Warlander.Deedplanner
     public class Properties
     {
         private const string PropertiesKey = "properties";
-        
+
         public static readonly bool Mobile = Application.isMobilePlatform;
         public static readonly bool Web = Application.platform == RuntimePlatform.WebGLPlayer;
 
@@ -27,7 +27,7 @@ namespace Warlander.Deedplanner
             {
                 return new Properties();
             }
-            
+
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Properties));
             using (TextReader reader = new StringReader(PlayerPrefs.GetString(PropertiesKey)))
             {
@@ -45,10 +45,8 @@ namespace Warlander.Deedplanner
         public float FppShiftModifier = 5f;
         public float FppControlModifier = 0.2f;
 
-        public float TopMouseSensitivity = 0.2f;
         public float TopMovementSpeed = 16f;
 
-        public float IsoMouseSensitivity = 0.2f;
         public float IsoMovementSpeed = 16f;
 
         public float HeightDragSensitivity = 0.5f;
@@ -93,9 +91,9 @@ namespace Warlander.Deedplanner
             }
             PlayerPrefs.SetString(PropertiesKey, builder.ToString());
             PlayerPrefs.Save();
-            
+
             Debug.Log("Properties saved");
-            
+
             Saved?.Invoke();
         }
     }
