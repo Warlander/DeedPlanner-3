@@ -24,7 +24,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         {
             if (focusedWindow)
             {
-                if (mouseOver)
+                if (mouseOver && !Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift))
                 {
                     Vector2 topPoint = new Vector2(focusedPoint.x, focusedPoint.z);
 
