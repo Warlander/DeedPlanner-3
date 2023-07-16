@@ -1,21 +1,27 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Warlander.UI.Windows;
+using Zenject;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Windows
 {
     public class GraphicSettingsWindow : MonoBehaviour
     {
-        [SerializeField] private Toggle simpleWaterToggle = null;
-        [SerializeField] private Toggle highWaterToggle = null;
-        [SerializeField] private Toggle ultraWaterToggle = null;
+        [Inject] private Window _window;
+        
+        [SerializeField] private Toggle simpleWaterToggle;
+        [SerializeField] private Toggle highWaterToggle;
+        [SerializeField] private Toggle ultraWaterToggle;
 
-        [SerializeField] private TMP_Dropdown overallQualityDropdown = null;
+        [SerializeField] private TMP_Dropdown overallQualityDropdown;
 
-        [SerializeField] private Slider guiScaleSlider = null;
-        [SerializeField] private TMP_Text guiScaleValueText = null;
+        [SerializeField] private Slider guiScaleSlider;
+        [SerializeField] private TMP_Text guiScaleValueText;
 
-        private void Awake()
+        [SerializeField] private Button _saveButton;
+
+        private void Start()
         {
             string[] availableQualitySettings = QualitySettings.names;
 
@@ -23,19 +29,17 @@ namespace Warlander.Deedplanner.Gui
             {
                 overallQualityDropdown.options.Add(new TMP_Dropdown.OptionData(qualitySetting));
             }
-        }
-        
-        private void OnEnable()
-        {
-            ResetState();
+            
             ApplyProperties();
+            
+            guiScaleSlider.onValueChanged.AddListener(GuiScaleOnValueChanged);
+            _saveButton.onClick.AddListener(SaveButtonOnClick);
         }
 
-        private void ResetState()
+        private void SaveButtonOnClick()
         {
-            simpleWaterToggle.isOn = false;
-            highWaterToggle.isOn = false;
-            ultraWaterToggle.isOn = false;
+            SaveProperties();
+            _window.Close();
         }
 
         private void ApplyProperties()
@@ -58,17 +62,11 @@ namespace Warlander.Deedplanner.Gui
             guiScaleSlider.value = Properties.Instance.GuiScale;
         }
 
-        public void OnGuiScaleChanged()
+        private void GuiScaleOnValueChanged(float value)
         {
             guiScaleValueText.text = Mathf.RoundToInt(guiScaleSlider.value).ToString();
         }
-
-        public void OnSaveButton()
-        {
-            SaveProperties();
-            gameObject.SetActive(false);
-        }
-
+        
         private void SaveProperties()
         {
             if (simpleWaterToggle.isOn)

@@ -89,12 +89,6 @@ namespace Warlander.Deedplanner.Logic
             WurmAssetsLoader.LoadModel(modelFilePath, OnModelLoaded);
         }
 
-        public void ShowTextWindowDebug()
-        {
-            Window window = GuiManager.Instance.CreateTextWindow("Test Window", "Testing\nTesting Longer Text");
-            window.ShowWindow();
-        }
-
         private void OnModelLoaded(GameObject model)
         {
             // Do nothing, this is test of model loading system and we do nothing extra with loaded model.

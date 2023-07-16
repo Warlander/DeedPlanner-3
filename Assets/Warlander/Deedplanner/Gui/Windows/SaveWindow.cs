@@ -12,22 +12,31 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
+using Warlander.UI.Windows;
+using Zenject;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Windows
 {
     public class SaveWindow : MonoBehaviour
     {
-        [SerializeField] private Window window = null;
-        
-        [SerializeField] private Button pastebinButton = null;
-        [SerializeField] private TMP_Dropdown pastebinDropdown = null;
+        [Inject] private Window _window = null;
 
-        [SerializeField] private Button webVersionButton = null;
-        [SerializeField] private TMP_Dropdown webVersionDropdown = null;
+        [SerializeField] private Button _saveToFileButton;
+        [SerializeField] private Button _pastebinButton = null;
+        [SerializeField] private TMP_Dropdown _pastebinDropdown = null;
+        [SerializeField] private Button _webVersionButton = null;
+        [SerializeField] private TMP_Dropdown _webVersionDropdown = null;
 
-        private UnityWebRequest currentPastebinRequest;
+        private UnityWebRequest _currentPastebinRequest;
 
-        public void OnFileSave()
+        private void Start()
+        {
+            _saveToFileButton.onClick.AddListener(SaveToFileOnClick);
+            _pastebinButton.onClick.AddListener(PastebinOnClick);
+            _webVersionButton.onClick.AddListener(WebVersionOnClick);
+        }
+
+        private void SaveToFileOnClick()
         {
             Map map = GameManager.Instance.Map;
 
@@ -71,23 +80,23 @@ namespace Warlander.Deedplanner.Gui
             byte[] bytes = Encoding.Default.GetBytes(build.ToString());
             File.WriteAllBytes(path, bytes);
 #endif
-            window.HideWindow();
+            _window.Close();
         }
 
-        public void OnPastebinSave()
+        private void PastebinOnClick()
         {
-            PostMapToPastebin(pastebinDropdown.value, OnPastebinUploadComplete);
+            PostMapToPastebin(_pastebinDropdown.value, OnPastebinUploadComplete);
         }
 
-        public void OnWebVersionSave()
+        private void WebVersionOnClick()
         {
-            PostMapToPastebin(webVersionDropdown.value, OnWebVersionUploadComplete);
+            PostMapToPastebin(_webVersionDropdown.value, OnWebVersionUploadComplete);
         }
-        
+
         private void PostMapToPastebin(int expirationValueIndex, Action<AsyncOperation> completedCallback)
         {
-            pastebinButton.interactable = false;
-            webVersionButton.interactable = false;
+            _pastebinButton.interactable = false;
+            _webVersionButton.interactable = false;
             
             Map map = GameManager.Instance.Map;
 
@@ -113,23 +122,23 @@ namespace Warlander.Deedplanner.Gui
             const string pastebinApiEndpoint = "https://pastebin.com/api/api_post.php";
             string requestLink = WebLinkUtils.AsCrossOriginLink(pastebinApiEndpoint);
 
-            currentPastebinRequest = UnityWebRequest.Post(requestLink, form);
-            UnityWebRequestAsyncOperation operation = currentPastebinRequest.SendWebRequest();
+            _currentPastebinRequest = UnityWebRequest.Post(requestLink, form);
+            UnityWebRequestAsyncOperation operation = _currentPastebinRequest.SendWebRequest();
             operation.completed += completedCallback;
         }
 
         private void OnPastebinUploadComplete(AsyncOperation obj)
         {
-            pastebinButton.interactable = true;
-            webVersionButton.interactable = true;
+            _pastebinButton.interactable = true;
+            _webVersionButton.interactable = true;
 
-            if (!string.IsNullOrEmpty(currentPastebinRequest.error))
+            if (!string.IsNullOrEmpty(_currentPastebinRequest.error))
             {
-                Debug.LogError(currentPastebinRequest.error);
+                Debug.LogError(_currentPastebinRequest.error);
             }
 
-            string response = currentPastebinRequest.downloadHandler.text;
-            currentPastebinRequest.Dispose();
+            string response = _currentPastebinRequest.downloadHandler.text;
+            _currentPastebinRequest.Dispose();
             if (response.Contains("Bad API request"))
             {
                 Debug.LogError(response);
@@ -139,15 +148,15 @@ namespace Warlander.Deedplanner.Gui
                 Application.OpenURL(response);
             }
             
-            window.HideWindow();
+            _window.Close();
         }
 
         private void OnWebVersionUploadComplete(AsyncOperation obj)
         {
-            pastebinButton.interactable = true;
-            webVersionButton.interactable = true;
+            _pastebinButton.interactable = true;
+            _webVersionButton.interactable = true;
             
-            string response = currentPastebinRequest.downloadHandler.text;
+            string response = _currentPastebinRequest.downloadHandler.text;
             if (response.Contains("Bad API request"))
             {
                 Debug.LogError(response);
@@ -158,7 +167,7 @@ namespace Warlander.Deedplanner.Gui
                 Application.OpenURL(webVersionUrl);
             }
 
-            window.HideWindow();
+            _window.Close();
         }
 
         private byte[] Compress(byte[] raw)

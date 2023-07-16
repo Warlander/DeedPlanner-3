@@ -13,16 +13,29 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
+using Warlander.UI.Windows;
+using Zenject;
 
 namespace Warlander.Deedplanner.Updaters
 {
     public class MenuUpdater : AbstractUpdater
     {
-        [SerializeField] private Button fullscreenButton = null;
-        [SerializeField] private Button quitButton = null;
+        [Inject] private WindowCoordinator _windowCoordinator;
+
+        [SerializeField] private Button _resizeButton;
+        [SerializeField] private Button _clearButton;
+        [SerializeField] private Button _saveButton;
+        [SerializeField] private Button _loadButton;
+        [SerializeField] private Button _graphicsSettingsButton;
+        [SerializeField] private Button _inputSettingsButton;
+        [SerializeField] private Button _creditsButton;
+        [SerializeField] private Button _fullscreenButton;
+        [SerializeField] private Button _quitButton;
+        [SerializeField] private Button _patreonButton;
+        [SerializeField] private Button _paypalButton;
         
-        [SerializeField] private TMP_Text steamConnectionText = null;
-        [SerializeField] private TMP_Text versionText = null;
+        [SerializeField] private TMP_Text _steamConnectionText;
+        [SerializeField] private TMP_Text _versionText;
         
         private void Start()
         {
@@ -31,15 +44,27 @@ namespace Warlander.Deedplanner.Updaters
 
             if (mobile || web)
             {
-                quitButton.gameObject.SetActive(false);
+                _quitButton.gameObject.SetActive(false);
             }
 
             if (mobile)
             {
-                fullscreenButton.gameObject.SetActive(false);
+                _fullscreenButton.gameObject.SetActive(false);
             }
 
-            versionText.text = Constants.TitleString;
+            _versionText.text = Constants.TitleString;
+            
+            _resizeButton.onClick.AddListener(ResizeButtonOnClick);
+            _clearButton.onClick.AddListener(ClearOnClick);
+            _saveButton.onClick.AddListener(SaveOnClick);
+            _loadButton.onClick.AddListener(LoadOnClick);
+            _graphicsSettingsButton.onClick.AddListener(GraphicsSettingsOnClick);
+            _inputSettingsButton.onClick.AddListener(InputSettingsOnClick);
+            _creditsButton.onClick.AddListener(CreditsOnClick);
+            _fullscreenButton.onClick.AddListener(FullscreenOnClick);
+            _quitButton.onClick.AddListener(QuitOnClick);
+            _patreonButton.onClick.AddListener(PatreonOnClick);
+            _paypalButton.onClick.AddListener(PaypalOnClick);
         }
         
         private void OnEnable()
@@ -47,51 +72,51 @@ namespace Warlander.Deedplanner.Updaters
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
 
             bool connectedToSteam = SteamManager.ConnectedToSteam;
-            steamConnectionText.gameObject.SetActive(connectedToSteam);
+            _steamConnectionText.gameObject.SetActive(connectedToSteam);
 #if !DISABLESTEAMWORKS
             if (connectedToSteam)
             {
-                steamConnectionText.text = "Connected to Steam as " + SteamFriends.GetPersonaName();
+                _steamConnectionText.text = "Connected to Steam as " + SteamFriends.GetPersonaName();
             }
 #endif
         }
 
-        public void OnResizeMap()
+        private void ResizeButtonOnClick()
         {
-            GuiManager.Instance.ShowWindow(WindowId.ResizeMap);
+            _windowCoordinator.CreateWindowExclusive(WindowNames.ResizeMapWindow);
         }
 
-        public void OnClearMap()
+        private void ClearOnClick()
         {
-            GuiManager.Instance.ShowWindow(WindowId.ClearMap);
+            _windowCoordinator.CreateWindowExclusive(WindowNames.ClearMapWindow);
         }
 
-        public void OnSaveMap()
+        private void SaveOnClick()
         {
-            GuiManager.Instance.ShowWindow(WindowId.SaveMap);
+            _windowCoordinator.CreateWindowExclusive(WindowNames.SaveMapWindow);
         }
 
-        public void OnLoadMap()
+        private void LoadOnClick()
         {
-            GuiManager.Instance.ShowWindow(WindowId.LoadMap);
+            _windowCoordinator.CreateWindowExclusive(WindowNames.LoadMapWindow);
         }
 
-        public void OnGraphicsSettings()
+        private void GraphicsSettingsOnClick()
         {
-            GuiManager.Instance.ShowWindow(WindowId.GraphicsSettings);
+            _windowCoordinator.CreateWindowExclusive(WindowNames.GraphicsSettingsWindow);
+        }
+        
+        private void InputSettingsOnClick()
+        {
+            _windowCoordinator.CreateWindowExclusive(WindowNames.InputSettingsWindow);
         }
 
-        public void OnInputSettings()
+        private void CreditsOnClick()
         {
-            GuiManager.Instance.ShowWindow(WindowId.InputSettings);
+            _windowCoordinator.CreateWindow(WindowNames.CreditsWindow);
         }
 
-        public void OnAbout()
-        {
-            GuiManager.Instance.ShowWindow(WindowId.About);
-        }
-
-        public void OnToggleFullscreen()
+        private void FullscreenOnClick()
         {
             if (Screen.fullScreen)
             {
@@ -104,19 +129,19 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        public void OnQuit()
+        private void QuitOnClick()
         {
             // TODO: add auto-saving before quit logic
             Properties.Instance.SaveProperties();
             Application.Quit();
         }
 
-        public void OnPatreon()
+        private void PatreonOnClick()
         {
             Application.OpenURL("https://www.patreon.com/warlander");
         }
 
-        public void OnPaypal()
+        private void PaypalOnClick()
         {
             Application.OpenURL("https://www.paypal.me/MCyranowicz/10eur");
         }

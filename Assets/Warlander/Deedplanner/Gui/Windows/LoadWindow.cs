@@ -5,19 +5,30 @@ using System.Text;
 using SFB;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
+using Warlander.UI.Windows;
+using Zenject;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Windows
 {
     public class LoadWindow : MonoBehaviour
     {
-        
-        [SerializeField] private Window window = null;
-        [SerializeField] private TMP_InputField pastebinInput = null;
+        [Inject] private Window _window = null;
 
-        public void OnFileLoad()
+        [SerializeField] private Button _loadFromFileButton;
+        [SerializeField] private Button _loadFromWebButton;
+        [SerializeField] private TMP_InputField _pastebinInput = null;
+
+        private void Start()
+        {
+            _loadFromFileButton.onClick.AddListener(LoadFromFileOnClick);
+            _loadFromWebButton.onClick.AddListener(LoadFromWebOnClick);
+        }
+
+        private void LoadFromFileOnClick()
         {
             if (Properties.Web)
             {
@@ -26,55 +37,13 @@ namespace Warlander.Deedplanner.Gui
             else
             {
                 LoadFileStandalone();
-                window.HideWindow();
+                _window.Close();
             }
         }
 
-        private void LoadFileBrowser()
+        private void LoadFromWebOnClick()
         {
-#if UNITY_WEBGL
-            JavaScriptUtils.UploadNative(gameObject.name, nameof(LoadFileBrowserCallback));
-#endif
-        }
-
-        public void LoadFileBrowserCallback(string result)
-        {
-            if (string.IsNullOrEmpty(result))
-            {
-                return;
-            }
-            
-            GameManager.Instance.LoadMap(result);
-            window.HideWindow();
-        }
-
-        private void LoadFileStandalone()
-        {
-            ExtensionFilter[] extensionArray = {
-                new ExtensionFilter("DeedPlanner 3 save", "MAP")
-            };
-            
-            string[] pathArray = StandaloneFileBrowser.OpenFilePanel("Load Map", "", extensionArray, false);
-            if (pathArray == null || pathArray.Length != 1)
-            {
-                return;
-            }
-
-            string path = pathArray[0];
-            if (string.IsNullOrEmpty(path))
-            {
-                return;
-            }
-            
-            byte[] mapBytes = File.ReadAllBytes(path);
-            string mapString = Encoding.Default.GetString(mapBytes);
-
-            GameManager.Instance.LoadMap(mapString);
-        }
-
-        public void OnWebLoad()
-        {
-            string rawLink = pastebinInput.text;
+            string rawLink = _pastebinInput.text;
 
             try
             {
@@ -107,10 +76,52 @@ namespace Warlander.Deedplanner.Gui
             }
             finally
             {
-                window.HideWindow();
+                _window.Close();
             }
         }
-        
+
+        private void LoadFileBrowser()
+        {
+#if UNITY_WEBGL
+            JavaScriptUtils.UploadNative(gameObject.name, nameof(LoadFileBrowserCallback));
+#endif
+        }
+
+        public void LoadFileBrowserCallback(string result)
+        {
+            if (string.IsNullOrEmpty(result))
+            {
+                return;
+            }
+            
+            GameManager.Instance.LoadMap(result);
+            _window.Close();
+        }
+
+        private void LoadFileStandalone()
+        {
+            ExtensionFilter[] extensionArray = {
+                new ExtensionFilter("DeedPlanner 3 save", "MAP")
+            };
+            
+            string[] pathArray = StandaloneFileBrowser.OpenFilePanel("Load Map", "", extensionArray, false);
+            if (pathArray == null || pathArray.Length != 1)
+            {
+                return;
+            }
+
+            string path = pathArray[0];
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+            
+            byte[] mapBytes = File.ReadAllBytes(path);
+            string mapString = Encoding.Default.GetString(mapBytes);
+
+            GameManager.Instance.LoadMap(mapString);
+        }
+
         private byte[] Decompress(byte[] gzip)
         {
             using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
