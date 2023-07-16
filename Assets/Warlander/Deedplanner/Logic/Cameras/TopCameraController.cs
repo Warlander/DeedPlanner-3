@@ -8,25 +8,27 @@ namespace Warlander.Deedplanner.Logic.Cameras
     {
         private Vector2 topPosition;
         private float topScale = 40;
-        
+
         public bool SupportsMode(CameraMode mode)
         {
             return mode == CameraMode.Top;
         }
 
-        public void UpdateDrag(PointerEventData eventData)
+        public void UpdateDrag(Camera attachedCamera, PointerEventData eventData)
         {
-            topPosition += new Vector2(-eventData.delta.x * Properties.Instance.TopMouseSensitivity, -eventData.delta.y * Properties.Instance.TopMouseSensitivity);
+            float factor = topScale * Mathf.Pow(attachedCamera.scaledPixelHeight, -1f) * 2f;
+
+            topPosition += new Vector2(-eventData.delta.x * factor, -eventData.delta.y * factor);
         }
 
         public void UpdateInput(Map map, CameraMode mode, Vector3 focusedPoint, float aspect, int currentFloor, bool focusedWindow, bool mouseOver)
         {
             if (focusedWindow)
             {
-                if (mouseOver)
+                if (mouseOver && !Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift))
                 {
                     Vector2 topPoint = new Vector2(focusedPoint.x, focusedPoint.z);
-                    
+
                     float scroll = Input.mouseScrollDelta.y;
                     if (scroll > 0 && topScale > 10)
                     {
@@ -85,7 +87,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             cameraTransform.localRotation = Quaternion.Euler(90, 0, 0);
             cameraParentTransform.localRotation = Quaternion.identity;
         }
-        
+
         public Vector2 CalculateWaterTablePosition(Vector3 cameraPosition)
         {
             return new Vector2(cameraPosition.x, cameraPosition.z);

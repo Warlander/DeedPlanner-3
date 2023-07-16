@@ -10,13 +10,13 @@ namespace Warlander.Deedplanner.Logic.Cameras
         private Vector3 fppPosition = new Vector3(-3, 4, -3);
         private Vector3 fppRotation = new Vector3(15, 45, 0);
         private const float WurmianHeight = 1.4f;
-        
+
         public bool SupportsMode(CameraMode mode)
         {
             return mode == CameraMode.Perspective || mode == CameraMode.Wurmian;
         }
 
-        public void UpdateDrag(PointerEventData eventData)
+        public void UpdateDrag(Camera attachedCamera, PointerEventData eventData)
         {
             fppRotation += new Vector3(-eventData.delta.y * Properties.Instance.FppMouseSensitivity, eventData.delta.x * Properties.Instance.FppMouseSensitivity, 0);
             fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
@@ -35,7 +35,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 {
                     movementMultiplier *= Properties.Instance.FppControlModifier;
                 }
-                
+
                 Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                 movement *= Properties.Instance.FppMovementSpeed * Time.deltaTime * movementMultiplier;
 

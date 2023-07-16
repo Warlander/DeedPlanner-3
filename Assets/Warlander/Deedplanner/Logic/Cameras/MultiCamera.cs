@@ -21,7 +21,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         private readonly List<ICameraController> cameraControllers = new List<ICameraController>();
         public Camera AttachedCamera { get; private set; }
         public Vector2 MousePosition { get; private set; }
-        
+
         [SerializeField] private int screenId = 0;
         [SerializeField] private GameObject screen = null;
         [SerializeField] private CameraMode cameraMode = CameraMode.Top;
@@ -55,7 +55,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 return null;
             }
         }
-        
+
         public CameraMode CameraMode {
             get => cameraMode;
             set {
@@ -104,7 +104,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             cameraControllers.Add(new FppCameraController());
             cameraControllers.Add(new IsoCameraController());
             cameraControllers.Add(new TopCameraController());
-            
+
             parentTransform = transform.parent;
             AttachedCamera = GetComponent<Camera>();
             attachedProjector = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Yellow);
@@ -119,8 +119,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 {
                     return;
                 }
-                
-                CameraController.UpdateDrag(data);
+
+                CameraController.UpdateDrag(AttachedCamera, data);
             });
 
             eventCatcher.OnBeginDragEvent.AddListener(data =>
@@ -185,7 +185,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         private void UpdateRaycast()
         {
             CurrentRaycast = default;
-            
+
             if (MouseOver)
             {
                 Ray ray = CreateMouseRay();
@@ -193,19 +193,19 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 int mask = LayerMasks.GetMaskForTab(LayoutManager.Instance.CurrentTab);
                 bool hit = Physics.Raycast(ray, out raycastHit, 20000, mask);
                 StringBuilder tooltipBuild = new StringBuilder();
-                
+
                 if (hit && Cursor.visible)
                 {
                     CurrentRaycast = raycastHit;
 
                     bool isHeightEditing = LayoutManager.Instance.CurrentTab == Tab.Height;
-                    
+
                     GameObject hitObject = raycastHit.transform.gameObject;
                     TileEntity tileEntity = hitObject.GetComponent<TileEntity>();
                     GroundMesh groundMesh = hitObject.GetComponent<GroundMesh>();
                     OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
                     HeightmapHandle heightmapHandle = GameManager.Instance.Map.SurfaceGridMesh.RaycastHandles();
-                    
+
                     if (tileEntity)
                     {
                         tooltipBuild.Append(tileEntity.ToString());
@@ -222,7 +222,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                         else if (isHeightEditing)
                         {
                             tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
-                            
+
                             Map map = GameManager.Instance.Map;
                             Vector3 raycastPoint = raycastHit.point;
                             Vector2Int tileCoords = new Vector2Int(Mathf.FloorToInt(raycastPoint.x / 4), Mathf.FloorToInt(raycastPoint.z / 4));
@@ -239,7 +239,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                             int h01Digits = StringUtils.DigitsStringCount(h01);
                             int h11Digits = StringUtils.DigitsStringCount(h11);
                             int maxDigits = Mathf.Max(h00Digits, h10Digits, h01Digits, h11Digits);
-                            
+
                             tooltipBuild.Append("<mspace=0.5em>");
                             tooltipBuild.Append(StringUtils.PaddedNumberString(h01, maxDigits)).Append("   ").Append(StringUtils.PaddedNumberString(h11, maxDigits)).AppendLine();
                             tooltipBuild.AppendLine();
@@ -284,7 +284,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             int editingFloor = forceSurfaceEditing ? 0 : Floor;
             bool renderWater = RenderEntireMap || editingFloor == 0 || editingFloor == -1;
             Vector2 waterPosition = CameraController.CalculateWaterTablePosition(AttachedCamera.transform.position);
-            
+
             if (Properties.Instance.WaterQuality == Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(renderWater);
@@ -309,7 +309,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             Tab tab = LayoutManager.Instance.CurrentTab;
             bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
             int editingFloor = forceSurfaceEditing ? 0 : Floor;
-            
+
             Map map = GameManager.Instance.Map;
             if (map.RenderedFloor != editingFloor)
             {
@@ -333,14 +333,14 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 map.SurfaceGridMesh.ApplyAllChanges();
             }
         }
-        
+
         private void PrepareProjector()
         {
             if (!CurrentRaycast.collider)
             {
                 return;
             }
-            
+
             GameObject hitObject = CurrentRaycast.collider.gameObject;
             bool gridOrGroundHit = hitObject.GetComponent<GroundMesh>() || hitObject.GetComponent<OverlayMesh>();
             if (!gridOrGroundHit)
@@ -378,7 +378,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             {
                 return;
             }
-            
+
             GameObject hitObject = CurrentRaycast.collider.gameObject;
             GroundMesh groundMesh = hitObject.GetComponent<GroundMesh>();
             OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
