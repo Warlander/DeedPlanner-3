@@ -24716,6 +24716,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _debugProperties: {fileID: 11400000, guid: 814971153ac067e47b61f466e9322aa6, type: 2}
+  _layoutManager: {fileID: 167561238}
 --- !u!114 &1412727819
 MonoBehaviour:
   m_ObjectHideFlags: 0

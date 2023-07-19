@@ -99,18 +99,21 @@ namespace Warlander.Deedplanner.Logic.Cameras
             set => selectionBox.sizeDelta = value;
         }
 
-        private void Start()
+        private void Awake()
         {
             cameraControllers.Add(new FppCameraController());
             cameraControllers.Add(new IsoCameraController());
             cameraControllers.Add(new TopCameraController());
-
+            
             parentTransform = transform.parent;
             AttachedCamera = GetComponent<Camera>();
             attachedProjector = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Yellow);
             attachedProjector.SetRenderCameraId(screenId);
             attachedProjector.gameObject.SetActive(false);
-
+        }
+        
+        private void Start()
+        {
             MouseEventCatcher eventCatcher = screen.GetComponent<MouseEventCatcher>();
 
             eventCatcher.OnDragEvent.AddListener(data =>

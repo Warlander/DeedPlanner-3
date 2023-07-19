@@ -135,6 +135,7 @@ namespace Warlander.Deedplanner.Gui
 
             Properties.Instance.Saved += ValidateState;
             ValidateState();
+            ChangeLayout(currentLayout);
         }
 
         private void CreateAndStartTabFadeAnimation(Tab previousTab, Tab newTab)
@@ -187,9 +188,8 @@ namespace Warlander.Deedplanner.Gui
             mainCanvasScaler.referenceResolution = new Vector2(referenceWidth, referenceHeight);
         }
         
-        public void OnLayoutChange(LayoutReference layoutReference)
+        public void ChangeLayout(Layout layout)
         {
-            Layout layout = layoutReference.Layout;
             currentLayout = layout;
 
             switch (layout)
