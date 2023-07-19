@@ -86,12 +86,7 @@ namespace Warlander.Deedplanner.Logic
 
             string modelFilePath = selection[0];
             
-            WurmAssetsLoader.LoadModel(modelFilePath, OnModelLoaded);
-        }
-
-        private void OnModelLoaded(GameObject model)
-        {
-            // Do nothing, this is test of model loading system and we do nothing extra with loaded model.
+            WurmAssetsLoader.LoadModel(modelFilePath, null);
         }
 
         private string GetTestMapPath(TestMap map)

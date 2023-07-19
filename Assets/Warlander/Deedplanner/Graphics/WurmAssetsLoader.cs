@@ -45,14 +45,14 @@ namespace Warlander.Deedplanner.Graphics
 
                         if (loadedMeshes == meshCount)
                         {
-                            onLoaded.Invoke(modelGameObject);
+                            onLoaded?.Invoke(modelGameObject);
                         }
                     });
                 }
 
                 if (meshCount == 0)
                 {
-                    onLoaded.Invoke(modelGameObject);
+                    onLoaded?.Invoke(modelGameObject);
                 }
             });
         }
