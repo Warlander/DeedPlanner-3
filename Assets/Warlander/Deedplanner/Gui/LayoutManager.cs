@@ -37,7 +37,7 @@ namespace Warlander.Deedplanner.Gui
 
         [SerializeField] private Tooltip tooltip = null;
 
-        public event GenericEventArgs<Tab> TabChanged;
+        public event Action<Tab> TabChanged;
 
         private int activeWindow;
         private Layout currentLayout = Layout.Single;

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 using UnityEngine;
@@ -35,7 +36,7 @@ namespace Warlander.Deedplanner
             }
         }
 
-        public event GenericEventArgs Saved;
+        public event Action Saved;
 
         public int FieldOfView = 60;
 
