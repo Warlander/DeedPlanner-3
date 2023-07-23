@@ -2,6 +2,7 @@
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Cameras;
 using Zenject;
 
 namespace Warlander.Deedplanner.Installers
@@ -14,6 +15,10 @@ namespace Warlander.Deedplanner.Installers
         public override void InstallBindings()
         {
             Container.Bind<LayoutManager>().FromInstance(_layoutManager);
+
+            Container.Bind<ICameraController>().To<FppCameraController>().AsTransient();
+            Container.Bind<ICameraController>().To<IsoCameraController>().AsTransient();
+            Container.Bind<ICameraController>().To<TopCameraController>().AsTransient();
             
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
             Container.BindInterfacesAndSelfTo<FileDragManager>().AsSingle().NonLazy();

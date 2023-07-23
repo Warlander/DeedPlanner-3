@@ -6,7 +6,8 @@ using System;
 using DG.Tweening;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic.Cameras;
-using Warlander.Deedplanner.Utils;
+using Warlander.Deedplanner.Settings;
+using Zenject;
 
 namespace Warlander.Deedplanner.Gui
 {
@@ -14,6 +15,8 @@ namespace Warlander.Deedplanner.Gui
     {
         public static LayoutManager Instance { get; private set; }
 
+        [Inject] private DPSettings _settings;
+        
         [SerializeField] private CanvasScaler mainCanvasScaler = null;
         
         [SerializeField] private Toggle[] indicatorButtons = new Toggle[4];
@@ -133,7 +136,7 @@ namespace Warlander.Deedplanner.Gui
             // state validation at launch - it makes development and debugging easier as you don't need to make sure tab is set to the proper one when commiting
             CurrentTab = currentTab;
 
-            Properties.Instance.Saved += ValidateState;
+            _settings.Modified += ValidateState;
             ValidateState();
             ChangeLayout(currentLayout);
         }
@@ -176,7 +179,7 @@ namespace Warlander.Deedplanner.Gui
         
         private void ValidateState()
         {
-            WaterQuality waterQuality = Properties.Instance.WaterQuality;
+            WaterQuality waterQuality = _settings.WaterQuality;
             highQualityWaterObject.SetActive(waterQuality == WaterQuality.High);
             simpleQualityWaterObject.SetActive(waterQuality == WaterQuality.Simple);
         }
@@ -184,7 +187,7 @@ namespace Warlander.Deedplanner.Gui
         public void UpdateCanvasScale()
         {
             float referenceWidth = Constants.DefaultGuiWidth;
-            float referenceHeight = Constants.DefaultGuiHeight * (Properties.Instance.GuiScale * Constants.GuiScaleUnitsToRealScale);
+            float referenceHeight = Constants.DefaultGuiHeight * (_settings.GuiScale * Constants.GuiScaleUnitsToRealScale);
             mainCanvasScaler.referenceResolution = new Vector2(referenceWidth, referenceHeight);
         }
         

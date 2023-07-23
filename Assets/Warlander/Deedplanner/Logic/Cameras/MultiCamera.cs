@@ -10,15 +10,19 @@ using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic.Projectors;
+using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Utils;
+using Zenject;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {
     [RequireComponent(typeof(Camera))]
     public class MultiCamera : MonoBehaviour
     {
+        [Inject] private DPSettings _settings;
+        [Inject] private ICameraController[] _cameraControllers;
+        
         private Transform parentTransform;
-        private readonly List<ICameraController> cameraControllers = new List<ICameraController>();
         public Camera AttachedCamera { get; private set; }
         public Vector2 MousePosition { get; private set; }
 
@@ -44,7 +48,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         {
             get
             {
-                foreach (ICameraController controller in cameraControllers)
+                foreach (ICameraController controller in _cameraControllers)
                 {
                     if (controller.SupportsMode(CameraMode))
                     {
@@ -101,10 +105,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private void Awake()
         {
-            cameraControllers.Add(new FppCameraController());
-            cameraControllers.Add(new IsoCameraController());
-            cameraControllers.Add(new TopCameraController());
-            
             parentTransform = transform.parent;
             AttachedCamera = GetComponent<Camera>();
             attachedProjector = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Yellow);
@@ -147,13 +147,13 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
             CameraMode = cameraMode;
 
-            Properties.Instance.Saved += ValidateState;
+            _settings.Modified += ValidateState;
             ValidateState();
         }
 
         private void ValidateState()
         {
-            Gui.WaterQuality waterQuality = Properties.Instance.WaterQuality;
+            Gui.WaterQuality waterQuality = _settings.WaterQuality;
             if (waterQuality != Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(false);
@@ -288,7 +288,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             bool renderWater = RenderEntireMap || editingFloor == 0 || editingFloor == -1;
             Vector2 waterPosition = CameraController.CalculateWaterTablePosition(AttachedCamera.transform.position);
 
-            if (Properties.Instance.WaterQuality == Gui.WaterQuality.Ultra)
+            if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(renderWater);
                 Vector3 ultraQualityWaterPosition;
@@ -296,12 +296,12 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 ultraQualityWater.transform.position = ultraQualityWaterPosition;
                 ultraQualityWater.Update();
             }
-            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.High)
+            else if (_settings.WaterQuality == Gui.WaterQuality.High)
             {
                 highQualityWater.gameObject.SetActive(renderWater);
                 highQualityWater.transform.position = new Vector3(waterPosition.x, highQualityWater.transform.position.y, waterPosition.y);
             }
-            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.Simple)
+            else if (_settings.WaterQuality == Gui.WaterQuality.Simple)
             {
                 simpleQualityWater.gameObject.SetActive(renderWater);
             }
@@ -483,7 +483,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         private void OnPostRender()
         {
             attachedProjector.gameObject.SetActive(false);
-            if (Properties.Instance.WaterQuality == Gui.WaterQuality.Ultra)
+            if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(false);
             }

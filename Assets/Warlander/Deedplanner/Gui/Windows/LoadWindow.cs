@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Utils;
 using Warlander.UI.Windows;
 using Zenject;
@@ -30,7 +31,7 @@ namespace Warlander.Deedplanner.Gui.Windows
 
         private void LoadFromFileOnClick()
         {
-            if (Properties.Web)
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
                 LoadFileBrowser();
             }

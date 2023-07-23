@@ -13,6 +13,7 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Settings;
 using Warlander.UI.Windows;
 using Zenject;
 
@@ -20,6 +21,7 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class MenuUpdater : AbstractUpdater
     {
+        [Inject] private DPSettings _settings;
         [Inject] private WindowCoordinator _windowCoordinator;
 
         [SerializeField] private Button _resizeButton;
@@ -132,7 +134,7 @@ namespace Warlander.Deedplanner.Updaters
         private void QuitOnClick()
         {
             // TODO: add auto-saving before quit logic
-            Properties.Instance.SaveProperties();
+            _settings.Save();
             Application.Quit();
         }
 

@@ -1,6 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Warlander.Deedplanner.Settings;
 using Warlander.UI.Windows;
 using Zenject;
 
@@ -8,6 +9,7 @@ namespace Warlander.Deedplanner.Gui.Windows
 {
     public class GraphicSettingsWindow : MonoBehaviour
     {
+        [Inject] private DPSettings _settings;
         [Inject] private Window _window;
         
         [SerializeField] private Toggle simpleWaterToggle;
@@ -44,7 +46,7 @@ namespace Warlander.Deedplanner.Gui.Windows
 
         private void ApplyProperties()
         {
-            WaterQuality waterQuality = Properties.Instance.WaterQuality;
+            WaterQuality waterQuality = _settings.WaterQuality;
             switch (waterQuality)
             {
                 case WaterQuality.Simple:
@@ -59,7 +61,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             }
             
             overallQualityDropdown.value = QualitySettings.GetQualityLevel();
-            guiScaleSlider.value = Properties.Instance.GuiScale;
+            guiScaleSlider.value = _settings.GuiScale;
         }
 
         private void GuiScaleOnValueChanged(float value)
@@ -69,23 +71,24 @@ namespace Warlander.Deedplanner.Gui.Windows
         
         private void SaveProperties()
         {
-            if (simpleWaterToggle.isOn)
+            _settings.Modify(settings =>
             {
-                Properties.Instance.WaterQuality = WaterQuality.Simple;
-            }
-            else if (highWaterToggle.isOn)
-            {
-                Properties.Instance.WaterQuality = WaterQuality.High;
-            }
-            else if (ultraWaterToggle.isOn)
-            {
-                Properties.Instance.WaterQuality = WaterQuality.Ultra;
-            }
+                if (simpleWaterToggle.isOn)
+                {
+                    settings.WaterQuality = WaterQuality.Simple;
+                }
+                else if (highWaterToggle.isOn)
+                {
+                    settings.WaterQuality = WaterQuality.High;
+                }
+                else if (ultraWaterToggle.isOn)
+                {
+                    settings.WaterQuality = WaterQuality.Ultra;
+                }
 
-            Properties.Instance.GuiScale = Mathf.RoundToInt(guiScaleSlider.value);
+                settings.GuiScale = Mathf.RoundToInt(guiScaleSlider.value);
+            });
 
-            Properties.Instance.SaveProperties();
-            
             QualitySettings.SetQualityLevel(overallQualityDropdown.value, true);
             LayoutManager.Instance.UpdateCanvasScale();
         }

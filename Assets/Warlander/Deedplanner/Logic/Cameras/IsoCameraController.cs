@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Settings;
+using Zenject;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {
     public class IsoCameraController : ICameraController
     {
+        [Inject] private DPSettings _settings;
+        
         private Vector2 isoPosition;
         private float isoScale = 40;
 
@@ -41,10 +45,10 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
                 Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
                 if (Input.GetKey(KeyCode.LeftShift)) {
-                    movement *= (Properties.Instance.IsoMovementSpeed * 4) * Time.deltaTime;
+                    movement *= (_settings.IsoMovementSpeed * 4) * Time.deltaTime;
                 }
                 else {
-                    movement *= Properties.Instance.IsoMovementSpeed * Time.deltaTime;
+                    movement *= _settings.IsoMovementSpeed * Time.deltaTime;
                 }
                 isoPosition += movement;
 

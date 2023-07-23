@@ -1,4 +1,5 @@
-﻿using Zenject;
+﻿using Warlander.Deedplanner.Settings;
+using Zenject;
 
 namespace Warlander.Deedplanner.Installers
 {
@@ -6,7 +7,7 @@ namespace Warlander.Deedplanner.Installers
     {
         public override void InstallBindings()
         {
-            
+            Container.Bind<DPSettings>().FromFactory<SettingsFactory>().AsSingle();
         }
     }
 }

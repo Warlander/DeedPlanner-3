@@ -6,23 +6,46 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Settings;
+using Zenject;
 
 namespace Warlander.Deedplanner.Updaters
 {
     public class WallUpdater : AbstractUpdater
     {
+        [Inject] private DPSettings _settings;
+        
         [SerializeField] private Toggle reverseToggle = null;
         [SerializeField] private Toggle automaticReverseToggle = null;
 
         private void Start()
         {
-            automaticReverseToggle.isOn = Properties.Instance.WallAutomaticReverse;
-            reverseToggle.isOn = Properties.Instance.WallReverse;
+            automaticReverseToggle.isOn = _settings.WallAutomaticReverse;
+            reverseToggle.isOn = _settings.WallReverse;
+            
+            automaticReverseToggle.onValueChanged.AddListener(AutomaticReverseToggleOnValueChanged);
+            reverseToggle.onValueChanged.AddListener(ReverseToggleOnValueChanged);
         }
         
         private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Borders;
+        }
+
+        private void AutomaticReverseToggleOnValueChanged(bool value)
+        {
+            _settings.Modify(settings =>
+            {
+                settings.WallAutomaticReverse = automaticReverseToggle.isOn;
+            });
+        }
+
+        private void ReverseToggleOnValueChanged(bool value)
+        {
+            _settings.Modify(settings =>
+            {
+                settings.WallReverse = reverseToggle.isOn;
+            });
         }
 
         private void Update()
@@ -42,32 +65,12 @@ namespace Warlander.Deedplanner.Updaters
             GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
             Wall wallEntity = tileEntity as Wall;
-
-            bool automaticReverse = automaticReverseToggle.isOn;
-            bool reverse = reverseToggle.isOn;
+            
             int floor = 0;
             int x = -1;
             int y = -1;
             bool horizontal = false;
-            
-            bool propertiesNeedSaving = false;
-            
-            if (automaticReverse != Properties.Instance.WallAutomaticReverse)
-            {
-                Properties.Instance.WallAutomaticReverse = automaticReverse;
-                propertiesNeedSaving = true;
-            }
-            if (reverse != Properties.Instance.WallReverse)
-            {
-                Properties.Instance.WallReverse = reverse;
-                propertiesNeedSaving = true;
-            }
 
-            if (propertiesNeedSaving)
-            {
-                Properties.Instance.SaveProperties();
-            }
-            
             if (wallEntity && wallEntity.Valid)
             {
                 floor = tileEntity.Floor;
@@ -105,18 +108,18 @@ namespace Warlander.Deedplanner.Updaters
             {
                 Floor currentFloor = GameManager.Instance.Map[x, y].GetTileContent(floor) as Floor;
                 bool shouldReverse = false;
-                if (automaticReverse && horizontal)
+                if (_settings.WallAutomaticReverse && horizontal)
                 {
                     Floor nearFloor = GameManager.Instance.Map[x, y - 1].GetTileContent(floor) as Floor;
                     shouldReverse = currentFloor && !nearFloor;
                 }
-                else if (automaticReverse && !horizontal)
+                else if (_settings.WallAutomaticReverse && !horizontal)
                 {
                     Floor nearFloor = GameManager.Instance.Map[x - 1, y].GetTileContent(floor) as Floor;
                     shouldReverse = !currentFloor && nearFloor;
                 }
 
-                if (reverse)
+                if (_settings.WallReverse)
                 {
                     shouldReverse = !shouldReverse;
                 }

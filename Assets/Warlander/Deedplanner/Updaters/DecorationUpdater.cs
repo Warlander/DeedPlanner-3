@@ -11,11 +11,15 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Settings;
+using Zenject;
 
 namespace Warlander.Deedplanner.Updaters
 {
     public class DecorationUpdater : AbstractUpdater
     {
+        [Inject] private DPSettings _settings;
+        
         [SerializeField] private Toggle snapToGridToggle = null;
 
         [SerializeField] private Color allowedGhostColor = Color.green;
@@ -45,7 +49,9 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Start()
         {
-            snapToGridToggle.isOn = Properties.Instance.DecorationSnapToGrid;
+            snapToGridToggle.isOn = _settings.DecorationSnapToGrid;
+            
+            snapToGridToggle.onValueChanged.AddListener(SnapToGridToggleOnValueChanged);
         }
 
         private void OnEnable()
@@ -53,23 +59,16 @@ namespace Warlander.Deedplanner.Updaters
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
+        private void SnapToGridToggleOnValueChanged(bool value)
+        {
+            _settings.Modify(settings =>
+            {
+                settings.DecorationSnapToGrid = snapToGridToggle.isOn;
+            });
+        }
+
         private void Update()
         {
-            bool snapToGrid = snapToGridToggle.isOn;
-
-            bool propertiesNeedSaving = false;
-
-            if (snapToGrid != Properties.Instance.DecorationSnapToGrid)
-            {
-                Properties.Instance.DecorationSnapToGrid = snapToGrid;
-                propertiesNeedSaving = true;
-            }
-
-            if (propertiesNeedSaving)
-            {
-                Properties.Instance.SaveProperties();
-            }
-
             RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
             if (!raycast.transform)
             {
@@ -119,7 +118,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (!placingDecoration)
             {
-                position = CalculateCorrectedPosition(raycast.point, data, snapToGrid);
+                position = CalculateCorrectedPosition(raycast.point, data, _settings.DecorationSnapToGrid);
                 targetedTile = null;
                 if (overlayMesh)
                 {

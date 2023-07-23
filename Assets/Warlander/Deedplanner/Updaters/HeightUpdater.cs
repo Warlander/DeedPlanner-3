@@ -9,11 +9,15 @@ using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logic.Projectors;
+using Warlander.Deedplanner.Settings;
+using Zenject;
 
 namespace Warlander.Deedplanner.Updaters
 {
     public class HeightUpdater : AbstractUpdater
     {
+        [Inject] private DPSettings _settings;
+        
         [SerializeField] private Toggle selectAndDragToggle = null;
         [SerializeField] private Toggle createRampsToggle = null;
         [SerializeField] private Toggle levelAreaToggle = null;
@@ -57,8 +61,11 @@ namespace Warlander.Deedplanner.Updaters
         
         private void Start()
         {
-            dragSensitivityInput.text = Properties.Instance.HeightDragSensitivity.ToString(CultureInfo.InvariantCulture);
-            respectOriginalSlopesToggle.isOn = Properties.Instance.HeightRespectOriginalSlopes;
+            dragSensitivityInput.text = _settings.HeightDragSensitivity.ToString(CultureInfo.InvariantCulture);
+            respectOriginalSlopesToggle.isOn = _settings.HeightRespectOriginalSlopes;
+            
+            dragSensitivityInput.onValueChanged.AddListener(DragSensitivityOnValueChanged);
+            respectOriginalSlopesToggle.onValueChanged.AddListener(RespectOriginalSlopesOnValueChanged);
         }
         
         private void OnEnable()
@@ -66,6 +73,25 @@ namespace Warlander.Deedplanner.Updaters
             RefreshTileSelectionMode();
             anchorProjector = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Red);
             anchorProjector.gameObject.SetActive(false);
+        }
+
+        private void DragSensitivityOnValueChanged(string value)
+        {
+            float.TryParse(dragSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture,
+                out float dragSensitivity);
+            
+            _settings.Modify(settings =>
+            {
+                settings.HeightDragSensitivity = dragSensitivity;
+            });
+        }
+
+        private void RespectOriginalSlopesOnValueChanged(bool value)
+        {
+            _settings.Modify(settings =>
+            {
+                settings.HeightRespectOriginalSlopes = respectOriginalSlopesToggle.isOn;
+            });
         }
 
         public void OnModeChange(bool toggledOn)
@@ -184,28 +210,7 @@ namespace Warlander.Deedplanner.Updaters
         private void UpdateSelectAndDrag()
         {
             Map map = GameManager.Instance.Map;
-            float dragSensitivity = 0;
-            float.TryParse(dragSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out dragSensitivity);
-            bool respectSlopes = respectOriginalSlopesToggle.isOn;
 
-            bool propertiesNeedSaving = false;
-            
-            if (Math.Abs(dragSensitivity - Properties.Instance.HeightDragSensitivity) > float.Epsilon)
-            {
-                Properties.Instance.HeightDragSensitivity = dragSensitivity;
-                propertiesNeedSaving = true;
-            }
-            if (respectSlopes != Properties.Instance.HeightRespectOriginalSlopes)
-            {
-                Properties.Instance.HeightRespectOriginalSlopes = respectSlopes;
-                propertiesNeedSaving = true;
-            }
-
-            if (propertiesNeedSaving)
-            {
-                Properties.Instance.SaveProperties();
-            }
-            
             if (Input.GetMouseButtonDown(0))
             {
                 if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
@@ -231,11 +236,11 @@ namespace Warlander.Deedplanner.Updaters
                 {
                     map.CommandManager.UndoAction();
                     int originalHeight = map[activeHandle.TileCoords].SurfaceHeight;
-                    int heightDelta = (int) ((dragEndPos.y - dragStartPos.y) * dragSensitivity);
+                    int heightDelta = (int) ((dragEndPos.y - dragStartPos.y) * _settings.HeightDragSensitivity);
                     foreach (HeightmapHandle heightmapHandle in selectedHandles)
                     {
                         Vector2Int tileCoords = heightmapHandle.TileCoords;
-                        if (respectSlopes)
+                        if (_settings.HeightRespectOriginalSlopes)
                         {
                             map[tileCoords].SurfaceHeight += heightDelta;
                         }

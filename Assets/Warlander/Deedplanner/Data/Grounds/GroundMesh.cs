@@ -11,8 +11,8 @@ namespace Warlander.Deedplanner.Data.Grounds
     {
         private const int GroundTexturesWidth = 512;
         private const int GroundTexturesHeight = 512;
-        private const TextureFormat WebGroundTexturesFormat = TextureFormat.ARGB32;
         private const TextureFormat DefaultGroundTexturesFormat = TextureFormat.DXT5;
+        private const TextureFormat FallbackGroundTexturesFormat = TextureFormat.ARGB32;
         
         private static IndexedTextureArray<TextureReference> groundTexturesArray;
         
@@ -50,16 +50,7 @@ namespace Warlander.Deedplanner.Data.Grounds
             if (groundTexturesArray == null)
             {
                 int groundTexturesCount = CalculateGroundTexturesCount();
-                
-                if (Properties.Web)
-                {
-                    groundTexturesArray = new IndexedTextureArray<TextureReference>(GroundTexturesWidth, GroundTexturesHeight, groundTexturesCount, WebGroundTexturesFormat);
-                }
-                else
-                {
-                    groundTexturesArray = new IndexedTextureArray<TextureReference>(GroundTexturesWidth, GroundTexturesHeight, groundTexturesCount, DefaultGroundTexturesFormat);
-                }
-                
+                groundTexturesArray = new IndexedTextureArray<TextureReference>(GroundTexturesWidth, GroundTexturesHeight, groundTexturesCount, GetTextureFormatToUse());
             }
             
             gameObject.layer = LayerMasks.GroundLayer;
@@ -106,6 +97,18 @@ namespace Warlander.Deedplanner.Data.Grounds
             
             needsVerticesUpdate = true;
             needsUvUpdate = true;
+        }
+
+        private TextureFormat GetTextureFormatToUse()
+        {
+            if (SystemInfo.SupportsTextureFormat(DefaultGroundTexturesFormat))
+            {
+                return DefaultGroundTexturesFormat;
+            }
+            else
+            {
+                return FallbackGroundTexturesFormat;
+            }
         }
 
         private int CalculateGroundTexturesCount()
