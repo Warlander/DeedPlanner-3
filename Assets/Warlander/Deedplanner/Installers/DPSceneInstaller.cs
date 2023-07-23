@@ -1,4 +1,5 @@
-﻿using Zenject;
+﻿using Warlander.Deedplanner.Gui.Tooltips;
+using Zenject;
 
 namespace Warlander.Deedplanner.Installers
 {
@@ -9,7 +10,7 @@ namespace Warlander.Deedplanner.Installers
     {
         public override void InstallBindings()
         {
-            
+            Container.BindInterfacesAndSelfTo<TooltipHandler>().AsSingle().Lazy();
         }
     }
 }

@@ -62,8 +62,14 @@ namespace Warlander.UI.Windows
 
         private void Awake()
         {
-            _outsideButton.onClick.AddListener(OnOutsideClick);
-            _closeButton.onClick.AddListener(OnCloseClick);
+            if (_outsideButton)
+            {
+                _outsideButton.onClick.AddListener(OnOutsideClick);
+            }
+            if (_closeButton)
+            {
+                _closeButton.onClick.AddListener(OnCloseClick);
+            }
         }
         
         internal void Initialize(int sortOrder)

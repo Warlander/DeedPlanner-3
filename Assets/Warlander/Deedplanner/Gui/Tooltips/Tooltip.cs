@@ -1,16 +1,19 @@
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
+using Warlander.UI.Windows;
+using Zenject;
 
-namespace Warlander.Deedplanner.Gui.Widgets
+namespace Warlander.Deedplanner.Gui.Tooltips
 {
     public class Tooltip : MonoBehaviour
     {
-        [SerializeField] private TMP_Text text = null;
-        [SerializeField] private CanvasGroup canvasGroup = null;
+        [SerializeField] private TMP_Text text;
+        [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private Canvas _referenceCanvas;
+        [SerializeField] private RectTransform _referenceCanvasTransform;
+        [SerializeField] private RectTransform _transformToMove;
         [SerializeField] private float animationSpeed = 10f;
-
-        private RectTransform rectTransform;
 
         public string Value
         {
@@ -33,7 +36,6 @@ namespace Warlander.Deedplanner.Gui.Widgets
 
         private void Awake()
         {
-            rectTransform = GetComponent<RectTransform>();
             canvasGroup.alpha = 0;
         }
 
@@ -49,10 +51,10 @@ namespace Warlander.Deedplanner.Gui.Widgets
 
         private void UpdatePosition()
         {
-            Vector2 mousePos = Input.mousePosition;
             Vector2 cursorCorrection = new Vector2(0, -20);
-            rectTransform.anchoredPosition = mousePos + cursorCorrection;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(_referenceCanvasTransform, Input.mousePosition, null,
+                out Vector2 localPos);
+            _transformToMove.localPosition = localPos + cursorCorrection;
         }
-
     }
 }

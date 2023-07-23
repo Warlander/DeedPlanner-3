@@ -8,6 +8,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic.Projectors;
 using Warlander.Deedplanner.Settings;
@@ -21,6 +22,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
     {
         [Inject] private DPSettings _settings;
         [Inject] private ICameraController[] _cameraControllers;
+        [Inject] private TooltipHandler _tooltipHandler;
         
         private Transform parentTransform;
         public Camera AttachedCamera { get; private set; }
@@ -265,7 +267,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     }
                 }
 
-                LayoutManager.Instance.TooltipText = tooltipBuild.ToString();
+                _tooltipHandler.ShowTooltipText(tooltipBuild.ToString());
             }
         }
 

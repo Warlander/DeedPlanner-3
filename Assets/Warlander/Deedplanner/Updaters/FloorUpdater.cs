@@ -3,12 +3,16 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Logic;
+using Zenject;
 
 namespace Warlander.Deedplanner.Updaters
 {
     public class FloorUpdater : AbstractUpdater
     {
+        [Inject] private TooltipHandler _tooltipHandler;
+        
         [SerializeField] private Toggle southToggle = null;
         [SerializeField] private Toggle westToggle = null;
         [SerializeField] private Toggle northToggle = null;
@@ -54,7 +58,7 @@ namespace Warlander.Deedplanner.Updaters
             FloorData data = GuiManager.Instance.FloorsTree.SelectedValue as FloorData;
             if (data.Opening && (floor == 0 || floor == -1))
             {
-                LayoutManager.Instance.TooltipText += "\n<color=red><b>It's not possible to place openings/stairs on ground floor</b></color>";
+                _tooltipHandler.ShowTooltipText("<color=red><b>It's not possible to place openings/stairs on ground floor</b></color>");
                 return;
             }
 

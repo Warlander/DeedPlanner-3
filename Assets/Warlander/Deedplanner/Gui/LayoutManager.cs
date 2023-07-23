@@ -4,6 +4,7 @@ using Warlander.Deedplanner.Logic;
 using System.Linq;
 using System;
 using DG.Tweening;
+using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Settings;
@@ -38,8 +39,6 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField] private GameObject highQualityWaterObject = null;
         [SerializeField] private GameObject simpleQualityWaterObject = null;
 
-        [SerializeField] private Tooltip tooltip = null;
-
         public event Action<Tab> TabChanged;
 
         private int activeWindow;
@@ -66,12 +65,6 @@ namespace Warlander.Deedplanner.Gui
 
                 return null;
             }
-        }
-
-        public string TooltipText
-        {
-            get => tooltip.Value;
-            set => tooltip.Value = value;
         }
 
         public int ActiveWindow {

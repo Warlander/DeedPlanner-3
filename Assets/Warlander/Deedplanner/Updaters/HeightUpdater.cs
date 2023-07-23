@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logic.Projectors;
@@ -16,6 +17,7 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class HeightUpdater : AbstractUpdater
     {
+        [Inject] private TooltipHandler _tooltipHandler;
         [Inject] private DPSettings _settings;
         
         [SerializeField] private Toggle selectAndDragToggle = null;
@@ -203,7 +205,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (activeHandle != null)
             {
-                LayoutManager.Instance.TooltipText = activeHandle.ToRichString();
+                _tooltipHandler.ShowTooltipText(activeHandle.ToRichString());
             }
         }
 

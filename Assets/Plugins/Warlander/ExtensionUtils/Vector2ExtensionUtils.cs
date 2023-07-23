@@ -7,6 +7,11 @@ namespace Warlander.ExtensionUtils
     /// </summary>
     public static class Vector2Utils
     {
+        public static Vector3 ToVector3XY(this Vector2 vec, float z = 0)
+        {
+            return new Vector3(vec.x, vec.y, z);
+        }
+        
         public static Vector2 SetX(this Vector2 vec, float newX)
         {
             return new Vector2(newX, vec.y);
@@ -49,6 +54,11 @@ namespace Warlander.ExtensionUtils
         public static Vector2Int CeilToInt(this Vector2 vec)
         {
             return new Vector2Int(Mathf.CeilToInt(vec.x), Mathf.CeilToInt(vec.y));
+        }
+
+        public static float Max(this Vector2 vec)
+        {
+            return Mathf.Max(vec.x, vec.y);
         }
     }
 }
