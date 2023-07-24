@@ -5278,7 +5278,7 @@
 			<category>Fires</category>
 		</object>
 		<object name="Open fireplace, stone" shortname="fPlace" type="normal">
-			<model location="Objects/Fireplace.wom"/>
+			<model location="Objects/Fireplaces/Fireplace.wom"/>
 			<materials>
 				Planks = 2,
 				Mortar = 10,
@@ -5288,8 +5288,8 @@
 			<category>Materials/Stone</category>
 		</object>
 		<object name="Open fireplace, marble" shortname="fPlaceMarble" type="normal">
-			<model location="Objects/Fireplace.wom">
-				<override mesh="FireplaceMesh" texture="Objects/fireplace_marble.dds"/>
+			<model location="Objects/Fireplaces/Fireplace.wom">
+				<override mesh="FireplaceMesh" texture="Objects/Fireplaces/fireplace_marble.dds"/>
 			</model>
 			<materials>
 				Planks = 2,
@@ -5300,8 +5300,8 @@
 			<category>Materials/Marble</category>
 		</object>
 		<object name="Open fireplace, pottery" shortname="fPlacePott" type="normal">
-			<model location="Objects/Fireplace.wom">
-				<override mesh="FireplaceMesh" texture="Objects/fireplace_brick.dds"/>
+			<model location="Objects/Fireplaces/Fireplace.wom">
+				<override mesh="FireplaceMesh" texture="Objects/Fireplaces/fireplace_brick.dds"/>
 			</model>
 			<materials>
 				Planks = 2,
@@ -5312,8 +5312,8 @@
 			<category>Materials/Pottery</category>
 		</object>
 		<object name="Open fireplace, rendered" shortname="fPlaceRend" type="normal">
-			<model location="Objects/Fireplace.wom">
-				<override mesh="FireplaceMesh" texture="Objects/fireplace_render.dds"/>
+			<model location="Objects/Fireplaces/Fireplace.wom">
+				<override mesh="FireplaceMesh" texture="Objects/Fireplaces/fireplace_render.dds"/>
 			</model>
 			<materials>
 				Planks = 2,
@@ -5325,8 +5325,8 @@
 			<category>Materials/Rendered</category>
 		</object>
 		<object name="Open fireplace, sandstone" shortname="fPlaceSand" type="normal">
-			<model location="Objects/Fireplace.wom">
-				<override mesh="FireplaceMesh" texture="Objects/fireplace_sand.dds"/>
+			<model location="Objects/Fireplaces/Fireplace.wom">
+				<override mesh="FireplaceMesh" texture="Objects/Fireplaces/fireplace_sand.dds"/>
 			</model>
 			<materials>
 				Planks = 2,
@@ -5337,8 +5337,8 @@
 			<category>Materials/Sandstone</category>
 		</object>
 		<object name="Open fireplace, rounded" shortname="fPlaceRound" type="normal">
-			<model location="Objects/Fireplace.wom">
-				<override mesh="FireplaceMesh" texture="Objects/fireplace_rounded.dds"/>
+			<model location="Objects/Fireplaces/Fireplace.wom">
+				<override mesh="FireplaceMesh" texture="Objects/Fireplaces/fireplace_rounded.dds"/>
 			</model>
 			<materials>
 				Planks = 2,
@@ -5349,8 +5349,8 @@
 			<category>Materials/Rounded stone</category>
 		</object>
 		<object name="Open fireplace, slate" shortname="fPlaceSlate" type="normal">
-			<model location="Objects/Fireplace.wom">
-				<override mesh="FireplaceMesh" texture="Objects/fireplace_slate.dds"/>
+			<model location="Objects/Fireplaces/Fireplace.wom">
+				<override mesh="FireplaceMesh" texture="Objects/Fireplaces/fireplace_slate.dds"/>
 			</model>
 			<materials>
 				Planks = 2,
@@ -6600,7 +6600,7 @@
 		</object>
 
 		<object name="Forge" shortname="forge" type="normal">
-			<model location="Objects/forge.wom"/>
+			<model location="Objects/Fireplaces/forge.wom"/>
 			<materials>
 				Clay = 11,
 				Stone bricks = 11
@@ -6609,7 +6609,10 @@
 			<category>Materials/Stone</category>
 		</object>
 		<object name="Forge (lit)" shortname="forgelit" type="normal">
-			<model location="Objects/forge.wom"/>
+			<model location="Objects/Fireplaces/forge.wom">
+				<override mesh="ForgeMesh" texture="Objects/Fireplaces/forgelit.jpg"/>
+				<override mesh="CauldronMesh" texture="Objects/Fireplaces/forgecauldronglow.jpg"/>
+			</model>
 			<materials>
 				Clay = 11,
 				Stone bricks = 11
@@ -6617,8 +6620,8 @@
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Oven" shortname="oven" type="normal">
-			<model location="Objects/oven.wom"/>
+		<object name="Oven, stone" shortname="oven" type="normal">
+			<model location="Objects/Fireplaces/Oven.wom"/>
 			<materials>
 				Clay = 11,
 				Stone bricks = 11
@@ -6626,14 +6629,50 @@
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Oven (lit)" shortname="ovenlit" type="normal">
-			<model location="Objects/oven.wom"/>
+		<object name="Oven, stone (lit)" shortname="ovenlit" type="normal">
+			<model location="Objects/Fireplaces/Oven.wom">
+				<override mesh="OvenMesh" texture="Objects/Fireplaces/ovenlit.jpg"/>
+				<override mesh="PanMesh" texture="Objects/Fireplaces/ovenpanlit.jpg"/>
+			</model>
 			<materials>
 				Clay = 11,
 				Stone bricks = 11
 			</materials>
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
+		</object>
+		<object name="Oven, pottery" shortname="ovenPott" type="normal">
+			<model location="Objects/Fireplaces/Oven2.wom">
+				<override mesh="OvenMesh" texture="Objects/Fireplaces/oven_brick.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Pottery</category>
+		</object>
+		<object name="Oven, rendered" shortname="ovenRend" type="normal">
+			<model location="Objects/Fireplaces/Oven2.wom">
+				<override mesh="OvenMesh" texture="Objects/Fireplaces/oven_render.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Oven, sandstone" shortname="ovenSand" type="normal">
+			<model location="Objects/Fireplaces/Oven2.wom"/>
+			<category>Furnaces</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Oven, rounded stone" shortname="ovenRounded" type="normal">
+			<model location="Objects/Fireplaces/Oven2.wom">
+				<override mesh="OvenMesh" texture="Objects/Fireplaces/oven_rounded.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Oven, slate" shortname="ovenSlate" type="normal">
+			<model location="Objects/Fireplaces/Oven2.wom">
+				<override mesh="OvenMesh" texture="Objects/Fireplaces/oven_slate.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Slate</category>
 		</object>
 		<object name="Still" shortname="still" type="normal">
 			<model location="Objects/Still.wom"/>
