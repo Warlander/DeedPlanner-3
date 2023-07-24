@@ -62,6 +62,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             
             overallQualityDropdown.value = QualitySettings.GetQualityLevel();
             guiScaleSlider.value = _settings.GuiScale;
+            guiScaleValueText.text = Mathf.RoundToInt(guiScaleSlider.value).ToString();
         }
 
         private void GuiScaleOnValueChanged(float value)
