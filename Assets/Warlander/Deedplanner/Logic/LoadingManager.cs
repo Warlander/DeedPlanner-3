@@ -29,7 +29,6 @@ namespace Warlander.Deedplanner.Logic
         private void Start()
         {
             splashGroup.gameObject.SetActive(true);
-            LayoutManager.Instance.UpdateCanvasScale();
             OutputGraphicsCapabilities();
             StartCoroutine(Load());
         }

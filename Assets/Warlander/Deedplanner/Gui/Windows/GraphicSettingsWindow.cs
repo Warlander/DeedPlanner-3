@@ -91,7 +91,6 @@ namespace Warlander.Deedplanner.Gui.Windows
             });
 
             QualitySettings.SetQualityLevel(overallQualityDropdown.value, true);
-            LayoutManager.Instance.UpdateCanvasScale();
         }
     }
 }

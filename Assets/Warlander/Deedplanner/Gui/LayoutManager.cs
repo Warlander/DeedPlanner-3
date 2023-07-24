@@ -18,8 +18,6 @@ namespace Warlander.Deedplanner.Gui
 
         [Inject] private DPSettings _settings;
         
-        [SerializeField] private CanvasScaler mainCanvasScaler = null;
-        
         [SerializeField] private Toggle[] indicatorButtons = new Toggle[4];
         [SerializeField] private RectTransform horizontalBottomIndicatorHolder = null;
         [SerializeField] private RawImage[] screens = new RawImage[4];
@@ -177,13 +175,6 @@ namespace Warlander.Deedplanner.Gui
             simpleQualityWaterObject.SetActive(waterQuality == WaterQuality.Simple);
         }
 
-        public void UpdateCanvasScale()
-        {
-            float referenceWidth = Constants.DefaultGuiWidth;
-            float referenceHeight = Constants.DefaultGuiHeight * (_settings.GuiScale * Constants.GuiScaleUnitsToRealScale);
-            mainCanvasScaler.referenceResolution = new Vector2(referenceWidth, referenceHeight);
-        }
-        
         public void ChangeLayout(Layout layout)
         {
             currentLayout = layout;
