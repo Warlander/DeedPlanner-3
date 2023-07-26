@@ -593,7 +593,7 @@ namespace Warlander.Deedplanner.Updaters
 
                 for (int i = 0; i <= GameManager.Instance.Map.Width; i++)
                 {
-                    for (int i2 = 0; i2 < GameManager.Instance.Map.Height; i2++)
+                    for (int i2 = 0; i2 <= GameManager.Instance.Map.Height; i2++)
                     {
                         float height = GameManager.Instance.Map[i, i2].GetHeightForFloor(LayoutManager.Instance.CurrentCamera.Floor) * 0.1f;
                         Vector2 viewportLocation = checkedCamera.WorldToViewportPoint(new Vector3(i * 4, height, i2 * 4));
