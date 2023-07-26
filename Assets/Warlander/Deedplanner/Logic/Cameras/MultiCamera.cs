@@ -267,7 +267,12 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     }
                 }
 
-                _tooltipHandler.ShowTooltipText(tooltipBuild.ToString());
+                string tooltip = tooltipBuild.ToString();
+                if (string.IsNullOrEmpty(tooltip) == false)
+                {
+                    _tooltipHandler.ShowTooltipText(tooltip);
+                }
+                
             }
         }
 
