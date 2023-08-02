@@ -4296,7 +4296,7 @@
 		</object>
 
 		<object name="Gold altar" shortname="gAltar" type="normal">
-			<model location="Objects/altar-gold.wom"/>
+			<model location="Objects/Altars/altar-gold.wom"/>
 			<materials>
 				Gold lump = 50
 			</materials>
@@ -4304,7 +4304,7 @@
 			<category>Materials/Gold</category>
 		</object>
 		<object name="Silver altar" shortname="sAltar" type="normal">
-			<model location="Objects/altar-silver.wom"/>
+			<model location="Objects/Altars/altar-silver.wom"/>
 			<materials>
 				Silver lump = 50
 			</materials>
@@ -4312,7 +4312,7 @@
 			<category>Materials/Silver</category>
 		</object>
 		<object name="Stone altar" shortname="stAltar" type="normal">
-			<model location="Objects/altar-stone.wom"/>
+			<model location="Objects/Altars/altar-stone.wom"/>
 			<materials>
 				Clay = 11,
 				Stone bricks = 11,
@@ -4321,8 +4321,29 @@
 			<category>Altars</category>
 			<category>Materials/Stone</category>
 		</object>
+		<object name="Sandstone altar" shortname="sandAltar" type="normal">
+			<model location="Objects/Altars/altar-stone.wom">
+				<override mesh="AltarMesh" texture="Objects/Altars/altar_sand.dds"/>
+			</model>
+			<category>Altars</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Marble altar" shortname="marbleAltar" type="normal">
+			<model location="Objects/Altars/altar-stone.wom">
+				<override mesh="AltarMesh" texture="Objects/Altars/altar_marble.dds"/>
+			</model>
+			<category>Altars</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Slate altar" shortname="slateAltar" type="normal">
+			<model location="Objects/Altars/altar-stone.wom">
+				<override mesh="AltarMesh" texture="Objects/Altars/altar_slate.dds"/>
+			</model>
+			<category>Altars</category>
+			<category>Materials/Slate</category>
+		</object>
 		<object name="Wooden altar" shortname="wAltar" type="normal">
-			<model location="Objects/altar-wooden.wom"/>
+			<model location="Objects/Altars/altar-wooden.wom"/>
 			<materials>
 				Planks = 9,
 				Small nails = 1,
@@ -6599,7 +6620,7 @@
 			<category>Materials/Wood</category>
 		</object>
 
-		<object name="Forge" shortname="forge" type="normal">
+		<object name="Forge, stone" shortname="forge" type="normal">
 			<model location="Objects/Fireplaces/forge.wom"/>
 			<materials>
 				Clay = 11,
@@ -6608,7 +6629,7 @@
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Forge (lit)" shortname="forgelit" type="normal">
+		<object name="Forge, stone (lit)" shortname="forgelit" type="normal">
 			<model location="Objects/Fireplaces/forge.wom">
 				<override mesh="ForgeMesh" texture="Objects/Fireplaces/forgelit.jpg"/>
 				<override mesh="CauldronMesh" texture="Objects/Fireplaces/forgecauldronglow.jpg"/>
@@ -6620,6 +6641,40 @@
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
 		</object>
+		<object name="Forge, pottery" shortname="forgePott" type="normal">
+			<model location="Objects/Fireplaces/Forge2.wom">
+				<override mesh="ForgeMesh" texture="Objects/Fireplaces/forge_brick.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Pottery</category>
+		</object>
+		<object name="Forge, rendered" shortname="forgeRend" type="normal">
+			<model location="Objects/Fireplaces/Forge2.wom">
+				<override mesh="ForgeMesh" texture="Objects/Fireplaces/forge_render.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Forge, sandstone" shortname="forgeSand" type="normal">
+			<model location="Objects/Fireplaces/Forge2.wom"/>
+			<category>Furnaces</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Forge, rounded stone" shortname="forgeRounded" type="normal">
+			<model location="Objects/Fireplaces/Forge2.wom">
+				<override mesh="ForgeMesh" texture="Objects/Fireplaces/forge_rounded.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Forge, slate" shortname="forgeSlate" type="normal">
+			<model location="Objects/Fireplaces/Forge2.wom">
+				<override mesh="ForgeMesh" texture="Objects/Fireplaces/forge_slate.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Slate</category>
+		</object>
+
 		<object name="Oven, stone" shortname="oven" type="normal">
 			<model location="Objects/Fireplaces/Oven.wom"/>
 			<materials>
@@ -6706,15 +6761,45 @@
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Smelter" shortname="sme" type="normal">
-			<model location="Objects/Smelter.wom"/>
-			<materials>
-				Stone Bricks = 50,
-				Clay = 50,
-				Sand = 5
-			</materials>
+		<object name="Smelter, stone" shortname="smeStone" type="normal">
+			<model location="Objects/Fireplaces/Smelter.wom">
+				<override mesh="SmelterMesh" texture="Objects/Fireplaces/smelter_stone.dds"/>
+			</model>
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
+		</object>
+		<object name="Smelter, pottery" shortname="sme" type="normal">
+			<model location="Objects/Fireplaces/Smelter.wom"/>
+			<category>Furnaces</category>
+			<category>Materials/Pottery</category>
+		</object>
+		<object name="Smelter, rendered" shortname="smeRend" type="normal">
+			<model location="Objects/Fireplaces/Smelter.wom">
+				<override mesh="SmelterMesh" texture="Objects/Fireplaces/smelter_render.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Smelter, sandstone" shortname="smeSand" type="normal">
+			<model location="Objects/Fireplaces/Smelter.wom">
+				<override mesh="SmelterMesh" texture="Objects/Fireplaces/smelter_sand.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Smelter, rounded stone" shortname="smeRounded" type="normal">
+			<model location="Objects/Fireplaces/Smelter.wom">
+				<override mesh="SmelterMesh" texture="Objects/Fireplaces/smelter_rounded.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Smelter, slate" shortname="smeSlate" type="normal">
+			<model location="Objects/Fireplaces/Smelter.wom">
+				<override mesh="SmelterMesh" texture="Objects/Fireplaces/smelter_slate.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Slate</category>
 		</object>
 		<object name="Market stall" shortname="mstall" type="normal">
 			<model location="Objects/MarketStall.wom"/>
@@ -6741,6 +6826,38 @@
 				Eggs = 1
 			</materials>
 			<category>Decoration</category>
+		</object>
+
+		<object name="Keystone" shortname="kStone" type="normal">
+			<model location="Bridges/Stone/Keystone.wom"/>
+			<category>Materials/Stone</category>
+			<category>Parts</category>
+		</object>
+		<object name="Keystone, pottery" shortname="kStonePott" type="normal">
+			<model location="Bridges/Stone/Keystone.wom">
+					<override mesh="KeystoneMesh" texture="Bridges/Stone/bridgeBrick.dds"/>
+			</model>
+			<category>Materials/Pottery</category>
+			<category>Parts</category>
+		</object>
+		<object name="Keystone, marble" shortname="kStoneMarble" type="normal">
+			<model location="Bridges/Marble/KeystoneM.wom"/>
+			<category>Materials/Marble</category>
+			<category>Parts</category>
+		</object>
+		<object name="Keystone, sandstone" shortname="kStoneSand" type="normal">
+			<model location="Bridges/Stone/Keystone.wom">
+					<override mesh="KeystoneMesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
+			</model>
+			<category>Materials/Sandstone</category>
+			<category>Parts</category>
+		</object>
+		<object name="Keystone, slate" shortname="kStoneSlate" type="normal">
+			<model location="Bridges/Stone/Keystone.wom">
+					<override mesh="KeystoneMesh" texture="Bridges/Stone/bridgeSlate.dds"/>
+			</model>
+			<category>Materials/Slate</category>
+			<category>Parts</category>
 		</object>
 
 		<object name="Yule goat" shortname="ygoat" type="normal">
@@ -6859,20 +6976,92 @@
 			<category>Decoration/Flowerpots</category>
 		</object>
 
-		<object name="Spirit castle" shortname="spiritcastle" type="normal">
-			<model location="Objects/spiritCastle.wom"/>
+		<object name="Spirit castle, stone" shortname="spiritcastle" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom"/>
 			<category>Mailboxes</category>
 		</object>
-		<object name="Spirit cottage" shortname="spiritcottage" type="normal">
-			<model location="Objects/spiritCottage.wom"/>
+		<object name="Spirit castle, pottery" shortname="spiritcastlePott" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom">
+				<override mesh="spiritCastleMesh" texture="Objects/Mailboxes/castle_brick.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit castle, rendered" shortname="spiritcastleRend" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom">
+				<override mesh="spiritCastleMesh" texture="Objects/Mailboxes/castle_render.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit castle, rounded stone" shortname="spiritcastleRounded" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom">
+				<override mesh="spiritCastleMesh" texture="Objects/Mailboxes/castle_rounded.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit castle, sandstone" shortname="spiritcastleSand" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom">
+				<override mesh="spiritCastleMesh" texture="Objects/Mailboxes/castle_sand.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit castle, marble" shortname="spiritcastleMarble" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom">
+				<override mesh="spiritCastleMesh" texture="Objects/Mailboxes/castle_marble.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit castle, slate" shortname="spiritcastleSlate" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom">
+				<override mesh="spiritCastleMesh" texture="Objects/Mailboxes/castle_slate.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, stone" shortname="spiritcottage" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom"/>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, pottery" shortname="spiritcottagePott" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom">
+				<override mesh="spiritCottageMesh" texture="Objects/Mailboxes/cottage_brick.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, rendered" shortname="spiritcottageRend" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom">
+				<override mesh="spiritCottageMesh" texture="Objects/Mailboxes/cottage_render.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, rounded stone" shortname="spiritcottageRounded" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom">
+				<override mesh="spiritCottageMesh" texture="Objects/Mailboxes/cottage_rounded.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, sandstone" shortname="spiritcottageSand" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom">
+				<override mesh="spiritCottageMesh" texture="Objects/Mailboxes/cottage_sand.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, marble" shortname="spiritcottageMarble" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom">
+				<override mesh="spiritCottageMesh" texture="Objects/Mailboxes/cottage_marble.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, slate" shortname="spiritcottageSlate" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom">
+				<override mesh="spiritCottageMesh" texture="Objects/Mailboxes/cottage_slate.dds"/>
+			</model>
 			<category>Mailboxes</category>
 		</object>
 		<object name="Spirit mansion" shortname="spiritmansion" type="normal">
-			<model location="Objects/spiritMansion.wom"/>
+			<model location="Objects/Mailboxes/spiritMansion.wom"/>
 			<category>Mailboxes</category>
 		</object>
 		<object name="Spirit house" shortname="spirithouse" type="normal">
-			<model location="Objects/spiritHouse.wom"/>
+			<model location="Objects/Mailboxes/spiritHouse.wom"/>
 			<category>Mailboxes</category>
 		</object>
 
