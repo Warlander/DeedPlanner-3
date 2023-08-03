@@ -4124,8 +4124,8 @@
 			<category>Containers</category>
 			<category>Materials/Wood</category>
 		</object>
-		<object name="Coffin" shortname="coffin" type="normal">
-			<model location="Objects/Coffin_main.wom"/>
+		<object name="Coffin, stone" shortname="coffin" type="normal">
+			<model location="Objects/Storage/Coffin_main.wom"/>
 			<materials>
 				Slabs = 4,
 				Clay = 4,
@@ -4133,6 +4133,27 @@
 			</materials>
 			<category>Containers</category>
 			<category>Materials/Stone</category>
+		</object>
+		<object name="Coffin, sandstone" shortname="coffinSand" type="normal">
+			<model location="Objects/Storage/Coffin_main.wom">
+				<override mesh="CoffinMesh" texture="Objects/Storage/coffin_sand.dds"/>
+			</model>
+			<category>Containers</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Coffin, marble" shortname="coffinMarble" type="normal">
+			<model location="Objects/Storage/Coffin_main.wom">
+				<override mesh="CoffinMesh" texture="Objects/Storage/coffin_marble.dds"/>
+			</model>
+			<category>Containers</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Coffin, slate" shortname="coffinSlate" type="normal">
+			<model location="Objects/Storage/Coffin_main.wom">
+				<override mesh="CoffinMesh" texture="Objects/Storage/coffin_slate.dds"/>
+			</model>
+			<category>Containers</category>
+			<category>Materials/Slate</category>
 		</object>
 		<object name="Bulk Storage Bin (empty)" shortname="bsbe" type="normal">
 			<model location="Objects/Bulk_Storage_Bin.wom"/>
@@ -4667,15 +4688,83 @@
 			<category>Jackal</category>
 		</object>
 
-		<object name="Fountain" shortname="foun" type="normal">
-			<model location="Objects/Fountain.wom"/>
+		<object name="Fountain, stone" shortname="foun" type="normal">
+			<model location="Objects/Fountains/Fountain.wom"/>
 			<category>Water Sources</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Ornate fountain" shortname="ofoun" type="normal">
-			<model location="Objects/Ornate_Fountain.wom"/>
+		<object name="Fountain, sandstone" shortname="founSand" type="normal">
+			<model location="Objects/Fountains/Fountain.wom">
+				<override mesh="FountainMesh" texture="Objects/Fountains/fountain_sandstone.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Fountain, marble" shortname="founMarble" type="normal">
+			<model location="Objects/Fountains/Fountain.wom">
+				<override mesh="FountainMesh" texture="Objects/Fountains/fountain_marble.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Fountain, slate" shortname="founSlate" type="normal">
+			<model location="Objects/Fountains/Fountain.wom">
+				<override mesh="FountainMesh" texture="Objects/Fountains/fountain_slate.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Slate</category>
+		</object>
+		<object name="Ornate fountain, stone" shortname="ofoun" type="normal">
+			<model location="Objects/Fountains/Ornate_Fountain.wom"/>
 			<category>Water Sources</category>
 			<category>Materials/Stone</category>
+		</object>
+		<object name="Ornate fountain, sandstone" shortname="ofounSand" type="normal">
+			<model location="Objects/Fountains/Ornate_Fountain.wom">
+				<override mesh="FountainMesh" texture="Objects/Fountains/ornatefountain_sandstone.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Ornate fountain, marble" shortname="ofounMarble" type="normal">
+			<model location="Objects/Fountains/Ornate_Fountain.wom">
+				<override mesh="FountainMesh" texture="Objects/Fountains/ornatefountain_marble.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Ornate fountain, slate" shortname="ofounSlate" type="normal">
+			<model location="Objects/Fountains/Ornate_Fountain.wom">
+				<override mesh="FountainMesh" texture="Objects/Fountains/ornatefountain_slate.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Slate</category>
+		</object>
+		<object name="Wall fountain, stone" shortname="wfoun" type="normal">
+			<model location="Objects/Fountains/wallFountain.wom"/>
+			<category>Water Sources</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Wall fountain, sandstone" shortname="wfounSand" type="normal">
+			<model location="Objects/Fountains/wallFountain.wom">
+				<override mesh="wallFountainMesh" texture="Objects/Fountains/wf_sand.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Wall fountain, marble" shortname="wfounMarble" type="normal">
+			<model location="Objects/Fountains/wallFountain.wom">
+				<override mesh="wallFountainMesh" texture="Objects/Fountains/wf_marble.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Wall fountain, slate" shortname="wfounSlate" type="normal">
+			<model location="Objects/Fountains/wallFountain.wom">
+				<override mesh="wallFountainMesh" texture="Objects/Fountains/wf_slate.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Slate</category>
 		</object>
 		<object name="Well, stone" shortname="well" type="normal">
 			<model location="Objects/Well.wom"/>
@@ -5054,7 +5143,7 @@
 			<category>Materials/Wood</category>
 		</object>
 		<object name="Stone bench" shortname="sBench" type="normal">
-			<model location="Objects/bench-stone.wom"/>
+			<model location="Objects/Furniture/bench-stone.wom"/>
 			<materials>
 				Slabs = 1,
 				Stone bricks = 2,
@@ -5062,6 +5151,27 @@
 			</materials>
 			<category>Furniture/Benches</category>
 			<category>Materials/Stone</category>
+		</object>
+		<object name="Stone bench, sandstone" shortname="sBenchSand" type="normal">
+			<model location="Objects/Furniture/bench-stone.wom">
+				<override mesh="StonebenchMesh" texture="Objects/Furniture/bench_sand.dds"/>
+			</model>
+			<category>Furniture/Benches</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Stone bench, marble" shortname="sBenchMarble" type="normal">
+			<model location="Objects/Furniture/bench-stone.wom">
+				<override mesh="StonebenchMesh" texture="Objects/Furniture/bench_marble.dds"/>
+			</model>
+			<category>Furniture/Benches</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Stone bench, slate" shortname="sBenchSlate" type="normal">
+			<model location="Objects/Furniture/bench-stone.wom">
+				<override mesh="StonebenchMesh" texture="Objects/Furniture/bench_slate.dds"/>
+			</model>
+			<category>Furniture/Benches</category>
+			<category>Materials/Slate</category>
 		</object>
 		<object name="Stool" shortname="stool" type="normal">
 			<model location="Objects/Stool.wom"/>
@@ -5477,12 +5587,50 @@
 			<model location="Objects/CopperBrazier.wom"/>
 			<category>Braziers</category>
 		</object>
+
+
 		<object name="Marble brazier pillar" shortname="mBrazier" type="normal">
-			<model location="Objects/BrazierPillar.wom"/>
+			<model location="Objects/Braziers/BrazierPillar.wom"/>
 			<materials>
 				Mortar = 50,
 				Marble bricks = 50
 			</materials>
+			<category>Braziers</category>
+		</object>
+		<object name="Stone brazier pillar" shortname="mBrazierStone" type="normal">
+			<model location="Objects/Braziers/BrazierPillar.wom">
+				<override mesh="goldFirePillarMesh" texture="Objects/Braziers/firepillar_stone.dds"/>
+			</model>
+			<category>Braziers</category>
+		</object>
+		<object name="Rendered brazier pillar" shortname="mBrazierRend" type="normal">
+			<model location="Objects/Braziers/BrazierPillar.wom">
+				<override mesh="goldFirePillarMesh" texture="Objects/Braziers/firepillar_render.dds"/>
+			</model>
+			<category>Braziers</category>
+		</object>
+		<object name="Pottery brick brazier pillar" shortname="mBrazierPott" type="normal">
+			<model location="Objects/Braziers/BrazierPillar.wom">
+				<override mesh="goldFirePillarMesh" texture="Objects/Braziers/firepillar_brick.dds"/>
+			</model>
+			<category>Braziers</category>
+		</object>
+		<object name="Rounded stone brazier pillar" shortname="mBrazierRounded" type="normal">
+			<model location="Objects/Braziers/BrazierPillar.wom">
+				<override mesh="goldFirePillarMesh" texture="Objects/Braziers/firepillar_rounded.dds"/>
+			</model>
+			<category>Braziers</category>
+		</object>
+		<object name="Sandstone brazier pillar" shortname="mBrazierSand" type="normal">
+			<model location="Objects/Braziers/BrazierPillar.wom">
+				<override mesh="goldFirePillarMesh" texture="Objects/Braziers/firepillar_sand.dds"/>
+			</model>
+			<category>Braziers</category>
+		</object>
+		<object name="Slate brazier pillar" shortname="mBrazierSlate" type="normal">
+			<model location="Objects/Braziers/BrazierPillar.wom">
+				<override mesh="goldFirePillarMesh" texture="Objects/Braziers/firepillar_slate.dds"/>
+			</model>
 			<category>Braziers</category>
 		</object>
 
@@ -6441,12 +6589,29 @@
 			<category>Misc</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Pillar" shortname="pill" type="normal">
-			<model location="Objects/Pillar.wom"/>
-			<materials>
-				Clay = 51,
-				Stone bricks = 51
-			</materials>
+		<object name="Pillar, stone" shortname="pillStone" type="normal">
+			<model location="Objects/Pillar/Pillar.wom">
+				<override mesh="PillarMesh" texture="Objects/Pillar/pillar_rock.dds"/>
+			</model>
+			<category>Misc</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Pillar, sandstone" shortname="pill" type="normal">
+			<model location="Objects/Pillar/Pillar.wom">
+				<override mesh="PillarMesh" texture="Objects/Pillar/pillar_sand.dds"/>
+			</model>
+			<category>Misc</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Pillar, marble" shortname="pillMarble" type="normal">
+			<model location="Objects/Pillar/Pillar.wom"/>
+			<category>Misc</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Pillar, slate" shortname="pillSlate" type="normal">
+			<model location="Objects/Pillar/Pillar.wom">
+				<override mesh="PillarMesh" texture="Objects/Pillar/pillar_slate.dds"/>
+			</model>
 			<category>Misc</category>
 			<category>Materials/Stone</category>
 		</object>
@@ -6751,15 +6916,45 @@
 			<category>Furnaces</category>
 			<category>Materials/Copper</category>
 		</object>
-		<object name="Kiln" shortname="kiln" type="normal">
-			<model location="Objects/Kiln.wom"/>
-			<materials>
-				Stone Bricks = 20,
-				Clay = 20,
-				Dirt = 2
-			</materials>
+		<object name="Kiln, stone" shortname="kiln" type="normal">
+			<model location="Objects/Fireplaces/Kiln.wom">
+				<override mesh="KilnMesh" texture="Objects/Fireplaces/kiln_stone.dds"/>
+			</model>
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
+		</object>
+		<object name="Kiln, pottery" shortname="kilnPott" type="normal">
+			<model location="Objects/Fireplaces/Kiln.wom"/>
+			<category>Furnaces</category>
+			<category>Materials/Pottery</category>
+		</object>
+		<object name="Kiln, rendered" shortname="kilnRend" type="normal">
+			<model location="Objects/Fireplaces/Kiln.wom">
+				<override mesh="KilnMesh" texture="Objects/Fireplaces/kiln_render.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Kiln, rounded stone" shortname="kilnRound" type="normal">
+			<model location="Objects/Fireplaces/Kiln.wom">
+				<override mesh="KilnMesh" texture="Objects/Fireplaces/kiln_rounded.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Kiln, sandstone" shortname="kilnSand" type="normal">
+			<model location="Objects/Fireplaces/Kiln.wom">
+				<override mesh="KilnMesh" texture="Objects/Fireplaces/kiln_sand.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Kiln, slate" shortname="kilnSlate" type="normal">
+			<model location="Objects/Fireplaces/Kiln.wom">
+				<override mesh="KilnMesh" texture="Objects/Fireplaces/kiln_slate.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Slate</category>
 		</object>
 		<object name="Smelter, stone" shortname="smeStone" type="normal">
 			<model location="Objects/Fireplaces/Smelter.wom">
