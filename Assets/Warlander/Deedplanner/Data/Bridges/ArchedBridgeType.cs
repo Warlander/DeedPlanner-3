@@ -75,10 +75,24 @@ namespace Warlander.Deedplanner.Data.Bridges
         
         public int CalculateAddedHeight(int currentSegment, int bridgeLength, int startHeight, int endHeight, int extraArgument)
         {
-            int[] archHeights = Heights[Mathf.CeilToInt((float)bridgeLength / 2)];
+            int middleSectionLength = bridgeLength - 2;
+            int dataToUse = Mathf.CeilToInt((float)middleSectionLength / 2);
+            int[] archHeights = Heights[dataToUse];
 
-            int currentSegmentRelative = Math.Abs(currentSegment / 2);
-            return archHeights[currentSegmentRelative];
+            int distanceFromMiddle = Mathf.Min(currentSegment, bridgeLength - 1 - currentSegment);
+            // Start and end of the bridge.
+            if (distanceFromMiddle == 0)
+            {
+                return 0;
+            }
+
+            int archIndexToUse = distanceFromMiddle - 1;
+
+            if (archIndexToUse >= archHeights.Length)
+            {
+                Debug.Log("Something wrong");
+            }
+            return archHeights[archIndexToUse];
         }
     }
 }
