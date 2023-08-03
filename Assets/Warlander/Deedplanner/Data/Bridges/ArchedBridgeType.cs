@@ -87,11 +87,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
 
             int archIndexToUse = distanceFromMiddle - 1;
-
-            if (archIndexToUse >= archHeights.Length)
-            {
-                Debug.Log("Something wrong");
-            }
+            
             return archHeights[archIndexToUse];
         }
     }
