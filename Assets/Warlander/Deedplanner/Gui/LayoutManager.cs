@@ -4,7 +4,6 @@ using Warlander.Deedplanner.Logic;
 using System.Linq;
 using System;
 using DG.Tweening;
-using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Settings;

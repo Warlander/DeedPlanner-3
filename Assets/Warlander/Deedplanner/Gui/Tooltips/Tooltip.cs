@@ -10,7 +10,6 @@ namespace Warlander.Deedplanner.Gui.Tooltips
     {
         [SerializeField] private TMP_Text text;
         [SerializeField] private CanvasGroup canvasGroup;
-        [SerializeField] private Canvas _referenceCanvas;
         [SerializeField] private RectTransform _referenceCanvasTransform;
         [SerializeField] private RectTransform _transformToMove;
         [SerializeField] private float animationSpeed = 10f;
