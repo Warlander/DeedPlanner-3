@@ -17,6 +17,8 @@ namespace Warlander.Deedplanner.Updaters
     public class DecorationUpdater : AbstractUpdater
     {
         [SerializeField] private Toggle snapToGridToggle = null;
+        [SerializeField] private Toggle rotationSnappingToggle = null;
+        [SerializeField] private TMP_InputField rotationSensitivityInput = null;
 
         [SerializeField] private Color allowedGhostColor = Color.green;
         [SerializeField] private Color disabledGhostColor = Color.red;
@@ -35,6 +37,8 @@ namespace Warlander.Deedplanner.Updaters
         private Tile targetedTile;
         private Vector2 dragStartPos;
 
+        private bool isScrollRotate = false;
+
         private void Awake()
         {
             allowedGhostPropertyBlock = new MaterialPropertyBlock();
@@ -45,7 +49,9 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Start()
         {
+            rotationSensitivityInput.text = Properties.Instance.DecorationRotationSensitivity.ToString(CultureInfo.InvariantCulture);
             snapToGridToggle.isOn = Properties.Instance.DecorationSnapToGrid;
+            rotationSnappingToggle.isOn = Properties.Instance.DecorationRotationSnapping;
         }
 
         private void OnEnable()
@@ -56,12 +62,25 @@ namespace Warlander.Deedplanner.Updaters
         private void Update()
         {
             bool snapToGrid = snapToGridToggle.isOn;
+            bool rotationSnapping = rotationSnappingToggle.isOn;
+            float rotationEditSensitivity = 1;
+            float.TryParse(rotationSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out rotationEditSensitivity);
 
             bool propertiesNeedSaving = false;
 
+            if (Math.Abs(rotationEditSensitivity - Properties.Instance.DecorationRotationSensitivity) > float.Epsilon)
+            {
+                Properties.Instance.DecorationRotationSensitivity = rotationEditSensitivity;
+                propertiesNeedSaving = true;
+            }
             if (snapToGrid != Properties.Instance.DecorationSnapToGrid)
             {
                 Properties.Instance.DecorationSnapToGrid = snapToGrid;
+                propertiesNeedSaving = true;
+            }
+            if (rotationSnapping != Properties.Instance.DecorationRotationSnapping)
+            {
+                Properties.Instance.DecorationRotationSnapping = rotationSnapping;
                 propertiesNeedSaving = true;
             }
 
@@ -80,7 +99,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            DecorationData data = (DecorationData) GuiManager.Instance.ObjectsTree.SelectedValue;
+            DecorationData data = (DecorationData)GuiManager.Instance.ObjectsTree.SelectedValue;
             bool dataChanged = data != lastFrameData;
             lastFrameData = data;
             if (data == null)
@@ -182,19 +201,35 @@ namespace Warlander.Deedplanner.Updaters
             {
                 if (Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftControl))
                 {
+                    isScrollRotate = true;
                     rotation += Input.GetAxis("Mouse ScrollWheel");
                 }
                 else if (!Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.LeftControl))
                 {
-                    if (Input.GetAxis("Mouse ScrollWheel") > 0f) {
+                    isScrollRotate = true;
+                    if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+                    {
                         rotation += 11.25f;
                     }
-                    else {
+                    else
+                    {
                         rotation -= 11.25f;
                     }
                     rotation = Mathf.Round(rotation / 11.25f) * 11.25f;
                 }
 
+                ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
+            }
+
+            if (!isScrollRotate && Input.GetMouseButton(0) && placingDecoration)
+            {
+                Vector2 dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
+                Vector2 difference = dragEndPos - dragStartPos;
+                rotation = -difference.x * rotationEditSensitivity;
+                if (rotationSnapping)
+                {
+                    rotation = Mathf.Round(rotation / 45f) * 45f;
+                }
                 ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
             }
 
@@ -208,6 +243,7 @@ namespace Warlander.Deedplanner.Updaters
 
                 placingDecoration = false;
                 ghostObject.transform.localRotation = Quaternion.identity;
+                isScrollRotate = false;
                 rotation = 0f;
             }
 
