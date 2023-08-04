@@ -5292,6 +5292,10 @@
 			<category>Furniture/Beds</category>
 			<category>Materials/Wood</category>
 		</object>
+		<object name="Straw bed" shortname="strawBed" type="normal">
+			<model location="Objects/Hay/strawBed.wom"/>
+			<category>Furniture/Beds</category>
+		</object>
 
 		<object name="Large dining table" shortname="lTable" type="normal">
 			<model location="Objects/largeTable.wom"/>
@@ -6584,10 +6588,35 @@
 			<category>Misc</category>
 			<category>Materials/Wood</category>
 		</object>
-		<object name="Gravestone" shortname="graves" type="normal">
-			<model location="Objects/Gravestone.wom"/>
+		<object name="Pet bowl" shortname="petBowl" type="normal">
+			<model location="Objects/PetBowl/petBowl.wom"/>
+			<category>Misc</category>
+		</object>
+		<object name="Gravestone, stone" shortname="graves" type="normal">
+			<model location="Objects/Gravestones/Gravestone.wom"/>
 			<category>Misc</category>
 			<category>Materials/Stone</category>
+		</object>
+		<object name="Gravestone, sandstone" shortname="gravesSand" type="normal">
+			<model location="Objects/Gravestones/Gravestone.wom">
+				<override mesh="GravestoneMesh" texture="Objects/Gravestones/gravestone_sand.dds"/>
+			</model>
+			<category>Misc</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Gravestone, marble" shortname="gravesMarble" type="normal">
+			<model location="Objects/Gravestones/Gravestone.wom">
+				<override mesh="GravestoneMesh" texture="Objects/Gravestones/gravestone_marble.dds"/>
+			</model>
+			<category>Misc</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Gravestone, slate" shortname="gravesSlate" type="normal">
+			<model location="Objects/Gravestones/Gravestone.wom">
+				<override mesh="GravestoneMesh" texture="Objects/Gravestones/gravestone_slate.dds"/>
+			</model>
+			<category>Misc</category>
+			<category>Materials/Slate</category>
 		</object>
 		<object name="Pillar, stone" shortname="pillStone" type="normal">
 			<model location="Objects/Pillar/Pillar.wom">
@@ -7129,6 +7158,14 @@
 
 		<object name="Large Planter (earth)" shortname="lpEarth" type="centered">
 			<model location="Objects/LargePlanter/raisedBedEarth.wom"/>
+			<category>Gardening</category>
+		</object>
+		<object name="Hay Stack" shortname="hayStack" type="normal">
+			<model location="Objects/Hay/hayStack.wom"/>
+			<category>Gardening</category>
+		</object>
+		<object name="Hay Bundle" shortname="hayBundle" type="normal">
+			<model location="Objects/Hay/hayBundle.wom"/>
 			<category>Gardening</category>
 		</object>
 
