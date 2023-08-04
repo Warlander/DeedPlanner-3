@@ -3971,6 +3971,11 @@
 			<category>Gardening</category>
 			<category>Materials/Wood</category>
 		</object>
+		<object name="Empty shelf" shortname="eShelf" type="normal">
+			<model location="Objects/Furniture/shelfEmpty.wom"/>
+			<category>Containers/Racks and Stands</category>
+			<category>Materials/Wood</category>
+		</object>
 		<object name="Armor stand (empty)" shortname="arStandE" type="normal">
 			<model location="Objects/armorStand01.wom"/>
 			<materials>
@@ -4106,8 +4111,23 @@
 			<model location="Objects/magic_chest.wom"/>
 			<category>Containers</category>
 		</object>
+		<object name="Crate rack, empty" shortname="crateRackE" type="normal">
+			<model location="Objects/Crates/crateRack_empty.wom"/>
+			<category>Containers</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Crate rack, full" shortname="crateRackF" type="normal">
+			<model location="Objects/Crates/crateRack_full.wom"/>
+			<category>Containers</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Huge crate" shortname="hCrate" type="normal">
+			<model location="Objects/Crates/crateHuge.wom"/>
+			<category>Containers</category>
+			<category>Materials/Wood</category>
+		</object>
 		<object name="Large crate" shortname="lCrate" type="normal">
-			<model location="Objects/crateLarge.wom"/>
+			<model location="Objects/Crates/crateLarge.wom"/>
 			<materials>
 				Planks = 16,
 				Large nails = 1
@@ -4116,7 +4136,7 @@
 			<category>Materials/Wood</category>
 		</object>
 		<object name="Small crate" shortname="sCrate" type="normal">
-			<model location="Objects/crateSmall.wom"/>
+			<model location="Objects/Crates/crateSmall.wom"/>
 			<materials>
 				Planks = 11,
 				Large nails = 1
@@ -4921,6 +4941,10 @@
 			<model location="Objects/unicornStatue.wom"/>
 			<category>Statues/Archaeology</category>
 		</object>
+		<object name="Statue of pumpkin terror" shortname="stattPumTerr" type="normal">
+			<model location="Objects/Statues/pumpkinTerror.wom"/>
+			<category>Statues/Archaeology</category>
+		</object>
 
 		<object name="Statue of boy" shortname="statBoy" type="normal">
 			<model location="Objects/boyStatue.wom"/>
@@ -5361,6 +5385,16 @@
 			</materials>
 			<category>Furniture/Tables</category>
 			<category>Materials/Marble</category>
+		</object>
+		<object name="Cartography table" shortname="cTable" type="normal">
+			<model location="Objects/Furniture/cTable.wom"/>
+			<materials>
+				Small nails = 2,
+				Planks = 6,
+				Shafts = 2
+			</materials>
+			<category>Furniture/Tables</category>
+			<category>Materials/Wood</category>
 		</object>
 		<object name="High bookshelf" shortname="hBook" type="normal">
 			<model location="Objects/Bookshelf_high.wom"/>
@@ -6802,7 +6836,7 @@
 			<category>Jackal</category>
 		</object>
 		<object name="Hitching post" shortname="hitchingpost" type="normal">
-			<model location="Objects/hitchingPost.wom"/>
+			<model location="Objects/HitchingPost/hitchingPost.wom"/>
 			<materials>
 				Large nails = 4,
 				Planks = 8,
@@ -6810,6 +6844,28 @@
 				Small nails = 8,
 				Wooden beams = 3
 			</materials>
+			<category>Misc</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Hitching post, full" shortname="hitchingPostF" type="normal">
+			<model location="Objects/HitchingPost/hitchingPostF.wom"/>
+			<materials>
+				Large nails = 4,
+				Planks = 8,
+				Ribbons = 2,
+				Small nails = 8,
+				Wooden beams = 3
+			</materials>
+			<category>Misc</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Feeding trough, empty" shortname="feedingTroughEmpty" type="normal">
+			<model location="Objects/HitchingPost/feedingTroughEmpty.wom"/>
+			<category>Misc</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Feeding trough, full" shortname="feedingTroughFull" type="normal">
+			<model location="Objects/HitchingPost/feedingTroughMeat.wom"/>
 			<category>Misc</category>
 			<category>Materials/Wood</category>
 		</object>
@@ -7760,6 +7816,10 @@
 		</object>
 		<object name="Caravel" shortname="boatCara" type="floating">
 			<model location="Objects/Caravel.wom"/>
+			<category>Ships</category>
+		</object>
+		<object name="Crude canoe" shortname="boatCCanoe" type="floating">
+			<model location="Objects/Ships/Canoe.wom"/>
 			<category>Ships</category>
 		</object>
 
