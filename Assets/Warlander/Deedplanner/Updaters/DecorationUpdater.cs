@@ -21,8 +21,10 @@ namespace Warlander.Deedplanner.Updaters
     {
         [Inject] private DPSettings _settings;
         [Inject] private CameraCoordinator _cameraCoordinator;
-        
+
         [SerializeField] private Toggle snapToGridToggle = null;
+        [SerializeField] private Toggle rotationSnappingToggle = null;
+        [SerializeField] private TMP_InputField rotationSensitivityInput = null;
 
         [SerializeField] private Color allowedGhostColor = Color.green;
         [SerializeField] private Color disabledGhostColor = Color.red;
@@ -41,6 +43,8 @@ namespace Warlander.Deedplanner.Updaters
         private Tile targetedTile;
         private Vector2 dragStartPos;
 
+        private bool isScrollRotate = false;
+
         private void Awake()
         {
             allowedGhostPropertyBlock = new MaterialPropertyBlock();
@@ -51,14 +55,26 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Start()
         {
+            rotationSensitivityInput.text = _settings.DecorationRotationSensitivity.ToString(CultureInfo.InvariantCulture);
             snapToGridToggle.isOn = _settings.DecorationSnapToGrid;
-            
+            rotationSnappingToggle.isOn = _settings.DecorationRotationSnapping;
+
+            rotationSensitivityInput.onValueChanged.AddListener(RotationSensitivityInputOnValueChanged);
             snapToGridToggle.onValueChanged.AddListener(SnapToGridToggleOnValueChanged);
+            rotationSnappingToggle.onValueChanged.AddListener(RotationSnappingToggleOnValueChanged);
         }
 
         private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
+        }
+
+        private void RotationSensitivityInputOnValueChanged(string value)
+        {
+            _settings.Modify(settings =>
+            {
+                settings.DecorationRotationSensitivity = rotationSensitivityInput.text;
+            });
         }
 
         private void SnapToGridToggleOnValueChanged(bool value)
@@ -69,8 +85,19 @@ namespace Warlander.Deedplanner.Updaters
             });
         }
 
+        private void RotationSnappingToggleOnValueChanged(bool value)
+        {
+            _settings.Modify(settings =>
+            {
+                settings.DecorationRotationSnapping = rotationSnappingToggle.isOn;
+            });
+        }
+
         private void Update()
         {
+            float rotationEditSensitivity = 1;
+            float.TryParse(rotationSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out rotationEditSensitivity);
+
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
@@ -81,7 +108,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            DecorationData data = (DecorationData) GuiManager.Instance.ObjectsTree.SelectedValue;
+            DecorationData data = (DecorationData)GuiManager.Instance.ObjectsTree.SelectedValue;
             bool dataChanged = data != lastFrameData;
             lastFrameData = data;
             if (data == null)
@@ -183,19 +210,35 @@ namespace Warlander.Deedplanner.Updaters
             {
                 if (Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftControl))
                 {
+                    isScrollRotate = true;
                     rotation += Input.GetAxis("Mouse ScrollWheel");
                 }
                 else if (!Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.LeftControl))
                 {
-                    if (Input.GetAxis("Mouse ScrollWheel") > 0f) {
+                    isScrollRotate = true;
+                    if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+                    {
                         rotation += 11.25f;
                     }
-                    else {
+                    else
+                    {
                         rotation -= 11.25f;
                     }
                     rotation = Mathf.Round(rotation / 11.25f) * 11.25f;
                 }
 
+                ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
+            }
+
+            if (!isScrollRotate && Input.GetMouseButton(0) && placingDecoration)
+            {
+                Vector2 dragEndPos = _cameraCoordinator.Current.MousePosition;
+                Vector2 difference = dragEndPos - dragStartPos;
+                rotation = -difference.x * rotationEditSensitivity;
+                if (rotationSnappingToggle.isOn)
+                {
+                    rotation = Mathf.Round(rotation / 45f) * 45f;
+                }
                 ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
             }
 
@@ -209,12 +252,14 @@ namespace Warlander.Deedplanner.Updaters
 
                 placingDecoration = false;
                 ghostObject.transform.localRotation = Quaternion.identity;
+                isScrollRotate = false;
                 rotation = 0f;
             }
 
             if (Input.GetMouseButtonDown(1))
             {
                 placingDecoration = false;
+                isScrollRotate = false;
                 ghostObject.transform.localRotation = Quaternion.identity;
             }
 
