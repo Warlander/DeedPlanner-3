@@ -14,9 +14,9 @@ namespace Warlander.Deedplanner.Settings
     public class DPSettings
     {
         public const string SettingsKey = "properties";
-        
+
         public event Action Modified;
-        
+
         public float FppMouseSensitivity = 0.5f;
         public float FppKeyboardRotationSensitivity = 60f;
         public float FppMovementSpeed = 16f;
@@ -32,15 +32,19 @@ namespace Warlander.Deedplanner.Settings
 
         public bool WallAutomaticReverse = true;
         public bool WallReverse = false;
-        
+
         public bool DecorationSnapToGrid = false;
+        public bool DecorationRotationSnapping = false;
+        public string DecorationRotationSensitivity = "1";
 
         public int GuiScale = 10;
 
         public WaterQuality WaterQuality = WaterDefaultQuality;
-        
-        private static WaterQuality WaterDefaultQuality {
-            get {
+
+        private static WaterQuality WaterDefaultQuality
+        {
+            get
+            {
                 if (SystemInfo.deviceType == DeviceType.Desktop && Application.platform != RuntimePlatform.WebGLPlayer)
                 {
                     return WaterQuality.High;
@@ -51,7 +55,7 @@ namespace Warlander.Deedplanner.Settings
                 }
             }
         }
-        
+
         public void Modify(Action<DPSettings> modifyCallback, bool autoSave = true)
         {
             modifyCallback.Invoke(this);
@@ -61,12 +65,12 @@ namespace Warlander.Deedplanner.Settings
                 Save();
             }
         }
-        
+
         public void Save()
         {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
-            
+
             StringBuilder builder = new StringBuilder();
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(DPSettings));
             using (TextWriter writer = new StringWriter(builder))

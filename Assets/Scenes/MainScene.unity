@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44402242, g: 0.49316543, b: 0.5722324, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -546,6 +546,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &39991406 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3640077888067744011, guid: 6db79a0e8f0c9af48905e99b0003cb83,
+    type: 3}
+  m_PrefabInstance: {fileID: 39991399}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 39991401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &42500068
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28702,6 +28714,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetTab: 6
   snapToGridToggle: {fileID: 987679741}
+  rotationSnappingToggle: {fileID: 39991406}
+  rotationSensitivityInput: {fileID: 1586115284}
   allowedGhostColor: {r: 0, g: 1, b: 0, a: 1}
   disabledGhostColor: {r: 1, g: 0, b: 0, a: 1}
   minimumPlacementGap: 0.25
@@ -28741,7 +28755,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 7.5, y: 0}
+  m_AnchoredPosition: {x: 7.5000305, y: 0}
   m_SizeDelta: {x: -15, y: 19}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1604953538
@@ -37695,7 +37709,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 7.5, y: 0}
+  m_AnchoredPosition: {x: 7.5000305, y: 0}
   m_SizeDelta: {x: -15, y: 19}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2095485027
@@ -37827,7 +37841,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 7.5, y: 0}
+  m_AnchoredPosition: {x: 7.5000305, y: 0}
   m_SizeDelta: {x: -15, y: 19}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2117289895
