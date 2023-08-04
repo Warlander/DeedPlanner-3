@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 using UnityEngine;
 using Warlander.Deedplanner.Gui;
@@ -63,11 +64,17 @@ namespace Warlander.Deedplanner.Settings
         
         public void Save()
         {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.OmitXmlDeclaration = true;
+            
             StringBuilder builder = new StringBuilder();
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(DPSettings));
             using (TextWriter writer = new StringWriter(builder))
             {
-                xmlSerializer.Serialize(writer, this);
+                using (XmlWriter xmlWriter = XmlWriter.Create(writer, settings))
+                {
+                    xmlSerializer.Serialize(xmlWriter, this);
+                }
             }
             PlayerPrefs.SetString(SettingsKey, builder.ToString());
             PlayerPrefs.Save();

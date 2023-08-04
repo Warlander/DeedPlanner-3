@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 using UnityEngine;
 using Zenject;
@@ -14,10 +16,21 @@ namespace Warlander.Deedplanner.Settings
                 return new DPSettings();
             }
 
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(DPSettings));
-            using (TextReader reader = new StringReader(PlayerPrefs.GetString(DPSettings.SettingsKey)))
+            try
             {
-                return (DPSettings) xmlSerializer.Deserialize(reader);
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(DPSettings));
+                using (TextReader reader = new StringReader(PlayerPrefs.GetString(DPSettings.SettingsKey)))
+                {
+                    using (XmlReader xmlReader = new XmlTextReader(reader))
+                    {
+                        return (DPSettings) xmlSerializer.Deserialize(xmlReader);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+                return new DPSettings();
             }
         }
     }
