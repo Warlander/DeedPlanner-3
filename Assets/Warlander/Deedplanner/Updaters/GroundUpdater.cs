@@ -6,11 +6,15 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Cameras;
+using Zenject;
 
 namespace Warlander.Deedplanner.Updaters
 {
     public class GroundUpdater : AbstractUpdater
     {
+        [Inject] private CameraCoordinator _cameraCoordinator;
+        
         [SerializeField] private Image leftClickImage = null;
         [SerializeField] private TextMeshProUGUI leftClickText = null;
         [SerializeField] private Image rightClickImage = null;
@@ -97,7 +101,7 @@ namespace Warlander.Deedplanner.Updaters
                 GameManager.Instance.Map.CommandManager.FinishAction();
             }
             
-            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
+            RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
                 return;

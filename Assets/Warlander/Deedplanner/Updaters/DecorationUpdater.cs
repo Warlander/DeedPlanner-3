@@ -11,11 +11,17 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Settings;
+using Zenject;
 
 namespace Warlander.Deedplanner.Updaters
 {
     public class DecorationUpdater : AbstractUpdater
     {
+        [Inject] private DPSettings _settings;
+        [Inject] private CameraCoordinator _cameraCoordinator;
+        
         [SerializeField] private Toggle snapToGridToggle = null;
 
         [SerializeField] private Color allowedGhostColor = Color.green;
@@ -45,7 +51,9 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Start()
         {
-            snapToGridToggle.isOn = Properties.Instance.DecorationSnapToGrid;
+            snapToGridToggle.isOn = _settings.DecorationSnapToGrid;
+            
+            snapToGridToggle.onValueChanged.AddListener(SnapToGridToggleOnValueChanged);
         }
 
         private void OnEnable()
@@ -53,24 +61,17 @@ namespace Warlander.Deedplanner.Updaters
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
+        private void SnapToGridToggleOnValueChanged(bool value)
+        {
+            _settings.Modify(settings =>
+            {
+                settings.DecorationSnapToGrid = snapToGridToggle.isOn;
+            });
+        }
+
         private void Update()
         {
-            bool snapToGrid = snapToGridToggle.isOn;
-
-            bool propertiesNeedSaving = false;
-
-            if (snapToGrid != Properties.Instance.DecorationSnapToGrid)
-            {
-                Properties.Instance.DecorationSnapToGrid = snapToGrid;
-                propertiesNeedSaving = true;
-            }
-
-            if (propertiesNeedSaving)
-            {
-                Properties.Instance.SaveProperties();
-            }
-
-            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
+            RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
                 if (ghostObject)
@@ -104,7 +105,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            int targetFloor = LayoutManager.Instance.CurrentCamera.Floor;
+            int targetFloor = _cameraCoordinator.Current.Floor;
             if (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor))
             {
                 targetFloor = tileEntity.Floor;
@@ -119,7 +120,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (!placingDecoration)
             {
-                position = CalculateCorrectedPosition(raycast.point, data, snapToGrid);
+                position = CalculateCorrectedPosition(raycast.point, data, _settings.DecorationSnapToGrid);
                 targetedTile = null;
                 if (overlayMesh)
                 {
@@ -175,7 +176,7 @@ namespace Warlander.Deedplanner.Updaters
             if (Input.GetMouseButtonDown(0))
             {
                 placingDecoration = true;
-                dragStartPos = LayoutManager.Instance.CurrentCamera.MousePosition;
+                dragStartPos = _cameraCoordinator.Current.MousePosition;
             }
 
             if (Input.GetAxis("Mouse ScrollWheel") != 0f)

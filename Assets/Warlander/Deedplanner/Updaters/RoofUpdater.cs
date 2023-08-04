@@ -2,12 +2,18 @@
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Cameras;
+using Zenject;
 
 namespace Warlander.Deedplanner.Updaters
 {
     public class RoofUpdater : AbstractUpdater
     {
+        [Inject] private TooltipHandler _tooltipHandler;
+        [Inject] private CameraCoordinator _cameraCoordinator;
+        
         private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
@@ -15,7 +21,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Update()
         {
-            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
+            RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
                 return;
@@ -35,14 +41,14 @@ namespace Warlander.Deedplanner.Updaters
             }
             else if (overlayMesh)
             {
-                floor = LayoutManager.Instance.CurrentCamera.Floor;
+                floor = _cameraCoordinator.Current.Floor;
                 x = Mathf.FloorToInt(raycast.point.x / 4f);
                 y = Mathf.FloorToInt(raycast.point.z / 4f);
             }
 
             if (floor == 0 || floor == -1)
             {
-                LayoutManager.Instance.TooltipText += "\n<color=red><b>It's not possible to place roofs on ground floor</b></color>";
+                _tooltipHandler.ShowTooltipText("<color=red><b>It's not possible to place roofs on ground floor</b></color>");
                 return;
             }
 

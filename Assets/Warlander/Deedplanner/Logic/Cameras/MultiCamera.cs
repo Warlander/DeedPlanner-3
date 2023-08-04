@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -8,24 +9,33 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic.Projectors;
+using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Utils;
+using Zenject;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {
     [RequireComponent(typeof(Camera))]
     public class MultiCamera : MonoBehaviour
     {
+        [Inject] private DPSettings _settings;
+        [Inject] private ICameraController[] _cameraControllers;
+        [Inject] private TooltipHandler _tooltipHandler;
+        [Inject] private CameraCoordinator _cameraCoordinator;
+
+        public event Action FloorChanged;
+        public event Action ModeChanged;
+        public event Action<MultiCamera> PointerDown;
+        
         private Transform parentTransform;
-        private readonly List<ICameraController> cameraControllers = new List<ICameraController>();
         public Camera AttachedCamera { get; private set; }
         public Vector2 MousePosition { get; private set; }
 
         [SerializeField] private int screenId = 0;
         [SerializeField] private GameObject screen = null;
-        [SerializeField] private CameraMode cameraMode = CameraMode.Top;
-        [SerializeField] private int floor = 0;
 
         [SerializeField] private Water ultraQualityWater = null;
         [SerializeField] private GameObject highQualityWater = null;
@@ -44,7 +54,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         {
             get
             {
-                foreach (ICameraController controller in cameraControllers)
+                foreach (ICameraController controller in _cameraControllers)
                 {
                     if (controller.SupportsMode(CameraMode))
                     {
@@ -60,6 +70,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             get => cameraMode;
             set {
                 cameraMode = value;
+                ModeChanged?.Invoke();
                 UpdateState();
             }
         }
@@ -68,6 +79,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             get => floor;
             set {
                 floor = value;
+                FloorChanged?.Invoke();
                 UpdateState();
             }
         }
@@ -98,19 +110,21 @@ namespace Warlander.Deedplanner.Logic.Cameras
             get => selectionBox.sizeDelta;
             set => selectionBox.sizeDelta = value;
         }
+        
+        private CameraMode cameraMode = CameraMode.Top;
+        private int floor = 0;
 
-        private void Start()
+        private void Awake()
         {
-            cameraControllers.Add(new FppCameraController());
-            cameraControllers.Add(new IsoCameraController());
-            cameraControllers.Add(new TopCameraController());
-
             parentTransform = transform.parent;
             AttachedCamera = GetComponent<Camera>();
             attachedProjector = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Yellow);
             attachedProjector.SetRenderCameraId(screenId);
             attachedProjector.gameObject.SetActive(false);
-
+        }
+        
+        private void Start()
+        {
             MouseEventCatcher eventCatcher = screen.GetComponent<MouseEventCatcher>();
 
             eventCatcher.OnDragEvent.AddListener(data =>
@@ -141,16 +155,17 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
             eventCatcher.OnPointerEnterEvent.AddListener(data => MouseOver = true);
             eventCatcher.OnPointerExitEvent.AddListener(data => MouseOver = false);
+            eventCatcher.OnPointerDownEvent.AddListener(data => PointerDown?.Invoke(this));
 
             CameraMode = cameraMode;
 
-            Properties.Instance.Saved += ValidateState;
+            _settings.Modified += ValidateState;
             ValidateState();
         }
 
         private void ValidateState()
         {
-            Gui.WaterQuality waterQuality = Properties.Instance.WaterQuality;
+            Gui.WaterQuality waterQuality = _settings.WaterQuality;
             if (waterQuality != Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(false);
@@ -167,7 +182,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             if (shouldUpdateCameras)
             {
                 Vector3 focusedPoint = CurrentRaycast.point;
-                bool focusedWindow = LayoutManager.Instance.ActiveWindow == screenId;
+                bool focusedWindow = _cameraCoordinator.ActiveId == screenId;
                 CameraController.UpdateInput(map, cameraMode, focusedPoint, AttachedCamera.aspect, floor, focusedWindow, MouseOver);
             }
 
@@ -262,7 +277,12 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     }
                 }
 
-                LayoutManager.Instance.TooltipText = tooltipBuild.ToString();
+                string tooltip = tooltipBuild.ToString();
+                if (string.IsNullOrEmpty(tooltip) == false)
+                {
+                    _tooltipHandler.ShowTooltipText(tooltip);
+                }
+                
             }
         }
 
@@ -285,7 +305,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             bool renderWater = RenderEntireMap || editingFloor == 0 || editingFloor == -1;
             Vector2 waterPosition = CameraController.CalculateWaterTablePosition(AttachedCamera.transform.position);
 
-            if (Properties.Instance.WaterQuality == Gui.WaterQuality.Ultra)
+            if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(renderWater);
                 Vector3 ultraQualityWaterPosition;
@@ -293,12 +313,12 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 ultraQualityWater.transform.position = ultraQualityWaterPosition;
                 ultraQualityWater.Update();
             }
-            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.High)
+            else if (_settings.WaterQuality == Gui.WaterQuality.High)
             {
                 highQualityWater.gameObject.SetActive(renderWater);
                 highQualityWater.transform.position = new Vector3(waterPosition.x, highQualityWater.transform.position.y, waterPosition.y);
             }
-            else if (Properties.Instance.WaterQuality == Gui.WaterQuality.Simple)
+            else if (_settings.WaterQuality == Gui.WaterQuality.Simple)
             {
                 simpleQualityWater.gameObject.SetActive(renderWater);
             }
@@ -480,7 +500,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         private void OnPostRender()
         {
             attachedProjector.gameObject.SetActive(false);
-            if (Properties.Instance.WaterQuality == Gui.WaterQuality.Ultra)
+            if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(false);
             }

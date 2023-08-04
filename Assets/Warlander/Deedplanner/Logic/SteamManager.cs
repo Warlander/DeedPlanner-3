@@ -88,7 +88,7 @@ namespace Warlander.Deedplanner.Logic
             }
             
             // checks to check if Steam connection should be initialized
-            if (!Application.platform.IsDesktopPlatform())
+            if (SystemInfo.deviceType != DeviceType.Desktop)
             {
                 Debug.Log("Current platform is not Steam compatible, destroying SteamManager.", this);
                 return false;

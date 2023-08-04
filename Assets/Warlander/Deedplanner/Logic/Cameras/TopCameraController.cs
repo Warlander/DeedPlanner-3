@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Settings;
+using Zenject;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {
     public class TopCameraController : ICameraController
     {
+        [Inject] private DPSettings _settings;
+        
         private Vector2 topPosition;
         private float topScale = 40;
 
@@ -43,7 +47,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 }
 
                 Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-                movement *= Properties.Instance.TopMovementSpeed * Time.deltaTime;
+                movement *= _settings.TopMovementSpeed * Time.deltaTime;
                 topPosition += movement;
             }
 

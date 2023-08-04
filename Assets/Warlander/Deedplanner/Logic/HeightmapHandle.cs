@@ -2,12 +2,16 @@
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Utils;
+using Zenject;
 
 namespace Warlander.Deedplanner.Logic
 {
     public class HeightmapHandle
     {
+        [Inject] private CameraCoordinator _cameraCoordinator;
+        
         private const float handleScale = 0.6f;
         
         public Vector2Int TileCoords { get; }
@@ -74,7 +78,7 @@ namespace Warlander.Deedplanner.Logic
             
             build.Append("<mspace=0.5em>");
 
-            int floor = LayoutManager.Instance.CurrentCamera.Floor;
+            int floor = _cameraCoordinator.Current.Floor;
             Map map = GameManager.Instance.Map;
             Tile centralTile = map[TileCoords.x, TileCoords.y];
             int centralHeight = centralTile.GetHeightForFloor(floor);

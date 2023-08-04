@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+using System;
+using System.Collections.Generic;
 using System.IO;
 using B83.Win32;
 using UnityEngine;
+using Zenject;
 
 namespace Warlander.Deedplanner.Logic
 {
-    public class FileDragManager : MonoBehaviour
+    public class FileDragManager : IInitializable, IDisposable
     {
-        #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-        private void OnEnable()
+        void IInitializable.Initialize()
         {
             UnityDragAndDropHook.InstallHook();
             UnityDragAndDropHook.OnDroppedFiles += OnFileDropped;
@@ -24,17 +26,11 @@ namespace Warlander.Deedplanner.Logic
             GameManager.Instance.LoadMap(File.ReadAllText(files[0]));
         }
         
-        private void OnDisable()
+        void IDisposable.Dispose()
         {
             UnityDragAndDropHook.UninstallHook();
             UnityDragAndDropHook.OnDroppedFiles -= OnFileDropped;
         }
-        #else
-        public void Awake()
-        {
-            // Immediately destroy the manager on other platforms than Windows.
-            Destroy(gameObject);
-        }
-        #endif
     }
 }
+#endif

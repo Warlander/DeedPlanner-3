@@ -30,18 +30,6 @@ namespace Warlander.Deedplanner.Logic.Projectors
 
         private Dictionary<ProjectorColor, Stack<MapProjector>> freeProjectors = new Dictionary<ProjectorColor, Stack<MapProjector>>();
 
-        private void Awake()
-        {
-            if (!instance)
-            {
-                instance = this;
-            }
-            else
-            {
-                Debug.LogError($"More than one instance of {nameof(MapProjectorManager)} exists.");
-            }
-        }
-        
         public MapProjector RequestProjector(ProjectorColor color)
         {
             ValidateList(color);

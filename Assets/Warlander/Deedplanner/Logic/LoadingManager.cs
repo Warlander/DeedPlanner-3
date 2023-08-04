@@ -9,12 +9,16 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Utils;
 using DG.Tweening;
+using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Logic.Cameras;
+using Zenject;
 
 namespace Warlander.Deedplanner.Logic
 {
     public class LoadingManager : MonoBehaviour
     {
+        [InjectOptional] private DebugProperties _debugProperties;
+        
         [SerializeField] private CanvasGroup splashGroup = null;
         [SerializeField] private GameObject managersRoot = null;
         [SerializeField] private MultiCamera[] cameras = null;
@@ -25,7 +29,6 @@ namespace Warlander.Deedplanner.Logic
         private void Start()
         {
             splashGroup.gameObject.SetActive(true);
-            LayoutManager.Instance.UpdateCanvasScale();
             OutputGraphicsCapabilities();
             StartCoroutine(Load());
         }
@@ -96,10 +99,10 @@ namespace Warlander.Deedplanner.Logic
                 text.text = "Loading map from web address";
                 yield return GameManager.Instance.LoadMap(new Uri(mapLocationString));
             }
-            else if ((Application.isEditor || Debug.isDebugBuild) && DebugManager.Instance.ShouldLoadTestMap)
+            else if ((Application.isEditor || Debug.isDebugBuild) && _debugProperties != null)
             {
                 text.text = "Loading debug map";
-                yield return GameManager.Instance.LoadMap(new Uri(DebugManager.Instance.TestMapPath));
+                yield return GameManager.Instance.LoadMap(new Uri(_debugProperties.TestMapPath));
             }
             else
             {

@@ -6,14 +6,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logic.Projectors;
+using Warlander.Deedplanner.Settings;
+using Zenject;
 
 namespace Warlander.Deedplanner.Updaters
 {
     public class HeightUpdater : AbstractUpdater
     {
+        [Inject] private TooltipHandler _tooltipHandler;
+        [Inject] private DPSettings _settings;
+        [Inject] private CameraCoordinator _cameraCoordinator;
+        
         [SerializeField] private Toggle selectAndDragToggle = null;
         [SerializeField] private Toggle createRampsToggle = null;
         [SerializeField] private Toggle levelAreaToggle = null;
@@ -57,8 +64,11 @@ namespace Warlander.Deedplanner.Updaters
         
         private void Start()
         {
-            dragSensitivityInput.text = Properties.Instance.HeightDragSensitivity.ToString(CultureInfo.InvariantCulture);
-            respectOriginalSlopesToggle.isOn = Properties.Instance.HeightRespectOriginalSlopes;
+            dragSensitivityInput.text = _settings.HeightDragSensitivity.ToString(CultureInfo.InvariantCulture);
+            respectOriginalSlopesToggle.isOn = _settings.HeightRespectOriginalSlopes;
+            
+            dragSensitivityInput.onValueChanged.AddListener(DragSensitivityOnValueChanged);
+            respectOriginalSlopesToggle.onValueChanged.AddListener(RespectOriginalSlopesOnValueChanged);
         }
         
         private void OnEnable()
@@ -66,6 +76,25 @@ namespace Warlander.Deedplanner.Updaters
             RefreshTileSelectionMode();
             anchorProjector = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Red);
             anchorProjector.gameObject.SetActive(false);
+        }
+
+        private void DragSensitivityOnValueChanged(string value)
+        {
+            float.TryParse(dragSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture,
+                out float dragSensitivity);
+            
+            _settings.Modify(settings =>
+            {
+                settings.HeightDragSensitivity = dragSensitivity;
+            });
+        }
+
+        private void RespectOriginalSlopesOnValueChanged(bool value)
+        {
+            _settings.Modify(settings =>
+            {
+                settings.HeightRespectOriginalSlopes = respectOriginalSlopesToggle.isOn;
+            });
         }
 
         public void OnModeChange(bool toggledOn)
@@ -140,13 +169,13 @@ namespace Warlander.Deedplanner.Updaters
             state = HeightUpdaterState.Idle;
             GameManager.Instance.Map.CommandManager.UndoAction();
             UpdateHandlesColors();
-            LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
+            _cameraCoordinator.Current.RenderSelectionBox = false;
         }
 
         private void Update()
         {
-            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
-            bool cameraOnScreen = LayoutManager.Instance.CurrentCamera.MouseOver;
+            RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
+            bool cameraOnScreen = _cameraCoordinator.Current.MouseOver;
 
             if (!cameraOnScreen)
             {
@@ -177,35 +206,14 @@ namespace Warlander.Deedplanner.Updaters
 
             if (activeHandle != null)
             {
-                LayoutManager.Instance.TooltipText = activeHandle.ToRichString();
+                _tooltipHandler.ShowTooltipText(activeHandle.ToRichString());
             }
         }
 
         private void UpdateSelectAndDrag()
         {
             Map map = GameManager.Instance.Map;
-            float dragSensitivity = 0;
-            float.TryParse(dragSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out dragSensitivity);
-            bool respectSlopes = respectOriginalSlopesToggle.isOn;
 
-            bool propertiesNeedSaving = false;
-            
-            if (Math.Abs(dragSensitivity - Properties.Instance.HeightDragSensitivity) > float.Epsilon)
-            {
-                Properties.Instance.HeightDragSensitivity = dragSensitivity;
-                propertiesNeedSaving = true;
-            }
-            if (respectSlopes != Properties.Instance.HeightRespectOriginalSlopes)
-            {
-                Properties.Instance.HeightRespectOriginalSlopes = respectSlopes;
-                propertiesNeedSaving = true;
-            }
-
-            if (propertiesNeedSaving)
-            {
-                Properties.Instance.SaveProperties();
-            }
-            
             if (Input.GetMouseButtonDown(0))
             {
                 if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
@@ -231,11 +239,11 @@ namespace Warlander.Deedplanner.Updaters
                 {
                     map.CommandManager.UndoAction();
                     int originalHeight = map[activeHandle.TileCoords].SurfaceHeight;
-                    int heightDelta = (int) ((dragEndPos.y - dragStartPos.y) * dragSensitivity);
+                    int heightDelta = (int) ((dragEndPos.y - dragStartPos.y) * _settings.HeightDragSensitivity);
                     foreach (HeightmapHandle heightmapHandle in selectedHandles)
                     {
                         Vector2Int tileCoords = heightmapHandle.TileCoords;
-                        if (respectSlopes)
+                        if (_settings.HeightRespectOriginalSlopes)
                         {
                             map[tileCoords].SurfaceHeight += heightDelta;
                         }
@@ -284,7 +292,7 @@ namespace Warlander.Deedplanner.Updaters
                     state = HeightUpdaterState.Recovering;
                 }
                 
-                LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
+                _cameraCoordinator.Current.RenderSelectionBox = false;
             }
         }
 
@@ -388,7 +396,7 @@ namespace Warlander.Deedplanner.Updaters
                         float anchorPositionY = anchorHandle.TileCoords.y * 4;
                         Vector2 anchorPosition = new Vector2(anchorPositionX, anchorPositionY);
 
-                        Vector3 raycastPoint = LayoutManager.Instance.CurrentCamera.CurrentRaycast.point;
+                        Vector3 raycastPoint = _cameraCoordinator.Current.CurrentRaycast.point;
                         Vector2 raycastPosition = new Vector2(raycastPoint.x, raycastPoint.z);
 
                         Vector2 positionDelta = raycastPosition - anchorPosition;
@@ -450,7 +458,7 @@ namespace Warlander.Deedplanner.Updaters
                     state = HeightUpdaterState.Recovering;
                 }
                 
-                LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
+                _cameraCoordinator.Current.RenderSelectionBox = false;
             }
         }
 
@@ -488,14 +496,14 @@ namespace Warlander.Deedplanner.Updaters
                 }
                 map.CommandManager.FinishAction();
                 state = HeightUpdaterState.Idle;
-                LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
+                _cameraCoordinator.Current.RenderSelectionBox = false;
             }
 
             if (Input.GetMouseButtonDown(1))
             {
                 map.CommandManager.UndoAction();
                 state = HeightUpdaterState.Idle;
-                LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
+                _cameraCoordinator.Current.RenderSelectionBox = false;
             }
         }
 
@@ -539,7 +547,7 @@ namespace Warlander.Deedplanner.Updaters
             }
             else
             {
-                MultiCamera hoveredCamera = LayoutManager.Instance.HoveredCamera;
+                MultiCamera hoveredCamera = _cameraCoordinator.Hovered;
                 if (!hoveredCamera || hoveredCamera.CameraMode != CameraMode.Top)
                 {
                     return new List<HeightmapHandle>();
@@ -555,16 +563,16 @@ namespace Warlander.Deedplanner.Updaters
 
             if (Input.GetMouseButtonDown(0))
             {
-                dragStartPos = LayoutManager.Instance.CurrentCamera.MousePosition;
+                dragStartPos = _cameraCoordinator.Current.MousePosition;
             }
             
-            dragEndPos = LayoutManager.Instance.CurrentCamera.MousePosition;
+            dragEndPos = _cameraCoordinator.Current.MousePosition;
             
             if (state == HeightUpdaterState.Dragging)
             {
                 if (Vector2.Distance(dragStartPos, dragEndPos) > 5)
                 {
-                    LayoutManager.Instance.CurrentCamera.RenderSelectionBox = true;
+                    _cameraCoordinator.Current.RenderSelectionBox = true;
                 }
                 
                 Vector2 difference = dragEndPos - dragStartPos;
@@ -575,20 +583,20 @@ namespace Warlander.Deedplanner.Updaters
                 Vector2 selectionStart = dragStartPos - clampedDifference;
                 Vector2 selectionEnd = dragEndPos - dragStartPos + clampedDifference * 2;
 
-                LayoutManager.Instance.CurrentCamera.SelectionBoxPosition = selectionStart;
-                LayoutManager.Instance.CurrentCamera.SelectionBoxSize = selectionEnd;
+                _cameraCoordinator.Current.SelectionBoxPosition = selectionStart;
+                _cameraCoordinator.Current.SelectionBoxSize = selectionEnd;
 
-                Vector2 viewportStart = selectionStart / LayoutManager.Instance.CurrentCamera.Screen.GetComponent<RectTransform>().sizeDelta;
-                Vector2 viewportEnd = selectionEnd / LayoutManager.Instance.CurrentCamera.Screen.GetComponent<RectTransform>().sizeDelta;
+                Vector2 viewportStart = selectionStart / _cameraCoordinator.Current.Screen.GetComponent<RectTransform>().sizeDelta;
+                Vector2 viewportEnd = selectionEnd / _cameraCoordinator.Current.Screen.GetComponent<RectTransform>().sizeDelta;
                 Rect viewportRect = new Rect(viewportStart, viewportEnd);
 
-                Camera checkedCamera = LayoutManager.Instance.CurrentCamera.AttachedCamera;
+                Camera checkedCamera = _cameraCoordinator.Current.AttachedCamera;
 
                 for (int i = 0; i <= GameManager.Instance.Map.Width; i++)
                 {
-                    for (int i2 = 0; i2 < GameManager.Instance.Map.Height; i2++)
+                    for (int i2 = 0; i2 <= GameManager.Instance.Map.Height; i2++)
                     {
-                        float height = GameManager.Instance.Map[i, i2].GetHeightForFloor(LayoutManager.Instance.CurrentCamera.Floor) * 0.1f;
+                        float height = GameManager.Instance.Map[i, i2].GetHeightForFloor(_cameraCoordinator.Current.Floor) * 0.1f;
                         Vector2 viewportLocation = checkedCamera.WorldToViewportPoint(new Vector3(i * 4, height, i2 * 4));
                         if (viewportRect.Contains(viewportLocation))
                         {
@@ -600,7 +608,7 @@ namespace Warlander.Deedplanner.Updaters
             
             if (Input.GetMouseButtonUp(0))
             {
-                LayoutManager.Instance.CurrentCamera.RenderSelectionBox = false;
+                _cameraCoordinator.Current.RenderSelectionBox = false;
             }
             
             if (hoveredHandles.Count == 0)

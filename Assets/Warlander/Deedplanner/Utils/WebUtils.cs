@@ -66,7 +66,7 @@ namespace Warlander.Deedplanner.Utils
             bool isWebUri = uri != null && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
             
             // required for Linux and Mac compatibility, have no effect on Windows
-            if (!isWebUri && Application.platform.IsDesktopPlatform())
+            if (!isWebUri && SystemInfo.deviceType == DeviceType.Desktop)
             {
                 return "file://" + path;
             }

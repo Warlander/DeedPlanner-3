@@ -2,11 +2,15 @@
 using UnityEngine.EventSystems;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Settings;
+using Zenject;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {
     public class FppCameraController : ICameraController
     {
+        [Inject] private DPSettings _settings;
+        
         private Vector3 fppPosition = new Vector3(-3, 4, -3);
         private Vector3 fppRotation = new Vector3(15, 45, 0);
         private const float WurmianHeight = 1.4f;
@@ -18,7 +22,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         public void UpdateDrag(Camera attachedCamera, PointerEventData eventData)
         {
-            fppRotation += new Vector3(-eventData.delta.y * Properties.Instance.FppMouseSensitivity, eventData.delta.x * Properties.Instance.FppMouseSensitivity, 0);
+            fppRotation += new Vector3(-eventData.delta.y * _settings.FppMouseSensitivity, eventData.delta.x * _settings.FppMouseSensitivity, 0);
             fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
         }
 
@@ -29,34 +33,34 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 float movementMultiplier = 1;
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    movementMultiplier *= Properties.Instance.FppShiftModifier;
+                    movementMultiplier *= _settings.FppShiftModifier;
                 }
                 else if (Input.GetKey(KeyCode.LeftControl))
                 {
-                    movementMultiplier *= Properties.Instance.FppControlModifier;
+                    movementMultiplier *= _settings.FppControlModifier;
                 }
 
                 Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                movement *= Properties.Instance.FppMovementSpeed * Time.deltaTime * movementMultiplier;
+                movement *= _settings.FppMovementSpeed * Time.deltaTime * movementMultiplier;
 
                 if (Input.GetKey(KeyCode.Q))
                 {
-                    fppRotation += new Vector3(0, -Time.deltaTime * Properties.Instance.FppKeyboardRotationSensitivity, 0);
+                    fppRotation += new Vector3(0, -Time.deltaTime * _settings.FppKeyboardRotationSensitivity, 0);
                     fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
                 }
                 if (Input.GetKey(KeyCode.E))
                 {
-                    fppRotation += new Vector3(0, Time.deltaTime * Properties.Instance.FppKeyboardRotationSensitivity, 0);
+                    fppRotation += new Vector3(0, Time.deltaTime * _settings.FppKeyboardRotationSensitivity, 0);
                     fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
                 }
 
                 if (Input.GetKey(KeyCode.R))
                 {
-                    fppPosition += new Vector3(0, Time.deltaTime * Properties.Instance.FppMovementSpeed * movementMultiplier, 0);
+                    fppPosition += new Vector3(0, Time.deltaTime * _settings.FppMovementSpeed * movementMultiplier, 0);
                 }
                 if (Input.GetKey(KeyCode.F))
                 {
-                    fppPosition += new Vector3(0, -Time.deltaTime * Properties.Instance.FppMovementSpeed * movementMultiplier, 0);
+                    fppPosition += new Vector3(0, -Time.deltaTime * _settings.FppMovementSpeed * movementMultiplier, 0);
                 }
 
                 fppPosition += Quaternion.Euler(fppRotation) * movement;

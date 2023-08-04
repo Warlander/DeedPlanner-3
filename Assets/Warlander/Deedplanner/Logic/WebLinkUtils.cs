@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Warlander.Deedplanner.Logic
 {
@@ -98,7 +99,7 @@ namespace Warlander.Deedplanner.Logic
 
         public static string AsCrossOriginLink(string originalLink)
         {
-            if (Properties.Web)
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
                 return "https://cors-anywhere.herokuapp.com/" + originalLink;
             }

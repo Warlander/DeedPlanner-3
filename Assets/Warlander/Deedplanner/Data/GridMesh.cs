@@ -5,11 +5,16 @@ using UnityEngine.Rendering;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Cameras;
+using Zenject;
 
 namespace Warlander.Deedplanner.Data
 {
     public class GridMesh : MonoBehaviour
     {
+        [Inject] private CameraCoordinator _cameraCoordinator;
+        [Inject] private DiContainer _container;
+        
         private Map map;
         private bool cave;
 
@@ -67,6 +72,8 @@ namespace Warlander.Deedplanner.Data
                     heightColors[index] = new Color(1, 1, 1);
 
                     HeightmapHandle newHandle = new HeightmapHandle(new Vector2Int(i, i2), 0);
+                    _container.Inject(newHandle);
+                    
                     heightmapHandles[i, i2] = newHandle;
                 }
             }
@@ -152,7 +159,7 @@ namespace Warlander.Deedplanner.Data
 
         public HeightmapHandle RaycastHandles()
         {
-            Ray ray = LayoutManager.Instance.CurrentCamera.CreateMouseRay();
+            Ray ray = _cameraCoordinator.Current.CreateMouseRay();
 
             float closestDistance = float.MaxValue;
             HeightmapHandle closestHandle = null;

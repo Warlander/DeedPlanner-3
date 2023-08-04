@@ -27,7 +27,7 @@ namespace Warlander.Deedplanner.Data
 
         public static IEnumerator LoadData()
         {
-            if (Properties.Mobile || Properties.Web)
+            if (Application.platform == RuntimePlatform.WebGLPlayer || SystemInfo.deviceType == DeviceType.Handheld)
             {
                 return LoadData(Application.streamingAssetsPath + "/objects.xml");
             }

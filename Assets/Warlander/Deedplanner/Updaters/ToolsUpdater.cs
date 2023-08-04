@@ -9,19 +9,24 @@ using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Gui.Windows;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.UI.Windows;
+using Zenject;
 
 namespace Warlander.Deedplanner.Updaters
 {
     public class ToolsUpdater : AbstractUpdater
     {
+        [Inject] private WindowCoordinator _windowCoordinator;
+        [Inject] private CameraCoordinator _cameraCoordinator;
+        
         [SerializeField] private Toggle calculateMaterialsToggle = null;
         [SerializeField] private Toggle mapWarningsToggle = null;
         
         [SerializeField] private RectTransform calculateMaterialsPanelTransform = null;
         [SerializeField] private RectTransform mapWarningsPanelTransform = null;
-        
-        [SerializeField] private TMP_InputField materialsInputField = null;
 
         [SerializeField] private UnityList warningsList = null;
 
@@ -47,7 +52,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
             
-            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
+            RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
                 return;
@@ -61,7 +66,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (Input.GetMouseButtonDown(0))
             {
-                int floor = LayoutManager.Instance.CurrentCamera.Floor;
+                int floor = _cameraCoordinator.Current.Floor;
                 int x = Mathf.FloorToInt(raycast.point.x / 4f);
                 int y = Mathf.FloorToInt(raycast.point.z / 4f);
                 Map map = GameManager.Instance.Map;
@@ -352,8 +357,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void ShowMaterialsWindow(string text)
         {
-            GuiManager.Instance.ShowWindow(WindowId.Materials);
-            materialsInputField.text = text;
+            _windowCoordinator.CreateWindow<TextWindow>(WindowNames.TextWindow).ShowText("Materials", text);
         }
         
         private enum ToolType

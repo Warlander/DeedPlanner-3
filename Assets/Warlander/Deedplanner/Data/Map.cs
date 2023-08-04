@@ -12,11 +12,14 @@ using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
+using Zenject;
 
 namespace Warlander.Deedplanner.Data
 {
     public class Map : MonoBehaviour, IXmlSerializable, IEnumerable<Tile>
     {
+        [Inject] private IInstantiator _instantiator;
+        
         private Tile[,] tiles;
 
         private Transform[] surfaceLevelRoots;
@@ -295,7 +298,9 @@ namespace Warlander.Deedplanner.Data
                 caveLevelRoots[i] = root;
             }
 
-            OverlayMesh surfaceOverlayMesh = Instantiate(GameManager.Instance.OverlayMeshPrefab, transform);
+            OverlayMesh surfaceOverlayMesh = 
+                _instantiator.InstantiatePrefabForComponent<OverlayMesh>(GameManager.Instance.OverlayMeshPrefab, transform);
+            
             surfaceGridRoot = surfaceOverlayMesh.transform;
 
             GameObject groundObject = new GameObject("Ground Mesh", typeof(GroundMesh));
@@ -377,11 +382,10 @@ namespace Warlander.Deedplanner.Data
 
         private GridMesh PrepareGridMesh(string name, Transform parent, bool cave)
         {
-            GameObject gridObject = new GameObject(name, typeof(GridMesh));
-            GridMesh gridMesh = gridObject.GetComponent<GridMesh>();
+            GridMesh gridMesh = _instantiator.InstantiateComponentOnNewGameObject<GridMesh>(name);
             gridMesh.Initialize(this, cave);
-            gridObject.transform.SetParent(parent);
-            gridObject.transform.localPosition = new Vector3(0, 0.01f, 0);
+            gridMesh.transform.SetParent(parent);
+            gridMesh.transform.localPosition = new Vector3(0, 0.01f, 0);
 
             return gridMesh;
         }
