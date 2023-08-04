@@ -624,6 +624,7 @@ namespace Warlander.Deedplanner.Data
         public void RegisterBridgePart(BridgePart bridgePart)
         {
             surfaceBridgePart = bridgePart;
+            bridgePart.transform.SetParent(Map.transform);
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
