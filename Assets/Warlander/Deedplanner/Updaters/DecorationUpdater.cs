@@ -11,6 +11,7 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Settings;
 using Zenject;
 
@@ -19,6 +20,7 @@ namespace Warlander.Deedplanner.Updaters
     public class DecorationUpdater : AbstractUpdater
     {
         [Inject] private DPSettings _settings;
+        [Inject] private CameraCoordinator _cameraCoordinator;
         
         [SerializeField] private Toggle snapToGridToggle = null;
 
@@ -69,7 +71,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Update()
         {
-            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
+            RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
                 if (ghostObject)
@@ -103,7 +105,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            int targetFloor = LayoutManager.Instance.CurrentCamera.Floor;
+            int targetFloor = _cameraCoordinator.Current.Floor;
             if (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor))
             {
                 targetFloor = tileEntity.Floor;
@@ -174,7 +176,7 @@ namespace Warlander.Deedplanner.Updaters
             if (Input.GetMouseButtonDown(0))
             {
                 placingDecoration = true;
-                dragStartPos = LayoutManager.Instance.CurrentCamera.MousePosition;
+                dragStartPos = _cameraCoordinator.Current.MousePosition;
             }
 
             if (Input.GetAxis("Mouse ScrollWheel") != 0f)

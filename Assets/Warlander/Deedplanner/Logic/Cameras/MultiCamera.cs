@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -23,6 +24,11 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [Inject] private DPSettings _settings;
         [Inject] private ICameraController[] _cameraControllers;
         [Inject] private TooltipHandler _tooltipHandler;
+        [Inject] private CameraCoordinator _cameraCoordinator;
+
+        public event Action FloorChanged;
+        public event Action ModeChanged;
+        public event Action<MultiCamera> PointerDown;
         
         private Transform parentTransform;
         public Camera AttachedCamera { get; private set; }
@@ -30,8 +36,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         [SerializeField] private int screenId = 0;
         [SerializeField] private GameObject screen = null;
-        [SerializeField] private CameraMode cameraMode = CameraMode.Top;
-        [SerializeField] private int floor = 0;
 
         [SerializeField] private Water ultraQualityWater = null;
         [SerializeField] private GameObject highQualityWater = null;
@@ -66,6 +70,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             get => cameraMode;
             set {
                 cameraMode = value;
+                ModeChanged?.Invoke();
                 UpdateState();
             }
         }
@@ -74,6 +79,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             get => floor;
             set {
                 floor = value;
+                FloorChanged?.Invoke();
                 UpdateState();
             }
         }
@@ -104,6 +110,9 @@ namespace Warlander.Deedplanner.Logic.Cameras
             get => selectionBox.sizeDelta;
             set => selectionBox.sizeDelta = value;
         }
+        
+        private CameraMode cameraMode = CameraMode.Top;
+        private int floor = 0;
 
         private void Awake()
         {
@@ -146,6 +155,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
             eventCatcher.OnPointerEnterEvent.AddListener(data => MouseOver = true);
             eventCatcher.OnPointerExitEvent.AddListener(data => MouseOver = false);
+            eventCatcher.OnPointerDownEvent.AddListener(data => PointerDown?.Invoke(this));
 
             CameraMode = cameraMode;
 
@@ -172,7 +182,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             if (shouldUpdateCameras)
             {
                 Vector3 focusedPoint = CurrentRaycast.point;
-                bool focusedWindow = LayoutManager.Instance.ActiveWindow == screenId;
+                bool focusedWindow = _cameraCoordinator.ActiveId == screenId;
                 CameraController.UpdateInput(map, cameraMode, focusedPoint, AttachedCamera.aspect, floor, focusedWindow, MouseOver);
             }
 

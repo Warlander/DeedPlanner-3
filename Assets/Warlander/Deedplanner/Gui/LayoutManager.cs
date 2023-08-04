@@ -16,18 +16,13 @@ namespace Warlander.Deedplanner.Gui
         public static LayoutManager Instance { get; private set; }
 
         [Inject] private DPSettings _settings;
+        [Inject] private CameraCoordinator _cameraCoordinator;
         
         [SerializeField] private Toggle[] indicatorButtons = new Toggle[4];
         [SerializeField] private RectTransform horizontalBottomIndicatorHolder = null;
         [SerializeField] private RawImage[] screens = new RawImage[4];
         [SerializeField] private RectTransform horizontalBottomScreenHolder = null;
         [SerializeField] private RectTransform[] splits = new RectTransform[5];
-        [SerializeField] private MultiCamera[] cameras = new MultiCamera[4];
-        [SerializeField] private ToggleGroup cameraModeGroup = null;
-        [SerializeField] private Toggle[] cameraModeToggles = new Toggle[4];
-        [SerializeField] private ToggleGroup floorGroup = null;
-        [SerializeField] private FloorToggle[] positiveFloorToggles = new FloorToggle[16];
-        [SerializeField] private FloorToggle[] negativeFloorToggles = new FloorToggle[6];
 
         [SerializeField] private UIContentTab[] tabs = new UIContentTab[12];
         [SerializeField] private Toggle groundToggle = null;
@@ -45,57 +40,6 @@ namespace Warlander.Deedplanner.Gui
         private Sequence tabFadeSequence;
         
         public TileSelectionMode TileSelectionMode { get; set; }
-        
-        public MultiCamera CurrentCamera => cameras[ActiveWindow];
-
-        public MultiCamera HoveredCamera
-        {
-            get
-            {
-                foreach (MultiCamera cam in cameras)
-                {
-                    if (cam.MouseOver)
-                    {
-                        return cam;
-                    }
-                }
-
-                return null;
-            }
-        }
-
-        public int ActiveWindow {
-            get => activeWindow;
-            private set {
-                activeWindow = value;
-
-                int floor = cameras[ActiveWindow].Floor;
-                foreach (FloorToggle toggle in positiveFloorToggles)
-                {
-                    toggle.Toggle.isOn = false;
-                }
-                foreach (FloorToggle toggle in negativeFloorToggles)
-                {
-                    toggle.Toggle.isOn = false;
-                }
-
-                if (floor < 0)
-                {
-                    floor++;
-                    negativeFloorToggles[floor].Toggle.isOn = true;
-                }
-                else
-                {
-                    positiveFloorToggles[floor].Toggle.isOn = true;
-                }
-
-                CameraMode cameraMode = cameras[ActiveWindow].CameraMode;
-                foreach (Toggle toggle in cameraModeToggles)
-                {
-                    toggle.isOn = toggle.GetComponent<CameraModeReference>().CameraMode == cameraMode;
-                }
-            }
-        }
 
         public Tab CurrentTab {
             get => currentTab;
@@ -107,8 +51,6 @@ namespace Warlander.Deedplanner.Gui
                 TabChanged?.Invoke(currentTab);
             }
         }
-
-        private FloorToggle CurrentFloorToggle => floorGroup.ActiveToggles().First().GetComponent<FloorToggle>();
 
         public LayoutManager()
         {
@@ -125,10 +67,23 @@ namespace Warlander.Deedplanner.Gui
         {
             // state validation at launch - it makes development and debugging easier as you don't need to make sure tab is set to the proper one when commiting
             CurrentTab = currentTab;
-
-            _settings.Modified += ValidateState;
+            
             ValidateState();
             ChangeLayout(currentLayout);
+            
+            _settings.Modified += ValidateState;
+            _cameraCoordinator.CurrentCameraChanged += CameraCoordinatorOnCurrentCameraChanged;
+            _cameraCoordinator.FloorChanged += CameraCoordinatorOnFloorChanged;
+        }
+
+        private void CameraCoordinatorOnCurrentCameraChanged()
+        {
+            OnActiveWindowChange();
+        }
+
+        private void CameraCoordinatorOnFloorChanged()
+        {
+            UpdateTabs();
         }
 
         private void CreateAndStartTabFadeAnimation(Tab previousTab, Tab newTab)
@@ -231,72 +186,37 @@ namespace Warlander.Deedplanner.Gui
 
         private void ToggleSharedMainScreenObjects(int index, bool enable)
         {
-            cameras[index].gameObject.SetActive(enable);
+            _cameraCoordinator.ToggleCamera(index, enable);
             indicatorButtons[index].gameObject.SetActive(enable);
             screens[index].gameObject.SetActive(enable);
             
             // if screen is being toggled off, focus primary screen instead
-            if (!enable && ActiveWindow == index)
+            if (!enable && _cameraCoordinator.ActiveId == index)
             {
-                indicatorButtons[ActiveWindow].isOn = false;
-                ActiveWindow = 0;
+                indicatorButtons[_cameraCoordinator.ActiveId].isOn = false;
+                _cameraCoordinator.ChangeCurrentCamera(0);
                 indicatorButtons[0].isOn = true;
             }
         }
 
         public void OnActiveIndicatorChange(int window)
         {
-            if (ActiveWindow == window)
-            {
-                return;
-            }
-
             if (indicatorButtons[window].isOn)
             {
-                ActiveWindow = window;
-                Debug.Log("Active window changed to " + ActiveWindow);
+                _cameraCoordinator.ChangeCurrentCamera(window);
+                Debug.Log("Active window changed to " + window);
             }
         }
 
-        public void OnActiveWindowChange(int window)
+        private void OnActiveWindowChange()
         {
-            if (ActiveWindow == window)
+            int activeId = _cameraCoordinator.ActiveId;
+            
+            for (int i = 0; i < indicatorButtons.Length; i++)
             {
-                return;
+                Toggle indicatorButton = indicatorButtons[i];
+                indicatorButton.isOn = activeId == i;
             }
-
-            indicatorButtons[ActiveWindow].isOn = false;
-            indicatorButtons[window].isOn = true;
-            ActiveWindow = window;
-            Debug.Log("Active window changed to " + ActiveWindow);
-        }
-
-        public void OnCameraModeChange()
-        {
-            CameraModeReference cameraModeReference = cameraModeGroup.ActiveToggles().First().GetComponent<CameraModeReference>();
-            CameraMode cameraMode = cameraModeReference.CameraMode;
-
-            if (cameras[ActiveWindow].CameraMode == cameraMode)
-            {
-                return;
-            }
-
-            cameras[ActiveWindow].CameraMode = cameraMode;
-            Debug.Log("Camera " + ActiveWindow + " camera mode changed to " + cameraMode);
-        }
-
-        public void OnFloorChange()
-        {
-            int floor = CurrentFloorToggle.Floor;
-
-            if (cameras[ActiveWindow].Floor == floor)
-            {
-                return;
-            }
-
-            cameras[ActiveWindow].Floor = floor;
-            Debug.Log("Camera " + ActiveWindow + " floor changed to " + floor);
-            UpdateTabs();
         }
 
         public void OnTabChange(TabReference tabReference)
@@ -308,7 +228,7 @@ namespace Warlander.Deedplanner.Gui
 
         private void UpdateTabs()
         {
-            int floor = CurrentFloorToggle.Floor;
+            int floor = _cameraCoordinator.Current.Floor;
             if (floor < 0)
             {
                 groundToggle.gameObject.SetActive(false);
@@ -350,6 +270,11 @@ namespace Warlander.Deedplanner.Gui
             return null;
         }
 
+        private void OnDestroy()
+        {
+            _settings.Modified -= ValidateState;
+            _cameraCoordinator.CurrentCameraChanged -= CameraCoordinatorOnCurrentCameraChanged;
+            _cameraCoordinator.FloorChanged -= CameraCoordinatorOnFloorChanged;
+        }
     }
-
 }

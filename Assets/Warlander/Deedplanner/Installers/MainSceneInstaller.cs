@@ -11,10 +11,12 @@ namespace Warlander.Deedplanner.Installers
     {
         [SerializeField] private DebugProperties _debugProperties;
         [SerializeField] private LayoutManager _layoutManager;
+        [SerializeField] private CameraCoordinator _cameraCoordinator;
         
         public override void InstallBindings()
         {
             Container.Bind<LayoutManager>().FromInstance(_layoutManager);
+            Container.Bind<CameraCoordinator>().FromInstance(_cameraCoordinator).AsSingle();
 
             Container.Bind<ICameraController>().To<FppCameraController>().AsTransient();
             Container.Bind<ICameraController>().To<IsoCameraController>().AsTransient();

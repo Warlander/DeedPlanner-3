@@ -6,6 +6,7 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Settings;
 using Zenject;
 
@@ -14,6 +15,7 @@ namespace Warlander.Deedplanner.Updaters
     public class WallUpdater : AbstractUpdater
     {
         [Inject] private DPSettings _settings;
+        [Inject] private CameraCoordinator _cameraCoordinator;
         
         [SerializeField] private Toggle reverseToggle = null;
         [SerializeField] private Toggle automaticReverseToggle = null;
@@ -55,7 +57,7 @@ namespace Warlander.Deedplanner.Updaters
                 GameManager.Instance.Map.CommandManager.FinishAction();
             }
             
-            RaycastHit raycast = LayoutManager.Instance.CurrentCamera.CurrentRaycast;
+            RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
                 return;
@@ -74,7 +76,7 @@ namespace Warlander.Deedplanner.Updaters
             if (wallEntity && wallEntity.Valid)
             {
                 floor = tileEntity.Floor;
-                if (LayoutManager.Instance.CurrentCamera.Floor == floor + 1)
+                if (_cameraCoordinator.Current.Floor == floor + 1)
                 {
                     floor++;
                 }
@@ -87,7 +89,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 if (overlayMesh)
                 {
-                    floor = LayoutManager.Instance.CurrentCamera.Floor;
+                    floor = _cameraCoordinator.Current.Floor;
                 }
                 else if (groundMesh)
                 {
@@ -136,7 +138,7 @@ namespace Warlander.Deedplanner.Updaters
             }
             else if (Input.GetMouseButton(1))
             {
-                if (floor != LayoutManager.Instance.CurrentCamera.Floor)
+                if (floor != _cameraCoordinator.Current.Floor)
                 {
                     return;
                 }

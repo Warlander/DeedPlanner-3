@@ -10,6 +10,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic.Projectors;
 using Warlander.Deedplanner.Updaters;
+using Zenject;
 
 namespace Warlander.Deedplanner.Logic
 {
@@ -17,6 +18,8 @@ namespace Warlander.Deedplanner.Logic
     {
         public static GameManager Instance { get; private set; }
 
+        [Inject] private IInstantiator _instantiator;
+        
         public Map Map { get; private set; }
 
         [SerializeField] private OverlayMesh overlayMeshPrefab = null;
@@ -68,8 +71,7 @@ namespace Warlander.Deedplanner.Logic
                 Destroy(Map.gameObject);
             }
             
-            GameObject mapObject = new GameObject("Map", typeof(Map));
-            Map = mapObject.GetComponent<Map>();
+            Map = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             Map.Initialize(width, height);
             ApplyPropertiesToMap(Map);
         }
@@ -77,8 +79,7 @@ namespace Warlander.Deedplanner.Logic
         public void ResizeMap(int left, int right, int bottom, int top)
         {
             Map.gameObject.SetActive(false);
-            GameObject mapObject = new GameObject("Map", typeof(Map));
-            Map newMap = mapObject.GetComponent<Map>();
+            Map newMap = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             newMap.Initialize(Map, left, right, bottom, top);
             Destroy(Map.gameObject);
             Map = newMap;
@@ -95,8 +96,7 @@ namespace Warlander.Deedplanner.Logic
                 Destroy(Map.gameObject);
             }
             
-            GameObject mapObject = new GameObject("Map", typeof(Map));
-            Map = mapObject.GetComponent<Map>();
+            Map = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             Map.Initialize(width, height);
             ApplyPropertiesToMap(Map);
         }
@@ -141,8 +141,7 @@ namespace Warlander.Deedplanner.Logic
                 Destroy(oldMapObject);
             }
             
-            GameObject mapObject = new GameObject("Map", typeof(Map));
-            Map = mapObject.GetComponent<Map>();
+            Map = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             Map.Initialize(doc);
             ApplyPropertiesToMap(Map);
         }
