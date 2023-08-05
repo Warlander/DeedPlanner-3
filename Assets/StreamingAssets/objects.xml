@@ -245,7 +245,7 @@
 			<tex location="GroundTextures/minedoor_gold.dds"/>
 			<category>Cave doors</category>
 		</ground>
-		
+
 		<ground name="Rock" shortname="ro">
 			<tex location="GroundTextures/rock.dds"/>
 			<category>Natural terrain/Mountain</category>
@@ -275,11 +275,11 @@
 			<category>Natural terrain/Resources</category>
 		</ground>
 	</grounds>
-	
-	
-	
-	
-	
+
+
+
+
+
 	<floors>
 		<floor name="Wooden plank floor" shortname="wFloor">
 			<model location="Floors/Floor.wom">
@@ -358,7 +358,7 @@
 			<category>Floors</category>
 			<category>Materials/Sandstone slab</category>
 		</floor>
-		
+
 		<floor name="Wooden plank opening" shortname="wOpen">
 			<model location="Floors/Floor_Opening.wom">
 				<override mesh="OpeningMesh" texture="Floors/floor.png"/>
@@ -443,7 +443,7 @@
 			<category>Openings</category>
 			<category>Materials/Sandstone slab</category>
 		</floor>
-		
+
 		<floor name="Spiral staircase" shortname="spStair">
 			<model location="Floors/spiralStaircase.wom"/>
 			<opening/>
@@ -569,7 +569,7 @@
 			</materials>
 			<category>Staircases</category>
 		</floor>
-		
+
 		<floor name="Wooden plank staircase" shortname="wStair">
 			<model location="Floors/Staircase.wom">
 				<override mesh="FloorMesh" texture="Floors/floor.png"/>
@@ -680,7 +680,7 @@
 			<category>Staircases</category>
 			<category>Materials/Sandstone slab</category>
 		</floor>
-		
+
 		<floor name="Wooden plank left staircase" shortname="wlStair">
 			<model location="Floors/staircaseLeft.wom">
 				<override mesh="FloorMesh" texture="Floors/floor.png"/>
@@ -791,7 +791,7 @@
 			<category>Staircases</category>
 			<category>Materials/Sandstone slab</category>
 		</floor>
-		
+
 		<floor name="Wooden plank right staircase" shortname="wrStair">
 			<model location="Floors/staircaseRight.wom">
 				<override mesh="FloorMesh" texture="Floors/floor.png"/>
@@ -902,17 +902,17 @@
 			<category>Staircases</category>
 			<category>Materials/Sandstone slab</category>
 		</floor>
-		
+
 		<floor name="Unfinished floor" shortname="uFloor">
 			<model location="Floors/Floor_Plan.wom"/>
 			<category>Unfinished</category>
 		</floor>
 	</floors>
-	
-	
-	
-	
-	
+
+
+
+
+
 	<walls>
 		<wall name="Wooden wall" shortname="wWall" scale="4" type="house">
 			<model location="Walls/Wooden_Wall.wom"/>
@@ -1038,7 +1038,7 @@
 			<category>House walls/Wood</category>
 			<category>Materials/Wood</category>
 		</wall>
-		
+
 		<wall name="Stone wall" shortname="sWall" scale="1" type="house">
 			<model location="Walls/House_Stone_Wall.wom" tag="bottom"/>
 			<model location="Walls/House_Stone_Wall_Upper.wom"/>
@@ -1159,7 +1159,7 @@
 			<category>House walls/Stone</category>
 			<category>Materials/Stone</category>
 		</wall>
-		
+
 		<wall name="Plain stone wall" shortname="psWall" scale="1" type="house">
 			<model location="Walls/House_Stone_Wall_Plain.wom" tag="bottom"/>
 			<model location="Walls/House_Stone_Wall_Plain_Upper.wom"/>
@@ -1303,7 +1303,7 @@
 			<category>House walls/Plain Stone</category>
 			<category>Materials/Stone</category>
 		</wall>
-		
+
 		<wall name="Slate wall" shortname="dsWall" scale="1" type="house">
 			<model location="Walls/House_Stone_Wall_Plain.wom" tag="bottom">
 				<override mesh="StoneWallPlainMesh" texture="Walls/slate.png"/>
@@ -1487,7 +1487,7 @@
 			<category>House walls/Slate</category>
 			<category>Materials/Slate</category>
 		</wall>
-		
+
 		<wall name="Marble wall" shortname="mbWall" scale="1" type="house">
 			<model location="Walls/House_Stone_Wall_Plain.wom" tag="bottom">
 				<override mesh="StoneWallPlainMesh" texture="Walls/marble.png"/>
@@ -1671,7 +1671,7 @@
 			<category>House walls/Marble</category>
 			<category>Materials/Marble</category>
 		</wall>
-		
+
 		<wall name="Sandstone wall" shortname="sbWall" scale="1" type="house">
 			<model location="Walls/House_Stone_Wall_Plain.wom" tag="bottom">
 				<override mesh="StoneWallPlainMesh" texture="Walls/sandstone.png"/>
@@ -1855,7 +1855,7 @@
 			<category>House walls/Sandstone</category>
 			<category>Materials/Sandstone</category>
 		</wall>
-		
+
 		<wall name="Pottery wall" shortname="pbWall" scale="1" type="house">
 			<model location="Walls/House_Stone_Wall_Plain.wom" tag="bottom">
 				<override mesh="StoneWallPlainMesh" texture="Walls/brick.png"/>
@@ -2039,7 +2039,7 @@
 			<category>House walls/Pottery</category>
 			<category>Materials/Pottery</category>
 		</wall>
-		
+
 		<wall name="Rounded stone wall" shortname="rsWall" scale="1" type="house">
 			<model location="Walls/House_Stone_Wall_Plain.wom" tag="bottom">
 				<override mesh="StoneWallPlainMesh" texture="Walls/rounded.png"/>
@@ -2223,7 +2223,7 @@
 			<category>House walls/Rounded stone</category>
 			<category>Materials/Stone</category>
 		</wall>
-		
+
 		<wall name="Rendered wall" shortname="rWall" scale="1" type="house">
 			<model location="Walls/House_Stone_Wall_Plain.wom" tag="bottom">
 				<override mesh="StoneWallPlainMesh" texture="Walls/plaster.png"/>
@@ -2419,7 +2419,7 @@
 			<category>House walls/Rendered</category>
 			<category>Materials/Stone</category>
 		</wall>
-		
+
 		<wall name="Timber wall" shortname="tWall" scale="4" type="house">
 			<model location="Walls/timberWall.wom" tag="bottom"/>
 			<model location="Walls/timberWall_upper.wom"/>
@@ -2544,14 +2544,14 @@
 			<category>House walls/Timber</category>
 			<category>Materials/Timber</category>
 		</wall>
-		
+
 		<wall name="Wall plan" shortname="wPlan" scale="4" type="house">
 			<model location="Walls/Wall_Plan.wom"/>
 			<color type="dec" r="1" g="1" b="1"/>
 			<icon location="Walls/Icons/outline.png"/>
 			<category>House walls</category>
 		</wall>
-		
+
 		<wall name="Low stone wall" shortname="lsFence" scale="2" type="highfence">
 			<model location="Walls/SmallStone.wom"/>
 			<color type="dec" r="1" g="1" b="1"/>
@@ -2832,7 +2832,7 @@
 			<category>Fences</category>
 			<category>Materials/Rendered</category>
 		</wall>
-		
+
 		<wall name="Palisade" shortname="pFence" scale="3" type="highfence">
 			<model location="Walls/Palisade.wom"/>
 			<color type="dec" r="1" g="1" b="1"/>
@@ -2863,7 +2863,7 @@
 			<category>Fences</category>
 			<category>Materials/Wood</category>
 		</wall>
-		
+
 		<wall name="Wooden parapet" shortname="wPar" scale="4" type="lowfence">
 			<model location="Walls/Wooden_Parapet.wom"/>
 			<color type="dec" r="1" g="1" b="1"/>
@@ -2979,7 +2979,98 @@
 			<category>Parapets</category>
 			<category>Materials/Wood</category>
 		</wall>
-		
+
+		<wall name="Stone parapet (unfinished)" shortname="sParU" scale="2" type="lowfence">
+			<model location="Walls/Stone_Parapet_Unf.wom"/>
+			<color type="dec" r="1" g="1" b="1"/>
+			<house/>
+			<materials>
+				Stone bricks = 15
+			</materials>
+			<icon location="Walls/Icons/StoneParapet_Unf.png"/>
+			<category>Parapets</category>
+			<category>Materials/Stone</category>
+		</wall>
+		<wall name="Slate parapet (unfinished)" shortname="ssParU" scale="2" type="lowfence">
+			<model location="Walls/Stone_Parapet_Unf.wom">
+				<override mesh="StoneParapetUnfMesh" texture="Walls/slate.png"/>
+			</model>
+			<color type="dec" r="1" g="1" b="1"/>
+			<house/>
+			<materials>
+				Slate bricks = 15
+			</materials>
+			<icon location="Walls/Icons/slate/StoneParapet_Unf.png"/>
+			<category>Parapets</category>
+			<category>Materials/Slate</category>
+		</wall>
+		<wall name="Marble parapet (unfinished)" shortname="msParU" scale="2" type="lowfence">
+			<model location="Walls/Stone_Parapet_Unf.wom">
+				<override mesh="StoneParapetUnfMesh" texture="Walls/marble.png"/>
+			</model>
+			<color type="dec" r="1" g="1" b="1"/>
+			<house/>
+			<materials>
+				Marble bricks = 15
+			</materials>
+			<icon location="Walls/Icons/marble/StoneParapet_Unf.png"/>
+			<category>Parapets</category>
+			<category>Materials/Marble</category>
+		</wall>
+		<wall name="Sandstone parapet (unfinished)" shortname="sasParU" scale="2" type="lowfence">
+			<model location="Walls/Stone_Parapet_Unf.wom">
+				<override mesh="StoneParapetUnfMesh" texture="Walls/sandstone.png"/>
+			</model>
+			<color type="dec" r="1" g="1" b="1"/>
+			<house/>
+			<materials>
+				Sandstone bricks = 15
+			</materials>
+			<icon location="Walls/Icons/sand/StoneParapet_Unf.png"/>
+			<category>Parapets</category>
+			<category>Materials/Sandstone</category>
+		</wall>
+		<wall name="Pottery parapet (unfinished)" shortname="psParU" scale="2" type="lowfence">
+			<model location="Walls/Stone_Parapet_Unf.wom">
+				<override mesh="StoneParapetUnfMesh" texture="Walls/brick.png"/>
+			</model>
+			<color type="dec" r="1" g="1" b="1"/>
+			<house/>
+			<materials>
+				Pottery bricks = 15
+			</materials>
+			<icon location="Walls/Icons/brick/StoneParapet_Unf.png"/>
+			<category>Parapets</category>
+			<category>Materials/Pottery</category>
+		</wall>
+		<wall name="Rounded stone parapet (unfinished)" shortname="rsParU" scale="2" type="lowfence">
+			<model location="Walls/Stone_Parapet_Unf.wom">
+				<override mesh="StoneParapetUnfMesh" texture="Walls/rounded.png"/>
+			</model>
+			<color type="dec" r="1" g="1" b="1"/>
+			<house/>
+			<materials>
+				Rounded stones = 15
+			</materials>
+			<icon location="Walls/Icons/rounded/StoneParapet_Unf.png"/>
+			<category>Parapets</category>
+			<category>Materials/Rounded stone</category>
+		</wall>
+		<wall name="Rendered parapet (unfinished)" shortname="resParU" scale="2" type="lowfence">
+			<model location="Walls/Stone_Parapet_Unf.wom">
+				<override mesh="StoneParapetUnfMesh" texture="Walls/plaster.png"/>
+			</model>
+			<color type="dec" r="1" g="1" b="1"/>
+			<house/>
+			<materials>
+				Stone bricks = 15,
+				Clay = 10
+			</materials>
+			<icon location="Walls/Icons/rend/StoneParapet_Unf.png"/>
+			<category>Parapets</category>
+			<category>Materials/Rendered</category>
+		</wall>
+
 		<wall name="Crude wooden fence" shortname="cwFence" scale="4" type="lowfence">
 			<model location="Walls/Crude_Wooden_Fence.wom"/>
 			<color type="dec" r="1" g="1" b="1"/>
@@ -3004,7 +3095,7 @@
 			<category>Fences</category>
 			<category>Materials/Wood</category>
 		</wall>
-		
+
 		<wall name="Low roundpole fence" shortname="gFence" scale="12" type="lowfence">
 			<model location="Walls/Gardesgard.wom"/>
 			<color type="dec" r="0.5" g="0.5" b="1"/>
@@ -3038,7 +3129,7 @@
 			<category>Fences</category>
 			<category>Materials/Wood</category>
 		</wall>
-		
+
 		<wall name="Wooden fence" shortname="wFence" scale="4" type="lowfence">
 			<model location="Walls/Wooden_Fence.wom"/>
 			<color type="dec" r="1" g="1" b="1"/>
@@ -3063,7 +3154,7 @@
 			<category>Fences</category>
 			<category>Materials/Wood</category>
 		</wall>
-		
+
 		<wall name="Iron fence" shortname="iFence" scale="2" type="lowfence">
 			<model location="Walls/IronFence.wom"/>
 			<color type="dec" r="0.5" g="0.5" b="1"/>
@@ -3514,7 +3605,7 @@
 			<category>Fences</category>
 			<category>Materials/Iron</category>
 		</wall>
-		
+
 		<wall name="Curb" shortname="curb" scale="2" type="lowfence">
 			<model location="Walls/Curb.wom"/>
 			<color type="dec" r="0.5" g="0.5" b="1"/>
@@ -3525,7 +3616,7 @@
 			<category>Decorations</category>
 			<category>Materials/Stone</category>
 		</wall>
-		
+
 		<wall name="Low rope fence" shortname="rFence" scale="15" type="lowfence">
 			<model location="Walls/RopeFence.wom"/>
 			<color type="dec" r="0.5" g="0.5" b="1"/>
@@ -3548,7 +3639,7 @@
 			<category>Fences</category>
 			<category>Materials/Rope</category>
 		</wall>
-		
+
 		<wall name="Woven fence" shortname="wovFence" scale="10" type="lowfence">
 			<model location="Walls/WovenFence.wom"/>
 			<color type="dec" r="0.1" g="0.1" b="1"/>
@@ -3559,7 +3650,7 @@
 			<category>Fences</category>
 			<category>Materials/Wood</category>
 		</wall>
-		
+
 		<wall name="High hedge" shortname="hHedge" scale="1" type="highfence">
 			<model location="Walls/Hedge01_High.wom"/>
 			<color type="dec" r="0.5" g="0.5" b="0.5"/>
@@ -3686,7 +3777,7 @@
 			<icon location="Walls/Icons/Hedge01_Low.png"/>
 			<category>Hedges</category>
 		</wall>
-		
+
 		<wall name="Blue flowerbed" shortname="bFlowerbed" scale="1" type="highfence">
 			<model location="Walls/Flowerbed_blue.wom"/>
 			<color type="dec" r="1" g="1" b="1"/>
@@ -3730,11 +3821,11 @@
 			<category>Flowerbeds</category>
 		</wall>
 	</walls>
-	
-	
-	
-	
-	
+
+
+
+
+
 	<roofs>
 		<roof name="Wood shingle roof" shortname="wRoof" tex="Special/wooden.png">
 			<materials>
@@ -3761,11 +3852,11 @@
 			</materials>
 		</roof>
 	</roofs>
-	
-	
-	
-	
-	
+
+
+
+
+
 	<objects>
 		<object name="Small bucket" shortname="sBucket" type="normal">
 			<model location="Objects/bucket.wom"/>
@@ -3822,7 +3913,7 @@
 			<category>Containers/Barrels</category>
 			<category>Materials/Wood</category>
 		</object>
-		
+
 		<object name="Small barrel rack (empty)" shortname="barRackE" type="normal">
 			<model location="Objects/barrelRackEmpty.wom"/>
 			<materials>
@@ -3876,6 +3967,12 @@
 				Wooden beams = 1,
 				Planks = 4
 			</materials>
+			<category>Containers/Racks and Stands</category>
+			<category>Gardening</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Empty shelf" shortname="eShelf" type="normal">
+			<model location="Objects/Furniture/shelfEmpty.wom"/>
 			<category>Containers/Racks and Stands</category>
 			<category>Materials/Wood</category>
 		</object>
@@ -3981,7 +4078,7 @@
 			<category>Containers/Racks and Stands</category>
 			<category>Materials/Wood</category>
 		</object>
-		
+
 		<object name="Coffer" shortname="coffer" type="normal">
 			<model location="Objects/Coffer.wom"/>
 			<materials>
@@ -4014,8 +4111,23 @@
 			<model location="Objects/magic_chest.wom"/>
 			<category>Containers</category>
 		</object>
+		<object name="Crate rack, empty" shortname="crateRackE" type="normal">
+			<model location="Objects/Crates/crateRack_empty.wom"/>
+			<category>Containers</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Crate rack, full" shortname="crateRackF" type="normal">
+			<model location="Objects/Crates/crateRack_full.wom"/>
+			<category>Containers</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Huge crate" shortname="hCrate" type="normal">
+			<model location="Objects/Crates/crateHuge.wom"/>
+			<category>Containers</category>
+			<category>Materials/Wood</category>
+		</object>
 		<object name="Large crate" shortname="lCrate" type="normal">
-			<model location="Objects/crateLarge.wom"/>
+			<model location="Objects/Crates/crateLarge.wom"/>
 			<materials>
 				Planks = 16,
 				Large nails = 1
@@ -4024,7 +4136,7 @@
 			<category>Materials/Wood</category>
 		</object>
 		<object name="Small crate" shortname="sCrate" type="normal">
-			<model location="Objects/crateSmall.wom"/>
+			<model location="Objects/Crates/crateSmall.wom"/>
 			<materials>
 				Planks = 11,
 				Large nails = 1
@@ -4032,8 +4144,8 @@
 			<category>Containers</category>
 			<category>Materials/Wood</category>
 		</object>
-		<object name="Coffin" shortname="coffin" type="normal">
-			<model location="Objects/Coffin_main.wom"/>
+		<object name="Coffin, stone" shortname="coffin" type="normal">
+			<model location="Objects/Storage/Coffin_main.wom"/>
 			<materials>
 				Slabs = 4,
 				Clay = 4,
@@ -4041,6 +4153,27 @@
 			</materials>
 			<category>Containers</category>
 			<category>Materials/Stone</category>
+		</object>
+		<object name="Coffin, sandstone" shortname="coffinSand" type="normal">
+			<model location="Objects/Storage/Coffin_main.wom">
+				<override mesh="CoffinMesh" texture="Objects/Storage/coffin_sand.dds"/>
+			</model>
+			<category>Containers</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Coffin, marble" shortname="coffinMarble" type="normal">
+			<model location="Objects/Storage/Coffin_main.wom">
+				<override mesh="CoffinMesh" texture="Objects/Storage/coffin_marble.dds"/>
+			</model>
+			<category>Containers</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Coffin, slate" shortname="coffinSlate" type="normal">
+			<model location="Objects/Storage/Coffin_main.wom">
+				<override mesh="CoffinMesh" texture="Objects/Storage/coffin_slate.dds"/>
+			</model>
+			<category>Containers</category>
+			<category>Materials/Slate</category>
 		</object>
 		<object name="Bulk Storage Bin (empty)" shortname="bsbe" type="normal">
 			<model location="Objects/Bulk_Storage_Bin.wom"/>
@@ -4058,6 +4191,37 @@
 				Planks = 25,
 				Large nails = 4,
 				Iron ribbons = 1
+			</materials>
+			<category>Containers</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Bulk Container Unit" shortname="bsbUnit" type="normal">
+			<model location="Objects/bsbUnit.wom"/>
+			<materials>
+				Large nails = 1,
+				Wooden beams = 3,
+				Planks = 6,
+				Bulk storage bin = 4
+			</materials>
+			<category>Containers</category>
+			<category>Materials/Wood</category>
+		</object>
+			<object name="Rack for empty bsbs (full)" shortname="bsbRack_full" type="normal">
+			<model location="Objects/bsbRack_full.wom"/>
+			<materials>
+				Large nails = 1,
+				Wooden beams = 2,
+				Planks = 6
+			</materials>
+			<category>Containers</category>
+			<category>Materials/Wood</category>
+		</object>
+			<object name="Rack for empty bsbs (empty)" shortname="bsbRack_empty" type="normal">
+			<model location="Objects/bsbRack_empty.wom"/>
+			<materials>
+				Large nails = 1,
+				Wooden beams = 2,
+				Planks = 6
 			</materials>
 			<category>Containers</category>
 			<category>Materials/Wood</category>
@@ -4171,9 +4335,9 @@
 			<category>Containers</category>
 			<category>Materials/Pottery</category>
 		</object>
-		
+
 		<object name="Gold altar" shortname="gAltar" type="normal">
-			<model location="Objects/altar-gold.wom"/>
+			<model location="Objects/Altars/altar-gold.wom"/>
 			<materials>
 				Gold lump = 50
 			</materials>
@@ -4181,7 +4345,7 @@
 			<category>Materials/Gold</category>
 		</object>
 		<object name="Silver altar" shortname="sAltar" type="normal">
-			<model location="Objects/altar-silver.wom"/>
+			<model location="Objects/Altars/altar-silver.wom"/>
 			<materials>
 				Silver lump = 50
 			</materials>
@@ -4189,7 +4353,7 @@
 			<category>Materials/Silver</category>
 		</object>
 		<object name="Stone altar" shortname="stAltar" type="normal">
-			<model location="Objects/altar-stone.wom"/>
+			<model location="Objects/Altars/altar-stone.wom"/>
 			<materials>
 				Clay = 11,
 				Stone bricks = 11,
@@ -4198,8 +4362,29 @@
 			<category>Altars</category>
 			<category>Materials/Stone</category>
 		</object>
+		<object name="Sandstone altar" shortname="sandAltar" type="normal">
+			<model location="Objects/Altars/altar-stone.wom">
+				<override mesh="AltarMesh" texture="Objects/Altars/altar_sand.dds"/>
+			</model>
+			<category>Altars</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Marble altar" shortname="marbleAltar" type="normal">
+			<model location="Objects/Altars/altar-stone.wom">
+				<override mesh="AltarMesh" texture="Objects/Altars/altar_marble.dds"/>
+			</model>
+			<category>Altars</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Slate altar" shortname="slateAltar" type="normal">
+			<model location="Objects/Altars/altar-stone.wom">
+				<override mesh="AltarMesh" texture="Objects/Altars/altar_slate.dds"/>
+			</model>
+			<category>Altars</category>
+			<category>Materials/Slate</category>
+		</object>
 		<object name="Wooden altar" shortname="wAltar" type="normal">
-			<model location="Objects/altar-wooden.wom"/>
+			<model location="Objects/Altars/altar-wooden.wom"/>
 			<materials>
 				Planks = 9,
 				Small nails = 1,
@@ -4209,7 +4394,7 @@
 			<category>Altars</category>
 			<category>Materials/Wood</category>
 		</object>
-		
+
 		<object name="Camellia bush" shortname="cam" type="bush">
 			<model location="Objects/camellia.wom" scale="3"/>
 			<category>Bushes</category>
@@ -4250,7 +4435,7 @@
 			<model location="Objects/raspberryBush.wom" scale="3"/>
 			<category>Bushes</category>
 		</object>
-		
+
 		<object name="Willow tree (small)" shortname="willS" type="tree">
 			<model location="Objects/willowTree.wom" scale="4"/>
 			<category>Trees</category>
@@ -4431,7 +4616,7 @@
 			<model location="Objects/orangeTree.wom" scale="16"/>
 			<category>Trees</category>
 		</object>
-		
+
 		<object name="Coral tree (small)" shortname="coralS" type="tree">
 			<model location="Objects/Jackal/Trees/coralTree.wom" scale="4"/>
 			<category>Trees/Jackal</category>
@@ -4522,23 +4707,133 @@
 			<category>Trees/Jackal</category>
 			<category>Jackal</category>
 		</object>
-		
-		<object name="Fountain" shortname="foun" type="normal">
-			<model location="Objects/Fountain.wom"/>
+
+		<object name="Fountain, stone" shortname="foun" type="normal">
+			<model location="Objects/Fountains/Fountain.wom"/>
 			<category>Water Sources</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Ornate fountain" shortname="ofoun" type="normal">
-			<model location="Objects/Ornate_Fountain.wom"/>
+		<object name="Fountain, sandstone" shortname="founSand" type="normal">
+			<model location="Objects/Fountains/Fountain.wom">
+				<override mesh="FountainMesh" texture="Objects/Fountains/fountain_sandstone.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Fountain, marble" shortname="founMarble" type="normal">
+			<model location="Objects/Fountains/Fountain.wom">
+				<override mesh="FountainMesh" texture="Objects/Fountains/fountain_marble.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Fountain, slate" shortname="founSlate" type="normal">
+			<model location="Objects/Fountains/Fountain.wom">
+				<override mesh="FountainMesh" texture="Objects/Fountains/fountain_slate.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Slate</category>
+		</object>
+		<object name="Ornate fountain, stone" shortname="ofoun" type="normal">
+			<model location="Objects/Fountains/Ornate_Fountain.wom"/>
 			<category>Water Sources</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Well" shortname="well" type="normal">
+		<object name="Ornate fountain, sandstone" shortname="ofounSand" type="normal">
+			<model location="Objects/Fountains/Ornate_Fountain.wom">
+				<override mesh="FountainMesh" texture="Objects/Fountains/ornatefountain_sandstone.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Ornate fountain, marble" shortname="ofounMarble" type="normal">
+			<model location="Objects/Fountains/Ornate_Fountain.wom">
+				<override mesh="FountainMesh" texture="Objects/Fountains/ornatefountain_marble.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Ornate fountain, slate" shortname="ofounSlate" type="normal">
+			<model location="Objects/Fountains/Ornate_Fountain.wom">
+				<override mesh="FountainMesh" texture="Objects/Fountains/ornatefountain_slate.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Slate</category>
+		</object>
+		<object name="Wall fountain, stone" shortname="wfoun" type="normal">
+			<model location="Objects/Fountains/wallFountain.wom"/>
+			<category>Water Sources</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Wall fountain, sandstone" shortname="wfounSand" type="normal">
+			<model location="Objects/Fountains/wallFountain.wom">
+				<override mesh="wallFountainMesh" texture="Objects/Fountains/wf_sand.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Wall fountain, marble" shortname="wfounMarble" type="normal">
+			<model location="Objects/Fountains/wallFountain.wom">
+				<override mesh="wallFountainMesh" texture="Objects/Fountains/wf_marble.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Wall fountain, slate" shortname="wfounSlate" type="normal">
+			<model location="Objects/Fountains/wallFountain.wom">
+				<override mesh="wallFountainMesh" texture="Objects/Fountains/wf_slate.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Slate</category>
+		</object>
+		<object name="Well, stone" shortname="well" type="normal">
 			<model location="Objects/Well.wom"/>
 			<category>Water Sources</category>
 			<category>Materials/Stone</category>
 		</object>
-		
+		<object name="Well, pottery" shortname="wellPott" type="normal">
+			<model location="Objects/Well/Well.wom">
+				<override mesh="WellMesh" texture="Objects/Well/brick.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Pottery</category>
+		</object>
+		<object name="Well, marble" shortname="wellMarble" type="normal">
+			<model location="Objects/Well/Well.wom">
+				<override mesh="WellMesh" texture="Objects/Well/marble.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Well, rendered" shortname="wellRend" type="normal">
+			<model location="Objects/Well/Well.wom">
+				<override mesh="WellMesh" texture="Objects/Well/render.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Rendered</category>
+		</object>
+		<object name="Well, rounded" shortname="wellRound" type="normal">
+			<model location="Objects/Well/Well.wom">
+				<override mesh="WellMesh" texture="Objects/Well/rounded.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Rounded stone</category>
+		</object>
+		<object name="Well, sandstone" shortname="wellSand" type="normal">
+			<model location="Objects/Well/Well.wom">
+				<override mesh="WellMesh" texture="Objects/Well/sandstone.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Well, slate" shortname="wellSlate" type="normal">
+			<model location="Objects/Well/Well.wom">
+				<override mesh="WellMesh" texture="Objects/Well/slate.dds"/>
+			</model>
+			<category>Water Sources</category>
+			<category>Materials/Slate</category>
+		</object>
+
 		<object name="Bear vs Bull" shortname="bearvbullhota" type="normal">
 			<model location="Objects/bearBullStatue.wom"/>
 			<category>Statues/HOTA</category>
@@ -4583,7 +4878,7 @@
 			<model location="Objects/wolfBisonStatue.wom"/>
 			<category>Statues/HOTA</category>
 		</object>
-		
+
 		<object name="Statue of eagle" shortname="eaglearch" type="normal">
 			<model location="Objects/eagleStatue.wom"/>
 			<category>Statues/Archaeology</category>
@@ -4646,7 +4941,11 @@
 			<model location="Objects/unicornStatue.wom"/>
 			<category>Statues/Archaeology</category>
 		</object>
-		
+		<object name="Statue of pumpkin terror" shortname="stattPumTerr" type="normal">
+			<model location="Objects/Statues/pumpkinTerror.wom"/>
+			<category>Statues/Archaeology</category>
+		</object>
+
 		<object name="Statue of boy" shortname="statBoy" type="normal">
 			<model location="Objects/boyStatue.wom"/>
 			<category>Statues</category>
@@ -4687,7 +4986,7 @@
 			<category>Statues</category>
 			<category>Materials/Stone</category>
 		</object>
-		
+
 		<object name="Freedom wagon" shortname="wagonFree" type="normal">
 			<model location="Objects/Wagon_main.wom">
 				<override mesh="TentMesh" texture="Objects/wagon_cloth_free.dds"/>
@@ -4715,7 +5014,14 @@
 			<category>Vehicles/Wagons</category>
 			<category>Kingdoms/Mol-Rehan</category>
 		</object>
-		
+		<object name="Cheese wagon" shortname="wagonChee" type="normal">
+			<model location="Objects/Wagon_main.wom">
+				<override mesh="TentMesh" texture="Objects/wagon_cloth_chee_pmk.dds"/>
+			</model>
+			<category>Vehicles/Wagons</category>
+			<category>Kingdoms/Cheese PMK</category>
+		</object>
+
 		<object name="Small cart" shortname="sCart" type="normal">
 			<model location="Objects/smallCart_main.wom"/>
 			<category>Vehicles/Carts</category>
@@ -4732,7 +5038,15 @@
 			<model location="Objects/ShipTransporter_loaded.wom"/>
 			<category>Vehicles/Ship transporter</category>
 		</object>
-		
+		<object name="Creature transporter (empty)" shortname="cTransportE" type="normal">
+			<model location="Objects/CreatureTransporter.wom"/>
+			<category>Vehicles/Creature transporter</category>
+		</object>
+		<object name="Creature transporter (loaded)" shortname="cTransportL" type="normal">
+			<model location="Objects/CreatureTransporter_loaded.wom"/>
+			<category>Vehicles/Creature transporter</category>
+		</object>
+
 		<object name="Colossus" shortname="col" type="centered">
 			<model location="Objects/colossus.wom"/>
 			<materials>
@@ -4782,7 +5096,7 @@
 			<category>Giants</category>
 			<category>Materials/Stone</category>
 		</object>
-		
+
 		<object name="Freedom guard tower" shortname="freeGT" type="centered">
 			<model location="Objects/freedomTower.wom"/>
 			<materials>
@@ -4840,7 +5154,7 @@
 			<category>Towers</category>
 			<category>Materials/Stone</category>
 		</object>
-		
+
 		<object name="Wooden bench" shortname="wBench" type="normal">
 			<model location="Objects/WoodenBench.wom"/>
 			<materials>
@@ -4853,7 +5167,7 @@
 			<category>Materials/Wood</category>
 		</object>
 		<object name="Stone bench" shortname="sBench" type="normal">
-			<model location="Objects/bench-stone.wom"/>
+			<model location="Objects/Furniture/bench-stone.wom"/>
 			<materials>
 				Slabs = 1,
 				Stone bricks = 2,
@@ -4861,6 +5175,27 @@
 			</materials>
 			<category>Furniture/Benches</category>
 			<category>Materials/Stone</category>
+		</object>
+		<object name="Stone bench, sandstone" shortname="sBenchSand" type="normal">
+			<model location="Objects/Furniture/bench-stone.wom">
+				<override mesh="StonebenchMesh" texture="Objects/Furniture/bench_sand.dds"/>
+			</model>
+			<category>Furniture/Benches</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Stone bench, marble" shortname="sBenchMarble" type="normal">
+			<model location="Objects/Furniture/bench-stone.wom">
+				<override mesh="StonebenchMesh" texture="Objects/Furniture/bench_marble.dds"/>
+			</model>
+			<category>Furniture/Benches</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Stone bench, slate" shortname="sBenchSlate" type="normal">
+			<model location="Objects/Furniture/bench-stone.wom">
+				<override mesh="StonebenchMesh" texture="Objects/Furniture/bench_slate.dds"/>
+			</model>
+			<category>Furniture/Benches</category>
+			<category>Materials/Slate</category>
 		</object>
 		<object name="Stool" shortname="stool" type="normal">
 			<model location="Objects/Stool.wom"/>
@@ -4943,7 +5278,18 @@
 			<category>Furniture/Chairs</category>
 			<category>Materials/Wood</category>
 		</object>
-		
+		<object name="Lounge Chair" shortname="louChair" type="normal">
+			<model location="Objects/woodenLoungeChair.wom"/>
+			<materials>
+				Planks = 6,
+				Shaft = 4,
+				Small nails = 2,
+				Tar = 4
+			</materials>
+			<category>Materials/Wood</category>
+			<category>Furniture/Chairs</category>
+		</object>
+
 		<object name="Bed" shortname="bed" type="normal">
 			<model location="Objects/bed.wom"/>
 			<materials>
@@ -4970,7 +5316,11 @@
 			<category>Furniture/Beds</category>
 			<category>Materials/Wood</category>
 		</object>
-		
+		<object name="Straw bed" shortname="strawBed" type="normal">
+			<model location="Objects/Hay/strawBed.wom"/>
+			<category>Furniture/Beds</category>
+		</object>
+
 		<object name="Large dining table" shortname="lTable" type="normal">
 			<model location="Objects/largeTable.wom"/>
 			<materials>
@@ -5036,29 +5386,59 @@
 			<category>Furniture/Tables</category>
 			<category>Materials/Marble</category>
 		</object>
-		<object name="High bookcase" shortname="hBook" type="normal">
+		<object name="Cartography table" shortname="cTable" type="normal">
+			<model location="Objects/Furniture/cTable.wom"/>
+			<materials>
+				Small nails = 2,
+				Planks = 6,
+				Shafts = 2
+			</materials>
+			<category>Furniture/Tables</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="High bookshelf" shortname="hBook" type="normal">
 			<model location="Objects/Bookshelf_high.wom"/>
 			<materials>
 				Shafts = 2,
 				Planks = 8,
 				Large nails = 4
 			</materials>
-			<category>Furniture/Bookcases</category>
+			<category>Furniture/Bookshelf</category>
 			<category>Materials/Wood</category>
 		</object>
-		<object name="Low bookcase" shortname="lBook" type="normal">
+		<object name="High bookshelf (empty)" shortname="hBookE" type="normal">
+			<model location="Objects/Bookshelf_high_empty.wom"/>
+			<materials>
+				Shafts = 2,
+				Planks = 8,
+				Large nails = 4
+			</materials>
+			<category>Furniture/Bookshelf</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Low bookshelf" shortname="lBook" type="normal">
 			<model location="Objects/Bookshelf_low.wom"/>
 			<materials>
 				Shafts = 1,
 				Planks = 4,
 				Large nails = 2
 			</materials>
-			<category>Furniture/Bookcases</category>
+			<category>Furniture/Bookshelf</category>
 			<category>Materials/Wood</category>
 		</object>
-		
-		
-		
+		<object name="Low bookshelf (empty)" shortname="lBookE" type="normal">
+			<model location="Objects/Bookshelf_low_empty.wom"/>
+			<materials>
+				Shafts = 1,
+				Planks = 4,
+				Large nails = 2
+			</materials>
+			<category>Furniture/Bookshelf</category>
+			<category>Materials/Wood</category>
+		</object>
+
+
+
 		<object name="Campfire" shortname="camp" type="normal">
 			<model location="Objects/campfire.wom"/>
 			<materials>
@@ -5066,18 +5446,92 @@
 			</materials>
 			<category>Fires</category>
 		</object>
-		<object name="Open fireplace" shortname="fPlace" type="normal">
-			<model location="Objects/Fireplace.wom"/>
+		<object name="Open fireplace, stone" shortname="fPlace" type="normal">
+			<model location="Objects/Fireplaces/Fireplace.wom"/>
 			<materials>
 				Planks = 2,
 				Mortar = 10,
 				Stone brick = 10
 			</materials>
 			<category>Fires</category>
+			<category>Materials/Stone</category>
 		</object>
-		
-		
-		
+		<object name="Open fireplace, marble" shortname="fPlaceMarble" type="normal">
+			<model location="Objects/Fireplaces/Fireplace.wom">
+				<override mesh="FireplaceMesh" texture="Objects/Fireplaces/fireplace_marble.dds"/>
+			</model>
+			<materials>
+				Planks = 2,
+				Mortar = 10,
+				Marble brick = 10
+			</materials>
+			<category>Fires</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Open fireplace, pottery" shortname="fPlacePott" type="normal">
+			<model location="Objects/Fireplaces/Fireplace.wom">
+				<override mesh="FireplaceMesh" texture="Objects/Fireplaces/fireplace_brick.dds"/>
+			</model>
+			<materials>
+				Planks = 2,
+				Mortar = 10,
+				Pottery brick = 10
+			</materials>
+			<category>Fires</category>
+			<category>Materials/Pottery</category>
+		</object>
+		<object name="Open fireplace, rendered" shortname="fPlaceRend" type="normal">
+			<model location="Objects/Fireplaces/Fireplace.wom">
+				<override mesh="FireplaceMesh" texture="Objects/Fireplaces/fireplace_render.dds"/>
+			</model>
+			<materials>
+				Planks = 2,
+				Mortar = 10,
+				Stone brick = 10,
+				Clay = 1
+			</materials>
+			<category>Fires</category>
+			<category>Materials/Rendered</category>
+		</object>
+		<object name="Open fireplace, sandstone" shortname="fPlaceSand" type="normal">
+			<model location="Objects/Fireplaces/Fireplace.wom">
+				<override mesh="FireplaceMesh" texture="Objects/Fireplaces/fireplace_sand.dds"/>
+			</model>
+			<materials>
+				Planks = 2,
+				Mortar = 10,
+				Sandstone brick = 10
+			</materials>
+			<category>Fires</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Open fireplace, rounded" shortname="fPlaceRound" type="normal">
+			<model location="Objects/Fireplaces/Fireplace.wom">
+				<override mesh="FireplaceMesh" texture="Objects/Fireplaces/fireplace_rounded.dds"/>
+			</model>
+			<materials>
+				Planks = 2,
+				Mortar = 10,
+				Rounded stone = 10
+			</materials>
+			<category>Fires</category>
+			<category>Materials/Rounded stone</category>
+		</object>
+		<object name="Open fireplace, slate" shortname="fPlaceSlate" type="normal">
+			<model location="Objects/Fireplaces/Fireplace.wom">
+				<override mesh="FireplaceMesh" texture="Objects/Fireplaces/fireplace_slate.dds"/>
+			</model>
+			<materials>
+				Planks = 2,
+				Mortar = 10,
+				Slate brick = 10
+			</materials>
+			<category>Fires</category>
+			<category>Materials/Slate</category>
+		</object>
+
+
+
 		<object name="Brass hanging lamp" shortname="bhLamp" type="normal">
 			<model location="Objects/Brass_Pole.wom"/>
 			<materials>
@@ -5164,24 +5618,62 @@
 			</materials>
 			<category>Lamps</category>
 		</object>
-		
-		
-		
+
+
+
 		<object name="Small brazier" shortname="sBrazier" type="normal">
 			<model location="Objects/CopperBrazier.wom"/>
 			<category>Braziers</category>
 		</object>
+
+
 		<object name="Marble brazier pillar" shortname="mBrazier" type="normal">
-			<model location="Objects/BrazierPillar.wom"/>
+			<model location="Objects/Braziers/BrazierPillar.wom"/>
 			<materials>
 				Mortar = 50,
 				Marble bricks = 50
 			</materials>
 			<category>Braziers</category>
 		</object>
+		<object name="Stone brazier pillar" shortname="mBrazierStone" type="normal">
+			<model location="Objects/Braziers/BrazierPillar.wom">
+				<override mesh="goldFirePillarMesh" texture="Objects/Braziers/firepillar_stone.dds"/>
+			</model>
+			<category>Braziers</category>
+		</object>
+		<object name="Rendered brazier pillar" shortname="mBrazierRend" type="normal">
+			<model location="Objects/Braziers/BrazierPillar.wom">
+				<override mesh="goldFirePillarMesh" texture="Objects/Braziers/firepillar_render.dds"/>
+			</model>
+			<category>Braziers</category>
+		</object>
+		<object name="Pottery brick brazier pillar" shortname="mBrazierPott" type="normal">
+			<model location="Objects/Braziers/BrazierPillar.wom">
+				<override mesh="goldFirePillarMesh" texture="Objects/Braziers/firepillar_brick.dds"/>
+			</model>
+			<category>Braziers</category>
+		</object>
+		<object name="Rounded stone brazier pillar" shortname="mBrazierRounded" type="normal">
+			<model location="Objects/Braziers/BrazierPillar.wom">
+				<override mesh="goldFirePillarMesh" texture="Objects/Braziers/firepillar_rounded.dds"/>
+			</model>
+			<category>Braziers</category>
+		</object>
+		<object name="Sandstone brazier pillar" shortname="mBrazierSand" type="normal">
+			<model location="Objects/Braziers/BrazierPillar.wom">
+				<override mesh="goldFirePillarMesh" texture="Objects/Braziers/firepillar_sand.dds"/>
+			</model>
+			<category>Braziers</category>
+		</object>
+		<object name="Slate brazier pillar" shortname="mBrazierSlate" type="normal">
+			<model location="Objects/Braziers/BrazierPillar.wom">
+				<override mesh="goldFirePillarMesh" texture="Objects/Braziers/firepillar_slate.dds"/>
+			</model>
+			<category>Braziers</category>
+		</object>
 
-		
-		
+
+
 		<object name="Large anvil" shortname="lAnvil" type="normal">
 			<model location="Objects/Anvil_large.wom"/>
 			<materials>
@@ -5198,7 +5690,7 @@
 			<category>Anvils</category>
 			<category>Materials/Iron</category>
 		</object>
-		
+
 		<object name="Small colourful carpet" shortname="sCarpet" type="normal">
 			<model location="Objects/Carpet1.wom"/>
 			<category>Rugs and carpets</category>
@@ -5251,7 +5743,7 @@
 			<model location="Objects/BlackbearRug.wom"/>
 			<category>Rugs and carpets</category>
 		</object>
-		
+
 		<object name="Tapestry stand" shortname="tStand" type="normal">
 			<model location="Objects/Tapestries/tapestry_stand.wom"/>
 			<materials>
@@ -5301,6 +5793,19 @@
 		<object name="Tapestry of Mclavin" shortname="tMclavin" type="normal">
 			<model location="Objects/Tapestries/tapestry.wom">
 				<override mesh="tapestryMeshMesh" texture="Objects/Tapestries/TapestryMc.dds"/>
+			</model>
+			<materials>
+				Planks = 1,
+				Shafts = 4,
+				Small nails = 2,
+				Square piece of wool cloth = 8,
+				Yarn = 6
+			</materials>
+			<category>Tapestries</category>
+		</object>
+		<object name="Tapestry of Rockcliff" shortname="tRockcliff" type="normal">
+			<model location="Objects/Tapestries/tapestry.wom">
+				<override mesh="tapestryMeshMesh" texture="Objects/Tapestries/TapestryOfRockcliff.dds"/>
 			</model>
 			<materials>
 				Planks = 1,
@@ -5589,7 +6094,18 @@
 			<category>Banners/Tall Banners</category>
 			<category>Kingdoms/Pandemonium</category>
 		</object>
-		
+		<object name="Cheese tall banner" shortname="tbCheesePMK" type="normal">
+			<model location="Objects/TallBanners/mr_tall_banner.wom">
+				<override mesh="mr_tall_BannerMesh" texture="Objects/TallBanners/tall_banner_chee.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners/Tall Banners</category>
+			<category>Kingdoms/Cheese PMK</category>
+		</object>
+
 		<object name="Blank banner" shortname="bBlank" type="normal">
 			<model location="Objects/Banners/Banner_main.wom">
 				<override mesh="Cloth1Mesh" texture="Objects/Banners/Banner5.dds"/>
@@ -5830,6 +6346,17 @@
 			</materials>
 			<category>Banners</category>
 			<category>Kingdoms/Pandemonium</category>
+		</object>
+		<object name="Cheese banner" shortname="bCheese" type="normal">
+			<model location="Objects/Banners/Banner_main.wom">
+				<override mesh="Cloth1Mesh" texture="Objects/Banners/chee_banner.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Banners</category>
+			<category>Kingdoms/Cheese PMK</category>
 		</object>
 
 		<object name="Blank flag" shortname="fBlank" type="normal">
@@ -6073,7 +6600,18 @@
 			<category>Flags</category>
 			<category>Kingdoms/Pandemonium</category>
 		</object>
-		
+		<object name="Cheese flag" shortname="fCheese" type="normal">
+			<model location="Objects/Flags/Flag_main.wom">
+				<override mesh="Flag_flagMesh" texture="Objects/Flags/chee_flag.dds"/>
+			</model>
+			<materials>
+				Shaft = 1,
+				Square piece of cloth = 1
+			</materials>
+			<category>Flags</category>
+			<category>Kingdoms/Cheese PMK</category>
+		</object>
+
 		<object name="Bee hive" shortname="hive" type="normal">
 			<model location="Objects/Hive.wom"/>
 			<materials>
@@ -6084,17 +6622,59 @@
 			<category>Misc</category>
 			<category>Materials/Wood</category>
 		</object>
-		<object name="Gravestone" shortname="graves" type="normal">
-			<model location="Objects/Gravestone.wom"/>
+		<object name="Pet bowl" shortname="petBowl" type="normal">
+			<model location="Objects/PetBowl/petBowl.wom"/>
+			<category>Misc</category>
+		</object>
+		<object name="Gravestone, stone" shortname="graves" type="normal">
+			<model location="Objects/Gravestones/Gravestone.wom"/>
 			<category>Misc</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Pillar" shortname="pill" type="normal">
-			<model location="Objects/Pillar.wom"/>
-			<materials>
-				Clay = 51,
-				Stone bricks = 51
-			</materials>
+		<object name="Gravestone, sandstone" shortname="gravesSand" type="normal">
+			<model location="Objects/Gravestones/Gravestone.wom">
+				<override mesh="GravestoneMesh" texture="Objects/Gravestones/gravestone_sand.dds"/>
+			</model>
+			<category>Misc</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Gravestone, marble" shortname="gravesMarble" type="normal">
+			<model location="Objects/Gravestones/Gravestone.wom">
+				<override mesh="GravestoneMesh" texture="Objects/Gravestones/gravestone_marble.dds"/>
+			</model>
+			<category>Misc</category>
+			<category>Materials/Marble</category>
+		</object>
+		<object name="Gravestone, slate" shortname="gravesSlate" type="normal">
+			<model location="Objects/Gravestones/Gravestone.wom">
+				<override mesh="GravestoneMesh" texture="Objects/Gravestones/gravestone_slate.dds"/>
+			</model>
+			<category>Misc</category>
+			<category>Materials/Slate</category>
+		</object>
+		<object name="Pillar, stone" shortname="pillStone" type="normal">
+			<model location="Objects/Pillar/Pillar.wom">
+				<override mesh="PillarMesh" texture="Objects/Pillar/pillar_rock.dds"/>
+			</model>
+			<category>Misc</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Pillar, sandstone" shortname="pill" type="normal">
+			<model location="Objects/Pillar/Pillar.wom">
+				<override mesh="PillarMesh" texture="Objects/Pillar/pillar_sand.dds"/>
+			</model>
+			<category>Misc</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Pillar, marble" shortname="pillMarble" type="normal">
+			<model location="Objects/Pillar/Pillar.wom"/>
+			<category>Misc</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Pillar, slate" shortname="pillSlate" type="normal">
+			<model location="Objects/Pillar/Pillar.wom">
+				<override mesh="PillarMesh" texture="Objects/Pillar/pillar_slate.dds"/>
+			</model>
 			<category>Misc</category>
 			<category>Materials/Stone</category>
 		</object>
@@ -6256,7 +6836,7 @@
 			<category>Jackal</category>
 		</object>
 		<object name="Hitching post" shortname="hitchingpost" type="normal">
-			<model location="Objects/hitchingPost.wom"/>
+			<model location="Objects/HitchingPost/hitchingPost.wom"/>
 			<materials>
 				Large nails = 4,
 				Planks = 8,
@@ -6267,9 +6847,31 @@
 			<category>Misc</category>
 			<category>Materials/Wood</category>
 		</object>
-		
-		<object name="Forge" shortname="forge" type="normal">
-			<model location="Objects/forge.wom"/>
+		<object name="Hitching post, full" shortname="hitchingPostF" type="normal">
+			<model location="Objects/HitchingPost/hitchingPostF.wom"/>
+			<materials>
+				Large nails = 4,
+				Planks = 8,
+				Ribbons = 2,
+				Small nails = 8,
+				Wooden beams = 3
+			</materials>
+			<category>Misc</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Feeding trough, empty" shortname="feedingTroughEmpty" type="normal">
+			<model location="Objects/HitchingPost/feedingTroughEmpty.wom"/>
+			<category>Misc</category>
+			<category>Materials/Wood</category>
+		</object>
+		<object name="Feeding trough, full" shortname="feedingTroughFull" type="normal">
+			<model location="Objects/HitchingPost/feedingTroughMeat.wom"/>
+			<category>Misc</category>
+			<category>Materials/Wood</category>
+		</object>
+
+		<object name="Forge, stone" shortname="forge" type="normal">
+			<model location="Objects/Fireplaces/forge.wom"/>
 			<materials>
 				Clay = 11,
 				Stone bricks = 11
@@ -6277,8 +6879,11 @@
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Forge (lit)" shortname="forgelit" type="normal">
-			<model location="Objects/forge.wom"/>
+		<object name="Forge, stone (lit)" shortname="forgelit" type="normal">
+			<model location="Objects/Fireplaces/forge.wom">
+				<override mesh="ForgeMesh" texture="Objects/Fireplaces/forgelit.jpg"/>
+				<override mesh="CauldronMesh" texture="Objects/Fireplaces/forgecauldronglow.jpg"/>
+			</model>
 			<materials>
 				Clay = 11,
 				Stone bricks = 11
@@ -6286,8 +6891,42 @@
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Oven" shortname="oven" type="normal">
-			<model location="Objects/oven.wom"/>
+		<object name="Forge, pottery" shortname="forgePott" type="normal">
+			<model location="Objects/Fireplaces/Forge2.wom">
+				<override mesh="ForgeMesh" texture="Objects/Fireplaces/forge_brick.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Pottery</category>
+		</object>
+		<object name="Forge, rendered" shortname="forgeRend" type="normal">
+			<model location="Objects/Fireplaces/Forge2.wom">
+				<override mesh="ForgeMesh" texture="Objects/Fireplaces/forge_render.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Forge, sandstone" shortname="forgeSand" type="normal">
+			<model location="Objects/Fireplaces/Forge2.wom"/>
+			<category>Furnaces</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Forge, rounded stone" shortname="forgeRounded" type="normal">
+			<model location="Objects/Fireplaces/Forge2.wom">
+				<override mesh="ForgeMesh" texture="Objects/Fireplaces/forge_rounded.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Forge, slate" shortname="forgeSlate" type="normal">
+			<model location="Objects/Fireplaces/Forge2.wom">
+				<override mesh="ForgeMesh" texture="Objects/Fireplaces/forge_slate.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Slate</category>
+		</object>
+
+		<object name="Oven, stone" shortname="oven" type="normal">
+			<model location="Objects/Fireplaces/Oven.wom"/>
 			<materials>
 				Clay = 11,
 				Stone bricks = 11
@@ -6295,14 +6934,50 @@
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Oven (lit)" shortname="ovenlit" type="normal">
-			<model location="Objects/oven.wom"/>
+		<object name="Oven, stone (lit)" shortname="ovenlit" type="normal">
+			<model location="Objects/Fireplaces/Oven.wom">
+				<override mesh="OvenMesh" texture="Objects/Fireplaces/ovenlit.jpg"/>
+				<override mesh="PanMesh" texture="Objects/Fireplaces/ovenpanlit.jpg"/>
+			</model>
 			<materials>
 				Clay = 11,
 				Stone bricks = 11
 			</materials>
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
+		</object>
+		<object name="Oven, pottery" shortname="ovenPott" type="normal">
+			<model location="Objects/Fireplaces/Oven2.wom">
+				<override mesh="OvenMesh" texture="Objects/Fireplaces/oven_brick.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Pottery</category>
+		</object>
+		<object name="Oven, rendered" shortname="ovenRend" type="normal">
+			<model location="Objects/Fireplaces/Oven2.wom">
+				<override mesh="OvenMesh" texture="Objects/Fireplaces/oven_render.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Oven, sandstone" shortname="ovenSand" type="normal">
+			<model location="Objects/Fireplaces/Oven2.wom"/>
+			<category>Furnaces</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Oven, rounded stone" shortname="ovenRounded" type="normal">
+			<model location="Objects/Fireplaces/Oven2.wom">
+				<override mesh="OvenMesh" texture="Objects/Fireplaces/oven_rounded.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Oven, slate" shortname="ovenSlate" type="normal">
+			<model location="Objects/Fireplaces/Oven2.wom">
+				<override mesh="OvenMesh" texture="Objects/Fireplaces/oven_slate.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Slate</category>
 		</object>
 		<object name="Still" shortname="still" type="normal">
 			<model location="Objects/Still.wom"/>
@@ -6326,25 +7001,85 @@
 			<category>Furnaces</category>
 			<category>Materials/Copper</category>
 		</object>
-		<object name="Kiln" shortname="kiln" type="normal">
-			<model location="Objects/Kiln.wom"/>
-			<materials>
-				Stone Bricks = 20,
-				Clay = 20,
-				Dirt = 2
-			</materials>
+		<object name="Kiln, stone" shortname="kiln" type="normal">
+			<model location="Objects/Fireplaces/Kiln.wom">
+				<override mesh="KilnMesh" texture="Objects/Fireplaces/kiln_stone.dds"/>
+			</model>
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
 		</object>
-		<object name="Smelter" shortname="sme" type="normal">
-			<model location="Objects/Smelter.wom"/>
-			<materials>
-				Stone Bricks = 50,
-				Clay = 50,
-				Sand = 5
-			</materials>
+		<object name="Kiln, pottery" shortname="kilnPott" type="normal">
+			<model location="Objects/Fireplaces/Kiln.wom"/>
+			<category>Furnaces</category>
+			<category>Materials/Pottery</category>
+		</object>
+		<object name="Kiln, rendered" shortname="kilnRend" type="normal">
+			<model location="Objects/Fireplaces/Kiln.wom">
+				<override mesh="KilnMesh" texture="Objects/Fireplaces/kiln_render.dds"/>
+			</model>
 			<category>Furnaces</category>
 			<category>Materials/Stone</category>
+		</object>
+		<object name="Kiln, rounded stone" shortname="kilnRound" type="normal">
+			<model location="Objects/Fireplaces/Kiln.wom">
+				<override mesh="KilnMesh" texture="Objects/Fireplaces/kiln_rounded.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Kiln, sandstone" shortname="kilnSand" type="normal">
+			<model location="Objects/Fireplaces/Kiln.wom">
+				<override mesh="KilnMesh" texture="Objects/Fireplaces/kiln_sand.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Kiln, slate" shortname="kilnSlate" type="normal">
+			<model location="Objects/Fireplaces/Kiln.wom">
+				<override mesh="KilnMesh" texture="Objects/Fireplaces/kiln_slate.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Slate</category>
+		</object>
+		<object name="Smelter, stone" shortname="smeStone" type="normal">
+			<model location="Objects/Fireplaces/Smelter.wom">
+				<override mesh="SmelterMesh" texture="Objects/Fireplaces/smelter_stone.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Smelter, pottery" shortname="sme" type="normal">
+			<model location="Objects/Fireplaces/Smelter.wom"/>
+			<category>Furnaces</category>
+			<category>Materials/Pottery</category>
+		</object>
+		<object name="Smelter, rendered" shortname="smeRend" type="normal">
+			<model location="Objects/Fireplaces/Smelter.wom">
+				<override mesh="SmelterMesh" texture="Objects/Fireplaces/smelter_render.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Smelter, sandstone" shortname="smeSand" type="normal">
+			<model location="Objects/Fireplaces/Smelter.wom">
+				<override mesh="SmelterMesh" texture="Objects/Fireplaces/smelter_sand.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Sandstone</category>
+		</object>
+		<object name="Smelter, rounded stone" shortname="smeRounded" type="normal">
+			<model location="Objects/Fireplaces/Smelter.wom">
+				<override mesh="SmelterMesh" texture="Objects/Fireplaces/smelter_rounded.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Stone</category>
+		</object>
+		<object name="Smelter, slate" shortname="smeSlate" type="normal">
+			<model location="Objects/Fireplaces/Smelter.wom">
+				<override mesh="SmelterMesh" texture="Objects/Fireplaces/smelter_slate.dds"/>
+			</model>
+			<category>Furnaces</category>
+			<category>Materials/Slate</category>
 		</object>
 		<object name="Market stall" shortname="mstall" type="normal">
 			<model location="Objects/MarketStall.wom"/>
@@ -6372,7 +7107,39 @@
 			</materials>
 			<category>Decoration</category>
 		</object>
-		
+
+		<object name="Keystone" shortname="kStone" type="normal">
+			<model location="Bridges/Stone/Keystone.wom"/>
+			<category>Materials/Stone</category>
+			<category>Parts</category>
+		</object>
+		<object name="Keystone, pottery" shortname="kStonePott" type="normal">
+			<model location="Bridges/Stone/Keystone.wom">
+					<override mesh="KeystoneMesh" texture="Bridges/Stone/bridgeBrick.dds"/>
+			</model>
+			<category>Materials/Pottery</category>
+			<category>Parts</category>
+		</object>
+		<object name="Keystone, marble" shortname="kStoneMarble" type="normal">
+			<model location="Bridges/Marble/KeystoneM.wom"/>
+			<category>Materials/Marble</category>
+			<category>Parts</category>
+		</object>
+		<object name="Keystone, sandstone" shortname="kStoneSand" type="normal">
+			<model location="Bridges/Stone/Keystone.wom">
+					<override mesh="KeystoneMesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
+			</model>
+			<category>Materials/Sandstone</category>
+			<category>Parts</category>
+		</object>
+		<object name="Keystone, slate" shortname="kStoneSlate" type="normal">
+			<model location="Bridges/Stone/Keystone.wom">
+					<override mesh="KeystoneMesh" texture="Bridges/Stone/bridgeSlate.dds"/>
+			</model>
+			<category>Materials/Slate</category>
+			<category>Parts</category>
+		</object>
+
 		<object name="Yule goat" shortname="ygoat" type="normal">
 			<model location="Objects/bucketthree.wom"/>
 			<category>Unique items</category>
@@ -6397,7 +7164,7 @@
 			<model location="Objects/SnowLamp.wom"/>
 			<category>Unique items</category>
 		</object>
-		
+
 		<object name="Marble Planter (empty)" shortname="marbplantempty" type="normal">
 			<model location="Objects/marblePlanter_empty.wom"/>
 			<category>Decoration/Marble Planters</category>
@@ -6444,7 +7211,20 @@
 			</model>
 			<category>Decoration/Marble Planters</category>
 		</object>
-		
+
+		<object name="Large Planter (earth)" shortname="lpEarth" type="centered">
+			<model location="Objects/LargePlanter/raisedBedEarth.wom"/>
+			<category>Gardening</category>
+		</object>
+		<object name="Hay Stack" shortname="hayStack" type="normal">
+			<model location="Objects/Hay/hayStack.wom"/>
+			<category>Gardening</category>
+		</object>
+		<object name="Hay Bundle" shortname="hayBundle" type="normal">
+			<model location="Objects/Hay/hayBundle.wom"/>
+			<category>Gardening</category>
+		</object>
+
 		<object name="Flowerpot (clay)" shortname="flowerpotClay" type="normal">
 			<model location="Objects/FlowerPots/FlowerpotClay.wom"/>
 			<category>Decoration/Flowerpots</category>
@@ -6483,24 +7263,96 @@
 			<model location="Objects/FlowerPots/Flowerpot_yellow.wom"/>
 			<category>Decoration/Flowerpots</category>
 		</object>
-		
-		<object name="Spirit castle" shortname="spiritcastle" type="normal">
-			<model location="Objects/spiritCastle.wom"/>
+
+		<object name="Spirit castle, stone" shortname="spiritcastle" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom"/>
 			<category>Mailboxes</category>
 		</object>
-		<object name="Spirit cottage" shortname="spiritcottage" type="normal">
-			<model location="Objects/spiritCottage.wom"/>
+		<object name="Spirit castle, pottery" shortname="spiritcastlePott" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom">
+				<override mesh="spiritCastleMesh" texture="Objects/Mailboxes/castle_brick.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit castle, rendered" shortname="spiritcastleRend" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom">
+				<override mesh="spiritCastleMesh" texture="Objects/Mailboxes/castle_render.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit castle, rounded stone" shortname="spiritcastleRounded" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom">
+				<override mesh="spiritCastleMesh" texture="Objects/Mailboxes/castle_rounded.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit castle, sandstone" shortname="spiritcastleSand" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom">
+				<override mesh="spiritCastleMesh" texture="Objects/Mailboxes/castle_sand.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit castle, marble" shortname="spiritcastleMarble" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom">
+				<override mesh="spiritCastleMesh" texture="Objects/Mailboxes/castle_marble.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit castle, slate" shortname="spiritcastleSlate" type="normal">
+			<model location="Objects/Mailboxes/spiritCastle.wom">
+				<override mesh="spiritCastleMesh" texture="Objects/Mailboxes/castle_slate.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, stone" shortname="spiritcottage" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom"/>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, pottery" shortname="spiritcottagePott" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom">
+				<override mesh="spiritCottageMesh" texture="Objects/Mailboxes/cottage_brick.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, rendered" shortname="spiritcottageRend" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom">
+				<override mesh="spiritCottageMesh" texture="Objects/Mailboxes/cottage_render.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, rounded stone" shortname="spiritcottageRounded" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom">
+				<override mesh="spiritCottageMesh" texture="Objects/Mailboxes/cottage_rounded.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, sandstone" shortname="spiritcottageSand" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom">
+				<override mesh="spiritCottageMesh" texture="Objects/Mailboxes/cottage_sand.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, marble" shortname="spiritcottageMarble" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom">
+				<override mesh="spiritCottageMesh" texture="Objects/Mailboxes/cottage_marble.dds"/>
+			</model>
+			<category>Mailboxes</category>
+		</object>
+		<object name="Spirit cottage, slate" shortname="spiritcottageSlate" type="normal">
+			<model location="Objects/Mailboxes/spiritCottage.wom">
+				<override mesh="spiritCottageMesh" texture="Objects/Mailboxes/cottage_slate.dds"/>
+			</model>
 			<category>Mailboxes</category>
 		</object>
 		<object name="Spirit mansion" shortname="spiritmansion" type="normal">
-			<model location="Objects/spiritMansion.wom"/>
+			<model location="Objects/Mailboxes/spiritMansion.wom"/>
 			<category>Mailboxes</category>
 		</object>
 		<object name="Spirit house" shortname="spirithouse" type="normal">
-			<model location="Objects/spiritHouse.wom"/>
+			<model location="Objects/Mailboxes/spiritHouse.wom"/>
 			<category>Mailboxes</category>
 		</object>
-		
+
 		<object name="Shop sign (blank)" shortname="shSign0" type="normal">
 			<model location="Objects/ShopSign_main.wom"/>
 			<materials>
@@ -6779,7 +7631,7 @@
 			</materials>
 			<category>Signs</category>
 		</object>
-		
+
 		<object name="Freedom pavilion" shortname="pavFree" type="normal">
 			<model location="Objects/pavilionTent.wom"/>
 			<materials>
@@ -6880,6 +7732,19 @@
 			<category>Tents</category>
 			<category>Kingdoms/Mol-Rehan</category>
 		</object>
+		<object name="Cheese military tent" shortname="mTentCheese" type="normal">
+			<model location="Objects/militaryTent.wom">
+				<override mesh="tentMesh1Mesh" texture="Objects/military_tent_chee.dds"/>
+			</model>
+			<materials>
+				Square piece of cloth = 13,
+				Pegs = 10,
+				Shafts = 11,
+				Cordage ropes = 10
+			</materials>
+			<category>Tents</category>
+			<category>Kingdoms/Cheese PMK</category>
+		</object>
 		<object name="Explorer tent" shortname="expTent" type="normal">
 			<model location="Objects/smallTent.wom"/>
 			<materials>
@@ -6891,7 +7756,7 @@
 			<category>Tents</category>
 			<category>Kingdoms/Freedom</category>
 		</object>
-		
+
 		<object name="Grape trellis" shortname="gTrellis" type="normal">
 			<model location="Objects/grapeTrellis.wom"/>
 			<materials>
@@ -6899,7 +7764,7 @@
 				Small nails = 1,
 				Grape seedlings = 1
 			</materials>
-			<category>Trellises</category>
+			<category>Gardening</category>
 		</object>
 		<object name="Hops trellis" shortname="hTrellis" type="normal">
 			<model location="Objects/hopTrellis.wom"/>
@@ -6908,7 +7773,7 @@
 				Small nails = 1,
 				Hops seedlings = 1
 			</materials>
-			<category>Trellises</category>
+			<category>Gardening</category>
 		</object>
 		<object name="Ivy trellis" shortname="iTrellis" type="normal">
 			<model location="Objects/ivyTrellis.wom"/>
@@ -6917,7 +7782,7 @@
 				Small nails = 1,
 				Ivy seedlings = 1
 			</materials>
-			<category>Trellises</category>
+			<category>Gardening</category>
 		</object>
 		<object name="Rose trellis" shortname="rTrellis" type="normal">
 			<model location="Objects/roseTrellis.wom"/>
@@ -6926,9 +7791,9 @@
 				Small nails = 1,
 				Rose seedlings = 1
 			</materials>
-			<category>Trellises</category>
+			<category>Gardening</category>
 		</object>
-		
+
 		<object name="Rowing Boat" shortname="boatRB" type="floating">
 			<model location="Objects/RowingBoat.wom"/>
 			<category>Ships</category>
@@ -6953,7 +7818,11 @@
 			<model location="Objects/Caravel.wom"/>
 			<category>Ships</category>
 		</object>
-		
+		<object name="Crude canoe" shortname="boatCCanoe" type="floating">
+			<model location="Objects/Ships/Canoe.wom"/>
+			<category>Ships</category>
+		</object>
+
 		<object name="Spirit gate" shortname="sGate" type="normal">
 			<model location="Objects/spiritgate.wom"/>
 			<materials>
@@ -6996,7 +7865,7 @@
 			<category>Epic structures</category>
 			<category>Materials/Stone</category>
 		</object>
-		
+
 		<object name="Small catapult" shortname="sCatapult" type="normal">
 			<model location="Objects/Catapult_main.wom"/>
 			<materials>
@@ -7041,7 +7910,7 @@
 			</materials>
 			<category>War machines</category>
 		</object>
-		
+
 		<object name="Strange device" shortname="sDevice" type="normal">
 			<model location="Objects/magicTurret_uncarged.wom"/>
 			<materials>
@@ -7097,7 +7966,7 @@
 			</materials>
 			<category>Magic turrets</category>
 		</object>
-		
+
 		<object name="Axe display" shortname="displayAxe" type="normal">
 			<model location="Objects/hangersAxes.wom"/>
 			<category>Displays</category>
@@ -7106,7 +7975,7 @@
 			<model location="Objects/hangersSwords.wom"/>
 			<category>Displays</category>
 		</object>
-		
+
 		<object name="Waystone" shortname="waystone" type="corner">
 			<model location="Objects/Waystone.wom"/>
 			<category>Highway</category>
@@ -7115,18 +7984,18 @@
 			<model location="Objects/catseye.wom"/>
 			<category>Highway</category>
 		</object>
-		
+
 	</objects>
-		
-		
-	
+
+
+
 	<animals>
 		<animal name="Cow/Bull" shortname="cow">
 			<model location="Animals/Cow_main.wom"/>
 			<model location="Animals/Bull_Main2_bb.wom" tag="male"/>
 			<category>Farm animals</category>
 		</animal>
-		
+
 		<animal name="Horse (white)" shortname="whiteHorse">
 			<model location="Animals/Horse_main.wom">
 				<include mesh="bodyMeshMesh"/>
@@ -7183,7 +8052,7 @@
 			</model>
 			<category>Horses</category>
 		</animal>
-		
+
 		<animal name="Hell horse (mat)" shortname="matHell">
 			<model location="Animals/hellHorse.wom">
 				<include mesh="bodyMeshMesh"/>
@@ -7241,11 +8110,11 @@
 			<category>Hell horses</category>
 		</animal>
 	</animals>
-	
-		
-		
+
+
+
 	<caves>
-	
+
 		<rock name="Stone wall" shortname="sw" type="wall" tex="Caves/cave_512.dds">
 			<category>Walls</category>
 		</rock>
@@ -7320,7 +8189,7 @@
 		<rock name="Wooden reinforced cave wall" shortname="rswWood" type="wall" tex="Caves/cave_wood.dds">
 			<category>Walls/Decorative</category>
 		</rock>
-		
+
 		<rock name="Stone floor" shortname="sfl" type="floor" tex="Caves/cave_512.dds">
 			<category>Floors</category>
 		</rock>
@@ -7366,7 +8235,7 @@
 		<rock name="Planks" shortname="pl" type="floor" tex="GroundTextures/planks.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		
+
 		<rock name="Wooden cave door" shortname="wcaDoorC" type="entrance" tex="GroundTextures/minedoor_wooden.dds">
 			<category>Entrances</category>
 		</rock>
@@ -7379,11 +8248,11 @@
 		<rock name="Golden cave door" shortname="gcaDoorC" type="entrance" tex="GroundTextures/minedoor_gold.dds">
 			<category>Entrances</category>
 		</rock>
-		
+
 	</caves>
-	
-	
-	
+
+
+
 	<bridges>
 		<bridge name="rope" supportheight="0" maxwidth="1">
 			<type name="rope"/>
@@ -7417,7 +8286,7 @@
 				</materials>
 			</part>
 		</bridge>
-		
+
 		<bridge name="wood" supportheight="60" maxwidth="2">
 			<type name="flat"/>
 			<type name="arched"/>
@@ -7475,7 +8344,7 @@
 				</materials>
 			</part>
 		</bridge>
-		
+
 		<bridge name="stone" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
@@ -7641,7 +8510,7 @@
 				</materials>
 			</part>
 		</bridge>
-		
+
 		<bridge name="slate" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
@@ -7807,7 +8676,7 @@
 				</materials>
 			</part>
 		</bridge>
-		
+
 		<bridge name="sandstone" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
@@ -7973,7 +8842,7 @@
 				</materials>
 			</part>
 		</bridge>
-		
+
 		<bridge name="rounded stone" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
@@ -8139,7 +9008,7 @@
 				</materials>
 			</part>
 		</bridge>
-		
+
 		<bridge name="rendered" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
@@ -8315,7 +9184,7 @@
 				</materials>
 			</part>
 		</bridge>
-		
+
 		<bridge name="pottery" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
@@ -8481,7 +9350,7 @@
 				</materials>
 			</part>
 		</bridge>
-		
+
 		<bridge name="marble" supportheight="80" maxwidth="3">
 			<type name="flat"/>
 			<type name="arched"/>
