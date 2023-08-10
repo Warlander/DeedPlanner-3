@@ -10,6 +10,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
     public class FppCameraController : ICameraController
     {
         [Inject] private DPSettings _settings;
+
+        public GridMaterialType GridMaterialToUse => GridMaterialType.ProximityBased;
         
         private Vector3 fppPosition = new Vector3(-3, 4, -3);
         private Vector3 fppRotation = new Vector3(15, 45, 0);
@@ -111,18 +113,22 @@ namespace Warlander.Deedplanner.Logic.Cameras
             }
         }
 
-        public void UpdateState(Camera camera, Transform cameraTransform, Transform cameraParentTransform)
+        public void UpdateState(MultiCamera camera, Transform cameraTransform)
         {
-            camera.clearFlags = CameraClearFlags.Skybox;
-            camera.orthographic = false;
+            camera.AttachedCamera.clearFlags = CameraClearFlags.Skybox;
+            camera.AttachedCamera.orthographic = false;
             cameraTransform.localPosition = fppPosition;
             cameraTransform.localRotation = Quaternion.Euler(fppRotation);
-            cameraParentTransform.localRotation = Quaternion.identity;
         }
 
         public Vector2 CalculateWaterTablePosition(Vector3 cameraPosition)
         {
             return new Vector2(cameraPosition.x, cameraPosition.z);
+        }
+        
+        public float CalculateGridAlphaMultiplier()
+        {
+            return 1;
         }
     }
 }

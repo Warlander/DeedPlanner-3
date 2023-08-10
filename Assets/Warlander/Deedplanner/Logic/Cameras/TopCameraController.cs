@@ -9,6 +9,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
     public class TopCameraController : ICameraController
     {
         [Inject] private DPSettings _settings;
+
+        public GridMaterialType GridMaterialToUse => GridMaterialType.Uniform;
         
         private Vector2 topPosition;
         private float topScale = 40;
@@ -82,19 +84,24 @@ namespace Warlander.Deedplanner.Logic.Cameras
             }
         }
 
-        public void UpdateState(Camera camera, Transform cameraTransform, Transform cameraParentTransform)
+        public void UpdateState(MultiCamera camera, Transform cameraTransform)
         {
-            camera.clearFlags = CameraClearFlags.SolidColor;
-            camera.orthographic = true;
-            camera.orthographicSize = topScale;
+            camera.AttachedCamera.clearFlags = CameraClearFlags.SolidColor;
+            camera.AttachedCamera.orthographic = true;
+            camera.AttachedCamera.orthographicSize = topScale;
             cameraTransform.localPosition = new Vector3(topPosition.x, 10000, topPosition.y);
             cameraTransform.localRotation = Quaternion.Euler(90, 0, 0);
-            cameraParentTransform.localRotation = Quaternion.identity;
         }
 
         public Vector2 CalculateWaterTablePosition(Vector3 cameraPosition)
         {
             return new Vector2(cameraPosition.x, cameraPosition.z);
+        }
+
+        public float CalculateGridAlphaMultiplier()
+        {
+            float scaleReversed = 1 / topScale;
+            return Mathf.Min(scaleReversed * 20, 1);
         }
     }
 }

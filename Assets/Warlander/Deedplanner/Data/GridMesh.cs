@@ -6,6 +6,7 @@ using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.ExtensionUtils;
 using Zenject;
 
 namespace Warlander.Deedplanner.Data
@@ -25,6 +26,7 @@ namespace Warlander.Deedplanner.Data
         private Vector3[] vertices;
         private Color[] uniformColors;
         private Color[] heightColors;
+        private float _alphaMultiplier;
         private bool renderHeightColors = false;
         private bool verticesChanged = false;
         private bool dirty = false;
@@ -68,8 +70,8 @@ namespace Warlander.Deedplanner.Data
                 {
                     int index = map.CoordinateToIndex(i, i2);
                     vertices[index] = new Vector3(i * 4, 0, i2 * 4);
-                    uniformColors[index] = new Color(1, 1, 1);
-                    heightColors[index] = new Color(1, 1, 1);
+                    uniformColors[index] = new Color(1, 1, 1, _alphaMultiplier);
+                    heightColors[index] = new Color(1, 1, 1, _alphaMultiplier);
 
                     HeightmapHandle newHandle = new HeightmapHandle(new Vector2Int(i, i2), 0);
                     _container.Inject(newHandle);
@@ -98,7 +100,7 @@ namespace Warlander.Deedplanner.Data
             mesh.SetIndices(indices, MeshTopology.Lines, 0, true);
 
             meshFilter.sharedMesh = mesh;
-            meshRenderer.sharedMaterial = GraphicsManager.Instance.SimpleDrawingMaterial;
+            meshRenderer.sharedMaterial = GraphicsManager.Instance.SimpleSubtleDrawingMaterial;
 
             verticesChanged = false;
             dirty = false;
@@ -203,6 +205,27 @@ namespace Warlander.Deedplanner.Data
                 handle.Slope = height;
 
                 verticesChanged = true;
+                dirty = true;
+            }
+        }
+
+        public void SetMaterial(Material newMaterial)
+        {
+            meshRenderer.sharedMaterial = newMaterial;
+        }
+
+        public void SetAlphaMultiplier(float multiplier)
+        {
+            if (Math.Abs(multiplier - _alphaMultiplier) > 0.001f)
+            {
+                _alphaMultiplier = multiplier;
+                
+                for (int i = 0; i < uniformColors.Length; i++)
+                {
+                    uniformColors[i] = uniformColors[i].SetA(_alphaMultiplier);
+                    heightColors[i] = heightColors[i].SetA(_alphaMultiplier);
+                }
+                
                 dirty = true;
             }
         }

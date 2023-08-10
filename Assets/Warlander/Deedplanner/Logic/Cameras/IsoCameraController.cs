@@ -2,6 +2,7 @@
 using UnityEngine.EventSystems;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Settings;
+using Warlander.ExtensionUtils;
 using Zenject;
 
 namespace Warlander.Deedplanner.Logic.Cameras
@@ -9,6 +10,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
     public class IsoCameraController : ICameraController
     {
         [Inject] private DPSettings _settings;
+        
+        public GridMaterialType GridMaterialToUse => GridMaterialType.Uniform;
         
         private Vector2 isoPosition;
         private float isoScale = 40;
@@ -126,19 +129,27 @@ namespace Warlander.Deedplanner.Logic.Cameras
             // }
         }
 
-        public void UpdateState(Camera camera, Transform cameraTransform, Transform cameraParentTransform)
+        public void UpdateState(MultiCamera camera, Transform cameraTransform)
         {
-            camera.clearFlags = CameraClearFlags.SolidColor;
-            camera.orthographic = true;
-            camera.orthographicSize = isoScale;
-            cameraTransform.localPosition = new Vector3(isoPosition.x, isoPosition.y, -10000);
-            cameraTransform.localRotation = Quaternion.identity;
-            cameraParentTransform.localRotation = Quaternion.Euler(30, rotation, 0);
+            Quaternion rotationQuaternion = Quaternion.Euler(30, rotation, 0);
+            Quaternion counterRotationQuaternion = Quaternion.Euler(30, -rotation, 0);
+            
+            camera.AttachedCamera.clearFlags = CameraClearFlags.SolidColor;
+            camera.AttachedCamera.orthographic = true;
+            camera.AttachedCamera.orthographicSize = isoScale;
+            cameraTransform.localPosition = rotationQuaternion * new Vector3(isoPosition.x, isoPosition.y, -10000);
+            cameraTransform.localRotation = rotationQuaternion;
         }
 
         public Vector2 CalculateWaterTablePosition(Vector3 cameraPosition)
         {
             return new Vector2(isoPosition.x, isoPosition.y);
+        }
+        
+        public float CalculateGridAlphaMultiplier()
+        {
+            float scaleReversed = 1 / isoScale;
+            return Mathf.Min(scaleReversed * 20, 1);
         }
     }
 }

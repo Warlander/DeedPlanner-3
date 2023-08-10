@@ -8,11 +8,13 @@ namespace Warlander.Deedplanner.Graphics
         
         [SerializeField] private Material womDefaultMaterial = null;
         [SerializeField] private Material simpleDrawingMaterial = null;
+        [SerializeField] private Material simpleSubtleDrawingMaterial = null;
         [SerializeField] private Material terrainMaterial = null;
         [SerializeField] private Material ghostMaterial = null;
         
         public Material WomDefaultMaterial => womDefaultMaterial;
         public Material SimpleDrawingMaterial => simpleDrawingMaterial;
+        public Material SimpleSubtleDrawingMaterial => simpleSubtleDrawingMaterial;
         public Material TerrainMaterial => terrainMaterial;
         public Material GhostMaterial => ghostMaterial;
 

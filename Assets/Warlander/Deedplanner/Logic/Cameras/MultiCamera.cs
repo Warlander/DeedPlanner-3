@@ -30,7 +30,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
         public event Action ModeChanged;
         public event Action<MultiCamera> PointerDown;
         
-        private Transform parentTransform;
         public Camera AttachedCamera { get; private set; }
         public Vector2 MousePosition { get; private set; }
 
@@ -116,7 +115,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private void Awake()
         {
-            parentTransform = transform.parent;
             AttachedCamera = GetComponent<Camera>();
             attachedProjector = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Yellow);
             attachedProjector.SetRenderCameraId(screenId);
@@ -339,21 +337,30 @@ namespace Warlander.Deedplanner.Logic.Cameras
             {
                 map.RenderEntireMap = RenderEntireMap;
             }
+            
             bool renderHeights = tab == Tab.Height;
-            if (Floor < 0)
-            {
-                map.CaveGridMesh.HandlesVisible = renderHeights;
-                map.CaveGridMesh.SetRenderHeightColors(renderHeights);
-                map.CaveGridMesh.ApplyAllChanges();
-            }
-            else
-            {
-                map.SurfaceGridMesh.HandlesVisible = renderHeights;
-                map.SurfaceGridMesh.SetRenderHeightColors(renderHeights);
-                map.SurfaceGridMesh.ApplyAllChanges();
-            }
+            GridMesh gridMeshToUse = Floor < 0 ? map.CaveGridMesh : map.SurfaceGridMesh;
+            
+            gridMeshToUse.HandlesVisible = renderHeights;
+            gridMeshToUse.SetRenderHeightColors(renderHeights);
+            gridMeshToUse.SetAlphaMultiplier(CameraController.CalculateGridAlphaMultiplier());
+            gridMeshToUse.SetMaterial(GetMaterialForGridMaterialType(CameraController.GridMaterialToUse));
+            gridMeshToUse.ApplyAllChanges();
         }
 
+        private Material GetMaterialForGridMaterialType(GridMaterialType gridMaterialType)
+        {
+            switch (gridMaterialType)
+            {
+                case GridMaterialType.Uniform:
+                    return GraphicsManager.Instance.SimpleDrawingMaterial;
+                case GridMaterialType.ProximityBased:
+                    return GraphicsManager.Instance.SimpleSubtleDrawingMaterial;
+                default:
+                    return GraphicsManager.Instance.SimpleDrawingMaterial;
+            }
+        }
+        
         private void PrepareProjector()
         {
             if (!CurrentRaycast.collider)
@@ -386,7 +393,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private void UpdateState()
         {
-            CameraController.UpdateState(AttachedCamera, AttachedCamera.transform, parentTransform);
+            CameraController.UpdateState(this, AttachedCamera.transform);
         }
 
         private void OnRenderObject()
