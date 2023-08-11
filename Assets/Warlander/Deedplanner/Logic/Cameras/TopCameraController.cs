@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Settings;
 using Zenject;
 
@@ -9,10 +10,12 @@ namespace Warlander.Deedplanner.Logic.Cameras
     public class TopCameraController : ICameraController
     {
         [Inject] private DPSettings _settings;
-
+        [Inject] private DPInput _input;
+        
         public GridMaterialType GridMaterialToUse => GridMaterialType.Uniform;
         
         private Vector2 topPosition;
+        private Vector2 velocity;
         private float topScale = 40;
 
         public bool SupportsMode(CameraMode mode)
@@ -31,11 +34,14 @@ namespace Warlander.Deedplanner.Logic.Cameras
         {
             if (focusedWindow)
             {
-                if (mouseOver && !Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift))
+                bool boostPressed = _input.MapInput2D.Boost.IsPressed();
+                bool altBoostPressed = _input.MapInput2D.AltBoost.IsPressed();
+                
+                if (mouseOver && !boostPressed && !altBoostPressed)
                 {
                     Vector2 topPoint = new Vector2(focusedPoint.x, focusedPoint.z);
 
-                    float scroll = Input.mouseScrollDelta.y;
+                    float scroll = _input.MapInput2D.ZoomInOut.ReadValue<float>();
                     if (scroll > 0 && topScale > 10)
                     {
                         topPosition += (topPoint - topPosition) / topScale * 4;
@@ -47,10 +53,23 @@ namespace Warlander.Deedplanner.Logic.Cameras
                         topScale += 4;
                     }
                 }
+                
+                Vector2 movement = _input.MapInput2D.MoveMap.ReadValue<Vector2>();
+                velocity = Vector2.Lerp(velocity, movement, Time.deltaTime * 10);
+                float scaleMultiplier = topScale / 10f;
+                float velocityMultiplier = Time.deltaTime * _settings.TopMovementSpeed * scaleMultiplier;
 
-                Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-                movement *= _settings.TopMovementSpeed * Time.deltaTime;
-                topPosition += movement;
+                if (boostPressed)
+                {
+                    velocityMultiplier *= _settings.ShiftSpeedModifier;
+                }
+
+                if (altBoostPressed)
+                {
+                    velocityMultiplier *= _settings.ControlSpeedModifier;
+                }
+                
+                topPosition += velocity * velocityMultiplier;
             }
 
             if (topPosition.x < topScale * aspect)

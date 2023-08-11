@@ -35,11 +35,11 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 float movementMultiplier = 1;
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
-                    movementMultiplier *= _settings.FppShiftModifier;
+                    movementMultiplier *= _settings.ShiftSpeedModifier;
                 }
                 else if (Input.GetKey(KeyCode.LeftControl))
                 {
-                    movementMultiplier *= _settings.FppControlModifier;
+                    movementMultiplier *= _settings.ControlSpeedModifier;
                 }
 
                 Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));

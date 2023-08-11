@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Settings;
 using Warlander.ExtensionUtils;
 using Zenject;
@@ -10,10 +11,12 @@ namespace Warlander.Deedplanner.Logic.Cameras
     public class IsoCameraController : ICameraController
     {
         [Inject] private DPSettings _settings;
+        [Inject] private DPInput _input;
         
         public GridMaterialType GridMaterialToUse => GridMaterialType.Uniform;
         
         private Vector2 isoPosition;
+        private Vector2 velocity;
         private float isoScale = 40;
 
         private int rotation = 45;
@@ -33,9 +36,12 @@ namespace Warlander.Deedplanner.Logic.Cameras
         {
             if (focusedWindow)
             {
-                if (mouseOver && !Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift))
+                bool boostPressed = _input.MapInput2D.Boost.IsPressed();
+                bool altBoostPressed = _input.MapInput2D.AltBoost.IsPressed();
+                
+                if (mouseOver && !boostPressed && !altBoostPressed)
                 {
-                    float scroll = Input.mouseScrollDelta.y;
+                    float scroll = _input.MapInput2D.ZoomInOut.ReadValue<float>();
                     if (scroll > 0 && isoScale > 10)
                     {
                         isoScale -= 4;
@@ -46,19 +52,27 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     }
                 }
 
-                Vector2 movement = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-                if (Input.GetKey(KeyCode.LeftShift)) {
-                    movement *= (_settings.IsoMovementSpeed * 4) * Time.deltaTime;
+                Vector2 movement = _input.MapInput2D.MoveMap.ReadValue<Vector2>();
+                velocity = Vector2.Lerp(velocity, movement, Time.deltaTime * 10);
+                float scaleMultiplier = isoScale / 10f;
+                float velocityMultiplier = Time.deltaTime * _settings.IsoMovementSpeed * scaleMultiplier;
+                
+                if (boostPressed)
+                {
+                    velocityMultiplier *= _settings.ShiftSpeedModifier;
                 }
-                else {
-                    movement *= _settings.IsoMovementSpeed * Time.deltaTime;
+
+                if (altBoostPressed)
+                {
+                    velocityMultiplier *= _settings.ControlSpeedModifier;
                 }
-                isoPosition += movement;
+                
+                isoPosition += velocity * velocityMultiplier;
 
             }
             if (mouseOver)
             {
-                if (Input.GetKeyDown(KeyCode.PageUp)) {
+                if (_input.MapInput2D.TurnCameraClockwise.triggered) {
                     float posX = isoPosition.x;
                     float posY = isoPosition.y;
 
@@ -70,7 +84,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     isoPosition.x = -(posY * 2);
                     isoPosition.y = (posX / 2);
                 }
-                else if (Input.GetKeyDown(KeyCode.PageDown)) {
+                else if (_input.MapInput2D.TurnCameraCounterclockwise.triggered) {
                     float posX = isoPosition.x;
                     float posY = isoPosition.y;
 
@@ -132,8 +146,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         public void UpdateState(MultiCamera camera, Transform cameraTransform)
         {
             Quaternion rotationQuaternion = Quaternion.Euler(30, rotation, 0);
-            Quaternion counterRotationQuaternion = Quaternion.Euler(30, -rotation, 0);
-            
+
             camera.AttachedCamera.clearFlags = CameraClearFlags.SolidColor;
             camera.AttachedCamera.orthographic = true;
             camera.AttachedCamera.orthographicSize = isoScale;

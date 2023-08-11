@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Zenject;
@@ -31,6 +32,10 @@ namespace Warlander.Deedplanner.Installers
                 Container.BindInterfacesAndSelfTo<DebugApplier>().AsSingle().NonLazy();
                 Container.Bind<DebugProperties>().FromInstance(_debugProperties);
             }
+
+            DPInput input = new DPInput();
+            input.Enable();
+            Container.Bind<DPInput>().FromInstance(input);
         }
     }
 }

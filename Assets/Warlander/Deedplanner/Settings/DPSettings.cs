@@ -19,13 +19,13 @@ namespace Warlander.Deedplanner.Settings
 
         public float FppMouseSensitivity = 0.5f;
         public float FppKeyboardRotationSensitivity = 60f;
+        
         public float FppMovementSpeed = 16f;
-        public float FppShiftModifier = 5f;
-        public float FppControlModifier = 0.2f;
-
         public float TopMovementSpeed = 16f;
-
         public float IsoMovementSpeed = 16f;
+        
+        [XmlElement(ElementName = "FppShiftModifier")] public float ShiftSpeedModifier = 5f;
+        [XmlElement(ElementName = "FppControlModifier")] public float ControlSpeedModifier = 0.2f;
 
         public float HeightDragSensitivity = 0.5f;
         public bool HeightRespectOriginalSlopes = true;
