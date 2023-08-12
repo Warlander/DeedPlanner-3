@@ -26,6 +26,54 @@ namespace Warlander.Deedplanner.Inputs
     ""name"": ""DPInput"",
     ""maps"": [
         {
+            ""name"": ""MapInputShared"",
+            ""id"": ""05536137-e996-4986-a473-384875a6bd7f"",
+            ""actions"": [
+                {
+                    ""name"": ""Boost"",
+                    ""type"": ""Button"",
+                    ""id"": ""17bfb7ae-f45f-4a49-9b77-36afe6b3e605"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Alt Boost"",
+                    ""type"": ""Button"",
+                    ""id"": ""30e2d9b8-f06e-48d0-92a5-1684f683ad36"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""91004101-fd27-4c8a-8e9a-6681dea99b90"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Boost"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9b68ea20-16b1-42e9-bd91-640efcd661a6"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Alt Boost"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""MapInput2D"",
             ""id"": ""854db249-95e9-42a0-9f9b-0e632925bfc2"",
             ""actions"": [
@@ -37,24 +85,6 @@ namespace Warlander.Deedplanner.Inputs
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Boost"",
-                    ""type"": ""Button"",
-                    ""id"": ""b1b8ea5b-8c56-4ba1-82f1-f6e33a453bfa"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Alt Boost"",
-                    ""type"": ""Button"",
-                    ""id"": ""eef3ae4a-5a1f-44bc-bf7c-e684c831bb20"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""Zoom In/Out"",
@@ -141,28 +171,6 @@ namespace Warlander.Deedplanner.Inputs
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""60695f60-576b-4f8e-ac27-b95b69f6db13"",
-                    ""path"": ""<Keyboard>/shift"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse and Keyboard"",
-                    ""action"": ""Boost"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""e6b61e98-81ca-41fc-9876-26965b09a8a7"",
-                    ""path"": ""<Keyboard>/ctrl"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse and Keyboard"",
-                    ""action"": ""Alt Boost"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
                     ""name"": ""1D Axis"",
                     ""id"": ""928bba72-63c6-42ea-b3db-41802469ee13"",
                     ""path"": ""1DAxis"",
@@ -245,11 +253,13 @@ namespace Warlander.Deedplanner.Inputs
         }
     ]
 }");
+            // MapInputShared
+            m_MapInputShared = asset.FindActionMap("MapInputShared", throwIfNotFound: true);
+            m_MapInputShared_Boost = m_MapInputShared.FindAction("Boost", throwIfNotFound: true);
+            m_MapInputShared_AltBoost = m_MapInputShared.FindAction("Alt Boost", throwIfNotFound: true);
             // MapInput2D
             m_MapInput2D = asset.FindActionMap("MapInput2D", throwIfNotFound: true);
             m_MapInput2D_MoveMap = m_MapInput2D.FindAction("Move Map", throwIfNotFound: true);
-            m_MapInput2D_Boost = m_MapInput2D.FindAction("Boost", throwIfNotFound: true);
-            m_MapInput2D_AltBoost = m_MapInput2D.FindAction("Alt Boost", throwIfNotFound: true);
             m_MapInput2D_ZoomInOut = m_MapInput2D.FindAction("Zoom In/Out", throwIfNotFound: true);
             m_MapInput2D_TurnCameraClockwise = m_MapInput2D.FindAction("Turn Camera Clockwise", throwIfNotFound: true);
             m_MapInput2D_TurnCameraCounterclockwise = m_MapInput2D.FindAction("Turn Camera Counterclockwise", throwIfNotFound: true);
@@ -313,12 +323,64 @@ namespace Warlander.Deedplanner.Inputs
             return asset.FindBinding(bindingMask, out action);
         }
 
+        // MapInputShared
+        private readonly InputActionMap m_MapInputShared;
+        private List<IMapInputSharedActions> m_MapInputSharedActionsCallbackInterfaces = new List<IMapInputSharedActions>();
+        private readonly InputAction m_MapInputShared_Boost;
+        private readonly InputAction m_MapInputShared_AltBoost;
+        public struct MapInputSharedActions
+        {
+            private @DPInput m_Wrapper;
+            public MapInputSharedActions(@DPInput wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Boost => m_Wrapper.m_MapInputShared_Boost;
+            public InputAction @AltBoost => m_Wrapper.m_MapInputShared_AltBoost;
+            public InputActionMap Get() { return m_Wrapper.m_MapInputShared; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(MapInputSharedActions set) { return set.Get(); }
+            public void AddCallbacks(IMapInputSharedActions instance)
+            {
+                if (instance == null || m_Wrapper.m_MapInputSharedActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_MapInputSharedActionsCallbackInterfaces.Add(instance);
+                @Boost.started += instance.OnBoost;
+                @Boost.performed += instance.OnBoost;
+                @Boost.canceled += instance.OnBoost;
+                @AltBoost.started += instance.OnAltBoost;
+                @AltBoost.performed += instance.OnAltBoost;
+                @AltBoost.canceled += instance.OnAltBoost;
+            }
+
+            private void UnregisterCallbacks(IMapInputSharedActions instance)
+            {
+                @Boost.started -= instance.OnBoost;
+                @Boost.performed -= instance.OnBoost;
+                @Boost.canceled -= instance.OnBoost;
+                @AltBoost.started -= instance.OnAltBoost;
+                @AltBoost.performed -= instance.OnAltBoost;
+                @AltBoost.canceled -= instance.OnAltBoost;
+            }
+
+            public void RemoveCallbacks(IMapInputSharedActions instance)
+            {
+                if (m_Wrapper.m_MapInputSharedActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IMapInputSharedActions instance)
+            {
+                foreach (var item in m_Wrapper.m_MapInputSharedActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_MapInputSharedActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public MapInputSharedActions @MapInputShared => new MapInputSharedActions(this);
+
         // MapInput2D
         private readonly InputActionMap m_MapInput2D;
         private List<IMapInput2DActions> m_MapInput2DActionsCallbackInterfaces = new List<IMapInput2DActions>();
         private readonly InputAction m_MapInput2D_MoveMap;
-        private readonly InputAction m_MapInput2D_Boost;
-        private readonly InputAction m_MapInput2D_AltBoost;
         private readonly InputAction m_MapInput2D_ZoomInOut;
         private readonly InputAction m_MapInput2D_TurnCameraClockwise;
         private readonly InputAction m_MapInput2D_TurnCameraCounterclockwise;
@@ -327,8 +389,6 @@ namespace Warlander.Deedplanner.Inputs
             private @DPInput m_Wrapper;
             public MapInput2DActions(@DPInput wrapper) { m_Wrapper = wrapper; }
             public InputAction @MoveMap => m_Wrapper.m_MapInput2D_MoveMap;
-            public InputAction @Boost => m_Wrapper.m_MapInput2D_Boost;
-            public InputAction @AltBoost => m_Wrapper.m_MapInput2D_AltBoost;
             public InputAction @ZoomInOut => m_Wrapper.m_MapInput2D_ZoomInOut;
             public InputAction @TurnCameraClockwise => m_Wrapper.m_MapInput2D_TurnCameraClockwise;
             public InputAction @TurnCameraCounterclockwise => m_Wrapper.m_MapInput2D_TurnCameraCounterclockwise;
@@ -344,12 +404,6 @@ namespace Warlander.Deedplanner.Inputs
                 @MoveMap.started += instance.OnMoveMap;
                 @MoveMap.performed += instance.OnMoveMap;
                 @MoveMap.canceled += instance.OnMoveMap;
-                @Boost.started += instance.OnBoost;
-                @Boost.performed += instance.OnBoost;
-                @Boost.canceled += instance.OnBoost;
-                @AltBoost.started += instance.OnAltBoost;
-                @AltBoost.performed += instance.OnAltBoost;
-                @AltBoost.canceled += instance.OnAltBoost;
                 @ZoomInOut.started += instance.OnZoomInOut;
                 @ZoomInOut.performed += instance.OnZoomInOut;
                 @ZoomInOut.canceled += instance.OnZoomInOut;
@@ -366,12 +420,6 @@ namespace Warlander.Deedplanner.Inputs
                 @MoveMap.started -= instance.OnMoveMap;
                 @MoveMap.performed -= instance.OnMoveMap;
                 @MoveMap.canceled -= instance.OnMoveMap;
-                @Boost.started -= instance.OnBoost;
-                @Boost.performed -= instance.OnBoost;
-                @Boost.canceled -= instance.OnBoost;
-                @AltBoost.started -= instance.OnAltBoost;
-                @AltBoost.performed -= instance.OnAltBoost;
-                @AltBoost.canceled -= instance.OnAltBoost;
                 @ZoomInOut.started -= instance.OnZoomInOut;
                 @ZoomInOut.performed -= instance.OnZoomInOut;
                 @ZoomInOut.canceled -= instance.OnZoomInOut;
@@ -445,11 +493,14 @@ namespace Warlander.Deedplanner.Inputs
                 return asset.controlSchemes[m_MouseandKeyboardSchemeIndex];
             }
         }
+        public interface IMapInputSharedActions
+        {
+            void OnBoost(InputAction.CallbackContext context);
+            void OnAltBoost(InputAction.CallbackContext context);
+        }
         public interface IMapInput2DActions
         {
             void OnMoveMap(InputAction.CallbackContext context);
-            void OnBoost(InputAction.CallbackContext context);
-            void OnAltBoost(InputAction.CallbackContext context);
             void OnZoomInOut(InputAction.CallbackContext context);
             void OnTurnCameraClockwise(InputAction.CallbackContext context);
             void OnTurnCameraCounterclockwise(InputAction.CallbackContext context);

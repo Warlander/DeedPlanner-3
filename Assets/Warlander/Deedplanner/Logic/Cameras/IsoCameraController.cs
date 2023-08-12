@@ -36,8 +36,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
         {
             if (focusedWindow)
             {
-                bool boostPressed = _input.MapInput2D.Boost.IsPressed();
-                bool altBoostPressed = _input.MapInput2D.AltBoost.IsPressed();
+                bool boostPressed = _input.MapInputShared.Boost.IsPressed();
+                bool altBoostPressed = _input.MapInputShared.AltBoost.IsPressed();
                 
                 if (mouseOver && !boostPressed && !altBoostPressed)
                 {

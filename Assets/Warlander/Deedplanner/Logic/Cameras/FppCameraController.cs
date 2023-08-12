@@ -2,6 +2,7 @@
 using UnityEngine.EventSystems;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Settings;
 using Zenject;
 
@@ -10,6 +11,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
     public class FppCameraController : ICameraController
     {
         [Inject] private DPSettings _settings;
+        [Inject] private DPInput _input;
 
         public GridMaterialType GridMaterialToUse => GridMaterialType.ProximityBased;
         
@@ -33,11 +35,11 @@ namespace Warlander.Deedplanner.Logic.Cameras
             if (focusedWindow)
             {
                 float movementMultiplier = 1;
-                if (Input.GetKey(KeyCode.LeftShift))
+                if (_input.MapInputShared.Boost.IsPressed())
                 {
                     movementMultiplier *= _settings.ShiftSpeedModifier;
                 }
-                else if (Input.GetKey(KeyCode.LeftControl))
+                else if (_input.MapInputShared.AltBoost.IsPressed())
                 {
                     movementMultiplier *= _settings.ControlSpeedModifier;
                 }

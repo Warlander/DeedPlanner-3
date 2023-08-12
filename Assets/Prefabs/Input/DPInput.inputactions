@@ -2,6 +2,54 @@
     "name": "DPInput",
     "maps": [
         {
+            "name": "MapInputShared",
+            "id": "05536137-e996-4986-a473-384875a6bd7f",
+            "actions": [
+                {
+                    "name": "Boost",
+                    "type": "Button",
+                    "id": "17bfb7ae-f45f-4a49-9b77-36afe6b3e605",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Alt Boost",
+                    "type": "Button",
+                    "id": "30e2d9b8-f06e-48d0-92a5-1684f683ad36",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "91004101-fd27-4c8a-8e9a-6681dea99b90",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Boost",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9b68ea20-16b1-42e9-bd91-640efcd661a6",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Alt Boost",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "MapInput2D",
             "id": "854db249-95e9-42a0-9f9b-0e632925bfc2",
             "actions": [
@@ -13,24 +61,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "Boost",
-                    "type": "Button",
-                    "id": "b1b8ea5b-8c56-4ba1-82f1-f6e33a453bfa",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Alt Boost",
-                    "type": "Button",
-                    "id": "eef3ae4a-5a1f-44bc-bf7c-e684c831bb20",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 },
                 {
                     "name": "Zoom In/Out",
@@ -115,28 +145,6 @@
                     "action": "Move Map",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "60695f60-576b-4f8e-ac27-b95b69f6db13",
-                    "path": "<Keyboard>/shift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse and Keyboard",
-                    "action": "Boost",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e6b61e98-81ca-41fc-9876-26965b09a8a7",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse and Keyboard",
-                    "action": "Alt Boost",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 },
                 {
                     "name": "1D Axis",
