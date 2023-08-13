@@ -5,9 +5,11 @@ using System.IO.Compression;
 using System.Text;
 using System.Xml;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Networking;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic.Projectors;
 using Warlander.Deedplanner.Updaters;
 using Zenject;
@@ -19,6 +21,7 @@ namespace Warlander.Deedplanner.Logic
         public static GameManager Instance { get; private set; }
 
         [Inject] private IInstantiator _instantiator;
+        [Inject] private DPInput _input;
         
         public Map Map { get; private set; }
 
@@ -50,18 +53,19 @@ namespace Warlander.Deedplanner.Logic
         {
             updaters[0].gameObject.SetActive(true);
             LayoutManager.Instance.TabChanged += OnTabChange;
+            
+            _input.EditingControls.Undo.performed += UndoOnperformed;
+            _input.EditingControls.Redo.performed += RedoOnperformed;
         }
-
-        private void Update()
+        
+        private void UndoOnperformed(InputAction.CallbackContext obj)
         {
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Z))
-            {
-                Map.CommandManager.Undo();
-            }
-            else if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Y))
-            {
-                Map.CommandManager.Redo();
-            }
+            Map.CommandManager.Undo();
+        }
+        
+        private void RedoOnperformed(InputAction.CallbackContext obj)
+        {
+            Map.CommandManager.Redo();
         }
 
         public void CreateNewMap(int width, int height)

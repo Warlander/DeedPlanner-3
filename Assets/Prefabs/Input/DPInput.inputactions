@@ -2,7 +2,7 @@
     "name": "DPInput",
     "maps": [
         {
-            "name": "MapInputShared",
+            "name": "Map Input Shared",
             "id": "05536137-e996-4986-a473-384875a6bd7f",
             "actions": [
                 {
@@ -22,6 +22,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "FocusPosition",
+                    "type": "Value",
+                    "id": "cb61d857-6de3-40cb-9de4-68adb3ee47df",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -46,11 +55,22 @@
                     "action": "Alt Boost",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8f116e40-fb2a-475a-91f5-0f3b9d80f735",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "FocusPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
         {
-            "name": "MapInput2D",
+            "name": "Map Input 2D",
             "id": "854db249-95e9-42a0-9f9b-0e632925bfc2",
             "actions": [
                 {
@@ -204,7 +224,7 @@
             ]
         },
         {
-            "name": "MapInput3D",
+            "name": "Map Input 3D",
             "id": "35620df3-4660-49f6-b73b-d63dcd26c6b3",
             "actions": [
                 {
@@ -356,6 +376,118 @@
                     "action": "Move Map",
                     "isComposite": false,
                     "isPartOfComposite": true
+                }
+            ]
+        },
+        {
+            "name": "Editing Controls",
+            "id": "9b77110c-700e-459b-8888-9d0c7f0c6321",
+            "actions": [
+                {
+                    "name": "Undo",
+                    "type": "Button",
+                    "id": "6c94caed-5fdb-41fb-a547-e16a9685e09c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Redo",
+                    "type": "Button",
+                    "id": "e7a593a5-942b-4f7b-b0a2-586058faa3b2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Toggle UI",
+                    "type": "Button",
+                    "id": "784e38f2-36cc-448a-8bc2-c8feacb53698",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "One Modifier",
+                    "id": "2ec74565-7aef-4318-b031-825f0c90458e",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Undo",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "42cf481e-0a39-478f-b6b3-cff5ebf12792",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Undo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "ad0e0b5a-3e83-4baa-b693-3ef17259aaf9",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Undo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "a6e706c9-cca5-4fdd-8177-e1a1bddbea77",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Redo",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "dc050f42-bc41-4d67-b1fd-c8aedb18e98b",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Redo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "7702abf3-6274-4a58-af03-769e7c3a2516",
+                    "path": "<Keyboard>/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Redo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "a30a7813-7000-4bc0-8c40-fb3c41226135",
+                    "path": "<Keyboard>/f10",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toggle UI",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

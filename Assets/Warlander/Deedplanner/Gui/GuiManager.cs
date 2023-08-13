@@ -1,8 +1,11 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Inputs;
+using Zenject;
 
 namespace Warlander.Deedplanner.Gui
 {
@@ -10,6 +13,8 @@ namespace Warlander.Deedplanner.Gui
     {
         public static GuiManager Instance { get; private set; }
 
+        [Inject] private DPInput _input;
+        
         [SerializeField] private RectTransform[] interfaceTransforms = null;
 
         [SerializeField] private UnityTree groundsTree = null;
@@ -37,14 +42,16 @@ namespace Warlander.Deedplanner.Gui
             Instance = this;
         }
 
-        private void Update()
+        private void Start()
         {
-            if (Input.GetKeyDown(KeyCode.F10))
+            _input.EditingControls.ToggleUI.performed += ToggleUIOnperformed;
+        }
+
+        private void ToggleUIOnperformed(InputAction.CallbackContext obj)
+        {
+            foreach (RectTransform interfaceTransform in interfaceTransforms)
             {
-                foreach (RectTransform interfaceTransform in interfaceTransforms)
-                {
-                    interfaceTransform.gameObject.SetActive(!interfaceTransform.gameObject.activeSelf);
-                }
+                interfaceTransform.gameObject.SetActive(!interfaceTransform.gameObject.activeSelf);
             }
         }
     }

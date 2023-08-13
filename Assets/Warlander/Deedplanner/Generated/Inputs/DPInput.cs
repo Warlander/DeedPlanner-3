@@ -26,7 +26,7 @@ namespace Warlander.Deedplanner.Inputs
     ""name"": ""DPInput"",
     ""maps"": [
         {
-            ""name"": ""MapInputShared"",
+            ""name"": ""Map Input Shared"",
             ""id"": ""05536137-e996-4986-a473-384875a6bd7f"",
             ""actions"": [
                 {
@@ -46,6 +46,15 @@ namespace Warlander.Deedplanner.Inputs
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FocusPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""cb61d857-6de3-40cb-9de4-68adb3ee47df"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -70,11 +79,22 @@ namespace Warlander.Deedplanner.Inputs
                     ""action"": ""Alt Boost"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8f116e40-fb2a-475a-91f5-0f3b9d80f735"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""FocusPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
         {
-            ""name"": ""MapInput2D"",
+            ""name"": ""Map Input 2D"",
             ""id"": ""854db249-95e9-42a0-9f9b-0e632925bfc2"",
             ""actions"": [
                 {
@@ -228,7 +248,7 @@ namespace Warlander.Deedplanner.Inputs
             ]
         },
         {
-            ""name"": ""MapInput3D"",
+            ""name"": ""Map Input 3D"",
             ""id"": ""35620df3-4660-49f6-b73b-d63dcd26c6b3"",
             ""actions"": [
                 {
@@ -382,6 +402,118 @@ namespace Warlander.Deedplanner.Inputs
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""Editing Controls"",
+            ""id"": ""9b77110c-700e-459b-8888-9d0c7f0c6321"",
+            ""actions"": [
+                {
+                    ""name"": ""Undo"",
+                    ""type"": ""Button"",
+                    ""id"": ""6c94caed-5fdb-41fb-a547-e16a9685e09c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Redo"",
+                    ""type"": ""Button"",
+                    ""id"": ""e7a593a5-942b-4f7b-b0a2-586058faa3b2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Toggle UI"",
+                    ""type"": ""Button"",
+                    ""id"": ""784e38f2-36cc-448a-8bc2-c8feacb53698"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""2ec74565-7aef-4318-b031-825f0c90458e"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Undo"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""42cf481e-0a39-478f-b6b3-cff5ebf12792"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Undo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""ad0e0b5a-3e83-4baa-b693-3ef17259aaf9"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Undo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""a6e706c9-cca5-4fdd-8177-e1a1bddbea77"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Redo"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""dc050f42-bc41-4d67-b1fd-c8aedb18e98b"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Redo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""7702abf3-6274-4a58-af03-769e7c3a2516"",
+                    ""path"": ""<Keyboard>/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Redo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a30a7813-7000-4bc0-8c40-fb3c41226135"",
+                    ""path"": ""<Keyboard>/f10"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Toggle UI"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -403,21 +535,27 @@ namespace Warlander.Deedplanner.Inputs
         }
     ]
 }");
-            // MapInputShared
-            m_MapInputShared = asset.FindActionMap("MapInputShared", throwIfNotFound: true);
+            // Map Input Shared
+            m_MapInputShared = asset.FindActionMap("Map Input Shared", throwIfNotFound: true);
             m_MapInputShared_Boost = m_MapInputShared.FindAction("Boost", throwIfNotFound: true);
             m_MapInputShared_AltBoost = m_MapInputShared.FindAction("Alt Boost", throwIfNotFound: true);
-            // MapInput2D
-            m_MapInput2D = asset.FindActionMap("MapInput2D", throwIfNotFound: true);
+            m_MapInputShared_FocusPosition = m_MapInputShared.FindAction("FocusPosition", throwIfNotFound: true);
+            // Map Input 2D
+            m_MapInput2D = asset.FindActionMap("Map Input 2D", throwIfNotFound: true);
             m_MapInput2D_MoveMap = m_MapInput2D.FindAction("Move Map", throwIfNotFound: true);
             m_MapInput2D_ZoomInOut = m_MapInput2D.FindAction("Zoom In/Out", throwIfNotFound: true);
             m_MapInput2D_TurnCameraClockwise = m_MapInput2D.FindAction("Turn Camera Clockwise", throwIfNotFound: true);
             m_MapInput2D_TurnCameraCounterclockwise = m_MapInput2D.FindAction("Turn Camera Counterclockwise", throwIfNotFound: true);
-            // MapInput3D
-            m_MapInput3D = asset.FindActionMap("MapInput3D", throwIfNotFound: true);
+            // Map Input 3D
+            m_MapInput3D = asset.FindActionMap("Map Input 3D", throwIfNotFound: true);
             m_MapInput3D_MoveMap = m_MapInput3D.FindAction("Move Map", throwIfNotFound: true);
             m_MapInput3D_RotateSideways = m_MapInput3D.FindAction("Rotate Sideways", throwIfNotFound: true);
             m_MapInput3D_MoveVertically = m_MapInput3D.FindAction("Move Vertically", throwIfNotFound: true);
+            // Editing Controls
+            m_EditingControls = asset.FindActionMap("Editing Controls", throwIfNotFound: true);
+            m_EditingControls_Undo = m_EditingControls.FindAction("Undo", throwIfNotFound: true);
+            m_EditingControls_Redo = m_EditingControls.FindAction("Redo", throwIfNotFound: true);
+            m_EditingControls_ToggleUI = m_EditingControls.FindAction("Toggle UI", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -476,17 +614,19 @@ namespace Warlander.Deedplanner.Inputs
             return asset.FindBinding(bindingMask, out action);
         }
 
-        // MapInputShared
+        // Map Input Shared
         private readonly InputActionMap m_MapInputShared;
         private List<IMapInputSharedActions> m_MapInputSharedActionsCallbackInterfaces = new List<IMapInputSharedActions>();
         private readonly InputAction m_MapInputShared_Boost;
         private readonly InputAction m_MapInputShared_AltBoost;
+        private readonly InputAction m_MapInputShared_FocusPosition;
         public struct MapInputSharedActions
         {
             private @DPInput m_Wrapper;
             public MapInputSharedActions(@DPInput wrapper) { m_Wrapper = wrapper; }
             public InputAction @Boost => m_Wrapper.m_MapInputShared_Boost;
             public InputAction @AltBoost => m_Wrapper.m_MapInputShared_AltBoost;
+            public InputAction @FocusPosition => m_Wrapper.m_MapInputShared_FocusPosition;
             public InputActionMap Get() { return m_Wrapper.m_MapInputShared; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -502,6 +642,9 @@ namespace Warlander.Deedplanner.Inputs
                 @AltBoost.started += instance.OnAltBoost;
                 @AltBoost.performed += instance.OnAltBoost;
                 @AltBoost.canceled += instance.OnAltBoost;
+                @FocusPosition.started += instance.OnFocusPosition;
+                @FocusPosition.performed += instance.OnFocusPosition;
+                @FocusPosition.canceled += instance.OnFocusPosition;
             }
 
             private void UnregisterCallbacks(IMapInputSharedActions instance)
@@ -512,6 +655,9 @@ namespace Warlander.Deedplanner.Inputs
                 @AltBoost.started -= instance.OnAltBoost;
                 @AltBoost.performed -= instance.OnAltBoost;
                 @AltBoost.canceled -= instance.OnAltBoost;
+                @FocusPosition.started -= instance.OnFocusPosition;
+                @FocusPosition.performed -= instance.OnFocusPosition;
+                @FocusPosition.canceled -= instance.OnFocusPosition;
             }
 
             public void RemoveCallbacks(IMapInputSharedActions instance)
@@ -530,7 +676,7 @@ namespace Warlander.Deedplanner.Inputs
         }
         public MapInputSharedActions @MapInputShared => new MapInputSharedActions(this);
 
-        // MapInput2D
+        // Map Input 2D
         private readonly InputActionMap m_MapInput2D;
         private List<IMapInput2DActions> m_MapInput2DActionsCallbackInterfaces = new List<IMapInput2DActions>();
         private readonly InputAction m_MapInput2D_MoveMap;
@@ -600,7 +746,7 @@ namespace Warlander.Deedplanner.Inputs
         }
         public MapInput2DActions @MapInput2D => new MapInput2DActions(this);
 
-        // MapInput3D
+        // Map Input 3D
         private readonly InputActionMap m_MapInput3D;
         private List<IMapInput3DActions> m_MapInput3DActionsCallbackInterfaces = new List<IMapInput3DActions>();
         private readonly InputAction m_MapInput3D_MoveMap;
@@ -661,6 +807,68 @@ namespace Warlander.Deedplanner.Inputs
             }
         }
         public MapInput3DActions @MapInput3D => new MapInput3DActions(this);
+
+        // Editing Controls
+        private readonly InputActionMap m_EditingControls;
+        private List<IEditingControlsActions> m_EditingControlsActionsCallbackInterfaces = new List<IEditingControlsActions>();
+        private readonly InputAction m_EditingControls_Undo;
+        private readonly InputAction m_EditingControls_Redo;
+        private readonly InputAction m_EditingControls_ToggleUI;
+        public struct EditingControlsActions
+        {
+            private @DPInput m_Wrapper;
+            public EditingControlsActions(@DPInput wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Undo => m_Wrapper.m_EditingControls_Undo;
+            public InputAction @Redo => m_Wrapper.m_EditingControls_Redo;
+            public InputAction @ToggleUI => m_Wrapper.m_EditingControls_ToggleUI;
+            public InputActionMap Get() { return m_Wrapper.m_EditingControls; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(EditingControlsActions set) { return set.Get(); }
+            public void AddCallbacks(IEditingControlsActions instance)
+            {
+                if (instance == null || m_Wrapper.m_EditingControlsActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_EditingControlsActionsCallbackInterfaces.Add(instance);
+                @Undo.started += instance.OnUndo;
+                @Undo.performed += instance.OnUndo;
+                @Undo.canceled += instance.OnUndo;
+                @Redo.started += instance.OnRedo;
+                @Redo.performed += instance.OnRedo;
+                @Redo.canceled += instance.OnRedo;
+                @ToggleUI.started += instance.OnToggleUI;
+                @ToggleUI.performed += instance.OnToggleUI;
+                @ToggleUI.canceled += instance.OnToggleUI;
+            }
+
+            private void UnregisterCallbacks(IEditingControlsActions instance)
+            {
+                @Undo.started -= instance.OnUndo;
+                @Undo.performed -= instance.OnUndo;
+                @Undo.canceled -= instance.OnUndo;
+                @Redo.started -= instance.OnRedo;
+                @Redo.performed -= instance.OnRedo;
+                @Redo.canceled -= instance.OnRedo;
+                @ToggleUI.started -= instance.OnToggleUI;
+                @ToggleUI.performed -= instance.OnToggleUI;
+                @ToggleUI.canceled -= instance.OnToggleUI;
+            }
+
+            public void RemoveCallbacks(IEditingControlsActions instance)
+            {
+                if (m_Wrapper.m_EditingControlsActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IEditingControlsActions instance)
+            {
+                foreach (var item in m_Wrapper.m_EditingControlsActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_EditingControlsActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public EditingControlsActions @EditingControls => new EditingControlsActions(this);
         private int m_MouseandKeyboardSchemeIndex = -1;
         public InputControlScheme MouseandKeyboardScheme
         {
@@ -674,6 +882,7 @@ namespace Warlander.Deedplanner.Inputs
         {
             void OnBoost(InputAction.CallbackContext context);
             void OnAltBoost(InputAction.CallbackContext context);
+            void OnFocusPosition(InputAction.CallbackContext context);
         }
         public interface IMapInput2DActions
         {
@@ -687,6 +896,12 @@ namespace Warlander.Deedplanner.Inputs
             void OnMoveMap(InputAction.CallbackContext context);
             void OnRotateSideways(InputAction.CallbackContext context);
             void OnMoveVertically(InputAction.CallbackContext context);
+        }
+        public interface IEditingControlsActions
+        {
+            void OnUndo(InputAction.CallbackContext context);
+            void OnRedo(InputAction.CallbackContext context);
+            void OnToggleUI(InputAction.CallbackContext context);
         }
     }
 }

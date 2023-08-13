@@ -11,6 +11,7 @@ using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic.Projectors;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Utils;
@@ -25,6 +26,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [Inject] private ICameraController[] _cameraControllers;
         [Inject] private TooltipHandler _tooltipHandler;
         [Inject] private CameraCoordinator _cameraCoordinator;
+        [Inject] private DPInput _input;
 
         public event Action FloorChanged;
         public event Action ModeChanged;
@@ -287,7 +289,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
         public Ray CreateMouseRay()
         {
             Vector2 local;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(screen.GetComponent<RectTransform>(), Input.mousePosition, null, out local);
+            Vector2 focusPos = _input.MapInputShared.FocusPosition.ReadValue<Vector2>();
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(screen.GetComponent<RectTransform>(), focusPos, null, out local);
             MousePosition = local + (screen.GetComponent<RectTransform>().sizeDelta / 2);
             local /= screen.GetComponent<RectTransform>().sizeDelta;
             local += new Vector2(0.5f, 0.5f);
