@@ -169,7 +169,7 @@ namespace Warlander.Deedplanner.Graphics
         private static void LoadMaterial(BinaryReader source, string modelFolder, Action<Material> onLoaded)
         {
             string texName = ReadString(source);
-            string texLocation = Path.Combine(modelFolder, texName);
+            string texLocation = Path.Combine(modelFolder, texName).Replace("\\", "/");
             string matName = ReadString(source);
             
             MaterialKey materialKey = new MaterialKey(matName, texLocation);
