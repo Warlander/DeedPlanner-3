@@ -11,6 +11,11 @@ namespace Warlander.ExtensionUtils
         {
             return new Vector3(vec.x, vec.y, z);
         }
+
+        public static Vector3 ToVector3XZ(this Vector2 vec, float y = 0)
+        {
+            return new Vector3(vec.x, y, vec.y);
+        }
         
         public static Vector2 SetX(this Vector2 vec, float newX)
         {

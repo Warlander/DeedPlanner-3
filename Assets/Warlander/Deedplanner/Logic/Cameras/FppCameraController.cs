@@ -4,6 +4,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Settings;
+using Warlander.ExtensionUtils;
 using Zenject;
 
 namespace Warlander.Deedplanner.Logic.Cameras
@@ -44,28 +45,16 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     movementMultiplier *= _settings.ControlSpeedModifier;
                 }
 
-                Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+                Vector2 movementInput = _input.MapInput3D.MoveMap.ReadValue<Vector2>();
+                Vector3 movement = movementInput.ToVector3XZ();
                 movement *= _settings.FppMovementSpeed * Time.deltaTime * movementMultiplier;
 
-                if (Input.GetKey(KeyCode.Q))
-                {
-                    fppRotation += new Vector3(0, -Time.deltaTime * _settings.FppKeyboardRotationSensitivity, 0);
-                    fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
-                }
-                if (Input.GetKey(KeyCode.E))
-                {
-                    fppRotation += new Vector3(0, Time.deltaTime * _settings.FppKeyboardRotationSensitivity, 0);
-                    fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
-                }
+                float sidewaysRotation = _input.MapInput3D.RotateSideways.ReadValue<float>();
+                fppRotation = fppRotation.AddY(Time.deltaTime * _settings.FppKeyboardRotationSensitivity * sidewaysRotation);
+                fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
 
-                if (Input.GetKey(KeyCode.R))
-                {
-                    fppPosition += new Vector3(0, Time.deltaTime * _settings.FppMovementSpeed * movementMultiplier, 0);
-                }
-                if (Input.GetKey(KeyCode.F))
-                {
-                    fppPosition += new Vector3(0, -Time.deltaTime * _settings.FppMovementSpeed * movementMultiplier, 0);
-                }
+                float verticalMovement = _input.MapInput3D.MoveVertically.ReadValue<float>();
+                fppPosition = fppPosition.AddY(Time.deltaTime * _settings.FppMovementSpeed * movementMultiplier * verticalMovement);
 
                 fppPosition += Quaternion.Euler(fppRotation) * movement;
             }
