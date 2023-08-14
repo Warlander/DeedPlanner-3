@@ -10,6 +10,7 @@ using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Settings;
@@ -21,6 +22,7 @@ namespace Warlander.Deedplanner.Updaters
     {
         [Inject] private DPSettings _settings;
         [Inject] private CameraCoordinator _cameraCoordinator;
+        [Inject] private DPInput _input;
 
         [SerializeField] private Toggle snapToGridToggle = null;
         [SerializeField] private Toggle rotationSnappingToggle = null;
@@ -200,7 +202,7 @@ namespace Warlander.Deedplanner.Updaters
 
             ToggleGhostPropertyBlock(placementOverlap ? allowedGhostPropertyBlock : disabledGhostPropertyBlock);
 
-            if (Input.GetMouseButtonDown(0))
+            if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 placingDecoration = true;
                 dragStartPos = _cameraCoordinator.Current.MousePosition;
@@ -230,7 +232,7 @@ namespace Warlander.Deedplanner.Updaters
                 ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
             }
 
-            if (!isScrollRotate && Input.GetMouseButton(0) && placingDecoration)
+            if (!isScrollRotate && _input.UpdatersShared.Placement.ReadValue<float>() > 0 && placingDecoration)
             {
                 Vector2 dragEndPos = _cameraCoordinator.Current.MousePosition;
                 Vector2 difference = dragEndPos - dragStartPos;
@@ -242,7 +244,7 @@ namespace Warlander.Deedplanner.Updaters
                 ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
             }
 
-            if (Input.GetMouseButtonUp(0) && placingDecoration)
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() && placingDecoration)
             {
                 float decorationPositionX = position.x - targetedTile.X * 4f;
                 float decorationPositionY = position.z - targetedTile.Y * 4f;
@@ -256,14 +258,14 @@ namespace Warlander.Deedplanner.Updaters
                 rotation = 0f;
             }
 
-            if (Input.GetMouseButtonDown(1))
+            if (_input.UpdatersShared.Deletion.WasPerformedThisFrame())
             {
                 placingDecoration = false;
                 isScrollRotate = false;
                 ghostObject.transform.localRotation = Quaternion.identity;
             }
 
-            if (Input.GetMouseButtonDown(1) && !placingDecoration)
+            if (_input.UpdatersShared.Deletion.WasPerformedThisFrame() && !placingDecoration)
             {
                 IEnumerable<Decoration> decorationsOnTile = targetedTile.GetDecorations();
                 foreach (Decoration decoration in decorationsOnTile)

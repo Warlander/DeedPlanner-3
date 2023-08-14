@@ -508,8 +508,56 @@ namespace Warlander.Deedplanner.Inputs
                     ""path"": ""<Keyboard>/f10"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": ""Mouse and Keyboard"",
                     ""action"": ""Toggle UI"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Updaters Shared"",
+            ""id"": ""9baf9b14-e2d3-42bc-92fd-bcbe389df51b"",
+            ""actions"": [
+                {
+                    ""name"": ""Placement"",
+                    ""type"": ""Value"",
+                    ""id"": ""5eaff5a9-aee0-4d6b-b7ee-304e405a11e9"",
+                    ""expectedControlType"": ""Analog"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Deletion"",
+                    ""type"": ""Value"",
+                    ""id"": ""ceadc98a-63d4-49fa-a206-d411d720d063"",
+                    ""expectedControlType"": ""Analog"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""d1bf4d71-b4d1-4e86-bfd8-e398b41e5191"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Placement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""06e1c7b0-8912-417b-8dd4-39887b66b8e4"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Deletion"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -556,6 +604,10 @@ namespace Warlander.Deedplanner.Inputs
             m_EditingControls_Undo = m_EditingControls.FindAction("Undo", throwIfNotFound: true);
             m_EditingControls_Redo = m_EditingControls.FindAction("Redo", throwIfNotFound: true);
             m_EditingControls_ToggleUI = m_EditingControls.FindAction("Toggle UI", throwIfNotFound: true);
+            // Updaters Shared
+            m_UpdatersShared = asset.FindActionMap("Updaters Shared", throwIfNotFound: true);
+            m_UpdatersShared_Placement = m_UpdatersShared.FindAction("Placement", throwIfNotFound: true);
+            m_UpdatersShared_Deletion = m_UpdatersShared.FindAction("Deletion", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -869,6 +921,60 @@ namespace Warlander.Deedplanner.Inputs
             }
         }
         public EditingControlsActions @EditingControls => new EditingControlsActions(this);
+
+        // Updaters Shared
+        private readonly InputActionMap m_UpdatersShared;
+        private List<IUpdatersSharedActions> m_UpdatersSharedActionsCallbackInterfaces = new List<IUpdatersSharedActions>();
+        private readonly InputAction m_UpdatersShared_Placement;
+        private readonly InputAction m_UpdatersShared_Deletion;
+        public struct UpdatersSharedActions
+        {
+            private @DPInput m_Wrapper;
+            public UpdatersSharedActions(@DPInput wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Placement => m_Wrapper.m_UpdatersShared_Placement;
+            public InputAction @Deletion => m_Wrapper.m_UpdatersShared_Deletion;
+            public InputActionMap Get() { return m_Wrapper.m_UpdatersShared; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(UpdatersSharedActions set) { return set.Get(); }
+            public void AddCallbacks(IUpdatersSharedActions instance)
+            {
+                if (instance == null || m_Wrapper.m_UpdatersSharedActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_UpdatersSharedActionsCallbackInterfaces.Add(instance);
+                @Placement.started += instance.OnPlacement;
+                @Placement.performed += instance.OnPlacement;
+                @Placement.canceled += instance.OnPlacement;
+                @Deletion.started += instance.OnDeletion;
+                @Deletion.performed += instance.OnDeletion;
+                @Deletion.canceled += instance.OnDeletion;
+            }
+
+            private void UnregisterCallbacks(IUpdatersSharedActions instance)
+            {
+                @Placement.started -= instance.OnPlacement;
+                @Placement.performed -= instance.OnPlacement;
+                @Placement.canceled -= instance.OnPlacement;
+                @Deletion.started -= instance.OnDeletion;
+                @Deletion.performed -= instance.OnDeletion;
+                @Deletion.canceled -= instance.OnDeletion;
+            }
+
+            public void RemoveCallbacks(IUpdatersSharedActions instance)
+            {
+                if (m_Wrapper.m_UpdatersSharedActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IUpdatersSharedActions instance)
+            {
+                foreach (var item in m_Wrapper.m_UpdatersSharedActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_UpdatersSharedActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public UpdatersSharedActions @UpdatersShared => new UpdatersSharedActions(this);
         private int m_MouseandKeyboardSchemeIndex = -1;
         public InputControlScheme MouseandKeyboardScheme
         {
@@ -902,6 +1008,11 @@ namespace Warlander.Deedplanner.Inputs
             void OnUndo(InputAction.CallbackContext context);
             void OnRedo(InputAction.CallbackContext context);
             void OnToggleUI(InputAction.CallbackContext context);
+        }
+        public interface IUpdatersSharedActions
+        {
+            void OnPlacement(InputAction.CallbackContext context);
+            void OnDeletion(InputAction.CallbackContext context);
         }
     }
 }

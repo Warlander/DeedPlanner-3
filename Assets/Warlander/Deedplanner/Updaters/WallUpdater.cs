@@ -5,6 +5,7 @@ using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Settings;
@@ -16,6 +17,7 @@ namespace Warlander.Deedplanner.Updaters
     {
         [Inject] private DPSettings _settings;
         [Inject] private CameraCoordinator _cameraCoordinator;
+        [Inject] private DPInput _input;
         
         [SerializeField] private Toggle reverseToggle = null;
         [SerializeField] private Toggle automaticReverseToggle = null;
@@ -52,7 +54,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Update()
         {
-            if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
                 GameManager.Instance.Map.CommandManager.FinishAction();
             }
@@ -106,7 +108,7 @@ namespace Warlander.Deedplanner.Updaters
                 horizontal = (target == TileSelectionTarget.BottomBorder);
             }
 
-            if (Input.GetMouseButton(0))
+            if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
                 Floor currentFloor = GameManager.Instance.Map[x, y].GetTileContent(floor) as Floor;
                 bool shouldReverse = false;
@@ -136,7 +138,7 @@ namespace Warlander.Deedplanner.Updaters
                     GameManager.Instance.Map[x, y].SetVerticalWall(data, shouldReverse, floor);
                 }
             }
-            else if (Input.GetMouseButton(1))
+            else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
             {
                 if (floor != _cameraCoordinator.Current.Floor)
                 {

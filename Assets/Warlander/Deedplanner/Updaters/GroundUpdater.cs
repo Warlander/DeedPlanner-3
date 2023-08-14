@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Zenject;
@@ -14,6 +15,7 @@ namespace Warlander.Deedplanner.Updaters
     public class GroundUpdater : AbstractUpdater
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
+        [Inject] private DPInput _input;
         
         [SerializeField] private Image leftClickImage = null;
         [SerializeField] private TextMeshProUGUI leftClickText = null;
@@ -96,7 +98,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Update()
         {
-            if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
                 GameManager.Instance.Map.CommandManager.FinishAction();
             }
@@ -115,11 +117,11 @@ namespace Warlander.Deedplanner.Updaters
 
             if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
             {
-                if (Input.GetMouseButtonDown(0))
+                if (_input.UpdatersShared.Placement.WasPressedThisFrame())
                 {
                     LeftClickData = ground.Data;
                 }
-                else if (Input.GetMouseButtonDown(1))
+                else if (_input.UpdatersShared.Deletion.WasPressedThisFrame())
                 {
                     RightClickData = ground.Data;
                 }
@@ -210,11 +212,11 @@ namespace Warlander.Deedplanner.Updaters
 
         private GroundData GetCurrentClickData()
         {
-            if (Input.GetMouseButton(0))
+            if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
                 return leftClickData;
             }
-            else if (Input.GetMouseButton(1))
+            else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
             {
                 return rightClickData;
             }

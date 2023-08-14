@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logic.Projectors;
@@ -20,6 +21,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private TooltipHandler _tooltipHandler;
         [Inject] private DPSettings _settings;
         [Inject] private CameraCoordinator _cameraCoordinator;
+        [Inject] private DPInput _input;
         
         [SerializeField] private Toggle selectAndDragToggle = null;
         [SerializeField] private Toggle createRampsToggle = null;
@@ -214,7 +216,7 @@ namespace Warlander.Deedplanner.Updaters
         {
             Map map = GameManager.Instance.Map;
 
-            if (Input.GetMouseButtonDown(0))
+            if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
                 {
@@ -233,7 +235,7 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
 
-            if (Input.GetMouseButton(0))
+            if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
                 if (state == HeightUpdaterState.Manipulating)
                 {
@@ -255,7 +257,7 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
             
-            if (Input.GetMouseButtonUp(0))
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
             {
                 if (state == HeightUpdaterState.Dragging && Input.GetKey(KeyCode.LeftShift))
                 {
@@ -274,7 +276,7 @@ namespace Warlander.Deedplanner.Updaters
                 state = HeightUpdaterState.Idle;
             }
 
-            if (Input.GetMouseButtonDown(1))
+            if (_input.UpdatersShared.Deletion.WasPressedThisFrame())
             {
                 if (state == HeightUpdaterState.Idle)
                 {
@@ -308,7 +310,7 @@ namespace Warlander.Deedplanner.Updaters
                 state = HeightUpdaterState.Idle;
             }
             
-            if (Input.GetMouseButtonDown(0))
+            if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
                 {
@@ -336,7 +338,7 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
 
-            if (Input.GetMouseButton(0))
+            if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
                 if (state == HeightUpdaterState.Manipulating)
                 {
@@ -415,7 +417,7 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
             
-            if (Input.GetMouseButtonUp(0))
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
             {
                 if (state == HeightUpdaterState.Dragging && Input.GetKey(KeyCode.LeftShift))
                 {
@@ -434,7 +436,7 @@ namespace Warlander.Deedplanner.Updaters
                 state = HeightUpdaterState.Idle;
             }
 
-            if (Input.GetMouseButtonDown(1))
+            if (_input.UpdatersShared.Deletion.WasPressedThisFrame())
             {
                 if (state == HeightUpdaterState.Manipulating && activeHandle != null)
                 {
@@ -483,12 +485,12 @@ namespace Warlander.Deedplanner.Updaters
             Map map = GameManager.Instance.Map;
             int targetHeight = int.Parse(targetHeightInput.text);
 
-            if (Input.GetMouseButtonDown(0))
+            if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 state = HeightUpdaterState.Dragging;
             }
 
-            if (Input.GetMouseButtonUp(0) && state == HeightUpdaterState.Dragging)
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() && state == HeightUpdaterState.Dragging)
             {
                 foreach (HeightmapHandle handle in currentFrameHoveredHandles)
                 {
@@ -499,7 +501,7 @@ namespace Warlander.Deedplanner.Updaters
                 _cameraCoordinator.Current.RenderSelectionBox = false;
             }
 
-            if (Input.GetMouseButtonDown(1))
+            if (_input.UpdatersShared.Deletion.WasPressedThisFrame())
             {
                 map.CommandManager.UndoAction();
                 state = HeightUpdaterState.Idle;
@@ -512,12 +514,12 @@ namespace Warlander.Deedplanner.Updaters
             Map map = GameManager.Instance.Map;
             int targetHeight = int.Parse(targetHeightInput.text);
 
-            if (Input.GetMouseButtonDown(0))
+            if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 state = HeightUpdaterState.Manipulating;
             }
             
-            if (Input.GetMouseButton(0) && state == HeightUpdaterState.Manipulating)
+            if (_input.UpdatersShared.Placement.ReadValue<float>() > 0 && state == HeightUpdaterState.Manipulating)
             {
                 foreach (HeightmapHandle handle in currentFrameHoveredHandles)
                 {
@@ -525,13 +527,13 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
             {
                 map.CommandManager.FinishAction();
                 state = HeightUpdaterState.Idle;
             }
 
-            if (Input.GetMouseButtonDown(1))
+            if (_input.UpdatersShared.Deletion.WasPressedThisFrame())
             {
                 map.CommandManager.UndoAction();
                 state = HeightUpdaterState.Idle;
@@ -606,7 +608,7 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
             
-            if (Input.GetMouseButtonUp(0))
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
             {
                 _cameraCoordinator.Current.RenderSelectionBox = false;
             }

@@ -484,8 +484,56 @@
                     "path": "<Keyboard>/f10",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Mouse and Keyboard",
                     "action": "Toggle UI",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Updaters Shared",
+            "id": "9baf9b14-e2d3-42bc-92fd-bcbe389df51b",
+            "actions": [
+                {
+                    "name": "Placement",
+                    "type": "Value",
+                    "id": "5eaff5a9-aee0-4d6b-b7ee-304e405a11e9",
+                    "expectedControlType": "Analog",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Deletion",
+                    "type": "Value",
+                    "id": "ceadc98a-63d4-49fa-a206-d411d720d063",
+                    "expectedControlType": "Analog",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d1bf4d71-b4d1-4e86-bfd8-e398b41e5191",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Placement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "06e1c7b0-8912-417b-8dd4-39887b66b8e4",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Deletion",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
