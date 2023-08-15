@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Render
 {
     public class IndexedTextureArray<T>
     {
