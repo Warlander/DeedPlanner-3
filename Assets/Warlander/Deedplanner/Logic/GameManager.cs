@@ -18,8 +18,6 @@ namespace Warlander.Deedplanner.Logic
 {
     public class GameManager : MonoBehaviour
     {
-        public static GameManager Instance { get; private set; }
-
         [Inject] private IInstantiator _instantiator;
         [Inject] private DPInput _input;
         
@@ -37,18 +35,7 @@ namespace Warlander.Deedplanner.Logic
         private bool renderTrees = true;
         private bool renderBushes = true;
         private bool renderShips = true;
-
-        public GameManager()
-        {
-            if (Instance)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-        }
-
+        
         private void Start()
         {
             updaters[0].gameObject.SetActive(true);

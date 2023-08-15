@@ -22,6 +22,8 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPSettings _settings;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
+        [Inject] private GameManager _gameManager;
+        [Inject] private MapProjectorManager _mapProjectorManager;
         
         [SerializeField] private Toggle selectAndDragToggle = null;
         [SerializeField] private Toggle createRampsToggle = null;
@@ -76,7 +78,7 @@ namespace Warlander.Deedplanner.Updaters
         private void OnEnable()
         {
             RefreshTileSelectionMode();
-            anchorProjector = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Red);
+            anchorProjector = _mapProjectorManager.RequestProjector(ProjectorColor.Red);
             anchorProjector.gameObject.SetActive(false);
         }
 
@@ -169,7 +171,7 @@ namespace Warlander.Deedplanner.Updaters
                 anchorProjector.gameObject.SetActive(false);
             }
             state = HeightUpdaterState.Idle;
-            GameManager.Instance.Map.CommandManager.UndoAction();
+            _gameManager.Map.CommandManager.UndoAction();
             UpdateHandlesColors();
             _cameraCoordinator.Current.RenderSelectionBox = false;
         }
@@ -214,7 +216,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void UpdateSelectAndDrag()
         {
-            Map map = GameManager.Instance.Map;
+            Map map = _gameManager.Map;
 
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
@@ -300,7 +302,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void UpdateCreateRamps()
         {
-            Map map = GameManager.Instance.Map;
+            Map map = _gameManager.Map;
             float dragSensitivity = 0;
             float.TryParse(dragSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out dragSensitivity);
             bool respectSlopes = respectOriginalSlopesToggle.isOn;
@@ -482,7 +484,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void UpdateLevelArea()
         {
-            Map map = GameManager.Instance.Map;
+            Map map = _gameManager.Map;
             int targetHeight = int.Parse(targetHeightInput.text);
 
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
@@ -511,7 +513,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void UpdatePaintTerrain()
         {
-            Map map = GameManager.Instance.Map;
+            Map map = _gameManager.Map;
             int targetHeight = int.Parse(targetHeightInput.text);
 
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
@@ -594,15 +596,15 @@ namespace Warlander.Deedplanner.Updaters
 
                 Camera checkedCamera = _cameraCoordinator.Current.AttachedCamera;
 
-                for (int i = 0; i <= GameManager.Instance.Map.Width; i++)
+                for (int i = 0; i <= _gameManager.Map.Width; i++)
                 {
-                    for (int i2 = 0; i2 <= GameManager.Instance.Map.Height; i2++)
+                    for (int i2 = 0; i2 <= _gameManager.Map.Height; i2++)
                     {
-                        float height = GameManager.Instance.Map[i, i2].GetHeightForFloor(_cameraCoordinator.Current.Floor) * 0.1f;
+                        float height = _gameManager.Map[i, i2].GetHeightForFloor(_cameraCoordinator.Current.Floor) * 0.1f;
                         Vector2 viewportLocation = checkedCamera.WorldToViewportPoint(new Vector3(i * 4, height, i2 * 4));
                         if (viewportRect.Contains(viewportLocation))
                         {
-                            hoveredHandles.Add(GameManager.Instance.Map.SurfaceGridMesh.GetHandle(i, i2));
+                            hoveredHandles.Add(_gameManager.Map.SurfaceGridMesh.GetHandle(i, i2));
                         }
                     }
                 }
@@ -615,7 +617,7 @@ namespace Warlander.Deedplanner.Updaters
             
             if (hoveredHandles.Count == 0)
             {
-                HeightmapHandle heightmapHandle = raycast.transform ? GameManager.Instance.Map.SurfaceGridMesh.RaycastHandles() : null;
+                HeightmapHandle heightmapHandle = raycast.transform ? _gameManager.Map.SurfaceGridMesh.RaycastHandles() : null;
                 if (heightmapHandle != null)
                 {
                     hoveredHandles.Add(heightmapHandle);
@@ -627,7 +629,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private List<HeightmapHandle> UpdateHoveredHandlesSimpleSelection(RaycastHit raycast)
         {
-            GridMesh gridMesh = GameManager.Instance.Map.SurfaceGridMesh;
+            GridMesh gridMesh = _gameManager.Map.SurfaceGridMesh;
             
             List<HeightmapHandle> hoveredHandles = new List<HeightmapHandle>();
 
@@ -702,7 +704,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private void OnDisable()
         {
-            MapProjectorManager.Instance.FreeProjector(anchorProjector);
+            _mapProjectorManager.FreeProjector(anchorProjector);
             anchorProjector = null;
             ResetState();
         }

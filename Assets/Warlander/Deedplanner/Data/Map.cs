@@ -19,6 +19,7 @@ namespace Warlander.Deedplanner.Data
     public class Map : MonoBehaviour, IXmlSerializable, IEnumerable<Tile>
     {
         [Inject] private IInstantiator _instantiator;
+        [Inject] private GameManager _gameManager;
         
         private Tile[,] tiles;
 
@@ -299,7 +300,7 @@ namespace Warlander.Deedplanner.Data
             }
 
             OverlayMesh surfaceOverlayMesh = 
-                _instantiator.InstantiatePrefabForComponent<OverlayMesh>(GameManager.Instance.OverlayMeshPrefab, transform);
+                _instantiator.InstantiatePrefabForComponent<OverlayMesh>(_gameManager.OverlayMeshPrefab, transform);
             
             surfaceGridRoot = surfaceOverlayMesh.transform;
 

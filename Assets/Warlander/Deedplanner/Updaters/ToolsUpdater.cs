@@ -21,6 +21,7 @@ namespace Warlander.Deedplanner.Updaters
     {
         [Inject] private WindowCoordinator _windowCoordinator;
         [Inject] private CameraCoordinator _cameraCoordinator;
+        [Inject] private GameManager _gameManager;
         
         [SerializeField] private Toggle calculateMaterialsToggle = null;
         [SerializeField] private Toggle mapWarningsToggle = null;
@@ -69,7 +70,7 @@ namespace Warlander.Deedplanner.Updaters
                 int floor = _cameraCoordinator.Current.Floor;
                 int x = Mathf.FloorToInt(raycast.point.x / 4f);
                 int y = Mathf.FloorToInt(raycast.point.z / 4f);
-                Map map = GameManager.Instance.Map;
+                Map map = _gameManager.Map;
                 Tile clickedTile = map[x, y];
 
                 if (buildingAllLevelsMaterialsToggle.isOn)
@@ -214,8 +215,8 @@ namespace Warlander.Deedplanner.Updaters
 
         private void RefreshTileWarnings()
         {
-            BuildingsSummary surfaceGroundSummary = new BuildingsSummary(GameManager.Instance.Map, 0);
-            Map map = GameManager.Instance.Map;
+            BuildingsSummary surfaceGroundSummary = new BuildingsSummary(_gameManager.Map, 0);
+            Map map = _gameManager.Map;
 
             foreach (Tile tile in map)
             {
@@ -342,9 +343,9 @@ namespace Warlander.Deedplanner.Updaters
         
         public void CalculateMapMaterials()
         {
-            Materials mapMaterials = GameManager.Instance.Map.CalculateMapMaterials();
+            Materials mapMaterials = _gameManager.Map.CalculateMapMaterials();
             
-            BuildingsSummary surfaceGroundSummary = new BuildingsSummary(GameManager.Instance.Map, 0);
+            BuildingsSummary surfaceGroundSummary = new BuildingsSummary(_gameManager.Map, 0);
             
             StringBuilder build = new StringBuilder();
             build.Append("Total buildings: ").Append(surfaceGroundSummary.BuildingsCount).AppendLine();

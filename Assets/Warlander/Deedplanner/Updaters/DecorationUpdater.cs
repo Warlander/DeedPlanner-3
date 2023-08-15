@@ -23,6 +23,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPSettings _settings;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
+        [Inject] private GameManager _gameManager;
 
         [SerializeField] private Toggle snapToGridToggle = null;
         [SerializeField] private Toggle rotationSnappingToggle = null;
@@ -145,7 +146,7 @@ namespace Warlander.Deedplanner.Updaters
                 targetFloor = 0;
             }
 
-            Map map = GameManager.Instance.Map;
+            Map map = _gameManager.Map;
 
             if (!placingDecoration)
             {
@@ -389,7 +390,7 @@ namespace Warlander.Deedplanner.Updaters
             placingDecoration = false;
             dragStartPos = new Vector2();
 
-            GameManager.Instance.Map.CommandManager.UndoAction();
+            _gameManager.Map.CommandManager.UndoAction();
         }
     }
 }

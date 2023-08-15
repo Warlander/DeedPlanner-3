@@ -15,6 +15,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private TooltipHandler _tooltipHandler;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
+        [Inject] private GameManager _gameManager;
         
         private void OnEnable()
         {
@@ -57,16 +58,16 @@ namespace Warlander.Deedplanner.Updaters
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
                 RoofData data = GuiManager.Instance.RoofsList.SelectedValue as RoofData;
-                GameManager.Instance.Map[x, y].SetRoof(data, floor);
+                _gameManager.Map[x, y].SetRoof(data, floor);
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
             {
-                GameManager.Instance.Map[x, y].SetRoof(null, floor);
+                _gameManager.Map[x, y].SetRoof(null, floor);
             }
             
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
-                GameManager.Instance.Map.CommandManager.FinishAction();
+                _gameManager.Map.CommandManager.FinishAction();
             }
         }
     }

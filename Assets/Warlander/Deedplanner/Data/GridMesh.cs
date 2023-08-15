@@ -15,6 +15,7 @@ namespace Warlander.Deedplanner.Data
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DiContainer _container;
+        [Inject] private GameManager _gameManager;
         
         private Map map;
         private bool cave;
@@ -142,7 +143,7 @@ namespace Warlander.Deedplanner.Data
 
                 List<Matrix4x4> matrices = pair.Value;
 
-                Mesh heightmapMesh = GameManager.Instance.HeightmapHandleMesh;
+                Mesh heightmapMesh = _gameManager.HeightmapHandleMesh;
 
                 const int batchSize = 1023; // max allowed batch size for DrawMeshInstanced
                 for (int i = 0; i < matrices.Count; i += batchSize)

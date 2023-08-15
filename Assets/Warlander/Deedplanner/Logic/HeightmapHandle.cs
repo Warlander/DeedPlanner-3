@@ -11,6 +11,7 @@ namespace Warlander.Deedplanner.Logic
     public class HeightmapHandle
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
+        [Inject] private GameManager _gameManager;
         
         private const float handleScale = 0.6f;
         
@@ -79,7 +80,7 @@ namespace Warlander.Deedplanner.Logic
             build.Append("<mspace=0.5em>");
 
             int floor = _cameraCoordinator.Current.Floor;
-            Map map = GameManager.Instance.Map;
+            Map map = _gameManager.Map;
             Tile centralTile = map[TileCoords.x, TileCoords.y];
             int centralHeight = centralTile.GetHeightForFloor(floor);
             for (int i = 1; i >= -1; i--)

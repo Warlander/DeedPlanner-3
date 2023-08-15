@@ -2,11 +2,14 @@
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logic.Cameras;
+using Zenject;
 
 namespace Warlander.Deedplanner.Logic.Projectors
 {
     public class MapProjector : MonoBehaviour
     {
+        [Inject] private GameManager _gameManager;
+        
         [SerializeField] private ProjectorColor color = default;
         [SerializeField] private Projector attachedProjector = null;
         
@@ -62,7 +65,7 @@ namespace Warlander.Deedplanner.Logic.Projectors
 
         public void ProjectLine(Vector2Int tileCoord, PlaneAlignment alignment)
         {
-            Map map = GameManager.Instance.Map;
+            Map map = _gameManager.Map;
             
             switch (alignment)
             {

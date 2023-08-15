@@ -19,13 +19,14 @@ namespace Warlander.Deedplanner.Gui.Windows
 {
     public class SaveWindow : MonoBehaviour
     {
-        [Inject] private Window _window = null;
+        [Inject] private Window _window;
+        [Inject] private GameManager _gameManager;
 
         [SerializeField] private Button _saveToFileButton;
-        [SerializeField] private Button _pastebinButton = null;
-        [SerializeField] private TMP_Dropdown _pastebinDropdown = null;
-        [SerializeField] private Button _webVersionButton = null;
-        [SerializeField] private TMP_Dropdown _webVersionDropdown = null;
+        [SerializeField] private Button _pastebinButton;
+        [SerializeField] private TMP_Dropdown _pastebinDropdown;
+        [SerializeField] private Button _webVersionButton;
+        [SerializeField] private TMP_Dropdown _webVersionDropdown;
 
         private UnityWebRequest _currentPastebinRequest;
 
@@ -38,7 +39,7 @@ namespace Warlander.Deedplanner.Gui.Windows
 
         private void SaveToFileOnClick()
         {
-            Map map = GameManager.Instance.Map;
+            Map map = _gameManager.Map;
 
             if (!map)
             {
@@ -98,7 +99,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             _pastebinButton.interactable = false;
             _webVersionButton.interactable = false;
             
-            Map map = GameManager.Instance.Map;
+            Map map = _gameManager.Map;
 
             if (!map)
             {

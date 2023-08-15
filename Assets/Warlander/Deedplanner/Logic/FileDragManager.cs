@@ -10,6 +10,8 @@ namespace Warlander.Deedplanner.Logic
 {
     public class FileDragManager : IInitializable, IDisposable
     {
+        [Inject] private GameManager _gameManager;
+        
         void IInitializable.Initialize()
         {
             UnityDragAndDropHook.InstallHook();
@@ -23,7 +25,7 @@ namespace Warlander.Deedplanner.Logic
                 return;
             }
             
-            GameManager.Instance.LoadMap(File.ReadAllText(files[0]));
+            _gameManager.LoadMap(File.ReadAllText(files[0]));
         }
         
         void IDisposable.Dispose()

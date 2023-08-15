@@ -17,6 +17,7 @@ namespace Warlander.Deedplanner.Logic
 {
     public class LoadingManager : MonoBehaviour
     {
+        [Inject] private GameManager _gameManager;
         [InjectOptional] private DebugProperties _debugProperties;
         
         [SerializeField] private CanvasGroup splashGroup = null;
@@ -97,17 +98,17 @@ namespace Warlander.Deedplanner.Logic
             if (!string.IsNullOrEmpty(mapLocationString))
             {
                 text.text = "Loading map from web address";
-                yield return GameManager.Instance.LoadMap(new Uri(mapLocationString));
+                yield return _gameManager.LoadMap(new Uri(mapLocationString));
             }
             else if ((Application.isEditor || Debug.isDebugBuild) && _debugProperties != null)
             {
                 text.text = "Loading debug map";
-                yield return GameManager.Instance.LoadMap(new Uri(_debugProperties.TestMapPath));
+                yield return _gameManager.LoadMap(new Uri(_debugProperties.TestMapPath));
             }
             else
             {
                 text.text = "Creating map";
-                GameManager.Instance.CreateNewMap(25, 25);
+                _gameManager.CreateNewMap(25, 25);
             }
         }
 

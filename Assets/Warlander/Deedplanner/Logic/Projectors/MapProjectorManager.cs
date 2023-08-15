@@ -1,32 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace Warlander.Deedplanner.Logic.Projectors
 {
     public class MapProjectorManager : MonoBehaviour
     {
-        private static MapProjectorManager instance;
+        [Inject] private IInstantiator _instantiator;
 
-        public static MapProjectorManager Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = FindObjectOfType<MapProjectorManager>();
-                    if (!instance)
-                    {
-                        Debug.LogError($"Unable to find {nameof(MapProjectorManager)} in scene.");
-                    }
-                }
-
-                return instance;
-            }
-        }
-        
-        [SerializeField]
-        private MapProjector[] ProjectorPrefabs = null;
+        [SerializeField] private MapProjector[] ProjectorPrefabs = null;
 
         private Dictionary<ProjectorColor, Stack<MapProjector>> freeProjectors = new Dictionary<ProjectorColor, Stack<MapProjector>>();
 
@@ -67,7 +50,7 @@ namespace Warlander.Deedplanner.Logic.Projectors
             {
                 if (prefab.Color == color)
                 {
-                    return Instantiate(prefab, transform);
+                    return _instantiator.InstantiatePrefabForComponent<MapProjector>(prefab, transform);
                 }
             }
 

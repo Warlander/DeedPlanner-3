@@ -11,16 +11,17 @@ namespace Warlander.Deedplanner.Debugging
     public class DebugApplier : IInitializable, ITickable
     {
         [Inject] private DebugProperties _debugProperties;
+        [Inject] private MapProjectorManager _mapProjectorManager;
         
         void IInitializable.Initialize()
         {
             if (_debugProperties.DrawDebugPlaneLines)
             {
-                MapProjector horizontalLine = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Green);
+                MapProjector horizontalLine = _mapProjectorManager.RequestProjector(ProjectorColor.Green);
                 horizontalLine.ProjectLine(new Vector2Int(5, 5), PlaneAlignment.Horizontal);
-                MapProjector firstVerticalLine = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Red);
+                MapProjector firstVerticalLine = _mapProjectorManager.RequestProjector(ProjectorColor.Red);
                 firstVerticalLine.ProjectLine(new Vector2Int(5, 5), PlaneAlignment.Vertical);
-                MapProjector secondVerticalLine = MapProjectorManager.Instance.RequestProjector(ProjectorColor.Yellow);
+                MapProjector secondVerticalLine = _mapProjectorManager.RequestProjector(ProjectorColor.Yellow);
                 secondVerticalLine.ProjectLine(new Vector2Int(15, 15), PlaneAlignment.Vertical);
             }
 
