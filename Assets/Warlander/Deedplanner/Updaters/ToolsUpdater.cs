@@ -10,6 +10,7 @@ using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Gui.Windows;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.UI.Windows;
@@ -22,6 +23,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private WindowCoordinator _windowCoordinator;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private GameManager _gameManager;
+        [Inject] private DPInput _input;
         
         [SerializeField] private Toggle calculateMaterialsToggle = null;
         [SerializeField] private Toggle mapWarningsToggle = null;
@@ -65,7 +67,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            if (Input.GetMouseButtonDown(0))
+            if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 int floor = _cameraCoordinator.Current.Floor;
                 int x = Mathf.FloorToInt(raycast.point.x / 4f);

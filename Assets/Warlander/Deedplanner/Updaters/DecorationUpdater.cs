@@ -208,28 +208,25 @@ namespace Warlander.Deedplanner.Updaters
                 placingDecoration = true;
                 dragStartPos = _cameraCoordinator.Current.MousePosition;
             }
-
-            if (Input.GetAxis("Mouse ScrollWheel") != 0f)
+            
+            if (_input.DecorationUpdater.SmoothObjectRotate.IsPressed())
             {
-                if (Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftControl))
+                isScrollRotate = true;
+                rotation += _input.DecorationUpdater.SmoothObjectRotate.ReadValue<float>();
+                ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
+            }
+            else if (_input.DecorationUpdater.SnappyObjectRotate.IsPressed())
+            {
+                isScrollRotate = true;
+                if (_input.DecorationUpdater.SmoothObjectRotate.ReadValue<float>() > 0)
                 {
-                    isScrollRotate = true;
-                    rotation += Input.GetAxis("Mouse ScrollWheel");
+                    rotation += 11.25f;
                 }
-                else if (!Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.LeftControl))
+                else
                 {
-                    isScrollRotate = true;
-                    if (Input.GetAxis("Mouse ScrollWheel") > 0f)
-                    {
-                        rotation += 11.25f;
-                    }
-                    else
-                    {
-                        rotation -= 11.25f;
-                    }
-                    rotation = Mathf.Round(rotation / 11.25f) * 11.25f;
+                    rotation -= 11.25f;
                 }
-
+                rotation = Mathf.Round(rotation / 11.25f) * 11.25f;
                 ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
             }
 
@@ -276,7 +273,7 @@ namespace Warlander.Deedplanner.Updaters
                 map.CommandManager.FinishAction();
             }
 
-            if (Input.GetKeyDown("delete") && !placingDecoration)
+            if (_input.DecorationUpdater.DeleteSingleObject.WasPressedThisFrame() && !placingDecoration)
             {
                 foreach (Decoration decoration in nearbyDecorations)
                 {

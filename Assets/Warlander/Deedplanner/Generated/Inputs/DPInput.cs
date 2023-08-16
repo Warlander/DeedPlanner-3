@@ -1078,6 +1078,174 @@ namespace Warlander.Deedplanner.Inputs
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Ground Updater"",
+            ""id"": ""14c71b29-8c4d-4c85-a9bc-a763f93d7ed4"",
+            ""actions"": [
+                {
+                    ""name"": ""Pick Tile"",
+                    ""type"": ""Button"",
+                    ""id"": ""dc4d947b-e81f-4043-8480-1c93255f3521"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""30536ec3-6f95-4d47-aeee-2403378380c1"",
+                    ""path"": ""<Keyboard>/alt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Pick Tile"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Height Updater"",
+            ""id"": ""b2ce9885-ece8-4973-b14f-bfecf1bf99e7"",
+            ""actions"": [
+                {
+                    ""name"": ""Drag Selection"",
+                    ""type"": ""Button"",
+                    ""id"": ""bbeafc3a-42be-4bd2-bb82-f09fc5dfaac8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""9460d947-472d-4710-8307-188794e40b72"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Drag Selection"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Decoration Updater"",
+            ""id"": ""16f30c85-6b23-4d61-a85b-a107507a1b98"",
+            ""actions"": [
+                {
+                    ""name"": ""Delete Single Object"",
+                    ""type"": ""Button"",
+                    ""id"": ""9b83d5c5-c3df-4e6d-914e-05d288da5fa2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Smooth Object Rotate"",
+                    ""type"": ""Value"",
+                    ""id"": ""43ae78e7-2763-4f89-aa61-d95a42d361ae"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Snappy Object Rotate"",
+                    ""type"": ""Value"",
+                    ""id"": ""6433287a-cba0-40ec-a05a-10fe7787b3b5"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""94d41bdb-262e-47aa-9b90-10d0032c5f0a"",
+                    ""path"": ""<Keyboard>/delete"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Delete Single Object"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""700d3886-cf75-486a-8df8-4faa5fd9c4cb"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Smooth Object Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Modifier"",
+                    ""id"": ""d2a4ecb2-8bac-450d-a70c-c433c48b5ad9"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Smooth Object Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Binding"",
+                    ""id"": ""e2a9c45d-91e2-4c12-8d1d-808a90356336"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Smooth Object Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""f5b82b1f-df9c-4321-8388-e99c8838b1bb"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Snappy Object Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Modifier"",
+                    ""id"": ""c3d90cbf-1a10-4582-893d-de995b5e0143"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Snappy Object Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Binding"",
+                    ""id"": ""edd9535e-c675-4726-b6b2-88b86a4d3394"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Snappy Object Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1136,6 +1304,17 @@ namespace Warlander.Deedplanner.Inputs
             m_UpdatersShared = asset.FindActionMap("Updaters Shared", throwIfNotFound: true);
             m_UpdatersShared_Placement = m_UpdatersShared.FindAction("Placement", throwIfNotFound: true);
             m_UpdatersShared_Deletion = m_UpdatersShared.FindAction("Deletion", throwIfNotFound: true);
+            // Ground Updater
+            m_GroundUpdater = asset.FindActionMap("Ground Updater", throwIfNotFound: true);
+            m_GroundUpdater_PickTile = m_GroundUpdater.FindAction("Pick Tile", throwIfNotFound: true);
+            // Height Updater
+            m_HeightUpdater = asset.FindActionMap("Height Updater", throwIfNotFound: true);
+            m_HeightUpdater_DragSelection = m_HeightUpdater.FindAction("Drag Selection", throwIfNotFound: true);
+            // Decoration Updater
+            m_DecorationUpdater = asset.FindActionMap("Decoration Updater", throwIfNotFound: true);
+            m_DecorationUpdater_DeleteSingleObject = m_DecorationUpdater.FindAction("Delete Single Object", throwIfNotFound: true);
+            m_DecorationUpdater_SmoothObjectRotate = m_DecorationUpdater.FindAction("Smooth Object Rotate", throwIfNotFound: true);
+            m_DecorationUpdater_SnappyObjectRotate = m_DecorationUpdater.FindAction("Snappy Object Rotate", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -1621,6 +1800,160 @@ namespace Warlander.Deedplanner.Inputs
             }
         }
         public UpdatersSharedActions @UpdatersShared => new UpdatersSharedActions(this);
+
+        // Ground Updater
+        private readonly InputActionMap m_GroundUpdater;
+        private List<IGroundUpdaterActions> m_GroundUpdaterActionsCallbackInterfaces = new List<IGroundUpdaterActions>();
+        private readonly InputAction m_GroundUpdater_PickTile;
+        public struct GroundUpdaterActions
+        {
+            private @DPInput m_Wrapper;
+            public GroundUpdaterActions(@DPInput wrapper) { m_Wrapper = wrapper; }
+            public InputAction @PickTile => m_Wrapper.m_GroundUpdater_PickTile;
+            public InputActionMap Get() { return m_Wrapper.m_GroundUpdater; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(GroundUpdaterActions set) { return set.Get(); }
+            public void AddCallbacks(IGroundUpdaterActions instance)
+            {
+                if (instance == null || m_Wrapper.m_GroundUpdaterActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_GroundUpdaterActionsCallbackInterfaces.Add(instance);
+                @PickTile.started += instance.OnPickTile;
+                @PickTile.performed += instance.OnPickTile;
+                @PickTile.canceled += instance.OnPickTile;
+            }
+
+            private void UnregisterCallbacks(IGroundUpdaterActions instance)
+            {
+                @PickTile.started -= instance.OnPickTile;
+                @PickTile.performed -= instance.OnPickTile;
+                @PickTile.canceled -= instance.OnPickTile;
+            }
+
+            public void RemoveCallbacks(IGroundUpdaterActions instance)
+            {
+                if (m_Wrapper.m_GroundUpdaterActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IGroundUpdaterActions instance)
+            {
+                foreach (var item in m_Wrapper.m_GroundUpdaterActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_GroundUpdaterActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public GroundUpdaterActions @GroundUpdater => new GroundUpdaterActions(this);
+
+        // Height Updater
+        private readonly InputActionMap m_HeightUpdater;
+        private List<IHeightUpdaterActions> m_HeightUpdaterActionsCallbackInterfaces = new List<IHeightUpdaterActions>();
+        private readonly InputAction m_HeightUpdater_DragSelection;
+        public struct HeightUpdaterActions
+        {
+            private @DPInput m_Wrapper;
+            public HeightUpdaterActions(@DPInput wrapper) { m_Wrapper = wrapper; }
+            public InputAction @DragSelection => m_Wrapper.m_HeightUpdater_DragSelection;
+            public InputActionMap Get() { return m_Wrapper.m_HeightUpdater; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(HeightUpdaterActions set) { return set.Get(); }
+            public void AddCallbacks(IHeightUpdaterActions instance)
+            {
+                if (instance == null || m_Wrapper.m_HeightUpdaterActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_HeightUpdaterActionsCallbackInterfaces.Add(instance);
+                @DragSelection.started += instance.OnDragSelection;
+                @DragSelection.performed += instance.OnDragSelection;
+                @DragSelection.canceled += instance.OnDragSelection;
+            }
+
+            private void UnregisterCallbacks(IHeightUpdaterActions instance)
+            {
+                @DragSelection.started -= instance.OnDragSelection;
+                @DragSelection.performed -= instance.OnDragSelection;
+                @DragSelection.canceled -= instance.OnDragSelection;
+            }
+
+            public void RemoveCallbacks(IHeightUpdaterActions instance)
+            {
+                if (m_Wrapper.m_HeightUpdaterActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IHeightUpdaterActions instance)
+            {
+                foreach (var item in m_Wrapper.m_HeightUpdaterActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_HeightUpdaterActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public HeightUpdaterActions @HeightUpdater => new HeightUpdaterActions(this);
+
+        // Decoration Updater
+        private readonly InputActionMap m_DecorationUpdater;
+        private List<IDecorationUpdaterActions> m_DecorationUpdaterActionsCallbackInterfaces = new List<IDecorationUpdaterActions>();
+        private readonly InputAction m_DecorationUpdater_DeleteSingleObject;
+        private readonly InputAction m_DecorationUpdater_SmoothObjectRotate;
+        private readonly InputAction m_DecorationUpdater_SnappyObjectRotate;
+        public struct DecorationUpdaterActions
+        {
+            private @DPInput m_Wrapper;
+            public DecorationUpdaterActions(@DPInput wrapper) { m_Wrapper = wrapper; }
+            public InputAction @DeleteSingleObject => m_Wrapper.m_DecorationUpdater_DeleteSingleObject;
+            public InputAction @SmoothObjectRotate => m_Wrapper.m_DecorationUpdater_SmoothObjectRotate;
+            public InputAction @SnappyObjectRotate => m_Wrapper.m_DecorationUpdater_SnappyObjectRotate;
+            public InputActionMap Get() { return m_Wrapper.m_DecorationUpdater; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(DecorationUpdaterActions set) { return set.Get(); }
+            public void AddCallbacks(IDecorationUpdaterActions instance)
+            {
+                if (instance == null || m_Wrapper.m_DecorationUpdaterActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_DecorationUpdaterActionsCallbackInterfaces.Add(instance);
+                @DeleteSingleObject.started += instance.OnDeleteSingleObject;
+                @DeleteSingleObject.performed += instance.OnDeleteSingleObject;
+                @DeleteSingleObject.canceled += instance.OnDeleteSingleObject;
+                @SmoothObjectRotate.started += instance.OnSmoothObjectRotate;
+                @SmoothObjectRotate.performed += instance.OnSmoothObjectRotate;
+                @SmoothObjectRotate.canceled += instance.OnSmoothObjectRotate;
+                @SnappyObjectRotate.started += instance.OnSnappyObjectRotate;
+                @SnappyObjectRotate.performed += instance.OnSnappyObjectRotate;
+                @SnappyObjectRotate.canceled += instance.OnSnappyObjectRotate;
+            }
+
+            private void UnregisterCallbacks(IDecorationUpdaterActions instance)
+            {
+                @DeleteSingleObject.started -= instance.OnDeleteSingleObject;
+                @DeleteSingleObject.performed -= instance.OnDeleteSingleObject;
+                @DeleteSingleObject.canceled -= instance.OnDeleteSingleObject;
+                @SmoothObjectRotate.started -= instance.OnSmoothObjectRotate;
+                @SmoothObjectRotate.performed -= instance.OnSmoothObjectRotate;
+                @SmoothObjectRotate.canceled -= instance.OnSmoothObjectRotate;
+                @SnappyObjectRotate.started -= instance.OnSnappyObjectRotate;
+                @SnappyObjectRotate.performed -= instance.OnSnappyObjectRotate;
+                @SnappyObjectRotate.canceled -= instance.OnSnappyObjectRotate;
+            }
+
+            public void RemoveCallbacks(IDecorationUpdaterActions instance)
+            {
+                if (m_Wrapper.m_DecorationUpdaterActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IDecorationUpdaterActions instance)
+            {
+                foreach (var item in m_Wrapper.m_DecorationUpdaterActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_DecorationUpdaterActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public DecorationUpdaterActions @DecorationUpdater => new DecorationUpdaterActions(this);
         private int m_MouseandKeyboardSchemeIndex = -1;
         public InputControlScheme MouseandKeyboardScheme
         {
@@ -1672,6 +2005,20 @@ namespace Warlander.Deedplanner.Inputs
         {
             void OnPlacement(InputAction.CallbackContext context);
             void OnDeletion(InputAction.CallbackContext context);
+        }
+        public interface IGroundUpdaterActions
+        {
+            void OnPickTile(InputAction.CallbackContext context);
+        }
+        public interface IHeightUpdaterActions
+        {
+            void OnDragSelection(InputAction.CallbackContext context);
+        }
+        public interface IDecorationUpdaterActions
+        {
+            void OnDeleteSingleObject(InputAction.CallbackContext context);
+            void OnSmoothObjectRotate(InputAction.CallbackContext context);
+            void OnSnappyObjectRotate(InputAction.CallbackContext context);
         }
     }
 }

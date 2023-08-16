@@ -225,7 +225,7 @@ namespace Warlander.Deedplanner.Updaters
                     activeHandle = currentFrameHoveredHandles[0];
                     state = HeightUpdaterState.Manipulating;
                 }
-                else if (Input.GetKey(KeyCode.LeftShift))
+                else if (_input.HeightUpdater.DragSelection.IsPressed())
                 {
                     state = HeightUpdaterState.Dragging;
                 }
@@ -261,7 +261,7 @@ namespace Warlander.Deedplanner.Updaters
             
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
             {
-                if (state == HeightUpdaterState.Dragging && Input.GetKey(KeyCode.LeftShift))
+                if (state == HeightUpdaterState.Dragging && _input.HeightUpdater.DragSelection.IsPressed())
                 {
                     selectedHandles.AddRange(lastFrameHoveredHandles);
                 }
@@ -326,7 +326,7 @@ namespace Warlander.Deedplanner.Updaters
                     }
                     state = HeightUpdaterState.Manipulating;
                 }
-                else if (Input.GetKey(KeyCode.LeftShift))
+                else if (_input.HeightUpdater.DragSelection.IsPressed())
                 {
                     state = HeightUpdaterState.Dragging;
                 }
@@ -421,7 +421,7 @@ namespace Warlander.Deedplanner.Updaters
             
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
             {
-                if (state == HeightUpdaterState.Dragging && Input.GetKey(KeyCode.LeftShift))
+                if (state == HeightUpdaterState.Dragging && _input.HeightUpdater.DragSelection.IsPressed())
                 {
                     selectedHandles.AddRange(lastFrameHoveredHandles);
                 }
@@ -565,7 +565,7 @@ namespace Warlander.Deedplanner.Updaters
         {
             List<HeightmapHandle> hoveredHandles = new List<HeightmapHandle>();
 
-            if (Input.GetMouseButtonDown(0))
+            if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 dragStartPos = _cameraCoordinator.Current.MousePosition;
             }

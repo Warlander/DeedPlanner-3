@@ -116,7 +116,7 @@ namespace Warlander.Deedplanner.Updaters
             Tile tile = map[tileX, tileZ];
             Ground ground = tile.Ground;
 
-            if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
+            if (_input.GroundUpdater.PickTile.IsPressed())
             {
                 if (_input.UpdatersShared.Placement.WasPressedThisFrame())
                 {
