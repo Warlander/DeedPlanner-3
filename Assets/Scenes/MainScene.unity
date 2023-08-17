@@ -17602,7 +17602,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 115050054}
-  - {fileID: 1873116307}
   m_Father: {fileID: 1145859125}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -24187,6 +24186,8 @@ MonoBehaviour:
   _debugProperties: {fileID: 11400000, guid: 814971153ac067e47b61f466e9322aa6, type: 2}
   _layoutManager: {fileID: 167561238}
   _cameraCoordinator: {fileID: 1890273981}
+  _mapProjectorManager: {fileID: 4600826319021692651, guid: 96c65a1d2a7e4c2428356c91263c4fd0,
+    type: 3}
 --- !u!114 &1412727819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33355,54 +33356,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 479189262}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1873116306
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1873116307}
-  - component: {fileID: 1873116308}
-  m_Layer: 0
-  m_Name: Map Projector Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1873116307
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873116306}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1002259781}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1873116308
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873116306}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f44f83c9185b4db1ad5aad04a16fc652, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ProjectorPrefabs:
-  - {fileID: 413135758364781688, guid: 8edb3788626634a4889225133a311055, type: 3}
-  - {fileID: 413135758364781688, guid: f64e36ee933513e469923504ef8a41e1, type: 3}
-  - {fileID: 413135758364781688, guid: d174cdcd9ed7f334eb8f5a863e9a9b00, type: 3}
 --- !u!1001 &1874177406
 PrefabInstance:
   m_ObjectHideFlags: 0

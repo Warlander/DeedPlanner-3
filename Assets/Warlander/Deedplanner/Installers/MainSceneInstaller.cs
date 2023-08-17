@@ -14,6 +14,7 @@ namespace Warlander.Deedplanner.Installers
         [SerializeField] private DebugProperties _debugProperties;
         [SerializeField] private LayoutManager _layoutManager;
         [SerializeField] private CameraCoordinator _cameraCoordinator;
+        [SerializeField] private MapProjectorManager _mapProjectorManager;
         
         public override void InstallBindings()
         {
@@ -39,7 +40,7 @@ namespace Warlander.Deedplanner.Installers
             Container.Bind<DPInput>().FromInstance(input).AsSingle();
 
             Container.Bind<GameManager>().FromComponentInHierarchy().AsSingle();
-            Container.Bind<MapProjectorManager>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<MapProjectorManager>().FromComponentInNewPrefab(_mapProjectorManager).AsSingle();
         }
     }
 }
