@@ -14,6 +14,7 @@ using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Settings;
+using Warlander.Deedplanner.Steam;
 using Warlander.UI.Windows;
 using Zenject;
 
@@ -23,6 +24,7 @@ namespace Warlander.Deedplanner.Updaters
     {
         [Inject] private DPSettings _settings;
         [Inject] private WindowCoordinator _windowCoordinator;
+        [Inject] private ISteamConnection _steamConnection;
 
         [SerializeField] private Button _resizeButton;
         [SerializeField] private Button _clearButton;
@@ -72,15 +74,12 @@ namespace Warlander.Deedplanner.Updaters
         private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
-
-            bool connectedToSteam = SteamManager.ConnectedToSteam;
-            _steamConnectionText.gameObject.SetActive(connectedToSteam);
-#if !DISABLESTEAMWORKS
-            if (connectedToSteam)
+            
+            _steamConnectionText.gameObject.SetActive(_steamConnection.Connected);
+            if (_steamConnection.Connected)
             {
-                _steamConnectionText.text = "Connected to Steam as " + SteamFriends.GetPersonaName();
+                _steamConnectionText.text = "Connected to Steam as " + _steamConnection.GetName();
             }
-#endif
         }
 
         private void ResizeButtonOnClick()
