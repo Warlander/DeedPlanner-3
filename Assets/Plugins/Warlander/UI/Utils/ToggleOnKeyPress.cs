@@ -1,5 +1,4 @@
 ﻿#if ENABLE_INPUT_SYSTEM
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Warlander.Core;
@@ -29,18 +28,22 @@ namespace Warlander.UI.Utils
         
         private void Init()
         {
-            _toggle.action.performed += ActionOnperformed;
-            _initialized = true;
+            if (_initialized == false)
+            {
+                _toggle.action.Enable();
+                _toggle.action.started += ActionOnStarted;
+                _initialized = true;
+            }
         }
 
-        private void ActionOnperformed(InputAction.CallbackContext obj)
+        private void ActionOnStarted(InputAction.CallbackContext obj)
         {
             gameObject.SetActive(gameObject.activeSelf == false);
         }
 
         private void OnDestroy()
         {
-            _toggle.action.performed -= ActionOnperformed;
+            _toggle.action.started -= ActionOnStarted;
         }
     }
 }
