@@ -8,6 +8,7 @@ namespace Warlander.Deedplanner.Data.Decorations
         public Model Model { get; }
         public string Name { get; }
         public string ShortName { get; }
+        public string[][] Categories { get; }
         public string Type { get; }
 
         public bool CenterOnly { get; }
@@ -18,11 +19,13 @@ namespace Warlander.Deedplanner.Data.Decorations
 
         public Materials Materials { get; }
 
-        public DecorationData(Model model, string name, string shortName, string type, bool centerOnly, bool cornerOnly, bool floating, bool tree, bool bush, Materials materials)
+        public DecorationData(Model model, string name, string shortName, string[][] categories, string type,
+            bool centerOnly, bool cornerOnly, bool floating, bool tree, bool bush, Materials materials)
         {
             Model = model;
             Name = name;
             ShortName = shortName;
+            Categories = categories;
             Type = type;
             CenterOnly = centerOnly;
             CornerOnly = cornerOnly;

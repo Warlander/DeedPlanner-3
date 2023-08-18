@@ -146,13 +146,8 @@ namespace Warlander.Deedplanner.Data
                     Debug.LogWarning("No textures loaded, aborting");
                 }
 
-                GroundData data = new GroundData(name, shortName, tex2d, tex3d, diagonal);
+                GroundData data = new GroundData(name, shortName, categories.ToArray(), tex2d, tex3d, diagonal);
                 Database.Grounds[shortName] = data;
-                foreach (string[] category in categories)
-                {
-                    IconUnityListElement iconListElement = (IconUnityListElement) GuiManager.Instance.GroundsTree.Add(data, category);
-                    iconListElement.TextureReference = tex2d;
-                }
                 Debug.Log("Ground data " + name + " loaded and ready to use!");
             }
         }
@@ -196,12 +191,8 @@ namespace Warlander.Deedplanner.Data
                     }
                 }
 
-                CaveData data = new CaveData(texture, name, shortName, wall, show, entrance);
+                CaveData data = new CaveData(texture, name, shortName, categories.ToArray(), wall, show, entrance);
                 Database.Caves[shortName] = data;
-                foreach (string[] category in categories)
-                {
-                    GuiManager.Instance.CavesTree.Add(data, category);
-                }
             }
         }
 
@@ -252,12 +243,8 @@ namespace Warlander.Deedplanner.Data
                     Debug.LogWarning("No model loaded, aborting");
                 }
 
-                FloorData data = new FloorData(model, name, shortName, opening, materials);
+                FloorData data = new FloorData(model, name, shortName, categories.ToArray(), opening, materials);
                 Database.Floors[shortName] = data;
-                foreach (string[] category in categories)
-                {
-                    GuiManager.Instance.FloorsTree.Add(data, category);
-                }
             }
         }
 
@@ -329,13 +316,9 @@ namespace Warlander.Deedplanner.Data
                     bottomModel = normalModel;
                 }
 
-                WallData data = new WallData(bottomModel, normalModel, name, shortName, color, scale, houseWall, arch, archBuildable, materials, icon);
+                WallData data = new WallData(bottomModel, normalModel, name, shortName, categories.ToArray(), color,
+                    scale, houseWall, arch, archBuildable, materials, icon);
                 Database.Walls[shortName] = data;
-                foreach (string[] category in categories)
-                {
-                    IconUnityListElement iconListElement = (IconUnityListElement)GuiManager.Instance.WallsTree.Add(data, category);
-                    iconListElement.TextureReference = icon;
-                }
             }
         }
 
@@ -372,8 +355,6 @@ namespace Warlander.Deedplanner.Data
 
                 RoofData data = new RoofData(texture, name, shortName, materials);
                 Database.Roofs[shortName] = data;
-
-                GuiManager.Instance.RoofsList.Add(data);
             }
         }
 
@@ -421,14 +402,10 @@ namespace Warlander.Deedplanner.Data
                     }
                 }
 
-                DecorationData data = new DecorationData(model, name, shortName, type, centerOnly, cornerOnly, floating,
+                DecorationData data = new DecorationData(model, name, shortName, categories.ToArray(),
+                    type, centerOnly, cornerOnly, floating,
                     tree, bush, materials);
                 Database.Decorations[shortName] = data;
-
-                foreach (string[] category in categories)
-                {
-                    GuiManager.Instance.ObjectsTree.Add(data, category);
-                }
             }
         }
 

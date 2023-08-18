@@ -10,6 +10,7 @@ using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
@@ -25,9 +26,11 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPInput _input;
         [Inject] private GameManager _gameManager;
 
-        [SerializeField] private Toggle snapToGridToggle = null;
-        [SerializeField] private Toggle rotationSnappingToggle = null;
-        [SerializeField] private TMP_InputField rotationSensitivityInput = null;
+        [SerializeField] private UnityTree _decorationsTree;
+
+        [SerializeField] private Toggle snapToGridToggle;
+        [SerializeField] private Toggle rotationSnappingToggle;
+        [SerializeField] private TMP_InputField rotationSensitivityInput;
 
         [SerializeField] private Color allowedGhostColor = Color.green;
         [SerializeField] private Color disabledGhostColor = Color.red;
@@ -58,6 +61,14 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Start()
         {
+            foreach (DecorationData data in Database.Decorations.Values)
+            {
+                foreach (string[] category in data.Categories)
+                {
+                    _decorationsTree.Add(data, category);
+                }
+            }
+            
             rotationSensitivityInput.text = _settings.DecorationRotationSensitivity.ToString(CultureInfo.InvariantCulture);
             snapToGridToggle.isOn = _settings.DecorationSnapToGrid;
             rotationSnappingToggle.isOn = _settings.DecorationRotationSnapping;
@@ -111,7 +122,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            DecorationData data = (DecorationData)GuiManager.Instance.ObjectsTree.SelectedValue;
+            DecorationData data = (DecorationData)_decorationsTree.SelectedValue;
             bool dataChanged = data != lastFrameData;
             lastFrameData = data;
             if (data == null)

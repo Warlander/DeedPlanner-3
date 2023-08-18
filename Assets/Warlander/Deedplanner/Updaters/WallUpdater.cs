@@ -5,6 +5,7 @@ using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
@@ -20,11 +21,22 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPInput _input;
         [Inject] private GameManager _gameManager;
 
-        [SerializeField] private Toggle reverseToggle = null;
-        [SerializeField] private Toggle automaticReverseToggle = null;
+        [SerializeField] private UnityTree _wallsTree;
+
+        [SerializeField] private Toggle reverseToggle;
+        [SerializeField] private Toggle automaticReverseToggle;
 
         private void Start()
         {
+            foreach (WallData data in Database.Walls.Values)
+            {
+                foreach (string[] category in data.Categories)
+                {
+                    IconUnityListElement iconListElement = (IconUnityListElement) _wallsTree.Add(data, category);
+                    iconListElement.TextureReference = data.Icon;
+                }
+            }
+            
             automaticReverseToggle.isOn = _settings.WallAutomaticReverse;
             reverseToggle.isOn = _settings.WallReverse;
             
@@ -129,7 +141,7 @@ namespace Warlander.Deedplanner.Updaters
                     shouldReverse = !shouldReverse;
                 }
 
-                WallData data = GuiManager.Instance.WallsTree.SelectedValue as WallData;
+                WallData data = _wallsTree.SelectedValue as WallData;
                 if (horizontal)
                 {
                     _gameManager.Map[x, y].SetHorizontalWall(data, shouldReverse, floor);

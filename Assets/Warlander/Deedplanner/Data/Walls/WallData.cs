@@ -9,6 +9,7 @@ namespace Warlander.Deedplanner.Data.Walls
         public Model NormalModel { get; }
         public string Name { get; }
         public string ShortName { get; }
+        public string[][] Categories { get; }
         public Color Color { get; }
         public float Scale { get; }
         public bool HouseWall { get; }
@@ -19,13 +20,15 @@ namespace Warlander.Deedplanner.Data.Walls
 
         public Materials Materials { get; }
 
-        public WallData(Model bottomModel, Model normalModel, string name, string shortName, Color color, float scale,
-            bool houseWall, bool arch, bool archBuildable, Materials materials, TextureReference icon)
+        public WallData(Model bottomModel, Model normalModel, string name, string shortName, string[][] categories,
+            Color color, float scale, bool houseWall, bool arch, bool archBuildable, Materials materials,
+            TextureReference icon)
         {
             BottomModel = bottomModel;
             NormalModel = normalModel;
             Name = name;
             ShortName = shortName;
+            Categories = categories;
             Color = color;
             Scale = scale;
             HouseWall = houseWall;

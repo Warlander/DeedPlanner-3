@@ -3,6 +3,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
@@ -16,6 +17,16 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private GameManager _gameManager;
+
+        [SerializeField] private UnityList _roofsList;
+
+        private void Start()
+        {
+            foreach (RoofData data in Database.Roofs.Values)
+            {
+                _roofsList.Add(data);
+            }
+        }
         
         private void OnEnable()
         {
@@ -57,7 +68,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
-                RoofData data = GuiManager.Instance.RoofsList.SelectedValue as RoofData;
+                RoofData data = _roofsList.SelectedValue as RoofData;
                 _gameManager.Map[x, y].SetRoof(data, floor);
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)

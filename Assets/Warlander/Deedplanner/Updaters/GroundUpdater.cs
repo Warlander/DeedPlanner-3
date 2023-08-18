@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
@@ -17,6 +18,8 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private GameManager _gameManager;
+
+        [SerializeField] private UnityTree _groundsTree;
         
         [SerializeField] private Image leftClickImage = null;
         [SerializeField] private TextMeshProUGUI leftClickText = null;
@@ -24,7 +27,6 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private TextMeshProUGUI rightClickText = null;
 
         [SerializeField] private Toggle leftClickToggle = null;
-
         [SerializeField] private Toggle pencilToggle = null;
         [SerializeField] private Toggle fillToggle = null;
         
@@ -61,9 +63,18 @@ namespace Warlander.Deedplanner.Updaters
 
         private void Start()
         {
-            GuiManager.Instance.GroundsTree.ValueChanged += OnGroundsTreeValueChanged;
+            _groundsTree.ValueChanged += OnGroundsTreeValueChanged;
             LeftClickData = Database.DefaultGroundData;
             RightClickData = Database.DefaultSecondaryGroundData;
+
+            foreach (GroundData data in Database.Grounds.Values)
+            {
+                foreach (string[] category in data.Categories)
+                {
+                    IconUnityListElement iconListElement = (IconUnityListElement) _groundsTree.Add(data, category);
+                    iconListElement.TextureReference = data.Tex2d;
+                }
+            }
         }
 
         private void OnEnable()

@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
@@ -17,12 +19,25 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private GameManager _gameManager;
-        
-        [SerializeField] private Toggle southToggle = null;
-        [SerializeField] private Toggle westToggle = null;
-        [SerializeField] private Toggle northToggle = null;
-        [SerializeField] private Toggle eastToggle = null;
 
+        [SerializeField] private UnityTree _floorsTree;
+
+        [SerializeField] private Toggle southToggle;
+        [SerializeField] private Toggle westToggle;
+        [SerializeField] private Toggle northToggle;
+        [SerializeField] private Toggle eastToggle;
+
+        private void Start()
+        {
+            foreach (FloorData data in Database.Floors.Values)
+            {
+                foreach (string[] category in data.Categories)
+                {
+                    _floorsTree.Add(data, category);
+                }
+            }
+        }
+        
         private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
@@ -60,7 +75,7 @@ namespace Warlander.Deedplanner.Updaters
                 y = Mathf.FloorToInt(raycast.point.z / 4f);
             }
 
-            FloorData data = GuiManager.Instance.FloorsTree.SelectedValue as FloorData;
+            FloorData data = _floorsTree.SelectedValue as FloorData;
             if (data.Opening && (floor == 0 || floor == -1))
             {
                 _tooltipHandler.ShowTooltipText("<color=red><b>It's not possible to place openings/stairs on ground floor</b></color>");

@@ -7,6 +7,7 @@ namespace Warlander.Deedplanner.Data.Caves
     {
         public string Name { get; }
         public string ShortName { get; }
+        public string[][] Categories { get; }
 
         public TextureReference Texture { get; }
 
@@ -14,11 +15,12 @@ namespace Warlander.Deedplanner.Data.Caves
         public bool Show { get; }
         public bool Entrance { get; }
 
-        public CaveData(TextureReference texture, string name, string shortName, bool wall, bool show, bool entrance)
+        public CaveData(TextureReference texture, string name, string shortName, string[][] categories, bool wall, bool show, bool entrance)
         {
             Texture = texture;
             Name = name;
             ShortName = shortName;
+            Categories = categories;
             Wall = wall;
             Show = show;
             Entrance = entrance;

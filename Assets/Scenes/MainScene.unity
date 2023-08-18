@@ -1713,6 +1713,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTab: 5
+  _roofsList: {fileID: 4875529235959106886}
 --- !u!1 &111401815
 GameObject:
   m_ObjectHideFlags: 0
@@ -1911,50 +1912,6 @@ MonoBehaviour:
   selectionBox: {fileID: 1615102299}
   attachedProjector: {fileID: 0}
   pickerColor: {r: 0.8, g: 0.8, b: 0, a: 0.25}
---- !u!1 &115050053
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 115050054}
-  - component: {fileID: 115050055}
-  m_Layer: 0
-  m_Name: Steam Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &115050054
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 115050053}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1002259781}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &115050055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 115050053}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e5b393e5c244fe0a927349b6c3f3068, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &124614393
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2935,7 +2892,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 661221209}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &167561238
 MonoBehaviour:
@@ -8447,7 +8404,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 661221209}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &412287674
 MonoBehaviour:
@@ -9967,60 +9924,6 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!1 &496878105
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 496878106}
-  - component: {fileID: 496878107}
-  m_Layer: 0
-  m_Name: Gui Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &496878106
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 496878105}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 661221209}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &496878107
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 496878105}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03134ab2813131742810fc39a8ad2d5e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interfaceTransforms:
-  - {fileID: 2077539212}
-  - {fileID: 704808008}
-  - {fileID: 1845217158}
-  groundsTree: {fileID: 16709742}
-  cavesTree: {fileID: 1489062526}
-  floorsTree: {fileID: 286422256}
-  wallsTree: {fileID: 349014249}
-  roofsList: {fileID: 4875529235959106886}
-  objectsTree: {fileID: 428208118}
 --- !u!1 &500953200
 GameObject:
   m_ObjectHideFlags: 0
@@ -11674,6 +11577,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTab: 8
+  _cavesTree: {fileID: 1489062526}
 --- !u!1 &651162082
 GameObject:
   m_ObjectHideFlags: 0
@@ -11817,11 +11721,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1727024744}
-  - {fileID: 496878106}
   - {fileID: 167561237}
   - {fileID: 412287673}
   m_Father: {fileID: 1145859125}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &661367297
 PrefabInstance:
@@ -12795,6 +12698,7 @@ GameObject:
   - component: {fileID: 704808011}
   - component: {fileID: 704808010}
   - component: {fileID: 704808009}
+  - component: {fileID: 704808012}
   m_Layer: 5
   m_Name: Top Bar Divider
   m_TagString: Untagged
@@ -12880,6 +12784,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 704808007}
   m_CullTransparentMesh: 0
+--- !u!114 &704808012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 704808007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af2e0b6450ec4208a221da8cf1171bef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _toggle: {fileID: 5817424834801495739, guid: 23e27ddbd7d985a4cb60d45e98dbfb99, type: 3}
 --- !u!1001 &707154200
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13195,6 +13112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTab: 2
+  _floorsTree: {fileID: 286422256}
   southToggle: {fileID: 1532161767}
   westToggle: {fileID: 1503939245}
   northToggle: {fileID: 952311532}
@@ -15180,6 +15098,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTab: 3
+  _wallsTree: {fileID: 349014249}
   reverseToggle: {fileID: 169382236}
   automaticReverseToggle: {fileID: 987493787}
 --- !u!1 &842417727 stripped
@@ -17573,38 +17492,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1383301488}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1002259780
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1002259781}
-  m_Layer: 0
-  m_Name: Utility Managers
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1002259781
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1002259780}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 115050054}
-  m_Father: {fileID: 1145859125}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1012061858
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19734,7 +19621,6 @@ Transform:
   m_Children:
   - {fileID: 236628888}
   - {fileID: 825856258}
-  - {fileID: 1002259781}
   - {fileID: 661221209}
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -20411,6 +20297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTab: 0
+  _groundsTree: {fileID: 16709742}
   leftClickImage: {fileID: 1222685802}
   leftClickText: {fileID: 2012910539}
   rightClickImage: {fileID: 1303508364}
@@ -28641,6 +28528,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTab: 6
+  _decorationsTree: {fileID: 428208118}
   snapToGridToggle: {fileID: 987679741}
   rotationSnappingToggle: {fileID: 39991406}
   rotationSensitivityInput: {fileID: 1586115284}
@@ -33001,6 +32889,7 @@ GameObject:
   - component: {fileID: 1845217158}
   - component: {fileID: 1845217159}
   - component: {fileID: 1845217160}
+  - component: {fileID: 1845217161}
   m_Layer: 5
   m_Name: Side Panel
   m_TagString: Untagged
@@ -33069,6 +32958,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _layoutsButton: {fileID: 1652071403132846306}
+--- !u!114 &1845217161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1845217157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af2e0b6450ec4208a221da8cf1171bef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _toggle: {fileID: 5817424834801495739, guid: 23e27ddbd7d985a4cb60d45e98dbfb99, type: 3}
 --- !u!1 &1846271173
 GameObject:
   m_ObjectHideFlags: 0
@@ -36957,6 +36859,7 @@ GameObject:
   - component: {fileID: 2077539216}
   - component: {fileID: 2077539217}
   - component: {fileID: 2077539218}
+  - component: {fileID: 2077539219}
   m_Layer: 5
   m_Name: Top Bar
   m_TagString: Untagged
@@ -37110,6 +37013,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &2077539219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2077539211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af2e0b6450ec4208a221da8cf1171bef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _toggle: {fileID: 5817424834801495739, guid: 23e27ddbd7d985a4cb60d45e98dbfb99, type: 3}
 --- !u!1 &2078134840
 GameObject:
   m_ObjectHideFlags: 0
@@ -38052,7 +37968,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 496878107}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: 
         m_MethodName: ShowLayoutsWindow
         m_Mode: 1
