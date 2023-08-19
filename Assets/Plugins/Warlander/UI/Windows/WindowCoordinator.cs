@@ -11,7 +11,6 @@ namespace Warlander.UI.Windows
         private const int SupportedWindows = 1000;
 
         [Inject] private DiContainer _diContainer;
-        [Inject] private IInstantiator _instantiator;
 
         private Dictionary<int, Window> _windows = new Dictionary<int, Window>();
         private List<Window> _spawnedPrefabInstances = new List<Window>();
@@ -58,7 +57,8 @@ namespace Warlander.UI.Windows
             }
             
             _spawnedPrefabInstances.Add(windowPrefab);
-            Window window = _instantiator.InstantiatePrefabForComponent<Window>(windowPrefab);
+
+            Window window = Object.Instantiate(windowPrefab, _diContainer.DefaultParent);
 
             WindowLayer layer = windowLayer.GetValueOrDefault(window.DefaultLayer);
             int layerNumber = (int)layer;
