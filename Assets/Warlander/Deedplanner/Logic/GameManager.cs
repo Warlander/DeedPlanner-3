@@ -10,7 +10,6 @@ using UnityEngine.Networking;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Inputs;
-using Warlander.Deedplanner.Logic.Projectors;
 using Warlander.Deedplanner.Updaters;
 using Zenject;
 
@@ -20,6 +19,8 @@ namespace Warlander.Deedplanner.Logic
     {
         [Inject] private IInstantiator _instantiator;
         [Inject] private DPInput _input;
+
+        public event Action MapInitialized;
         
         public Map Map { get; private set; }
 
@@ -38,7 +39,6 @@ namespace Warlander.Deedplanner.Logic
         
         private void Start()
         {
-            updaters[0].gameObject.SetActive(true);
             LayoutManager.Instance.TabChanged += OnTabChange;
             
             _input.EditingControls.Undo.performed += UndoOnperformed;
@@ -65,6 +65,7 @@ namespace Warlander.Deedplanner.Logic
             Map = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             Map.Initialize(width, height);
             ApplyPropertiesToMap(Map);
+            MapInitialized?.Invoke();
         }
 
         public void ResizeMap(int left, int right, int bottom, int top)
@@ -75,6 +76,7 @@ namespace Warlander.Deedplanner.Logic
             Destroy(Map.gameObject);
             Map = newMap;
             ApplyPropertiesToMap(Map);
+            MapInitialized?.Invoke();
         }
 
         public void ClearMap()
@@ -90,6 +92,7 @@ namespace Warlander.Deedplanner.Logic
             Map = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             Map.Initialize(width, height);
             ApplyPropertiesToMap(Map);
+            MapInitialized?.Invoke();
         }
 
         public IEnumerator LoadMap(Uri mapUri)
@@ -135,6 +138,7 @@ namespace Warlander.Deedplanner.Logic
             Map = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             Map.Initialize(doc);
             ApplyPropertiesToMap(Map);
+            MapInitialized?.Invoke();
         }
 
         private void ApplyPropertiesToMap(Map map)
@@ -180,7 +184,10 @@ namespace Warlander.Deedplanner.Logic
                 CheckUpdater(updater, tab);
             }
 
-            Map.RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
+            if (Map != null)
+            {
+                Map.RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
+            }
         }
 
         public void OnDecorationsVisibilityChange(bool enable)

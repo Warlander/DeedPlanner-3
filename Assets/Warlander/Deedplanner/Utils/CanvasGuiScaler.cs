@@ -24,7 +24,6 @@ namespace Warlander.Deedplanner.Utils
             ApplyScale();
         }
 
-
         private void ApplyScale()
         {
             float referenceWidth = Constants.DefaultGuiWidth;

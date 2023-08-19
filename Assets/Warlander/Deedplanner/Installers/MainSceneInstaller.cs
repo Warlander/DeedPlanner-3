@@ -41,6 +41,8 @@ namespace Warlander.Deedplanner.Installers
 
             Container.Bind<GameManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<MapProjectorManager>().FromComponentInNewPrefab(_mapProjectorManager).AsSingle();
+
+            Container.Bind<StartupMapLoader>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
         }
     }
 }

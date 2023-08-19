@@ -176,6 +176,11 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private void Update()
         {
+            if (_gameManager.Map == null)
+            {
+                return;
+            }
+            
             Map map = _gameManager.Map;
 
             GameObject focusedObject = EventSystem.current.currentSelectedGameObject;
@@ -193,6 +198,11 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private void OnPreCull()
         {
+            if (_gameManager.Map == null)
+            {
+                return;
+            }
+            
             PrepareWater();
             PrepareMapState();
             UpdateRaycast();

@@ -1,10 +1,13 @@
 ﻿using System;
 using UnityEngine;
+using Zenject;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {
     public class CameraCoordinator : MonoBehaviour
     {
+        [Inject] private GameManager _gameManager;
+        
         [SerializeField] private MultiCamera[] _cameras;
 
         public event Action CurrentCameraChanged;
@@ -15,17 +18,30 @@ namespace Warlander.Deedplanner.Logic.Cameras
         public MultiCamera Hovered => GetCurrentlyHoveredCamera();
         public int ActiveId => _activeCamera;
 
-        private int _activeCamera = -1;
+        private int _activeCamera = 0;
 
         private void Awake()
         {
-            ChangeCurrentCamera(0);
-
+            if (_gameManager.Map != null)
+            {
+                ChangeCurrentCamera(0);
+            }
+            
             foreach (MultiCamera cam in _cameras)
             {
                 cam.FloorChanged += CameraOnFloorChanged;
                 cam.ModeChanged += CameraOnModeChanged;
                 cam.PointerDown += CameraOnPointerDown;
+            }
+            
+            _gameManager.MapInitialized += GameManagerOnMapInitialized;
+        }
+
+        private void GameManagerOnMapInitialized()
+        {
+            if (_activeCamera == -1)
+            {
+                ChangeCurrentCamera(0);
             }
         }
 
@@ -79,8 +95,11 @@ namespace Warlander.Deedplanner.Logic.Cameras
             foreach (MultiCamera cam in _cameras)
             {
                 cam.FloorChanged -= CameraOnFloorChanged;
+                cam.ModeChanged -= CameraOnModeChanged;
                 cam.PointerDown -= CameraOnPointerDown;
             }
+            
+            _gameManager.MapInitialized -= GameManagerOnMapInitialized;
         }
     }
 }

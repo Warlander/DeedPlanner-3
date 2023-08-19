@@ -3511,6 +3511,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SaveMapWindow
       objectReference: {fileID: 0}
+    - target: {fileID: 6426926222874444246, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_Pivot.x

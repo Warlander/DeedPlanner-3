@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
+using Plugins.Warlander.Utils;
 using UnityEngine;
 using UnityEngine.Networking;
+using Warlander.Core;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Decorations;
@@ -18,18 +21,59 @@ using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
+using Zenject;
 
 namespace Warlander.Deedplanner.Data
 {
-    public static class DataLoader
+    public class DataLoader : IInitializable
     {
-        private static readonly List<string> ShortNames = new List<string>();
+        [Inject] private UnityThreadRunner _unityThreadRunner;
 
-        public static IEnumerator LoadData()
+        public delegate void LoadingStepStartedDelegate(int stepNumber, string stepDescription);
+
+        public event LoadingStepStartedDelegate LoadingStepStarted;
+        public event Action LoadingComplete;
+        
+        public const int TotalSteps = 7;
+        
+        public bool Completed { get; private set; }
+        
+        private readonly List<string> _shortNames = new List<string>();
+        private int _stepsCompleted = 0;
+
+        void IInitializable.Initialize()
+        {
+            string[] locations = GetDataLocations();
+
+            int completedLoadings = 0;
+            XmlDocument[] documents = new XmlDocument[locations.Length];
+
+            for (int i = 0; i < documents.Length; i++)
+            {
+                int index = i;
+                Debug.Log("Parsing " + locations[i]);
+                UnityWebRequest request = UnityWebRequest.Get(locations[i]);
+                request.SendWebRequest().completed += operation =>
+                {
+                    completedLoadings++;
+                    documents[index] = new XmlDocument();
+                    documents[index].LoadXml(request.downloadHandler.text);
+                    
+                    Debug.Log("Parsed " + locations[index]);
+
+                    if (completedLoadings == documents.Length)
+                    {
+                        Task.Run(() => PerformLoading(documents));
+                    }
+                };
+            }
+        }
+
+        private string[] GetDataLocations()
         {
             if (Application.platform == RuntimePlatform.WebGLPlayer || SystemInfo.deviceType == DeviceType.Handheld)
             {
-                return LoadData(Application.streamingAssetsPath + "/objects.xml");
+                return new string[] { Application.streamingAssetsPath + "/objects.xml" };
             }
             
             string[] objectFiles = Directory.GetFiles(Application.streamingAssetsPath);
@@ -45,51 +89,44 @@ namespace Warlander.Deedplanner.Data
                 objectFiles[i] = "file://" + Application.streamingAssetsPath + "/" + oldFile;
             }
             
-            return LoadData(objectFiles);
+            return objectFiles;
         }
 
-        private static IEnumerator LoadData(params string[] locations)
+        private void PerformLoading(XmlDocument[] documents)
         {
-            XmlDocument[] documents = new XmlDocument[locations.Length];
-
-            for (int i = 0; i < documents.Length; i++)
+            IncrementStep(documents, "Loading grounds", LoadGrounds);
+            IncrementStep(documents, "Loading caves", LoadCaves);
+            IncrementStep(documents, "Loading floors", LoadFloors);
+            IncrementStep(documents, "Loading walls", LoadWalls);
+            IncrementStep(documents, "Loading roofs", LoadRoofs);
+            IncrementStep(documents, "Loading objects", LoadObjects);
+            IncrementStep(documents, "Loading bridges", LoadBridges);
+            
+            Completed = true;
+            
+            _unityThreadRunner.RunOnUnityThread(() =>
             {
-                Debug.Log("Parsing " + locations[i]);
-                UnityWebRequest request = UnityWebRequest.Get(locations[i]);
-                yield return request.SendWebRequest();
-                documents[i] = new XmlDocument();
-                documents[i].LoadXml(request.downloadHandler.text);
-                Debug.Log("Parsed " + locations[i]);
-            }
-
-            foreach (XmlDocument document in documents)
-            {
-                Debug.Log("Loading grounds");
-                LoadGrounds(document);
-                ShortNames.Clear();
-                Debug.Log("Loading caves");
-                LoadCaves(document);
-                ShortNames.Clear();
-                Debug.Log("Loading floors");
-                LoadFloors(document);
-                ShortNames.Clear();
-                Debug.Log("Loading walls");
-                LoadWalls(document);
-                ShortNames.Clear();
-                Debug.Log("Loading roofs");
-                LoadRoofs(document);
-                ShortNames.Clear();
-                Debug.Log("Loading objects");
-                LoadObjects(document);
-                ShortNames.Clear();
-                Debug.Log("Loading bridges");
-                LoadBridges(document);
-                ShortNames.Clear();
                 Debug.Log("XML file loading complete");
-            }
+                LoadingComplete?.Invoke();
+            });
         }
 
-        private static void LoadGrounds(XmlDocument document)
+        private void IncrementStep(XmlDocument[] documents, string description, Action<XmlDocument> loadingAction)
+        {
+            _stepsCompleted++;
+            int capturedStepNumber = _stepsCompleted;
+            
+            _unityThreadRunner.RunOnUnityThread(() =>
+            {
+                Debug.Log(description);
+                LoadingStepStarted?.Invoke(capturedStepNumber, description);
+            });
+            
+            Array.ForEach(documents, loadingAction);
+            _shortNames.Clear();
+        }
+
+        private void LoadGrounds(XmlDocument document)
         {
             XmlNodeList entities = document.GetElementsByTagName("ground");
 
@@ -152,7 +189,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        private static void LoadCaves(XmlDocument document)
+        private void LoadCaves(XmlDocument document)
         {
             XmlNodeList entities = document.GetElementsByTagName("rock");
 
@@ -196,7 +233,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        private static void LoadFloors(XmlDocument document)
+        private void LoadFloors(XmlDocument document)
         {
             XmlNodeList entities = document.GetElementsByTagName("floor");
 
@@ -248,7 +285,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        private static void LoadWalls(XmlDocument document)
+        private void LoadWalls(XmlDocument document)
         {
             XmlNodeList entities = document.GetElementsByTagName("wall");
 
@@ -322,7 +359,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        private static void LoadRoofs(XmlDocument document)
+        private void LoadRoofs(XmlDocument document)
         {
             XmlNodeList entities = document.GetElementsByTagName("roof");
 
@@ -358,7 +395,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        private static void LoadObjects(XmlDocument document)
+        private void LoadObjects(XmlDocument document)
         {
             XmlNodeList entities = document.GetElementsByTagName("object");
 
@@ -409,7 +446,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        private static void LoadBridges(XmlDocument document)
+        private void LoadBridges(XmlDocument document)
         {
             XmlNodeList entities = document.GetElementsByTagName("bridge");
             
@@ -488,14 +525,14 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        private static bool VerifyShortName(string shortName)
+        private bool VerifyShortName(string shortName)
         {
-            if (ShortNames.Contains(shortName))
+            if (_shortNames.Contains(shortName))
             {
                 return false;
             }
 
-            ShortNames.Add(shortName);
+            _shortNames.Add(shortName);
             return true;
         }
     }
