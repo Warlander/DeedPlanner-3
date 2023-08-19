@@ -1,4 +1,5 @@
-﻿using Zenject;
+﻿using Plugins.Warlander.Utils;
+using Zenject;
 
 namespace Warlander.Installers
 {
@@ -9,7 +10,7 @@ namespace Warlander.Installers
     {
         public override void InstallBindings()
         {
-            
+            Container.Bind<UnityThreadRunner>().FromNewComponentOnNewGameObject().AsSingle();
         }
     }
 }
