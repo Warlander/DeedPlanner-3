@@ -272,6 +272,8 @@ namespace Warlander.Deedplanner.Gui
 
         private void OnDestroy()
         {
+            tabFadeSequence?.Kill();
+            
             _settings.Modified -= ValidateState;
             _cameraCoordinator.CurrentCameraChanged -= CameraCoordinatorOnCurrentCameraChanged;
             _cameraCoordinator.FloorChanged -= CameraCoordinatorOnFloorChanged;

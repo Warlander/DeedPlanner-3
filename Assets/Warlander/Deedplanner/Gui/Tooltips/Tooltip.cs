@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
@@ -58,6 +59,11 @@ namespace Warlander.Deedplanner.Gui.Tooltips
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_referenceCanvasTransform, focusPos, null,
                 out Vector2 localPos);
             _transformToMove.localPosition = localPos + cursorCorrection;
+        }
+
+        private void OnDestroy()
+        {
+            canvasGroup.DOKill();
         }
     }
 }
