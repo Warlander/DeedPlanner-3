@@ -1,6 +1,7 @@
 ﻿using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Steam;
+using Warlander.Deedplanner.Utils;
 using Zenject;
 
 namespace Warlander.Deedplanner.Installers
@@ -12,6 +13,8 @@ namespace Warlander.Deedplanner.Installers
             Container.Bind<DPSettings>().FromFactory<SettingsFactory>().AsSingle();
 
             Container.BindInterfacesAndSelfTo<ISteamConnection>().FromFactory<ISteamConnection, SteamConnectionFactory>().AsSingle().NonLazy();
+
+            Container.BindInterfacesAndSelfTo<TargetFrameRateSetter>().AsSingle().NonLazy();
         }
     }
 }
