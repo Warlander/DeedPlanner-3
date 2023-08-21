@@ -10,9 +10,6 @@ namespace Warlander.Deedplanner.Logic
 {
     public class HeightmapHandle
     {
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private GameManager _gameManager;
-        
         private const float handleScale = 0.6f;
         
         public Vector2Int TileCoords { get; }
@@ -71,16 +68,14 @@ namespace Warlander.Deedplanner.Logic
             return distance;
         }
         
-        public string ToRichString()
+        public string ToRichString(Map map, int floor)
         {
             StringBuilder build = new StringBuilder();
             
             build.Append("X: " + TileCoords.x + " Y: " + TileCoords.y).AppendLine();
             
             build.Append("<mspace=0.5em>");
-
-            int floor = _cameraCoordinator.Current.Floor;
-            Map map = _gameManager.Map;
+            
             Tile centralTile = map[TileCoords.x, TileCoords.y];
             int centralHeight = centralTile.GetHeightForFloor(floor);
             for (int i = 1; i >= -1; i--)

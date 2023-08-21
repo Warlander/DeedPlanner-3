@@ -244,7 +244,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
                         if (heightmapHandle != null)
                         {
-                            tooltipBuild.Append(heightmapHandle.ToRichString());
+                            tooltipBuild.Append(heightmapHandle.ToRichString(_gameManager.Map, Floor));
                         }
                         else if (isHeightEditing)
                         {
@@ -285,7 +285,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     }
                     else if (heightmapHandle != null)
                     {
-                        tooltipBuild.Append(heightmapHandle.ToRichString());
+                        tooltipBuild.Append(heightmapHandle.ToRichString(_gameManager.Map, Floor));
                     }
                 }
 

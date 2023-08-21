@@ -210,7 +210,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (activeHandle != null)
             {
-                _tooltipHandler.ShowTooltipText(activeHandle.ToRichString());
+                _tooltipHandler.ShowTooltipText(activeHandle.ToRichString(_gameManager.Map, _cameraCoordinator.Current.Floor));
             }
         }
 

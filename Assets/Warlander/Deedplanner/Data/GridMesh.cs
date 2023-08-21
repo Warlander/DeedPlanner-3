@@ -14,7 +14,6 @@ namespace Warlander.Deedplanner.Data
     public class GridMesh : MonoBehaviour
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private DiContainer _container;
         [Inject] private GameManager _gameManager;
         
         private Map map;
@@ -75,8 +74,7 @@ namespace Warlander.Deedplanner.Data
                     heightColors[index] = new Color(1, 1, 1, _alphaMultiplier);
 
                     HeightmapHandle newHandle = new HeightmapHandle(new Vector2Int(i, i2), 0);
-                    _container.Inject(newHandle);
-                    
+
                     heightmapHandles[i, i2] = newHandle;
                 }
             }
