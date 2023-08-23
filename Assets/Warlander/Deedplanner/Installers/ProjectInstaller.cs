@@ -14,7 +14,7 @@ namespace Warlander.Deedplanner.Installers
 
             Container.BindInterfacesAndSelfTo<ISteamConnection>().FromFactory<ISteamConnection, SteamConnectionFactory>().AsSingle().NonLazy();
 
-            Container.BindInterfacesAndSelfTo<TargetFrameRateSetter>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<DefaultTargetFrameRateSetter>().AsSingle().NonLazy();
         }
     }
 }
