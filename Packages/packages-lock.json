@@ -128,15 +128,6 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.postprocessing": {
-      "version": "3.2.2",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.physics": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.scriptablebuildpipeline": {
       "version": "1.20.2",
       "depth": 0,
@@ -190,16 +181,6 @@
       "depth": 0,
       "source": "registry",
       "dependencies": {},
-      "url": "https://registry.npmjs.org"
-    },
-    "com.unityfx.outline.postprocessing": {
-      "version": "0.2.0",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unityfx.outline": "0.8.0",
-        "com.unity.postprocessing": "2.3.0"
-      },
       "url": "https://registry.npmjs.org"
     },
     "com.unity.modules.ai": {
