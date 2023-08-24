@@ -4,7 +4,7 @@ using Warlander.Deedplanner.Graphics;
 
 namespace Warlander.Deedplanner.Data.Bridges
 {
-    public class BridgePart : MonoBehaviour
+    public class BridgePart : DynamicModelBehaviour
     {
         public Bridge ParentBridge { get; private set; }
 
@@ -67,6 +67,8 @@ namespace Warlander.Deedplanner.Data.Bridges
             {
                 model.transform.localPosition = new Vector3(-4, 0, 0);
             }
+
+            OnModelLoadedCallback(model);
         }
     }
 }

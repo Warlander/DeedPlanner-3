@@ -5,7 +5,7 @@ using Warlander.Deedplanner.Utils;
 namespace Warlander.Deedplanner.Data
 {
     
-    public abstract class TileEntity : MonoBehaviour, IXmlSerializable
+    public abstract class TileEntity : DynamicModelBehaviour, IXmlSerializable
     {
         public Tile Tile { get; set; }
         public abstract Materials Materials { get; }

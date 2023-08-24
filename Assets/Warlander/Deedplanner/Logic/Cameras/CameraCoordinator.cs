@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -16,6 +17,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         
         public MultiCamera Current => _cameras[_activeCamera];
         public MultiCamera Hovered => GetCurrentlyHoveredCamera();
+        public IEnumerable<MultiCamera> Cameras => _cameras;
         public int ActiveId => _activeCamera;
 
         private int _activeCamera = 0;

@@ -74,7 +74,6 @@ namespace Warlander.Deedplanner.Data.Grounds
 
         private class GroundDataChangeCommand : IReversibleCommand
         {
-
             private Ground ground;
             private GroundData oldData;
             private GroundData newData;
@@ -117,7 +116,6 @@ namespace Warlander.Deedplanner.Data.Grounds
         
         private class RoadDirectionChangeCommand : IReversibleCommand
         {
-
             private Ground ground;
             private RoadDirection oldDirection;
             private RoadDirection newDirection;

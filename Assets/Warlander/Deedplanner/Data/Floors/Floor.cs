@@ -61,6 +61,8 @@ namespace Warlander.Deedplanner.Data.Floors
             {
                 model.transform.localPosition = new Vector3(-4, 0, 0);
             }
+
+            OnModelLoadedCallback(model);
         }
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)

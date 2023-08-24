@@ -11,8 +11,8 @@ namespace Warlander.Deedplanner.Data.Roofs
         public override Materials Materials => Data.Materials;
 
         public int RoofLevel { get; private set; }
-        public GameObject Model { get; private set; }
-
+        
+        private GameObject _model;
         private RoofType currentRoofType;
         private int currentRoofMatch = -1;
 
@@ -91,30 +91,32 @@ namespace Warlander.Deedplanner.Data.Roofs
 
         private void OnModelLoaded(GameObject newModel)
         {
-            if (Model)
+            if (_model)
             {
-                Destroy(Model);
+                Destroy(_model);
             }
             
-            Model = newModel;
-            Model.transform.SetParent(transform);
-            Model.transform.localPosition = new Vector3(-2, RoofLevel * 3.5f, -2);
+            _model = newModel;
+            _model.transform.SetParent(transform);
+            _model.transform.localPosition = new Vector3(-2, RoofLevel * 3.5f, -2);
             if (currentRoofMatch == 0)
             {
-                Model.transform.rotation = Quaternion.Euler(0, 90, 0);
+                _model.transform.rotation = Quaternion.Euler(0, 90, 0);
             }
             else if (currentRoofMatch == 1)
             {
-                Model.transform.rotation = Quaternion.Euler(0, 0, 0);
+                _model.transform.rotation = Quaternion.Euler(0, 0, 0);
             }
             else if (currentRoofMatch == 2)
             {
-                Model.transform.rotation = Quaternion.Euler(0, 270, 0);
+                _model.transform.rotation = Quaternion.Euler(0, 270, 0);
             }
             else if (currentRoofMatch == 3)
             {
-                Model.transform.rotation = Quaternion.Euler(0, 180, 0);
+                _model.transform.rotation = Quaternion.Euler(0, 180, 0);
             }
+
+            OnModelLoadedCallback(Model);
         }
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)

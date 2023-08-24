@@ -20,6 +20,7 @@ namespace Warlander.Deedplanner.Data
     {
         [Inject] private IInstantiator _instantiator;
         [Inject] private GameManager _gameManager;
+        [Inject] private TileFactory _tileFactory;
         
         private Tile[,] tiles;
 
@@ -319,7 +320,7 @@ namespace Warlander.Deedplanner.Data
             {
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
-                    Tile tile = new Tile(this, i, i2);
+                    Tile tile = _tileFactory.CreateTile(this, i, i2);
                     tiles[i, i2] = tile;
                 }
             }

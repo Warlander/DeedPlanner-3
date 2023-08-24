@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Inputs;
@@ -20,6 +21,7 @@ namespace Warlander.Deedplanner.Installers
         {
             Container.Bind<LayoutManager>().FromInstance(_layoutManager);
             Container.Bind<CameraCoordinator>().FromInstance(_cameraCoordinator).AsSingle();
+            Container.Bind<OutlineCoordinator>().AsSingle();
 
             Container.Bind<ICameraController>().To<FppCameraController>().AsTransient();
             Container.Bind<ICameraController>().To<IsoCameraController>().AsTransient();
@@ -43,6 +45,9 @@ namespace Warlander.Deedplanner.Installers
             Container.Bind<MapProjectorManager>().FromComponentInNewPrefab(_mapProjectorManager).AsSingle();
 
             Container.Bind<StartupMapLoader>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+            
+            // Factories.
+            Container.Bind<TileFactory>().AsSingle();
         }
     }
 }

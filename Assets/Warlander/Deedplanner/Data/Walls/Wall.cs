@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Walls
@@ -10,9 +11,10 @@ namespace Warlander.Deedplanner.Data.Walls
         public WallData Data { get; private set; }
         public bool Reversed { get; private set; }
         public override Materials Materials => Data.Materials;
-
-        public GameObject Model { get; private set; }
+        
         public int SlopeDifference { get; private set; } = int.MinValue;
+
+        private GameObject _model;
         private MeshCollider meshCollider;
         private Mesh boundsMesh;
 
@@ -53,23 +55,23 @@ namespace Warlander.Deedplanner.Data.Walls
 
         private void OnModelLoaded(GameObject newModel)
         {
-            if (Model)
+            if (_model)
             {
-                Destroy(Model);
+                Destroy(_model);
             }
 
-            Model = newModel;
-            Model.transform.SetParent(transform, false);
+            _model = newModel;
+            _model.transform.SetParent(transform, false);
             if (Reversed)
             {
-                Model.transform.localRotation = Quaternion.Euler(0, 180, 0);
+                _model.transform.localRotation = Quaternion.Euler(0, 180, 0);
             }
             else
             {
-                Model.transform.localPosition = new Vector3(-4f, 0, 0);
+                _model.transform.localPosition = new Vector3(-4f, 0, 0);
             }
 
-            Bounds bounds = GetTotalModelBounds(Model);
+            Bounds bounds = GetTotalModelBounds(_model);
             const float wallDepthComfortableMargin = 0.75f;
             float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthComfortableMargin);
             bounds.size = new Vector3(-bounds.size.x, bounds.size.y, comfortableWallDepth);
@@ -81,6 +83,8 @@ namespace Warlander.Deedplanner.Data.Walls
             meshCollider.enabled = false;
             // ReSharper disable once Unity.InefficientPropertyAccess
             meshCollider.enabled = true;
+            
+            OnModelLoadedCallback(_model);
         }
 
         private static Mesh CreateBoundsMesh(int slopeDifference)

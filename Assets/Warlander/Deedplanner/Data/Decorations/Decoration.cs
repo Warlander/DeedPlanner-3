@@ -41,6 +41,8 @@ namespace Warlander.Deedplanner.Data.Decorations
             model = newModel;
             model.transform.SetParent(transform, false);
             model.transform.rotation = Quaternion.Euler(0, Rotation * Mathf.Rad2Deg, 0);
+
+            OnModelLoadedCallback(model);
         }
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)

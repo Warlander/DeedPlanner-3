@@ -1685,6 +1685,7 @@ GameObject:
   - component: {fileID: 112517483}
   - component: {fileID: 112517482}
   - component: {fileID: 112517485}
+  - component: {fileID: 112517486}
   m_Layer: 0
   m_Name: Camera 1
   m_TagString: MainCamera
@@ -1777,7 +1778,23 @@ MonoBehaviour:
   simpleQualityWater: {fileID: 474621805}
   selectionBox: {fileID: 1615102299}
   attachedProjector: {fileID: 0}
+  _outlineEffect: {fileID: 112517486}
   pickerColor: {r: 0.8, g: 0.8, b: 0, a: 0.25}
+--- !u!114 &112517486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112517481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 270d3185d159bf54fb4cddbb42235437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outlineResources: {fileID: 11400000, guid: d28e70f030b1a634db9a6a6d5478ef19, type: 2}
+  _outlineLayers: {fileID: 11400000, guid: 020ed76275873794e84810a89ee31c6d, type: 2}
+  _cameraEvent: 18
 --- !u!1001 &124614393
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9202,6 +9219,7 @@ GameObject:
   - component: {fileID: 476452799}
   - component: {fileID: 476452798}
   - component: {fileID: 476452800}
+  - component: {fileID: 476452801}
   m_Layer: 0
   m_Name: Camera 4
   m_TagString: MainCamera
@@ -9286,7 +9304,23 @@ MonoBehaviour:
   simpleQualityWater: {fileID: 474621805}
   selectionBox: {fileID: 2069332195}
   attachedProjector: {fileID: 0}
+  _outlineEffect: {fileID: 476452801}
   pickerColor: {r: 0.8, g: 0.8, b: 0, a: 0.25}
+--- !u!114 &476452801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 476452796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 270d3185d159bf54fb4cddbb42235437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outlineResources: {fileID: 11400000, guid: d28e70f030b1a634db9a6a6d5478ef19, type: 2}
+  _outlineLayers: {fileID: 11400000, guid: 020ed76275873794e84810a89ee31c6d, type: 2}
+  _cameraEvent: 18
 --- !u!1001 &479189262
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23744,6 +23778,7 @@ GameObject:
   - component: {fileID: 1418748997}
   - component: {fileID: 1418748996}
   - component: {fileID: 1418748998}
+  - component: {fileID: 1418748999}
   m_Layer: 0
   m_Name: Camera 3
   m_TagString: MainCamera
@@ -23828,7 +23863,23 @@ MonoBehaviour:
   simpleQualityWater: {fileID: 474621805}
   selectionBox: {fileID: 2025413718}
   attachedProjector: {fileID: 0}
+  _outlineEffect: {fileID: 1418748999}
   pickerColor: {r: 0.8, g: 0.8, b: 0, a: 0.25}
+--- !u!114 &1418748999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1418748994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 270d3185d159bf54fb4cddbb42235437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outlineResources: {fileID: 11400000, guid: d28e70f030b1a634db9a6a6d5478ef19, type: 2}
+  _outlineLayers: {fileID: 11400000, guid: 020ed76275873794e84810a89ee31c6d, type: 2}
+  _cameraEvent: 18
 --- !u!1001 &1422412214
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35500,6 +35551,7 @@ GameObject:
   - component: {fileID: 2039501104}
   - component: {fileID: 2039501102}
   - component: {fileID: 2039501105}
+  - component: {fileID: 2039501106}
   m_Layer: 0
   m_Name: Camera 2
   m_TagString: MainCamera
@@ -35584,7 +35636,23 @@ MonoBehaviour:
   simpleQualityWater: {fileID: 474621805}
   selectionBox: {fileID: 98636951}
   attachedProjector: {fileID: 0}
+  _outlineEffect: {fileID: 2039501106}
   pickerColor: {r: 0.8, g: 0.8, b: 0, a: 0.25}
+--- !u!114 &2039501106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2039501101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 270d3185d159bf54fb4cddbb42235437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outlineResources: {fileID: 11400000, guid: d28e70f030b1a634db9a6a6d5478ef19, type: 2}
+  _outlineLayers: {fileID: 11400000, guid: 020ed76275873794e84810a89ee31c6d, type: 2}
+  _cameraEvent: 18
 --- !u!1 &2048020736
 GameObject:
   m_ObjectHideFlags: 0

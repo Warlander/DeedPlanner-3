@@ -11,6 +11,7 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
+using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 using Object = UnityEngine.Object;
 
@@ -18,6 +19,8 @@ namespace Warlander.Deedplanner.Data
 {
     public class Tile : IXmlSerializable
     {
+        private OutlineCoordinator _outlineCoordinator;
+        
         private int surfaceHeight = 0;
         private int caveHeight = 0;
         private int caveSize = 0;
@@ -70,11 +73,13 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        public Tile(Map map, int x, int y)
+        public Tile(Map map, int x, int y, OutlineCoordinator outlineCoordinator)
         {
             Map = map;
             X = x;
             Y = y;
+
+            _outlineCoordinator = outlineCoordinator;
 
             Entities = new Dictionary<EntityData, TileEntity>();
 
