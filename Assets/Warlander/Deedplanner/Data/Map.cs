@@ -21,6 +21,7 @@ namespace Warlander.Deedplanner.Data
         [Inject] private IInstantiator _instantiator;
         [Inject] private GameManager _gameManager;
         [Inject] private TileFactory _tileFactory;
+        [Inject] private BridgeFactory _bridgeFactory;
         
         private Tile[,] tiles;
 
@@ -265,7 +266,7 @@ namespace Warlander.Deedplanner.Data
             XmlNodeList bridgesList = mapRoot.GetElementsByTagName("bridge");
             foreach (XmlElement bridgeElement in bridgesList)
             {
-                Bridge bridge = new Bridge(this, bridgeElement);
+                Bridge bridge = _bridgeFactory.CreateBridge(this, bridgeElement);
                 bridges.Add(bridge);
             }
 
@@ -573,8 +574,7 @@ namespace Warlander.Deedplanner.Data
                 return 0.25f;
             }
 
-            throw new ArgumentOutOfRangeException(
-                "Relative floor opacity is supported only for values from -2 to 0, supplied value: " + relativeFloor);
+            return 0;
         }
 
         private void UpdateFloorsRendering()
@@ -618,21 +618,65 @@ namespace Warlander.Deedplanner.Data
 
                 surfaceGridRoot.localPosition = new Vector3(0, absoluteFloor * 3 + 0.01f, 0);
             }
+
+            RefreshBridgesRendering(absoluteFloor);
         }
 
         private void RefreshLevelRendering(Transform root, int relativeFloor)
         {
-            bool renderFloor = RenderEntireMap || (relativeFloor <= 0 && relativeFloor > -3);
+            float opacity = RenderEntireMap ? 1 : GetRelativeFloorOpacity(relativeFloor);
+            bool renderFloor = opacity > 0;
             root.gameObject.SetActive(renderFloor);
             if (renderFloor)
             {
-                float opacity = RenderEntireMap ? 1f : GetRelativeFloorOpacity(relativeFloor);
                 MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
                 propertyBlock.SetColor(ShaderPropertyIds.Color, new Color(opacity, opacity, opacity));
                 Renderer[] renderers = root.GetComponentsInChildren<Renderer>();
                 foreach (Renderer renderer in renderers)
                 {
                     renderer.SetPropertyBlock(propertyBlock);
+                }
+            }
+        }
+
+        private void RefreshBridgesRendering(int absoluteFloor)
+        {
+            if (RenderEntireMap)
+            {
+                foreach (Bridge bridge in bridges)
+                {
+                    bridge.SetVisible(true);
+                }
+            }
+            else
+            {
+                foreach (Bridge bridge in bridges)
+                {
+                    int lowerFloor = bridge.LowerFloor;
+                    int higherFloor = bridge.HigherFloor;
+
+                    float opacity;
+                    if (higherFloor > absoluteFloor)
+                    {
+                        opacity = 0;
+                    }
+                    else if (higherFloor < absoluteFloor && lowerFloor > absoluteFloor)
+                    {
+                        opacity = 1;
+                    }
+                    else
+                    {
+                        opacity = GetRelativeFloorOpacity(higherFloor - absoluteFloor);
+                    }
+
+                    bool renderBridge = opacity > 0;
+                    bridge.SetVisible(renderBridge);
+                    if (renderBridge)
+                    {
+                        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+                        propertyBlock.SetColor(ShaderPropertyIds.Color, new Color(opacity, opacity, opacity));
+                        bridge.SetPropertyBlock(propertyBlock);
+                    }
                 }
             }
         }

@@ -25,6 +25,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private GameManager _gameManager;
+        [Inject] private OutlineCoordinator _outlineCoordinator;
 
         [SerializeField] private UnityTree _decorationsTree;
 
@@ -159,6 +160,14 @@ namespace Warlander.Deedplanner.Updaters
 
             Map map = _gameManager.Map;
 
+            if (targetedTile != null)
+            {
+                foreach (Decoration decoration in targetedTile.GetDecorations())
+                {
+                    _outlineCoordinator.RemoveObject(decoration);
+                }
+            }
+            
             if (!placingDecoration)
             {
                 position = CalculateCorrectedPosition(raycast.point, data, _settings.DecorationSnapToGrid);
@@ -182,6 +191,14 @@ namespace Warlander.Deedplanner.Updaters
                 else if (tileEntity && tileEntity.Valid)
                 {
                     targetedTile = tileEntity.Tile;
+                }
+            }
+            
+            if (targetedTile != null)
+            {
+                foreach (Decoration decoration in targetedTile.GetDecorations())
+                {
+                    _outlineCoordinator.AddObject(decoration, OutlineType.Neutral);
                 }
             }
 

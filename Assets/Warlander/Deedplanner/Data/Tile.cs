@@ -34,6 +34,7 @@ namespace Warlander.Deedplanner.Data
 
         public Ground Ground { get; private set; }
         public Cave Cave { get; private set; }
+        public BridgePart BridgePart => surfaceBridgePart;
 
         public int SurfaceHeight {
             get => surfaceHeight;
@@ -1026,15 +1027,15 @@ namespace Warlander.Deedplanner.Data
 
                 int renderedFloor = tile.Map.RenderedFloor;
                 bool renderEntireMap = tile.Map.RenderEntireMap;
-
+                
                 bool underground = renderedFloor < 0;
                 int absoluteFloor = underground ? -renderedFloor + 1 : renderedFloor;
                 int relativeFloor = entity.Floor - absoluteFloor;
-                bool renderFloor = renderEntireMap || (relativeFloor <= 0 && relativeFloor > -3);
+                float opacity = renderEntireMap ? 1f : tile.Map.GetRelativeFloorOpacity(relativeFloor);
+                bool renderFloor = opacity > 0;
 
                 if (renderFloor)
                 {
-                    float opacity = renderEntireMap ? 1f : tile.Map.GetRelativeFloorOpacity(relativeFloor);
                     MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
                     propertyBlock.SetColor(ShaderPropertyIds.Color, new Color(opacity, opacity, opacity));
                     Renderer[] renderers = entity.GetComponentsInChildren<Renderer>();

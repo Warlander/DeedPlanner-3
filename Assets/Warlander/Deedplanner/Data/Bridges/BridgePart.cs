@@ -9,6 +9,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         public Bridge ParentBridge { get; private set; }
 
         public Materials Materials => ParentBridge.Data.GetMaterialsForPart(partType, partSide);
+        public BridgePartType PartType => partType;
 
         private BridgePartType partType;
         private BridgePartSide partSide;

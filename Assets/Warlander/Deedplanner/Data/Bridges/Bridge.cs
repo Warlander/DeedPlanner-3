@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data.Bridges
@@ -10,6 +11,11 @@ namespace Warlander.Deedplanner.Data.Bridges
     {
         public BridgeData Data { get; }
 
+        public int LowerFloor => Mathf.Min(firstFloor, secondFloor);
+        public int HigherFloor => Mathf.Max(firstFloor, secondFloor);
+
+        private readonly OutlineCoordinator _outlineCoordinator;
+        
         private readonly BridgePartType[] segments;
         private readonly int firstFloor;
         private readonly int firstX;
@@ -24,8 +30,10 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         private List<BridgePart> bridgeParts = new List<BridgePart>();
         
-        public Bridge(Map map, XmlElement element)
+        public Bridge(Map map, XmlElement element, OutlineCoordinator outlineCoordinator)
         {
+            _outlineCoordinator = outlineCoordinator;
+            
             string dataString = element.GetAttribute("data");
             Data = Database.Bridges[dataString];
 
@@ -225,6 +233,42 @@ namespace Warlander.Deedplanner.Data.Bridges
                     return new ArchedBridgeType();
                 default:
                     throw new ArgumentException("Unknown bridge type: " + type);
+            }
+        }
+
+        public void SetVisible(bool state)
+        {
+            foreach (BridgePart part in bridgeParts)
+            {
+                part.gameObject.SetActive(state);
+            }
+        }
+
+        public void EnableHighlighting(OutlineType type)
+        {
+            foreach (BridgePart part in bridgeParts)
+            {
+                _outlineCoordinator.AddObject(part, type);
+            }
+        }
+
+        public void DisableHighlighting()
+        {
+            foreach (BridgePart part in bridgeParts)
+            {
+                _outlineCoordinator.RemoveObject(part);
+            }
+        }
+
+        public void SetPropertyBlock(MaterialPropertyBlock propertyBlock)
+        {
+            foreach (BridgePart part in bridgeParts)
+            {
+                Renderer[] renderers = part.GetComponentsInChildren<Renderer>();
+                foreach (Renderer renderer in renderers)
+                {
+                    renderer.SetPropertyBlock(propertyBlock);
+                }
             }
         }
 

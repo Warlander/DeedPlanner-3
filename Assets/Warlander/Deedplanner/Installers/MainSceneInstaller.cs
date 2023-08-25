@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Inputs;
@@ -48,6 +49,7 @@ namespace Warlander.Deedplanner.Installers
             
             // Factories.
             Container.Bind<TileFactory>().AsSingle();
+            Container.Bind<BridgeFactory>().AsSingle();
         }
     }
 }
