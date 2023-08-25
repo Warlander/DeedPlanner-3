@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Plugins.Warlander.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityFx.Outline;
@@ -15,7 +15,6 @@ using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic.Projectors;
 using Warlander.Deedplanner.Settings;
-using Warlander.Deedplanner.Utils;
 using Zenject;
 
 namespace Warlander.Deedplanner.Logic.Cameras
@@ -268,16 +267,16 @@ namespace Warlander.Deedplanner.Logic.Cameras
                             int h10 = map[tileCoords.x + 1, tileCoords.y].GetHeightForFloor(floor);
                             int h01 = map[tileCoords.x, tileCoords.y + 1].GetHeightForFloor(floor);
                             int h11 = map[tileCoords.x + 1, tileCoords.y + 1].GetHeightForFloor(floor);
-                            int h00Digits = StringUtils.DigitsStringCount(h00);
-                            int h10Digits = StringUtils.DigitsStringCount(h10);
-                            int h01Digits = StringUtils.DigitsStringCount(h01);
-                            int h11Digits = StringUtils.DigitsStringCount(h11);
+                            int h00Digits = NumericStringUtils.CalculateDigitsCount(h00);
+                            int h10Digits = NumericStringUtils.CalculateDigitsCount(h10);
+                            int h01Digits = NumericStringUtils.CalculateDigitsCount(h01);
+                            int h11Digits = NumericStringUtils.CalculateDigitsCount(h11);
                             int maxDigits = Mathf.Max(h00Digits, h10Digits, h01Digits, h11Digits);
 
                             tooltipBuild.Append("<mspace=0.5em>");
-                            tooltipBuild.Append(StringUtils.PaddedNumberString(h01, maxDigits)).Append("   ").Append(StringUtils.PaddedNumberString(h11, maxDigits)).AppendLine();
+                            tooltipBuild.Append(NumericStringUtils.PadIntFromBothSides(h01, maxDigits)).Append("   ").Append(NumericStringUtils.PadIntFromBothSides(h11, maxDigits)).AppendLine();
                             tooltipBuild.AppendLine();
-                            tooltipBuild.Append(StringUtils.PaddedNumberString(h00, maxDigits)).Append("   ").Append(StringUtils.PaddedNumberString(h10, maxDigits)).Append("</mspace>");
+                            tooltipBuild.Append(NumericStringUtils.PadIntFromBothSides(h00, maxDigits)).Append("   ").Append(NumericStringUtils.PadIntFromBothSides(h10, maxDigits)).Append("</mspace>");
                         }
                         else
                         {

@@ -1,10 +1,7 @@
 ﻿using System.Text;
+using Plugins.Warlander.Utils;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Gui;
-using Warlander.Deedplanner.Logic.Cameras;
-using Warlander.Deedplanner.Utils;
-using Zenject;
 
 namespace Warlander.Deedplanner.Logic
 {
@@ -84,12 +81,12 @@ namespace Warlander.Deedplanner.Logic
                 {
                     if (i == 0 && i2 == 0)
                     {
-                        build.Append("<b>").Append(StringUtils.PaddedNumberString(centralHeight, 5)).Append("</b>");
+                        build.Append("<b>").Append(NumericStringUtils.PadIntFromBothSides(centralHeight, 5)).Append("</b>");
                     }
                     else
                     {
                         int heightDifference = TileHeightOrDefault(map[TileCoords.x + i2, TileCoords.y + i], centralHeight, floor) - centralHeight;
-                        build.Append(StringUtils.PaddedNumberString(heightDifference, 5));
+                        build.Append(NumericStringUtils.PadIntFromBothSides(heightDifference, 5));
                     }
 
                     if (i2 != 1)
