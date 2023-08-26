@@ -10,7 +10,7 @@ namespace Warlander.Deedplanner.Gui
     {
         [Inject] private TooltipHandler _tooltipHandler;
         
-        [SerializeField] private string text = null;
+        [SerializeField] [TextArea(2, 5)] private string text = null;
         [SerializeField] private float showDelay = 0f;
 
         private bool _showTooltip;
