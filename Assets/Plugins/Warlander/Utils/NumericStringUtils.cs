@@ -6,7 +6,7 @@ namespace Plugins.Warlander.Utils
     {
         public static int CalculateDigitsCount(int number)
         {
-            return Mathf.FloorToInt(Mathf.Log10(number) + 1);
+            return number.ToString().Length;
         }
         
         public static string PadIntFromBothSides(int number, int expectedLength)
