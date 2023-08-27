@@ -81,12 +81,12 @@ namespace Warlander.Deedplanner.Logic
                 {
                     if (i == 0 && i2 == 0)
                     {
-                        build.Append("<b>").Append(NumericStringUtils.PadIntFromBothSides(centralHeight, 5)).Append("</b>");
+                        build.Append("<b>").Append(NumericStringUtils.PadIntFromBothSidesTMP(centralHeight, 5)).Append("</b>");
                     }
                     else
                     {
                         int heightDifference = TileHeightOrDefault(map[TileCoords.x + i2, TileCoords.y + i], centralHeight, floor) - centralHeight;
-                        build.Append(NumericStringUtils.PadIntFromBothSides(heightDifference, 5));
+                        build.Append(NumericStringUtils.PadIntFromBothSidesTMP(heightDifference, 5));
                     }
 
                     if (i2 != 1)

@@ -274,9 +274,9 @@ namespace Warlander.Deedplanner.Logic.Cameras
                             int maxDigits = Mathf.Max(h00Digits, h10Digits, h01Digits, h11Digits);
 
                             tooltipBuild.Append("<mspace=0.5em>");
-                            tooltipBuild.Append(NumericStringUtils.PadIntFromBothSides(h01, maxDigits)).Append("   ").Append(NumericStringUtils.PadIntFromBothSides(h11, maxDigits)).AppendLine();
+                            tooltipBuild.Append(NumericStringUtils.PadIntFromBothSidesTMP(h01, maxDigits)).Append("   ").Append(NumericStringUtils.PadIntFromBothSidesTMP(h11, maxDigits)).AppendLine();
                             tooltipBuild.AppendLine();
-                            tooltipBuild.Append(NumericStringUtils.PadIntFromBothSides(h00, maxDigits)).Append("   ").Append(NumericStringUtils.PadIntFromBothSides(h10, maxDigits)).Append("</mspace>");
+                            tooltipBuild.Append(NumericStringUtils.PadIntFromBothSidesTMP(h00, maxDigits)).Append("   ").Append(NumericStringUtils.PadIntFromBothSidesTMP(h10, maxDigits)).Append("</mspace>");
                         }
                         else
                         {
