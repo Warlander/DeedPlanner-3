@@ -96,10 +96,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 1177845723638453947}
   canvasGroup: {fileID: 5758364276332548563}
-  _referenceCanvas: {fileID: 384246530826815470}
+  _canvasScaler: {fileID: 9018120239069122212}
   _referenceCanvasTransform: {fileID: 1060395969191119484}
   _transformToMove: {fileID: 5002695278348008188}
   animationSpeed: 10
+  _cursorCorrection: {x: 0, y: -20}
 --- !u!114 &9018120239069122212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,8 +171,8 @@ RectTransform:
   m_Father: {fileID: 5002695278348008188}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 49.03, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -409,7 +410,7 @@ MonoBehaviour:
     m_Right: 10
     m_Top: 10
     m_Bottom: 10
-  m_ChildAlignment: 0
+  m_ChildAlignment: 4
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1

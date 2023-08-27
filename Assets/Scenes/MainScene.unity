@@ -2732,6 +2732,20 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &161642281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161642276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: toggle diagonals
+  showDelay: 0.3
 --- !u!1 &166770693 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100006, guid: b544816461f324e56a39767fdeb5b114,
@@ -5445,7 +5459,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: Cave editing not available<br>in current alpha version
+  text: 'Cave editing not available
+
+    in current alpha version'
   showDelay: 0
 --- !u!1001 &291301580
 PrefabInstance:
@@ -6582,7 +6598,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: Cave editing not available<br>in current alpha version
+  text: 'Cave editing not available
+
+    in current alpha version'
   showDelay: 0
 --- !u!1 &365067048
 GameObject:
@@ -15580,7 +15598,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: Cave editing not available<br>in current alpha version
+  text: 'Cave editing not available
+
+    in current alpha version'
   showDelay: 0
 --- !u!1 &951556654
 GameObject:
@@ -23435,7 +23455,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: Cave editing not available<br>in current alpha version
+  text: 'Cave editing not available
+
+    in current alpha version'
   showDelay: 0
 --- !u!1 &1403010388 stripped
 GameObject:
@@ -29712,7 +29734,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: Cave editing not available<br>in current alpha version
+  text: 'Cave editing not available
+
+    in current alpha version'
   showDelay: 0
 --- !u!1 &1731037931
 GameObject:
@@ -33307,6 +33331,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1911880805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211103427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: 'pencil tool
+
+    swipe around to edit the terrain'
+  showDelay: 0.3
 --- !u!84 &1913406502
 RenderTexture:
   m_ObjectHideFlags: 0
@@ -35575,7 +35615,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: Cave editing not available<br>in current alpha version
+  text: 'Cave editing not available
+
+    in current alpha version'
   showDelay: 0
 --- !u!1 &2039501101
 GameObject:
@@ -37017,6 +37059,25 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &2112345400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2112345395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: 'fill tool
+
+    press the tile to replace all connected
+
+    tiles of the
+    same type with selected tile type'
+  showDelay: 0.3
 --- !u!1 &2117289893
 GameObject:
   m_ObjectHideFlags: 0
