@@ -1,4 +1,5 @@
-﻿using Plugins.Warlander.Utils;
+﻿using System;
+using Plugins.Warlander.Utils;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
@@ -18,8 +19,9 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPInput _input;
         [Inject] private TooltipHandler _tooltipHandler;
 
-        private Bridge _lastFrameBridge;
-        
+        private Bridge _lastFrameHoveredBridge;
+        private Bridge _selectedBridge;
+
         private void OnEnable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
@@ -32,7 +34,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 return;
             }
-            
+
             Map map = _gameManager.Map;
             int tileX = Mathf.FloorToInt(raycast.point.x / 4f);
             int tileZ = Mathf.FloorToInt(raycast.point.z / 4f);
@@ -40,18 +42,16 @@ namespace Warlander.Deedplanner.Updaters
             BridgePart bridgePart = tile.BridgePart;
             Bridge bridge = bridgePart != null ? bridgePart.ParentBridge : null;
 
-            if (_lastFrameBridge != bridge)
-            {
-                if (_lastFrameBridge != null)
-                {
-                    _lastFrameBridge.DisableHighlighting();
-                }
+            UpdateBridgeHover(bridge);
 
-                _lastFrameBridge = bridge;
-                if (bridge != null)
-                {
-                    bridge.EnableHighlighting(OutlineType.Neutral);
-                }
+            if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
+            {
+                OnBridgeClicked(bridge);
+            }
+
+            if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
+            {
+                OnBridgeDeselected();
             }
 
             if (bridge != null)
@@ -65,6 +65,65 @@ namespace Warlander.Deedplanner.Updaters
                 string bridgePartWithSpaces = StringUtils.AddSpacesToSentence(bridgePartRawString);
                 string bridgePartLowercase = bridgePartWithSpaces.ToLower();
                 _tooltipHandler.ShowTooltipText(bridgePartLowercase);
+            }
+        }
+
+        private void UpdateBridgeHover(Bridge bridge)
+        {
+            if (_lastFrameHoveredBridge == bridge)
+            {
+                return;
+            }
+            
+            if (_lastFrameHoveredBridge != null && IsSelectedBridge(_lastFrameHoveredBridge) == false)
+            {
+                _lastFrameHoveredBridge.DisableHighlighting();
+            }
+
+            _lastFrameHoveredBridge = bridge;
+
+            if (bridge != null && IsSelectedBridge(bridge) == false)
+            {
+                bridge.EnableHighlighting(OutlineType.Neutral);
+            }
+        }
+
+        private bool IsSelectedBridge(Bridge bridge)
+        {
+            return bridge != null && bridge == _selectedBridge;
+        }
+
+        private void OnBridgeClicked(Bridge bridge)
+        {
+            if (bridge == null)
+            {
+                OnBridgeDeselected();
+                return;
+            }
+            
+            if (_selectedBridge != null)
+            {
+                _selectedBridge.DisableHighlighting();
+            }
+
+            _selectedBridge = bridge;
+            _selectedBridge.EnableHighlighting(OutlineType.Positive);
+        }
+
+        private void OnBridgeDeselected()
+        {
+            if (_selectedBridge != null)
+            {
+                if (_selectedBridge == _lastFrameHoveredBridge)
+                {
+                    _selectedBridge.EnableHighlighting(OutlineType.Neutral);
+                }
+                else
+                {
+                    _selectedBridge.DisableHighlighting();
+                }
+
+                _selectedBridge = null;
             }
         }
     }
