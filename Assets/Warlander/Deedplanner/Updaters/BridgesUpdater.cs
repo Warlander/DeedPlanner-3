@@ -126,5 +126,20 @@ namespace Warlander.Deedplanner.Updaters
                 _selectedBridge = null;
             }
         }
+
+        private void OnDisable()
+        {
+            if (_lastFrameHoveredBridge != null)
+            {
+                _lastFrameHoveredBridge.DisableHighlighting();
+            }
+            _lastFrameHoveredBridge = null;
+
+            if (_selectedBridge != null)
+            {
+                _selectedBridge.DisableHighlighting();
+            }
+            _selectedBridge = null;
+        }
     }
 }
