@@ -485,7 +485,11 @@ namespace Warlander.Deedplanner.Updaters
         private void UpdateLevelArea()
         {
             Map map = _gameManager.Map;
-            int targetHeight = int.Parse(targetHeightInput.text);
+            int targetHeight;
+            if (int.TryParse(targetHeightInput.text, out targetHeight) == false)
+            {
+                targetHeight = 0;
+            }
 
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
