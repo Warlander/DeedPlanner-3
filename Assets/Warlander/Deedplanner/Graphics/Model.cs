@@ -26,6 +26,10 @@ namespace Warlander.Deedplanner.Graphics
         public string Tag { get; private set; }
         public Vector3 Scale { get; private set; }
         public int Layer { get; private set; }
+        /// <summary>
+        /// Can be null if model isn't loaded yet. After any variation of the model is loaded, it will be always non-null.
+        /// </summary>
+        public GameObject OriginalModel => originalModel;
 
         public Model(XmlElement element, Vector3 scale, int layer = int.MaxValue) : this(element, layer)
         {

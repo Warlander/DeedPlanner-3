@@ -70,8 +70,8 @@ namespace Warlander.Deedplanner.Data.Walls
             {
                 _model.transform.localPosition = new Vector3(-4f, 0, 0);
             }
-
-            Bounds bounds = GetTotalModelBounds(_model);
+            
+            Bounds bounds = GetTotalModelBounds(Data.NormalModel.OriginalModel);
             const float wallDepthComfortableMargin = 0.75f;
             float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthComfortableMargin);
             bounds.size = new Vector3(-bounds.size.x, bounds.size.y, comfortableWallDepth);
@@ -155,14 +155,14 @@ namespace Warlander.Deedplanner.Data.Walls
         {
             Vector3[] vectors = new Vector3[8];
             const float padding = 1.01f;
-            vectors[0] = (bounds.center - new Vector3(bounds.extents.x + 4f, bounds.extents.y - slopeDifference * 0.1f, -bounds.extents.z) * padding);
-            vectors[1] = (bounds.center - new Vector3(bounds.extents.x + 4f, bounds.extents.y - slopeDifference * 0.1f, bounds.extents.z) * padding);
-            vectors[2] = (bounds.center - new Vector3(-bounds.extents.x + 4f, bounds.extents.y, bounds.extents.z) * padding);
-            vectors[3] = (bounds.center - new Vector3(-bounds.extents.x + 4f, bounds.extents.y, -bounds.extents.z) * padding);
-            vectors[4] = (bounds.center - new Vector3(bounds.extents.x + 4f, -bounds.extents.y - slopeDifference * 0.1f, -bounds.extents.z) * padding);
-            vectors[5] = (bounds.center - new Vector3(bounds.extents.x + 4f, -bounds.extents.y - slopeDifference * 0.1f, bounds.extents.z) * padding);
-            vectors[6] = (bounds.center - new Vector3(-bounds.extents.x + 4f, -bounds.extents.y, bounds.extents.z) * padding);
-            vectors[7] = (bounds.center - new Vector3(-bounds.extents.x + 4f, -bounds.extents.y, -bounds.extents.z) * padding);
+            vectors[0] = (bounds.center - new Vector3(bounds.extents.x + 4f, bounds.extents.y, -bounds.extents.z) * padding);
+            vectors[1] = (bounds.center - new Vector3(bounds.extents.x + 4f, bounds.extents.y, bounds.extents.z) * padding);
+            vectors[2] = (bounds.center - new Vector3(-bounds.extents.x + 4f, bounds.extents.y + slopeDifference * 0.1f, bounds.extents.z) * padding);
+            vectors[3] = (bounds.center - new Vector3(-bounds.extents.x + 4f, bounds.extents.y + slopeDifference * 0.1f, -bounds.extents.z) * padding);
+            vectors[4] = (bounds.center - new Vector3(bounds.extents.x + 4f, -bounds.extents.y, -bounds.extents.z) * padding);
+            vectors[5] = (bounds.center - new Vector3(bounds.extents.x + 4f, -bounds.extents.y, bounds.extents.z) * padding);
+            vectors[6] = (bounds.center - new Vector3(-bounds.extents.x + 4f, -bounds.extents.y + slopeDifference * 0.1f, bounds.extents.z) * padding);
+            vectors[7] = (bounds.center - new Vector3(-bounds.extents.x + 4f, -bounds.extents.y + slopeDifference * 0.1f, -bounds.extents.z) * padding);
 
             return vectors;
         }
