@@ -186,6 +186,11 @@ namespace Warlander.Deedplanner.Data
                     int copyY = y - addBottom;
 
                     this[x, y].PasteTile(originalMap[copyX, copyY]);
+                    
+                    int surfaceHeight = this[x, y].SurfaceHeight;
+                    int caveHeight = this[x, y].CaveHeight;
+                    SurfaceGridMesh.SetHeight(x, y, surfaceHeight);
+                    CaveGridMesh.SetHeight(x, y, caveHeight);
                 }
             }
 
@@ -212,6 +217,10 @@ namespace Warlander.Deedplanner.Data
                 }
             }
 
+            Ground.UpdateNow();
+            
+            RefreshAllTiles();
+            
             RecalculateHeights();
             RecalculateRoofs();
             CommandManager.ForgetAction();

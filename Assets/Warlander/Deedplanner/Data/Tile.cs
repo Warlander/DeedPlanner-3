@@ -95,9 +95,9 @@ namespace Warlander.Deedplanner.Data
 
         public void PasteTile(Tile otherTile)
         {
-            surfaceHeight = otherTile.surfaceHeight;
-            caveHeight = otherTile.caveHeight;
-            caveSize = otherTile.caveSize;
+            SurfaceHeight = otherTile.SurfaceHeight;
+            CaveHeight = otherTile.CaveHeight;
+            CaveSize = otherTile.CaveSize;
 
             Ground.Data = otherTile.Ground.Data;
             Ground.RoadDirection = otherTile.Ground.RoadDirection;
