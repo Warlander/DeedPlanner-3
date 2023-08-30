@@ -189,6 +189,20 @@ namespace Warlander.Deedplanner.Data
                 }
             }
 
+            Vector2Int bridgeShift = new Vector2Int(addLeft, addBottom);
+            
+            foreach (Bridge originalMapBridge in originalMap.bridges)
+            {
+                Vector2Int firstTileAfterShift = originalMapBridge.FirstTile + bridgeShift;
+                Vector2Int secondTileAfterShift = originalMapBridge.SecondTile + bridgeShift;
+
+                if (IsWithinBounds(firstTileAfterShift) && IsWithinBounds(secondTileAfterShift))
+                {
+                    Bridge movedBridge = _bridgeFactory.CreateBridge(this, originalMapBridge, bridgeShift);
+                    bridges.Add(movedBridge);
+                }
+            }
+
             for (int i = 0; i <= Width; i++)
             {
                 for (int i2 = 0; i2 <= Height; i2++)
@@ -679,6 +693,12 @@ namespace Warlander.Deedplanner.Data
                     }
                 }
             }
+        }
+
+        private bool IsWithinBounds(Vector2Int tile)
+        {
+            return tile.x >= 0 && tile.x < Width
+                && tile.y >= 0 && tile.y < Height;
         }
     }
 }

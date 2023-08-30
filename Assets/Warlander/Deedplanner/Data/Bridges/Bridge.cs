@@ -13,6 +13,8 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         public int LowerFloor => Mathf.Min(firstFloor, secondFloor);
         public int HigherFloor => Mathf.Max(firstFloor, secondFloor);
+        public Vector2Int FirstTile => new Vector2Int(firstX, firstY);
+        public Vector2Int SecondTile => new Vector2Int(secondX, secondY);
 
         private readonly OutlineCoordinator _outlineCoordinator;
         
@@ -67,6 +69,31 @@ namespace Warlander.Deedplanner.Data.Bridges
                 Debug.LogError($"Bridge type enum parsing fail, type: {typeString}");
             }
 
+            ConstructBridge(map);
+        }
+
+        /// <summary>
+        /// Constructor used for moving (previously) existing bridges around the map.
+        /// </summary>
+        public Bridge(Map map, Bridge originalBridge, Vector2Int tileShift,
+            OutlineCoordinator outlineCoordinator)
+        {
+            _outlineCoordinator = outlineCoordinator;
+
+            Data = originalBridge.Data;
+
+            segments = originalBridge.segments;
+            firstFloor = originalBridge.firstFloor;
+            firstX = originalBridge.firstX + tileShift.x;
+            firstY = originalBridge.firstY + tileShift.y;
+            secondFloor = originalBridge.secondFloor;
+            secondX = originalBridge.secondX + tileShift.x;
+            secondY = originalBridge.secondY + tileShift.y;
+            additionalData = originalBridge.additionalData;
+            verticalOrientation = originalBridge.verticalOrientation;
+            surfaced = originalBridge.surfaced;
+            bridgeType = originalBridge.bridgeType;
+            
             ConstructBridge(map);
         }
 
