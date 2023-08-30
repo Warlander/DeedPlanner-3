@@ -256,7 +256,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter text...
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -289,7 +289,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 2
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -337,7 +337,6 @@ GameObject:
   - component: {fileID: 403360065052475672}
   - component: {fileID: 403360065052475678}
   - component: {fileID: 403360065052475676}
-  - component: {fileID: 403360065052475679}
   - component: {fileID: 403360065052475673}
   m_Layer: 5
   m_Name: Top Input
@@ -503,18 +502,6 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
---- !u!114 &403360065052475679
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 403360065052475667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1721f02d603442d9b3564652064c205e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &403360065052475673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -678,7 +665,6 @@ GameObject:
   - component: {fileID: 403360065217338758}
   - component: {fileID: 403360065217338756}
   - component: {fileID: 403360065217338746}
-  - component: {fileID: 403360065217338757}
   - component: {fileID: 403360065217338759}
   m_Layer: 5
   m_Name: Left Input
@@ -844,18 +830,6 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
---- !u!114 &403360065217338757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 403360065217338745}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1721f02d603442d9b3564652064c205e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &403360065217338759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1019,7 +993,6 @@ GameObject:
   - component: {fileID: 403360065439898480}
   - component: {fileID: 403360065439898486}
   - component: {fileID: 403360065439898484}
-  - component: {fileID: 403360065439898487}
   - component: {fileID: 403360065439898481}
   m_Layer: 5
   m_Name: Right Input
@@ -1185,18 +1158,6 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
---- !u!114 &403360065439898487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 403360065439898475}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1721f02d603442d9b3564652064c205e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &403360065439898481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1277,7 +1238,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter text...
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1310,7 +1271,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 2
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -1685,7 +1646,6 @@ GameObject:
   - component: {fileID: 403360065804834403}
   - component: {fileID: 403360065804834401}
   - component: {fileID: 403360065804834407}
-  - component: {fileID: 403360065804834402}
   - component: {fileID: 403360065804834412}
   m_Layer: 5
   m_Name: Bottom Input
@@ -1851,18 +1811,6 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
---- !u!114 &403360065804834402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 403360065804834406}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1721f02d603442d9b3564652064c205e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &403360065804834412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2131,7 +2079,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter text...
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2164,7 +2112,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 2
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -2536,7 +2484,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter text...
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2569,7 +2517,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 2
+  m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -3156,6 +3104,11 @@ PrefabInstance:
     - target: {fileID: 1363300979575058775, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3362090858256578404, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222301033874, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
