@@ -12,10 +12,22 @@ namespace Warlander.Deedplanner.Logic
 
         private readonly Dictionary<DynamicModelBehaviour, OutlineType> _outlinesToUse =
             new Dictionary<DynamicModelBehaviour, OutlineType>();
+
+        private readonly Dictionary<DynamicModelBehaviour, int> _outlinesPriority =
+            new Dictionary<DynamicModelBehaviour, int>();
         
-        public void AddObject(DynamicModelBehaviour behaviour, OutlineType type)
+        public void AddObject(DynamicModelBehaviour behaviour, OutlineType type, int priority)
         {
+            if (_outlinesPriority.TryGetValue(behaviour, out int currentPriority))
+            {
+                if (currentPriority > priority)
+                {
+                    return;
+                }
+            }
+            
             _outlinesToUse[behaviour] = type;
+            _outlinesPriority[behaviour] = priority;
 
             if (behaviour.Model != null)
             {
@@ -38,10 +50,19 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
-        public void RemoveObject(DynamicModelBehaviour behaviour)
+        public void RemoveObject(DynamicModelBehaviour behaviour, int priority)
         {
+            if (_outlinesPriority.TryGetValue(behaviour, out int currentPriority))
+            {
+                if (currentPriority > priority)
+                {
+                    return;
+                }
+            }
+            
             behaviour.ModelLoaded -= OnModelLoaded;
             _outlinesToUse.Remove(behaviour);
+            _outlinesPriority.Remove(behaviour);
             
             foreach (MultiCamera camera in _cameraCoordinator.Cameras)
             {

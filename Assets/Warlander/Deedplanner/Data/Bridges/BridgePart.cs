@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Bridges
 {
@@ -23,6 +24,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         public void Initialise(Bridge parentBridge, BridgePartType partType, BridgePartSide partSide,
             EntityOrientation orientation, int x, int y, float height, int skew)
         {
+            gameObject.layer = LayerMasks.BridgeLayer;
             ParentBridge = parentBridge;
             this.partType = partType;
             this.partSide = partSide;

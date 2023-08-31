@@ -34,12 +34,8 @@ namespace Warlander.Deedplanner.Updaters
             {
                 return;
             }
-
-            Map map = _gameManager.Map;
-            int tileX = Mathf.FloorToInt(raycast.point.x / 4f);
-            int tileZ = Mathf.FloorToInt(raycast.point.z / 4f);
-            Tile tile = map[tileX, tileZ];
-            BridgePart bridgePart = tile.BridgePart;
+            
+            BridgePart bridgePart = raycast.transform.GetComponent<BridgePart>();
             Bridge bridge = bridgePart != null ? bridgePart.ParentBridge : null;
 
             UpdateBridgeHover(bridge);

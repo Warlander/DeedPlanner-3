@@ -164,7 +164,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 foreach (Decoration decoration in targetedTile.GetDecorations())
                 {
-                    _outlineCoordinator.RemoveObject(decoration);
+                    _outlineCoordinator.RemoveObject(decoration, 1);
                 }
             }
             
@@ -198,7 +198,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 foreach (Decoration decoration in targetedTile.GetDecorations())
                 {
-                    _outlineCoordinator.AddObject(decoration, OutlineType.Neutral);
+                    _outlineCoordinator.AddObject(decoration, OutlineType.Neutral, 1);
                 }
             }
 

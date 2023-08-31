@@ -457,7 +457,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
             if (_outlinedModel != null)
             {
-                _outlineCoordinator.AddObject(_outlinedModel, OutlineType.Neutral);
+                _outlineCoordinator.AddObject(_outlinedModel, OutlineType.Neutral, 0);
             }
             else if (hitCollider.GetType() == typeof(MeshCollider))
             {
@@ -541,7 +541,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
             if (_outlinedModel != null)
             {
-                _outlineCoordinator.RemoveObject(_outlinedModel);
+                _outlineCoordinator.RemoveObject(_outlinedModel, 0);
                 _outlinedModel = null;
             }
         }

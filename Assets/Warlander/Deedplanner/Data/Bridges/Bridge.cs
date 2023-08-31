@@ -275,7 +275,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         {
             foreach (BridgePart part in bridgeParts)
             {
-                _outlineCoordinator.AddObject(part, type);
+                _outlineCoordinator.AddObject(part, type, 1);
             }
         }
 
@@ -283,7 +283,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         {
             foreach (BridgePart part in bridgeParts)
             {
-                _outlineCoordinator.RemoveObject(part);
+                _outlineCoordinator.RemoveObject(part, 1);
             }
         }
 
