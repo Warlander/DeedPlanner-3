@@ -574,6 +574,28 @@
                 },
                 {
                     "name": "",
+                    "id": "122b8e20-df3a-4234-99a5-6b3119e39932",
+                    "path": "<Keyboard>/leftMeta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Alt Boost",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "76e68da3-2d69-4cab-a64d-3e05d17ae87a",
+                    "path": "<Keyboard>/rightMeta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Alt Boost",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "8f116e40-fb2a-475a-91f5-0f3b9d80f735",
                     "path": "<Mouse>/position",
                     "interactions": "",
@@ -951,6 +973,28 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "modifier",
+                    "id": "abd7563b-3e05-4995-92b6-d6cdd8a8cd2c",
+                    "path": "<Keyboard>/leftMeta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Undo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "modifier",
+                    "id": "012fefd6-c21b-43ec-996d-24986bf18f06",
+                    "path": "<Keyboard>/rightMeta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Undo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "binding",
                     "id": "ad0e0b5a-3e83-4baa-b693-3ef17259aaf9",
                     "path": "<Keyboard>/z",
@@ -976,6 +1020,28 @@
                     "name": "modifier",
                     "id": "dc050f42-bc41-4d67-b1fd-c8aedb18e98b",
                     "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Redo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "modifier",
+                    "id": "347dae24-d53c-4bdb-84e8-ee367de22d4b",
+                    "path": "<Keyboard>/leftMeta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Redo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "modifier",
+                    "id": "60c82b28-c447-4ec2-85b1-47751d2802a0",
+                    "path": "<Keyboard>/rightMeta",
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse and Keyboard",
@@ -1203,6 +1269,28 @@
                     "name": "Modifier",
                     "id": "c3d90cbf-1a10-4582-893d-de995b5e0143",
                     "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Snappy Object Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Modifier",
+                    "id": "022b4bdf-134c-4090-aa38-7f4c88815386",
+                    "path": "<Keyboard>/leftMeta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Snappy Object Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Modifier",
+                    "id": "a1481151-d3f8-4593-8b3f-f27e3721205f",
+                    "path": "<Keyboard>/rightMeta",
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse and Keyboard",
