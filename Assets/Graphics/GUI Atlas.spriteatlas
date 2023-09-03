@@ -164,11 +164,14 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5185f0332b488a844a1b53da9e34df83, type: 3}
   - {fileID: 21300000, guid: 54b4d733ea224f64891d21746bda01e0, type: 3}
   - {fileID: 21300000, guid: b25deb83b3ac27f46b91dcee3759f7f0, type: 3}
+  - {fileID: 21300000, guid: 0ea25704aee7fb44599f07f879395264, type: 3}
   - {fileID: 21300000, guid: 1b0c4594781d7934a93e8e0aaf53644e, type: 3}
+  - {fileID: 21300000, guid: 1fe68594062efe84f800340493495702, type: 3}
   - {fileID: 21300000, guid: d0f76f05fc63c35458cde07e5fb7639f, type: 3}
   - {fileID: 21300000, guid: 5a634e15b62faee4c8ada7465bd76205, type: 3}
   - {fileID: 21300000, guid: 1ce817b554ac0fc499c8f21ecd6dec10, type: 3}
   - {fileID: 21300000, guid: 62113bd50b934ff4993219fe297c3ced, type: 3}
+  - {fileID: 21300000, guid: b7b3e216e94407b48847dec3e306cac8, type: 3}
   - {fileID: 21300000, guid: f727f746dce98754eaa196bdb2a64b5a, type: 3}
   - {fileID: 21300000, guid: 55ffa856654dd2349b393eb64d770a48, type: 3}
   - {fileID: 21300000, guid: 7c8380c69220ad447bd89ea2dda88de4, type: 3}
@@ -187,6 +190,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b995197ce436e9d49814219ffa6eeb23, type: 3}
   - {fileID: 21300000, guid: 3862c3bc9dbabee46be18bd376bebdc2, type: 3}
   - {fileID: 21300000, guid: ce0b4abca2a3d634d8053a2b6ce56525, type: 3}
+  - {fileID: 21300000, guid: 49888a1de0335324b8919252173f2cf2, type: 3}
   - {fileID: 21300000, guid: bbee3afdc2e7b8941a552321b7e72fcd, type: 3}
   - {fileID: 21300000, guid: db371deee7e65a346903d18c446332a6, type: 3}
   - {fileID: 21300000, guid: 6c9e471f7bab2bd45823ee1be124ee86, type: 3}
@@ -308,11 +312,14 @@ SpriteAtlas:
   - Paypal Button
   - 019-photo-camera-configuration-symbol-for-interface-with-a-gear-behind
   - 4_Exclude
+  - S
   - 020-menu
+  - N
   - 010-bird
   - 011-horizontal-symmetry
   - 004-flowers
   - 021-save
+  - E
   - Patreon Button
   - 001-magnifying-glass
   - 4Scr
@@ -331,6 +338,7 @@ SpriteAtlas:
   - 015-mouse-left-button
   - 023-compass
   - 005-mountain
+  - W
   - 1Scr
   - paper background
   - 2vert
