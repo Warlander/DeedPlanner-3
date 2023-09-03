@@ -8259,7 +8259,7 @@
 			<lane type="narrow"/>
 			<part type="crown">
 				<model location="Bridges/Rope/RopeBridgeCrown.wom" tag="narrow"/>
-				<tex location="Bridges/Icons/WoodCrown.png"/>
+				<tex location="Bridges/Icons/RopeCrown.png"/>
 				<materials>
 					Planks = 10,
 					Mooring ropes = 6,
@@ -8268,6 +8268,7 @@
 			</part>
 			<part type="abutment">
 				<model location="Bridges/Rope/RopeBridgeEnd.wom" tag="narrow"/>
+				<tex location="Bridges/Icons/RopeEndL.png"/>
 				<materials>
 					Planks = 10,
 					Mooring ropes = 6,
@@ -8278,6 +8279,7 @@
 			</part>
 			<part type="doubleAbutment">
 				<model location="Bridges/Rope/RopeBridgeDA.wom" tag="narrow"/>
+				<tex location="Bridges/Icons/RopeDA.png"/>
 				<materials>
 					Planks = 10,
 					Mooring ropes = 6,
@@ -8308,6 +8310,7 @@
 			<part type="crown">
 				<model location="Bridges/Wooden/WoodBridge.wom" tag="narrow"/>
 				<model location="Bridges/Wooden/WoodBridgeRight.wom" tag="side"/>
+				<tex location="Bridges/Icons/WoodCrown.png"/>
 				<materials>
 					Wooden beams = 4,
 					Planks = 20,
@@ -8318,6 +8321,7 @@
 			<part type="abutment">
 				<model location="Bridges/Wooden/WoodBridgeAbutmentNarrow.wom" tag="narrow"/>
 				<model location="Bridges/Wooden/WoodBridgeAbutmentRight.wom" tag="side"/>
+				<tex location="Bridges/Icons/WoodCrown.png"/>
 				<materials>
 					Wooden beams = 8,
 					Planks = 20,
@@ -8328,6 +8332,7 @@
 			<part type="support">
 				<model location="Bridges/Wooden/WoodBridgeSupport.wom" tag="narrow"/>
 				<model location="Bridges/Wooden/WoodBridgeSupportRight.wom" tag="side"/>
+				<tex location="Bridges/Icons/WoodSupport.png"/>
 				<materials>
 					Wooden beams = 12,
 					Planks = 20,
@@ -8373,6 +8378,7 @@
 					<override mesh="StoneBridgeCrownCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
 					<override mesh="StoneBridgeCrownCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
+				<tex location="Bridges/Icons/crown.png"/>
 				<materials>
 					Stone bricks = 12,
 					Mortar = 10,
@@ -8393,6 +8399,7 @@
 					<override mesh="AbutmentDoubleCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
 					<override mesh="StoneBridgeAbutmentCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
+				<tex location="Bridges/Icons/abutmentL.png"/>
 				<materials>
 					Stone bricks = 42,
 					Mortar = 40,
@@ -8412,6 +8419,7 @@
 					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
 					<override mesh="DoubleAbutmentCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
+				<tex location="Bridges/Icons/doubleAbutment.png"/>
 				<materials>
 					Stone bricks = 62,
 					Mortar = 60,
@@ -8431,6 +8439,7 @@
 					<override mesh="BracingDoubleCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
 					<override mesh="BracingDoubleCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
+				<tex location="Bridges/Icons/bracingL.png"/>
 				<materials>
 					Stone bricks = 27,
 					Mortar = 25,
@@ -8450,6 +8459,7 @@
 					<override mesh="DoubleBracingCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
 					<override mesh="DoubleBracingCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
+				<tex location="Bridges/Icons/doubleBracing.png"/>
 				<materials>
 					Stone bricks = 32,
 					Mortar = 30,
@@ -8469,6 +8479,7 @@
 					<override mesh="SupportDoubleCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
 					<override mesh="SupportDoubleCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
+				<tex location="Bridges/Icons/support.png"/>
 				<materials>
 					Stone bricks = 92,
 					Mortar = 90,
@@ -8504,6 +8515,7 @@
 					<override mesh="FloatingDoubleCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
 					<override mesh="FloatingDoubleCenterMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
+				<tex location="Bridges/Icons/floating.png"/>
 				<materials>
 					Stone bricks = 12,
 					Mortar = 10,
@@ -8539,6 +8551,7 @@
 					<override mesh="StoneBridgeCrownCenter2Mesh" texture="Bridges/Stone/bridgeSlate.dds"/>
 					<override mesh="StoneBridgeCrownCenterMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/slate_crown.png"/>
 				<materials>
 					Slate bricks = 12,
 					Mortar = 10,
@@ -8559,6 +8572,7 @@
 					<override mesh="AbutmentDoubleCenter2Mesh" texture="Bridges/Stone/bridgeSlate.dds"/>
 					<override mesh="StoneBridgeAbutmentCenterMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/slate_abutmentL.png"/>
 				<materials>
 					Slate bricks = 42,
 					Mortar = 40,
@@ -8578,6 +8592,7 @@
 					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridgeSlate.dds"/>
 					<override mesh="DoubleAbutmentCenterMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/slate_doubleAbutment.png"/>
 				<materials>
 					Slate bricks = 62,
 					Mortar = 60,
@@ -8597,6 +8612,7 @@
 					<override mesh="BracingDoubleCenter2Mesh" texture="Bridges/Stone/bridgeSlate.dds"/>
 					<override mesh="BracingDoubleCenterMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/slate_bracingL.png"/>
 				<materials>
 					Slate bricks = 27,
 					Mortar = 25,
@@ -8616,6 +8632,7 @@
 					<override mesh="DoubleBracingCenter2Mesh" texture="Bridges/Stone/bridgeSlate.dds"/>
 					<override mesh="DoubleBracingCenterMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/slate_doubleBracing.png"/>
 				<materials>
 					Slate bricks = 32,
 					Mortar = 30,
@@ -8635,6 +8652,7 @@
 					<override mesh="SupportDoubleCenter2Mesh" texture="Bridges/Stone/bridgeSlate.dds"/>
 					<override mesh="SupportDoubleCenterMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/slate_support.png"/>
 				<materials>
 					Slate bricks = 92,
 					Mortar = 90,
@@ -8670,6 +8688,7 @@
 					<override mesh="FloatingDoubleCenter2Mesh" texture="Bridges/Stone/bridgeSlate.dds"/>
 					<override mesh="FloatingDoubleCenterMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/slate_floating.png"/>
 				<materials>
 					Slate bricks = 12,
 					Mortar = 10,
@@ -8705,6 +8724,7 @@
 					<override mesh="StoneBridgeCrownCenter2Mesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
 					<override mesh="StoneBridgeCrownCenterMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/sand_crown.png"/>
 				<materials>
 					Sandstone bricks = 12,
 					Mortar = 10,
@@ -8725,6 +8745,7 @@
 					<override mesh="AbutmentDoubleCenter2Mesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
 					<override mesh="StoneBridgeAbutmentCenterMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/sand_abutmentL.png"/>
 				<materials>
 					Sandstone bricks = 42,
 					Mortar = 40,
@@ -8744,6 +8765,7 @@
 					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
 					<override mesh="DoubleAbutmentCenterMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/sand_doubleAbutment.png"/>
 				<materials>
 					Sandstone bricks = 62,
 					Mortar = 60,
@@ -8763,6 +8785,7 @@
 					<override mesh="BracingDoubleCenter2Mesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
 					<override mesh="BracingDoubleCenterMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/sand_bracingL.png"/>
 				<materials>
 					Sandstone bricks = 27,
 					Mortar = 25,
@@ -8782,6 +8805,7 @@
 					<override mesh="DoubleBracingCenter2Mesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
 					<override mesh="DoubleBracingCenterMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/sand_doubleBracing.png"/>
 				<materials>
 					Sandstone bricks = 32,
 					Mortar = 30,
@@ -8801,6 +8825,7 @@
 					<override mesh="SupportDoubleCenter2Mesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
 					<override mesh="SupportDoubleCenterMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/sand_support.png"/>
 				<materials>
 					Sandstone bricks = 92,
 					Mortar = 90,
@@ -8836,6 +8861,7 @@
 					<override mesh="FloatingDoubleCenter2Mesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
 					<override mesh="FloatingDoubleCenterMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/sand_floating.png"/>
 				<materials>
 					Sandstone bricks = 12,
 					Mortar = 10,
@@ -8871,6 +8897,7 @@
 					<override mesh="StoneBridgeCrownCenter2Mesh" texture="Bridges/Stone/bridgeRounded.dds"/>
 					<override mesh="StoneBridgeCrownCenterMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/rounded_crown.png"/>
 				<materials>
 					Rounded stones = 12,
 					Mortar = 10,
@@ -8891,6 +8918,7 @@
 					<override mesh="AbutmentDoubleCenter2Mesh" texture="Bridges/Stone/bridgeRounded.dds"/>
 					<override mesh="StoneBridgeAbutmentCenterMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/rounded_abutmentL.png"/>
 				<materials>
 					Rounded stones = 42,
 					Mortar = 40,
@@ -8910,6 +8938,7 @@
 					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridgeRounded.dds"/>
 					<override mesh="DoubleAbutmentCenterMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/rounded_doubleAbutment.png"/>
 				<materials>
 					Rounded stones = 62,
 					Mortar = 60,
@@ -8929,6 +8958,7 @@
 					<override mesh="BracingDoubleCenter2Mesh" texture="Bridges/Stone/bridgeRounded.dds"/>
 					<override mesh="BracingDoubleCenterMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/rounded_bracingL.png"/>
 				<materials>
 					Rounded stones = 27,
 					Mortar = 25,
@@ -8948,6 +8978,7 @@
 					<override mesh="DoubleBracingCenter2Mesh" texture="Bridges/Stone/bridgeRounded.dds"/>
 					<override mesh="DoubleBracingCenterMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/rounded_doubleBracing.png"/>
 				<materials>
 					Rounded stones = 32,
 					Mortar = 30,
@@ -8967,6 +8998,7 @@
 					<override mesh="SupportDoubleCenter2Mesh" texture="Bridges/Stone/bridgeRounded.dds"/>
 					<override mesh="SupportDoubleCenterMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/rounded_support.png"/>
 				<materials>
 					Rounded stones = 92,
 					Mortar = 90,
@@ -9002,6 +9034,7 @@
 					<override mesh="FloatingDoubleCenter2Mesh" texture="Bridges/Stone/bridgeRounded.dds"/>
 					<override mesh="FloatingDoubleCenterMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/rounded_floating.png"/>
 				<materials>
 					Rounded stones = 12,
 					Mortar = 10,
@@ -9039,6 +9072,7 @@
 					<override mesh="StoneBridgeCrownCenter2Mesh" texture="Bridges/Stone/bridgeRendered.dds"/>
 					<override mesh="StoneBridgeCrownCenterMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/render_crown.png"/>
 				<materials>
 					Stone bricks = 12,
 					Mortar = 10,
@@ -9060,6 +9094,7 @@
 					<override mesh="AbutmentDoubleCenter2Mesh" texture="Bridges/Stone/bridgeRendered.dds"/>
 					<override mesh="StoneBridgeAbutmentCenterMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/render_abutmentL.png"/>
 				<materials>
 					Stone bricks = 42,
 					Mortar = 40,
@@ -9080,6 +9115,7 @@
 					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridgeRendered.dds"/>
 					<override mesh="DoubleAbutmentCenterMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/render_doubleAbutment.png"/>
 				<materials>
 					Stone bricks = 62,
 					Mortar = 60,
@@ -9100,6 +9136,7 @@
 					<override mesh="BracingDoubleCenter2Mesh" texture="Bridges/Stone/bridgeRendered.dds"/>
 					<override mesh="BracingDoubleCenterMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/render_bracingL.png"/>
 				<materials>
 					Stone bricks = 27,
 					Mortar = 25,
@@ -9120,6 +9157,7 @@
 					<override mesh="DoubleBracingCenter2Mesh" texture="Bridges/Stone/bridgeRendered.dds"/>
 					<override mesh="DoubleBracingCenterMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/render_doubleBracing.png"/>
 				<materials>
 					Stone bricks = 32,
 					Mortar = 30,
@@ -9140,6 +9178,7 @@
 					<override mesh="SupportDoubleCenter2Mesh" texture="Bridges/Stone/bridgeRendered.dds"/>
 					<override mesh="SupportDoubleCenterMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/render_support.png"/>
 				<materials>
 					Stone bricks = 92,
 					Mortar = 90,
@@ -9177,6 +9216,7 @@
 					<override mesh="FloatingDoubleCenter2Mesh" texture="Bridges/Stone/bridgeRendered.dds"/>
 					<override mesh="FloatingDoubleCenterMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/render_floating.png"/>
 				<materials>
 					Stone bricks = 12,
 					Mortar = 10,
@@ -9213,6 +9253,7 @@
 					<override mesh="StoneBridgeCrownCenter2Mesh" texture="Bridges/Stone/bridgeBrick.dds"/>
 					<override mesh="StoneBridgeCrownCenterMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/brick_crown.png"/>
 				<materials>
 					Pottery bricks = 12,
 					Mortar = 10,
@@ -9233,6 +9274,7 @@
 					<override mesh="AbutmentDoubleCenter2Mesh" texture="Bridges/Stone/bridgeBrick.dds"/>
 					<override mesh="StoneBridgeAbutmentCenterMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/brick_abutmentL.png"/>
 				<materials>
 					Pottery bricks = 42,
 					Mortar = 40,
@@ -9252,6 +9294,7 @@
 					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridgeBrick.dds"/>
 					<override mesh="DoubleAbutmentCenterMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/brick_doubleAbutment.png"/>
 				<materials>
 					Pottery bricks = 62,
 					Mortar = 60,
@@ -9271,6 +9314,7 @@
 					<override mesh="BracingDoubleCenter2Mesh" texture="Bridges/Stone/bridgeBrick.dds"/>
 					<override mesh="BracingDoubleCenterMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/brick_bracingL.png"/>
 				<materials>
 					Pottery bricks = 27,
 					Mortar = 25,
@@ -9290,6 +9334,7 @@
 					<override mesh="DoubleBracingCenter2Mesh" texture="Bridges/Stone/bridgeBrick.dds"/>
 					<override mesh="DoubleBracingCenterMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/brick_doubleBracing.png"/>
 				<materials>
 					Pottery bricks = 32,
 					Mortar = 30,
@@ -9309,6 +9354,7 @@
 					<override mesh="SupportDoubleCenter2Mesh" texture="Bridges/Stone/bridgeBrick.dds"/>
 					<override mesh="SupportDoubleCenterMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/brick_support.png"/>
 				<materials>
 					Pottery bricks = 92,
 					Mortar = 90,
@@ -9344,6 +9390,7 @@
 					<override mesh="FloatingDoubleCenter2Mesh" texture="Bridges/Stone/bridgeBrick.dds"/>
 					<override mesh="FloatingDoubleCenterMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
+				<tex location="Bridges/Icons/brick_floating.png"/>
 				<materials>
 					Pottery bricks = 12,
 					Mortar = 10,
@@ -9370,6 +9417,7 @@
 				<model location="Bridges/Marble/CrownMarble.wom" tag="narrow"/>
 				<model location="Bridges/Marble/CrownMarbleDouble.wom" tag="side"/>
 				<model location="Bridges/Marble/CrownMarbleCenter.wom" tag="center"/>
+				<tex location="Bridges/Icons/mCrown.png"/>
 				<materials>
 					Marble bricks = 12,
 					Mortar = 10,
@@ -9381,6 +9429,7 @@
 				<model location="Bridges/Marble/AbutmentMarble.wom" tag="narrow"/>
 				<model location="Bridges/Marble/AbutmentMarbleRight.wom" tag="side"/>
 				<model location="Bridges/Marble/AbutmentMarbleCenter.wom" tag="center"/>
+				<tex location="Bridges/Icons/mAbutmentL.png"/>
 				<materials>
 					Marble bricks = 42,
 					Mortar = 40,
@@ -9391,6 +9440,7 @@
 				<model location="Bridges/Marble/DoubleAbutmentMarble.wom" tag="narrow"/>
 				<model location="Bridges/Marble/DoubleAbutmentDouble.wom" tag="side"/>
 				<model location="Bridges/Marble/AbutmentDoubleCenter.wom" tag="center"/>
+				<tex location="Bridges/Icons/mDoubleAbutment.png"/>
 				<materials>
 					Marble bricks = 62,
 					Mortar = 60,
@@ -9401,6 +9451,7 @@
 				<model location="Bridges/Marble/BracingMarble.wom" tag="narrow"/>
 				<model location="Bridges/Marble/BracingMarbleRight.wom" tag="side"/>
 				<model location="Bridges/Marble/BracingMarbleCenter.wom" tag="center"/>
+				<tex location="Bridges/Icons/mBracingL.png"/>
 				<materials>
 					Marble bricks = 27,
 					Mortar = 25,
@@ -9411,6 +9462,7 @@
 				<model location="Bridges/Marble/DoubleBracingMarble.wom" tag="narrow"/>
 				<model location="Bridges/Marble/DoubleBracingDouble.wom" tag="side"/>
 				<model location="Bridges/Marble/BracingDoubleCenter.wom" tag="center"/>
+				<tex location="Bridges/Icons/mDoubleBracing.png"/>
 				<materials>
 					Marble bricks = 32,
 					Mortar = 30,
@@ -9421,6 +9473,7 @@
 				<model location="Bridges/Marble/SupportMarble.wom" tag="narrow"/>
 				<model location="Bridges/Marble/SupportMarbleRight.wom" tag="side"/>
 				<model location="Bridges/Marble/SupportMarbleCenter.wom" tag="center"/>
+				<tex location="Bridges/Icons/mSupport.png"/>
 				<materials>
 					Marble bricks = 92,
 					Mortar = 90,
@@ -9441,6 +9494,7 @@
 				<model location="Bridges/Marble/FloatingMarble.wom" tag="narrow"/>
 				<model location="Bridges/Marble/FloatingMarbleDouble.wom" tag="side"/>
 				<model location="Bridges/Marble/FloatingMarbleCenter.wom" tag="center"/>
+				<tex location="Bridges/Icons/mFloating.png"/>
 				<materials>
 					Marble bricks = 12,
 					Mortar = 10,
