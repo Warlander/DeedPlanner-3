@@ -8259,6 +8259,7 @@
 			<lane type="narrow"/>
 			<part type="crown">
 				<model location="Bridges/Rope/RopeBridgeCrown.wom" tag="narrow"/>
+				<tex location="Bridges/Icons/WoodCrown.png"/>
 				<materials>
 					Planks = 10,
 					Mooring ropes = 6,
@@ -8266,7 +8267,7 @@
 				</materials>
 			</part>
 			<part type="abutment">
-				<model location="Bridges/Rope/RopeBridgeCrown.wom" tag="narrow"/>
+				<model location="Bridges/Rope/RopeBridgeEnd.wom" tag="narrow"/>
 				<materials>
 					Planks = 10,
 					Mooring ropes = 6,
@@ -8276,7 +8277,7 @@
 				</materials>
 			</part>
 			<part type="doubleAbutment">
-				<model location="Bridges/Rope/RopeBridgeCrown.wom" tag="narrow"/>
+				<model location="Bridges/Rope/RopeBridgeDA.wom" tag="narrow"/>
 				<materials>
 					Planks = 10,
 					Mooring ropes = 6,
