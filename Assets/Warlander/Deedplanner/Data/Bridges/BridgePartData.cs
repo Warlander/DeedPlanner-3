@@ -10,6 +10,7 @@ namespace Warlander.Deedplanner.Data.Bridges
     public class BridgePartData
     {
         private readonly Dictionary<BridgePartSide, Model> models = new Dictionary<BridgePartSide, Model>();
+        private readonly TextureReference _uiSpriteReference;
         private readonly Materials materials;
         
         public BridgePartType PartType { get; }
@@ -24,6 +25,8 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
 
             PartType = type;
+            
+            TextureReference uiTex = null;
             
             foreach (XmlElement child in element)
             {
@@ -47,11 +50,16 @@ namespace Warlander.Deedplanner.Data.Bridges
                             Debug.LogError($"Bridge side enum parsing fail: {sideString}");
                         }
                         break;
+                    case "tex":
+                        uiTex = TextureReference.GetTextureReference(child);
+                        break;
                     case "materials":
                         materials = new Materials(child);
                         break;
                 }
             }
+
+            _uiSpriteReference = uiTex;
         }
 
         public Model GetModel(BridgePartSide side)
