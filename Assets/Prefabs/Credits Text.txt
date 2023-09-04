@@ -3,6 +3,7 @@
 <b>Maciej "Warlander" Cyranowicz</b> - lead developer, database maintainer
 <b>Aldur</b> - ideas, help with figuring out roof algorithm
 <b>Aum</b> - program logo used in standalone launcher
+<b>Drogos</b> - developer, database updates
 <b>Malena</b> - program logo used in loading screen, farm textures
 <b>Yldrania</b> - program icons
 <b>Xenonpl</b> - ideas, camera icons
@@ -10,6 +11,9 @@
 
 <b>Unity Technologies</b> - Unity engine
 <b>Steamworks.NET</b> - Steam API support
+<b>Zenject</b> - Dependency Injection
+<b>DOTween</b> - Tweening
+<b>Arvtesh (https://github.com/Arvtesh)</b> - UnityFX.Outline
 <b>gkngkc (https://github.com/gkngkc)</b> - Standalone File Browser
 <b>Bunny83 (https://github.com/Bunny83)</b> - UnityWindowsFileDrag-Drop
 Icons made by <b>Freepik, Gregor Cresnar, Smashicons, Cole Bemis</b> from <b>www.flaticon.com</b>
