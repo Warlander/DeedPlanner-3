@@ -25,7 +25,8 @@ namespace Warlander.Deedplanner.Gui.Windows
 
             foreach (InputActionMap inputMap in _input.asset.actionMaps)
             {
-                // Ignore input action map.
+                // We don't want to introduce deadlock situation where user changes/disables important UI input
+                // and can't use UI anymore - disable customizing it. This might be re-considered on users request.
                 if (inputMap == _input.UI.Submit.actionMap)
                 {
                     continue;
