@@ -8,6 +8,7 @@
 using Steamworks;
 #endif
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Gui;
@@ -134,7 +135,14 @@ namespace Warlander.Deedplanner.Updaters
         {
             // TODO: add auto-saving before quit logic
             _settings.Save();
-            Application.Quit();
+            if (Application.isEditor)
+            {
+                EditorApplication.ExitPlaymode();
+            }
+            else
+            {
+                Application.Quit();
+            }
         }
 
         private void PatreonOnClick()
