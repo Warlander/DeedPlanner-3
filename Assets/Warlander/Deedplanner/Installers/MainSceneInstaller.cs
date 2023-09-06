@@ -7,6 +7,7 @@ using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logic.Projectors;
+using Warlander.Deedplanner.Settings;
 using Zenject;
 
 namespace Warlander.Deedplanner.Installers
@@ -41,6 +42,7 @@ namespace Warlander.Deedplanner.Installers
             DPInput input = new DPInput();
             input.Enable();
             Container.Bind<DPInput>().FromInstance(input).AsSingle();
+            Container.BindInterfacesAndSelfTo<InputSettings>().AsSingle().NonLazy();
 
             Container.Bind<GameManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<MapProjectorManager>().FromComponentInNewPrefab(_mapProjectorManager).AsSingle();
