@@ -540,7 +540,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "FocusPosition",
+                    "name": "Focus Position",
                     "type": "Value",
                     "id": "cb61d857-6de3-40cb-9de4-68adb3ee47df",
                     "expectedControlType": "Vector2",
@@ -601,7 +601,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse and Keyboard",
-                    "action": "FocusPosition",
+                    "action": "Focus Position",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

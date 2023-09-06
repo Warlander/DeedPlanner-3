@@ -564,7 +564,7 @@ namespace Warlander.Deedplanner.Inputs
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""FocusPosition"",
+                    ""name"": ""Focus Position"",
                     ""type"": ""Value"",
                     ""id"": ""cb61d857-6de3-40cb-9de4-68adb3ee47df"",
                     ""expectedControlType"": ""Vector2"",
@@ -625,7 +625,7 @@ namespace Warlander.Deedplanner.Inputs
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse and Keyboard"",
-                    ""action"": ""FocusPosition"",
+                    ""action"": ""Focus Position"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1371,7 +1371,7 @@ namespace Warlander.Deedplanner.Inputs
             m_MapInputShared = asset.FindActionMap("Map Input Shared", throwIfNotFound: true);
             m_MapInputShared_Boost = m_MapInputShared.FindAction("Boost", throwIfNotFound: true);
             m_MapInputShared_AltBoost = m_MapInputShared.FindAction("Alt Boost", throwIfNotFound: true);
-            m_MapInputShared_FocusPosition = m_MapInputShared.FindAction("FocusPosition", throwIfNotFound: true);
+            m_MapInputShared_FocusPosition = m_MapInputShared.FindAction("Focus Position", throwIfNotFound: true);
             // Map Input 2D
             m_MapInput2D = asset.FindActionMap("Map Input 2D", throwIfNotFound: true);
             m_MapInput2D_MoveMap = m_MapInput2D.FindAction("Move Map", throwIfNotFound: true);
