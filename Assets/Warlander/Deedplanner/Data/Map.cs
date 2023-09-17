@@ -52,6 +52,11 @@ namespace Warlander.Deedplanner.Data
         public int LowestCaveHeight { get; private set; }
         public int HighestCaveHeight { get; private set; }
 
+        public bool RenderDecorations => _gameManager.RenderDecorations;
+        public bool RenderTrees => _gameManager.RenderTrees;
+        public bool RenderBushes => _gameManager.RenderBushes;
+        public bool RenderShips => _gameManager.RenderShips;
+
         public CommandManager CommandManager { get; set; } = new CommandManager(100);
 
         public Transform PlaneLineRoot { get; private set; }
@@ -59,68 +64,6 @@ namespace Warlander.Deedplanner.Data
         private List<Bridge> bridges = new List<Bridge>();
         
         private bool needsRoofUpdate = false;
-
-        private bool renderDecorations = true;
-        private bool renderTrees = true;
-        private bool renderBushes = true;
-        private bool renderShips = true;
-
-        public bool RenderDecorations
-        {
-            get => renderDecorations;
-            set
-            {
-                if (renderDecorations == value)
-                {
-                    return;
-                }
-                renderDecorations = value;
-                RefreshAllTiles();
-            }
-        }
-
-        public bool RenderTrees
-        {
-            get => renderTrees;
-            set
-            {
-                if (renderTrees == value)
-                {
-                    return;
-                }
-                renderTrees = value;
-                RefreshAllTiles();
-            }
-        }
-
-        public bool RenderBushes
-        {
-            get => renderBushes;
-            set
-            {
-                if (renderBushes == value)
-                {
-                    return;
-                }
-                renderBushes = value;
-                RefreshAllTiles();
-            }
-        }
-
-        public bool RenderShips
-        {
-            get => renderShips;
-            set
-            {
-                if (renderShips == value)
-                {
-                    return;
-                }
-
-                renderShips = value;
-                RefreshAllTiles();
-            }
-        }
 
         public Tile this[int x, int y]
         {
@@ -165,6 +108,11 @@ namespace Warlander.Deedplanner.Data
                 renderGrid = value;
                 UpdateFloorsRendering();
             }
+        }
+
+        private void Start()
+        {
+            _gameManager.RenderSettingsChanged += GameManagerOnRenderSettingsChanged;
         }
 
         public void Initialize(Map originalMap, int addLeft, int addRight, int addBottom, int addTop)
@@ -708,6 +656,16 @@ namespace Warlander.Deedplanner.Data
         {
             return tile.x >= 0 && tile.x < Width
                 && tile.y >= 0 && tile.y < Height;
+        }
+        
+        private void GameManagerOnRenderSettingsChanged()
+        {
+            RefreshAllTiles();
+        }
+
+        private void OnDestroy()
+        {
+            _gameManager.RenderSettingsChanged -= GameManagerOnRenderSettingsChanged;
         }
     }
 }

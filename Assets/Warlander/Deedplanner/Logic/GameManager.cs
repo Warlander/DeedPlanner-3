@@ -20,22 +20,23 @@ namespace Warlander.Deedplanner.Logic
         [Inject] private IInstantiator _instantiator;
         [Inject] private DPInput _input;
 
-        public event Action MapInitialized;
-        
-        public Map Map { get; private set; }
-
         [SerializeField] private OverlayMesh overlayMeshPrefab = null;
         [SerializeField] private Mesh heightmapHandleMesh = null;
 
         [SerializeField] private AbstractUpdater[] updaters = null;
+        
+        public event Action MapInitialized;
+        public event Action RenderSettingsChanged;
+        
+        public Map Map { get; private set; }
 
         public OverlayMesh OverlayMeshPrefab => overlayMeshPrefab;
         public Mesh HeightmapHandleMesh => heightmapHandleMesh;
 
-        private bool renderDecorations = true;
-        private bool renderTrees = true;
-        private bool renderBushes = true;
-        private bool renderShips = true;
+        public bool RenderDecorations { get; private set; } = true;
+        public bool RenderTrees { get; private set; } = true;
+        public bool RenderBushes { get; private set; } = true;
+        public bool RenderShips { get; private set; } = true;
         
         private void Start()
         {
@@ -64,7 +65,6 @@ namespace Warlander.Deedplanner.Logic
             
             Map = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             Map.Initialize(width, height);
-            ApplyPropertiesToMap(Map);
             MapInitialized?.Invoke();
         }
 
@@ -75,7 +75,6 @@ namespace Warlander.Deedplanner.Logic
             newMap.Initialize(Map, left, right, bottom, top);
             Destroy(Map.gameObject);
             Map = newMap;
-            ApplyPropertiesToMap(Map);
             MapInitialized?.Invoke();
         }
 
@@ -91,7 +90,6 @@ namespace Warlander.Deedplanner.Logic
             
             Map = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             Map.Initialize(width, height);
-            ApplyPropertiesToMap(Map);
             MapInitialized?.Invoke();
         }
 
@@ -137,18 +135,9 @@ namespace Warlander.Deedplanner.Logic
             
             Map = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             Map.Initialize(doc);
-            ApplyPropertiesToMap(Map);
             MapInitialized?.Invoke();
         }
-
-        private void ApplyPropertiesToMap(Map map)
-        {
-            map.RenderDecorations = renderDecorations;
-            map.RenderTrees = renderTrees;
-            map.RenderBushes = renderBushes;
-            map.RenderShips = renderShips;
-        }
-
+        
         private byte[] DecompressGzip(byte[] gzip)
         {
             using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
@@ -192,26 +181,26 @@ namespace Warlander.Deedplanner.Logic
 
         public void OnDecorationsVisibilityChange(bool enable)
         {
-            renderDecorations = enable;
-            Map.RenderDecorations = renderDecorations;
+            RenderDecorations = enable;
+            RenderSettingsChanged?.Invoke();
         }
 
         public void OnTreeVisibilityChange(bool enable)
         {
-            renderTrees = enable;
-            Map.RenderTrees = renderTrees;
+            RenderTrees = enable;
+            RenderSettingsChanged?.Invoke();
         }
 
         public void OnBushVisibilityChange(bool enable)
         {
-            renderBushes = enable;
-            Map.RenderBushes = renderBushes;
+            RenderBushes = enable;
+            RenderSettingsChanged?.Invoke();
         }
 
         public void OnShipsVisibilityChange(bool enable)
         {
-            renderShips = enable;
-            Map.RenderShips = renderShips;
+            RenderShips = enable;
+            RenderSettingsChanged?.Invoke();
         }
     }
 }
