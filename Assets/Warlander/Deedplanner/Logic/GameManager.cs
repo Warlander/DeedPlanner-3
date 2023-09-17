@@ -19,11 +19,10 @@ namespace Warlander.Deedplanner.Logic
     {
         [Inject] private IInstantiator _instantiator;
         [Inject] private DPInput _input;
+        [Inject] private AbstractUpdater[] _updaters;
 
         [SerializeField] private OverlayMesh overlayMeshPrefab = null;
         [SerializeField] private Mesh heightmapHandleMesh = null;
-
-        [SerializeField] private AbstractUpdater[] updaters = null;
         
         public event Action MapInitialized;
         public event Action RenderSettingsChanged;
@@ -168,7 +167,7 @@ namespace Warlander.Deedplanner.Logic
         
         private void OnTabChange(Tab tab)
         { 
-            foreach (AbstractUpdater updater in updaters)
+            foreach (AbstractUpdater updater in _updaters)
             {
                 CheckUpdater(updater, tab);
             }

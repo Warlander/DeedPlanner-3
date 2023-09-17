@@ -23681,6 +23681,19 @@ MonoBehaviour:
   _cameraCoordinator: {fileID: 1890273981}
   _mapProjectorManager: {fileID: 4600826319021692651, guid: 96c65a1d2a7e4c2428356c91263c4fd0,
     type: 3}
+  _groundUpdater: {fileID: 1200891937}
+  _caveUpdater: {fileID: 650922445}
+  _heightUpdater: {fileID: 1165461625}
+  _floorsUpdater: {fileID: 716036715}
+  _wallUpdater: {fileID: 835980717}
+  _roofUpdater: {fileID: 103496097}
+  _decorationUpdater: {fileID: 1604227846}
+  _labelUpdater: {fileID: 211449320}
+  _borderUpdater: {fileID: 1828645446}
+  _bridgesUpdater: {fileID: 475321930}
+  _mirrorUpdater: {fileID: 205400789}
+  _toolsUpdater: {fileID: 2018367164}
+  _menuUpdater: {fileID: 860138627}
 --- !u!114 &1412727819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29656,20 +29669,6 @@ MonoBehaviour:
   overlayMeshPrefab: {fileID: 3792902265302357509, guid: 1f351ee0d6f835246b4e6c880691257a,
     type: 3}
   heightmapHandleMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  updaters:
-  - {fileID: 1200891937}
-  - {fileID: 650922445}
-  - {fileID: 1165461625}
-  - {fileID: 716036715}
-  - {fileID: 835980717}
-  - {fileID: 103496097}
-  - {fileID: 1604227846}
-  - {fileID: 211449320}
-  - {fileID: 1828645446}
-  - {fileID: 475321930}
-  - {fileID: 205400789}
-  - {fileID: 2018367164}
-  - {fileID: 860138627}
 --- !u!1 &1728524857 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
