@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-namespace Warlander.Deedplanner.Logic.Projectors
+namespace Warlander.Deedplanner.Graphics.Projectors
 {
     public class MapProjectorManager : MonoBehaviour
     {

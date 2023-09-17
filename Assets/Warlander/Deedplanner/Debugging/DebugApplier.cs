@@ -2,8 +2,8 @@
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
+using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Gui;
-using Warlander.Deedplanner.Logic.Projectors;
 using Zenject;
 
 namespace Warlander.Deedplanner.Debugging

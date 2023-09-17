@@ -1,10 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Zenject;
 
-namespace Warlander.Deedplanner.Logic.Projectors
+namespace Warlander.Deedplanner.Graphics.Projectors
 {
     public class MapProjector : MonoBehaviour
     {

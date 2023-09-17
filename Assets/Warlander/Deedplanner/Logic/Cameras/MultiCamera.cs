@@ -9,11 +9,11 @@ using UnityStandardAssets.Water;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
-using Warlander.Deedplanner.Logic.Projectors;
 using Warlander.Deedplanner.Settings;
 using Zenject;
 

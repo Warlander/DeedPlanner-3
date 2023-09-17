@@ -1,4 +1,4 @@
-namespace Warlander.Deedplanner.Logic.Projectors
+namespace Warlander.Deedplanner.Graphics.Projectors
 {
     public enum PlaneAlignment
     {
