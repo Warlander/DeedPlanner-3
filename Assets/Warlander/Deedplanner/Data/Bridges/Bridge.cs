@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Xml;
 using UnityEngine;
+using UnityEngine.InputSystem.Utilities;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
@@ -297,6 +299,24 @@ namespace Warlander.Deedplanner.Data.Bridges
                     renderer.SetPropertyBlock(propertyBlock);
                 }
             }
+        }
+
+        /// <summary>
+        /// Bridge is longitudinal if going south-north instead of west-east.
+        /// </summary>
+        public bool IsLongitudinal()
+        {
+            return verticalOrientation;
+        }
+
+        public ReadOnlyCollection<BridgePart> GetBridgeParts()
+        {
+            return bridgeParts.AsReadOnly();
+        }
+
+        public BridgePart GetBridgePart(int index)
+        {
+            return bridgeParts[index];
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)

@@ -66,6 +66,11 @@ namespace Warlander.Deedplanner.Data.Bridges
         {
             return models[side];
         }
+
+        public TextureReference GetUISprite()
+        {
+            return _uiSpriteReference;
+        }
         
         public void AddCost(Materials existingMaterials)
         {

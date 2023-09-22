@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Warlander.Deedplanner.Graphics;
 
 namespace Warlander.Deedplanner.Data.Bridges
@@ -29,6 +30,11 @@ namespace Warlander.Deedplanner.Data.Bridges
         public Model GetModelForPart(BridgePartType type, BridgePartSide side)
         {
             return GetDataForType(type).GetModel(side);
+        }
+
+        public TextureReference GetUISpriteForPart(BridgePartType type)
+        {
+            return GetDataForType(type).GetUISprite();
         }
         
         public Materials GetMaterialsForPart(BridgePartType type, BridgePartSide side)

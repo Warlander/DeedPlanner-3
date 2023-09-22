@@ -184,6 +184,11 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
             return bounds;
         }
+
+        public TextureReference GetUISprite()
+        {
+            return ParentBridge.Data.GetUISpriteForPart(partType);
+        }
         
         private void OnDestroy()
         {

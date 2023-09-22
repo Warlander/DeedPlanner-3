@@ -19,8 +19,11 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPInput _input;
         [Inject] private TooltipHandler _tooltipHandler;
 
+        public event Action SelectedBridgeChanged;
+        
+        public Bridge SelectedBridge { get; private set; }
+        
         private Bridge _lastFrameHoveredBridge;
-        private Bridge _selectedBridge;
 
         private void OnEnable()
         {
@@ -86,7 +89,7 @@ namespace Warlander.Deedplanner.Updaters
 
         private bool IsSelectedBridge(Bridge bridge)
         {
-            return bridge != null && bridge == _selectedBridge;
+            return bridge != null && bridge == SelectedBridge;
         }
 
         private void OnBridgeClicked(Bridge bridge)
@@ -97,29 +100,31 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
             
-            if (_selectedBridge != null)
+            if (SelectedBridge != null)
             {
-                _selectedBridge.DisableHighlighting();
+                SelectedBridge.DisableHighlighting();
             }
 
-            _selectedBridge = bridge;
-            _selectedBridge.EnableHighlighting(OutlineType.Positive);
+            SelectedBridge = bridge;
+            SelectedBridge.EnableHighlighting(OutlineType.Positive);
+            SelectedBridgeChanged?.Invoke();
         }
 
         private void OnBridgeDeselected()
         {
-            if (_selectedBridge != null)
+            if (SelectedBridge != null)
             {
-                if (_selectedBridge == _lastFrameHoveredBridge)
+                if (SelectedBridge == _lastFrameHoveredBridge)
                 {
-                    _selectedBridge.EnableHighlighting(OutlineType.Neutral);
+                    SelectedBridge.EnableHighlighting(OutlineType.Neutral);
                 }
                 else
                 {
-                    _selectedBridge.DisableHighlighting();
+                    SelectedBridge.DisableHighlighting();
                 }
 
-                _selectedBridge = null;
+                SelectedBridge = null;
+                SelectedBridgeChanged?.Invoke();
             }
         }
 
@@ -131,11 +136,12 @@ namespace Warlander.Deedplanner.Updaters
             }
             _lastFrameHoveredBridge = null;
 
-            if (_selectedBridge != null)
+            if (SelectedBridge != null)
             {
-                _selectedBridge.DisableHighlighting();
+                SelectedBridge.DisableHighlighting();
             }
-            _selectedBridge = null;
+            SelectedBridge = null;
+            SelectedBridgeChanged?.Invoke();
         }
     }
 }
