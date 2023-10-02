@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Warlander.UI.Windows
@@ -8,7 +7,7 @@ namespace Warlander.UI.Windows
     /// <summary>
     /// Overall idea of windows:
     /// - Windows are always created via WindowCoordinator which makes sure windows play nice with each other.
-    /// - Most windowss typically have at least 3 MonoBehaviours:
+    /// - Most windows typically have at least 3 MonoBehaviours:
     ///     - Window itself, handles core functionality of the window.
     ///     - Implementation(s) of WindowAnimator for window showing and closing.
     ///       They can be separate or the same behaviour depending on implementation and expected animations.

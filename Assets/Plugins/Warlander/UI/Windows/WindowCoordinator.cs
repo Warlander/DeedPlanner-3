@@ -67,7 +67,7 @@ namespace Warlander.UI.Windows
             
             _windows[windowIndex] = window;
 
-            // Make sub-container so dialogs can request to have Window injected.
+            // Make sub-container so windows can request to have Window injected.
             DiContainer subContainer = _diContainer.CreateSubContainer();
             subContainer.Bind<Window>().FromInstance(window);
             
