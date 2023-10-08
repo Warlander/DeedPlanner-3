@@ -28,11 +28,21 @@ namespace Warlander.Deedplanner.Gui.Widgets
         {
             _inputAction = inputAction;
             _bindingIndex = bindingIndex;
-            
-            _actionNameText.text = GetBindingName();
-            _currentKeybindText.text = inputAction.bindings[bindingIndex].ToDisplayString();
+
+            RefreshUI();
         }
 
+        public void RefreshUI()
+        {
+            if (_inputAction == null)
+            {
+                return;
+            }
+            
+            _actionNameText.text = GetBindingName();
+            _currentKeybindText.text = _inputAction.bindings[_bindingIndex].ToDisplayString();
+        }
+        
         public string GetBindingName()
         {
             string bindingName = _inputAction.bindings[_bindingIndex].name;
