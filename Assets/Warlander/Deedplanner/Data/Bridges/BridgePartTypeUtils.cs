@@ -48,6 +48,27 @@ namespace Warlander.Deedplanner.Data.Bridges
             throw new ArgumentException("No letter for bridge part type: " + type);
         }
 
+        public static int GetSupportedDistanceFromSupport(this BridgePartType type)
+        {
+            switch (type)
+            {
+                case BridgePartType.Floating:
+                    return 1;
+                case BridgePartType.Abutment: case BridgePartType.DoubleAbutment:
+                    return 1;
+                case BridgePartType.Bracing: case BridgePartType.DoubleBracing:
+                    return 2;
+                case BridgePartType.Crown:
+                    return 3;
+                case BridgePartType.Support:
+                    return 0;
+                case BridgePartType.Extension:
+                    throw new ArgumentException("Extension cannot support distance from support. If it's included in calculations somewhere, that's a bug.");
+                default:
+                    throw new ArgumentException($"Unknown distance from support for part: {type}.");
+            }
+        }
+
         public static BridgePartType[] DecodeSegments(string segmentsString)
         {
             return segmentsString.ToCharArray().Select(FromChar).ToArray();
