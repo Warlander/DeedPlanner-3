@@ -16,9 +16,8 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         [SerializeField] private Transform _bridgeSegmentRoot;
         [SerializeField] private Image _bridgeStartImage;
         [SerializeField] private Image _bridgeEndImage;
-        [SerializeField] private Sprite _bridgeStartSprite;
-        [SerializeField] private Sprite _bridgeEndSprite;
         
+        [SerializeField] private Sprite _incorrectSectionSprite;
         [SerializeField] private Sprite _northSprite;
         [SerializeField] private Sprite _southSprite;
         [SerializeField] private Sprite _westSprite;
@@ -104,7 +103,10 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             {
                 BridgeSegmentItem item = Instantiate(_bridgeSegmentPrefab, _bridgeSegmentRoot);
                 _bridgeSegments.Add(item);
+                item.gameObject.SetActive(true);
             }
+            
+            _bridgeEndImage.transform.SetAsLastSibling();
 
             UpdateBridge();
         }
