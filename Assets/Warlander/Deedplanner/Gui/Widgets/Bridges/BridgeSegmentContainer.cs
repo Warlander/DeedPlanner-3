@@ -115,7 +115,8 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         {
             for (int i = 0; i < _bridgeSegments.Count; i++)
             {
-                _bridgeSegments[i].Set(_displayedBridge.GetBridgePart(i).GetUISprite());
+                _bridgeSegments[i].Set(
+                    _displayedBridge.GetBridgePart(i).GetUISprite(), _displayedBridge.GetBridgePart(i).Mirrored);
             }
         }
 

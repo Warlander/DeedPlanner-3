@@ -11,6 +11,7 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         public Materials Materials => ParentBridge.Data.GetMaterialsForPart(partType, partSide);
         public BridgePartType PartType => partType;
+        public bool Mirrored => orientation == EntityOrientation.Right || orientation == EntityOrientation.Up;
 
         private BridgePartType partType;
         private BridgePartSide partSide;
@@ -35,10 +36,8 @@ namespace Warlander.Deedplanner.Data.Bridges
             {
                 _selectionMeshCollider = gameObject.AddComponent<MeshCollider>();
             }
-
-            bool isRotatedAwayFromOrigin =
-                orientation == EntityOrientation.Right || orientation == EntityOrientation.Up;
-            _skew = isRotatedAwayFromOrigin ? -skew : skew;
+            
+            _skew = Mirrored ? -skew : skew;
             
             _selectionMesh = CreateSelectionMesh(_skew);
             _selectionMeshCollider.sharedMesh = _selectionMesh;
