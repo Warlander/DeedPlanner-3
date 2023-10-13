@@ -13,7 +13,7 @@ namespace Warlander.UI.Windows
         [Inject] private DiContainer _diContainer;
 
         private Dictionary<int, Window> _windows = new Dictionary<int, Window>();
-        private List<Window> _spawnedPrefabInstances = new List<Window>();
+        private List<string> _spawnedPrefabInstances = new List<string>();
 
         /// <summary>
         /// Won't create window instance if there's at least one window of given type already instanced.
@@ -48,15 +48,15 @@ namespace Warlander.UI.Windows
         
         private T CreateWindow<T>(string windowPath, WindowLayer? windowLayer = null, bool exclusive = false) where T : MonoBehaviour
         {
-            Window windowPrefab = Resources.Load<Window>(windowPath);
-            windowPrefab.gameObject.SetActive(false);
-            
-            if (exclusive && _spawnedPrefabInstances.Contains(windowPrefab))
+            if (exclusive && _spawnedPrefabInstances.Contains(windowPath))
             {
                 return null;
             }
             
-            _spawnedPrefabInstances.Add(windowPrefab);
+            Window windowPrefab = Resources.Load<Window>(windowPath);
+            windowPrefab.gameObject.SetActive(false);
+            
+            _spawnedPrefabInstances.Add(windowPath);
 
             Window window = Object.Instantiate(windowPrefab, _diContainer.DefaultParent);
 
@@ -79,7 +79,7 @@ namespace Warlander.UI.Windows
             window.Closed += () =>
             {
                 RemoveWindow(windowIndex);
-                _spawnedPrefabInstances.Remove(windowPrefab);
+                _spawnedPrefabInstances.Remove(windowPath);
             };
             
             window.Show();
