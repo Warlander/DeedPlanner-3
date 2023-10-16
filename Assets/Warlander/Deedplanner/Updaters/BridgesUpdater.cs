@@ -105,9 +105,13 @@ namespace Warlander.Deedplanner.Updaters
                 SelectedBridge.DisableHighlighting();
             }
 
+            bool bridgeChanged = SelectedBridge != bridge;
             SelectedBridge = bridge;
             SelectedBridge.EnableHighlighting(OutlineType.Positive);
-            SelectedBridgeChanged?.Invoke();
+            if (bridgeChanged)
+            {
+                SelectedBridgeChanged?.Invoke();
+            }
         }
 
         private void OnBridgeDeselected()
@@ -123,8 +127,12 @@ namespace Warlander.Deedplanner.Updaters
                     SelectedBridge.DisableHighlighting();
                 }
 
+                bool bridgeChanged = SelectedBridge != null;
                 SelectedBridge = null;
-                SelectedBridgeChanged?.Invoke();
+                if (bridgeChanged)
+                {
+                    SelectedBridgeChanged?.Invoke();
+                }
             }
         }
 
