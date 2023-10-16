@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Updaters;
+using Warlander.UI.Utils;
 using Zenject;
 
 namespace Warlander.Deedplanner.Gui.Widgets.Bridges
@@ -13,6 +14,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         [Inject] private BridgesUpdater _bridgesUpdater;
         
         [SerializeField] private BridgeSegmentItem _bridgeSegmentPrefab;
+        [SerializeField] private PivotAnimator _pivotAnimator;
         [SerializeField] private Transform _bridgeSegmentRoot;
         [SerializeField] private Image _bridgeStartImage;
         [SerializeField] private Image _bridgeEndImage;
@@ -23,8 +25,6 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         [SerializeField] private Sprite _westSprite;
         [SerializeField] private Sprite _eastSprite;
 
-        public event Action<bool> ShouldShowChanged;
-
         public bool ShouldShow => _displayedBridge != null;
 
         private Bridge DisplayedBridge
@@ -33,7 +33,6 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             set
             {
                 _displayedBridge = value;
-                ShouldShowChanged?.Invoke(ShouldShow);
             }
         }
 
@@ -55,16 +54,16 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             SetBridge(_bridgesUpdater.SelectedBridge);
         }
 
-        private  void SetBridge(Bridge bridge)
+        private void SetBridge(Bridge bridge)
         {
             DisplayedBridge = bridge;
             RefreshUI();
-            
-            ShouldShowChanged?.Invoke(ShouldShow);
         }
 
         private void RefreshUI()
         {
+            _pivotAnimator.SetShown(DisplayedBridge != null);
+            
             if (DisplayedBridge == null)
             {
                 // Display old bridge while no bridge is selected.
