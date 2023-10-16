@@ -26,6 +26,12 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         {
             spriteReference.LoadOrGetSprite(sprite =>
             {
+                if (this == null)
+                {
+                    // Object was destroyed, do nothing.
+                    return;
+                }
+                
                 _bridgePartImage.sprite = sprite;
                 int mirroredImageScale = mirrored ? -1 : 1;
                 transform.localScale = new Vector3(mirroredImageScale, 1, 1);
