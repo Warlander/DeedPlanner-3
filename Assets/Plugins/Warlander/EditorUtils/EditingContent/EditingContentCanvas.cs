@@ -27,9 +27,9 @@ namespace Warlander.UI.Utils
                 {
                     Transform childTransform = transform.GetChild(0);
                     Canvas childCanvas = childTransform.GetComponent<Canvas>();
-                    childCanvas.gameObject.SetActive(true);
                     if (childCanvas != null)
                     {
+                        childCanvas.gameObject.SetActive(true);
                         childTransform.SetParent(transform.parent);
                         DestroyImmediate(gameObject);
                     }
