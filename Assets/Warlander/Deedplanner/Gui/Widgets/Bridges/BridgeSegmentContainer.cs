@@ -11,6 +11,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 {
     public class BridgeSegmentContainer : MonoBehaviour
     {
+        [Inject] private IInstantiator _instantiator;
         [Inject] private BridgesUpdater _bridgesUpdater;
         
         [SerializeField] private BridgeSegmentItem _bridgeSegmentPrefab;
@@ -100,7 +101,8 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             var parts = _displayedBridge.GetBridgeParts();
             for (int i = 0; i < parts.Count; i++)
             {
-                BridgeSegmentItem item = Instantiate(_bridgeSegmentPrefab, _bridgeSegmentRoot);
+                BridgeSegmentItem item =
+                    _instantiator.InstantiatePrefabForComponent<BridgeSegmentItem>(_bridgeSegmentPrefab, _bridgeSegmentRoot);
                 _bridgeSegments.Add(item);
                 item.gameObject.SetActive(true);
             }
@@ -114,8 +116,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         {
             for (int i = 0; i < _bridgeSegments.Count; i++)
             {
-                _bridgeSegments[i].Set(
-                    _displayedBridge.GetBridgePart(i).GetUISprite(), _displayedBridge.GetBridgePart(i).Mirrored);
+                _bridgeSegments[i].Set(_displayedBridge.GetBridgePart(i));
             }
         }
 

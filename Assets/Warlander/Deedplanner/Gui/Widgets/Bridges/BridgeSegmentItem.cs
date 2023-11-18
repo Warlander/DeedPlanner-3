@@ -1,16 +1,25 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Gui.Tooltips;
+using Warlander.UI.Utils;
+using Zenject;
 
 namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 {
     public class BridgeSegmentItem : MonoBehaviour
     {
+        [Inject] private TooltipHandler _tooltipHandler;
+        
         [SerializeField] private Button _button;
         [SerializeField] private Image _bridgePartImage;
+        [SerializeField] private PointerOverDetector _pointerOverDetector;
 
         public event Action Clicked;
+
+        private BridgePart _shownPart;
 
         private void Awake()
         {
@@ -21,10 +30,20 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         {
             Clicked?.Invoke();
         }
-        
-        public void Set(TextureReference spriteReference, bool mirrored)
+
+        private void Update()
         {
-            spriteReference.LoadOrGetSprite(sprite =>
+            if (_pointerOverDetector.IsPointerOver)
+            {
+                _tooltipHandler.ShowTooltipText(_shownPart.PartType.ToHumanFriendlyName());
+            }
+        }
+
+        public void Set(BridgePart bridgePart)
+        {
+            _shownPart = bridgePart;
+            
+            bridgePart.GetUISprite().LoadOrGetSprite(sprite =>
             {
                 if (this == null)
                 {
@@ -33,7 +52,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
                 }
                 
                 _bridgePartImage.sprite = sprite;
-                int mirroredImageScale = mirrored ? -1 : 1;
+                int mirroredImageScale = bridgePart.Mirrored ? -1 : 1;
                 transform.localScale = new Vector3(mirroredImageScale, 1, 1);
             });
         }

@@ -23097,6 +23097,8 @@ GameObject:
   - component: {fileID: 1339864991}
   - component: {fileID: 1339864990}
   - component: {fileID: 1339864994}
+  - component: {fileID: 1339864995}
+  - component: {fileID: 1339864996}
   m_Layer: 5
   m_Name: BridgeSegmentItem
   m_TagString: Untagged
@@ -23181,6 +23183,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _button: {fileID: 1339864990}
   _bridgePartImage: {fileID: 1339864994}
+  _pointerOverDetector: {fileID: 1339864995}
 --- !u!222 &1339864993
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -23219,6 +23222,34 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1339864995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339864988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31426b6f4f314083926a1e6272b5b47d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1339864996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339864988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: 'click on bridge segment to turn it into support
+
+    (flat bridges only)'
+  showDelay: 2
 --- !u!1 &1359362834
 GameObject:
   m_ObjectHideFlags: 0

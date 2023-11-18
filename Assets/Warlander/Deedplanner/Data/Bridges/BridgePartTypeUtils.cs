@@ -48,6 +48,31 @@ namespace Warlander.Deedplanner.Data.Bridges
             throw new ArgumentException("No letter for bridge part type: " + type);
         }
 
+        public static string ToHumanFriendlyName(this BridgePartType type)
+        {
+            switch (type)
+            {
+                case BridgePartType.Floating:
+                    return "floating";
+                case BridgePartType.Abutment:
+                    return "abutment";
+                case BridgePartType.Bracing:
+                    return "bracing";
+                case BridgePartType.Crown:
+                    return "crown";
+                case BridgePartType.DoubleBracing:
+                    return "double bracing";
+                case BridgePartType.DoubleAbutment:
+                    return "double abutment";
+                case BridgePartType.Support:
+                    return "support";
+                case BridgePartType.Extension:
+                    return "extension";
+            }
+            
+            throw new ArgumentException("No name for bridge part type: " + type);
+        }
+
         public static int GetSupportedDistanceFromSupport(this BridgePartType type)
         {
             switch (type)
