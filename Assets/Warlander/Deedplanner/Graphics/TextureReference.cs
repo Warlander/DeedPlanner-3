@@ -136,6 +136,15 @@ namespace Warlander.Deedplanner.Graphics
                     }
                 });
             }
+            else
+            {
+                if (spriteLoadRequests == null)
+                {
+                    spriteLoadRequests = new List<Action<Sprite>>();
+                }
+                
+                spriteLoadRequests.Add(callback);
+            }
         }
 
         private void OnTextureLoaded(Texture2D tex)
@@ -165,6 +174,17 @@ namespace Warlander.Deedplanner.Graphics
                 
                 textureLoadRequests.Clear();
                 textureLoadRequests = null;
+            }
+
+            if (spriteLoadRequests != null)
+            {
+                foreach (Action<Sprite> loadRequest in spriteLoadRequests)
+                {
+                    loadRequest(sprite);
+                }
+                
+                spriteLoadRequests.Clear();
+                spriteLoadRequests = null;
             }
         }
     }
