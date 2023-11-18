@@ -34,12 +34,12 @@ namespace Warlander.UI.Utils
 
         private void AnimatePivotChange(bool shown, bool instant)
         {
+            this.DOComplete(true);
+            
             if (shown)
             {
                 gameObject.SetActive(true);
             }
-
-            this.DOComplete(true);
             
             _transform.DOPivot(GetPivotForShowState(shown), _duration)
                 .SetEase(_ease)
