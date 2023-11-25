@@ -162,6 +162,7 @@ SpriteAtlas:
     - 5a5456d1fef7fea44aa9046aff2ce04f: 21300000
     - b8be9962003f61c4fa348932b215fdb3: 21300000
     - 562cccc27ae301743a9434f27825accf: 21300000
+    - b7584be23d91c9a4397bddf002ffa1a7: 21300000
     - 5185f0332b488a844a1b53da9e34df83: 21300000
     - 54b4d733ea224f64891d21746bda01e0: 21300000
     - b25deb83b3ac27f46b91dcee3759f7f0: 21300000
@@ -170,6 +171,7 @@ SpriteAtlas:
     - 1fe68594062efe84f800340493495702: 21300000
     - d0f76f05fc63c35458cde07e5fb7639f: 21300000
     - 5a634e15b62faee4c8ada7465bd76205: 21300000
+    - 0eb0c325ba61ae74b933e7f3b1ca4c83: 21300000
     - 1ce817b554ac0fc499c8f21ecd6dec10: 21300000
     - 62113bd50b934ff4993219fe297c3ced: 21300000
     - b7b3e216e94407b48847dec3e306cac8: 21300000
@@ -314,6 +316,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5a5456d1fef7fea44aa9046aff2ce04f, type: 3}
   - {fileID: 21300000, guid: b8be9962003f61c4fa348932b215fdb3, type: 3}
   - {fileID: 21300000, guid: 562cccc27ae301743a9434f27825accf, type: 3}
+  - {fileID: 21300000, guid: b7584be23d91c9a4397bddf002ffa1a7, type: 3}
   - {fileID: 21300000, guid: 5185f0332b488a844a1b53da9e34df83, type: 3}
   - {fileID: 21300000, guid: 54b4d733ea224f64891d21746bda01e0, type: 3}
   - {fileID: 21300000, guid: b25deb83b3ac27f46b91dcee3759f7f0, type: 3}
@@ -322,6 +325,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1fe68594062efe84f800340493495702, type: 3}
   - {fileID: 21300000, guid: d0f76f05fc63c35458cde07e5fb7639f, type: 3}
   - {fileID: 21300000, guid: 5a634e15b62faee4c8ada7465bd76205, type: 3}
+  - {fileID: 21300000, guid: 0eb0c325ba61ae74b933e7f3b1ca4c83, type: 3}
   - {fileID: 21300000, guid: 1ce817b554ac0fc499c8f21ecd6dec10, type: 3}
   - {fileID: 21300000, guid: 62113bd50b934ff4993219fe297c3ced, type: 3}
   - {fileID: 21300000, guid: b7b3e216e94407b48847dec3e306cac8, type: 3}
@@ -465,6 +469,7 @@ SpriteAtlas:
   - 2ScrVert
   - 007-bridge
   - 006-armchair
+  - sqare-button-selected
   - Paypal Button
   - 019-photo-camera-configuration-symbol-for-interface-with-a-gear-behind
   - 4_Exclude
@@ -473,6 +478,7 @@ SpriteAtlas:
   - N
   - 010-bird
   - 011-horizontal-symmetry
+  - square-button
   - 004-flowers
   - 021-save
   - E
