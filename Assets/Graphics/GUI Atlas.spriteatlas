@@ -181,6 +181,7 @@ SpriteAtlas:
     - c2ba7617c13fbb04c9e9a91bba862211: 21300000
     - f6f9db17dd47d714c84fc1b883345851: 21300000
     - 09b8c75714cb7a148810a29a24e7185d: 21300000
+    - 5fc241a7a59e1e447acd80a21f4ee931: 21300000
     - bd6f7a38afa02974aa0f463dab0cb98c: 21300000
     - e0adeb1a9e5716d4abb3d740a9da4a52: 21300000
     - bc29c65abbb0f6e43b2f5a8787f2c638: 21300000
@@ -332,6 +333,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: c2ba7617c13fbb04c9e9a91bba862211, type: 3}
   - {fileID: 21300000, guid: f6f9db17dd47d714c84fc1b883345851, type: 3}
   - {fileID: 21300000, guid: 09b8c75714cb7a148810a29a24e7185d, type: 3}
+  - {fileID: 21300000, guid: 5fc241a7a59e1e447acd80a21f4ee931, type: 3}
   - {fileID: 21300000, guid: bd6f7a38afa02974aa0f463dab0cb98c, type: 3}
   - {fileID: 21300000, guid: e0adeb1a9e5716d4abb3d740a9da4a52, type: 3}
   - {fileID: 21300000, guid: bc29c65abbb0f6e43b2f5a8787f2c638, type: 3}
@@ -482,6 +484,7 @@ SpriteAtlas:
   - 1ScrTop2ScrBot
   - 2ScrTop1ScrBot
   - 016-mouse-right-button
+  - title-decoration
   - wood background
   - 017-broken-lines-square-border
   - 002-roof
