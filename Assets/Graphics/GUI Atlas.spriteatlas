@@ -191,7 +191,9 @@ SpriteAtlas:
     - bd6f7a38afa02974aa0f463dab0cb98c: 21300000
     - f64f58d8dde5949799d1321cca7eca76: 21300000
     - e0adeb1a9e5716d4abb3d740a9da4a52: 21300000
+    - 00436d1aec6b54f9d9f55d9f201ee74c: 21300000
     - bc29c65abbb0f6e43b2f5a8787f2c638: 21300000
+    - dbb75d7a7e22b4a6b9b452bc5ae8622d: 21300000
     - 9955bbdb810401a48bbbe699fbf31c1c: 21300000
     - dca7671c147d8c8419e92eaab4b3db92: 21300000
     - ca36db4c898a2114ea3e16b957f31b0b: 21300000
@@ -352,7 +354,9 @@ SpriteAtlas:
   - {fileID: 21300000, guid: bd6f7a38afa02974aa0f463dab0cb98c, type: 3}
   - {fileID: 21300000, guid: f64f58d8dde5949799d1321cca7eca76, type: 3}
   - {fileID: 21300000, guid: e0adeb1a9e5716d4abb3d740a9da4a52, type: 3}
+  - {fileID: 21300000, guid: 00436d1aec6b54f9d9f55d9f201ee74c, type: 3}
   - {fileID: 21300000, guid: bc29c65abbb0f6e43b2f5a8787f2c638, type: 3}
+  - {fileID: 21300000, guid: dbb75d7a7e22b4a6b9b452bc5ae8622d, type: 3}
   - {fileID: 21300000, guid: 9955bbdb810401a48bbbe699fbf31c1c, type: 3}
   - {fileID: 21300000, guid: dca7671c147d8c8419e92eaab4b3db92, type: 3}
   - {fileID: 21300000, guid: ca36db4c898a2114ea3e16b957f31b0b, type: 3}
@@ -512,7 +516,9 @@ SpriteAtlas:
   - wood background
   - wide-button-selected
   - 017-broken-lines-square-border
+  - 026-sunrise
   - 002-roof
+  - 027-sunset
   - 024-technical-support
   - 003-fence
   - 009-eraser
