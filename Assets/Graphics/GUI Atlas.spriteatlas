@@ -170,6 +170,7 @@ SpriteAtlas:
     - 54b4d733ea224f64891d21746bda01e0: 21300000
     - b25deb83b3ac27f46b91dcee3759f7f0: 21300000
     - 0ea25704aee7fb44599f07f879395264: 21300000
+    - 20aadf34657e749179b2e2bec57e480d: 21300000
     - 1b0c4594781d7934a93e8e0aaf53644e: 21300000
     - 1fe68594062efe84f800340493495702: 21300000
     - d0f76f05fc63c35458cde07e5fb7639f: 21300000
@@ -330,6 +331,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 54b4d733ea224f64891d21746bda01e0, type: 3}
   - {fileID: 21300000, guid: b25deb83b3ac27f46b91dcee3759f7f0, type: 3}
   - {fileID: 21300000, guid: 0ea25704aee7fb44599f07f879395264, type: 3}
+  - {fileID: 21300000, guid: 20aadf34657e749179b2e2bec57e480d, type: 3}
   - {fileID: 21300000, guid: 1b0c4594781d7934a93e8e0aaf53644e, type: 3}
   - {fileID: 21300000, guid: 1fe68594062efe84f800340493495702, type: 3}
   - {fileID: 21300000, guid: d0f76f05fc63c35458cde07e5fb7639f, type: 3}
@@ -489,6 +491,7 @@ SpriteAtlas:
   - 019-photo-camera-configuration-symbol-for-interface-with-a-gear-behind
   - 4_Exclude
   - S
+  - dropdown
   - 020-menu
   - N
   - 010-bird
