@@ -216,6 +216,7 @@ SpriteAtlas:
     - 06e6347f8bf75594c9417dcb433f6c42: 21300000
     - ea10119f176f0aa47ac60e573db3756c: 21300000
     - 2a36e1af02322fb448a0d68851de4247: 21300000
+    - bb0955aff4d3443e48be3018afed0eac: 21300000
     - b75201ff811e94f8ea71b03f8aaff8fa: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -385,6 +386,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 06e6347f8bf75594c9417dcb433f6c42, type: 3}
   - {fileID: 21300000, guid: ea10119f176f0aa47ac60e573db3756c, type: 3}
   - {fileID: 21300000, guid: 2a36e1af02322fb448a0d68851de4247, type: 3}
+  - {fileID: 21300000, guid: bb0955aff4d3443e48be3018afed0eac, type: 3}
   - {fileID: 21300000, guid: b75201ff811e94f8ea71b03f8aaff8fa, type: 3}
   m_PackedSpriteNamesToIndex:
   - 025-corners
@@ -553,6 +555,7 @@ SpriteAtlas:
   - 022-settings
   - SplashImage
   - 018-paint-bucket
+  - floor-orientation-map
   - frame
   m_RenderDataMap: {}
   m_Tag: GUI Atlas
