@@ -193,6 +193,7 @@ SpriteAtlas:
     - 5fc241a7a59e1e447acd80a21f4ee931: 21300000
     - bd6f7a38afa02974aa0f463dab0cb98c: 21300000
     - f64f58d8dde5949799d1321cca7eca76: 21300000
+    - 80334999ec0ae4b5ab491fa7dc99f715: 21300000
     - e0adeb1a9e5716d4abb3d740a9da4a52: 21300000
     - 00436d1aec6b54f9d9f55d9f201ee74c: 21300000
     - bc29c65abbb0f6e43b2f5a8787f2c638: 21300000
@@ -361,6 +362,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5fc241a7a59e1e447acd80a21f4ee931, type: 3}
   - {fileID: 21300000, guid: bd6f7a38afa02974aa0f463dab0cb98c, type: 3}
   - {fileID: 21300000, guid: f64f58d8dde5949799d1321cca7eca76, type: 3}
+  - {fileID: 21300000, guid: 80334999ec0ae4b5ab491fa7dc99f715, type: 3}
   - {fileID: 21300000, guid: e0adeb1a9e5716d4abb3d740a9da4a52, type: 3}
   - {fileID: 21300000, guid: 00436d1aec6b54f9d9f55d9f201ee74c, type: 3}
   - {fileID: 21300000, guid: bc29c65abbb0f6e43b2f5a8787f2c638, type: 3}
@@ -528,6 +530,7 @@ SpriteAtlas:
   - title-decoration
   - wood background
   - wide-button-selected
+  - wide-button-red
   - 017-broken-lines-square-border
   - 026-sunrise
   - 002-roof
