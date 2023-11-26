@@ -50,6 +50,7 @@ SpriteAtlas:
     isAtlasV2: 0
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
+    - 66f3c9007473042b7be42873db364709: 21300000
     - 0aec8e309d1724a4c8a7821457dffa83: 21300000
     - ecdd449057f3b3e4e9ff5337dea9328b: 21300000
     - 28ebd0c0c308bed42b5cae0cfe912cc8: 21300000
@@ -161,6 +162,7 @@ SpriteAtlas:
     - ff94ff816424d904db8078c13f23c380: 21300008
     - ff94ff816424d904db8078c13f23c380: 21300006
     - 5a5456d1fef7fea44aa9046aff2ce04f: 21300000
+    - 7efd21621c43f4c9f967ff3ba26c6e52: 21300000
     - b8be9962003f61c4fa348932b215fdb3: 21300000
     - 562cccc27ae301743a9434f27825accf: 21300000
     - b7584be23d91c9a4397bddf002ffa1a7: 21300000
@@ -186,6 +188,7 @@ SpriteAtlas:
     - 09b8c75714cb7a148810a29a24e7185d: 21300000
     - 5fc241a7a59e1e447acd80a21f4ee931: 21300000
     - bd6f7a38afa02974aa0f463dab0cb98c: 21300000
+    - f64f58d8dde5949799d1321cca7eca76: 21300000
     - e0adeb1a9e5716d4abb3d740a9da4a52: 21300000
     - bc29c65abbb0f6e43b2f5a8787f2c638: 21300000
     - 9955bbdb810401a48bbbe699fbf31c1c: 21300000
@@ -206,6 +209,7 @@ SpriteAtlas:
     - 2a36e1af02322fb448a0d68851de4247: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 66f3c9007473042b7be42873db364709, type: 3}
   - {fileID: 21300000, guid: 0aec8e309d1724a4c8a7821457dffa83, type: 3}
   - {fileID: 21300000, guid: ecdd449057f3b3e4e9ff5337dea9328b, type: 3}
   - {fileID: 21300000, guid: 28ebd0c0c308bed42b5cae0cfe912cc8, type: 3}
@@ -317,6 +321,7 @@ SpriteAtlas:
   - {fileID: 21300008, guid: ff94ff816424d904db8078c13f23c380, type: 3}
   - {fileID: 21300006, guid: ff94ff816424d904db8078c13f23c380, type: 3}
   - {fileID: 21300000, guid: 5a5456d1fef7fea44aa9046aff2ce04f, type: 3}
+  - {fileID: 21300000, guid: 7efd21621c43f4c9f967ff3ba26c6e52, type: 3}
   - {fileID: 21300000, guid: b8be9962003f61c4fa348932b215fdb3, type: 3}
   - {fileID: 21300000, guid: 562cccc27ae301743a9434f27825accf, type: 3}
   - {fileID: 21300000, guid: b7584be23d91c9a4397bddf002ffa1a7, type: 3}
@@ -342,6 +347,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 09b8c75714cb7a148810a29a24e7185d, type: 3}
   - {fileID: 21300000, guid: 5fc241a7a59e1e447acd80a21f4ee931, type: 3}
   - {fileID: 21300000, guid: bd6f7a38afa02974aa0f463dab0cb98c, type: 3}
+  - {fileID: 21300000, guid: f64f58d8dde5949799d1321cca7eca76, type: 3}
   - {fileID: 21300000, guid: e0adeb1a9e5716d4abb3d740a9da4a52, type: 3}
   - {fileID: 21300000, guid: bc29c65abbb0f6e43b2f5a8787f2c638, type: 3}
   - {fileID: 21300000, guid: 9955bbdb810401a48bbbe699fbf31c1c, type: 3}
@@ -361,6 +367,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: ea10119f176f0aa47ac60e573db3756c, type: 3}
   - {fileID: 21300000, guid: 2a36e1af02322fb448a0d68851de4247, type: 3}
   m_PackedSpriteNamesToIndex:
+  - 025-corners
   - Incorrect
   - yellow-orb
   - Selection Box
@@ -472,6 +479,7 @@ SpriteAtlas:
   - RPG_GUI_v1_3
   - RPG_GUI_v1_2
   - 2ScrVert
+  - wide-button
   - 007-bridge
   - 006-armchair
   - sqare-button-selected
@@ -497,6 +505,7 @@ SpriteAtlas:
   - 016-mouse-right-button
   - title-decoration
   - wood background
+  - wide-button-selected
   - 017-broken-lines-square-border
   - 002-roof
   - 024-technical-support
