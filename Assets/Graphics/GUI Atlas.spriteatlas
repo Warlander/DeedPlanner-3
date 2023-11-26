@@ -199,6 +199,7 @@ SpriteAtlas:
     - 3862c3bc9dbabee46be18bd376bebdc2: 21300000
     - ce0b4abca2a3d634d8053a2b6ce56525: 21300000
     - 49888a1de0335324b8919252173f2cf2: 21300000
+    - 29f0602d906624e70a5313106cf4aecc: 21300000
     - 4499044d3fd63c84fb5d6e2c36bbcd2a: 21300000
     - bbee3afdc2e7b8941a552321b7e72fcd: 21300000
     - db371deee7e65a346903d18c446332a6: 21300000
@@ -358,6 +359,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3862c3bc9dbabee46be18bd376bebdc2, type: 3}
   - {fileID: 21300000, guid: ce0b4abca2a3d634d8053a2b6ce56525, type: 3}
   - {fileID: 21300000, guid: 49888a1de0335324b8919252173f2cf2, type: 3}
+  - {fileID: 21300000, guid: 29f0602d906624e70a5313106cf4aecc, type: 3}
   - {fileID: 21300000, guid: 4499044d3fd63c84fb5d6e2c36bbcd2a, type: 3}
   - {fileID: 21300000, guid: bbee3afdc2e7b8941a552321b7e72fcd, type: 3}
   - {fileID: 21300000, guid: db371deee7e65a346903d18c446332a6, type: 3}
@@ -516,6 +518,7 @@ SpriteAtlas:
   - 023-compass
   - 005-mountain
   - W
+  - input-area
   - SliderHorizontal
   - 1Scr
   - paper background
