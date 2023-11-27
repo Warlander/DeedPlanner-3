@@ -164,6 +164,7 @@ SpriteAtlas:
     - 5a5456d1fef7fea44aa9046aff2ce04f: 21300000
     - 7efd21621c43f4c9f967ff3ba26c6e52: 21300000
     - b8be9962003f61c4fa348932b215fdb3: 21300000
+    - 0d3f78c2a5e164ffca6ff486cfc167e7: 21300000
     - 562cccc27ae301743a9434f27825accf: 21300000
     - b7584be23d91c9a4397bddf002ffa1a7: 21300000
     - 5185f0332b488a844a1b53da9e34df83: 21300000
@@ -191,6 +192,7 @@ SpriteAtlas:
     - f6f9db17dd47d714c84fc1b883345851: 21300000
     - 09b8c75714cb7a148810a29a24e7185d: 21300000
     - 5fc241a7a59e1e447acd80a21f4ee931: 21300000
+    - f74339084d9c84015a6e52c4b7243cb1: 21300000
     - bd6f7a38afa02974aa0f463dab0cb98c: 21300000
     - f64f58d8dde5949799d1321cca7eca76: 21300000
     - 80334999ec0ae4b5ab491fa7dc99f715: 21300000
@@ -334,6 +336,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5a5456d1fef7fea44aa9046aff2ce04f, type: 3}
   - {fileID: 21300000, guid: 7efd21621c43f4c9f967ff3ba26c6e52, type: 3}
   - {fileID: 21300000, guid: b8be9962003f61c4fa348932b215fdb3, type: 3}
+  - {fileID: 21300000, guid: 0d3f78c2a5e164ffca6ff486cfc167e7, type: 3}
   - {fileID: 21300000, guid: 562cccc27ae301743a9434f27825accf, type: 3}
   - {fileID: 21300000, guid: b7584be23d91c9a4397bddf002ffa1a7, type: 3}
   - {fileID: 21300000, guid: 5185f0332b488a844a1b53da9e34df83, type: 3}
@@ -361,6 +364,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: f6f9db17dd47d714c84fc1b883345851, type: 3}
   - {fileID: 21300000, guid: 09b8c75714cb7a148810a29a24e7185d, type: 3}
   - {fileID: 21300000, guid: 5fc241a7a59e1e447acd80a21f4ee931, type: 3}
+  - {fileID: 21300000, guid: f74339084d9c84015a6e52c4b7243cb1, type: 3}
   - {fileID: 21300000, guid: bd6f7a38afa02974aa0f463dab0cb98c, type: 3}
   - {fileID: 21300000, guid: f64f58d8dde5949799d1321cca7eca76, type: 3}
   - {fileID: 21300000, guid: 80334999ec0ae4b5ab491fa7dc99f715, type: 3}
@@ -503,6 +507,7 @@ SpriteAtlas:
   - 2ScrVert
   - wide-button
   - 007-bridge
+  - search-input
   - 006-armchair
   - sqare-button-selected
   - Paypal Button
@@ -530,6 +535,7 @@ SpriteAtlas:
   - 2ScrTop1ScrBot
   - 016-mouse-right-button
   - title-decoration
+  - serach-icon
   - wood background
   - wide-button-selected
   - wide-button-red
