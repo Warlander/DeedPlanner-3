@@ -11,7 +11,7 @@ namespace Warlander.Deedplanner.Logic
         [Inject] private GameManager _gameManager;
         [InjectOptional] private DebugProperties _debugProperties;
         
-        private void Awake()
+        private void Start()
         {
             StartCoroutine(LoadMap());
         }
