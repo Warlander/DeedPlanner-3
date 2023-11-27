@@ -153,7 +153,7 @@ namespace Warlander.Deedplanner.Editor
         private static BuildPlayerOptions CreateUniversalBuildOptions()
         {
             BuildPlayerOptions options = new BuildPlayerOptions();
-            options.scenes = new[] {"Assets/Scenes/MainScene.unity" };
+            options.scenes = new[] { "Assets/Scenes/LoadingScene.unity", "Assets/Scenes/MainScene.unity" };
 
             return options;
         }
