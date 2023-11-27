@@ -179,6 +179,7 @@ SpriteAtlas:
     - d0f76f05fc63c35458cde07e5fb7639f: 21300000
     - 5a634e15b62faee4c8ada7465bd76205: 21300000
     - 0eb0c325ba61ae74b933e7f3b1ca4c83: 21300000
+    - 4f509875ccd544efe9fb18a7008431b8: 21300000
     - 0411cca5677824715b8aa570a8862033: 21300000
     - 1ce817b554ac0fc499c8f21ecd6dec10: 21300000
     - 62113bd50b934ff4993219fe297c3ced: 21300000
@@ -351,6 +352,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: d0f76f05fc63c35458cde07e5fb7639f, type: 3}
   - {fileID: 21300000, guid: 5a634e15b62faee4c8ada7465bd76205, type: 3}
   - {fileID: 21300000, guid: 0eb0c325ba61ae74b933e7f3b1ca4c83, type: 3}
+  - {fileID: 21300000, guid: 4f509875ccd544efe9fb18a7008431b8, type: 3}
   - {fileID: 21300000, guid: 0411cca5677824715b8aa570a8862033, type: 3}
   - {fileID: 21300000, guid: 1ce817b554ac0fc499c8f21ecd6dec10, type: 3}
   - {fileID: 21300000, guid: 62113bd50b934ff4993219fe297c3ced, type: 3}
@@ -522,6 +524,7 @@ SpriteAtlas:
   - 010-bird
   - 011-horizontal-symmetry
   - square-button
+  - horizontal-seperator
   - paypal
   - 004-flowers
   - 021-save
