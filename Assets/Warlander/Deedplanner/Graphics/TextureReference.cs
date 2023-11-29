@@ -39,9 +39,7 @@ namespace Warlander.Deedplanner.Graphics
 
         private Texture2D texture;
         private Sprite sprite;
-        private Material material;
         private bool textureLoading = false;
-        private bool spriteRequested = false;
 
         private List<Action<Texture2D>> textureLoadRequests = null;
         private List<Action<Sprite>> spriteLoadRequests = null;
@@ -61,33 +59,14 @@ namespace Warlander.Deedplanner.Graphics
                 return;
             }
 
-            if (!textureLoading)
+            if (textureLoadRequests == null)
             {
-                textureLoading = true;
-                string location;
-                if (Path.IsPathRooted(Location))
-                {
-                    location = Location;
-                }
-                else
-                {
-                    location = Application.streamingAssetsPath + "/" + Location;
-                }
-                WurmAssetsLoader.LoadTexture(location, false, tex =>
-                {
-                    OnTextureLoaded(tex);
-                    onLoaded.Invoke(tex);
-                });
+                textureLoadRequests = new List<Action<Texture2D>>();
             }
-            else
-            {
-                if (textureLoadRequests == null)
-                {
-                    textureLoadRequests = new List<Action<Texture2D>>();
-                }
                 
-                textureLoadRequests.Add(onLoaded);
-            }
+            textureLoadRequests.Add(onLoaded);
+
+            LoadTextureIfNeeded();
         }
         
         public void LoadOrGetSprite(Action<Sprite> callback)
@@ -104,11 +83,22 @@ namespace Warlander.Deedplanner.Graphics
                 callback.Invoke(sprite);
                 return;
             }
+            
+            if (spriteLoadRequests == null)
+            {
+                spriteLoadRequests = new List<Action<Sprite>>();
+            }
+            
+            spriteLoadRequests.Add(callback);
 
+            LoadTextureIfNeeded();
+        }
+
+        private void LoadTextureIfNeeded()
+        {
             if (!textureLoading)
             {
                 textureLoading = true;
-                spriteRequested = true;
                 string location;
                 if (Path.IsPathRooted(Location))
                 {
@@ -118,32 +108,8 @@ namespace Warlander.Deedplanner.Graphics
                 {
                     location = Application.streamingAssetsPath + "/" + Location;
                 }
-                WurmAssetsLoader.LoadTexture(location, false, texture =>
-                {
-                    OnTextureLoaded(texture);
-                    sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-                    callback.Invoke(sprite);
-                    
-                    if (spriteLoadRequests != null)
-                    {
-                        foreach (Action<Sprite> loadRequest in spriteLoadRequests)
-                        {
-                            loadRequest(sprite);
-                        }
                 
-                        spriteLoadRequests.Clear();
-                        spriteLoadRequests = null;
-                    }
-                });
-            }
-            else
-            {
-                if (spriteLoadRequests == null)
-                {
-                    spriteLoadRequests = new List<Action<Sprite>>();
-                }
-                
-                spriteLoadRequests.Add(callback);
+                WurmAssetsLoader.LoadTexture(location, false, OnTextureLoaded);
             }
         }
 
@@ -157,11 +123,6 @@ namespace Warlander.Deedplanner.Graphics
 
             texture = tex;
             texture.name = Location;
-
-            if (spriteRequested)
-            {
-                sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-            }
             
             textureLoading = false;
 
@@ -178,6 +139,8 @@ namespace Warlander.Deedplanner.Graphics
 
             if (spriteLoadRequests != null)
             {
+                sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                
                 foreach (Action<Sprite> loadRequest in spriteLoadRequests)
                 {
                     loadRequest(sprite);
