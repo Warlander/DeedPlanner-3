@@ -135,14 +135,12 @@ namespace Warlander.Deedplanner.Updaters
         {
             // TODO: add auto-saving before quit logic
             _settings.Save();
-            if (Application.isEditor)
-            {
+            
+#if UNITY_EDITOR
                 EditorApplication.ExitPlaymode();
-            }
-            else
-            {
+#else
                 Application.Quit();
-            }
+#endif
         }
 
         private void PatreonOnClick()
