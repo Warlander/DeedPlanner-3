@@ -45,15 +45,15 @@ namespace Warlander.Deedplanner.Data.Walls
 
             if (firstFloor)
             {
-                Data.BottomModel.CreateOrGetModel(slopeDifference, OnModelLoaded);
+                Data.BottomModel.CreateOrGetModel(slopeDifference, model => OnModelLoaded(Data.BottomModel, model));
             }
             else
             {
-                Data.NormalModel.CreateOrGetModel(slopeDifference, OnModelLoaded);
+                Data.NormalModel.CreateOrGetModel(slopeDifference, model => OnModelLoaded(Data.NormalModel, model));
             }
         }
 
-        private void OnModelLoaded(GameObject newModel)
+        private void OnModelLoaded(Model originalModel, GameObject newModel)
         {
             if (_model)
             {
@@ -71,7 +71,7 @@ namespace Warlander.Deedplanner.Data.Walls
                 _model.transform.localPosition = new Vector3(-4f, 0, 0);
             }
             
-            Bounds bounds = GetTotalModelBounds(Data.NormalModel.OriginalModel);
+            Bounds bounds = GetTotalModelBounds(originalModel.OriginalModel);
             const float wallDepthComfortableMargin = 0.75f;
             float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthComfortableMargin);
             bounds.size = new Vector3(-bounds.size.x, bounds.size.y, comfortableWallDepth);
