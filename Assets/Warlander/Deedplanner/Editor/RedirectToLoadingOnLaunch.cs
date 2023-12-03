@@ -1,6 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Collections;
+using System.Reflection;
+using Unity.EditorCoroutines.Editor;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Warlander.Deedplanner.Editor
@@ -21,8 +22,14 @@ namespace Warlander.Deedplanner.Editor
             if (playMode == PlayModeStateChange.EnteredPlayMode && SceneManager.GetSceneAt(0).buildIndex != 0)
             {
                 SceneManager.LoadScene(0);
-                ClearConsole();
+                EditorCoroutineUtility.StartCoroutineOwnerless(ClearConsoleAfterFrame());
             }
+        }
+
+        private static IEnumerator ClearConsoleAfterFrame()
+        {
+            yield return null;
+            ClearConsole();
         }
 
         private static void ClearConsole()

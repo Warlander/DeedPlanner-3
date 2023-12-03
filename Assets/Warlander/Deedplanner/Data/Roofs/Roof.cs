@@ -116,7 +116,7 @@ namespace Warlander.Deedplanner.Data.Roofs
                 _model.transform.rotation = Quaternion.Euler(0, 180, 0);
             }
 
-            OnModelLoadedCallback(Model);
+            OnModelLoadedCallback(_model);
         }
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)
