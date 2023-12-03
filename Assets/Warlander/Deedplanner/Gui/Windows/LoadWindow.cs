@@ -39,7 +39,6 @@ namespace Warlander.Deedplanner.Gui.Windows
             else
             {
                 LoadFileStandalone();
-                _window.Close();
             }
         }
 
@@ -123,6 +122,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             string mapString = Encoding.Default.GetString(mapBytes);
 
             _gameManager.LoadMap(mapString);
+            _window.Close();
         }
 
         private void OnLoadCancel()
