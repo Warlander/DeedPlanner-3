@@ -3,15 +3,13 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Xml;
-using SFB;
+using SimpleFileBrowser;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
-using Warlander.Deedplanner.Utils;
 using Warlander.UI.Windows;
 using Zenject;
 
@@ -39,13 +37,36 @@ namespace Warlander.Deedplanner.Gui.Windows
 
         private void SaveToFileOnClick()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            JavaScriptUtils.DownloadNative("Deed plan.MAP", mapString);
+#else
+            FileBrowser.SetFilters(false, new FileBrowser.Filter("DeedPlanner 3 save", "MAP"));
+            FileBrowser.ShowSaveDialog(OnSaveSuccess, OnSaveCancel, FileBrowser.PickMode.Files,
+                initialFilename: "DP3 Map", title: "Save Map", saveButtonText: "Save");
+#endif
+        }
+
+        private void OnSaveSuccess(string[] paths)
+        {
+            string path = paths[0];
+            
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
+            if (!path.EndsWith(".MAP", StringComparison.OrdinalIgnoreCase))
+            {
+                path += ".MAP";
+            }
+        
             Map map = _gameManager.Map;
 
             if (!map)
             {
                 return;
             }
-
+            
             StringBuilder build = new StringBuilder();
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.OmitXmlDeclaration = true;
@@ -57,31 +78,16 @@ namespace Warlander.Deedplanner.Gui.Windows
                 map.Serialize(document, null);
                 document.Save(xmlWriter);
             }
-
-            string mapString = build.ToString();
             
-#if UNITY_WEBGL && !UNITY_EDITOR
-            JavaScriptUtils.DownloadNative("Deed plan.MAP", mapString);
-#else
-            ExtensionFilter[] extensionArray = {
-                new ExtensionFilter("DeedPlanner 3 save", "MAP")
-            };
-            string path = StandaloneFileBrowser.SaveFilePanel("Save Map", "", "Deed plan", extensionArray);
-        
-            if (string.IsNullOrEmpty(path))
-            {
-                return;
-            }
-
-            if (!path.EndsWith(".MAP"))
-            {
-                path += ".MAP";
-            }
-        
             byte[] bytes = Encoding.Default.GetBytes(build.ToString());
             File.WriteAllBytes(path, bytes);
-#endif
+            
             _window.Close();
+        }
+
+        private void OnSaveCancel()
+        {
+            
         }
 
         private void PastebinOnClick()

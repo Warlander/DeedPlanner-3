@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
-using SFB;
+using SimpleFileBrowser;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -102,11 +102,12 @@ namespace Warlander.Deedplanner.Gui.Windows
 
         private void LoadFileStandalone()
         {
-            ExtensionFilter[] extensionArray = {
-                new ExtensionFilter("DeedPlanner 3 save", "MAP")
-            };
-            
-            string[] pathArray = StandaloneFileBrowser.OpenFilePanel("Load Map", "", extensionArray, false);
+            FileBrowser.SetFilters(false, new FileBrowser.Filter("DeedPlanner 3 save", "MAP"));
+            FileBrowser.ShowLoadDialog(OnLoadSuccess, OnLoadCancel, FileBrowser.PickMode.Files, title: "Load Map", loadButtonText: "Load");
+        }
+
+        private void OnLoadSuccess(string[] pathArray)
+        {
             if (pathArray == null || pathArray.Length != 1)
             {
                 return;
@@ -122,6 +123,11 @@ namespace Warlander.Deedplanner.Gui.Windows
             string mapString = Encoding.Default.GetString(mapBytes);
 
             _gameManager.LoadMap(mapString);
+        }
+
+        private void OnLoadCancel()
+        {
+            
         }
 
         private byte[] Decompress(byte[] gzip)
