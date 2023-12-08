@@ -10,13 +10,10 @@ namespace Warlander.Deedplanner.Utils
     {
         public static byte[] ReadUrlToByteArray(string location)
         {
-#if UNITY_WEBGL
+#if UNITY_WEBGL && !UNITY_EDITOR
             // native JavaScript loading
-            if (Properties.Web)
-            {
-                return JavaScriptUtils.LoadUrlToBytes(location);
-            }
-#endif
+            return JavaScriptUtils.LoadUrlToBytes(location);
+#else
 
             location = FixLocalPath(location);
             
@@ -37,6 +34,7 @@ namespace Warlander.Deedplanner.Utils
                 byte[] data = request.downloadHandler.data;
                 return data;
             }
+#endif
         }
 
         public static void ReadUrlToByteArray(string location, Action<byte[]> onLoaded)

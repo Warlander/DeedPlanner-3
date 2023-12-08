@@ -19,14 +19,11 @@ namespace Warlander.Deedplanner.Logic
         private IEnumerator LoadMap()
         {
             string mapLocationString = "";
-#if UNITY_WEBGL
-            if (Properties.Web)
+#if UNITY_WEBGL && !UNITY_EDITOR
+            mapLocationString = Warlander.Deedplanner.Utils.JavaScriptUtils.GetMapLocationString();
+            if (!string.IsNullOrEmpty(mapLocationString))
             {
-                mapLocationString = JavaScriptUtils.GetMapLocationString();
-                if (!string.IsNullOrEmpty(mapLocationString))
-                {
-                    mapLocationString = WebLinkUtils.ParseToDirectDownloadLink(mapLocationString);
-                }
+                mapLocationString = WebLinkUtils.ParseToDirectDownloadLink(mapLocationString);
             }
 #endif
             
