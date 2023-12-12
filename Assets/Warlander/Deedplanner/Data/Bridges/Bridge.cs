@@ -176,35 +176,26 @@ namespace Warlander.Deedplanner.Data.Bridges
             return totalHeight;
         }
         
-        private int GetAbsoluteHeight(Tile tile, int floor) {
-            int calculationsFloor = floor;
-            if (calculationsFloor < 0) {
-                calculationsFloor = -calculationsFloor - 1;
+        private int GetAbsoluteHeight(Tile tile, int floor) 
+        {
+            int baseHeight;
+            if (floor < 0)
+            {
+                baseHeight = tile.CaveHeight;
             }
-        
-            if (calculationsFloor == 0) {
-                if (floor < 0)
-                {
-                    return tile.CaveHeight;
-                }
-                else
-                {
-                    return tile.SurfaceHeight;
-                }
+            else
+            {
+                baseHeight = tile.SurfaceHeight;
             }
-            else {
-                int tileHeight;
-                if (floor < 0)
-                {
-                    tileHeight = tile.CaveHeight;
-                }
-                else
-                {
-                    tileHeight = tile.SurfaceHeight;
-                }
+
+            int buildingFloor = floor >= 0 ? floor : -floor - 1;
+            if (buildingFloor > 0)
+            {
+                // Tiny bit of extra height for floors above ground level to account for height of the floor.
+                baseHeight += 3;
+            }
             
-                return tileHeight + calculationsFloor * 30 + 3;
-            }
+            return baseHeight + buildingFloor * 30;
         }
         
         private BridgePartSide GetPartSide(int startX, int startY, int endX, int endY, int x, int y, bool isVertical) {
