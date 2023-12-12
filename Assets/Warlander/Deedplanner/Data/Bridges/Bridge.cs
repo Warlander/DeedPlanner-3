@@ -133,7 +133,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             int bridgeLength = Mathf.Max(endX - startX, endY - startY) + 2;
             int startHeight = GetAbsoluteHeight(map[startX, startY], firstFloor);
             int endHeight = GetAbsoluteHeight(map[endX + 1, endY + 1], secondFloor);
-            float heightStep = (float)(endHeight - startHeight) / bridgeWidth;
+            float heightStep = (float)(endHeight - startHeight) / (bridgeLength - 1);
         
             for (int x = startX; x <= endX; x++) {
                 for (int y = startY; y <= endY; y++) {
