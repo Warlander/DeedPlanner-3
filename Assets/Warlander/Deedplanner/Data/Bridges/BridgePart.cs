@@ -1,15 +1,17 @@
-﻿using System.Xml;
+﻿using System.Text;
+using System.Xml;
+using Plugins.Warlander.Utils;
 using UnityEngine;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Bridges
 {
-    public class BridgePart : DynamicModelBehaviour
+    public class BridgePart : TileEntity
     {
         public Bridge ParentBridge { get; private set; }
 
-        public Materials Materials => ParentBridge.Data.GetMaterialsForPart(partType, partSide);
+        public override Materials Materials => ParentBridge.Data.GetMaterialsForPart(partType, partSide);
         public BridgePartType PartType => partType;
         public bool Mirrored => orientation == EntityOrientation.Right || orientation == EntityOrientation.Up;
 
@@ -187,6 +189,19 @@ namespace Warlander.Deedplanner.Data.Bridges
         public TextureReference GetUISprite()
         {
             return ParentBridge.Data.GetUISpriteForPart(partType);
+        }
+        
+        public override string ToString()
+        {
+            StringBuilder build = new StringBuilder();
+
+            build.Append("X: ").Append(Tile.X).Append(" Y: ").Append(Tile.Y).AppendLine();
+            string bridgePartRawString = PartType.ToString();
+            string bridgePartWithSpaces = StringUtils.AddSpacesToSentence(bridgePartRawString);
+            string bridgePartLowercase = bridgePartWithSpaces.ToLower();
+            build.Append(bridgePartLowercase);
+
+            return build.ToString();
         }
         
         private void OnDestroy()

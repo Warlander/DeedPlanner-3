@@ -267,7 +267,7 @@ namespace Warlander.Deedplanner.Updaters
             
             for (int i = Constants.NegativeFloorLimit; i < Constants.FloorLimit; i++)
             {
-                TileEntity floorRoof = tile.GetTileContent(i);
+                LevelEntity floorRoof = tile.GetTileContent(i);
                 if (!containsFloor && floorRoof)
                 {
                     warningsList.Add(CreateWarningString(tile, tileWarningText));

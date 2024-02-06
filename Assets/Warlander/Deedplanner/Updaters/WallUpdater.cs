@@ -80,8 +80,8 @@ namespace Warlander.Deedplanner.Updaters
 
             OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
             GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
-            TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
-            Wall wallEntity = tileEntity as Wall;
+            LevelEntity levelEntity = raycast.transform.GetComponent<LevelEntity>();
+            Wall wallEntity = levelEntity as Wall;
             
             int floor = 0;
             int x = -1;
@@ -90,14 +90,14 @@ namespace Warlander.Deedplanner.Updaters
 
             if (wallEntity && wallEntity.Valid)
             {
-                floor = tileEntity.Floor;
+                floor = levelEntity.Floor;
                 if (_cameraCoordinator.Current.Floor == floor + 1)
                 {
                     floor++;
                 }
-                x = tileEntity.Tile.X;
-                y = tileEntity.Tile.Y;
-                EntityType type = tileEntity.Type;
+                x = levelEntity.Tile.X;
+                y = levelEntity.Tile.Y;
+                EntityType type = levelEntity.Type;
                 horizontal = (type == EntityType.Hwall || type == EntityType.Hfence);
             }
             else if (overlayMesh || groundMesh)

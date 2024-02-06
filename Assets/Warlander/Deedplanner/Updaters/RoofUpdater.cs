@@ -42,16 +42,16 @@ namespace Warlander.Deedplanner.Updaters
             }
 
             OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
-            TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
+            LevelEntity levelEntity = raycast.transform.GetComponent<LevelEntity>();
 
             int floor = 0;
             int x = -1;
             int y = -1;
-            if (tileEntity && tileEntity.Valid)
+            if (levelEntity && levelEntity.Valid)
             {
-                floor = tileEntity.Floor;
-                x = tileEntity.Tile.X;
-                y = tileEntity.Tile.Y;
+                floor = levelEntity.Floor;
+                x = levelEntity.Tile.X;
+                y = levelEntity.Tile.Y;
             }
             else if (overlayMesh)
             {

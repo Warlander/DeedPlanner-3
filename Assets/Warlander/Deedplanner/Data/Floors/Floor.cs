@@ -5,7 +5,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Floors
 {
-    public class Floor : TileEntity
+    public class Floor : LevelEntity
     {
         private GameObject model;
 

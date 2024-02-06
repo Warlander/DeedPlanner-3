@@ -6,7 +6,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Walls
 {
-    public class Wall : TileEntity
+    public class Wall : LevelEntity
     {
         public WallData Data { get; private set; }
         public bool Reversed { get; private set; }

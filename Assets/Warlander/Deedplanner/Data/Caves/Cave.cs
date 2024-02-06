@@ -4,7 +4,7 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data.Caves
 {
-    public class Cave : TileEntity, IXmlSerializable
+    public class Cave : LevelEntity, IXmlSerializable
     {
         private CaveData data;
         public override Materials Materials => null;

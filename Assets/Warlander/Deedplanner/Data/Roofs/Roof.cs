@@ -5,7 +5,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Roofs
 {
-    public class Roof : TileEntity
+    public class Roof : LevelEntity
     {
         public RoofData Data { get; private set; }
         public override Materials Materials => Data.Materials;
@@ -59,7 +59,7 @@ namespace Warlander.Deedplanner.Data.Roofs
         {
             if (t != null)
             {
-                TileEntity entity = t.GetTileContent(floor);
+                LevelEntity entity = t.GetTileContent(floor);
                 return entity && entity.GetType() == typeof(Roof);
             }
             return false;
