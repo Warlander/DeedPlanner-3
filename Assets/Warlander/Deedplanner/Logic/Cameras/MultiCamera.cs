@@ -280,6 +280,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                         }
                         else
                         {
+                            tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
                             tooltipBuild.Append(_gameManager.Map[x, y].Ground.Data.Name);
                         }
                     }

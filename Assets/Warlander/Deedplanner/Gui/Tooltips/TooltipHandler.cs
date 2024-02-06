@@ -12,7 +12,7 @@ namespace Warlander.Deedplanner.Gui.Tooltips
     {
         [Inject] private WindowCoordinator _windowCoordinator;
         
-        private List<TooltipText> _scheduledTooltipTexts = new List<TooltipText>();
+        private readonly List<TooltipText> _scheduledTooltipTexts = new List<TooltipText>();
 
         private Tooltip _tooltip;
         
