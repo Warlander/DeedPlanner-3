@@ -124,11 +124,6 @@ namespace Warlander.Deedplanner.Data
 
         public bool ContainsEntity(TileEntity entity)
         {
-            if (entity == Cave)
-            {
-                return true;
-            }
-
             foreach (KeyValuePair<EntityData, LevelEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
@@ -144,11 +139,6 @@ namespace Warlander.Deedplanner.Data
 
         public EntityType FindTypeOfEntity(TileEntity entity)
         {
-            if (entity == Cave)
-            {
-                return EntityType.Cave;
-            }
-
             if (entity == BridgePart)
             {
                 return EntityType.BridgePart;
@@ -169,11 +159,6 @@ namespace Warlander.Deedplanner.Data
 
         public int FindFloorOfEntity(LevelEntity entity)
         {
-            if (entity == Cave)
-            {
-                return -1;
-            }
-
             foreach (KeyValuePair<EntityData, LevelEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
