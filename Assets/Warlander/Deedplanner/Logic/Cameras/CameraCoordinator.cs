@@ -12,7 +12,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [SerializeField] private MultiCamera[] _cameras;
 
         public event Action CurrentCameraChanged;
-        public event Action FloorChanged;
+        public event Action LevelChanged;
         public event Action ModeChanged;
         
         public MultiCamera Current => _cameras[_activeCamera];
@@ -31,7 +31,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             
             foreach (MultiCamera cam in _cameras)
             {
-                cam.FloorChanged += CameraOnFloorChanged;
+                cam.LevelChanged += CameraOnLevelChanged;
                 cam.ModeChanged += CameraOnModeChanged;
                 cam.PointerDown += CameraOnPointerDown;
             }
@@ -57,9 +57,9 @@ namespace Warlander.Deedplanner.Logic.Cameras
             ChangeCurrentCamera(cam.ScreenId);
         }
 
-        private void CameraOnFloorChanged()
+        private void CameraOnLevelChanged()
         {
-            FloorChanged?.Invoke();
+            LevelChanged?.Invoke();
         }
 
         public void ChangeCurrentCamera(int newCamera)
@@ -71,7 +71,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             
             _activeCamera = newCamera;
             CurrentCameraChanged?.Invoke();
-            FloorChanged?.Invoke();
+            LevelChanged?.Invoke();
         }
 
         public void ToggleCamera(int cameraId, bool render)
@@ -96,7 +96,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         {
             foreach (MultiCamera cam in _cameras)
             {
-                cam.FloorChanged -= CameraOnFloorChanged;
+                cam.LevelChanged -= CameraOnLevelChanged;
                 cam.ModeChanged -= CameraOnModeChanged;
                 cam.PointerDown -= CameraOnPointerDown;
             }

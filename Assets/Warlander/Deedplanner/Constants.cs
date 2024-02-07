@@ -10,8 +10,8 @@
 
         public const string WebVersionLink = "https://warlander.github.io/DeedPlanner-3-web";
 
-        public const int FloorLimit = 16;
-        public const int NegativeFloorLimit = -6;
+        public const int LevelLimit = 16;
+        public const int NegativeLevelLimit = -6;
 
         public const int DefaultGuiWidth = 1024;
         public const int DefaultGuiHeight = 768;

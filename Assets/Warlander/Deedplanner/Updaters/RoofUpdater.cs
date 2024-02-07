@@ -49,13 +49,13 @@ namespace Warlander.Deedplanner.Updaters
             int y = -1;
             if (levelEntity && levelEntity.Valid)
             {
-                floor = levelEntity.Floor;
+                floor = levelEntity.Level;
                 x = levelEntity.Tile.X;
                 y = levelEntity.Tile.Y;
             }
             else if (overlayMesh)
             {
-                floor = _cameraCoordinator.Current.Floor;
+                floor = _cameraCoordinator.Current.Level;
                 x = Mathf.FloorToInt(raycast.point.x / 4f);
                 y = Mathf.FloorToInt(raycast.point.z / 4f);
             }

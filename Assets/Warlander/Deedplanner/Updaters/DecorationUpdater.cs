@@ -147,10 +147,10 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            int targetFloor = _cameraCoordinator.Current.Floor;
+            int targetFloor = _cameraCoordinator.Current.Level;
             if (levelEntity && levelEntity.Valid && levelEntity.GetType() == typeof(Floor))
             {
-                targetFloor = levelEntity.Floor;
+                targetFloor = levelEntity.Level;
             }
 
             if (data.CenterOnly || data.Tree || data.Bush)

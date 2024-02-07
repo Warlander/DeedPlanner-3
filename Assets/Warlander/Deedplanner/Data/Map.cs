@@ -22,17 +22,6 @@ namespace Warlander.Deedplanner.Data
         [Inject] private GameManager _gameManager;
         [Inject] private TileFactory _tileFactory;
         [Inject] private BridgeFactory _bridgeFactory;
-        
-        private Tile[,] tiles;
-
-        private Transform[] surfaceLevelRoots;
-        private Transform[] caveLevelRoots;
-        private Transform surfaceGridRoot;
-        private Transform caveGridRoot;
-
-        private int renderedFloor;
-        private bool renderEntireMap = true;
-        private bool renderGrid = true;
 
         public GroundMesh Ground { get; private set; }
 
@@ -58,12 +47,22 @@ namespace Warlander.Deedplanner.Data
         public bool RenderShips => _gameManager.RenderShips;
 
         public CommandManager CommandManager { get; set; } = new CommandManager(100);
-
+        
         public Transform PlaneLineRoot { get; private set; }
 
-        private List<Bridge> bridges = new List<Bridge>();
+        private Tile[,] _tiles;
+        private List<Bridge> _bridges = new List<Bridge>();
+
+        private Transform[] _surfaceLevelRoots;
+        private Transform[] _caveLevelRoots;
+        private Transform _surfaceGridRoot;
+        private Transform _caveGridRoot;
+
+        private int _renderedLevel;
+        private bool _renderEntireMap = true;
+        private bool _renderGrid = true;
         
-        private bool needsRoofUpdate = false;
+        private bool _needsRoofUpdate = false;
 
         public Tile this[int x, int y]
         {
@@ -74,39 +73,39 @@ namespace Warlander.Deedplanner.Data
                     return null;
                 }
 
-                return tiles[x, y];
+                return _tiles[x, y];
             }
         }
 
         public Tile this[Vector2Int v] => this[v.x, v.y];
 
-        public int RenderedFloor
+        public int RenderedLevel
         {
-            get => renderedFloor;
+            get => _renderedLevel;
             set
             {
-                renderedFloor = value;
-                UpdateFloorsRendering();
+                _renderedLevel = value;
+                UpdateLevelsRendering();
             }
         }
 
         public bool RenderEntireMap
         {
-            get => renderEntireMap;
+            get => _renderEntireMap;
             set
             {
-                renderEntireMap = value;
-                UpdateFloorsRendering();
+                _renderEntireMap = value;
+                UpdateLevelsRendering();
             }
         }
 
         public bool RenderGrid
         {
-            get => renderGrid;
+            get => _renderGrid;
             set
             {
-                renderGrid = value;
-                UpdateFloorsRendering();
+                _renderGrid = value;
+                UpdateLevelsRendering();
             }
         }
 
@@ -144,7 +143,7 @@ namespace Warlander.Deedplanner.Data
 
             Vector2Int bridgeShift = new Vector2Int(addLeft, addBottom);
             
-            foreach (Bridge originalMapBridge in originalMap.bridges)
+            foreach (Bridge originalMapBridge in originalMap._bridges)
             {
                 Vector2Int firstTileAfterShift = originalMapBridge.FirstTile + bridgeShift;
                 Vector2Int secondTileAfterShift = originalMapBridge.SecondTile + bridgeShift;
@@ -152,7 +151,7 @@ namespace Warlander.Deedplanner.Data
                 if (IsWithinBounds(firstTileAfterShift) && IsWithinBounds(secondTileAfterShift))
                 {
                     Bridge movedBridge = _bridgeFactory.CreateBridge(this, originalMapBridge, bridgeShift);
-                    bridges.Add(movedBridge);
+                    _bridges.Add(movedBridge);
                 }
             }
 
@@ -238,7 +237,7 @@ namespace Warlander.Deedplanner.Data
             foreach (XmlElement bridgeElement in bridgesList)
             {
                 Bridge bridge = _bridgeFactory.CreateBridge(this, bridgeElement);
-                bridges.Add(bridge);
+                _bridges.Add(bridge);
             }
 
             Ground.UpdateNow();
@@ -254,28 +253,28 @@ namespace Warlander.Deedplanner.Data
         {
             Width = width;
             Height = height;
-            tiles = new Tile[width + 1, height + 1];
+            _tiles = new Tile[width + 1, height + 1];
 
-            surfaceLevelRoots = new Transform[16];
-            for (int i = 0; i < surfaceLevelRoots.Length; i++)
+            _surfaceLevelRoots = new Transform[16];
+            for (int i = 0; i < _surfaceLevelRoots.Length; i++)
             {
-                Transform root = new GameObject("Floor " + (i + 1)).transform;
+                Transform root = new GameObject("Level " + (i + 1)).transform;
                 root.SetParent(transform);
-                surfaceLevelRoots[i] = root;
+                _surfaceLevelRoots[i] = root;
             }
 
-            caveLevelRoots = new Transform[6];
-            for (int i = 0; i < caveLevelRoots.Length; i++)
+            _caveLevelRoots = new Transform[6];
+            for (int i = 0; i < _caveLevelRoots.Length; i++)
             {
-                Transform root = new GameObject("Floor -" + (i + 1)).transform;
+                Transform root = new GameObject("Level -" + (i + 1)).transform;
                 root.SetParent(transform);
-                caveLevelRoots[i] = root;
+                _caveLevelRoots[i] = root;
             }
 
             OverlayMesh surfaceOverlayMesh = 
                 _instantiator.InstantiatePrefabForComponent<OverlayMesh>(_gameManager.OverlayMeshPrefab, transform);
             
-            surfaceGridRoot = surfaceOverlayMesh.transform;
+            _surfaceGridRoot = surfaceOverlayMesh.transform;
 
             GameObject groundObject = new GameObject("Ground Mesh", typeof(GroundMesh));
             Ground = groundObject.GetComponent<GroundMesh>();
@@ -283,9 +282,9 @@ namespace Warlander.Deedplanner.Data
             surfaceOverlayMesh.Initialize(Ground.ColliderMesh);
             AddEntityToMap(groundObject, 0);
 
-            caveGridRoot = new GameObject("Cave Grid").transform;
-            caveGridRoot.SetParent(transform);
-            caveGridRoot.gameObject.SetActive(false);
+            _caveGridRoot = new GameObject("Cave Grid").transform;
+            _caveGridRoot.SetParent(transform);
+            _caveGridRoot.gameObject.SetActive(false);
             PlaneLineRoot = new GameObject("Plane Lines").transform;
 
             for (int i = 0; i <= Width; i++)
@@ -293,12 +292,12 @@ namespace Warlander.Deedplanner.Data
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
                     Tile tile = _tileFactory.CreateTile(this, i, i2);
-                    tiles[i, i2] = tile;
+                    _tiles[i, i2] = tile;
                 }
             }
 
-            SurfaceGridMesh = PrepareGridMesh("Surface grid", surfaceGridRoot, false);
-            CaveGridMesh = PrepareGridMesh("Cave grid", caveGridRoot, true);
+            SurfaceGridMesh = PrepareGridMesh("Surface grid", _surfaceGridRoot, false);
+            CaveGridMesh = PrepareGridMesh("Cave grid", _caveGridRoot, true);
 
             RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
             CommandManager.ForgetAction();
@@ -306,16 +305,16 @@ namespace Warlander.Deedplanner.Data
 
         private void LateUpdate()
         {
-            if (needsRoofUpdate)
+            if (_needsRoofUpdate)
             {
-                needsRoofUpdate = false;
+                _needsRoofUpdate = false;
                 RecalculateRoofsInternal();
             }
         }
 
         private void RefreshAllTiles()
         {
-            foreach (Tile tile in tiles)
+            foreach (Tile tile in _tiles)
             {
                 tile.Refresh();
             }
@@ -327,7 +326,7 @@ namespace Warlander.Deedplanner.Data
             {
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
-                    for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
+                    for (int i3 = 0; i3 < Constants.LevelLimit; i3++)
                     {
                         LevelEntity entity = this[i, i2].GetTileContent(i3);
                         if (entity && entity.GetType() == typeof(Roof))
@@ -342,7 +341,7 @@ namespace Warlander.Deedplanner.Data
             {
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
-                    for (int i3 = 0; i3 < Constants.FloorLimit; i3++)
+                    for (int i3 = 0; i3 < Constants.LevelLimit; i3++)
                     {
                         LevelEntity entity = this[i, i2].GetTileContent(i3);
                         if (entity && entity.GetType() == typeof(Roof))
@@ -368,7 +367,7 @@ namespace Warlander.Deedplanner.Data
         {
             Materials mapMaterials = new Materials();
 
-            foreach (Tile tile in tiles)
+            foreach (Tile tile in _tiles)
             {
                 mapMaterials.Add(tile.CalculateTileMaterials(TilePart.Everything));
             }
@@ -381,17 +380,17 @@ namespace Warlander.Deedplanner.Data
             return x * (Height + 1) + y;
         }
 
-        public void AddEntityToMap(GameObject entity, int floor)
+        public void AddEntityToMap(GameObject entity, int level)
         {
-            bool cave = floor < 0;
-            int absoluteFloor = cave ? -floor - 1 : floor;
+            bool cave = level < 0;
+            int absoluteLevel = cave ? -level - 1 : level;
             if (cave)
             {
-                entity.transform.SetParent(caveLevelRoots[absoluteFloor]);
+                entity.transform.SetParent(_caveLevelRoots[absoluteLevel]);
             }
             else
             {
-                entity.transform.SetParent(surfaceLevelRoots[absoluteFloor]);
+                entity.transform.SetParent(_surfaceLevelRoots[absoluteLevel]);
             }
         }
 
@@ -470,7 +469,7 @@ namespace Warlander.Deedplanner.Data
 
         public void RecalculateRoofs()
         {
-            needsRoofUpdate = true;
+            _needsRoofUpdate = true;
         }
 
         public Tile GetRelativeTile(Tile tile, int relativeX, int relativeY)
@@ -502,7 +501,7 @@ namespace Warlander.Deedplanner.Data
 
         public IEnumerator<Tile> GetEnumerator()
         {
-            return tiles.Cast<Tile>().GetEnumerator();
+            return _tiles.Cast<Tile>().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -524,23 +523,23 @@ namespace Warlander.Deedplanner.Data
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
                     XmlElement tile = document.CreateElement("tile");
-                    tiles[i, i2].Serialize(document, tile);
+                    _tiles[i, i2].Serialize(document, tile);
                     localRoot.AppendChild(tile);
                 }
             }
         }
 
-        public float GetRelativeFloorOpacity(int relativeFloor)
+        public float GetRelativeLevelOpacity(int relativeLevel)
         {
-            if (relativeFloor == 0)
+            if (relativeLevel == 0)
             {
                 return 1;
             }
-            else if (relativeFloor == -1)
+            else if (relativeLevel == -1)
             {
                 return 0.6f;
             }
-            else if (relativeFloor == -2)
+            else if (relativeLevel == -2)
             {
                 return 0.25f;
             }
@@ -548,57 +547,57 @@ namespace Warlander.Deedplanner.Data
             return 0;
         }
 
-        private void UpdateFloorsRendering()
+        private void UpdateLevelsRendering()
         {
-            bool underground = renderedFloor < 0;
-            int absoluteFloor = underground ? -renderedFloor + 1 : renderedFloor;
+            bool underground = _renderedLevel < 0;
+            int absoluteLevel = underground ? -_renderedLevel + 1 : _renderedLevel;
 
             if (underground)
             {
-                foreach (Transform root in surfaceLevelRoots)
+                foreach (Transform root in _surfaceLevelRoots)
                 {
                     root.gameObject.SetActive(false);
                 }
 
-                for (int i = 0; i < caveLevelRoots.Length; i++)
+                for (int i = 0; i < _caveLevelRoots.Length; i++)
                 {
-                    Transform root = caveLevelRoots[i];
-                    RefreshLevelRendering(root, i - absoluteFloor);
+                    Transform root = _caveLevelRoots[i];
+                    RefreshLevelRendering(root, i - absoluteLevel);
                 }
 
-                surfaceGridRoot.gameObject.SetActive(false);
-                caveGridRoot.gameObject.SetActive(renderGrid);
+                _surfaceGridRoot.gameObject.SetActive(false);
+                _caveGridRoot.gameObject.SetActive(_renderGrid);
 
-                caveGridRoot.localPosition = new Vector3(0, absoluteFloor * 3, 0);
+                _caveGridRoot.localPosition = new Vector3(0, absoluteLevel * 3, 0);
             }
             else
             {
-                foreach (Transform root in caveLevelRoots)
+                foreach (Transform root in _caveLevelRoots)
                 {
                     root.gameObject.SetActive(false);
                 }
 
-                for (int i = 0; i < surfaceLevelRoots.Length; i++)
+                for (int i = 0; i < _surfaceLevelRoots.Length; i++)
                 {
-                    Transform root = surfaceLevelRoots[i];
-                    RefreshLevelRendering(root, i - absoluteFloor);
+                    Transform root = _surfaceLevelRoots[i];
+                    RefreshLevelRendering(root, i - absoluteLevel);
                 }
 
-                surfaceGridRoot.gameObject.SetActive(renderGrid);
-                caveGridRoot.gameObject.SetActive(false);
+                _surfaceGridRoot.gameObject.SetActive(_renderGrid);
+                _caveGridRoot.gameObject.SetActive(false);
 
-                surfaceGridRoot.localPosition = new Vector3(0, absoluteFloor * 3 + 0.01f, 0);
+                _surfaceGridRoot.localPosition = new Vector3(0, absoluteLevel * 3 + 0.01f, 0);
             }
 
-            RefreshBridgesRendering(absoluteFloor);
+            RefreshBridgesRendering(absoluteLevel);
         }
 
-        private void RefreshLevelRendering(Transform root, int relativeFloor)
+        private void RefreshLevelRendering(Transform root, int relativeLevel)
         {
-            float opacity = RenderEntireMap ? 1 : GetRelativeFloorOpacity(relativeFloor);
-            bool renderFloor = opacity > 0;
-            root.gameObject.SetActive(renderFloor);
-            if (renderFloor)
+            float opacity = RenderEntireMap ? 1 : GetRelativeLevelOpacity(relativeLevel);
+            bool renderLevel = opacity > 0;
+            root.gameObject.SetActive(renderLevel);
+            if (renderLevel)
             {
                 MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
                 propertyBlock.SetColor(ShaderPropertyIds.Color, new Color(opacity, opacity, opacity));
@@ -610,34 +609,34 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        private void RefreshBridgesRendering(int absoluteFloor)
+        private void RefreshBridgesRendering(int absoluteLevel)
         {
             if (RenderEntireMap)
             {
-                foreach (Bridge bridge in bridges)
+                foreach (Bridge bridge in _bridges)
                 {
                     bridge.SetVisible(true);
                 }
             }
             else
             {
-                foreach (Bridge bridge in bridges)
+                foreach (Bridge bridge in _bridges)
                 {
-                    int lowerFloor = bridge.LowerFloor;
-                    int higherFloor = bridge.HigherFloor;
+                    int lowerLevel = bridge.LowerLevel;
+                    int higherLevel = bridge.HigherLevel;
 
                     float opacity;
-                    if (higherFloor > absoluteFloor)
+                    if (higherLevel > absoluteLevel)
                     {
                         opacity = 0;
                     }
-                    else if (higherFloor < absoluteFloor && lowerFloor > absoluteFloor)
+                    else if (higherLevel < absoluteLevel && lowerLevel > absoluteLevel)
                     {
                         opacity = 1;
                     }
                     else
                     {
-                        opacity = GetRelativeFloorOpacity(higherFloor - absoluteFloor);
+                        opacity = GetRelativeLevelOpacity(higherLevel - absoluteLevel);
                     }
 
                     bool renderBridge = opacity > 0;

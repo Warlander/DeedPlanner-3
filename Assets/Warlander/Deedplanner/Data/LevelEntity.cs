@@ -7,7 +7,7 @@ namespace Warlander.Deedplanner.Data
     
     public abstract class LevelEntity : TileEntity, IXmlSerializable
     {
-        public int Floor => Tile.FindFloorOfEntity(this);
+        public int Level => Tile.FindLevelOfEntity(this);
         public abstract void Serialize(XmlDocument document, XmlElement localRoot);
     }
 }

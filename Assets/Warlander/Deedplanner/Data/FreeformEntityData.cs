@@ -27,12 +27,12 @@ namespace Warlander.Deedplanner.Data
                 interpolatedHeight = Mathf.Max(interpolatedHeight, 0);
             }
             const float floorHeight = 0.25f;
-            bool containsFloor = tile.GetTileContent(Floor);
+            bool containsFloor = tile.GetTileContent(Level);
             if (containsFloor)
             {
                 interpolatedHeight += floorHeight;
             }
-            targetTransform.localPosition = new Vector3(x, interpolatedHeight + Floor * 3f, z);
+            targetTransform.localPosition = new Vector3(x, interpolatedHeight + Level * 3f, z);
         }
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)
@@ -48,17 +48,17 @@ namespace Warlander.Deedplanner.Data
                 return false;
             }
 
-            return Floor == data.Floor && Type == data.Type && X == data.X && Y == data.Y;
+            return Level == data.Level && Type == data.Type && X == data.X && Y == data.Y;
         }
 
         public override int GetHashCode()
         {
-            return (int)Type * 100 + Floor + (int)(X * 1000000) + (int)(Y * 100000000);
+            return (int)Type * 100 + Level + (int)(X * 1000000) + (int)(Y * 100000000);
         }
 
         public override string ToString()
         {
-            return "Entity floor " + Floor + " type " + Type + " X " + X + " Y " + Y;
+            return "Entity floor " + Level + " type " + Type + " X " + X + " Y " + Y;
         }
     }
 }

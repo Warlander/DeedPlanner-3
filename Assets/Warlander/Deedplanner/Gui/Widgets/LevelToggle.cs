@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Logic.Cameras;
 using Zenject;
@@ -7,11 +8,11 @@ using Zenject;
 namespace Warlander.Deedplanner.Gui.Widgets
 {
     [RequireComponent(typeof(Toggle))]
-    public class FloorToggle : MonoBehaviour
+    public class LevelToggle : MonoBehaviour
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
         
-        [SerializeField] private int floor = 0;
+        [FormerlySerializedAs("floor")] [SerializeField] private int _level = 0;
 
         private Toggle toggle;
 
@@ -23,10 +24,10 @@ namespace Warlander.Deedplanner.Gui.Widgets
             {
                 if (toggled)
                 {
-                    FloorChangedManually(floor);
+                    LevelChangedManually(_level);
                 }
 
-                if (toggled == false && _cameraCoordinator.Current.Floor == floor)
+                if (toggled == false && _cameraCoordinator.Current.Level == _level)
                 {
                     toggle.isOn = true;
                 }
@@ -36,12 +37,12 @@ namespace Warlander.Deedplanner.Gui.Widgets
         private void Start()
         {
             _cameraCoordinator.CurrentCameraChanged += CameraCoordinatorOnCurrentCameraChanged;
-            _cameraCoordinator.FloorChanged += CameraCoordinatorOnFloorChanged;
+            _cameraCoordinator.LevelChanged += CameraCoordinatorOnLevelChanged;
         }
 
-        private void CameraCoordinatorOnFloorChanged()
+        private void CameraCoordinatorOnLevelChanged()
         {
-            bool newState = _cameraCoordinator.Current.Floor == floor;
+            bool newState = _cameraCoordinator.Current.Level == _level;
 
             if (newState != toggle.isOn)
             {
@@ -49,21 +50,21 @@ namespace Warlander.Deedplanner.Gui.Widgets
             }
         }
 
-        private void FloorChangedManually(int newFloor)
+        private void LevelChangedManually(int newLevel)
         {
-            _cameraCoordinator.Current.Floor = newFloor;
+            _cameraCoordinator.Current.Level = newLevel;
         }
         
         private void CameraCoordinatorOnCurrentCameraChanged()
         {
-            int newFloor = _cameraCoordinator.Current.Floor;
-            toggle.isOn = newFloor == floor;
+            int newLevel = _cameraCoordinator.Current.Level;
+            toggle.isOn = newLevel == _level;
         }
         
         private void OnDestroy()
         {
             _cameraCoordinator.CurrentCameraChanged -= CameraCoordinatorOnCurrentCameraChanged;
-            _cameraCoordinator.FloorChanged -= CameraCoordinatorOnFloorChanged;
+            _cameraCoordinator.LevelChanged -= CameraCoordinatorOnLevelChanged;
         }
     }
 }

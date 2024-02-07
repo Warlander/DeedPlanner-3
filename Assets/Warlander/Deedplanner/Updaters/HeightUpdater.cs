@@ -210,7 +210,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (activeHandle != null)
             {
-                _tooltipHandler.ShowTooltipText(activeHandle.ToRichString(_gameManager.Map, _cameraCoordinator.Current.Floor));
+                _tooltipHandler.ShowTooltipText(activeHandle.ToRichString(_gameManager.Map, _cameraCoordinator.Current.Level));
             }
         }
 
@@ -604,7 +604,7 @@ namespace Warlander.Deedplanner.Updaters
                 {
                     for (int i2 = 0; i2 <= _gameManager.Map.Height; i2++)
                     {
-                        float height = _gameManager.Map[i, i2].GetHeightForFloor(_cameraCoordinator.Current.Floor) * 0.1f;
+                        float height = _gameManager.Map[i, i2].GetHeightForLevel(_cameraCoordinator.Current.Level) * 0.1f;
                         Vector2 viewportLocation = checkedCamera.WorldToViewportPoint(new Vector3(i * 4, height, i2 * 4));
                         if (viewportRect.Contains(viewportLocation))
                         {

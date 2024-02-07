@@ -32,7 +32,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             isoPosition += new Vector2(-eventData.delta.x * factor, -eventData.delta.y * factor);
         }
 
-        public void UpdateInput(Map map, CameraMode mode, Vector3 focusedPoint, float aspect, int currentFloor, bool focusedWindow, bool mouseOver)
+        public void UpdateInput(Map map, CameraMode mode, Vector3 focusedPoint, float aspect, int currentLevel, bool focusedWindow, bool mouseOver)
         {
             if (focusedWindow)
             {

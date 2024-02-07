@@ -36,7 +36,7 @@ namespace Warlander.Deedplanner.Data.Roofs
 
         public void RecalculateRoofLevel()
         {
-            int floor = Floor;
+            int floor = Level;
             int currRadius = 1;
             Map map = Tile.Map;
 
@@ -67,7 +67,7 @@ namespace Warlander.Deedplanner.Data.Roofs
 
         public void RecalculateRoofModel()
         {
-            int floor = Floor;
+            int floor = Level;
 
             foreach (RoofType type in RoofType.RoofTypes)
             {

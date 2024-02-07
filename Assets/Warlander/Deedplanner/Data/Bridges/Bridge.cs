@@ -13,18 +13,18 @@ namespace Warlander.Deedplanner.Data.Bridges
     {
         public BridgeData Data { get; }
 
-        public int LowerFloor => Mathf.Min(firstFloor, secondFloor);
-        public int HigherFloor => Mathf.Max(firstFloor, secondFloor);
+        public int LowerLevel => Mathf.Min(firstLevel, secondLevel);
+        public int HigherLevel => Mathf.Max(firstLevel, secondLevel);
         public Vector2Int FirstTile => new Vector2Int(firstX, firstY);
         public Vector2Int SecondTile => new Vector2Int(secondX, secondY);
 
         private readonly OutlineCoordinator _outlineCoordinator;
         
         private readonly BridgePartType[] segments;
-        private readonly int firstFloor;
+        private readonly int firstLevel;
         private readonly int firstX;
         private readonly int firstY;
-        private readonly int secondFloor;
+        private readonly int secondLevel;
         private readonly int secondX;
         private readonly int secondY;
         private readonly int additionalData;
@@ -42,10 +42,10 @@ namespace Warlander.Deedplanner.Data.Bridges
             Data = Database.Bridges[dataString];
 
             segments = BridgePartTypeUtils.DecodeSegments(element.InnerText);
-            firstFloor = int.Parse(element.GetAttribute("firstFloor"));
+            firstLevel = int.Parse(element.GetAttribute("firstFloor"));
             firstX = int.Parse(element.GetAttribute("firstX"));
             firstY = int.Parse(element.GetAttribute("firstY"));
-            secondFloor = int.Parse(element.GetAttribute("secondFloor"));
+            secondLevel = int.Parse(element.GetAttribute("secondFloor"));
             secondX = int.Parse(element.GetAttribute("secondX"));
             secondY = int.Parse(element.GetAttribute("secondY"));
             additionalData = int.Parse(element.GetAttribute("sag"));
@@ -85,10 +85,10 @@ namespace Warlander.Deedplanner.Data.Bridges
             Data = originalBridge.Data;
 
             segments = originalBridge.segments;
-            firstFloor = originalBridge.firstFloor;
+            firstLevel = originalBridge.firstLevel;
             firstX = originalBridge.firstX + tileShift.x;
             firstY = originalBridge.firstY + tileShift.y;
-            secondFloor = originalBridge.secondFloor;
+            secondLevel = originalBridge.secondLevel;
             secondX = originalBridge.secondX + tileShift.x;
             secondY = originalBridge.secondY + tileShift.y;
             additionalData = originalBridge.additionalData;
@@ -131,8 +131,8 @@ namespace Warlander.Deedplanner.Data.Bridges
             IBridgeType bridgeTypeCalc = GetTypeForBridge(bridgeType);
 
             int bridgeLength = Mathf.Max(endX - startX, endY - startY) + 2;
-            int startHeight = GetAbsoluteHeight(map[startX, startY], firstFloor);
-            int endHeight = GetAbsoluteHeight(map[endX + 1, endY + 1], secondFloor);
+            int startHeight = GetAbsoluteHeight(map[startX, startY], firstLevel);
+            int endHeight = GetAbsoluteHeight(map[endX + 1, endY + 1], secondLevel);
             float heightStep = (float)(endHeight - startHeight) / (bridgeLength - 1);
         
             for (int x = startX; x <= endX; x++) {
@@ -176,10 +176,10 @@ namespace Warlander.Deedplanner.Data.Bridges
             return totalHeight;
         }
         
-        private int GetAbsoluteHeight(Tile tile, int floor) 
+        private int GetAbsoluteHeight(Tile tile, int level) 
         {
             int baseHeight;
-            if (floor < 0)
+            if (level < 0)
             {
                 baseHeight = tile.CaveHeight;
             }
@@ -188,14 +188,14 @@ namespace Warlander.Deedplanner.Data.Bridges
                 baseHeight = tile.SurfaceHeight;
             }
 
-            int buildingFloor = floor >= 0 ? floor : -floor - 1;
-            if (buildingFloor > 0)
+            int buildingLevel = level >= 0 ? level : -level - 1;
+            if (buildingLevel > 0)
             {
-                // Tiny bit of extra height for floors above ground level to account for height of the floor.
+                // Tiny bit of extra height for levels above ground level to account for height of the level.
                 baseHeight += 3;
             }
             
-            return baseHeight + buildingFloor * 30;
+            return baseHeight + buildingLevel * 30;
         }
         
         private BridgePartSide GetPartSide(int startX, int startY, int endX, int endY, int x, int y, bool isVertical) {

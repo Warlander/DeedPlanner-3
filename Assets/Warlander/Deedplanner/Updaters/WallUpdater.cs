@@ -90,8 +90,8 @@ namespace Warlander.Deedplanner.Updaters
 
             if (wallEntity && wallEntity.Valid)
             {
-                floor = levelEntity.Floor;
-                if (_cameraCoordinator.Current.Floor == floor + 1)
+                floor = levelEntity.Level;
+                if (_cameraCoordinator.Current.Level == floor + 1)
                 {
                     floor++;
                 }
@@ -104,7 +104,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 if (overlayMesh)
                 {
-                    floor = _cameraCoordinator.Current.Floor;
+                    floor = _cameraCoordinator.Current.Level;
                 }
                 else if (groundMesh)
                 {
@@ -153,7 +153,7 @@ namespace Warlander.Deedplanner.Updaters
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
             {
-                if (floor != _cameraCoordinator.Current.Floor)
+                if (floor != _cameraCoordinator.Current.Level)
                 {
                     return;
                 }

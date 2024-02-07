@@ -69,7 +69,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
-                int floor = _cameraCoordinator.Current.Floor;
+                int floor = _cameraCoordinator.Current.Level;
                 int x = Mathf.FloorToInt(raycast.point.x / 4f);
                 int y = Mathf.FloorToInt(raycast.point.z / 4f);
                 Map map = _gameManager.Map;
@@ -118,7 +118,7 @@ namespace Warlander.Deedplanner.Updaters
                     foreach (TileSummary tileSummary in building.AllTiles)
                     {
                         Tile tile = map[tileSummary.X, tileSummary.Y];
-                        materials.Add(tile.CalculateFloorMaterials(floor, tileSummary.TilePart));
+                        materials.Add(tile.CalculateLevelMaterials(floor, tileSummary.TilePart));
                     }
                     
                     StringBuilder summary = new StringBuilder();
@@ -155,7 +155,7 @@ namespace Warlander.Deedplanner.Updaters
                     foreach (TileSummary tileSummary in room.Tiles)
                     {
                         Tile tile = map[tileSummary.X, tileSummary.Y];
-                        materials.Add(tile.CalculateFloorMaterials(floor, tileSummary.TilePart));
+                        materials.Add(tile.CalculateLevelMaterials(floor, tileSummary.TilePart));
                     }
                     
                     StringBuilder summary = new StringBuilder();
@@ -233,7 +233,7 @@ namespace Warlander.Deedplanner.Updaters
         {
             const string warningText = "\nBuilding wall on sloped terrain.";
             
-            for (int i = Constants.NegativeFloorLimit; i < Constants.FloorLimit; i++)
+            for (int i = Constants.NegativeLevelLimit; i < Constants.LevelLimit; i++)
             {
                 Wall vWall = tile.GetVerticalWall(i);
                 if (vWall && vWall.Data.HouseWall && vWall.SlopeDifference != 0)
@@ -265,7 +265,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
             
-            for (int i = Constants.NegativeFloorLimit; i < Constants.FloorLimit; i++)
+            for (int i = Constants.NegativeLevelLimit; i < Constants.LevelLimit; i++)
             {
                 LevelEntity floorRoof = tile.GetTileContent(i);
                 if (!containsFloor && floorRoof)
