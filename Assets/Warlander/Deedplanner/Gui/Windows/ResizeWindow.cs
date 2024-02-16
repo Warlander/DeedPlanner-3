@@ -28,12 +28,14 @@ namespace Warlander.Deedplanner.Gui.Windows
         private void Start()
         {
             Map map = _gameManager.Map;
-            originalWidthText.text = "Original Width<br>" + map.Width;
-            originalHeightText.text = "Original Height<br>" + map.Height;
-            leftInput.text = "0";
-            rightInput.text = "0";
-            bottomInput.text = "0";
-            topInput.text = "0";
+            originalWidthText.text = "Original Width<br><b>" + map.Width + "</b>";
+            originalHeightText.text = "Original Height<br><b>" + map.Height + "</b>";
+            leftInput.text = "";
+            rightInput.text = "";
+            bottomInput.text = "";
+            topInput.text = "";
+            newWidthText.text = "";
+            newHeightText.text = "";
             
             OnInputsUpdate();
             
@@ -82,9 +84,28 @@ namespace Warlander.Deedplanner.Gui.Windows
             
             int newWidth = map.Width + widthChange;
             int newHeight = map.Height + heightChange;
-            
-            newWidthText.text = "New Width<br>" + newWidth;
-            newHeightText.text = "New Height<br>" + newHeight;
+
+            if(widthChange != 0)
+            {
+                originalWidthText.text = "Original Width<br><b><color=#821010>" + map.Width + "</color></b>";
+                newWidthText.text = "New Width<br><b><color=#0F6C18>" + newWidth + "</color></b>";
+            }
+            else
+            {
+                originalWidthText.text = "Original Width<br><b>" + map.Width + "</b>";
+                newWidthText.text = "";
+            }
+
+            if(heightChange != 0)
+            {
+                originalHeightText.text = "Original Height<br><b><color=#821010>" + map.Height + "</color></b>";
+                newHeightText.text = "New Height<br><b><color=#0F6C18>" + newHeight + "</color></b>";
+            }
+            else
+            {
+                originalHeightText.text = "Original Height<br><b>" + map.Height + "</b>";
+                newHeightText.text = "";
+            }
         }
     }
 }
