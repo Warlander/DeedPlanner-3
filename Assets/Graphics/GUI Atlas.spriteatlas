@@ -52,6 +52,7 @@ SpriteAtlas:
     packedSpriteRenderDataKeys:
     - 66f3c9007473042b7be42873db364709: 21300000
     - 0aec8e309d1724a4c8a7821457dffa83: 21300000
+    - 52a3696080a8b4e0e9c592dc9a94a6e1: 21300000
     - ecdd449057f3b3e4e9ff5337dea9328b: 21300000
     - 28ebd0c0c308bed42b5cae0cfe912cc8: 21300000
     - e078b7f00cc26404881dc10f747d75eb: 21300000
@@ -230,6 +231,7 @@ SpriteAtlas:
   m_PackedSprites:
   - {fileID: 21300000, guid: 66f3c9007473042b7be42873db364709, type: 3}
   - {fileID: 21300000, guid: 0aec8e309d1724a4c8a7821457dffa83, type: 3}
+  - {fileID: 21300000, guid: 52a3696080a8b4e0e9c592dc9a94a6e1, type: 3}
   - {fileID: 21300000, guid: ecdd449057f3b3e4e9ff5337dea9328b, type: 3}
   - {fileID: 21300000, guid: 28ebd0c0c308bed42b5cae0cfe912cc8, type: 3}
   - {fileID: 21300000, guid: e078b7f00cc26404881dc10f747d75eb, type: 3}
@@ -407,6 +409,7 @@ SpriteAtlas:
   m_PackedSpriteNamesToIndex:
   - 025-corners
   - Incorrect
+  - fill-bar
   - yellow-orb
   - Selection Box
   - Slider
