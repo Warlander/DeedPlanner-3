@@ -196,6 +196,7 @@ SpriteAtlas:
     - 09b8c75714cb7a148810a29a24e7185d: 21300000
     - 757df977e1bde4107ad4ad20c3c746ca: 21300000
     - 5fc241a7a59e1e447acd80a21f4ee931: 21300000
+    - c9b0e9e71a80b48189e2cd1051fc6fb7: 21300000
     - f74339084d9c84015a6e52c4b7243cb1: 21300000
     - bd6f7a38afa02974aa0f463dab0cb98c: 21300000
     - f64f58d8dde5949799d1321cca7eca76: 21300000
@@ -377,6 +378,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 09b8c75714cb7a148810a29a24e7185d, type: 3}
   - {fileID: 21300000, guid: 757df977e1bde4107ad4ad20c3c746ca, type: 3}
   - {fileID: 21300000, guid: 5fc241a7a59e1e447acd80a21f4ee931, type: 3}
+  - {fileID: 21300000, guid: c9b0e9e71a80b48189e2cd1051fc6fb7, type: 3}
   - {fileID: 21300000, guid: f74339084d9c84015a6e52c4b7243cb1, type: 3}
   - {fileID: 21300000, guid: bd6f7a38afa02974aa0f463dab0cb98c, type: 3}
   - {fileID: 21300000, guid: f64f58d8dde5949799d1321cca7eca76, type: 3}
@@ -557,6 +559,7 @@ SpriteAtlas:
   - 016-mouse-right-button
   - list-shadow
   - Title-decoration
+  - paper-background-3
   - serach-icon
   - wood background
   - wide-button-selected
