@@ -73,7 +73,7 @@ namespace Warlander.Deedplanner.Gui
             
             _settings.Modified += ValidateState;
             _cameraCoordinator.CurrentCameraChanged += CameraCoordinatorOnCurrentCameraChanged;
-            _cameraCoordinator.FloorChanged += CameraCoordinatorOnFloorChanged;
+            _cameraCoordinator.LevelChanged += CameraCoordinatorOnLevelChanged;
         }
 
         private void CameraCoordinatorOnCurrentCameraChanged()
@@ -81,7 +81,7 @@ namespace Warlander.Deedplanner.Gui
             OnActiveWindowChange();
         }
 
-        private void CameraCoordinatorOnFloorChanged()
+        private void CameraCoordinatorOnLevelChanged()
         {
             UpdateTabs();
         }
@@ -228,7 +228,7 @@ namespace Warlander.Deedplanner.Gui
 
         private void UpdateTabs()
         {
-            int floor = _cameraCoordinator.Current.Floor;
+            int floor = _cameraCoordinator.Current.Level;
             if (floor < 0)
             {
                 groundToggle.gameObject.SetActive(false);
@@ -276,7 +276,7 @@ namespace Warlander.Deedplanner.Gui
             
             _settings.Modified -= ValidateState;
             _cameraCoordinator.CurrentCameraChanged -= CameraCoordinatorOnCurrentCameraChanged;
-            _cameraCoordinator.FloorChanged -= CameraCoordinatorOnFloorChanged;
+            _cameraCoordinator.LevelChanged -= CameraCoordinatorOnLevelChanged;
         }
     }
 }

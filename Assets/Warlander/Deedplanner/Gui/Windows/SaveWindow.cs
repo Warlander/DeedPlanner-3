@@ -38,7 +38,7 @@ namespace Warlander.Deedplanner.Gui.Windows
         private void SaveToFileOnClick()
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            JavaScriptUtils.DownloadNative("Deed plan.MAP", mapString);
+            Warlander.Deedplanner.Utils.JavaScriptUtils.DownloadNative("Deed plan.MAP", ParseCurrentMapToString());
 #else
             FileBrowser.SetFilters(false, new FileBrowser.Filter("DeedPlanner 3 save", "MAP"));
             FileBrowser.ShowSaveDialog(OnSaveSuccess, OnSaveCancel, FileBrowser.PickMode.Files,
@@ -59,13 +59,16 @@ namespace Warlander.Deedplanner.Gui.Windows
             {
                 path += ".MAP";
             }
-        
-            Map map = _gameManager.Map;
+            
+            byte[] bytes = Encoding.Default.GetBytes(ParseCurrentMapToString());
+            File.WriteAllBytes(path, bytes);
+            
+            _window.Close();
+        }
 
-            if (!map)
-            {
-                return;
-            }
+        private string ParseCurrentMapToString()
+        {
+            Map map = _gameManager.Map;
             
             StringBuilder build = new StringBuilder();
             XmlWriterSettings settings = new XmlWriterSettings();
@@ -78,11 +81,8 @@ namespace Warlander.Deedplanner.Gui.Windows
                 map.Serialize(document, null);
                 document.Save(xmlWriter);
             }
-            
-            byte[] bytes = Encoding.Default.GetBytes(build.ToString());
-            File.WriteAllBytes(path, bytes);
-            
-            _window.Close();
+
+            return build.ToString();
         }
 
         private void OnSaveCancel()

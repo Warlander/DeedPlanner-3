@@ -30,7 +30,7 @@ namespace Warlander.Deedplanner.Data
         public Map Map { get; }
         public int X { get; }
         public int Y { get; }
-        private Dictionary<EntityData, TileEntity> Entities { get; set; }
+        private Dictionary<EntityData, LevelEntity> Entities { get; set; }
 
         public Ground Ground { get; private set; }
         public Cave Cave { get; private set; }
@@ -82,7 +82,7 @@ namespace Warlander.Deedplanner.Data
 
             _outlineCoordinator = outlineCoordinator;
 
-            Entities = new Dictionary<EntityData, TileEntity>();
+            Entities = new Dictionary<EntityData, LevelEntity>();
 
             Ground = new Ground(this, Database.DefaultGroundData);
 
@@ -104,10 +104,10 @@ namespace Warlander.Deedplanner.Data
 
             // Cave.Data = otherTile.Cave.Data;
 
-            foreach (KeyValuePair<EntityData,TileEntity> pair in otherTile.Entities)
+            foreach (KeyValuePair<EntityData,LevelEntity> pair in otherTile.Entities)
             {
                 EntityData data = pair.Key;
-                TileEntity entity = pair.Value;
+                LevelEntity entity = pair.Value;
                 PasteEntity(data, entity);
             }
 
@@ -115,24 +115,19 @@ namespace Warlander.Deedplanner.Data
             RefreshCaveEntities();
         }
 
-        private void PasteEntity(EntityData data, TileEntity entity)
+        private void PasteEntity(EntityData data, LevelEntity entity)
         {
             entity.Tile = this;
             Entities[data] = entity;
-            Map.AddEntityToMap(entity.gameObject, data.Floor);
+            Map.AddEntityToMap(entity.gameObject, data.Level);
         }
 
         public bool ContainsEntity(TileEntity entity)
         {
-            if (entity == Cave)
-            {
-                return true;
-            }
-
-            foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
+            foreach (KeyValuePair<EntityData, LevelEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
-                TileEntity checkedEntity = pair.Value;
+                LevelEntity checkedEntity = pair.Value;
                 if (entity == checkedEntity)
                 {
                     return true;
@@ -144,15 +139,15 @@ namespace Warlander.Deedplanner.Data
 
         public EntityType FindTypeOfEntity(TileEntity entity)
         {
-            if (entity == Cave)
+            if (entity == BridgePart)
             {
-                return EntityType.Cave;
+                return EntityType.BridgePart;
             }
 
-            foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
+            foreach (KeyValuePair<EntityData, LevelEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
-                TileEntity checkedEntity = pair.Value;
+                LevelEntity checkedEntity = pair.Value;
                 if (entity == checkedEntity)
                 {
                     return key.Type;
@@ -162,29 +157,24 @@ namespace Warlander.Deedplanner.Data
             throw new ArgumentException("Entity is not part of the tile");
         }
 
-        public int FindFloorOfEntity(TileEntity entity)
+        public int FindLevelOfEntity(LevelEntity entity)
         {
-            if (entity == Cave)
-            {
-                return -1;
-            }
-
-            foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
+            foreach (KeyValuePair<EntityData, LevelEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
-                TileEntity checkedEntity = pair.Value;
+                LevelEntity checkedEntity = pair.Value;
                 if (entity == checkedEntity)
                 {
-                    return key.Floor;
+                    return key.Level;
                 }
             }
 
             throw new ArgumentException("Entity is not part of the tile");
         }
 
-        public int GetHeightForFloor(int floor)
+        public int GetHeightForLevel(int level)
         {
-            if (floor < 0)
+            if (level < 0)
             {
                 return caveHeight;
             }
@@ -194,14 +184,14 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        public Materials CalculateFloorMaterials(int floor, TilePart tilePart)
+        public Materials CalculateLevelMaterials(int level, TilePart tilePart)
         {
             Materials tileMaterials = new Materials();
 
-            foreach (KeyValuePair<EntityData,TileEntity> pair in Entities)
+            foreach (KeyValuePair<EntityData,LevelEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
-                if (key.Floor != floor)
+                if (key.Level != level)
                 {
                     continue;
                 }
@@ -223,7 +213,7 @@ namespace Warlander.Deedplanner.Data
         {
             Materials tileMaterials = new Materials();
 
-            foreach (KeyValuePair<EntityData,TileEntity> pair in Entities)
+            foreach (KeyValuePair<EntityData,LevelEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
 
@@ -245,33 +235,33 @@ namespace Warlander.Deedplanner.Data
             return tileMaterials;
         }
 
-        public TileEntity GetTileContent(int level)
+        public LevelEntity GetTileContent(int level)
         {
             EntityData entityData = new EntityData(level, EntityType.Floorroof);
-            TileEntity tileEntity;
-            Entities.TryGetValue(entityData, out tileEntity);
-            return tileEntity;
+            LevelEntity levelEntity;
+            Entities.TryGetValue(entityData, out levelEntity);
+            return levelEntity;
         }
 
         public Floor SetFloor(FloorData data, EntityOrientation orientation, int level)
         {
             EntityData entityData = new EntityData(level, EntityType.Floorroof);
-            TileEntity tileEntity;
-            Entities.TryGetValue(entityData, out tileEntity);
-            Floor currentFloor = tileEntity as Floor;
-            Roof currentRoof = tileEntity as Roof;
+            LevelEntity levelEntity;
+            Entities.TryGetValue(entityData, out levelEntity);
+            Floor currentFloor = levelEntity as Floor;
+            Roof currentRoof = levelEntity as Roof;
 
-            bool needsChange = !tileEntity || (currentFloor && (currentFloor.Data != data || currentFloor.Orientation != orientation)) || currentRoof;
+            bool needsChange = !levelEntity || (currentFloor && (currentFloor.Data != data || currentFloor.Orientation != orientation)) || currentRoof;
 
             if (data != null && needsChange)
             {
                 Floor floor = CreateNewFloor(entityData, data, orientation);
-                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, floor));
+                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, levelEntity, floor));
                 return floor;
             }
-            if (data == null && tileEntity)
+            if (data == null && levelEntity)
             {
-                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, null));
+                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, levelEntity, null));
                 return null;
             }
 
@@ -283,30 +273,30 @@ namespace Warlander.Deedplanner.Data
             GameObject floorObject = new GameObject("Floor " + data.Name, typeof(Floor));
             Floor floor = floorObject.GetComponent<Floor>();
             floor.Initialize(this, data, orientation);
-            Map.AddEntityToMap(floorObject, entity.Floor);
+            Map.AddEntityToMap(floorObject, entity.Level);
 
             return floor;
         }
 
-        public Roof SetRoof(RoofData data, int floor)
+        public Roof SetRoof(RoofData data, int level)
         {
-            EntityData entityData = new EntityData(floor, EntityType.Floorroof);
-            TileEntity tileEntity;
-            Entities.TryGetValue(entityData, out tileEntity);
-            Roof currentRoof = tileEntity as Roof;
-            Floor currentFloor = tileEntity as Floor;
+            EntityData entityData = new EntityData(level, EntityType.Floorroof);
+            LevelEntity levelEntity;
+            Entities.TryGetValue(entityData, out levelEntity);
+            Roof currentRoof = levelEntity as Roof;
+            Floor currentFloor = levelEntity as Floor;
 
-            bool needsChange = !tileEntity || (currentRoof && (currentRoof.Data != data)) || currentFloor;
+            bool needsChange = !levelEntity || (currentRoof && (currentRoof.Data != data)) || currentFloor;
 
             if (data != null && needsChange)
             {
                 Roof roof = CreateNewRoof(entityData, data);
-                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, roof));
+                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, levelEntity, roof));
                 return roof;
             }
-            if (data == null && tileEntity)
+            if (data == null && levelEntity)
             {
-                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, tileEntity, null));
+                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, levelEntity, null));
                 return null;
             }
 
@@ -320,7 +310,7 @@ namespace Warlander.Deedplanner.Data
             roof.Initialize(this, data);
 
             Entities[entity] = roof;
-            Map.AddEntityToMap(roofObject, entity.Floor);
+            Map.AddEntityToMap(roofObject, entity.Level);
             RefreshSurfaceEntities();
 
             return roof;
@@ -345,7 +335,7 @@ namespace Warlander.Deedplanner.Data
         public Wall GetVerticalWall(int level)
         {
             EntityData wallEntityData = new EntityData(level, EntityType.Vwall);
-            TileEntity wallEntity;
+            LevelEntity wallEntity;
             Entities.TryGetValue(wallEntityData, out wallEntity);
             Wall currentWall = wallEntity as Wall;
 
@@ -355,7 +345,7 @@ namespace Warlander.Deedplanner.Data
         public Wall GetVerticalFence(int level)
         {
             EntityData fenceEntityData = new EntityData(level, EntityType.Vfence);
-            TileEntity fenceEntity;
+            LevelEntity fenceEntity;
             Entities.TryGetValue(fenceEntityData, out fenceEntity);
             Wall currentFence = fenceEntity as Wall;
 
@@ -376,12 +366,12 @@ namespace Warlander.Deedplanner.Data
         public Wall SetVerticalWall(WallData data, bool reversed, int level)
         {
             EntityData wallEntityData = new EntityData(level, EntityType.Vwall);
-            TileEntity wallEntity;
+            LevelEntity wallEntity;
             Entities.TryGetValue(wallEntityData, out wallEntity);
             Wall currentWall = wallEntity as Wall;
 
             EntityData fenceEntityData = new EntityData(level, EntityType.Vfence);
-            TileEntity fenceEntity;
+            LevelEntity fenceEntity;
             Entities.TryGetValue(fenceEntityData, out fenceEntity);
             Wall currentFence = fenceEntity as Wall;
 
@@ -430,14 +420,14 @@ namespace Warlander.Deedplanner.Data
 
         private Wall CreateNewVerticalWall(EntityData entity, WallData data, bool reversed)
         {
-            int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 0, 1).GetHeightForFloor(entity.Floor);
+            int slopeDifference = GetHeightForLevel(entity.Level) - Map.GetRelativeTile(this, 0, 1).GetHeightForLevel(entity.Level);
             GameObject wallObject = new GameObject("Vertical Wall " + data.Name, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
             wall.Initialize(this, data, reversed, slopeDifference);
             wallObject.transform.rotation = Quaternion.Euler(0, 90, 0);
 
             Entities[entity] = wall;
-            Map.AddEntityToMap(wallObject, entity.Floor);
+            Map.AddEntityToMap(wallObject, entity.Level);
             RefreshSurfaceEntities();
 
             return wall;
@@ -462,7 +452,7 @@ namespace Warlander.Deedplanner.Data
         public Wall GetHorizontalWall(int level)
         {
             EntityData wallEntityData = new EntityData(level, EntityType.Hwall);
-            TileEntity wallEntity;
+            LevelEntity wallEntity;
             Entities.TryGetValue(wallEntityData, out wallEntity);
             Wall currentWall = wallEntity as Wall;
 
@@ -472,7 +462,7 @@ namespace Warlander.Deedplanner.Data
         public Wall GetHorizontalFence(int level)
         {
             EntityData fenceEntityData = new EntityData(level, EntityType.Hfence);
-            TileEntity fenceEntity;
+            LevelEntity fenceEntity;
             Entities.TryGetValue(fenceEntityData, out fenceEntity);
             Wall currentFence = fenceEntity as Wall;
 
@@ -493,12 +483,12 @@ namespace Warlander.Deedplanner.Data
         public Wall SetHorizontalWall(WallData data, bool reversed, int level)
         {
             EntityData wallEntityData = new EntityData(level, EntityType.Hwall);
-            TileEntity wallEntity;
+            LevelEntity wallEntity;
             Entities.TryGetValue(wallEntityData, out wallEntity);
             Wall currentWall = wallEntity as Wall;
 
             EntityData fenceEntityData = new EntityData(level, EntityType.Hfence);
-            TileEntity fenceEntity;
+            LevelEntity fenceEntity;
             Entities.TryGetValue(fenceEntityData, out fenceEntity);
             Wall currentFence = fenceEntity as Wall;
 
@@ -546,14 +536,14 @@ namespace Warlander.Deedplanner.Data
 
         private Wall CreateNewHorizontalWall(EntityData entity, WallData data, bool reversed)
         {
-            int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 1, 0).GetHeightForFloor(entity.Floor);
+            int slopeDifference = GetHeightForLevel(entity.Level) - Map.GetRelativeTile(this, 1, 0).GetHeightForLevel(entity.Level);
             GameObject wallObject = new GameObject("Horizontal Wall " + data.Name, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
             wall.Initialize(this, data, reversed, slopeDifference);
             wallObject.transform.rotation = Quaternion.Euler(0, 180, 0);
 
             Entities[entity] = wall;
-            Map.AddEntityToMap(wallObject, entity.Floor);
+            Map.AddEntityToMap(wallObject, entity.Level);
             RefreshSurfaceEntities();
 
             return wall;
@@ -564,7 +554,7 @@ namespace Warlander.Deedplanner.Data
         /// </summary>
         public Decoration GetCentralDecoration()
         {
-            foreach (TileEntity tileEntity in Entities.Values)
+            foreach (LevelEntity tileEntity in Entities.Values)
             {
                 if (tileEntity is Decoration decoration && decoration.Data.CenterOnly)
                 {
@@ -578,7 +568,7 @@ namespace Warlander.Deedplanner.Data
         public IEnumerable<Decoration> GetDecorations()
         {
             List<Decoration> decorations = new List<Decoration>();
-            foreach (TileEntity tileEntity in Entities.Values)
+            foreach (LevelEntity tileEntity in Entities.Values)
             {
                 if (tileEntity is Decoration decoration)
                 {
@@ -589,7 +579,7 @@ namespace Warlander.Deedplanner.Data
             return decorations;
         }
 
-        public Decoration SetDecoration(DecorationData data, Vector2 position, float rotation, int floor, bool floatOnWater = false)
+        public Decoration SetDecoration(DecorationData data, Vector2 position, float rotation, int level, bool floatOnWater = false)
         {
             if (position.x < 0 || position.x >= 4 || position.y < 0 || position.y >= 4)
             {
@@ -597,8 +587,8 @@ namespace Warlander.Deedplanner.Data
                 return null;
             }
 
-            FreeformEntityData decorationEntityData = new FreeformEntityData(floor, EntityType.Object, position.x, position.y, floatOnWater);
-            TileEntity decorationEntity;
+            FreeformEntityData decorationEntityData = new FreeformEntityData(level, EntityType.Object, position.x, position.y, floatOnWater);
+            LevelEntity decorationEntity;
             Entities.TryGetValue(decorationEntityData, out decorationEntity);
             Decoration currentDecoration = decorationEntity as Decoration;
             bool needsChange = !currentDecoration || currentDecoration.Data != data ||
@@ -626,7 +616,7 @@ namespace Warlander.Deedplanner.Data
             Decoration decoration = decorationObject.GetComponent<Decoration>();
             decoration.Initialize(this, data, position, rotation);
             Entities[entity] = decoration;
-            Map.AddEntityToMap(decorationObject, entity.Floor);
+            Map.AddEntityToMap(decorationObject, entity.Level);
             RefreshSurfaceEntities();
 
             return decoration;
@@ -635,6 +625,7 @@ namespace Warlander.Deedplanner.Data
         public void RegisterBridgePart(BridgePart bridgePart)
         {
             surfaceBridgePart = bridgePart;
+            bridgePart.Tile = this;
             bridgePart.transform.SetParent(Map.transform);
         }
 
@@ -654,32 +645,32 @@ namespace Warlander.Deedplanner.Data
             // Cave.Serialize(document, cave);
             // localRoot.AppendChild(cave);
 
-            Dictionary<int, XmlElement> levels = new Dictionary<int, XmlElement>();
-            foreach (KeyValuePair<EntityData, TileEntity> e in Entities)
+            Dictionary<int, XmlElement> levelElements = new Dictionary<int, XmlElement>();
+            foreach (KeyValuePair<EntityData, LevelEntity> e in Entities)
             {
                 EntityData key = e.Key;
-                TileEntity entity = e.Value;
-                int floor = key.Floor;
+                LevelEntity entity = e.Value;
+                int level = key.Level;
 
-                XmlElement level;
-                levels.TryGetValue(floor, out level);
-                if (level == null)
+                XmlElement levelElement;
+                levelElements.TryGetValue(level, out levelElement);
+                if (levelElement == null)
                 {
-                    level = document.CreateElement("level");
-                    level.SetAttribute("value", key.Floor.ToString());
-                    levels[key.Floor] = level;
-                    localRoot.AppendChild(level);
+                    levelElement = document.CreateElement("level");
+                    levelElement.SetAttribute("value", key.Level.ToString());
+                    levelElements[key.Level] = levelElement;
+                    localRoot.AppendChild(levelElement);
                 }
 
                 string elementName = GetEntitySerializedName(key, entity);
                 XmlElement element = document.CreateElement(elementName);
                 key.Serialize(document, element);
                 entity.Serialize(document, element);
-                level.AppendChild(element);
+                levelElement.AppendChild(element);
             }
         }
 
-        private string GetEntitySerializedName(EntityData key, TileEntity entity)
+        private string GetEntitySerializedName(EntityData key, LevelEntity entity)
         {
             switch (key.Type)
                 {
@@ -732,7 +723,7 @@ namespace Warlander.Deedplanner.Data
 
         private void DeserializeLevel(XmlElement floorElement)
         {
-            int floor = Convert.ToInt32(floorElement.GetAttribute("value"));
+            int level = Convert.ToInt32(floorElement.GetAttribute("value"));
 
             foreach (XmlElement childElement in floorElement)
             {
@@ -740,22 +731,22 @@ namespace Warlander.Deedplanner.Data
                 switch (tag)
                 {
                     case "floor":
-                        DeserializeFloor(childElement, floor);
+                        DeserializeFloor(childElement, level);
                         break;
                     case "hwall": case "vwall":
-                        DeserializeWall(childElement, floor);
+                        DeserializeWall(childElement, level);
                         break;
                     case "roof":
-                        DeserializeRoof(childElement, floor);
+                        DeserializeRoof(childElement, level);
                         break;
                     case "object":
-                        DeserializeDecoration(childElement, floor);
+                        DeserializeDecoration(childElement, level);
                         break;
                 }
             }
         }
 
-        private void DeserializeFloor(XmlElement element, int floor)
+        private void DeserializeFloor(XmlElement element, int level)
         {
             string id = element.GetAttribute("id");
             FloorData data;
@@ -784,10 +775,10 @@ namespace Warlander.Deedplanner.Data
                     break;
             }
 
-            SetFloor(data, orientation, floor);
+            SetFloor(data, orientation, level);
         }
 
-        private void DeserializeWall(XmlElement element, int floor)
+        private void DeserializeWall(XmlElement element, int level)
         {
             string id = element.GetAttribute("id");
             WallData data;
@@ -807,15 +798,15 @@ namespace Warlander.Deedplanner.Data
 
             if (horizontal)
             {
-                SetHorizontalWall(data, reversed, floor);
+                SetHorizontalWall(data, reversed, level);
             }
             else
             {
-                SetVerticalWall(data, reversed, floor);
+                SetVerticalWall(data, reversed, level);
             }
         }
 
-        private void DeserializeRoof(XmlElement element, int floor)
+        private void DeserializeRoof(XmlElement element, int level)
         {
             string id = element.GetAttribute("id");
             RoofData data;
@@ -826,10 +817,10 @@ namespace Warlander.Deedplanner.Data
                 return;
             }
 
-            SetRoof(data, floor);
+            SetRoof(data, level);
         }
 
-        public void DeserializeDecoration(XmlElement element, int floor)
+        public void DeserializeDecoration(XmlElement element, int level)
         {
             string id = element.GetAttribute("id");
             string positionString = element.GetAttribute("position");
@@ -863,7 +854,7 @@ namespace Warlander.Deedplanner.Data
                 rotation = -rotation + 180 * Mathf.Deg2Rad;
             }
 
-            SetDecoration(data, position, rotation, floor, data.Floating);
+            SetDecoration(data, position, rotation, level, data.Floating);
         }
 
         public void Refresh()
@@ -874,47 +865,47 @@ namespace Warlander.Deedplanner.Data
 
         private void RefreshSurfaceEntities()
         {
-            foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
+            foreach (KeyValuePair<EntityData, LevelEntity> pair in Entities)
             {
                 EntityData data = pair.Key;
-                if (data.Floor < 0)
+                if (data.Level < 0)
                 {
                     continue;
                 }
-                TileEntity tileEntity = pair.Value;
-                RefreshEntity(data, tileEntity);
+                LevelEntity levelEntity = pair.Value;
+                RefreshEntity(data, levelEntity);
             }
         }
 
         private void RefreshCaveEntities()
         {
-            foreach (KeyValuePair<EntityData, TileEntity> pair in Entities)
+            foreach (KeyValuePair<EntityData, LevelEntity> pair in Entities)
             {
                 EntityData data = pair.Key;
-                if (data.Floor >= 0)
+                if (data.Level >= 0)
                 {
                     continue;
                 }
-                TileEntity tileEntity = pair.Value;
-                RefreshEntity(data, tileEntity);
+                LevelEntity levelEntity = pair.Value;
+                RefreshEntity(data, levelEntity);
             }
         }
 
-        private void RefreshEntity(EntityData data, TileEntity entity)
+        private void RefreshEntity(EntityData data, LevelEntity entity)
         {
             data.Apply(this, entity.transform);
 
             if (data.Type == EntityType.Hfence || data.Type == EntityType.Hwall)
             {
-                int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 1, 0).GetHeightForFloor(entity.Floor);
+                int slopeDifference = GetHeightForLevel(entity.Level) - Map.GetRelativeTile(this, 1, 0).GetHeightForLevel(entity.Level);
                 Wall wall = (Wall) entity;
-                wall.UpdateModel(slopeDifference, data.IsGroundFloor);
+                wall.UpdateModel(slopeDifference, data.IsGroundLevel);
             }
             else if (data.Type == EntityType.Vfence || data.Type == EntityType.Vwall)
             {
-                int slopeDifference = GetHeightForFloor(entity.Floor) - Map.GetRelativeTile(this, 0, 1).GetHeightForFloor(entity.Floor);
+                int slopeDifference = GetHeightForLevel(entity.Level) - Map.GetRelativeTile(this, 0, 1).GetHeightForLevel(entity.Level);
                 Wall wall = (Wall) entity;
-                wall.UpdateModel(slopeDifference, data.IsGroundFloor);
+                wall.UpdateModel(slopeDifference, data.IsGroundLevel);
             }
 
             if (entity is Decoration decoration)
@@ -940,10 +931,10 @@ namespace Warlander.Deedplanner.Data
             private readonly Tile tile;
             private readonly EntityData data;
 
-            private readonly TileEntity oldEntity;
-            private readonly TileEntity newEntity;
+            private readonly LevelEntity oldEntity;
+            private readonly LevelEntity newEntity;
 
-            public TileEntityChangeCommand(Tile tile, EntityData data, TileEntity oldEntity, TileEntity newEntity)
+            public TileEntityChangeCommand(Tile tile, EntityData data, LevelEntity oldEntity, LevelEntity newEntity)
             {
                 this.tile = tile;
                 this.data = data;
@@ -1023,23 +1014,23 @@ namespace Warlander.Deedplanner.Data
                 UpdateEntityRendering(oldEntity);
             }
 
-            private void UpdateEntityRendering(TileEntity entity)
+            private void UpdateEntityRendering(LevelEntity entity)
             {
                 if (!entity)
                 {
                     return;
                 }
 
-                int renderedFloor = tile.Map.RenderedFloor;
+                int renderedLevel = tile.Map.RenderedLevel;
                 bool renderEntireMap = tile.Map.RenderEntireMap;
                 
-                bool underground = renderedFloor < 0;
-                int absoluteFloor = underground ? -renderedFloor + 1 : renderedFloor;
-                int relativeFloor = entity.Floor - absoluteFloor;
-                float opacity = renderEntireMap ? 1f : tile.Map.GetRelativeFloorOpacity(relativeFloor);
-                bool renderFloor = opacity > 0;
+                bool underground = renderedLevel < 0;
+                int absoluteLevel = underground ? -renderedLevel + 1 : renderedLevel;
+                int relativeLevel = entity.Level - absoluteLevel;
+                float opacity = renderEntireMap ? 1f : tile.Map.GetRelativeLevelOpacity(relativeLevel);
+                bool renderLevel = opacity > 0;
 
-                if (renderFloor)
+                if (renderLevel)
                 {
                     MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
                     propertyBlock.SetColor(ShaderPropertyIds.Color, new Color(opacity, opacity, opacity));

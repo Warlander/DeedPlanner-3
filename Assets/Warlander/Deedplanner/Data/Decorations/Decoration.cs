@@ -6,7 +6,7 @@ using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Data.Decorations
 {
-    public class Decoration : FreeformTileEntity
+    public class Decoration : FreeformLevelEntity
     {
         private Vector2 position;
         private GameObject model;

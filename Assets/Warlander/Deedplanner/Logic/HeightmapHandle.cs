@@ -74,7 +74,7 @@ namespace Warlander.Deedplanner.Logic
             build.Append("<mspace=0.5em>");
             
             Tile centralTile = map[TileCoords.x, TileCoords.y];
-            int centralHeight = centralTile.GetHeightForFloor(floor);
+            int centralHeight = centralTile.GetHeightForLevel(floor);
             for (int i = 1; i >= -1; i--)
             {
                 for (int i2 = -1; i2 <= 1; i2++)
@@ -108,7 +108,7 @@ namespace Warlander.Deedplanner.Logic
         
         private static int TileHeightOrDefault(Tile tile, int defaultHeight, int floor)
         {
-            return tile?.GetHeightForFloor(floor) ?? defaultHeight;
+            return tile?.GetHeightForLevel(floor) ?? defaultHeight;
         }
     }
 }

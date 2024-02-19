@@ -133,7 +133,7 @@ namespace Warlander.Deedplanner.Updaters
 
             OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
             GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
-            TileEntity tileEntity = raycast.transform.GetComponent<TileEntity>();
+            LevelEntity levelEntity = raycast.transform.GetComponent<LevelEntity>();
 
             Material ghostMaterial = GraphicsManager.Instance.GhostMaterial;
             if (dataChanged)
@@ -147,10 +147,10 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            int targetFloor = _cameraCoordinator.Current.Floor;
-            if (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor))
+            int targetFloor = _cameraCoordinator.Current.Level;
+            if (levelEntity && levelEntity.Valid && levelEntity.GetType() == typeof(Floor))
             {
-                targetFloor = tileEntity.Floor;
+                targetFloor = levelEntity.Level;
             }
 
             if (data.CenterOnly || data.Tree || data.Bush)
@@ -188,9 +188,9 @@ namespace Warlander.Deedplanner.Updaters
                         position.y += targetFloor * floorHeight;
                     }
                 }
-                else if (tileEntity && tileEntity.Valid)
+                else if (levelEntity && levelEntity.Valid)
                 {
-                    targetedTile = tileEntity.Tile;
+                    targetedTile = levelEntity.Tile;
                 }
             }
             
@@ -202,7 +202,7 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
 
-            bool canPlaceNewObject = overlayMesh || groundMesh || (tileEntity && tileEntity.Valid && tileEntity.GetType() == typeof(Floor));
+            bool canPlaceNewObject = overlayMesh || groundMesh || (levelEntity && levelEntity.Valid && levelEntity.GetType() == typeof(Floor));
             if (canPlaceNewObject || placingDecoration)
             {
                 ghostObject.gameObject.SetActive(true);

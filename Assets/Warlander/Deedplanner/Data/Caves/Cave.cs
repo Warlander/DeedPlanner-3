@@ -4,24 +4,24 @@ using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data.Caves
 {
-    public class Cave : TileEntity, IXmlSerializable
+    public class Cave : IXmlSerializable
     {
         private CaveData data;
-        public override Materials Materials => null;
+        
+        public Tile Tile { get; }
 
         public CaveData Data {
             get => data;
             set => data = value;
         }
 
-        public void Initialize(Tile tile, CaveData data)
+        public Cave(Tile tile, CaveData data)
         {
             Tile = tile;
             this.data = data;
-            gameObject.layer = LayerMasks.GroundLayer;
         }
 
-        public override void Serialize(XmlDocument document, XmlElement localRoot)
+        public void Serialize(XmlDocument document, XmlElement localRoot)
         {
             localRoot.SetAttribute("id", data.ShortName);
         }

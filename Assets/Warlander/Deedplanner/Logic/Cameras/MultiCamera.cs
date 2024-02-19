@@ -31,7 +31,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [Inject] private MapProjectorManager _mapProjectorManager;
         [Inject] private OutlineCoordinator _outlineCoordinator;
 
-        public event Action FloorChanged;
+        public event Action LevelChanged;
         public event Action ModeChanged;
         public event Action<MultiCamera> PointerDown;
         
@@ -80,11 +80,11 @@ namespace Warlander.Deedplanner.Logic.Cameras
             }
         }
 
-        public int Floor {
-            get => floor;
+        public int Level {
+            get => _level;
             set {
-                floor = value;
-                FloorChanged?.Invoke();
+                _level = value;
+                LevelChanged?.Invoke();
                 UpdateState();
             }
         }
@@ -121,7 +121,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         private DynamicModelBehaviour _outlinedModel;
         
         private CameraMode cameraMode = CameraMode.Top;
-        private int floor = 0;
+        private int _level = 0;
 
         private void Awake()
         {
@@ -196,7 +196,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             {
                 Vector3 focusedPoint = CurrentRaycast.point;
                 bool focusedWindow = _cameraCoordinator.ActiveId == screenId;
-                CameraController.UpdateInput(map, cameraMode, focusedPoint, AttachedCamera.aspect, floor, focusedWindow, MouseOver);
+                CameraController.UpdateInput(map, cameraMode, focusedPoint, AttachedCamera.aspect, _level, focusedWindow, MouseOver);
             }
 
             UpdateState();
@@ -250,7 +250,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
                         if (heightmapHandle != null)
                         {
-                            tooltipBuild.Append(heightmapHandle.ToRichString(_gameManager.Map, Floor));
+                            tooltipBuild.Append(heightmapHandle.ToRichString(_gameManager.Map, Level));
                         }
                         else if (isHeightEditing)
                         {
@@ -263,10 +263,10 @@ namespace Warlander.Deedplanner.Logic.Cameras
                             int clampedY = Mathf.Clamp(tileCoords.y, 0, map.Height);
                             tileCoords = new Vector2Int(clampedX, clampedY);
 
-                            int h00 = map[tileCoords.x, tileCoords.y].GetHeightForFloor(floor);
-                            int h10 = map[tileCoords.x + 1, tileCoords.y].GetHeightForFloor(floor);
-                            int h01 = map[tileCoords.x, tileCoords.y + 1].GetHeightForFloor(floor);
-                            int h11 = map[tileCoords.x + 1, tileCoords.y + 1].GetHeightForFloor(floor);
+                            int h00 = map[tileCoords.x, tileCoords.y].GetHeightForLevel(_level);
+                            int h10 = map[tileCoords.x + 1, tileCoords.y].GetHeightForLevel(_level);
+                            int h01 = map[tileCoords.x, tileCoords.y + 1].GetHeightForLevel(_level);
+                            int h11 = map[tileCoords.x + 1, tileCoords.y + 1].GetHeightForLevel(_level);
                             int h00Digits = NumericStringUtils.CalculateDigitsCount(h00);
                             int h10Digits = NumericStringUtils.CalculateDigitsCount(h10);
                             int h01Digits = NumericStringUtils.CalculateDigitsCount(h01);
@@ -280,6 +280,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                         }
                         else
                         {
+                            tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
                             tooltipBuild.Append(_gameManager.Map[x, y].Ground.Data.Name);
                         }
                     }
@@ -291,7 +292,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     }
                     else if (heightmapHandle != null)
                     {
-                        tooltipBuild.Append(heightmapHandle.ToRichString(_gameManager.Map, Floor));
+                        tooltipBuild.Append(heightmapHandle.ToRichString(_gameManager.Map, Level));
                     }
                 }
 
@@ -320,8 +321,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
         {
             Tab tab = LayoutManager.Instance.CurrentTab;
             bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
-            int editingFloor = forceSurfaceEditing ? 0 : Floor;
-            bool renderWater = RenderEntireMap || editingFloor == 0 || editingFloor == -1;
+            int currentlyEditedLevel = forceSurfaceEditing ? 0 : Level;
+            bool renderWater = RenderEntireMap || currentlyEditedLevel == 0 || currentlyEditedLevel == -1;
             Vector2 waterPosition = CameraController.CalculateWaterTablePosition(AttachedCamera.transform.position);
 
             if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
@@ -347,12 +348,12 @@ namespace Warlander.Deedplanner.Logic.Cameras
         {
             Tab tab = LayoutManager.Instance.CurrentTab;
             bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
-            int editingFloor = forceSurfaceEditing ? 0 : Floor;
+            int currentlyEditedLevel = forceSurfaceEditing ? 0 : Level;
 
             Map map = _gameManager.Map;
-            if (map.RenderedFloor != editingFloor)
+            if (map.RenderedLevel != currentlyEditedLevel)
             {
-                map.RenderedFloor = editingFloor;
+                map.RenderedLevel = currentlyEditedLevel;
             }
             if (map.RenderEntireMap != RenderEntireMap)
             {
@@ -360,7 +361,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             }
             
             bool renderHeights = tab == Tab.Height;
-            GridMesh gridMeshToUse = Floor < 0 ? map.CaveGridMesh : map.SurfaceGridMesh;
+            GridMesh gridMeshToUse = Level < 0 ? map.CaveGridMesh : map.SurfaceGridMesh;
             
             gridMeshToUse.HandlesVisible = renderHeights;
             gridMeshToUse.SetRenderHeightColors(renderHeights);

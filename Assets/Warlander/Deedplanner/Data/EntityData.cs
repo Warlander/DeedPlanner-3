@@ -6,22 +6,22 @@ namespace Warlander.Deedplanner.Data
 {
     public class EntityData : IXmlSerializable
     {
-        public int Floor { get; private set; }
+        public int Level { get; private set; }
         public EntityType Type { get; private set; }
 
-        public bool IsGroundFloor => Floor == 0 || Floor == -1;
-        public bool IsSurface => Floor >= 0;
-        public bool IsCave => Floor < 0;
+        public bool IsGroundLevel => Level == 0 || Level == -1;
+        public bool IsSurface => Level >= 0;
+        public bool IsCave => Level < 0;
 
         public EntityData(int floor, EntityType type)
         {
-            Floor = floor;
+            Level = floor;
             Type = type;
         }
 
         public virtual void Apply(Tile tile, Transform targetTransform)
         {
-            targetTransform.localPosition = new Vector3(tile.X * 4, tile.SurfaceHeight * 0.1f + Floor * 3f, tile.Y * 4);
+            targetTransform.localPosition = new Vector3(tile.X * 4, tile.SurfaceHeight * 0.1f + Level * 3f, tile.Y * 4);
         }
 
         public virtual void Serialize(XmlDocument document, XmlElement localRoot)
@@ -38,17 +38,17 @@ namespace Warlander.Deedplanner.Data
                 return false;
             }
 
-            return Floor == data.Floor && Type == data.Type;
+            return Level == data.Level && Type == data.Type;
         }
 
         public override int GetHashCode()
         {
-            return (int)Type * 100 + Floor;
+            return (int)Type * 100 + Level;
         }
 
         public override string ToString()
         {
-            return "Entity floor " + Floor + " type " + Type;
+            return "Entity level " + Level + " type " + Type;
         }
     }
 }

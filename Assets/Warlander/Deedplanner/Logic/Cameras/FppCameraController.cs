@@ -31,7 +31,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             fppRotation = new Vector3(Mathf.Clamp(fppRotation.x, -90, 90), fppRotation.y % 360, fppRotation.z);
         }
 
-        public void UpdateInput(Map map, CameraMode mode, Vector3 focusedPoint, float aspect, int currentFloor, bool focusedWindow, bool mouseOver)
+        public void UpdateInput(Map map, CameraMode mode, Vector3 focusedPoint, float aspect, int currentLevel, bool focusedWindow, bool mouseOver)
         {
             if (focusedWindow)
             {
@@ -86,10 +86,10 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 float xPartRev = 1f - xPart;
                 float yPartRev = 1f - yPart;
 
-                float h00 = map[currentTileX, currentTileY].GetHeightForFloor(currentFloor) * 0.1f;
-                float h10 = map[currentTileX + 1, currentTileY].GetHeightForFloor(currentFloor) * 0.1f;
-                float h01 = map[currentTileX, currentTileY + 1].GetHeightForFloor(currentFloor) * 0.1f;
-                float h11 = map[currentTileX + 1, currentTileY + 1].GetHeightForFloor(currentFloor) * 0.1f;
+                float h00 = map[currentTileX, currentTileY].GetHeightForLevel(currentLevel) * 0.1f;
+                float h10 = map[currentTileX + 1, currentTileY].GetHeightForLevel(currentLevel) * 0.1f;
+                float h01 = map[currentTileX, currentTileY + 1].GetHeightForLevel(currentLevel) * 0.1f;
+                float h11 = map[currentTileX + 1, currentTileY + 1].GetHeightForLevel(currentLevel) * 0.1f;
 
                 float x0 = (h00 * xPartRev + h10 * xPart);
                 float x1 = (h01 * xPartRev + h11 * xPart);

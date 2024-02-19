@@ -57,14 +57,6 @@ namespace Warlander.Deedplanner.Updaters
             {
                 _tooltipHandler.ShowTooltipText($"{bridge.Data.Name} bridge");
             }
-
-            if (bridgePart != null)
-            {
-                string bridgePartRawString = bridgePart.PartType.ToString();
-                string bridgePartWithSpaces = StringUtils.AddSpacesToSentence(bridgePartRawString);
-                string bridgePartLowercase = bridgePartWithSpaces.ToLower();
-                _tooltipHandler.ShowTooltipText(bridgePartLowercase);
-            }
         }
 
         private void UpdateBridgeHover(Bridge bridge)
