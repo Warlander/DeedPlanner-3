@@ -168,6 +168,12 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: Warlander.Deedplanner.Gui.LayoutReference, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 5696667720071699238, guid: 5e144ec137108d04a8df14e4f780d6d1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1e1a1346b2a5d415e9884335686d81c5,
+        type: 3}
     - target: {fileID: 9220848329166384058, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
       propertyPath: m_Sprite
@@ -284,6 +290,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9220848330087614004, guid: 5e144ec137108d04a8df14e4f780d6d1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f204275d18a2f48b0b8e0dfe853a5083,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -419,6 +431,12 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: Warlander.Deedplanner.Gui.LayoutReference, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 5696667720071699238, guid: 5e144ec137108d04a8df14e4f780d6d1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1e1a1346b2a5d415e9884335686d81c5,
+        type: 3}
     - target: {fileID: 9220848329166384058, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
       propertyPath: m_Sprite
@@ -535,6 +553,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9220848330087614004, guid: 5e144ec137108d04a8df14e4f780d6d1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f204275d18a2f48b0b8e0dfe853a5083,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -670,6 +694,12 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: Warlander.Deedplanner.Gui.LayoutReference, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 5696667720071699238, guid: 5e144ec137108d04a8df14e4f780d6d1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1e1a1346b2a5d415e9884335686d81c5,
+        type: 3}
     - target: {fileID: 9220848329166384058, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
       propertyPath: m_Sprite
@@ -786,6 +816,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9220848330087614004, guid: 5e144ec137108d04a8df14e4f780d6d1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f204275d18a2f48b0b8e0dfe853a5083,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -921,6 +957,12 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: Warlander.Deedplanner.Gui.LayoutReference, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 5696667720071699238, guid: 5e144ec137108d04a8df14e4f780d6d1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1e1a1346b2a5d415e9884335686d81c5,
+        type: 3}
     - target: {fileID: 9220848329166384058, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
       propertyPath: m_Sprite
@@ -1037,6 +1079,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9220848330087614004, guid: 5e144ec137108d04a8df14e4f780d6d1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f204275d18a2f48b0b8e0dfe853a5083,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1172,6 +1220,12 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: Warlander.Deedplanner.Gui.LayoutReference, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 5696667720071699238, guid: 5e144ec137108d04a8df14e4f780d6d1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1e1a1346b2a5d415e9884335686d81c5,
+        type: 3}
     - target: {fileID: 9220848329166384058, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
       propertyPath: m_Sprite
@@ -1288,6 +1342,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9220848330087614004, guid: 5e144ec137108d04a8df14e4f780d6d1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f204275d18a2f48b0b8e0dfe853a5083,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1428,6 +1488,12 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: Warlander.Deedplanner.Gui.LayoutReference, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 5696667720071699238, guid: 5e144ec137108d04a8df14e4f780d6d1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1e1a1346b2a5d415e9884335686d81c5,
+        type: 3}
     - target: {fileID: 9220848329166384058, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
       propertyPath: m_Sprite
@@ -1544,6 +1610,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9220848330087614004, guid: 5e144ec137108d04a8df14e4f780d6d1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f204275d18a2f48b0b8e0dfe853a5083,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1649,6 +1721,11 @@ PrefabInstance:
       propertyPath: m_text
       value: Choose Layout
       objectReference: {fileID: 0}
+    - target: {fileID: 6426926222443932187, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1.6000061
+      objectReference: {fileID: 0}
     - target: {fileID: 6426926222669548959, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1717,12 +1794,12 @@ PrefabInstance:
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 1008.5
+      value: 2789.5
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 623
+      value: 1673
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
@@ -1762,12 +1839,12 @@ PrefabInstance:
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 504.25
+      value: 1394.75
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 311.5
+      value: 836.5
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
@@ -1784,6 +1861,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6426926223143253523, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1.6000061
+      objectReference: {fileID: 0}
     - target: {fileID: 6426926223170459920, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1843,6 +1925,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6426926223540170643, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -1.6000061
+      objectReference: {fileID: 0}
+    - target: {fileID: 6426926223678012609, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 1.6000061
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
