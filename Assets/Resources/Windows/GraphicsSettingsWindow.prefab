@@ -244,7 +244,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: 40, y: 10}
+  m_SizeDelta: {x: 24, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4148314566574180891
 CanvasRenderer:
@@ -274,7 +274,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300036, guid: ff94ff816424d904db8078c13f23c380, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 912c48aa4c55843f0b43ae673d2eb864, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -712,7 +712,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 110.2, y: 30}
+  m_SizeDelta: {x: 91.5, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4148314567378886775
 CanvasRenderer:
@@ -867,7 +867,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 30}
+  m_SizeDelta: {x: 85.1, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4148314567519277940
 CanvasRenderer:
@@ -1177,7 +1177,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 50, y: 30}
+  m_SizeDelta: {x: 50, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4148314567638613038
 CanvasRenderer:
@@ -1601,8 +1601,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4f509875ccd544efe9fb18a7008431b8, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 0564d275adab04552bd7f8f46d7c56e7, type: 3}
+  m_Type: 1
   m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
@@ -1610,7 +1610,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 4
 --- !u!1 &4148314568161019027
 GameObject:
   m_ObjectHideFlags: 0
@@ -1672,7 +1672,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 24
   m_ChildAlignment: 1
-  m_Spacing: 0
+  m_Spacing: 4
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -2020,12 +2020,12 @@ PrefabInstance:
     - target: {fileID: 3640077888067744006, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 30.001034
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 3640077888067744006, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 30
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 3640077888067744006, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
@@ -2092,11 +2092,33 @@ PrefabInstance:
       propertyPath: m_Name
       value: Simple Water Radio
       objectReference: {fileID: 0}
+    - target: {fileID: 3640077888067744009, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3640077888067744009, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9219a0d1945e34b78be9815c8f0cbf11,
+        type: 3}
     - target: {fileID: 3640077888067744011, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 4148314568161019037}
+    - target: {fileID: 3640077888716000263, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3640077888716000263, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: cd2d250399b414901bad40562a591355,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2560,12 +2582,12 @@ PrefabInstance:
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 10016
+      value: 13578
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 6129
+      value: 8229
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
@@ -2605,12 +2627,12 @@ PrefabInstance:
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 5008
+      value: 6789
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 3064.5
+      value: 4114.5
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
@@ -2842,12 +2864,12 @@ PrefabInstance:
     - target: {fileID: 3640077888067744006, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 30.001034
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 3640077888067744006, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 30
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 3640077888067744006, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
@@ -2914,11 +2936,33 @@ PrefabInstance:
       propertyPath: m_Name
       value: High Water Radio
       objectReference: {fileID: 0}
+    - target: {fileID: 3640077888067744009, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3640077888067744009, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9219a0d1945e34b78be9815c8f0cbf11,
+        type: 3}
     - target: {fileID: 3640077888067744011, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 4148314568161019037}
+    - target: {fileID: 3640077888716000263, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3640077888716000263, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: cd2d250399b414901bad40562a591355,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3699,12 +3743,12 @@ PrefabInstance:
     - target: {fileID: 3640077888067744006, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 30.001034
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 3640077888067744006, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 30
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 3640077888067744006, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
@@ -3771,11 +3815,33 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ultra Water Radio
       objectReference: {fileID: 0}
+    - target: {fileID: 3640077888067744009, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3640077888067744009, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9219a0d1945e34b78be9815c8f0cbf11,
+        type: 3}
     - target: {fileID: 3640077888067744011, guid: a32902b751ab3e541b86447361bbb148,
         type: 3}
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 4148314568161019037}
+    - target: {fileID: 3640077888716000263, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3640077888716000263, guid: a32902b751ab3e541b86447361bbb148,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: cd2d250399b414901bad40562a591355,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
