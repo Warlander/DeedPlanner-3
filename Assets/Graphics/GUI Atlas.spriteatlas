@@ -487,12 +487,12 @@ SpriteAtlas:
   m_PackedSpriteNamesToIndex:
   - ButtonWideWhite
   - 025-corners
-  - decorated-title-new
+  - DecoratedTitle
   - Incorrect
-  - fill-bar
-  - yellow-orb
+  - FillBar
+  - 0ld_yellow-orb
   - Selection Box
-  - Slider
+  - 0ld_Slider
   - 012-parquet
   - RPG_GUI_v1_58
   - RPG_GUI_v1_59
@@ -599,42 +599,42 @@ SpriteAtlas:
   - RPG_GUI_v1_0
   - RPG_GUI_v1_3
   - RPG_GUI_v1_2
-  - line-vertical-v2
-  - radio-unchecked
+  - VerticalLine
+  - Radio
   - 2ScrVert
-  - DoubleFourConnection
-  - checkmark
-  - wide-button
+  - DoubleConnection
+  - Checkmark
+  - 0ld_wide-button
   - 007-bridge
-  - search-input
+  - 0ld_search-input
   - 006-armchair
-  - sqare-button-selected
-  - radio-checker
+  - 0ld_sqare-button-selected
+  - RadioSelector
   - Paypal Button
   - 019-photo-camera-configuration-symbol-for-interface-with-a-gear-behind
-  - white-button
+  - 0ld_white-button
   - 4_Exclude
   - patreon
   - S
-  - dropdown
-  - DoubleDownConnector
+  - 0ld_dropdown
+  - DoubleDown
   - 020-menu
   - N
   - logo
   - 010-bird
   - 011-horizontal-symmetry
-  - square-button
-  - slider-v2
-  - wood background brown
-  - line-v2
-  - DoubleUpConnection
-  - horizontal-seperator
+  - 0ld_square-button
+  - SliderVertical
+  - WoodBrownTile
+  - HorizontalLine
+  - DoubleUp
+  - 0ld_horizontal-seperator
   - paypal
   - 004-flowers
   - 021-save
-  - input-field-v2
+  - Input
   - E
-  - square-button-selected-2
+  - ButtonSquareBrown
   - Patreon Button
   - 001-magnifying-glass
   - 4Scr
@@ -643,64 +643,64 @@ SpriteAtlas:
   - 1ScrTop2ScrBot
   - 2ScrTop1ScrBot
   - 016-mouse-right-button
-  - list-shadow
-  - Title-decoration
-  - slider-horizontal
-  - paper-background-3
-  - horizontal-double-tile
-  - serach-icon
+  - ListShadow
+  - 0ld_Title-decoration
+  - SliderHorizontal
+  - PaperBackgroundVertical
+  - DoubleHorizontalTile
+  - 0ld_serach-icon
   - DropdownBackground
-  - wood background
-  - vertical-double-tile
-  - wide-button-selected
-  - horizontal-vertical-double-connection
-  - wide-button-red
+  - WoodTile
+  - DoubleVerticalTile1
+  - 0ld_wide-button-selected
+  - DoubleRight
+  - 0ld_wide-button-red
   - search
-  - vertical-seperator
-  - HorizontalLineCropped
+  - 0ld_vertical-seperator
+  - HorizontalTile
   - 017-broken-lines-square-border
   - 026-sunrise
   - 002-roof
   - tile
   - 027-sunset
   - FloorOrientationMap
-  - yellow-orb-2
-  - ButtonWideSelected
-  - double-line_bottom-left
-  - dark-gradient
-  - light_search
+  - OrbYellow
+  - ButtonWideBrown
+  - DoubleCornerBottomLeft
+  - Shadow
+  - 0ld_light_search
   - 024-technical-support
-  - vertical-double
+  - DoubleVerticalLine
   - 003-fence
-  - border
+  - Border
   - 009-eraser
   - 008-cave
   - 015-mouse-left-button
   - 023-compass
   - 005-mountain
-  - vertical-double-tile-type-2
+  - DoubleVerticalTile2
   - W
   - input-area
-  - SliderHorizontal
-  - double-line_top-right
-  - square-button-2
-  - double-line_top-left
-  - light-dropdown
-  - double-line_bottom-right
+  - 0ld_SliderHorizontalOld
+  - DoubleCornerTopRight
+  - ButtonSquare
+  - DoubleCornerTopLeft
+  - 0ld_light-dropdown
+  - DoubleCornerBottomRight
   - 1Scr
   - ButtonWide
-  - new-circle
+  - OrbDefault
   - clock
-  - paper background
+  - 0ld_paper background
   - 2vert
-  - paper-background-2
+  - PaperBackgroundTile
   - 022-settings
   - SplashImage
   - 018-paint-bucket
-  - floor-orientation-map
-  - checkbox-v2
+  - 0ld_floor-orientation-map
+  - Checkbox
   - ButtonWideRed
-  - frame
+  - 0ld_frame
   m_RenderDataMap: {}
   m_Tag: GUI Atlas
   m_IsVariant: 0
