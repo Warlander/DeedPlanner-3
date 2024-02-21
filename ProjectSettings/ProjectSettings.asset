@@ -76,7 +76,7 @@ PlayerSettings:
   androidMinimumWindowHeight: 300
   androidFullscreenMode: 1
   defaultIsNativeResolution: 0
-  macRetinaSupport: 0
+  macRetinaSupport: 1
   runInBackground: 1
   captureSingleScreen: 0
   muteOtherAudioSources: 0
@@ -136,8 +136,7 @@ PlayerSettings:
   vulkanEnableCommandBufferRecycling: 1
   loadStoreDebugModeEnabled: 0
   bundleVersion: 3.0.0
-  preloadedAssets:
-  - {fileID: 11400000, guid: 5e1b8572176a67244b74dba901340ec7, type: 2}
+  preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -284,44 +283,49 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: ebb880045ebdcc54f8d2d47ed48ff006, type: 3}
+      m_Icon: {fileID: 2800000, guid: c4539634ee1cc4d5e935ad69e5a8b34e, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
   - m_BuildTarget: Standalone
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: e82828158628b254bb72ed93a494f2a2, type: 3}
+      m_Icon: {fileID: 2800000, guid: c4539634ee1cc4d5e935ad69e5a8b34e, type: 3}
       m_Width: 1024
       m_Height: 1024
       m_Kind: 0
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: e82828158628b254bb72ed93a494f2a2, type: 3}
+      m_Icon: {fileID: 2800000, guid: 774f61a3553034a01937d49eaf75cd05, type: 3}
       m_Width: 512
       m_Height: 512
       m_Kind: 0
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: e82828158628b254bb72ed93a494f2a2, type: 3}
+      m_Icon: {fileID: 2800000, guid: 5dfa0921aa7ec48d38e52a4adf6b8c71, type: 3}
       m_Width: 256
       m_Height: 256
       m_Kind: 0
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: ebb880045ebdcc54f8d2d47ed48ff006, type: 3}
+      m_Icon: {fileID: 2800000, guid: d182039a2abd344bfb3fe72843974cda, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: ebb880045ebdcc54f8d2d47ed48ff006, type: 3}
+      m_Icon: {fileID: 2800000, guid: b9bd9979452ab46feba84d8a1c2179b7, type: 3}
+      m_Width: 64
+      m_Height: 64
+      m_Kind: 0
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: fb5f8d1ab92c4467baba634443d0bba0, type: 3}
       m_Width: 48
       m_Height: 48
       m_Kind: 0
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: ebb880045ebdcc54f8d2d47ed48ff006, type: 3}
+      m_Icon: {fileID: 2800000, guid: 249242b8b974345b9ad85e5ac1b07ca3, type: 3}
       m_Width: 32
       m_Height: 32
       m_Kind: 0
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: b3994c4ed10c1b0428eac54e9f52811b, type: 3}
+      m_Icon: {fileID: 2800000, guid: 366455bb12a9b4e66b48df51114670f3, type: 3}
       m_Width: 16
       m_Height: 16
       m_Kind: 0

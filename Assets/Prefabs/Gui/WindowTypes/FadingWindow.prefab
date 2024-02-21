@@ -5,6 +5,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1052847300699413424, guid: 7cca77f05c96fde48981a1284c9f0a65,
@@ -110,12 +111,12 @@ PrefabInstance:
     - target: {fileID: 1937894905981870348, guid: 7cca77f05c96fde48981a1284c9f0a65,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 1066
       objectReference: {fileID: 0}
     - target: {fileID: 1937894905981870348, guid: 7cca77f05c96fde48981a1284c9f0a65,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 623
       objectReference: {fileID: 0}
     - target: {fileID: 1937894905981870348, guid: 7cca77f05c96fde48981a1284c9f0a65,
         type: 3}
@@ -140,27 +141,27 @@ PrefabInstance:
     - target: {fileID: 1937894905981870348, guid: 7cca77f05c96fde48981a1284c9f0a65,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1937894905981870348, guid: 7cca77f05c96fde48981a1284c9f0a65,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1937894905981870348, guid: 7cca77f05c96fde48981a1284c9f0a65,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1937894905981870348, guid: 7cca77f05c96fde48981a1284c9f0a65,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 533
       objectReference: {fileID: 0}
     - target: {fileID: 1937894905981870348, guid: 7cca77f05c96fde48981a1284c9f0a65,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 311.5
       objectReference: {fileID: 0}
     - target: {fileID: 1937894905981870348, guid: 7cca77f05c96fde48981a1284c9f0a65,
         type: 3}
@@ -257,7 +258,19 @@ PrefabInstance:
       propertyPath: _windowShowingAnimator
       value: 
       objectReference: {fileID: 2284634891746131498}
+    - target: {fileID: 7889538735715194815, guid: 7cca77f05c96fde48981a1284c9f0a65,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1937894905981870349, guid: 7cca77f05c96fde48981a1284c9f0a65,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2284634891746131498}
   m_SourcePrefab: {fileID: 100100000, guid: 7cca77f05c96fde48981a1284c9f0a65, type: 3}
 --- !u!225 &1760799778984057464 stripped
 CanvasGroup:
