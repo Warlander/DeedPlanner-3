@@ -1,4 +1,4 @@
-namespace Plugins.Warlander.Collections
+namespace Warlander.UI.Tree.Model
 {
     public static class TreeNodeExtensions
     {
