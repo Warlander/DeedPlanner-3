@@ -98,6 +98,7 @@ namespace Warlander.SpritePacker.Editor
             spriteNameFileIdDataProvider.SetNameFileIdPairs(spriteNameFileIdPairs);
             
             dataProvider.Apply();
+            importer.SaveAndReimport();
         }
         
         private static Texture2D[] CreateReadableTextures(Texture2D[] originalTextures)
@@ -105,15 +106,20 @@ namespace Warlander.SpritePacker.Editor
             Texture2D[] readableTextures = new Texture2D[originalTextures.Length];
             for (int i = 0; i < readableTextures.Length; i++)
             {
-                Texture2D originalSprite = originalTextures[i];
-                
-                Texture2D assetDatabaseSprite = new Texture2D(originalSprite.width, originalSprite.height, originalSprite.format, false);
-                string originalTexturePath = AssetDatabase.GetAssetPath(originalSprite);
-                assetDatabaseSprite.LoadImage(File.ReadAllBytes(originalTexturePath));
-                readableTextures[i] = assetDatabaseSprite;
+                Texture2D originalTexture = originalTextures[i];
+                readableTextures[i] = CreateReadableTexture(originalTexture);
             }
 
             return readableTextures;
+        }
+
+        private static Texture2D CreateReadableTexture(Texture2D originalTexture)
+        {
+            Texture2D readableTexture = new Texture2D(originalTexture.width, originalTexture.height, originalTexture.format, false);
+            string originalTexturePath = AssetDatabase.GetAssetPath(originalTexture);
+            readableTexture.LoadImage(File.ReadAllBytes(originalTexturePath));
+
+            return readableTexture;
         }
 
         private static GUID GetOrGenerateSpriteGUID(Dictionary<int, SpriteData> preexistingSpriteData, int index)

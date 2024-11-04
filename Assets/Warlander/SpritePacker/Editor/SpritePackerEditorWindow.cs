@@ -52,7 +52,7 @@ namespace Warlander.SpritePacker.Editor
             {
                 EditorGUILayout.PropertyField(_overrideAtlasProperty, new GUIContent("Override Atlas"));
             }
-            if (!_overrideAtlas)
+            if (!_overrideAtlas || !_atlas)
             {
                 EditorGUILayout.PropertyField(_outputFolderProperty, new GUIContent("Output Folder"));
                 EditorGUILayout.PropertyField(_outputNameProperty, new GUIContent("Atlas Name"));

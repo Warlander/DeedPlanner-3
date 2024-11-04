@@ -17,8 +17,7 @@ namespace Warlander.SpritePacker.Editor
             int parentTextureStartY = (int)sprite.rect.y;
             int newTextureWidth = (int) sprite.rect.width;
             int newTextureHeight = (int) sprite.rect.height;
-            bool useMipmaps = parentTexture.mipmapCount > 0;
-            Texture2D newTexture = new Texture2D(newTextureWidth, newTextureHeight, parentTexture.format, useMipmaps);
+            Texture2D newTexture = new Texture2D(newTextureWidth, newTextureHeight);
             
             Color[] pixels = parentTexture.GetPixels(parentTextureStartX, parentTextureStartY, newTextureWidth, newTextureHeight);
             newTexture.SetPixels(pixels);
