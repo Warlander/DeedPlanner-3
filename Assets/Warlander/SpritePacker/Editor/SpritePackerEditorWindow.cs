@@ -59,32 +59,22 @@ namespace Warlander.SpritePacker.Editor
             }
             
             EditorGUILayout.PropertyField(_spritesToPackProperty, new GUIContent("Sprites to pack"), true);
-            _selfSerializedObject.ApplyModifiedProperties();
             
-            Texture2D[] readableSprites = new Texture2D[_spritesToPack.Length];
-            for (int i = 0; i < readableSprites.Length; i++)
-            {
-                Texture2D originalSprite = _spritesToPack[i];
-                if (originalSprite.isReadable)
-                {
-                    readableSprites[i] = originalSprite;
-                    continue;
-                }
-                
-                Texture2D assetDatabaseSprite = new Texture2D(originalSprite.width, originalSprite.height, originalSprite.format, false);
-                string originalTexturePath = AssetDatabase.GetAssetPath(originalSprite);
-                assetDatabaseSprite.LoadImage(File.ReadAllBytes(originalTexturePath));
-                readableSprites[i] = assetDatabaseSprite;
-            }
+            _selfSerializedObject.ApplyModifiedProperties();
             
             if (GUILayout.Button("Pack Sprites"))
             {
-                SpritePackerSettings spritePackerSettings = new SpritePackerSettings();
-                spritePackerSettings.TexturesToPack = readableSprites;
-                spritePackerSettings.OutputPath = GetOutputDirectory();
-                spritePackerSettings.Atlas = _atlas;
-                SpritePacker.PackSprites(spritePackerSettings);
+                PackSprites();
             }
+        }
+
+        private void PackSprites()
+        {
+            SpritePackerSettings spritePackerSettings = new SpritePackerSettings();
+            spritePackerSettings.TexturesToPack = _spritesToPack;
+            spritePackerSettings.OutputPath = GetOutputDirectory();
+            spritePackerSettings.Atlas = _atlas;
+            SpritePacker.PackSprites(spritePackerSettings);
         }
 
         private string GetOutputDirectory()

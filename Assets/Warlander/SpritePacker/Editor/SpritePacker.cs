@@ -13,8 +13,10 @@ namespace Warlander.SpritePacker.Editor
         public static void PackSprites(SpritePackerSettings settings)
         {
             List<Texture2D> allTextures = new List<Texture2D>();
-            List<Texture2D> texturesToCleanup = new List<Texture2D>();
             Dictionary<int, SpriteData> spriteDataToUse = new Dictionary<int, SpriteData>();
+
+            Texture2D[] readableInputTextures = CreateReadableTextures(settings.TexturesToPack);
+            allTextures.AddRange(readableInputTextures);
             
             if (settings.Atlas)
             {
@@ -41,7 +43,6 @@ namespace Warlander.SpritePacker.Editor
                 {
                     Texture2D tempTextureFromSprite = SpritePackerUtilities.CreateNewTextureFromSprite(atlasSprite);
                     allTextures.Add(tempTextureFromSprite);
-                    texturesToCleanup.Add(tempTextureFromSprite);
                 }
                 
                 TextureImporter atlasImporter = (TextureImporter) TextureImporter.GetAtPath(atlasPath);
@@ -57,12 +58,10 @@ namespace Warlander.SpritePacker.Editor
                 }
             }
             
-            allTextures.AddRange(settings.TexturesToPack);
-            
             Texture2D packedTexture = new Texture2D(0, 0);
             Rect[] rects = packedTexture.PackTextures(allTextures.ToArray(), 4);
 
-            foreach (Texture2D textureToCleanup in texturesToCleanup)
+            foreach (Texture2D textureToCleanup in allTextures)
             {
                 Object.DestroyImmediate(textureToCleanup);
             }
@@ -99,6 +98,22 @@ namespace Warlander.SpritePacker.Editor
             spriteNameFileIdDataProvider.SetNameFileIdPairs(spriteNameFileIdPairs);
             
             dataProvider.Apply();
+        }
+        
+        private static Texture2D[] CreateReadableTextures(Texture2D[] originalTextures)
+        {
+            Texture2D[] readableTextures = new Texture2D[originalTextures.Length];
+            for (int i = 0; i < readableTextures.Length; i++)
+            {
+                Texture2D originalSprite = originalTextures[i];
+                
+                Texture2D assetDatabaseSprite = new Texture2D(originalSprite.width, originalSprite.height, originalSprite.format, false);
+                string originalTexturePath = AssetDatabase.GetAssetPath(originalSprite);
+                assetDatabaseSprite.LoadImage(File.ReadAllBytes(originalTexturePath));
+                readableTextures[i] = assetDatabaseSprite;
+            }
+
+            return readableTextures;
         }
 
         private static GUID GetOrGenerateSpriteGUID(Dictionary<int, SpriteData> preexistingSpriteData, int index)
