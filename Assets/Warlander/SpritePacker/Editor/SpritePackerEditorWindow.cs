@@ -48,7 +48,7 @@ namespace Warlander.SpritePacker.Editor
         private void OnGUI()
         {
             EditorGUILayout.PropertyField(_atlasProperty, new GUIContent("Atlas to extend (optional)"));
-            if (_atlas != null)
+            if (_atlas)
             {
                 EditorGUILayout.PropertyField(_overrideAtlasProperty, new GUIContent("Override Atlas"));
             }
