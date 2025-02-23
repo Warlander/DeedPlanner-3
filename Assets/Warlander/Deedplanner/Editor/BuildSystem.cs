@@ -1,5 +1,6 @@
 using System.IO;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
@@ -33,11 +34,11 @@ namespace Warlander.Deedplanner.Editor
         {
             if (Application.platform == RuntimePlatform.WindowsEditor)
             {
-                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+                PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.IL2CPP);
             }
             else
             {
-                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+                PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
             }
             
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
@@ -66,11 +67,11 @@ namespace Warlander.Deedplanner.Editor
         {
             if (Application.platform == RuntimePlatform.LinuxEditor)
             {
-                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+                PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.IL2CPP);
             }
             else
             {
-                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+                PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
             }
 
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
@@ -99,11 +100,11 @@ namespace Warlander.Deedplanner.Editor
         {
             if (Application.platform == RuntimePlatform.OSXEditor)
             {
-                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.IL2CPP);
+                PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.IL2CPP);
             }
             else
             {
-                PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone, ScriptingImplementation.Mono2x);
+                PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
             }
             
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
