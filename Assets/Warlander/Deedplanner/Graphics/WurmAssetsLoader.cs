@@ -268,7 +268,7 @@ namespace Warlander.Deedplanner.Graphics
                 }
                 else
                 {
-                    texture = new Texture2D(0, 0, TextureFormat.DXT1, true);
+                    texture = new Texture2D(4, 4, TextureFormat.DXT1, true);
                     texture.LoadImage(data, !readable);
                 }
             
