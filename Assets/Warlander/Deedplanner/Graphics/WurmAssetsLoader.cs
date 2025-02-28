@@ -282,10 +282,10 @@ namespace Warlander.Deedplanner.Graphics
             if (ddsSizeCheck != 124)
                 throw new Exception("Invalid DDS DXTn texture. Unable to read");  //this header byte should be 124 for DDS image files
 
-            int height = ddsBytes[13] * 256 + ddsBytes[12];
-            int width = ddsBytes[17] * 256 + ddsBytes[16];
+            int height = ReadShort(ddsBytes, 12);
+            int width = ReadShort(ddsBytes, 16);
             int totalSize = width * height;
-            int pitch = ddsBytes[23] * 256 * 256 * 256 + ddsBytes[22] * 256 * 256 + ddsBytes[21] * 256 + ddsBytes[20];
+            int pitch = ReadInt(ddsBytes, 20);
 
             const int ddsHeaderSize = 128;
             
@@ -327,6 +327,16 @@ namespace Warlander.Deedplanner.Graphics
             finalTexture.Compress(true);
 
             return finalTexture;
+        }
+
+        private static short ReadShort(byte[] data, int index)
+        {
+            return  (short) (data[index + 1] * 256 + data[index]);
+        }
+
+        private static int ReadInt(byte[] data, int index)
+        {
+            return data[index + 3] * 256 * 256 * 256 + data[index + 2] * 256 * 256 + data[index + 1] * 256 + data[index];
         }
 
         private static string ReadString(BinaryReader source)
