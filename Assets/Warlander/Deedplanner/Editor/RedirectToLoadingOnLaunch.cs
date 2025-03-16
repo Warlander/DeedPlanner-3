@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Reflection;
-using Unity.EditorCoroutines.Editor;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
 namespace Warlander.Deedplanner.Editor
@@ -11,6 +9,15 @@ namespace Warlander.Deedplanner.Editor
     /// </summary>
     public static class RedirectToLoadingOnLaunch
     {
+        private const string LoadingScenePath = "Assets/Scenes/LoadingScene.unity";
+        private const string PreviousSceneKey = "Warlander_LaunchRedirect_PreviousScene";
+
+        private static string PreviousScene
+        {
+            get => EditorPrefs.GetString(PreviousSceneKey, null);
+            set => EditorPrefs.SetString(PreviousSceneKey, value);
+        }
+        
         [InitializeOnLoadMethod]
         private static void OnReload()
         {
@@ -19,25 +26,27 @@ namespace Warlander.Deedplanner.Editor
 
         private static void EditorApplicationOnplayModeStateChanged(PlayModeStateChange playMode)
         {
-            if (playMode == PlayModeStateChange.EnteredPlayMode && SceneManager.GetSceneAt(0).buildIndex != 0)
+            string currentScenePath = SceneManager.GetActiveScene().path;
+            if (playMode == PlayModeStateChange.ExitingEditMode && currentScenePath != LoadingScenePath)
             {
-                SceneManager.LoadScene(0);
-                EditorCoroutineUtility.StartCoroutineOwnerless(ClearConsoleAfterFrame());
+                PreviousScene = SceneManager.GetActiveScene().path;
+                EditorApplication.isPlaying = false;
+                EditorApplication.delayCall += ForcePlayFromStartupScene;
+            }
+            else if (playMode == PlayModeStateChange.EnteredEditMode)
+            {
+                if (PreviousScene != null)
+                {
+                    EditorSceneManager.OpenScene(PreviousScene, OpenSceneMode.Single);
+                    PreviousScene = null;
+                }
             }
         }
 
-        private static IEnumerator ClearConsoleAfterFrame()
+        private static void ForcePlayFromStartupScene()
         {
-            yield return null;
-            ClearConsole();
-        }
-
-        private static void ClearConsole()
-        {
-            var assembly = Assembly.GetAssembly(typeof(UnityEditor.Editor));
-            var type = assembly.GetType("UnityEditor.LogEntries");
-            var method = type.GetMethod("Clear");
-            method.Invoke(new object(), null);
+            EditorSceneManager.OpenScene(LoadingScenePath, OpenSceneMode.Single);
+            EditorApplication.isPlaying = true;
         }
     }
 }
