@@ -14,8 +14,8 @@ namespace Warlander.Deedplanner.Editor
 
         private static string PreviousScene
         {
-            get => EditorPrefs.GetString(PreviousSceneKey, null);
-            set => EditorPrefs.SetString(PreviousSceneKey, value);
+            get => SessionState.GetString(PreviousSceneKey, null);
+            set => SessionState.SetString(PreviousSceneKey, value);
         }
         
         [InitializeOnLoadMethod]
