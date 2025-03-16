@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 namespace Warlander.Deedplanner.Editor
 {
     /// <summary>
-    /// Force redirect to main menu so we can actually login and enter the game correctly.
+    /// Force redirect to the loading scene so the program can initialize correctly.
     /// </summary>
     public static class RedirectToLoadingOnLaunch
     {
