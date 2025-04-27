@@ -1,10 +1,10 @@
 ﻿using System;
-using Plugins.Warlander.Utils;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
+using Warlander.Deedplanner.Gui.Widgets.Bridges;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
@@ -18,12 +18,15 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private TooltipHandler _tooltipHandler;
+        [Inject] private BridgeTabSwapper _bridgeTabSwapper;
 
         public event Action SelectedBridgeChanged;
         
         public Bridge SelectedBridge { get; private set; }
         
         private Bridge _lastFrameHoveredBridge;
+        private TileCoords _firstClickedTile;
+        private TileCoords _secondClickedTile;
 
         private void OnEnable()
         {
@@ -43,14 +46,25 @@ namespace Warlander.Deedplanner.Updaters
 
             UpdateBridgeHover(bridge);
 
-            if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
+            OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
+            
+            if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 OnBridgeClicked(bridge);
+                if (overlayMesh != null)
+                {
+                    int floor = _cameraCoordinator.Current.Level;
+                    int x = Mathf.FloorToInt(raycast.point.x / 4f);
+                    int y = Mathf.FloorToInt(raycast.point.z / 4f);
+                    
+                    OnMapClicked(x, y, floor);
+                }
             }
 
-            if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
+            if (_input.UpdatersShared.Deletion.WasPressedThisFrame())
             {
                 OnBridgeDeselected();
+                OnMapDeselect();
             }
 
             if (bridge != null)
@@ -100,6 +114,12 @@ namespace Warlander.Deedplanner.Updaters
             bool bridgeChanged = SelectedBridge != bridge;
             SelectedBridge = bridge;
             SelectedBridge.EnableHighlighting(OutlineType.Positive);
+
+            _firstClickedTile = null;
+            _secondClickedTile = null;
+
+            RefreshUIState();
+            
             if (bridgeChanged)
             {
                 SelectedBridgeChanged?.Invoke();
@@ -121,6 +141,9 @@ namespace Warlander.Deedplanner.Updaters
 
                 bool bridgeChanged = SelectedBridge != null;
                 SelectedBridge = null;
+
+                RefreshUIState();
+                
                 if (bridgeChanged)
                 {
                     SelectedBridgeChanged?.Invoke();
@@ -128,6 +151,53 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
+        private void OnMapClicked(int x, int y, int floor)
+        {
+            if (_firstClickedTile != null && _secondClickedTile != null)
+            {
+                _firstClickedTile = new TileCoords(x, y, floor);
+                _secondClickedTile = null;
+            }
+            else if (_firstClickedTile != null)
+            {
+                _secondClickedTile = new TileCoords(x, y, floor);
+            }
+            else
+            {
+                _firstClickedTile = new TileCoords(x, y, floor);
+            }
+            
+            RefreshUIState();
+        }
+
+        private void OnMapDeselect()
+        {
+            _firstClickedTile = null;
+            _secondClickedTile = null;
+            
+            RefreshUIState();
+        }
+
+        private void RefreshUIState()
+        {
+            if (_firstClickedTile != null && _secondClickedTile != null)
+            {
+                _bridgeTabSwapper.SwapToTab(BridgeTab.TwoTilesSelected);
+            }
+            else if (_firstClickedTile != null)
+            {
+                _bridgeTabSwapper.SwapToTab(BridgeTab.OneTileSelected);
+            }
+            else if (SelectedBridge != null)
+            {
+                _bridgeTabSwapper.SwapToTab(BridgeTab.BridgeSelected);
+            }
+            else
+            {
+                _bridgeTabSwapper.SwapToTab(BridgeTab.NothingSelected);
+            }
+        }
+        
         private void OnDisable()
         {
             if (_lastFrameHoveredBridge != null)
@@ -141,6 +211,9 @@ namespace Warlander.Deedplanner.Updaters
                 SelectedBridge.DisableHighlighting();
             }
             SelectedBridge = null;
+            _firstClickedTile = null;
+            _secondClickedTile = null;
+            RefreshUIState();
             SelectedBridgeChanged?.Invoke();
         }
     }

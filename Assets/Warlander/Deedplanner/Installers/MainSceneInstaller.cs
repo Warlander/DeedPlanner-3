@@ -4,6 +4,7 @@ using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Widgets.Bridges;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
@@ -33,6 +34,8 @@ namespace Warlander.Deedplanner.Installers
         [SerializeField] private MirrorUpdater _mirrorUpdater;
         [SerializeField] private ToolsUpdater _toolsUpdater;
         [SerializeField] private MenuUpdater _menuUpdater;
+        
+        [SerializeField] private BridgeTabSwapper _bridgeTabSwapper;
         
         public override void InstallBindings()
         {
@@ -82,6 +85,8 @@ namespace Warlander.Deedplanner.Installers
             BindUpdater(_mirrorUpdater);
             BindUpdater(_toolsUpdater);
             BindUpdater(_menuUpdater);
+
+            Container.Bind<BridgeTabSwapper>().FromInstance(_bridgeTabSwapper);
         }
 
         private void BindUpdater<T>(T updater) where T : AbstractUpdater
