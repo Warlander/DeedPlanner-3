@@ -63,7 +63,14 @@ namespace Warlander.Deedplanner.Data
 
                     if (completedLoadings == documents.Length)
                     {
-                        Task.Run(() => PerformLoading(documents));
+                        if (Application.platform != RuntimePlatform.WebGLPlayer)
+                        {
+                            Task.Run(() => PerformLoading(documents));
+                        }
+                        else
+                        {
+                            PerformLoading(documents);
+                        }
                     }
                 };
             }

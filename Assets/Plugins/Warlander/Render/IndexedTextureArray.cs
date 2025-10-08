@@ -7,18 +7,39 @@ namespace Warlander.Render
 {
     public class IndexedTextureArray<T>
     {
+        private const TextureFormat DefaultGroundTexturesFormat = TextureFormat.DXT5;
+        private const TextureFormat FallbackGroundTexturesFormat = TextureFormat.ARGB32;
+        
         private readonly Dictionary<T, int> indexToSlice;
         
         public Texture2DArray TextureArray { get; private set; }
         public int MaxLength => TextureArray.depth;
         public int Length { get; private set; }
 
-        public IndexedTextureArray(int width, int height, int depth, TextureFormat format, bool mipmaps = true)
+        private readonly Material blitCopyMaterial;
+
+        public IndexedTextureArray(int width, int height, int depth, bool mipmaps = true)
         {
-            TextureArray = new Texture2DArray(width, height, depth, format, mipmaps);
+            TextureArray = new Texture2DArray(width, height, depth, GetTextureFormatToUse(), mipmaps);
+            TextureArray.name = "GroundTextureArray";
             indexToSlice = new Dictionary<T, int>();
+            
+            Shader blitCopyShader = Shader.Find("Hidden/BlitCopy");
+            blitCopyMaterial = new Material(blitCopyShader);
         }
 
+        private TextureFormat GetTextureFormatToUse()
+        {
+            if (Application.platform != RuntimePlatform.WebGLPlayer)
+            {
+                return DefaultGroundTexturesFormat;
+            }
+            else
+            {
+                return FallbackGroundTexturesFormat;
+            }
+        }
+        
         public int PutOrGetTexture(T key, Texture2D texture)
         {
             int index = GetTextureIndex(key);
@@ -87,13 +108,14 @@ namespace Warlander.Render
 
         private void AppendTexture(Texture2D texture, int index)
         {
-            if (SystemInfo.copyTextureSupport.HasFlag(CopyTextureSupport.DifferentTypes))
+            if (Application.platform != RuntimePlatform.WebGLPlayer)
             {
-                UnityEngine.Graphics.CopyTexture(texture, 0, TextureArray, index);
+                Graphics.CopyTexture(texture, 0, TextureArray, index);
             }
             else
             {
-                TextureArray.SetPixels32(texture.GetPixels32(), index);
+                var pixels =  texture.GetPixels();
+                TextureArray.SetPixels(pixels, index);
                 TextureArray.Apply(true);
             }
         }
@@ -103,13 +125,13 @@ namespace Warlander.Render
             return indexToSlice.ContainsKey(key);
         }
         
-        private static Texture2D Resize(Texture2D source, int newWidth, int newHeight)
+        private Texture2D Resize(Texture2D source, int newWidth, int newHeight)
         {
             source.filterMode = FilterMode.Bilinear;
             RenderTexture rt = RenderTexture.GetTemporary(newWidth, newHeight);
             rt.filterMode = FilterMode.Bilinear;
             RenderTexture.active = rt;
-            UnityEngine.Graphics.Blit(source, rt);
+            Graphics.Blit(source, rt, blitCopyMaterial);
             Texture2D nTex = new Texture2D(newWidth, newHeight);
             nTex.ReadPixels(new Rect(0, 0, newWidth, newWidth), 0,0);
             nTex.Apply();
