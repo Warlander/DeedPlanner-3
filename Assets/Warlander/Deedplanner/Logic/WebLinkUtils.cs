@@ -12,25 +12,22 @@ namespace Warlander.Deedplanner.Logic
         /// <returns>direct download link for supported formats, or original link</returns>
         public static string ParseToDirectDownloadLink(string originalLink)
         {
-            string newLink;
             if (originalLink.Contains("pastebin"))
             {
-                newLink = AsDirectPastebinLink(originalLink);
+                return AsDirectPastebinLink(originalLink);
             }
             else if (originalLink.Contains("drive.google"))
             {
-                newLink = AsDirectGoogleDriveLink(originalLink);
+                return AsDirectGoogleDriveLink(originalLink);
             }
             else if (originalLink.Contains("dropbox"))
             {
-                newLink = AsDirectDropboxLink(originalLink);
+                return AsDirectDropboxLink(originalLink);
             }
             else
             {
                 return originalLink;
             }
-
-            return AsCrossOriginLink(newLink);
         }
         
         private static string AsDirectPastebinLink(string originalLink)
@@ -95,16 +92,6 @@ namespace Warlander.Deedplanner.Logic
             }
 
             return newLink;
-        }
-
-        public static string AsCrossOriginLink(string originalLink)
-        {
-            if (Application.platform == RuntimePlatform.WebGLPlayer)
-            {
-                return "https://cors-anywhere.herokuapp.com/" + originalLink;
-            }
-
-            return originalLink;
         }
     }
 }

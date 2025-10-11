@@ -23,11 +23,17 @@ namespace Warlander.Deedplanner.Gui.Windows
         [SerializeField] private Button _loadFromFileButton;
         [SerializeField] private Button _loadFromWebButton;
         [SerializeField] private TMP_InputField _pastebinInput = null;
+        [SerializeField] private GameObject _webSaveGroup;
 
         private void Start()
         {
             _loadFromFileButton.onClick.AddListener(LoadFromFileOnClick);
             _loadFromWebButton.onClick.AddListener(LoadFromWebOnClick);
+            
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                _webSaveGroup.gameObject.SetActive(false);
+            }
         }
 
         private void LoadFromFileOnClick()

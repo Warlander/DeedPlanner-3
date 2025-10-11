@@ -25,6 +25,7 @@ namespace Warlander.Deedplanner.Gui.Windows
         [SerializeField] private TMP_Dropdown _pastebinDropdown;
         [SerializeField] private Button _webVersionButton;
         [SerializeField] private TMP_Dropdown _webVersionDropdown;
+        [SerializeField] private GameObject _webSaveGroup;
 
         private UnityWebRequest _currentPastebinRequest;
 
@@ -33,6 +34,11 @@ namespace Warlander.Deedplanner.Gui.Windows
             _saveToFileButton.onClick.AddListener(SaveToFileOnClick);
             _pastebinButton.onClick.AddListener(PastebinOnClick);
             _webVersionButton.onClick.AddListener(WebVersionOnClick);
+
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                _webSaveGroup.gameObject.SetActive(false);
+            }
         }
 
         private void SaveToFileOnClick()
@@ -127,9 +133,8 @@ namespace Warlander.Deedplanner.Gui.Windows
             form.AddField("api_paste_code", base64String);
 
             const string pastebinApiEndpoint = "https://pastebin.com/api/api_post.php";
-            string requestLink = WebLinkUtils.AsCrossOriginLink(pastebinApiEndpoint);
 
-            _currentPastebinRequest = UnityWebRequest.Post(requestLink, form);
+            _currentPastebinRequest = UnityWebRequest.Post(pastebinApiEndpoint, form);
             UnityWebRequestAsyncOperation operation = _currentPastebinRequest.SendWebRequest();
             operation.completed += completedCallback;
         }
