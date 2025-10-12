@@ -233,12 +233,12 @@ namespace Warlander.Deedplanner.Data
                 this[x, y].DeserializeEntities(tileElement);
             }
             
-            // XmlNodeList bridgesList = mapRoot.GetElementsByTagName("bridge");
-            // foreach (XmlElement bridgeElement in bridgesList)
-            // {
-            //     Bridge bridge = _bridgeFactory.CreateBridge(this, bridgeElement);
-            //     _bridges.Add(bridge);
-            // }
+            XmlNodeList bridgesList = mapRoot.GetElementsByTagName("bridge");
+            foreach (XmlElement bridgeElement in bridgesList)
+            {
+                Bridge bridge = _bridgeFactory.CreateBridge(this, bridgeElement);
+                _bridges.Add(bridge);
+            }
 
             Ground.UpdateNow();
 
