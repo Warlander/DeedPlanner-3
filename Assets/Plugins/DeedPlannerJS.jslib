@@ -1,7 +1,7 @@
 mergeInto(LibraryManager.library, {
 
     LoadResourceNative: function(location) {
-        var locationString = Pointer_stringify(location);
+        var locationString = UTF8ToString(location);
         var request = new XMLHttpRequest();
         request.open('GET', locationString, false);
         request.overrideMimeType('text\/plain; charset=x-user-defined');
@@ -38,8 +38,8 @@ mergeInto(LibraryManager.library, {
     },
 
     DownloadNative : function(name, content) {
-        var jsName = Pointer_stringify(name);
-        var jsContent = Pointer_stringify(content);
+        var jsName = UTF8ToString(name);
+        var jsContent = UTF8ToString(content);
         
         var element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsContent));
@@ -54,8 +54,8 @@ mergeInto(LibraryManager.library, {
     },
     
     UploadNative : function(objectCallbackName, methodCallbackName) {
-        var jsObjectCallbackName = Pointer_stringify(objectCallbackName);
-        var jsMethodCallbackName = Pointer_stringify(methodCallbackName);
+        var jsObjectCallbackName = UTF8ToString(objectCallbackName);
+        var jsMethodCallbackName = UTF8ToString(methodCallbackName);
         
         var element = document.createElement('input');
         element.setAttribute('type', 'file');
@@ -87,8 +87,8 @@ mergeInto(LibraryManager.library, {
     },
     
     PromptNative : function(message, defaultInput) {
-        var jsMessage = Pointer_stringify(message);
-        var jsDefaultInput = Pointer_stringify(defaultInput);
+        var jsMessage = UTF8ToString(message);
+        var jsDefaultInput = UTF8ToString(defaultInput);
         var jsContent = prompt(jsMessage, jsDefaultInput);
 
         if (jsContent == null) {
