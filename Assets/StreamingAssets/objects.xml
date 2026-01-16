@@ -8220,7 +8220,7 @@
 		<rock name="Slate slab" shortname="ssl2" type="floor" tex="GroundTextures/slateTiles.dds">
 			<category>Floors/Decorative</category>
 		</rock>
-		<rock name="Slate brick" shortname="ssl" type="floor" tex="GroundTextures/slateslab.dds">
+		<rock name="Slate brick" shortname="ssl" type="floor" tex="GroundTextures/slatebricks.dds">
 			<category>Floors/Decorative</category>
 		</rock>
 		<rock name="Sandstone slab" shortname="sas" type="floor" tex="GroundTextures/sandstoneslab.dds">
