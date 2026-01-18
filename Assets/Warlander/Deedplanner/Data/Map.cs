@@ -11,6 +11,7 @@ using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Utils;
 using Zenject;
 
@@ -22,6 +23,7 @@ namespace Warlander.Deedplanner.Data
         [Inject] private GameManager _gameManager;
         [Inject] private TileFactory _tileFactory;
         [Inject] private BridgeFactory _bridgeFactory;
+        [Inject] private IMapRenderSettingsRetriever _mapRenderSettingsRetriever;
 
         public GroundMesh Ground { get; private set; }
 
@@ -41,10 +43,10 @@ namespace Warlander.Deedplanner.Data
         public int LowestCaveHeight { get; private set; }
         public int HighestCaveHeight { get; private set; }
 
-        public bool RenderDecorations => _gameManager.RenderDecorations;
-        public bool RenderTrees => _gameManager.RenderTrees;
-        public bool RenderBushes => _gameManager.RenderBushes;
-        public bool RenderShips => _gameManager.RenderShips;
+        public bool RenderDecorations => _mapRenderSettingsRetriever.RenderDecorations;
+        public bool RenderTrees => _mapRenderSettingsRetriever.RenderTrees;
+        public bool RenderBushes => _mapRenderSettingsRetriever.RenderBushes;
+        public bool RenderShips => _mapRenderSettingsRetriever.RenderShips;
 
         public CommandManager CommandManager { get; set; } = new CommandManager(100);
         
@@ -111,7 +113,7 @@ namespace Warlander.Deedplanner.Data
 
         private void Start()
         {
-            _gameManager.RenderSettingsChanged += GameManagerOnRenderSettingsChanged;
+            _mapRenderSettingsRetriever.Changed += GameManagerOnRenderSettingsChanged;
         }
 
         public void Initialize(Map originalMap, int addLeft, int addRight, int addBottom, int addTop)
@@ -664,7 +666,7 @@ namespace Warlander.Deedplanner.Data
 
         private void OnDestroy()
         {
-            _gameManager.RenderSettingsChanged -= GameManagerOnRenderSettingsChanged;
+            _mapRenderSettingsRetriever.Changed -= GameManagerOnRenderSettingsChanged;
         }
     }
 }

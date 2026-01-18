@@ -25,18 +25,12 @@ namespace Warlander.Deedplanner.Logic
         [SerializeField] private Mesh heightmapHandleMesh = null;
         
         public event Action MapInitialized;
-        public event Action RenderSettingsChanged;
         
         public Map Map { get; private set; }
 
         public OverlayMesh OverlayMeshPrefab => overlayMeshPrefab;
         public Mesh HeightmapHandleMesh => heightmapHandleMesh;
 
-        public bool RenderDecorations { get; private set; } = true;
-        public bool RenderTrees { get; private set; } = true;
-        public bool RenderBushes { get; private set; } = true;
-        public bool RenderShips { get; private set; } = true;
-        
         private void Start()
         {
             LayoutManager.Instance.TabChanged += OnTabChange;
@@ -176,30 +170,6 @@ namespace Warlander.Deedplanner.Logic
             {
                 Map.RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
             }
-        }
-
-        public void OnDecorationsVisibilityChange(bool enable)
-        {
-            RenderDecorations = enable;
-            RenderSettingsChanged?.Invoke();
-        }
-
-        public void OnTreeVisibilityChange(bool enable)
-        {
-            RenderTrees = enable;
-            RenderSettingsChanged?.Invoke();
-        }
-
-        public void OnBushVisibilityChange(bool enable)
-        {
-            RenderBushes = enable;
-            RenderSettingsChanged?.Invoke();
-        }
-
-        public void OnShipsVisibilityChange(bool enable)
-        {
-            RenderShips = enable;
-            RenderSettingsChanged?.Invoke();
         }
     }
 }

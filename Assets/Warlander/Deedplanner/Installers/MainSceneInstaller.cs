@@ -61,7 +61,8 @@ namespace Warlander.Deedplanner.Installers
             input.Enable();
             Container.Bind<DPInput>().FromInstance(input).AsSingle();
             Container.BindInterfacesAndSelfTo<InputSettings>().AsSingle().NonLazy();
-
+            Container.BindInterfacesAndSelfTo<MapRenderSettings>().AsSingle();
+            
             Container.Bind<GameManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<MapProjectorManager>().FromComponentInNewPrefab(_mapProjectorManager).AsSingle();
 
