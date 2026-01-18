@@ -18,7 +18,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         public Vector2Int FirstTile => new Vector2Int(firstX, firstY);
         public Vector2Int SecondTile => new Vector2Int(secondX, secondY);
 
-        private readonly OutlineCoordinator _outlineCoordinator;
+        private readonly IOutlineCoordinator _outlineCoordinator;
         
         private readonly BridgePartType[] segments;
         private readonly int firstLevel;
@@ -34,7 +34,7 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         private List<BridgePart> bridgeParts = new List<BridgePart>();
         
-        public Bridge(Map map, XmlElement element, OutlineCoordinator outlineCoordinator)
+        public Bridge(Map map, XmlElement element, IOutlineCoordinator outlineCoordinator)
         {
             _outlineCoordinator = outlineCoordinator;
             
@@ -78,7 +78,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         /// Constructor used for moving (previously) existing bridges around the map.
         /// </summary>
         public Bridge(Map map, Bridge originalBridge, Vector2Int tileShift,
-            OutlineCoordinator outlineCoordinator)
+            IOutlineCoordinator outlineCoordinator)
         {
             _outlineCoordinator = outlineCoordinator;
 

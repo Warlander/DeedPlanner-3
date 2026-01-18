@@ -5,7 +5,13 @@ namespace Warlander.Deedplanner.Data
 {
     public class TileFactory
     {
-        [Inject] private OutlineCoordinator _outlineCoordinator;
+        private readonly IOutlineCoordinator _outlineCoordinator;
+        
+        [Inject]
+        public TileFactory(IOutlineCoordinator outlineCoordinator)
+        {
+            _outlineCoordinator = outlineCoordinator;
+        }
         
         public Tile CreateTile(Map map, int x, int y)
         {

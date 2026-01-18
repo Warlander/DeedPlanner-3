@@ -29,7 +29,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [Inject] private DPInput _input;
         [Inject] private GameManager _gameManager;
         [Inject] private MapProjectorManager _mapProjectorManager;
-        [Inject] private OutlineCoordinator _outlineCoordinator;
+        [Inject] private IOutlineCoordinator _outlineCoordinator;
 
         public event Action LevelChanged;
         public event Action ModeChanged;
