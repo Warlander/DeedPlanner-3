@@ -19,7 +19,7 @@ namespace Warlander.Deedplanner.Data
 {
     public class Tile : IXmlSerializable
     {
-        private OutlineCoordinator _outlineCoordinator;
+        private readonly IOutlineCoordinator _outlineCoordinator;
         
         private int surfaceHeight = 0;
         private int caveHeight = 0;
@@ -74,7 +74,7 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        public Tile(Map map, int x, int y, OutlineCoordinator outlineCoordinator)
+        public Tile(Map map, int x, int y, IOutlineCoordinator outlineCoordinator)
         {
             Map = map;
             X = x;

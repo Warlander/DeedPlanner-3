@@ -25,7 +25,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private GameManager _gameManager;
-        [Inject] private OutlineCoordinator _outlineCoordinator;
+        [Inject] private IOutlineCoordinator _outlineCoordinator;
 
         [SerializeField] private UnityTree _decorationsTree;
 

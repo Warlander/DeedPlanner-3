@@ -6,7 +6,7 @@ using Zenject;
 
 namespace Warlander.Deedplanner.Logic
 {
-    public class OutlineCoordinator
+    public class OutlineCoordinator : IOutlineCoordinator
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
 

@@ -41,7 +41,7 @@ namespace Warlander.Deedplanner.Installers
         {
             Container.Bind<LayoutManager>().FromInstance(_layoutManager);
             Container.Bind<CameraCoordinator>().FromInstance(_cameraCoordinator).AsSingle();
-            Container.Bind<OutlineCoordinator>().AsSingle();
+            Container.Bind<IOutlineCoordinator>().To<OutlineCoordinator>().AsSingle();
 
             Container.Bind<ICameraController>().To<FppCameraController>().AsTransient();
             Container.Bind<ICameraController>().To<IsoCameraController>().AsTransient();
@@ -61,7 +61,8 @@ namespace Warlander.Deedplanner.Installers
             input.Enable();
             Container.Bind<DPInput>().FromInstance(input).AsSingle();
             Container.BindInterfacesAndSelfTo<InputSettings>().AsSingle().NonLazy();
-
+            Container.BindInterfacesAndSelfTo<MapRenderSettings>().AsSingle();
+            
             Container.Bind<GameManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<MapProjectorManager>().FromComponentInNewPrefab(_mapProjectorManager).AsSingle();
 
