@@ -10,7 +10,13 @@ namespace Warlander.Deedplanner.Gui.Tooltips
 {
     public class TooltipHandler : IInitializable, ILateTickable
     {
-        [Inject] private WindowCoordinator _windowCoordinator;
+        private readonly WindowCoordinator _windowCoordinator;
+
+        [Inject]
+        public TooltipHandler(WindowCoordinator windowCoordinator)
+        {
+            _windowCoordinator = windowCoordinator;
+        }
         
         private readonly List<TooltipText> _scheduledTooltipTexts = new List<TooltipText>();
 

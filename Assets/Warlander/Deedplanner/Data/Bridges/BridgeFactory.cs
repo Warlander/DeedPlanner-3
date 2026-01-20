@@ -7,7 +7,13 @@ namespace Warlander.Deedplanner.Data.Bridges
 {
     public class BridgeFactory
     {
-        [Inject] private IOutlineCoordinator _outlineCoordinator;
+        private readonly IOutlineCoordinator _outlineCoordinator;
+
+        [Inject]
+        public BridgeFactory(IOutlineCoordinator outlineCoordinator)
+        {
+            _outlineCoordinator = outlineCoordinator;
+        }
 
         public Bridge CreateBridge(Map map, XmlElement element)
         {

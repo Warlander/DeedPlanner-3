@@ -6,7 +6,7 @@ namespace Warlander.Deedplanner.Data
     public class TileFactory
     {
         private readonly IOutlineCoordinator _outlineCoordinator;
-        
+
         [Inject]
         public TileFactory(IOutlineCoordinator outlineCoordinator)
         {

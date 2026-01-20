@@ -9,8 +9,15 @@ namespace Warlander.Deedplanner.Logic.Cameras
 {
     public class TopCameraController : ICameraController
     {
-        [Inject] private DPSettings _settings;
-        [Inject] private DPInput _input;
+        private readonly DPSettings _settings;
+        private readonly DPInput _input;
+
+        [Inject]
+        public TopCameraController(DPSettings settings, DPInput input)
+        {
+            _settings = settings;
+            _input = input;
+        }
         
         public GridMaterialType GridMaterialToUse => GridMaterialType.Uniform;
         

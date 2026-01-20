@@ -11,8 +11,15 @@ namespace Warlander.Deedplanner.Logic.Cameras
 {
     public class FppCameraController : ICameraController
     {
-        [Inject] private DPSettings _settings;
-        [Inject] private DPInput _input;
+        private readonly DPSettings _settings;
+        private readonly DPInput _input;
+
+        [Inject]
+        public FppCameraController(DPSettings settings, DPInput input)
+        {
+            _settings = settings;
+            _input = input;
+        }
 
         public GridMaterialType GridMaterialToUse => GridMaterialType.ProximityBased;
         

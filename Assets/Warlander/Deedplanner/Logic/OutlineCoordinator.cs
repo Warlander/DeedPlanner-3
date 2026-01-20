@@ -8,7 +8,13 @@ namespace Warlander.Deedplanner.Logic
 {
     public class OutlineCoordinator : IOutlineCoordinator
     {
-        [Inject] private CameraCoordinator _cameraCoordinator;
+        private readonly CameraCoordinator _cameraCoordinator;
+
+        [Inject]
+        public OutlineCoordinator(CameraCoordinator cameraCoordinator)
+        {
+            _cameraCoordinator = cameraCoordinator;
+        }
 
         private readonly Dictionary<DynamicModelBehaviour, OutlineType> _outlinesToUse =
             new Dictionary<DynamicModelBehaviour, OutlineType>();
