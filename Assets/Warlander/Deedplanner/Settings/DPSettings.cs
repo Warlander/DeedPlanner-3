@@ -40,6 +40,8 @@ namespace Warlander.Deedplanner.Settings
         public int GuiScale = 10;
 
         public WaterQuality WaterQuality = WaterDefaultQuality;
+        
+        public bool CompassVisibility = true;
 
         private static WaterQuality WaterDefaultQuality
         {

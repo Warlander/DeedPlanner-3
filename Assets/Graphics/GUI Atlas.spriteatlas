@@ -168,10 +168,12 @@ SpriteAtlas:
     - 798fec127bb7a41168411ff8c3b27f2f: 21300000
     - b18b5952c37cc428f9b52f2f14898002: 21300000
     - b8be9962003f61c4fa348932b215fdb3: 21300000
+    - e788e7a27ec2e4aa7bd1b9851017dc8d: 21300000
     - 562cccc27ae301743a9434f27825accf: 21300000
     - cd2d250399b414901bad40562a591355: 21300000
     - 5185f0332b488a844a1b53da9e34df83: 21300000
     - 54b4d733ea224f64891d21746bda01e0: 21300000
+    - 90b77a337dac447d7a076ac59808ae64: 21300000
     - 7cf636e3eea4f4025ae432fc8a7de671: 21300000
     - 0ea25704aee7fb44599f07f879395264: 21300000
     - 81662564c552048e99d642d4bed993ca: 21300000
@@ -366,10 +368,12 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 798fec127bb7a41168411ff8c3b27f2f, type: 3}
   - {fileID: 21300000, guid: b18b5952c37cc428f9b52f2f14898002, type: 3}
   - {fileID: 21300000, guid: b8be9962003f61c4fa348932b215fdb3, type: 3}
+  - {fileID: 21300000, guid: e788e7a27ec2e4aa7bd1b9851017dc8d, type: 3}
   - {fileID: 21300000, guid: 562cccc27ae301743a9434f27825accf, type: 3}
   - {fileID: 21300000, guid: cd2d250399b414901bad40562a591355, type: 3}
   - {fileID: 21300000, guid: 5185f0332b488a844a1b53da9e34df83, type: 3}
   - {fileID: 21300000, guid: 54b4d733ea224f64891d21746bda01e0, type: 3}
+  - {fileID: 21300000, guid: 90b77a337dac447d7a076ac59808ae64, type: 3}
   - {fileID: 21300000, guid: 7cf636e3eea4f4025ae432fc8a7de671, type: 3}
   - {fileID: 21300000, guid: 0ea25704aee7fb44599f07f879395264, type: 3}
   - {fileID: 21300000, guid: 81662564c552048e99d642d4bed993ca, type: 3}
@@ -563,10 +567,12 @@ SpriteAtlas:
   - DoubleConnection
   - Checkmark
   - 007-bridge
+  - front
   - 006-armchair
   - RadioSelector
   - Paypal Button
   - 019-photo-camera-configuration-symbol-for-interface-with-a-gear-behind
+  - back
   - 031-patreon
   - S
   - DoubleDown
