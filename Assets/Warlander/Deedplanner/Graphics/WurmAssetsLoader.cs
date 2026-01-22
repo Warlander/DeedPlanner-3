@@ -1,10 +1,8 @@
 ﻿using System;
- using System.Collections;
  using System.Collections.Generic;
 using System.IO;
  using System.Text;
  using UnityEngine;
- using UnityEngine.Networking;
  using Warlander.Deedplanner.Utils;
  using Object = UnityEngine.Object;
 
@@ -63,13 +61,20 @@ namespace Warlander.Deedplanner.Graphics
             string meshName = loadedMesh.name;
             
             string meshNameLowercase = meshName.ToLower();
-            bool discardMesh = meshNameLowercase.Contains("boundingbox") || meshNameLowercase.Contains("pickingbox") ||
-                               (meshNameLowercase.Contains("lod") && !meshNameLowercase.Contains("lod0"));
-
+            bool discardMesh = meshNameLowercase.Contains("boundingbox")
+                               || meshNameLowercase.Contains("pickingbox")
+                               || (meshNameLowercase.Contains("lod") && !meshNameLowercase.Contains("lod0"));
+            
             int materialsCount = source.ReadInt32(); // there is always only one material per mesh, but we need to load this int anyway
-            LoadMaterial(source, fileFolder, mat =>
+            if (materialsCount != 1)
             {
-                if (!discardMesh)
+                throw new NotImplementedException("Only one material per mesh is supported");
+            }
+            
+            if (!discardMesh)
+            {
+                Debug.Log("Loading mesh " + meshName);
+                LoadMaterial(source, fileFolder, mat =>
                 {
                     GameObject meshObject = new GameObject(meshName);
 
@@ -77,16 +82,17 @@ namespace Warlander.Deedplanner.Graphics
                     MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
                     meshFilter.sharedMesh = loadedMesh;
                     meshRenderer.sharedMaterial = mat;
-            
+
                     onLoaded.Invoke(meshObject);
-                }
-            });
-            
-            if (discardMesh)
+                });
+            }
+            else
             {
+                Debug.Log("Discarding mesh " + meshName);
+                // We need to load material metadata to advance file read to the next valid position.
+                LoadMaterialMetadata(source, fileFolder);
                 Object.Destroy(loadedMesh);
                 onLoaded.Invoke(null);
-                return;
             }
         }
 
@@ -168,12 +174,47 @@ namespace Warlander.Deedplanner.Graphics
 
         private static void LoadMaterial(BinaryReader source, string modelFolder, Action<Material> onLoaded)
         {
+            var materialMetadata = LoadMaterialMetadata(source, modelFolder);
+            MaterialKey materialKey = new MaterialKey(materialMetadata.MaterialName, materialMetadata.TextureLocation);
+            
+            if (cachedMaterials.ContainsKey(materialKey))
+            {
+                Debug.Log("Loading material from cache");
+                Material cachedMaterial = cachedMaterials[materialKey];
+                onLoaded.Invoke(cachedMaterial);
+            }
+            else
+            {
+                Material material = new Material(GraphicsManager.Instance.WomDefaultMaterial);
+                material.name = materialMetadata.MaterialName;
+                
+                TextureReference textureReference = TextureReference.GetTextureReference(materialMetadata.TextureLocation);
+
+                textureReference?.LoadOrGetTexture(texture =>
+                {
+                    if (texture)
+                    {
+                        material.SetTexture(ShaderPropertyIds.MainTex, texture);
+                    }
+                    else
+                    {
+                        material.SetColor(ShaderPropertyIds.Color, new Color(1, 1, 1, 0));
+                    }
+                
+                    material.SetFloat(ShaderPropertyIds.Glossiness, materialMetadata.Glossiness);
+                
+                    cachedMaterials[materialKey] = material;
+                    onLoaded.Invoke(material);
+                });
+            }
+        }
+
+        private static MaterialMetadata LoadMaterialMetadata(BinaryReader source, string modelFolder)
+        {
             string texName = ReadString(source);
             string texLocation = Path.Combine(modelFolder, texName).Replace("\\", "/");
             string matName = ReadString(source);
             
-            MaterialKey materialKey = new MaterialKey(matName, texLocation);
-
             float glossiness = 0;
 
             bool hasMaterialProperties = source.ReadBoolean();
@@ -217,36 +258,15 @@ namespace Warlander.Deedplanner.Graphics
                 }
             }
             
-            if (cachedMaterials.ContainsKey(materialKey))
+            var materialMetadata = new MaterialMetadata()
             {
-                Debug.Log("Loading material from cache");
-                Material cachedMaterial = cachedMaterials[materialKey];
-                onLoaded.Invoke(cachedMaterial);
-            }
-            else
-            {
-                Material material = new Material(GraphicsManager.Instance.WomDefaultMaterial);
-                material.name = matName;
-                
-                TextureReference textureReference = TextureReference.GetTextureReference(texLocation);
-
-                textureReference?.LoadOrGetTexture(texture =>
-                {
-                    if (texture)
-                    {
-                        material.SetTexture(ShaderPropertyIds.MainTex, texture);
-                    }
-                    else
-                    {
-                        material.SetColor(ShaderPropertyIds.Color, new Color(1, 1, 1, 0));
-                    }
-                
-                    material.SetFloat(ShaderPropertyIds.Glossiness, glossiness);
-                
-                    cachedMaterials[materialKey] = material;
-                    onLoaded.Invoke(material);
-                });
-            }
+                TextureName = texName,
+                TextureLocation = texLocation,
+                MaterialName = matName,
+                Glossiness = glossiness
+            };
+            
+            return materialMetadata;
         }
 
         public static void LoadTexture(string location, bool readable, Action<Texture2D> onLoaded)
@@ -278,6 +298,12 @@ namespace Warlander.Deedplanner.Graphics
 
         private static Texture2D LoadTextureDxt(byte[] ddsBytes)
         {
+            if (ddsBytes == null)
+            {
+                Debug.LogWarning("Unable to load DDS texture. Returning placeholder instead.");
+                return Texture2D.whiteTexture;
+            }
+            
             byte ddsSizeCheck = ddsBytes[4];
             if (ddsSizeCheck != 124)
                 throw new Exception("Invalid DDS DXTn texture. Unable to read");  //this header byte should be 124 for DDS image files
