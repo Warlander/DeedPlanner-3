@@ -27,7 +27,13 @@ namespace Warlander.Deedplanner.Data
 {
     public class DataLoader : IInitializable
     {
-        [Inject] private UnityThreadRunner _unityThreadRunner;
+        private readonly UnityThreadRunner _unityThreadRunner;
+
+        [Inject]
+        public DataLoader(UnityThreadRunner unityThreadRunner)
+        {
+            _unityThreadRunner = unityThreadRunner;
+        }
 
         public delegate void LoadingStepStartedDelegate(int stepNumber, string stepDescription);
 

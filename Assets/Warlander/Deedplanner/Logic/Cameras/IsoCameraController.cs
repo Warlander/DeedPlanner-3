@@ -10,8 +10,15 @@ namespace Warlander.Deedplanner.Logic.Cameras
 {
     public class IsoCameraController : ICameraController
     {
-        [Inject] private DPSettings _settings;
-        [Inject] private DPInput _input;
+        private readonly DPSettings _settings;
+        private readonly DPInput _input;
+
+        [Inject]
+        public IsoCameraController(DPSettings settings, DPInput input)
+        {
+            _settings = settings;
+            _input = input;
+        }
         
         public GridMaterialType GridMaterialToUse => GridMaterialType.Uniform;
         
