@@ -15,7 +15,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         
         public BridgePartType PartType { get; }
 
-        public BridgePartData(XmlElement element)
+        public BridgePartData(IWurmModelFactory modelFactory, ITextureReferenceFactory textureReferenceFactory, XmlElement element)
         {
             string typeString = element.GetAttribute("type");
             bool typeParseSuccess = Enum.TryParse(typeString, true, out BridgePartType type);
@@ -38,12 +38,12 @@ namespace Warlander.Deedplanner.Data.Bridges
 
                         if (sideString.Equals("side", StringComparison.OrdinalIgnoreCase))
                         {
-                            models.Add(BridgePartSide.LEFT, new Model(child, LayerMasks.BridgeLayer));
-                            models.Add(BridgePartSide.RIGHT, new Model(child, new Vector3(-1, 1, 1), LayerMasks.BridgeLayer));
+                            models.Add(BridgePartSide.LEFT, modelFactory.CreateModel(child, LayerMasks.BridgeLayer));
+                            models.Add(BridgePartSide.RIGHT, modelFactory.CreateModel(child, new Vector3(-1, 1, 1), LayerMasks.BridgeLayer));
                         }
                         else if (sideParseSuccess)
                         {
-                            models.Add(side, new Model(child, LayerMasks.BridgeLayer));
+                            models.Add(side, modelFactory.CreateModel(child, LayerMasks.BridgeLayer));
                         }
                         else
                         {
@@ -51,7 +51,7 @@ namespace Warlander.Deedplanner.Data.Bridges
                         }
                         break;
                     case "tex":
-                        uiTex = TextureReference.GetTextureReference(child);
+                        uiTex = textureReferenceFactory.GetTextureReference(child);
                         break;
                     case "materials":
                         materials = new Materials(child);

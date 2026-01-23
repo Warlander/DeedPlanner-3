@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Logic;
 using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Graphics
 {
     public class Model
     {
+        private readonly IWurmModelLoader _wurmModelLoader;
+        private readonly ITextureReferenceFactory _textureReferenceFactory;
+
         private static GameObject modelsRoot;
 
         private readonly string location;
@@ -31,13 +32,16 @@ namespace Warlander.Deedplanner.Graphics
         /// </summary>
         public GameObject OriginalModel => originalModel;
 
-        public Model(XmlElement element, Vector3 scale, int layer = int.MaxValue) : this(element, layer)
+        public Model(IWurmModelLoader wurmModelLoader, ITextureReferenceFactory textureReferenceFactory, XmlElement element, Vector3 scale, int layer = int.MaxValue)
+            : this(wurmModelLoader, textureReferenceFactory, element, layer)
         {
             Scale = scale;
         }
         
-        public Model(XmlElement element, int layer = int.MaxValue)
+        public Model(IWurmModelLoader wurmModelLoader, ITextureReferenceFactory textureReferenceFactory, XmlElement element, int layer = int.MaxValue)
         {
+            _wurmModelLoader = wurmModelLoader;
+            _textureReferenceFactory = textureReferenceFactory;
             modifiedModels = new Dictionary<ModelProperties, GameObject>();
 
             Tag = element.GetAttribute("tag");
@@ -77,13 +81,16 @@ namespace Warlander.Deedplanner.Graphics
             Layer = layer;
         }
 
-        public Model(string location, Vector3 scale, int layer = int.MaxValue) : this(location, layer)
+        public Model(IWurmModelLoader wurmModelLoader, ITextureReferenceFactory textureReferenceFactory, string location, Vector3 scale, int layer = int.MaxValue)
+            : this(wurmModelLoader, textureReferenceFactory, location, layer)
         {
             Scale = scale;
         }
 
-        public Model(string newLocation, int layer = int.MaxValue)
+        public Model(IWurmModelLoader wurmModelLoader, ITextureReferenceFactory textureReferenceFactory, string newLocation, int layer = int.MaxValue)
         {
+            _wurmModelLoader = wurmModelLoader;
+            _textureReferenceFactory = textureReferenceFactory;
             location = newLocation;
             Layer = layer;
 
@@ -160,7 +167,7 @@ namespace Warlander.Deedplanner.Graphics
             {
                 loadingOriginalModel = true;
                 string fullLocation = Application.streamingAssetsPath + "/" + location;
-                WurmAssetsLoader.LoadModel(fullLocation, Scale, model =>
+                _wurmModelLoader.LoadModel(fullLocation, Scale, model =>
                 {
                     OnMasterModelLoaded(model);
                     InitializeModifiedModel(modelProperties);
@@ -197,7 +204,7 @@ namespace Warlander.Deedplanner.Graphics
                 if (textureOverride != null)
                 {
                     MeshRenderer renderer = child.GetComponent<MeshRenderer>();
-                    TextureReference texture = TextureReference.GetTextureReference(textureOverride);
+                    TextureReference texture = _textureReferenceFactory.GetTextureReference(textureOverride);
                     Material newMaterial = new Material(renderer.sharedMaterial);
                     renderer.sharedMaterial = newMaterial;
 

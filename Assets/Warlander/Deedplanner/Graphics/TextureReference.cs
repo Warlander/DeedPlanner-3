@@ -1,41 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Graphics
 {
     public class TextureReference
     {
-        private static readonly Dictionary<string, TextureReference> references = new Dictionary<string, TextureReference>();
-
-        public static TextureReference GetTextureReference(string location)
-        {
-            location = location.Replace(Application.streamingAssetsPath + "/", "");
-
-            if (string.IsNullOrEmpty(Path.GetExtension(location)))
-            {
-                Debug.Log("Attempting to load invalid texture from " + location);
-                return null;
-            }
-            
-            if (references.ContainsKey(location))
-            {
-                return references[location];
-            }
-
-            TextureReference reference = new TextureReference(location);
-            references[location] = reference;
-            return reference;
-        }
-
-        public static TextureReference GetTextureReference(XmlElement element)
-        {
-            string location = element.GetAttribute("location");
-            return GetTextureReference(location);
-        }
+        private readonly ITextureLoader _textureLoader;
 
         private Texture2D texture;
         private Sprite sprite;
@@ -46,8 +18,9 @@ namespace Warlander.Deedplanner.Graphics
 
         public string Location { get; }
 
-        private TextureReference(string location)
+        public TextureReference(ITextureLoader textureLoader, string location)
         {
+            _textureLoader = textureLoader;
             Location = location;
         }
         
@@ -109,7 +82,7 @@ namespace Warlander.Deedplanner.Graphics
                     location = Application.streamingAssetsPath + "/" + Location;
                 }
                 
-                WurmAssetsLoader.LoadTexture(location, false, OnTextureLoaded);
+                _textureLoader.LoadTexture(location, false, OnTextureLoaded);
             }
         }
 
