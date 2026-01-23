@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -9,7 +8,6 @@ using System.Xml;
 using Plugins.Warlander.Utils;
 using UnityEngine;
 using UnityEngine.Networking;
-using Warlander.Core;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Decorations;
@@ -18,8 +16,6 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Graphics;
-using Warlander.Deedplanner.Gui;
-using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
 using Zenject;
 
@@ -28,11 +24,18 @@ namespace Warlander.Deedplanner.Data
     public class DataLoader : IInitializable
     {
         private readonly UnityThreadRunner _unityThreadRunner;
+        private readonly ITextureReferenceFactory _textureReferenceFactory;
+        private readonly IWurmModelFactory _modelFactory;
+        private readonly BridgePartDataFactory _bridgePartDataFactory;
 
         [Inject]
-        public DataLoader(UnityThreadRunner unityThreadRunner)
+        public DataLoader(UnityThreadRunner unityThreadRunner, ITextureReferenceFactory textureReferenceFactory,
+            IWurmModelFactory modelFactory, BridgePartDataFactory bridgePartDataFactory)
         {
             _unityThreadRunner = unityThreadRunner;
+            _textureReferenceFactory = textureReferenceFactory;
+            _modelFactory = modelFactory;
+            _bridgePartDataFactory = bridgePartDataFactory;
         }
 
         public delegate void LoadingStepStartedDelegate(int stepNumber, string stepDescription);
@@ -170,15 +173,15 @@ namespace Warlander.Deedplanner.Data
                             string target = child.GetAttribute("target");
                             if (target == "editmode")
                             {
-                                tex2d = TextureReference.GetTextureReference(child);
+                                tex2d = _textureReferenceFactory.GetTextureReference(child);
                             }
                             else if (target == "previewmode")
                             {
-                                tex3d = TextureReference.GetTextureReference(child);
+                                tex3d = _textureReferenceFactory.GetTextureReference(child);
                             }
                             else
                             {
-                                tex2d = TextureReference.GetTextureReference(child);
+                                tex2d = _textureReferenceFactory.GetTextureReference(child);
                                 tex3d = tex2d;
                             }
                             break;
@@ -220,7 +223,7 @@ namespace Warlander.Deedplanner.Data
                     continue;
                 }
 
-                TextureReference texture = TextureReference.GetTextureReference(element.GetAttribute("tex"));
+                TextureReference texture = _textureReferenceFactory.GetTextureReference(element.GetAttribute("tex"));
                 string type = element.GetAttribute("type");
                 bool wall = type == "wall";
                 bool entrance = type == "entrance";
@@ -274,7 +277,7 @@ namespace Warlander.Deedplanner.Data
                     switch (child.LocalName)
                     {
                         case "model":
-                            model = new Model(child, LayerMasks.FloorRoofLayer);
+                            model = _modelFactory.CreateModel(child, LayerMasks.FloorRoofLayer);
                             break;
                         case "category":
                             categories.Add(child.InnerText.Split('/'));
@@ -333,7 +336,7 @@ namespace Warlander.Deedplanner.Data
                     switch (child.LocalName)
                     {
                         case "model":
-                            Model model = new Model(child, LayerMasks.WallLayer);
+                            Model model = _modelFactory.CreateModel(child, LayerMasks.WallLayer);
                             if (model.Tag == "bottom")
                             {
                                 bottomModel = model;
@@ -356,7 +359,7 @@ namespace Warlander.Deedplanner.Data
                             materials = new Materials(child);
                             break;
                         case "icon":
-                            icon = TextureReference.GetTextureReference(child.GetAttribute("location"));
+                            icon = _textureReferenceFactory.GetTextureReference(child.GetAttribute("location"));
                             break;
                     }
                 }
@@ -374,6 +377,8 @@ namespace Warlander.Deedplanner.Data
 
         private void LoadRoofs(XmlDocument document)
         {
+            RoofType.Initialize(_modelFactory);
+            
             XmlNodeList entities = document.GetElementsByTagName("roof");
 
             foreach (XmlElement element in entities)
@@ -390,7 +395,7 @@ namespace Warlander.Deedplanner.Data
                     continue;
                 }
 
-                TextureReference texture = TextureReference.GetTextureReference(element.GetAttribute("tex"));
+                TextureReference texture = _textureReferenceFactory.GetTextureReference(element.GetAttribute("tex"));
                 Materials materials = null;
 
                 foreach (XmlElement child in element)
@@ -441,7 +446,7 @@ namespace Warlander.Deedplanner.Data
                     switch (child.LocalName)
                     {
                         case "model":
-                            model = new Model(child, LayerMasks.DecorationLayer);
+                            model = _modelFactory.CreateModel(child, LayerMasks.DecorationLayer);
                             break;
                         case "materials":
                             materials = new Materials(child);
@@ -527,7 +532,7 @@ namespace Warlander.Deedplanner.Data
                             }
                             break;
                         case "part":
-                            partsData.Add(new BridgePartData(child));
+                            partsData.Add(_bridgePartDataFactory.Create(child));
                             break;
                     }
                 }

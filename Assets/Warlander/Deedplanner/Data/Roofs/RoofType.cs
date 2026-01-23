@@ -9,81 +9,81 @@ namespace Warlander.Deedplanner.Data.Roofs
     {
         public static RoofType[] RoofTypes { get; private set; }
 
-        static RoofType()
+        public static void Initialize(IWurmModelFactory modelFactory)
         {
             List<RoofType> roofTypesList = new List<RoofType>();
 
-            roofTypesList.Add(new RoofType("Special/side.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/side.wom",
                               new int[,] {{ 1, 1, 1},
                                                     { 0, 0, 0},
                                                     {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType("Special/sideCorner.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/sideCorner.wom",
                               new int[,] {{-1,-2,-1},
                                                     { 0, 0,-2},
                                                     { 1, 0,-1}}));
 
-            roofTypesList.Add(new RoofType("Special/sideCut.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/sideCut.wom",
                               new int[,] {{ 1, 1, 1},
                                                     { 0, 0, 1},
                                                     {-2, 0, 1}}));
 
-            roofTypesList.Add(new RoofType("Special/spine.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/spine.wom",
                               new int[,] {{-1,-2,-1},
                                                     { 0, 0, 0},
                                                     {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType("Special/spineEnd.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/spineEnd.wom",
                               new int[,] {{-1,-2,-1},
                                                     { 0, 0,-2},
                                                     {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType("Special/spineEndUp.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/spineEndUp.wom",
                               new int[,] {{-1,-2,-1},
                                                     { 0, 0, 3},
                                                     { 1, 0,-1}}));
 
-            roofTypesList.Add(new RoofType("Special/spineEndUp.wom", new Vector3(-1, 1, 1),
+            roofTypesList.Add(new RoofType(modelFactory, "Special/spineEndUp.wom", new Vector3(-1, 1, 1),
                               new int[,] {{-1,-2,-1},
                                                     { 3, 0, 0},
                                                     {-1, 0, 1}}));
 
-            roofTypesList.Add(new RoofType("Special/spineCorner.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/spineCorner.wom",
                               new int[,] {{-1,-2,-1},
                                                     {-2, 0, 0},
                                                     {-1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType("Special/spineCornerUp.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/spineCornerUp.wom",
                               new int[,] {{-2, 0,-2},
                                                     { 0, 0, 0},
                                                     { 1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType("Special/spineCross.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/spineCross.wom",
                               new int[,] {{-2, 0,-2},
                                                     { 0, 0, 0},
                                                     {-2, 0,-2}}));
 
-            roofTypesList.Add(new RoofType("Special/spineTCross.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/spineTCross.wom",
                               new int[,] {{-1, 0,-2},
                                                     {-2, 0, 0},
                                                     {-1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType("Special/spineTip.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/spineTip.wom",
                               new int[,] {{-1,-2,-1},
                                                     {-2, 0,-2},
                                                     {-1,-2,-1}}));
             
-            roofTypesList.Add(new RoofType("Special/spineUp.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/spineUp.wom",
                               new int[,] {{ 1, 0,-2},
                                                     { 1, 0, 0},
                                                     { 1, 0,-2}}));
             
-            roofTypesList.Add(new RoofType("Special/sideToSpine.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/sideToSpine.wom",
                               new int[,] {{ 1, 0,-2},
                                                     { 1, 0, 0},
                                                     { 1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType("Special/levelsCross.wom",
+            roofTypesList.Add(new RoofType(modelFactory, "Special/levelsCross.wom",
                               new int[,] {{-2, 0, 1},
                                                     { 0, 0, 0},
                                                     { 1, 0,-2}}));
@@ -94,16 +94,16 @@ namespace Warlander.Deedplanner.Data.Roofs
         private readonly Dictionary<RoofData, Model> models;
         private readonly int[,] conditions;
 
-        private RoofType(string modelLocation, int[,] conditions) : this(modelLocation, new Vector3(1, 1, 1), conditions) {}
+        private RoofType(IWurmModelFactory modelFactory, string modelLocation, int[,] conditions) : this(modelFactory, modelLocation, new Vector3(1, 1, 1), conditions) {}
 
-        private RoofType(string modelLocation, Vector3 scale, int[,] conditions)
+        private RoofType(IWurmModelFactory modelFactory, string modelLocation, Vector3 scale, int[,] conditions)
         {
             models = new Dictionary<RoofData, Model>();
             this.conditions = conditions;
 
             foreach (RoofData data in Database.Roofs.Values)
             {
-                Model model = new Model(modelLocation, scale, LayerMasks.FloorRoofLayer);
+                Model model = modelFactory.CreateModel(modelLocation, scale, LayerMasks.FloorRoofLayer);
                 model.AddTextureOverride("*", data.Texture.Location);
                 models[data] = model;
             }
