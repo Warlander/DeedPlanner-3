@@ -17,6 +17,7 @@
 ExportedObj/
 .consulo/
 *.csproj
+*.csproj.meta
 *.unityproj
 *.sln
 *.suo
@@ -39,3 +40,4 @@ sysinfo.txt
 *.apk
 *.unitypackage
 UserSettings/
+.output.txt
