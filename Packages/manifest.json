@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "com.cysharp.r3": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity",
+    "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
     "com.unity.2d.animation": "13.0.2",
     "com.unity.2d.common": "12.0.1",
     "com.unity.2d.enhancers": "1.0.0",
@@ -61,7 +63,7 @@
   "scopedRegistries": [
     {
       "name": "Arvtesh",
-      "url": "https://registry.npmjs.org/",
+      "url": "https://registry.npmjs.org",
       "scopes": [
         "com.unityfx"
       ]
