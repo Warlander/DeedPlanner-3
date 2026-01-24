@@ -21,6 +21,8 @@ namespace Warlander.Deedplanner.Gui.Windows
         [SerializeField] private Slider guiScaleSlider;
         [SerializeField] private TMP_Text guiScaleValueText;
 
+        [SerializeField] private Toggle compassToggle; 
+
         [SerializeField] private Button _saveButton;
 
         private void Start()
@@ -60,6 +62,16 @@ namespace Warlander.Deedplanner.Gui.Windows
                     break;
             }
             
+            bool compassVisibility = _settings.CompassVisibility;
+            if (compassVisibility)
+            {
+                compassToggle.isOn = true;
+            }
+            else
+            {
+                compassToggle.isOn = false;
+            }
+            
             overallQualityDropdown.value = QualitySettings.GetQualityLevel();
             guiScaleSlider.value = _settings.GuiScale;
             guiScaleValueText.text = Mathf.RoundToInt(guiScaleSlider.value).ToString();
@@ -88,6 +100,15 @@ namespace Warlander.Deedplanner.Gui.Windows
                 }
 
                 settings.GuiScale = Mathf.RoundToInt(guiScaleSlider.value);
+
+                if (compassToggle.isOn)
+                {
+                    settings.CompassVisibility = true;
+                }
+                else
+                {
+                    settings.CompassVisibility = false;
+                }
             });
 
             QualitySettings.SetQualityLevel(overallQualityDropdown.value, true);
