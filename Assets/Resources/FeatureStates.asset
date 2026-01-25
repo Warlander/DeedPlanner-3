@@ -17,3 +17,11 @@ MonoBehaviour:
     _enabledInProduction: 0
     _enabledInDebug: 0
     _enabledInEditor: 1
+  - _feature: 1
+    _enabledInProduction: 0
+    _enabledInDebug: 0
+    _enabledInEditor: 1
+  - _feature: 2
+    _enabledInProduction: 0
+    _enabledInDebug: 0
+    _enabledInEditor: 1

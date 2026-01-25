@@ -2,6 +2,8 @@
 {
     public enum Feature
     {
-        BRIDGES = 0,
+        Bridges = 0,
+        Caves = 1,
+        Docks = 2,
     }
 }

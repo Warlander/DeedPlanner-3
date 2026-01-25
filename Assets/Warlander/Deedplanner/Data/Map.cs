@@ -167,7 +167,7 @@ namespace Warlander.Deedplanner.Data
 
         private void InitializeBridges(Map originalMap, int addLeft, int addBottom)
         {
-            if (!_featureStateRetriever.IsFeatureEnabled(Feature.BRIDGES))
+            if (!_featureStateRetriever.IsFeatureEnabled(Feature.Bridges))
             {
                 return;
             }
@@ -260,7 +260,7 @@ namespace Warlander.Deedplanner.Data
 
         private void InitializeBridges(XmlElement mapRoot)
         {
-            if (!_featureStateRetriever.IsFeatureEnabled(Feature.BRIDGES))
+            if (!_featureStateRetriever.IsFeatureEnabled(Feature.Bridges))
             {
                 return;
             }
