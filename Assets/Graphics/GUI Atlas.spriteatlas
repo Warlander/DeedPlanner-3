@@ -565,7 +565,7 @@ SpriteAtlas:
   - Radio
   - 2ScrVert
   - DoubleConnection
-  - Checkmark
+  - checkmark
   - 007-bridge
   - front
   - 006-armchair
@@ -622,7 +622,7 @@ SpriteAtlas:
   - 024-technical-support
   - DoubleVerticalLine
   - 003-fence
-  - Border
+  - border
   - 009-eraser
   - 008-cave
   - 015-mouse-left-button
