@@ -3,7 +3,7 @@
 
     public static class Constants
     {
-        public const string VersionString = "3.2.0 ALPHA";
+        public const string VersionString = "3.2.1 ALPHA";
         public const string TitleString = "DeedPlanner " + VersionString;
         public const string SimpleTitleString = "DeedPlanner";
         public const int SteamAppId = 1179760;
