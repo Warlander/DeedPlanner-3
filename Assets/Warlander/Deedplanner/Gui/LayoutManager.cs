@@ -34,7 +34,7 @@ namespace Warlander.Deedplanner.Gui
         public event Action<Tab> TabChanged;
 
         private int activeWindow;
-        private Layout currentLayout = Layout.Single;
+        public Layout currentLayout = Layout.Single;
         private Tab currentTab;
 
         private Sequence tabFadeSequence;
