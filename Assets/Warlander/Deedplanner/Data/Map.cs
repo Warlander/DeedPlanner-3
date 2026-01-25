@@ -9,6 +9,7 @@ using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Summary;
+using Warlander.Deedplanner.Features;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Settings;
@@ -24,6 +25,7 @@ namespace Warlander.Deedplanner.Data
         [Inject] private TileFactory _tileFactory;
         [Inject] private BridgeFactory _bridgeFactory;
         [Inject] private IMapRenderSettingsRetriever _mapRenderSettingsRetriever;
+        [Inject] private IFeatureStateRetriever _featureStateRetriever;
 
         public GroundMesh Ground { get; private set; }
 
@@ -143,19 +145,7 @@ namespace Warlander.Deedplanner.Data
                 }
             }
 
-            Vector2Int bridgeShift = new Vector2Int(addLeft, addBottom);
-            
-            foreach (Bridge originalMapBridge in originalMap._bridges)
-            {
-                Vector2Int firstTileAfterShift = originalMapBridge.FirstTile + bridgeShift;
-                Vector2Int secondTileAfterShift = originalMapBridge.SecondTile + bridgeShift;
-
-                if (IsWithinBounds(firstTileAfterShift) && IsWithinBounds(secondTileAfterShift))
-                {
-                    Bridge movedBridge = _bridgeFactory.CreateBridge(this, originalMapBridge, bridgeShift);
-                    _bridges.Add(movedBridge);
-                }
-            }
+            InitializeBridges(originalMap, addLeft, addBottom);
 
             for (int i = 0; i <= Width; i++)
             {
@@ -173,6 +163,28 @@ namespace Warlander.Deedplanner.Data
             RecalculateHeights();
             RecalculateRoofs();
             CommandManager.ForgetAction();
+        }
+
+        private void InitializeBridges(Map originalMap, int addLeft, int addBottom)
+        {
+            if (!_featureStateRetriever.IsFeatureEnabled(Feature.BRIDGES))
+            {
+                return;
+            }
+            
+            Vector2Int bridgeShift = new Vector2Int(addLeft, addBottom);
+            
+            foreach (Bridge originalMapBridge in originalMap._bridges)
+            {
+                Vector2Int firstTileAfterShift = originalMapBridge.FirstTile + bridgeShift;
+                Vector2Int secondTileAfterShift = originalMapBridge.SecondTile + bridgeShift;
+
+                if (IsWithinBounds(firstTileAfterShift) && IsWithinBounds(secondTileAfterShift))
+                {
+                    Bridge movedBridge = _bridgeFactory.CreateBridge(this, originalMapBridge, bridgeShift);
+                    _bridges.Add(movedBridge);
+                }
+            }
         }
 
         public void Initialize(int width, int height)
@@ -234,13 +246,8 @@ namespace Warlander.Deedplanner.Data
 
                 this[x, y].DeserializeEntities(tileElement);
             }
-            
-            XmlNodeList bridgesList = mapRoot.GetElementsByTagName("bridge");
-            foreach (XmlElement bridgeElement in bridgesList)
-            {
-                Bridge bridge = _bridgeFactory.CreateBridge(this, bridgeElement);
-                _bridges.Add(bridge);
-            }
+
+            InitializeBridges(mapRoot);
 
             Ground.UpdateNow();
 
@@ -249,6 +256,21 @@ namespace Warlander.Deedplanner.Data
             RecalculateHeights();
             RecalculateRoofs();
             CommandManager.ForgetAction();
+        }
+
+        private void InitializeBridges(XmlElement mapRoot)
+        {
+            if (!_featureStateRetriever.IsFeatureEnabled(Feature.BRIDGES))
+            {
+                return;
+            }
+            
+            XmlNodeList bridgesList = mapRoot.GetElementsByTagName("bridge");
+            foreach (XmlElement bridgeElement in bridgesList)
+            {
+                Bridge bridge = _bridgeFactory.CreateBridge(this, bridgeElement);
+                _bridges.Add(bridge);
+            }
         }
 
         private void PreInitialize(int width, int height)

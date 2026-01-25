@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b8ebff340cb48b5b0b7752f0c25741b, type: 3}
   m_Name: FeatureStates
   m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Features.FeatureStateRepository
-  featureStates: []
+  featureStates:
+  - _feature: 0
+    _enabledInProduction: 0
+    _enabledInDebug: 0
+    _enabledInEditor: 1
