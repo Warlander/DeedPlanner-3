@@ -13,6 +13,7 @@ namespace Warlander.Deedplanner.Gui
 
         private void Start()
         {
+            _toggle.isOn = (_layoutManager.CurrentLayout == _layout);
             _toggle.onValueChanged.AddListener(ToggleOnValueChanged);
         }
 
