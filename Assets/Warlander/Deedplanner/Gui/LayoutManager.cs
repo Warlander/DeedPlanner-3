@@ -13,7 +13,6 @@ namespace Warlander.Deedplanner.Gui
 {
     public class LayoutManager : MonoBehaviour
     {
-        public static LayoutManager Instance { get; private set; }
 
         [Inject] private DPSettings _settings;
         [Inject] private CameraCoordinator _cameraCoordinator;
@@ -32,15 +31,9 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField] private GameObject simpleQualityWaterObject = null;
 
         public event Action<Tab> TabChanged;
-
-        private int activeWindow;
-        public Layout currentLayout { get; private set; } = Layout.Single;
-        private Tab currentTab;
-
-        private Sequence tabFadeSequence;
-        
+        public static LayoutManager Instance { get; private set; }
         public TileSelectionMode TileSelectionMode { get; set; }
-
+        public Layout CurrentLayout { get; private set; } = Layout.Single;
         public Tab CurrentTab {
             get => currentTab;
             set
@@ -52,6 +45,10 @@ namespace Warlander.Deedplanner.Gui
             }
         }
 
+        private int activeWindow;
+        private Tab currentTab;
+        private Sequence tabFadeSequence;
+        
         public LayoutManager()
         {
             if (Instance)
@@ -69,7 +66,7 @@ namespace Warlander.Deedplanner.Gui
             CurrentTab = currentTab;
             
             ValidateState();
-            ChangeLayout(currentLayout);
+            ChangeLayout(CurrentLayout);
             
             _settings.Modified += ValidateState;
             _cameraCoordinator.CurrentCameraChanged += CameraCoordinatorOnCurrentCameraChanged;
@@ -131,7 +128,7 @@ namespace Warlander.Deedplanner.Gui
 
         public void ChangeLayout(Layout layout)
         {
-            currentLayout = layout;
+            CurrentLayout = layout;
 
             switch (layout)
             {
