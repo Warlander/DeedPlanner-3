@@ -92,7 +92,46 @@ namespace Warlander.Deedplanner.Data
             // Map.AddEntityToMap(caveObject, -1);
             // Cave.Initialize(this, Database.DefaultCaveData);
         }
+        
+        public DoorDirection UpdateDoorDirection()
+        {
+            if (X <= 0 || X + 1 >= Map.Width || Y <= 0 || Y + 1 >= Map.Height) return DoorDirection.N;
+            
+            Tile nwTile = this.Map[X, Y + 1];
+            Tile neTile = this.Map[X + 1, Y + 1];
+            Tile seTile = this.Map[X + 1, Y];
 
+            if (nwTile == null || neTile == null || seTile == null) return DoorDirection.N;
+            
+            int sw = SurfaceHeight;
+            int nw = this.Map[X, Y + 1].SurfaceHeight;
+            int ne = this.Map[X + 1, Y + 1].SurfaceHeight;
+            int se = this.Map[X + 1, Y].SurfaceHeight;
+
+            float northAvg = (nw + ne) / 2f;
+            float eastAvg = (ne + se) / 2f;
+            float southAvg = (se + sw) / 2f;
+            float westAvg = (sw + nw) / 2f;
+            
+            float max = Mathf.Max(northAvg, eastAvg, southAvg, westAvg);
+            
+            if (max == northAvg) return DoorDirection.N;
+            if (max == eastAvg) return DoorDirection.E;
+            if (max == southAvg) return DoorDirection.S;
+            if (max == westAvg) return DoorDirection.W;
+            
+            return DoorDirection.N;
+        }
+
+        public void RefreshDoorOrientation()
+        {
+            if (Ground.Data.IsCaveDoor)
+            {
+                Ground.DoorDirection = UpdateDoorDirection();
+                Map.Ground.SetGroundData(X, Y, Ground.Data, Ground.RoadDirection, Ground.DoorDirection);
+            }
+        }
+        
         public void PasteTile(Tile otherTile)
         {
             SurfaceHeight = otherTile.SurfaceHeight;
@@ -1089,10 +1128,20 @@ namespace Warlander.Deedplanner.Data
             private void Refresh()
             {
                 tile.Map.Ground.SetSlope(tile.X, tile.Y, tile.surfaceHeight);
+                
+                Tile t10 = tile.Map.GetRelativeTile(tile, -1, 0);
+                Tile t01 = tile.Map.GetRelativeTile(tile, 0, -1);
+                Tile t11 = tile.Map.GetRelativeTile(tile, -1, -1);
+
                 tile.RefreshSurfaceEntities();
-                tile.Map.GetRelativeTile(tile, -1, 0)?.RefreshSurfaceEntities();
-                tile.Map.GetRelativeTile(tile, 0, -1)?.RefreshSurfaceEntities();
-                tile.Map.GetRelativeTile(tile, -1, -1)?.RefreshSurfaceEntities();
+                t10?.RefreshSurfaceEntities();
+                t01?.RefreshSurfaceEntities();
+                t11?.RefreshSurfaceEntities();
+                
+                tile.RefreshDoorOrientation();
+                t10?.RefreshDoorOrientation();
+                t01?.RefreshDoorOrientation();
+                t11?.RefreshDoorOrientation();
 
                 tile.Map.RecalculateSurfaceHeight(tile.X, tile.Y);
             }

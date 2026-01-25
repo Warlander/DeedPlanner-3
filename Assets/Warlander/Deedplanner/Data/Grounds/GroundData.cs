@@ -13,6 +13,7 @@ namespace Warlander.Deedplanner.Data.Grounds
         public TextureReference Tex3d { get; }
 
         public bool Diagonal { get; }
+        public bool IsCaveDoor { get; private set; } = false;
 
         public GroundData(string name, string shortName, string[][] categories, TextureReference tex2d, TextureReference tex3d, bool diagonal)
         {
@@ -22,6 +23,7 @@ namespace Warlander.Deedplanner.Data.Grounds
             Tex2d = tex2d;
             Tex3d = tex3d;
             Diagonal = diagonal;
+            IsCaveDoor = ShortName is "wcaDoor" or "gcaDoor" or "scaDoor" or "mcaDoor";
         }
 
         public override string ToString()
