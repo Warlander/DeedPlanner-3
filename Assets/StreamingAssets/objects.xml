@@ -3907,7 +3907,7 @@
 		</wall>
 		<wall name="Bark log wide window" shortname="blWWindow" scale="4" type="house">
 			<model location="Walls/Log/logWideWindow.wom">
-				<override mesh="wallMat" texture="Walls/Log/logwall_bark.dds"/>
+				<override mesh="WallMesh" texture="Walls/Log/logwall_bark.dds"/>
 			</model>
 			<materials>
 				Logs = 7,
@@ -4016,7 +4016,7 @@
 		</wall>
 		<wall name="Hardwood log wide window" shortname="hlWWindow" scale="4" type="house">
 			<model location="Walls/Log/logWideWindow.wom">
-				<override mesh="wallMat" texture="Walls/Log/logwall_decid.dds"/>
+				<override mesh="WallMesh" texture="Walls/Log/logwall_decid.dds"/>
 			</model>
 			<materials>
 				Logs = 7,
@@ -4125,7 +4125,7 @@
 		</wall>
 		<wall name="Log wide window" shortname="lWWindow" scale="4" type="house">
 			<model location="Walls/Log/logWideWindow.wom">
-				<override mesh="wallMat" texture="Walls/Log/logwall_conif.dds"/>
+				<override mesh="WallMesh" texture="Walls/Log/logwall_conif.dds"/>
 			</model>
 			<materials>
 				Logs = 7,
@@ -4234,7 +4234,7 @@
 		</wall>
 		<wall name="Rustic log wide window" shortname="rlWWindow" scale="4" type="house">
 			<model location="Walls/Log/logWideWindow.wom">
-				<override mesh="wallMat" texture="Walls/Log/logwall_rustic.dds"/>
+				<override mesh="WallMesh" texture="Walls/Log/logwall_rustic.dds"/>
 			</model>
 			<materials>
 				Logs = 7,
@@ -4357,7 +4357,7 @@
 		</wall>
 		<wall name="Bark log wide window with chinking" shortname="blCWWindow" scale="4" type="house">
 			<model location="Walls/Log/logWideWindow.wom">
-				<override mesh="wallMat" texture="Walls/Log/logwall_bark_chinking.dds"/>
+				<override mesh="WallMesh" texture="Walls/Log/logwall_bark_chinking.dds"/>
 			</model>
 			<materials>
 				Logs = 7,
@@ -4484,7 +4484,7 @@
 		</wall>
 		<wall name="Hardwood log wide window with chinking" shortname="hlCWWindow" scale="4" type="house">
 			<model location="Walls/Log/logWideWindow.wom">
-				<override mesh="wallMat" texture="Walls/Log/logwall_decid_chinking.dds"/>
+				<override mesh="WallMesh" texture="Walls/Log/logwall_decid_chinking.dds"/>
 			</model>
 			<materials>
 				Logs = 7,
@@ -4611,7 +4611,7 @@
 		</wall>
 		<wall name="Log wide window with chinking" shortname="lCWWindow" scale="4" type="house">
 			<model location="Walls/Log/logWideWindow.wom">
-				<override mesh="wallMat" texture="Walls/Log/logwall_conif_chinking.dds"/>
+				<override mesh="WallMesh" texture="Walls/Log/logwall_conif_chinking.dds"/>
 			</model>
 			<materials>
 				Logs = 7,
@@ -4738,7 +4738,7 @@
 		</wall>
 		<wall name="Rustic log wide window with chinking" shortname="rlCWWindow" scale="4" type="house">
 			<model location="Walls/Log/logWideWindow.wom">
-				<override mesh="wallMat" texture="Walls/Log/logwall_rustic_chinking.dds"/>
+				<override mesh="WallMesh" texture="Walls/Log/logwall_rustic_chinking.dds"/>
 			</model>
 			<materials>
 				Logs = 7,
