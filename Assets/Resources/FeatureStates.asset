@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b8ebff340cb48b5b0b7752f0c25741b, type: 3}
+  m_Name: FeatureStates
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Features.FeatureStateRepository
+  featureStates:
+  - _feature: 0
+    _enabledInProduction: 0
+    _enabledInDebug: 0
+    _enabledInEditor: 1
+  - _feature: 1
+    _enabledInProduction: 0
+    _enabledInDebug: 0
+    _enabledInEditor: 1
+  - _feature: 2
+    _enabledInProduction: 0
+    _enabledInDebug: 0
+    _enabledInEditor: 1

@@ -2,6 +2,7 @@
 using UnityEngine.Device;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Features;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Steam;
@@ -37,6 +38,9 @@ namespace Warlander.Deedplanner.Installers
             Container.Bind<IWurmModelFactory>().To<WurmModelFactory>().AsSingle();
             Container.Bind<BridgePartDataFactory>().AsSingle();
             Container.Bind<IWurmModelLoader>().To<WurmModelLoader>().AsSingle();
+            
+            Container.Bind<FeatureStateRepository>().FromMethod(context => new FeatureStateRepositoryRetriever().Get()).AsSingle();
+            Container.Bind<IFeatureStateRetriever>().To<FeatureStateRetriever>().AsSingle();
         }
     }
 }

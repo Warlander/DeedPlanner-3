@@ -42399,7 +42399,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5575850793526680609, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1827277266}
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
 --- !u!114 &1827277263 stripped
 MonoBehaviour:
@@ -42407,12 +42411,44 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1827277262}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1827277265}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1827277264 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+    type: 3}
+  m_PrefabInstance: {fileID: 1827277262}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827277265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &1827277265 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5575850793526680609, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+    type: 3}
+  m_PrefabInstance: {fileID: 1827277262}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1827277266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827277265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9570f52f7b4dd28ae865fc28e26901, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Features.UIToggleFeatureStateToggler
+  _feature: 0
+  _toggle: {fileID: 1827277264}
 --- !u!1 &1828645444
 GameObject:
   m_ObjectHideFlags: 0
@@ -50045,7 +50081,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8947519543789060394}
   m_HandleRect: {fileID: 8784807583796052115}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
