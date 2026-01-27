@@ -5,7 +5,6 @@ using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Logic;
 using Warlander.Render;
 
-
 namespace Warlander.Deedplanner.Data.Grounds
 {
     public class GroundMesh : MonoBehaviour

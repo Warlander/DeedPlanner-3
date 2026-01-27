@@ -20,6 +20,7 @@ namespace Warlander.Deedplanner.Data.Grounds
             get => roadDirection;
             set => Tile.Map.CommandManager.AddToActionAndExecute(new RoadDirectionChangeCommand(this, roadDirection, value));
         }
+        
         public Ground(Tile tile, GroundData data)
         {
             Tile = tile;
