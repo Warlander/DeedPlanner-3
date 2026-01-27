@@ -6,7 +6,7 @@ namespace Warlander.Deedplanner.Graphics
 {
     public interface IWurmMaterialLoader
     {
-        void LoadMaterial(BinaryReader source, string modelFolder, Action<Material> onLoaded);
+        Material LoadMaterial(BinaryReader source, string modelFolder);
         MaterialMetadata LoadMaterialMetadata(BinaryReader source, string modelFolder);
     }
 }

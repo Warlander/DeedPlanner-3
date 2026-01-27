@@ -37,20 +37,18 @@ namespace Warlander.Deedplanner.Graphics
                 int loadedMeshes = 0;
                 for (int i = 0; i < meshCount; i++)
                 {
-                    LoadMeshObject(source, fileFolder, scale, loadedMesh =>
+                    var loadedMesh = LoadMeshObject(source, fileFolder, scale);
+                    if (loadedMesh)
                     {
-                        if (loadedMesh)
-                        {
-                            loadedMesh.transform.SetParent(modelGameObject.transform);
-                        }
+                        loadedMesh.transform.SetParent(modelGameObject.transform);
+                    }
 
-                        loadedMeshes++;
+                    loadedMeshes++;
 
-                        if (loadedMeshes == meshCount)
-                        {
-                            onLoaded?.Invoke(modelGameObject);
-                        }
-                    });
+                    if (loadedMeshes == meshCount)
+                    {
+                        onLoaded?.Invoke(modelGameObject);
+                    }
                 }
 
                 if (meshCount == 0)
@@ -60,7 +58,7 @@ namespace Warlander.Deedplanner.Graphics
             });
         }
 
-        private void LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale, Action<GameObject> onLoaded)
+        private GameObject LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale)
         {
             Mesh loadedMesh = _meshLoader.LoadMesh(source, scale);
             string meshName = loadedMesh.name;
@@ -79,17 +77,15 @@ namespace Warlander.Deedplanner.Graphics
             if (!discardMesh)
             {
                 Debug.Log("Loading mesh " + meshName);
-                _materialLoader.LoadMaterial(source, fileFolder, mat =>
-                {
-                    GameObject meshObject = new GameObject(meshName);
+                var mat = _materialLoader.LoadMaterial(source, fileFolder);
+                GameObject meshObject = new GameObject(meshName);
 
-                    MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
-                    MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
-                    meshFilter.sharedMesh = loadedMesh;
-                    meshRenderer.sharedMaterial = mat;
+                MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
+                MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
+                meshFilter.sharedMesh = loadedMesh;
+                meshRenderer.sharedMaterial = mat;
 
-                    onLoaded.Invoke(meshObject);
-                });
+                return meshObject;
             }
             else
             {
@@ -97,7 +93,7 @@ namespace Warlander.Deedplanner.Graphics
                 // We need to load material metadata to advance file read to the next valid position.
                 _materialLoader.LoadMaterialMetadata(source, fileFolder);
                 Object.Destroy(loadedMesh);
-                onLoaded.Invoke(null);
+                return null;
             }
         }
     }
