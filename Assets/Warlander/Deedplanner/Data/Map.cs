@@ -302,7 +302,7 @@ namespace Warlander.Deedplanner.Data
 
             GameObject groundObject = new GameObject("Ground Mesh", typeof(GroundMesh));
             Ground = groundObject.GetComponent<GroundMesh>();
-            Ground.Initialize(width, height, surfaceOverlayMesh);
+            Ground.Initialize(this, width, height, surfaceOverlayMesh);
             surfaceOverlayMesh.Initialize(Ground.ColliderMesh);
             AddEntityToMap(groundObject, 0);
 
