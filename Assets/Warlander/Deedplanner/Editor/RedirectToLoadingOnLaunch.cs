@@ -35,7 +35,7 @@ namespace Warlander.Deedplanner.Editor
             }
             else if (playMode == PlayModeStateChange.EnteredEditMode)
             {
-                if (PreviousScene != null)
+                if (PreviousScene != null && !string.IsNullOrEmpty(PreviousScene))
                 {
                     EditorSceneManager.OpenScene(PreviousScene, OpenSceneMode.Single);
                     PreviousScene = null;

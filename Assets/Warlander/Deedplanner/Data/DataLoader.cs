@@ -377,8 +377,6 @@ namespace Warlander.Deedplanner.Data
 
         private void LoadRoofs(XmlDocument document)
         {
-            RoofType.Initialize(_modelFactory);
-            
             XmlNodeList entities = document.GetElementsByTagName("roof");
 
             foreach (XmlElement element in entities)
@@ -411,6 +409,8 @@ namespace Warlander.Deedplanner.Data
                 RoofData data = new RoofData(texture, name, shortName, materials);
                 Database.Roofs[shortName] = data;
             }
+            
+            RoofType.Initialize(_modelFactory);
         }
 
         private void LoadObjects(XmlDocument document)
