@@ -596,25 +596,26 @@ namespace Warlander.Deedplanner.Data.Grounds
         
         public void SetGroundData(int x, int y, GroundData data, RoadDirection direction)
         {
-            Tile currentTile = map?[x, y];
-            
-            if (currentTile == null)
+            if (x < 0 || x >= Width || y < 0 || y >= Height)
             {
                 return;
             }
             
             DoorDirection doorDirection = DoorDirection.N;
             
-            if (currentTile != null)
+            if (data.IsCaveDoor)
             {
-                doorDirection = currentTile.UpdateDoorDirection();
+                Tile currentTile = map?[x, y];
+                if (currentTile != null)
+                {
+                    doorDirection = currentTile.UpdateDoorDirection();
+                }
             }
             
-            if (x < 0 || x >= Width || y < 0 || y >= Height)
-            {
-                return;
-            }
-            
+            bool wasDoor = dataArray[x, y] != null && dataArray[x, y].IsCaveDoor;
+            bool isDoor = data.IsCaveDoor;
+            bool directionChanged = doorDirectionsArray[x, y] != doorDirection;;
+                
             if (dataArray[x, y] == data && directionsArray[x, y] == direction && doorDirectionsArray[x, y] == doorDirection)
             {
                 return;
@@ -624,15 +625,11 @@ namespace Warlander.Deedplanner.Data.Grounds
             directionsArray[x, y] = direction;
             doorDirectionsArray[x, y] = doorDirection;
             
-            if (data.IsCaveDoor)
+            if ((isDoor && directionChanged) || (wasDoor && !isDoor))
             {
-                ApplyUvRotation(x, y, doorDirection);
+                ApplyUvRotation(x, y, doorDirection); 
             }
-            else
-            {
-                ApplyUvRotation(x, y, DoorDirection.N);
-            }
-            
+
             UpdateUV2(x, y, true);
             UpdateUV2(x - 1, y, false);
             UpdateUV2(x + 1, y, false);
@@ -675,7 +672,6 @@ namespace Warlander.Deedplanner.Data.Grounds
             {
                 if (doorDir == DoorDirection.E)
                 {
-                    Debug.Log("Rotating cave door East.");
                     westSlot = vertexIndex + 9;
                     northSlot = vertexIndex;
                     eastSlot = vertexIndex + 3;
@@ -683,7 +679,6 @@ namespace Warlander.Deedplanner.Data.Grounds
                 }
                 else if (doorDir == DoorDirection.S)
                 {
-                    Debug.Log("Rotating cave door South.");
                     westSlot = vertexIndex + 6;
                     northSlot = vertexIndex + 9;
                     eastSlot = vertexIndex;
@@ -691,7 +686,6 @@ namespace Warlander.Deedplanner.Data.Grounds
                 }
                 else if (doorDir == DoorDirection.W)
                 {
-                    Debug.Log("Rotating cave door West.");
                     westSlot = vertexIndex + 3;
                     northSlot = vertexIndex + 6;
                     eastSlot = vertexIndex + 9;
