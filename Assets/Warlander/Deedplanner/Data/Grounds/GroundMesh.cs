@@ -5,6 +5,7 @@ using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Logic;
 using Warlander.Render;
 
+
 namespace Warlander.Deedplanner.Data.Grounds
 {
     public class GroundMesh : MonoBehaviour
@@ -30,11 +31,12 @@ namespace Warlander.Deedplanner.Data.Grounds
         public Mesh ColliderMesh { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
-
+        
         private int[,] slopesArray;
         private GroundData[,] dataArray;
         private RoadDirection[,] directionsArray;
         private DoorDirection[,] doorDirectionsArray;
+        private Map map;
         
         private Vector3[] renderVertices;
         private Vector2[] uv2;
@@ -43,8 +45,9 @@ namespace Warlander.Deedplanner.Data.Grounds
         private bool needsVerticesUpdate = false;
         private bool needsUvUpdate = false;
 
-        public void Initialize(int width, int height, OverlayMesh newOverlayMesh)
+        public void Initialize(Map map, int width, int height, OverlayMesh newOverlayMesh)
         {
+            this.map = map;
             gameObject.layer = LayerMasks.GroundLayer;
             if (groundTexturesArray == null)
             {
@@ -591,8 +594,16 @@ namespace Warlander.Deedplanner.Data.Grounds
             return directionsArray[x, y];
         }
         
-        public void SetGroundData(int x, int y, GroundData data, RoadDirection direction, DoorDirection doorDirection)
+        public void SetGroundData(int x, int y, GroundData data, RoadDirection direction)
         {
+            Tile currentTile = map?[x, y];
+            DoorDirection doorDirection = DoorDirection.N;
+            
+            if (currentTile != null)
+            {
+                doorDirection = currentTile.UpdateDoorDirection();
+            }
+            
             if (x < 0 || x >= Width || y < 0 || y >= Height)
             {
                 return;
