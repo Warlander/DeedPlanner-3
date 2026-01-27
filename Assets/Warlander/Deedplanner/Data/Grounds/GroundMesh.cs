@@ -597,6 +597,12 @@ namespace Warlander.Deedplanner.Data.Grounds
         public void SetGroundData(int x, int y, GroundData data, RoadDirection direction)
         {
             Tile currentTile = map?[x, y];
+            
+            if (currentTile == null)
+            {
+                return;
+            }
+            
             DoorDirection doorDirection = DoorDirection.N;
             
             if (currentTile != null)
