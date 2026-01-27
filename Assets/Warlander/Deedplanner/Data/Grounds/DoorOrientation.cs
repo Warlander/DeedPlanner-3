@@ -1,6 +1,6 @@
 namespace Warlander.Deedplanner.Data.Grounds
 {
-    public enum DoorDirection
+    public enum DoorOrientation
     {
         N, E, S, W
     }

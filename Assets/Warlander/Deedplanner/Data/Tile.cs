@@ -93,15 +93,15 @@ namespace Warlander.Deedplanner.Data
             // Cave.Initialize(this, Database.DefaultCaveData);
         }
         
-        public DoorDirection UpdateDoorDirection()
+        public DoorOrientation CalculateDoorOrientation()
         {
-            if (X <= 0 || X + 1 >= Map.Width || Y <= 0 || Y + 1 >= Map.Height) return DoorDirection.N;
+            if (X <= 0 || X + 1 >= Map.Width || Y <= 0 || Y + 1 >= Map.Height) return DoorOrientation.N;
             
             Tile nwTile = this.Map[X, Y + 1];
             Tile neTile = this.Map[X + 1, Y + 1];
             Tile seTile = this.Map[X + 1, Y];
 
-            if (nwTile == null || neTile == null || seTile == null) return DoorDirection.N;
+            if (nwTile == null || neTile == null || seTile == null) return DoorOrientation.N;
             
             int sw = SurfaceHeight;
             int nw = this.Map[X, Y + 1].SurfaceHeight;
@@ -115,12 +115,12 @@ namespace Warlander.Deedplanner.Data
             
             float max = Mathf.Max(northAvg, eastAvg, southAvg, westAvg);
             
-            if (max == northAvg) return DoorDirection.N;
-            if (max == eastAvg) return DoorDirection.E;
-            if (max == southAvg) return DoorDirection.S;
-            if (max == westAvg) return DoorDirection.W;
+            if (max == northAvg) return DoorOrientation.N;
+            if (max == eastAvg) return DoorOrientation.E;
+            if (max == southAvg) return DoorOrientation.S;
+            if (max == westAvg) return DoorOrientation.W;
             
-            return DoorDirection.N;
+            return DoorOrientation.N;
         }
 
         public void RefreshDoorOrientation()
