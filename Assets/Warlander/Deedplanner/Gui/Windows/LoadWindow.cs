@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Threading.Tasks;
+using R3;
 using SimpleFileBrowser;
 using TMPro;
 using UnityEngine;
@@ -51,40 +53,43 @@ namespace Warlander.Deedplanner.Gui.Windows
         private void LoadFromWebOnClick()
         {
             string rawLink = _pastebinInput.text;
+            
+            string requestLink = WebLinkUtils.ParseToDirectDownloadLink(rawLink);
 
-            try
-            {
-                string requestLink = WebLinkUtils.ParseToDirectDownloadLink(rawLink);
+            WebUtils.ReadUrlToByteArray(requestLink)
+                .ToObservable()
+                .Subscribe(downloadedBytes =>
+                {
+                    string downloadedString = Encoding.Default.GetString(downloadedBytes);
+            
+                    // try to decompress the map, or load directly if it's not compressed
+                    try
+                    {
+                        byte[] compressedBytes = Convert.FromBase64String(downloadedString);
+                        byte[] pasteBytes = Decompress(compressedBytes);
+                        string pasteString = Encoding.Default.GetString(pasteBytes);
 
-                byte[] downloadedBytes = WebUtils.ReadUrlToByteArray(requestLink);
-                string downloadedString = Encoding.Default.GetString(downloadedBytes);
-                
-                // try to decompress the map, or load directly if it's not compressed
-                try
+                        _gameManager.LoadMap(pasteString);
+                    }
+                    catch
+                    {
+                        _gameManager.LoadMap(downloadedString);
+                    }
+                },
+                completion =>
                 {
-                    byte[] compressedBytes = Convert.FromBase64String(downloadedString);
-                    byte[] pasteBytes = Decompress(compressedBytes);
-                    string pasteString = Encoding.Default.GetString(pasteBytes);
-
-                    _gameManager.LoadMap(pasteString);
-                }
-                catch
-                {
-                    _gameManager.LoadMap(downloadedString);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning("Unable to load map from: " + rawLink);
-                if (Debug.isDebugBuild)
-                {
-                    Debug.LogError(ex);
-                }
-            }
-            finally
-            {
-                _window.Close();
-            }
+                    if (completion.IsFailure)
+                    {
+                        Debug.LogWarning("Unable to load map from: " + rawLink);
+                        if (Debug.isDebugBuild)
+                        {
+                            Debug.LogError(completion.Exception);
+                        }
+                    }
+                    
+                    _window.Close();
+                })
+                .AddTo(this);
         }
 
         private void LoadFileBrowser()

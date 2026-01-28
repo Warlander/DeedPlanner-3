@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Utils;
 using Object = UnityEngine.Object;
@@ -17,45 +18,40 @@ namespace Warlander.Deedplanner.Graphics
             _materialLoader = materialLoader;
         }
 
-        public void LoadModel(string path, Action<GameObject> onLoaded)
+        public async Task<GameObject> LoadModel(string path)
         {
-            LoadModel(path, Vector3.one, onLoaded);
+            return await LoadModel(path, Vector3.one);
         }
 
-        public void LoadModel(string path, Vector3 scale, Action<GameObject> onLoaded)
+        public async Task<GameObject> LoadModel(string path, Vector3 scale)
         {
             Debug.Log("Loading model at " + path);
 
-            WebUtils.ReadUrlToByteArray(path, data =>
+            var data = await WebUtils.ReadUrlToByteArray(path);
+            using BinaryReader source = new BinaryReader(new MemoryStream(data));
+            string fileFolder = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
+
+            GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(path));
+
+            int meshCount = source.ReadInt32();
+            int loadedMeshes = 0;
+            for (int i = 0; i < meshCount; i++)
             {
-                using BinaryReader source = new BinaryReader(new MemoryStream(data));
-                string fileFolder = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
-
-                GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(path));
-
-                int meshCount = source.ReadInt32();
-                int loadedMeshes = 0;
-                for (int i = 0; i < meshCount; i++)
+                var loadedMesh = LoadMeshObject(source, fileFolder, scale);
+                if (loadedMesh)
                 {
-                    var loadedMesh = LoadMeshObject(source, fileFolder, scale);
-                    if (loadedMesh)
-                    {
-                        loadedMesh.transform.SetParent(modelGameObject.transform);
-                    }
-
-                    loadedMeshes++;
-
-                    if (loadedMeshes == meshCount)
-                    {
-                        onLoaded?.Invoke(modelGameObject);
-                    }
+                    loadedMesh.transform.SetParent(modelGameObject.transform);
                 }
 
-                if (meshCount == 0)
+                loadedMeshes++;
+
+                if (loadedMeshes == meshCount)
                 {
-                    onLoaded?.Invoke(modelGameObject);
+                    return modelGameObject;
                 }
-            });
+            }
+            
+            return modelGameObject;
         }
 
         private GameObject LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale)

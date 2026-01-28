@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using R3;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Graphics
@@ -82,7 +83,9 @@ namespace Warlander.Deedplanner.Graphics
                     location = Application.streamingAssetsPath + "/" + Location;
                 }
                 
-                _textureLoader.LoadTexture(location, false, OnTextureLoaded);
+                _textureLoader.LoadTexture(location, false)
+                    .ToObservable()
+                    .Subscribe(OnTextureLoaded);
             }
         }
 

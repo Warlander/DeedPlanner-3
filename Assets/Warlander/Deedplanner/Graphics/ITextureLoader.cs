@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Graphics
 {
     public interface ITextureLoader
     {
-        void LoadTexture(string location, bool readable, Action<Texture2D> onLoaded);
+        Task<Texture2D> LoadTexture(string location, bool readable);
     }
 }

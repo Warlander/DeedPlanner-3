@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+using R3;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -167,12 +168,13 @@ namespace Warlander.Deedplanner.Graphics
             {
                 loadingOriginalModel = true;
                 string fullLocation = Application.streamingAssetsPath + "/" + location;
-                _wurmModelLoader.LoadModel(fullLocation, Scale, model =>
-                {
-                    OnMasterModelLoaded(model);
-                    InitializeModifiedModel(modelProperties);
-                    onDone();
-                });
+                _wurmModelLoader.LoadModel(fullLocation, Scale).ToObservable()
+                    .Subscribe(model =>
+                    {
+                        OnMasterModelLoaded(model);
+                        InitializeModifiedModel(modelProperties);
+                        onDone();
+                    });
             }
             else
             {

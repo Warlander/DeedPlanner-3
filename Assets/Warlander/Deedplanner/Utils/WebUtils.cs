@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -8,7 +9,7 @@ namespace Warlander.Deedplanner.Utils
 {
     public static class WebUtils
     {
-        public static byte[] ReadUrlToByteArray(string location)
+        /*public static byte[] ReadUrlToByteArray(string location)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
             // native JavaScript loading
@@ -35,26 +36,24 @@ namespace Warlander.Deedplanner.Utils
                 return data;
             }
 #endif
-        }
+        }*/
 
-        public static void ReadUrlToByteArray(string location, Action<byte[]> onLoaded)
+        public static async Task<byte[]> ReadUrlToByteArray(string location)
         {
             location = location.Replace('\\', '/'); // making sure all paths have uniform format
             location = FixLocalPath(location);
 
             UnityWebRequest www = UnityWebRequest.Get(location);
-            www.SendWebRequest().completed += operation =>
+            await www.SendWebRequest();
+            if (www.result != UnityWebRequest.Result.Success)
             {
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogError(www.error + "\nLocation: " + location);
-                    onLoaded.Invoke(null);
-                }
-                else
-                {
-                    onLoaded.Invoke(www.downloadHandler.data);
-                }
-            };
+                Debug.LogError(www.error + "\nLocation: " + location);
+                return null;
+            }
+            else
+            {
+                return www.downloadHandler.data;
+            }
         }
 
         private static string FixLocalPath(string path)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Graphics
@@ -15,24 +16,23 @@ namespace Warlander.Deedplanner.Graphics
             _genericTextureLoader = new GenericTextureLoader();
         }
 
-        public void LoadTexture(string location, bool readable, Action<Texture2D> onLoaded)
+        public async Task<Texture2D> LoadTexture(string location, bool readable)
         {
             if (string.IsNullOrEmpty(Path.GetExtension(location)))
             {
                 Debug.LogWarning("Attempting to load texture from empty location: " + location);
-                onLoaded.Invoke(null);
-                return;
+                return null;
             }
 
             Debug.Log("Loading texture at " + location);
 
             if (location.EndsWith(".dds", StringComparison.OrdinalIgnoreCase))
             {
-                _ddsTextureLoader.LoadTexture(location, readable, onLoaded);
+                return await _ddsTextureLoader.LoadTexture(location, readable);
             }
             else
             {
-                _genericTextureLoader.LoadTexture(location, readable, onLoaded);
+                return await _genericTextureLoader.LoadTexture(location, readable);
             }
         }
     }

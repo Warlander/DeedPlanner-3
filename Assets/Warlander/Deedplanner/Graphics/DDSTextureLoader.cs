@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Utils;
 using Object = UnityEngine.Object;
@@ -7,13 +8,10 @@ namespace Warlander.Deedplanner.Graphics
 {
     public class DDSTextureLoader : ITextureLoader
     {
-        public void LoadTexture(string location, bool readable, Action<Texture2D> onLoaded)
+        public async Task<Texture2D> LoadTexture(string location, bool readable)
         {
-            WebUtils.ReadUrlToByteArray(location, data =>
-            {
-                Texture2D texture = LoadTextureDxt(data);
-                onLoaded.Invoke(texture);
-            });
+            var data = await WebUtils.ReadUrlToByteArray(location);
+            return LoadTextureDxt(data);
         }
 
         private Texture2D LoadTextureDxt(byte[] ddsBytes)
