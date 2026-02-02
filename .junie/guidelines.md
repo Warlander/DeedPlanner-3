@@ -9,3 +9,5 @@ Use constructor dependency injection for dependencies. Add dependencies to insta
 Favor readonly class fields if possible.
 
 Always make [SerializedField] private. Prefer using [SerializeField] instead of GetComponent calls where applicable.
+
+Only use command line commands as a last resort. You can perform many Unity actions using MCP.
