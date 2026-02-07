@@ -210,7 +210,7 @@ namespace Warlander.Deedplanner.Graphics
                     Material newMaterial = new Material(renderer.sharedMaterial);
                     renderer.sharedMaterial = newMaterial;
 
-                    texture.LoadOrGetTexture(loadedTexture => newMaterial.mainTexture = loadedTexture);
+                    texture.LoadOrGetTexture().ToObservable().Subscribe(loadedTexture => newMaterial.mainTexture = loadedTexture);
                 }
             }
             originalModel.transform.SetParent(modelRoot.transform);

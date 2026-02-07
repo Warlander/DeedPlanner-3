@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using R3;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Graphics;
@@ -15,7 +16,6 @@ namespace Warlander.Deedplanner.Gui.Widgets
 
         private TextureReference textureReference;
         private object value;
-        private bool spriteLoading;
 
         public override object Value {
             get => value;
@@ -48,17 +48,10 @@ namespace Warlander.Deedplanner.Gui.Widgets
 
         private void LoadSprite()
         {
-            if (!spriteLoading && textureReference != null)
+            if (textureReference != null)
             {
-                spriteLoading = true;
-                textureReference.LoadOrGetSprite(OnSpriteLoaded);
+                textureReference.LoadOrGetSprite().ToObservable().Subscribe(sprite => image.sprite = sprite);
             }
-        }
-
-        private void OnSpriteLoaded(Sprite sprite)
-        {
-            spriteLoading = false;
-            image.sprite = sprite;
         }
 
     }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using R3;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Warlander.Deedplanner.Graphics;
@@ -627,7 +628,7 @@ namespace Warlander.Deedplanner.Data.Grounds
                 return;
             }
             
-            data.Tex3d.LoadOrGetTexture(loadedTexture =>
+            data.Tex3d.LoadOrGetTexture().ToObservable().Subscribe(loadedTexture =>
             {
                 if (!loadedTexture)
                 {

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using R3;
+﻿using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Graphics
@@ -12,10 +10,6 @@ namespace Warlander.Deedplanner.Graphics
 
         private Texture2D texture;
         private Sprite sprite;
-        private bool textureLoading = false;
-
-        private List<Action<Texture2D>> textureLoadRequests = null;
-        private List<Action<Sprite>> spriteLoadRequests = null;
 
         public string Location { get; }
 
@@ -25,106 +19,50 @@ namespace Warlander.Deedplanner.Graphics
             Location = location;
         }
         
-        public void LoadOrGetTexture(Action<Texture2D> onLoaded)
+        public async Task<Texture2D> LoadOrGetTexture()
         {
             if (texture)
             {
-                onLoaded.Invoke(texture);
-                return;
+                return texture;
             }
 
-            if (textureLoadRequests == null)
+            string location = Path.IsPathRooted(Location) 
+                ? Location 
+                : Application.streamingAssetsPath + "/" + Location;
+
+            texture = await _textureLoader.LoadTexture(location, false);
+            
+            if (texture)
             {
-                textureLoadRequests = new List<Action<Texture2D>>();
+                texture.name = Location;
             }
-                
-            textureLoadRequests.Add(onLoaded);
 
-            LoadTextureIfNeeded();
+            return texture;
         }
         
-        public void LoadOrGetSprite(Action<Sprite> callback)
+        public async Task<Sprite> LoadOrGetSprite()
         {
             if (sprite)
             {
-                callback.Invoke(sprite);
-                return;
+                return sprite;
+            }
+
+            if (!texture)
+            {
+                await LoadOrGetTexture();
             }
 
             if (texture)
             {
-                sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-                callback.Invoke(sprite);
-                return;
+                sprite = CreateSprite(texture);
             }
-            
-            if (spriteLoadRequests == null)
-            {
-                spriteLoadRequests = new List<Action<Sprite>>();
-            }
-            
-            spriteLoadRequests.Add(callback);
 
-            LoadTextureIfNeeded();
+            return sprite;
         }
 
-        private void LoadTextureIfNeeded()
+        private static Sprite CreateSprite(Texture2D tex)
         {
-            if (!textureLoading)
-            {
-                textureLoading = true;
-                string location;
-                if (Path.IsPathRooted(Location))
-                {
-                    location = Location;
-                }
-                else
-                {
-                    location = Application.streamingAssetsPath + "/" + Location;
-                }
-                
-                _textureLoader.LoadTexture(location, false)
-                    .ToObservable()
-                    .Subscribe(OnTextureLoaded);
-            }
-        }
-
-        private void OnTextureLoaded(Texture2D tex)
-        {
-            if (!tex)
-            {
-                textureLoading = false;
-                return;
-            }
-
-            texture = tex;
-            texture.name = Location;
-            
-            textureLoading = false;
-
-            if (textureLoadRequests != null)
-            {
-                foreach (Action<Texture2D> loadRequest in textureLoadRequests)
-                {
-                    loadRequest(texture);
-                }
-                
-                textureLoadRequests.Clear();
-                textureLoadRequests = null;
-            }
-
-            if (spriteLoadRequests != null)
-            {
-                sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-                
-                foreach (Action<Sprite> loadRequest in spriteLoadRequests)
-                {
-                    loadRequest(sprite);
-                }
-                
-                spriteLoadRequests.Clear();
-                spriteLoadRequests = null;
-            }
+            return Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using R3;
+using UnityEngine;
 
 namespace Warlander.Deedplanner.Graphics
 {
@@ -18,7 +19,7 @@ namespace Warlander.Deedplanner.Graphics
             
             TextureReference textureReference = _textureReferenceFactory.GetTextureReference(materialMetadata.TextureLocation);
 
-            textureReference?.LoadOrGetTexture(texture =>
+            textureReference?.LoadOrGetTexture().ToObservable().Subscribe(texture =>
             {
                 if (texture)
                 {
