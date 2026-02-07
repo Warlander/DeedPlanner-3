@@ -1,4 +1,5 @@
-using System.Collections;
+using System;
+using R3;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Warlander.Deedplanner.Gui.Tooltips;
@@ -14,7 +15,7 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField] private float showDelay = 0f;
 
         private bool _showTooltip;
-        private Coroutine _delayCoroutine;
+        private IDisposable _delayDisposable;
         
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -25,15 +26,13 @@ namespace Warlander.Deedplanner.Gui
             }
             else
             {
-                _delayCoroutine = StartCoroutine(DelayCoroutine());
+                _delayDisposable = Observable.Timer(TimeSpan.FromSeconds(showDelay))
+                    .Subscribe(_ =>
+                    {
+                        _showTooltip = true;
+                        _delayDisposable = null;
+                    });
             }
-        }
-
-        private IEnumerator DelayCoroutine()
-        {
-            yield return new WaitForSeconds(showDelay);
-            _showTooltip = true;
-            _delayCoroutine = null;
         }
 
         private void Update()
@@ -47,10 +46,8 @@ namespace Warlander.Deedplanner.Gui
         public void OnPointerExit(PointerEventData eventData)
         {
             _showTooltip = false;
-            if (_delayCoroutine != null)
-            {
-                StopCoroutine(_delayCoroutine);
-            }
+            _delayDisposable?.Dispose();
+            _delayDisposable = null;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Warlander.Deedplanner.Graphics
     {
         public async Task<Texture2D> LoadTexture(string location, bool readable)
         {
-            var data = await WebUtils.ReadUrlToByteArray(location);
+            var data = await WebUtils.ReadUrlToByteArrayAsync(location);
             Texture2D texture = new Texture2D(4, 4, TextureFormat.DXT1, true);
             texture.LoadImage(data, !readable);
             return texture;

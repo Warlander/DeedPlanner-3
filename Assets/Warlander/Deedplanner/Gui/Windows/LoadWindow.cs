@@ -56,7 +56,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             
             string requestLink = WebLinkUtils.ParseToDirectDownloadLink(rawLink);
 
-            WebUtils.ReadUrlToByteArray(requestLink)
+            WebUtils.ReadUrlToByteArrayAsync(requestLink)
                 .ToObservable()
                 .Subscribe(downloadedBytes =>
                 {

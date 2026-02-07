@@ -38,11 +38,16 @@ namespace Warlander.Deedplanner.Utils
 #endif
         }*/
 
-        public static async Task<byte[]> ReadUrlToByteArray(string location)
+        public static async Task<byte[]> ReadUrlToByteArrayAsync(string location)
         {
-            location = location.Replace('\\', '/'); // making sure all paths have uniform format
-            location = FixLocalPath(location);
-
+            var fixedLocation = location.Replace('\\', '/'); // making sure all paths have uniform format
+            fixedLocation = FixLocalPath(fixedLocation);
+            var uriLocation = new Uri(fixedLocation);
+            return await ReadUrlToByteArrayAsync(uriLocation);
+        }
+        
+        public static async Task<byte[]> ReadUrlToByteArrayAsync(Uri location)
+        {
             UnityWebRequest www = UnityWebRequest.Get(location);
             await www.SendWebRequest();
             if (www.result != UnityWebRequest.Result.Success)

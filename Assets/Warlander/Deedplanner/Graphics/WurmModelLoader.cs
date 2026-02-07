@@ -27,7 +27,7 @@ namespace Warlander.Deedplanner.Graphics
         {
             Debug.Log("Loading model at " + path);
 
-            var data = await WebUtils.ReadUrlToByteArray(path);
+            var data = await WebUtils.ReadUrlToByteArrayAsync(path);
             using BinaryReader source = new BinaryReader(new MemoryStream(data));
             string fileFolder = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
 

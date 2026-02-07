@@ -1,22 +1,24 @@
 ﻿using System;
-using System.Collections;
+using System.Threading.Tasks;
+using R3;
 using UnityEngine;
 using Warlander.Deedplanner.Debugging;
 using Zenject;
 
 namespace Warlander.Deedplanner.Logic
 {
-    public class StartupMapLoader : MonoBehaviour
+    // ReSharper disable once ClassNeverInstantiated.Global
+    public class StartupMapLoader : IInitializable
     {
         [Inject] private GameManager _gameManager;
         [InjectOptional] private DebugProperties _debugProperties;
         
-        private void Start()
+        public void Initialize()
         {
-            StartCoroutine(LoadMap());
+            LoadMapAsync().ToObservable().Subscribe();
         }
 
-        private IEnumerator LoadMap()
+        private async Task LoadMapAsync()
         {
             string mapLocationString = "";
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -26,14 +28,14 @@ namespace Warlander.Deedplanner.Logic
                 mapLocationString = WebLinkUtils.ParseToDirectDownloadLink(mapLocationString);
             }
 #endif
-            
+
             if (!string.IsNullOrEmpty(mapLocationString))
             {
-                yield return _gameManager.LoadMap(new Uri(mapLocationString));
+                await _gameManager.LoadMapAsync(new Uri(mapLocationString));
             }
             else if ((Application.isEditor || Debug.isDebugBuild) && _debugProperties != null)
             {
-                yield return _gameManager.LoadMap(new Uri(_debugProperties.TestMapPath));
+                await _gameManager.LoadMapAsync(new Uri(_debugProperties.TestMapPath));
             }
             else
             {

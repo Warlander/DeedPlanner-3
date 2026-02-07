@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Networking;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Updaters;
+using Warlander.Deedplanner.Utils;
 using Zenject;
 
 namespace Warlander.Deedplanner.Logic
@@ -86,24 +86,23 @@ namespace Warlander.Deedplanner.Logic
             MapInitialized?.Invoke();
         }
 
-        public IEnumerator LoadMap(Uri mapUri)
+        public async Task LoadMapAsync(Uri mapUri)
         {
-            UnityWebRequest webRequest = UnityWebRequest.Get(mapUri);
-            yield return webRequest.SendWebRequest();
-            if (webRequest.result != UnityWebRequest.Result.Success)
+            byte[] mapData = await WebUtils.ReadUrlToByteArrayAsync(mapUri);
+
+            if (mapData == null)
             {
-                Debug.LogError(webRequest.error);
-                webRequest.Dispose();
-                yield break;
+                Debug.LogError("Failed to download map from: " + mapUri);
+                return;
             }
-            
+
             Debug.Log("Map downloaded, checking if compressed");
-            string requestText = webRequest.downloadHandler.text;
-            webRequest.Dispose();
+            string requestText = Encoding.UTF8.GetString(mapData);
+
             try
             {
                 byte[] requestBytes = Convert.FromBase64String(requestText);
-                byte[] decompressedBytes = DecompressGzip(requestBytes);
+                byte[] decompressedBytes = await DecompressGzipAsync(requestBytes);
                 requestText = Encoding.UTF8.GetString(decompressedBytes, 0, decompressedBytes.Length);
                 Debug.Log("Compressed map, decompressed");
             }
@@ -131,24 +130,13 @@ namespace Warlander.Deedplanner.Logic
             MapInitialized?.Invoke();
         }
         
-        private byte[] DecompressGzip(byte[] gzip)
+        private async Task<byte[]> DecompressGzipAsync(byte[] gzip)
         {
             using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
             {
-                const int size = 4096;
-                byte[] buffer = new byte[size];
                 using (MemoryStream memory = new MemoryStream())
                 {
-                    int count = 0;
-                    do
-                    {
-                        count = stream.Read(buffer, 0, size);
-                        if (count > 0)
-                        {
-                            memory.Write(buffer, 0, count);
-                        }
-                    }
-                    while (count > 0);
+                    await stream.CopyToAsync(memory);
                     return memory.ToArray();
                 }
             }
