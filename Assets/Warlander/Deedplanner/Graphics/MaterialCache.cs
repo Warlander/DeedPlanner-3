@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Graphics
@@ -6,6 +7,7 @@ namespace Warlander.Deedplanner.Graphics
     public class MaterialCache : IMaterialCache
     {
         private readonly Dictionary<MaterialKey, Material> _cachedMaterials = new Dictionary<MaterialKey, Material>();
+        private readonly Dictionary<MaterialKey, Task<Material>> _pendingMaterials = new Dictionary<MaterialKey, Task<Material>>();
         private readonly IMaterialLoader _materialLoader;
 
         public MaterialCache(IMaterialLoader materialLoader)
@@ -13,7 +15,7 @@ namespace Warlander.Deedplanner.Graphics
             _materialLoader = materialLoader;
         }
 
-        public Material GetOrCreateMaterial(MaterialMetadata materialMetadata)
+        public async Task<Material> GetOrCreateMaterial(MaterialMetadata materialMetadata)
         {
             MaterialKey materialKey = new MaterialKey(materialMetadata.MaterialName, materialMetadata.TextureLocation);
 
@@ -22,8 +24,19 @@ namespace Warlander.Deedplanner.Graphics
                 return cachedMaterial;
             }
 
-            Material material = _materialLoader.CreateMaterial(materialMetadata);
+            if (_pendingMaterials.TryGetValue(materialKey, out Task<Material> pendingTask))
+            {
+                return await pendingTask;
+            }
+
+            Task<Material> materialTask = _materialLoader.CreateMaterial(materialMetadata);
+            _pendingMaterials[materialKey] = materialTask;
+            
+            Material material = await materialTask;
+            
             _cachedMaterials[materialKey] = material;
+            _pendingMaterials.Remove(materialKey);
+            
             return material;
         }
 

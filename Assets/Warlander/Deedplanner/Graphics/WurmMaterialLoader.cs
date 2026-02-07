@@ -14,10 +14,10 @@ namespace Warlander.Deedplanner.Graphics
             _materialCache = materialCache;
         }
 
-        public Material LoadMaterial(BinaryReader source, string modelFolder)
+        public async Task<Material> LoadMaterial(BinaryReader source, string modelFolder)
         {
             var materialMetadata = LoadMaterialMetadata(source, modelFolder);
-            Material material = _materialCache.GetOrCreateMaterial(materialMetadata);
+            Material material = await _materialCache.GetOrCreateMaterial(materialMetadata);
             return material;
         }
 

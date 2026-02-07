@@ -37,7 +37,7 @@ namespace Warlander.Deedplanner.Graphics
             int loadedMeshes = 0;
             for (int i = 0; i < meshCount; i++)
             {
-                var loadedMesh = LoadMeshObject(source, fileFolder, scale);
+                var loadedMesh = await LoadMeshObject(source, fileFolder, scale);
                 if (loadedMesh)
                 {
                     loadedMesh.transform.SetParent(modelGameObject.transform);
@@ -54,7 +54,7 @@ namespace Warlander.Deedplanner.Graphics
             return modelGameObject;
         }
 
-        private GameObject LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale)
+        private async Task<GameObject> LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale)
         {
             Mesh loadedMesh = _meshLoader.LoadMesh(source, scale);
             string meshName = loadedMesh.name;
@@ -73,7 +73,7 @@ namespace Warlander.Deedplanner.Graphics
             if (!discardMesh)
             {
                 Debug.Log("Loading mesh " + meshName);
-                var mat = _materialLoader.LoadMaterial(source, fileFolder);
+                var mat = await _materialLoader.LoadMaterial(source, fileFolder);
                 GameObject meshObject = new GameObject(meshName);
 
                 MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();

@@ -1,4 +1,4 @@
-﻿using R3;
+﻿using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Graphics
@@ -12,15 +12,16 @@ namespace Warlander.Deedplanner.Graphics
             _textureReferenceFactory = textureReferenceFactory;
         }
 
-        public Material CreateMaterial(MaterialMetadata materialMetadata)
+        public async Task<Material> CreateMaterial(MaterialMetadata materialMetadata)
         {
             Material material = new Material(GraphicsManager.Instance.WomDefaultMaterial);
             material.name = materialMetadata.MaterialName;
             
             TextureReference textureReference = _textureReferenceFactory.GetTextureReference(materialMetadata.TextureLocation);
 
-            textureReference?.LoadOrGetTexture().ToObservable().Subscribe(texture =>
+            if (textureReference != null)
             {
+                var texture = await textureReference.LoadOrGetTexture();
                 if (texture)
                 {
                     material.SetTexture(ShaderPropertyIds.MainTex, texture);
@@ -29,7 +30,7 @@ namespace Warlander.Deedplanner.Graphics
                 {
                     material.SetColor(ShaderPropertyIds.Color, new Color(1, 1, 1, 0));
                 }
-            });
+            }
 
             material.SetFloat(ShaderPropertyIds.Glossiness, materialMetadata.Glossiness);
             
