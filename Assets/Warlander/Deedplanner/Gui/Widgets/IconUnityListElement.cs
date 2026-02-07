@@ -1,4 +1,4 @@
-﻿using R3;
+using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,7 +50,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
         {
             if (textureReference != null)
             {
-                textureReference.LoadOrGetSprite().ToObservable().Subscribe(sprite => image.sprite = sprite);
+                textureReference.LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite => image.sprite = sprite);
             }
         }
 

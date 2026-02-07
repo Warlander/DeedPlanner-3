@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Graphics
 {
     public interface IMaterialCache
     {
-        Task<Material> GetOrCreateMaterial(MaterialMetadata materialMetadata);
+        Task<Material> GetOrCreateMaterialAsync(MaterialMetadata materialMetadata);
     }
 }

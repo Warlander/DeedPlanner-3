@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using R3;
 using TMPro;
 using UnityEngine;
@@ -41,7 +41,7 @@ namespace Warlander.Deedplanner.Updaters
             set {
                 leftClickData = value;
                 leftClickText.text = leftClickData.Name;
-                leftClickData.Tex2d.LoadOrGetSprite().ToObservable().Subscribe(sprite => leftClickImage.sprite = sprite);
+                leftClickData.Tex2d.LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite => leftClickImage.sprite = sprite);
             }
         }
 
@@ -50,7 +50,7 @@ namespace Warlander.Deedplanner.Updaters
             set {
                 rightClickData = value;
                 rightClickText.text = rightClickData.Name;
-                rightClickData.Tex2d.LoadOrGetSprite().ToObservable().Subscribe(sprite => rightClickImage.sprite = sprite);
+                rightClickData.Tex2d.LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite => rightClickImage.sprite = sprite);
             }
         }
 

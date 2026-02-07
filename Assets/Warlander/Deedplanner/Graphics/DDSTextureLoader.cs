@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Utils;
@@ -8,7 +8,7 @@ namespace Warlander.Deedplanner.Graphics
 {
     public class DDSTextureLoader : ITextureLoader
     {
-        public async Task<Texture2D> LoadTexture(string location, bool readable)
+        public async Task<Texture2D> LoadTextureAsync(string location, bool readable)
         {
             var data = await WebUtils.ReadUrlToByteArrayAsync(location);
             return LoadTextureDxt(data);

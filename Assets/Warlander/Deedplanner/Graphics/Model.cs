@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Xml;
 using R3;
@@ -168,7 +168,7 @@ namespace Warlander.Deedplanner.Graphics
             {
                 loadingOriginalModel = true;
                 string fullLocation = Application.streamingAssetsPath + "/" + location;
-                _wurmModelLoader.LoadModel(fullLocation, Scale).ToObservable()
+                _wurmModelLoader.LoadModelAsync(fullLocation, Scale).ToObservable()
                     .Subscribe(model =>
                     {
                         OnMasterModelLoaded(model);
@@ -210,7 +210,7 @@ namespace Warlander.Deedplanner.Graphics
                     Material newMaterial = new Material(renderer.sharedMaterial);
                     renderer.sharedMaterial = newMaterial;
 
-                    texture.LoadOrGetTexture().ToObservable().Subscribe(loadedTexture => newMaterial.mainTexture = loadedTexture);
+                    texture.LoadOrGetTextureAsync().ToObservable().Subscribe(loadedTexture => newMaterial.mainTexture = loadedTexture);
                 }
             }
             originalModel.transform.SetParent(modelRoot.transform);

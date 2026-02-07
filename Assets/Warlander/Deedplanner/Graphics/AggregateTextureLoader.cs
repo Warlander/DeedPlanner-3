@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -16,7 +16,7 @@ namespace Warlander.Deedplanner.Graphics
             _genericTextureLoader = new GenericTextureLoader();
         }
 
-        public async Task<Texture2D> LoadTexture(string location, bool readable)
+        public async Task<Texture2D> LoadTextureAsync(string location, bool readable)
         {
             if (string.IsNullOrEmpty(Path.GetExtension(location)))
             {
@@ -28,11 +28,11 @@ namespace Warlander.Deedplanner.Graphics
 
             if (location.EndsWith(".dds", StringComparison.OrdinalIgnoreCase))
             {
-                return await _ddsTextureLoader.LoadTexture(location, readable);
+                return await _ddsTextureLoader.LoadTextureAsync(location, readable);
             }
             else
             {
-                return await _genericTextureLoader.LoadTexture(location, readable);
+                return await _genericTextureLoader.LoadTextureAsync(location, readable);
             }
         }
     }

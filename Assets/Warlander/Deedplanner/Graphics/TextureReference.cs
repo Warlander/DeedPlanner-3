@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -19,7 +19,7 @@ namespace Warlander.Deedplanner.Graphics
             Location = location;
         }
         
-        public async Task<Texture2D> LoadOrGetTexture()
+        public async Task<Texture2D> LoadOrGetTextureAsync()
         {
             if (texture)
             {
@@ -30,7 +30,7 @@ namespace Warlander.Deedplanner.Graphics
                 ? Location 
                 : Application.streamingAssetsPath + "/" + Location;
 
-            texture = await _textureLoader.LoadTexture(location, false);
+            texture = await _textureLoader.LoadTextureAsync(location, false);
             
             if (texture)
             {
@@ -40,7 +40,7 @@ namespace Warlander.Deedplanner.Graphics
             return texture;
         }
         
-        public async Task<Sprite> LoadOrGetSprite()
+        public async Task<Sprite> LoadOrGetSpriteAsync()
         {
             if (sprite)
             {
@@ -49,7 +49,7 @@ namespace Warlander.Deedplanner.Graphics
 
             if (!texture)
             {
-                await LoadOrGetTexture();
+                await LoadOrGetTextureAsync();
             }
 
             if (texture)

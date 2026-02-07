@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using R3;
 using UnityEngine;
 using UnityEngine.UI;
@@ -44,7 +44,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         {
             _shownPart = bridgePart;
             
-            bridgePart.GetUISprite().LoadOrGetSprite().ToObservable().Subscribe(sprite =>
+            bridgePart.GetUISprite().LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite =>
             {
                 if (this == null)
                 {

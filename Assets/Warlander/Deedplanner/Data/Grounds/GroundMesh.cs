@@ -628,7 +628,7 @@ namespace Warlander.Deedplanner.Data.Grounds
                 return;
             }
             
-            data.Tex3d.LoadOrGetTexture().ToObservable().Subscribe(loadedTexture =>
+            data.Tex3d.LoadOrGetTextureAsync().ToObservable().Subscribe(loadedTexture =>
             {
                 if (!loadedTexture)
                 {

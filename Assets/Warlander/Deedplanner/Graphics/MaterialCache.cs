@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -15,7 +15,7 @@ namespace Warlander.Deedplanner.Graphics
             _materialLoader = materialLoader;
         }
 
-        public async Task<Material> GetOrCreateMaterial(MaterialMetadata materialMetadata)
+        public async Task<Material> GetOrCreateMaterialAsync(MaterialMetadata materialMetadata)
         {
             MaterialKey materialKey = new MaterialKey(materialMetadata.MaterialName, materialMetadata.TextureLocation);
 
@@ -29,7 +29,7 @@ namespace Warlander.Deedplanner.Graphics
                 return await pendingTask;
             }
 
-            Task<Material> materialTask = _materialLoader.CreateMaterial(materialMetadata);
+            Task<Material> materialTask = _materialLoader.CreateMaterialAsync(materialMetadata);
             _pendingMaterials[materialKey] = materialTask;
             
             Material material = await materialTask;

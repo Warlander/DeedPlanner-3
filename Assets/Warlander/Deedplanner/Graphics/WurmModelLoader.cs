@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -18,12 +18,12 @@ namespace Warlander.Deedplanner.Graphics
             _materialLoader = materialLoader;
         }
 
-        public async Task<GameObject> LoadModel(string path)
+        public async Task<GameObject> LoadModelAsync(string path)
         {
-            return await LoadModel(path, Vector3.one);
+            return await LoadModelAsync(path, Vector3.one);
         }
 
-        public async Task<GameObject> LoadModel(string path, Vector3 scale)
+        public async Task<GameObject> LoadModelAsync(string path, Vector3 scale)
         {
             Debug.Log("Loading model at " + path);
 
@@ -37,7 +37,7 @@ namespace Warlander.Deedplanner.Graphics
             int loadedMeshes = 0;
             for (int i = 0; i < meshCount; i++)
             {
-                var loadedMesh = await LoadMeshObject(source, fileFolder, scale);
+                var loadedMesh = await LoadMeshObjectAsync(source, fileFolder, scale);
                 if (loadedMesh)
                 {
                     loadedMesh.transform.SetParent(modelGameObject.transform);
@@ -54,7 +54,7 @@ namespace Warlander.Deedplanner.Graphics
             return modelGameObject;
         }
 
-        private async Task<GameObject> LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale)
+        private async Task<GameObject> LoadMeshObjectAsync(BinaryReader source, string fileFolder, Vector3 scale)
         {
             Mesh loadedMesh = _meshLoader.LoadMesh(source, scale);
             string meshName = loadedMesh.name;
@@ -73,7 +73,7 @@ namespace Warlander.Deedplanner.Graphics
             if (!discardMesh)
             {
                 Debug.Log("Loading mesh " + meshName);
-                var mat = await _materialLoader.LoadMaterial(source, fileFolder);
+                var mat = await _materialLoader.LoadMaterialAsync(source, fileFolder);
                 GameObject meshObject = new GameObject(meshName);
 
                 MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();

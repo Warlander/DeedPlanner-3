@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -14,10 +14,10 @@ namespace Warlander.Deedplanner.Graphics
             _materialCache = materialCache;
         }
 
-        public async Task<Material> LoadMaterial(BinaryReader source, string modelFolder)
+        public async Task<Material> LoadMaterialAsync(BinaryReader source, string modelFolder)
         {
             var materialMetadata = LoadMaterialMetadata(source, modelFolder);
-            Material material = await _materialCache.GetOrCreateMaterial(materialMetadata);
+            Material material = await _materialCache.GetOrCreateMaterialAsync(materialMetadata);
             return material;
         }
 
