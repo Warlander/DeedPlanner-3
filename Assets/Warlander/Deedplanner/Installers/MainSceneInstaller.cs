@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Debugging;
@@ -71,6 +71,9 @@ namespace Warlander.Deedplanner.Installers
             // Factories.
             Container.Bind<TileFactory>().AsSingle();
             Container.Bind<BridgeFactory>().AsSingle();
+
+            Container.Bind<MapHeightTracker>().AsSingle();
+            Container.BindInterfacesAndSelfTo<MapRoofCalculator>().AsSingle();
             
             //Updaters.
             BindUpdater(_groundUpdater);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,24 +26,25 @@ namespace Warlander.Deedplanner.Data
         [Inject] private BridgeFactory _bridgeFactory;
         [Inject] private IMapRenderSettingsRetriever _mapRenderSettingsRetriever;
         [Inject] private IFeatureStateRetriever _featureStateRetriever;
+        [Inject] private MapHeightTracker _heightTracker;
+        [Inject] private MapRoofCalculator _roofCalculator;
 
         public GroundMesh Ground { get; private set; }
 
         public GridMesh SurfaceGridMesh { get; private set; }
         public GridMesh CaveGridMesh { get; private set; }
 
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public int VisibleTilesCount => Width * Height;
-        public int AllTilesCount => (Width + 1) * (Height + 1);
+        public int Width => _tileGrid.Width;
+        public int Height => _tileGrid.Height;
+        public int VisibleTilesCount => _tileGrid.VisibleTilesCount;
+        public int AllTilesCount => _tileGrid.AllTilesCount;
         public string OriginalExporter { get; private set; } = Constants.TitleString;
         public Version OriginalExporterVersion { get; private set; }
 
-        public int LowestSurfaceHeight { get; private set; }
-        public int HighestSurfaceHeight { get; private set; }
-
-        public int LowestCaveHeight { get; private set; }
-        public int HighestCaveHeight { get; private set; }
+        public int LowestSurfaceHeight => _heightTracker.LowestSurfaceHeight;
+        public int HighestSurfaceHeight => _heightTracker.HighestSurfaceHeight;
+        public int LowestCaveHeight => _heightTracker.LowestCaveHeight;
+        public int HighestCaveHeight => _heightTracker.HighestCaveHeight;
 
         public bool RenderDecorations => _mapRenderSettingsRetriever.RenderDecorations;
         public bool RenderTrees => _mapRenderSettingsRetriever.RenderTrees;
@@ -51,66 +52,39 @@ namespace Warlander.Deedplanner.Data
         public bool RenderShips => _mapRenderSettingsRetriever.RenderShips;
 
         public CommandManager CommandManager { get; set; } = new CommandManager(100);
-        
+        public IReadOnlyList<Bridge> Bridges => _bridgesController.Bridges;
+
         public Transform PlaneLineRoot { get; private set; }
 
-        private Tile[,] _tiles;
-        private List<Bridge> _bridges = new List<Bridge>();
+        private MapTileGrid _tileGrid;
+        private MapLevelRenderer _levelRenderer;
+        private MapBridgesController _bridgesController;
 
         private Transform[] _surfaceLevelRoots;
         private Transform[] _caveLevelRoots;
         private Transform _surfaceGridRoot;
         private Transform _caveGridRoot;
 
-        private int _renderedLevel;
-        private bool _renderEntireMap = true;
-        private bool _renderGrid = true;
-        
-        private bool _needsRoofUpdate = false;
+        public Tile this[int x, int y] => _tileGrid[x, y];
 
-        public Tile this[int x, int y]
-        {
-            get
-            {
-                if (x < 0 || y < 0 || x > Width || y > Height)
-                {
-                    return null;
-                }
-
-                return _tiles[x, y];
-            }
-        }
-
-        public Tile this[Vector2Int v] => this[v.x, v.y];
+        public Tile this[Vector2Int v] => _tileGrid[v.x, v.y];
 
         public int RenderedLevel
         {
-            get => _renderedLevel;
-            set
-            {
-                _renderedLevel = value;
-                UpdateLevelsRendering();
-            }
+            get => _levelRenderer.RenderedLevel;
+            set => _levelRenderer.RenderedLevel = value;
         }
 
         public bool RenderEntireMap
         {
-            get => _renderEntireMap;
-            set
-            {
-                _renderEntireMap = value;
-                UpdateLevelsRendering();
-            }
+            get => _levelRenderer.RenderEntireMap;
+            set => _levelRenderer.RenderEntireMap = value;
         }
 
         public bool RenderGrid
         {
-            get => _renderGrid;
-            set
-            {
-                _renderGrid = value;
-                UpdateLevelsRendering();
-            }
+            get => _levelRenderer.RenderGrid;
+            set => _levelRenderer.RenderGrid = value;
         }
 
         private void Start()
@@ -145,7 +119,7 @@ namespace Warlander.Deedplanner.Data
                 }
             }
 
-            InitializeBridges(originalMap, addLeft, addBottom);
+            _bridgesController.InitializeBridgesAfterResize(originalMap, addLeft, addBottom);
 
             for (int i = 0; i <= Width; i++)
             {
@@ -163,28 +137,6 @@ namespace Warlander.Deedplanner.Data
             RecalculateHeights();
             RecalculateRoofs();
             CommandManager.ForgetAction();
-        }
-
-        private void InitializeBridges(Map originalMap, int addLeft, int addBottom)
-        {
-            if (!_featureStateRetriever.IsFeatureEnabled(Feature.Bridges))
-            {
-                return;
-            }
-            
-            Vector2Int bridgeShift = new Vector2Int(addLeft, addBottom);
-            
-            foreach (Bridge originalMapBridge in originalMap._bridges)
-            {
-                Vector2Int firstTileAfterShift = originalMapBridge.FirstTile + bridgeShift;
-                Vector2Int secondTileAfterShift = originalMapBridge.SecondTile + bridgeShift;
-
-                if (IsWithinBounds(firstTileAfterShift) && IsWithinBounds(secondTileAfterShift))
-                {
-                    Bridge movedBridge = _bridgeFactory.CreateBridge(this, originalMapBridge, bridgeShift);
-                    _bridges.Add(movedBridge);
-                }
-            }
         }
 
         public void Initialize(int width, int height)
@@ -247,7 +199,7 @@ namespace Warlander.Deedplanner.Data
                 this[x, y].DeserializeEntities(tileElement);
             }
 
-            InitializeBridges(mapRoot);
+            _bridgesController.InitializeBridges(mapRoot);
 
             Ground.UpdateNow();
 
@@ -258,26 +210,10 @@ namespace Warlander.Deedplanner.Data
             CommandManager.ForgetAction();
         }
 
-        private void InitializeBridges(XmlElement mapRoot)
-        {
-            if (!_featureStateRetriever.IsFeatureEnabled(Feature.Bridges))
-            {
-                return;
-            }
-            
-            XmlNodeList bridgesList = mapRoot.GetElementsByTagName("bridge");
-            foreach (XmlElement bridgeElement in bridgesList)
-            {
-                Bridge bridge = _bridgeFactory.CreateBridge(this, bridgeElement);
-                _bridges.Add(bridge);
-            }
-        }
-
         private void PreInitialize(int width, int height)
         {
-            Width = width;
-            Height = height;
-            _tiles = new Tile[width + 1, height + 1];
+            _tileGrid = new MapTileGrid(width, height);
+            _bridgesController = new MapBridgesController(this, _bridgeFactory, _featureStateRetriever);
 
             _surfaceLevelRoots = new Transform[16];
             for (int i = 0; i < _surfaceLevelRoots.Length; i++)
@@ -300,80 +236,44 @@ namespace Warlander.Deedplanner.Data
             
             _surfaceGridRoot = surfaceOverlayMesh.transform;
 
+            _caveGridRoot = new GameObject("Cave Grid").transform;
+            _caveGridRoot.SetParent(transform);
+            _caveGridRoot.gameObject.SetActive(false);
+            PlaneLineRoot = new GameObject("Plane Lines").transform;
+
+            _levelRenderer = new MapLevelRenderer();
+            _levelRenderer.Initialize(_surfaceLevelRoots, _caveLevelRoots, _surfaceGridRoot, _caveGridRoot, () => _bridgesController.Bridges);
+
             GameObject groundObject = new GameObject("Ground Mesh", typeof(GroundMesh));
             Ground = groundObject.GetComponent<GroundMesh>();
             Ground.Initialize(width, height, surfaceOverlayMesh);
             surfaceOverlayMesh.Initialize(Ground.ColliderMesh);
             AddEntityToMap(groundObject, 0);
 
-            _caveGridRoot = new GameObject("Cave Grid").transform;
-            _caveGridRoot.SetParent(transform);
-            _caveGridRoot.gameObject.SetActive(false);
-            PlaneLineRoot = new GameObject("Plane Lines").transform;
-
             for (int i = 0; i <= Width; i++)
             {
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
                     Tile tile = _tileFactory.CreateTile(this, i, i2);
-                    _tiles[i, i2] = tile;
+                    _tileGrid.SetTile(i, i2, tile);
                 }
             }
 
             SurfaceGridMesh = PrepareGridMesh("Surface grid", _surfaceGridRoot, false);
             CaveGridMesh = PrepareGridMesh("Cave grid", _caveGridRoot, true);
 
+            _heightTracker.SetCurrentMap(this);
+            _roofCalculator.SetCurrentMap(this);
+
             RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
             CommandManager.ForgetAction();
         }
 
-        private void LateUpdate()
-        {
-            if (_needsRoofUpdate)
-            {
-                _needsRoofUpdate = false;
-                RecalculateRoofsInternal();
-            }
-        }
-
         private void RefreshAllTiles()
         {
-            foreach (Tile tile in _tiles)
+            foreach (Tile tile in _tileGrid)
             {
                 tile.Refresh();
-            }
-        }
-
-        private void RecalculateRoofsInternal()
-        {
-            for (int i = 0; i <= Width; i++)
-            {
-                for (int i2 = 0; i2 <= Height; i2++)
-                {
-                    for (int i3 = 0; i3 < Constants.LevelLimit; i3++)
-                    {
-                        LevelEntity entity = this[i, i2].GetTileContent(i3);
-                        if (entity && entity.GetType() == typeof(Roof))
-                        {
-                            ((Roof) this[i, i2].GetTileContent(i3)).RecalculateRoofLevel();
-                        }
-                    }
-                }
-            }
-
-            for (int i = 0; i <= Width; i++)
-            {
-                for (int i2 = 0; i2 <= Height; i2++)
-                {
-                    for (int i3 = 0; i3 < Constants.LevelLimit; i3++)
-                    {
-                        LevelEntity entity = this[i, i2].GetTileContent(i3);
-                        if (entity && entity.GetType() == typeof(Roof))
-                        {
-                            ((Roof) this[i, i2].GetTileContent(i3)).RecalculateRoofModel();
-                        }
-                    }
-                }
             }
         }
 
@@ -391,7 +291,7 @@ namespace Warlander.Deedplanner.Data
         {
             Materials mapMaterials = new Materials();
 
-            foreach (Tile tile in _tiles)
+            foreach (Tile tile in _tileGrid)
             {
                 mapMaterials.Add(tile.CalculateTileMaterials(TilePart.Everything));
             }
@@ -401,112 +301,32 @@ namespace Warlander.Deedplanner.Data
 
         public int CoordinateToIndex(int x, int y)
         {
-            return x * (Height + 1) + y;
+            return _tileGrid.CoordinateToIndex(x, y);
         }
 
         public void AddEntityToMap(GameObject entity, int level)
         {
-            bool cave = level < 0;
-            int absoluteLevel = cave ? -level - 1 : level;
-            if (cave)
-            {
-                entity.transform.SetParent(_caveLevelRoots[absoluteLevel]);
-            }
-            else
-            {
-                entity.transform.SetParent(_surfaceLevelRoots[absoluteLevel]);
-            }
-        }
-
-        public void RecalculateHeights()
-        {
-            int min = int.MaxValue;
-            int max = int.MinValue;
-            int caveMin = int.MaxValue;
-            int caveMax = int.MinValue;
-
-            for (int i = 0; i <= Width; i++)
-            {
-                for (int i2 = 0; i2 <= Height; i2++)
-                {
-                    int elevation = this[i, i2].SurfaceHeight;
-                    int caveElevation = this[i, i2].CaveHeight;
-                    if (elevation > max)
-                    {
-                        max = elevation;
-                    }
-
-                    if (elevation < min)
-                    {
-                        min = elevation;
-                    }
-
-                    if (caveElevation > caveMax)
-                    {
-                        caveMax = caveElevation;
-                    }
-
-                    if (caveElevation < caveMin)
-                    {
-                        caveMin = caveElevation;
-                    }
-                }
-            }
-
-            LowestSurfaceHeight = min;
-            HighestSurfaceHeight = max;
-            LowestCaveHeight = caveMin;
-            HighestCaveHeight = caveMax;
+            _levelRenderer.AddEntityToMap(entity, level);
         }
 
         public void RecalculateSurfaceHeight(int x, int y)
         {
-            int elevation = this[x, y].SurfaceHeight;
-            if (elevation > HighestSurfaceHeight)
-            {
-                HighestSurfaceHeight = elevation;
-            }
-
-            if (elevation < LowestSurfaceHeight)
-            {
-                LowestSurfaceHeight = elevation;
-            }
-
-            SurfaceGridMesh.SetHeight(x, y, elevation);
+            _heightTracker.RecalculateSurfaceHeight(x, y);
         }
 
         public void RecalculateCaveHeight(int x, int y)
         {
-            int caveElevation = this[x, y].CaveHeight;
-            if (caveElevation > HighestCaveHeight)
-            {
-                HighestCaveHeight = caveElevation;
-            }
-
-            if (caveElevation < LowestCaveHeight)
-            {
-                LowestCaveHeight = caveElevation;
-            }
-
-            CaveGridMesh.SetHeight(x, y, caveElevation);
+            _heightTracker.RecalculateCaveHeight(x, y);
         }
 
         public void RecalculateRoofs()
         {
-            _needsRoofUpdate = true;
+            _roofCalculator.ScheduleRecalculation();
         }
 
         public Tile GetRelativeTile(Tile tile, int relativeX, int relativeY)
         {
-            int x = tile.X + relativeX;
-            int y = tile.Y + relativeY;
-
-            if (x < 0 || x > Width || y < 0 || y > Height)
-            {
-                return null;
-            }
-
-            return this[x, y];
+            return _tileGrid.GetRelativeTile(tile, relativeX, relativeY);
         }
 
         public float GetInterpolatedHeight(float x, float y)
@@ -522,10 +342,10 @@ namespace Warlander.Deedplanner.Data
 
             return 0;
         }
-
+        
         public IEnumerator<Tile> GetEnumerator()
         {
-            return _tiles.Cast<Tile>().GetEnumerator();
+            return _tileGrid.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -547,148 +367,29 @@ namespace Warlander.Deedplanner.Data
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
                     XmlElement tile = document.CreateElement("tile");
-                    _tiles[i, i2].Serialize(document, tile);
+                    _tileGrid[i, i2].Serialize(document, tile);
                     localRoot.AppendChild(tile);
                 }
             }
         }
 
-        public float GetRelativeLevelOpacity(int relativeLevel)
-        {
-            if (relativeLevel == 0)
-            {
-                return 1;
-            }
-            else if (relativeLevel == -1)
-            {
-                return 0.6f;
-            }
-            else if (relativeLevel == -2)
-            {
-                return 0.25f;
-            }
-
-            return 0;
-        }
-
-        private void UpdateLevelsRendering()
-        {
-            bool underground = _renderedLevel < 0;
-            int absoluteLevel = underground ? -_renderedLevel + 1 : _renderedLevel;
-
-            if (underground)
-            {
-                foreach (Transform root in _surfaceLevelRoots)
-                {
-                    root.gameObject.SetActive(false);
-                }
-
-                for (int i = 0; i < _caveLevelRoots.Length; i++)
-                {
-                    Transform root = _caveLevelRoots[i];
-                    RefreshLevelRendering(root, i - absoluteLevel);
-                }
-
-                _surfaceGridRoot.gameObject.SetActive(false);
-                _caveGridRoot.gameObject.SetActive(_renderGrid);
-
-                _caveGridRoot.localPosition = new Vector3(0, absoluteLevel * 3, 0);
-            }
-            else
-            {
-                foreach (Transform root in _caveLevelRoots)
-                {
-                    root.gameObject.SetActive(false);
-                }
-
-                for (int i = 0; i < _surfaceLevelRoots.Length; i++)
-                {
-                    Transform root = _surfaceLevelRoots[i];
-                    RefreshLevelRendering(root, i - absoluteLevel);
-                }
-
-                _surfaceGridRoot.gameObject.SetActive(_renderGrid);
-                _caveGridRoot.gameObject.SetActive(false);
-
-                _surfaceGridRoot.localPosition = new Vector3(0, absoluteLevel * 3 + 0.01f, 0);
-            }
-
-            RefreshBridgesRendering(absoluteLevel);
-        }
-
-        private void RefreshLevelRendering(Transform root, int relativeLevel)
-        {
-            float opacity = RenderEntireMap ? 1 : GetRelativeLevelOpacity(relativeLevel);
-            bool renderLevel = opacity > 0;
-            root.gameObject.SetActive(renderLevel);
-            if (renderLevel)
-            {
-                MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                propertyBlock.SetColor(ShaderPropertyIds.Color, new Color(opacity, opacity, opacity));
-                Renderer[] renderers = root.GetComponentsInChildren<Renderer>();
-                foreach (Renderer renderer in renderers)
-                {
-                    renderer.SetPropertyBlock(propertyBlock);
-                }
-            }
-        }
-
-        private void RefreshBridgesRendering(int absoluteLevel)
-        {
-            if (RenderEntireMap)
-            {
-                foreach (Bridge bridge in _bridges)
-                {
-                    bridge.SetVisible(true);
-                }
-            }
-            else
-            {
-                foreach (Bridge bridge in _bridges)
-                {
-                    int lowerLevel = bridge.LowerLevel;
-                    int higherLevel = bridge.HigherLevel;
-
-                    float opacity;
-                    if (higherLevel > absoluteLevel)
-                    {
-                        opacity = 0;
-                    }
-                    else if (higherLevel < absoluteLevel && lowerLevel > absoluteLevel)
-                    {
-                        opacity = 1;
-                    }
-                    else
-                    {
-                        opacity = GetRelativeLevelOpacity(higherLevel - absoluteLevel);
-                    }
-
-                    bool renderBridge = opacity > 0;
-                    bridge.SetVisible(renderBridge);
-                    if (renderBridge)
-                    {
-                        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                        propertyBlock.SetColor(ShaderPropertyIds.Color, new Color(opacity, opacity, opacity));
-                        bridge.SetPropertyBlock(propertyBlock);
-                    }
-                }
-            }
-        }
-
-        private bool IsWithinBounds(Vector2Int tile)
-        {
-            return tile.x >= 0 && tile.x < Width
-                && tile.y >= 0 && tile.y < Height;
-        }
+        public float GetRelativeLevelOpacity(int relativeLevel) => _levelRenderer.GetRelativeLevelOpacity(relativeLevel);
         
         private void GameManagerOnRenderSettingsChanged()
         {
             RefreshAllTiles();
         }
 
+        private void RecalculateHeights()
+        {
+            _heightTracker.RecalculateHeights();
+        }
+
         private void OnDestroy()
         {
             _mapRenderSettingsRetriever.Changed -= GameManagerOnRenderSettingsChanged;
+            _heightTracker.ClearCurrentMap();
+            _roofCalculator.ClearCurrentMap();
         }
     }
 }
