@@ -17,6 +17,10 @@ This is a Unity project — there are no CLI build/test commands. Development wo
 
 **Do not run builds directly** — building must be done by the developer through the Unity Editor.
 
+## Unity MCP Server
+
+A **Unity MCP server** may be available when the Unity Editor is open. It provides tools to interact with the running Unity Editor directly from Claude Code (e.g. querying scene state, executing editor commands, inspecting GameObjects). Use these MCP tools when available instead of relying solely on static file analysis — they give live, accurate state of the project.
+
 There is no automated test suite despite the Test Framework package being present.
 
 ## Architecture
