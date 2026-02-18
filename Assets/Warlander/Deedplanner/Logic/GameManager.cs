@@ -174,7 +174,7 @@ namespace Warlander.Deedplanner.Logic
 
             if (Map != null)
             {
-                Map.RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
+                Map.RenderGrid = tab != Tab.Menu;
             }
         }
     }
