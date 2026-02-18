@@ -8,5 +8,10 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private Tab targetTab = Tab.Ground;
 
         public Tab TargetTab => targetTab;
+
+        public abstract void Initialize();
+        public abstract void Enable();
+        public abstract void Disable();
+        public abstract void Tick();
     }
 }

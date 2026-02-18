@@ -23,20 +23,34 @@ namespace Warlander.Deedplanner.Logic
 
         [SerializeField] private OverlayMesh overlayMeshPrefab = null;
         [SerializeField] private Mesh heightmapHandleMesh = null;
-        
+
         public event Action MapInitialized;
-        
+
         public Map Map { get; private set; }
 
         public OverlayMesh OverlayMeshPrefab => overlayMeshPrefab;
         public Mesh HeightmapHandleMesh => heightmapHandleMesh;
 
+        private AbstractUpdater _currentUpdater;
+
         private void Start()
         {
+            foreach (AbstractUpdater updater in _updaters)
+            {
+                updater.Initialize();
+            }
+
             LayoutManager.Instance.TabChanged += OnTabChange;
-            
+
             _input.EditingControls.Undo.performed += UndoOnperformed;
             _input.EditingControls.Redo.performed += RedoOnperformed;
+
+            OnTabChange(LayoutManager.Instance.CurrentTab);
+        }
+
+        private void Update()
+        {
+            _currentUpdater?.Tick();
         }
         
         private void UndoOnperformed(InputAction.CallbackContext obj)
@@ -142,17 +156,21 @@ namespace Warlander.Deedplanner.Logic
             }
         }
 
-        private void CheckUpdater(AbstractUpdater updater, Tab tab)
-        {
-            updater.gameObject.SetActive(updater.TargetTab == tab);
-        }
-        
         private void OnTabChange(Tab tab)
-        { 
+        {
+            _currentUpdater?.Disable();
+
+            _currentUpdater = null;
             foreach (AbstractUpdater updater in _updaters)
             {
-                CheckUpdater(updater, tab);
+                if (updater.TargetTab == tab)
+                {
+                    _currentUpdater = updater;
+                    break;
+                }
             }
+
+            _currentUpdater?.Enable();
 
             if (Map != null)
             {

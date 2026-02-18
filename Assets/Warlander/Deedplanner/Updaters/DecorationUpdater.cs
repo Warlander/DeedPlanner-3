@@ -52,16 +52,13 @@ namespace Warlander.Deedplanner.Updaters
 
         private bool isScrollRotate = false;
 
-        private void Awake()
+        public override void Initialize()
         {
             allowedGhostPropertyBlock = new MaterialPropertyBlock();
             allowedGhostPropertyBlock.SetColor(ShaderPropertyIds.Color, allowedGhostColor);
             disabledGhostPropertyBlock = new MaterialPropertyBlock();
             disabledGhostPropertyBlock.SetColor(ShaderPropertyIds.Color, disabledGhostColor);
-        }
 
-        private void Start()
-        {
             foreach (DecorationData data in Database.Decorations.Values)
             {
                 foreach (string[] category in data.Categories)
@@ -69,7 +66,7 @@ namespace Warlander.Deedplanner.Updaters
                     _decorationsTree.Add(data, category);
                 }
             }
-            
+
             rotationSensitivityInput.text = _settings.DecorationRotationSensitivity.ToString(CultureInfo.InvariantCulture);
             snapToGridToggle.isOn = _settings.DecorationSnapToGrid;
             rotationSnappingToggle.isOn = _settings.DecorationRotationSnapping;
@@ -79,7 +76,7 @@ namespace Warlander.Deedplanner.Updaters
             rotationSnappingToggle.onValueChanged.AddListener(RotationSnappingToggleOnValueChanged);
         }
 
-        private void OnEnable()
+        public override void Enable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
         }
@@ -108,7 +105,7 @@ namespace Warlander.Deedplanner.Updaters
             });
         }
 
-        private void Update()
+        public override void Tick()
         {
             float rotationEditSensitivity = 1;
             float.TryParse(rotationSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out rotationEditSensitivity);
@@ -405,7 +402,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void OnDisable()
+        public override void Disable()
         {
             ResetState();
         }

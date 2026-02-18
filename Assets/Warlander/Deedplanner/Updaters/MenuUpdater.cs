@@ -42,7 +42,7 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private TMP_Text _steamConnectionText;
         [SerializeField] private TMP_Text _versionText;
         
-        private void Start()
+        public override void Initialize()
         {
             bool mobile = Application.isMobilePlatform;
             bool web = Application.platform == RuntimePlatform.WebGLPlayer;
@@ -58,7 +58,7 @@ namespace Warlander.Deedplanner.Updaters
             }
 
             _versionText.text = Constants.TitleString;
-            
+
             _resizeButton.onClick.AddListener(ResizeButtonOnClick);
             _clearButton.onClick.AddListener(ClearOnClick);
             _saveButton.onClick.AddListener(SaveOnClick);
@@ -71,17 +71,21 @@ namespace Warlander.Deedplanner.Updaters
             _patreonButton.onClick.AddListener(PatreonOnClick);
             _paypalButton.onClick.AddListener(PaypalOnClick);
         }
-        
-        private void OnEnable()
+
+        public override void Enable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
-            
+
             _steamConnectionText.gameObject.SetActive(_steamConnection.Connected);
             if (_steamConnection.Connected)
             {
                 _steamConnectionText.text = "Connected to Steam as " + _steamConnection.GetName();
             }
         }
+
+        public override void Disable() { }
+
+        public override void Tick() { }
 
         private void ResizeButtonOnClick()
         {

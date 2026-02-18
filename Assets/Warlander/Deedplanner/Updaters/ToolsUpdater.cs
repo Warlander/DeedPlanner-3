@@ -39,15 +39,19 @@ namespace Warlander.Deedplanner.Updaters
         
         private ToolType currentTool = ToolType.MaterialsCalculator;
 
-        private void OnEnable()
+        public override void Initialize() { }
+
+        public override void Enable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
-            
+
             RefreshMode();
             RefreshGui();
         }
 
-        private void Update()
+        public override void Disable() { }
+
+        public override void Tick()
         {
             if (currentTool != ToolType.MaterialsCalculator)
             {

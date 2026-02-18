@@ -27,7 +27,7 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private Toggle northToggle;
         [SerializeField] private Toggle eastToggle;
 
-        private void Start()
+        public override void Initialize()
         {
             foreach (FloorData data in Database.Floors.Values)
             {
@@ -37,13 +37,15 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
         }
-        
-        private void OnEnable()
+
+        public override void Enable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
-        private void Update()
+        public override void Disable() { }
+
+        public override void Tick()
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {

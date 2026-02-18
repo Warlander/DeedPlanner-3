@@ -66,16 +66,16 @@ namespace Warlander.Deedplanner.Updaters
 
         private bool ComplexSelectionEnabled => mode != HeightUpdaterMode.PaintTerrain;
         
-        private void Start()
+        public override void Initialize()
         {
             dragSensitivityInput.text = _settings.HeightDragSensitivity.ToString(CultureInfo.InvariantCulture);
             respectOriginalSlopesToggle.isOn = _settings.HeightRespectOriginalSlopes;
-            
+
             dragSensitivityInput.onValueChanged.AddListener(DragSensitivityOnValueChanged);
             respectOriginalSlopesToggle.onValueChanged.AddListener(RespectOriginalSlopesOnValueChanged);
         }
-        
-        private void OnEnable()
+
+        public override void Enable()
         {
             RefreshTileSelectionMode();
             anchorProjector = _mapProjectorManager.RequestProjector(ProjectorColor.Red);
@@ -176,7 +176,7 @@ namespace Warlander.Deedplanner.Updaters
             _cameraCoordinator.Current.RenderSelectionBox = false;
         }
 
-        private void Update()
+        public override void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             bool cameraOnScreen = _cameraCoordinator.Current.MouseOver;
@@ -706,7 +706,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void OnDisable()
+        public override void Disable()
         {
             _mapProjectorManager.FreeProjector(anchorProjector);
             anchorProjector = null;

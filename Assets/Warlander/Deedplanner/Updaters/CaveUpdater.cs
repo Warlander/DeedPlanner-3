@@ -18,7 +18,7 @@ namespace Warlander.Deedplanner.Updaters
         
         [SerializeField] private UnityTree _cavesTree;
 
-        private void OnStart()
+        public override void Initialize()
         {
             foreach (CaveData data in Database.Caves.Values)
             {
@@ -28,13 +28,15 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
         }
-        
-        private void OnEnable()
+
+        public override void Enable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
-        private void Update()
+        public override void Disable() { }
+
+        public override void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
