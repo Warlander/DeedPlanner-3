@@ -28,12 +28,14 @@ namespace Warlander.Deedplanner.Updaters
         private TileCoords _firstClickedTile;
         private TileCoords _secondClickedTile;
 
-        private void OnEnable()
+        public override void Initialize() { }
+
+        public override void Enable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
-        private void Update()
+        public override void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
@@ -198,7 +200,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
         
-        private void OnDisable()
+        public override void Disable()
         {
             if (_lastFrameHoveredBridge != null)
             {

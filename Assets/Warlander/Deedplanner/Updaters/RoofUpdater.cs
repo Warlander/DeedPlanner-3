@@ -20,20 +20,22 @@ namespace Warlander.Deedplanner.Updaters
 
         [SerializeField] private UnityList _roofsList;
 
-        private void Start()
+        public override void Initialize()
         {
             foreach (RoofData data in Database.Roofs.Values)
             {
                 _roofsList.Add(data);
             }
         }
-        
-        private void OnEnable()
+
+        public override void Enable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
-        private void Update()
+        public override void Disable() { }
+
+        public override void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)

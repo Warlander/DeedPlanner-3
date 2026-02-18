@@ -13,12 +13,16 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         
-        private void OnEnable()
+        public override void Initialize() { }
+
+        public override void Enable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
-        private void Update()
+        public override void Disable() { }
+
+        public override void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)

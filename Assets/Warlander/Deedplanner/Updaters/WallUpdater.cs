@@ -26,7 +26,7 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private Toggle reverseToggle;
         [SerializeField] private Toggle automaticReverseToggle;
 
-        private void Start()
+        public override void Initialize()
         {
             foreach (WallData data in Database.Walls.Values)
             {
@@ -36,18 +36,20 @@ namespace Warlander.Deedplanner.Updaters
                     iconListElement.TextureReference = data.Icon;
                 }
             }
-            
+
             automaticReverseToggle.isOn = _settings.WallAutomaticReverse;
             reverseToggle.isOn = _settings.WallReverse;
-            
+
             automaticReverseToggle.onValueChanged.AddListener(AutomaticReverseToggleOnValueChanged);
             reverseToggle.onValueChanged.AddListener(ReverseToggleOnValueChanged);
         }
-        
-        private void OnEnable()
+
+        public override void Enable()
         {
             LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Borders;
         }
+
+        public override void Disable() { }
 
         private void AutomaticReverseToggleOnValueChanged(bool value)
         {
@@ -65,7 +67,7 @@ namespace Warlander.Deedplanner.Updaters
             });
         }
 
-        private void Update()
+        public override void Tick()
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {

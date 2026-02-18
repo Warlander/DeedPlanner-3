@@ -62,7 +62,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void Start()
+        public override void Initialize()
         {
             _groundsTree.ValueChanged += OnGroundsTreeValueChanged;
             LeftClickData = Database.DefaultGroundData;
@@ -78,10 +78,12 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void OnEnable()
+        public override void Enable()
         {
             UpdateSelectionMode();
         }
+
+        public override void Disable() { }
 
         private void UpdateSelectionMode()
         {
@@ -109,7 +111,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void Update()
+        public override void Tick()
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
