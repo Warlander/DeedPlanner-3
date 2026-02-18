@@ -9,7 +9,7 @@ namespace Warlander.Deedplanner.Gui.Windows
     public class ClearMapWindow : MonoBehaviour
     {
         [Inject] private Window _window;
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
         
         [SerializeField] private Button _clearMapButton;
         [SerializeField] private Button _cancelButton;
@@ -22,7 +22,7 @@ namespace Warlander.Deedplanner.Gui.Windows
 
         private void ClearMapOnClick()
         {
-            _gameManager.ClearMap();
+            _mapHandler.ClearMap();
             _window.Close();
         }
 

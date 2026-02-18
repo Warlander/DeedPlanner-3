@@ -8,7 +8,7 @@ namespace Warlander.Deedplanner.Graphics.Projectors
 {
     public class MapProjector : MonoBehaviour
     {
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
         
         [SerializeField] private ProjectorColor color = default;
         [SerializeField] private Projector attachedProjector = null;
@@ -65,7 +65,7 @@ namespace Warlander.Deedplanner.Graphics.Projectors
 
         public void ProjectLine(Vector2Int tileCoord, PlaneAlignment alignment)
         {
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
             
             switch (alignment)
             {

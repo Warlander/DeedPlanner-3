@@ -11,7 +11,7 @@ namespace Warlander.Deedplanner.Gui.Windows
     public class ResizeWindow : MonoBehaviour
     {
         [Inject] private Window _window;
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
 
         [SerializeField] private Button _acceptButton;
         
@@ -27,7 +27,7 @@ namespace Warlander.Deedplanner.Gui.Windows
 
         private void Start()
         {
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
             originalWidthText.text = "Original Width<br><b>" + map.Width + "</b>";
             originalHeightText.text = "Original Height<br><b>" + map.Height + "</b>";
             leftInput.text = "";
@@ -57,7 +57,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             int top = 0;
             int.TryParse(topInput.text, out top);
             
-            _gameManager.ResizeMap(left, right, bottom, top);
+            _mapHandler.ResizeMap(left, right, bottom, top);
             _window.Close();
         }
 
@@ -68,7 +68,7 @@ namespace Warlander.Deedplanner.Gui.Windows
         
         private void OnInputsUpdate()
         {
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
             
             int left = 0;
             int.TryParse(leftInput.text, out left);

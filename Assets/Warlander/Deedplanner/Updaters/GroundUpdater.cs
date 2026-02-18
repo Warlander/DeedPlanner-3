@@ -18,7 +18,7 @@ namespace Warlander.Deedplanner.Updaters
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
 
         [SerializeField] private UnityTree _groundsTree;
         
@@ -115,7 +115,7 @@ namespace Warlander.Deedplanner.Updaters
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
-                _gameManager.Map.CommandManager.FinishAction();
+                _mapHandler.Map.CommandManager.FinishAction();
             }
             
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
@@ -124,7 +124,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
             int tileX = Mathf.FloorToInt(raycast.point.x / 4f);
             int tileZ = Mathf.FloorToInt(raycast.point.z / 4f);
             Tile tile = map[tileX, tileZ];
@@ -193,7 +193,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 return;
             }
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
             Stack<Tile> checkStack = new Stack<Tile>();
             checkStack.Push(tile);
             HashSet<Tile> tilesToChange = new HashSet<Tile>();

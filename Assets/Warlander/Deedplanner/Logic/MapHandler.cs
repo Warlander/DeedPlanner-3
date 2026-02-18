@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -7,51 +7,38 @@ using System.Xml;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Inputs;
-using Warlander.Deedplanner.Updaters;
 using Warlander.Deedplanner.Utils;
 using Zenject;
 
 namespace Warlander.Deedplanner.Logic
 {
-    public class GameManager : MonoBehaviour
+    public class MapHandler : IInitializable
     {
-        [Inject] private IInstantiator _instantiator;
-        [Inject] private DPInput _input;
-        [Inject] private AbstractUpdater[] _updaters;
+        private readonly IInstantiator _instantiator;
+        private readonly DPInput _input;
 
         public event Action MapInitialized;
 
         public Map Map { get; private set; }
 
-        private AbstractUpdater _currentUpdater;
-
-        private void Start()
+        public MapHandler(IInstantiator instantiator, DPInput input)
         {
-            foreach (AbstractUpdater updater in _updaters)
-            {
-                updater.Initialize();
-            }
+            _instantiator = instantiator;
+            _input = input;
+        }
 
-            LayoutManager.Instance.TabChanged += OnTabChange;
-
+        void IInitializable.Initialize()
+        {
             _input.EditingControls.Undo.performed += UndoOnperformed;
             _input.EditingControls.Redo.performed += RedoOnperformed;
-
-            OnTabChange(LayoutManager.Instance.CurrentTab);
         }
 
-        private void Update()
-        {
-            _currentUpdater?.Tick();
-        }
-        
         private void UndoOnperformed(InputAction.CallbackContext obj)
         {
             Map.CommandManager.Undo();
         }
-        
+
         private void RedoOnperformed(InputAction.CallbackContext obj)
         {
             Map.CommandManager.Redo();
@@ -61,9 +48,9 @@ namespace Warlander.Deedplanner.Logic
         {
             if (Map)
             {
-                Destroy(Map.gameObject);
+                UnityEngine.Object.Destroy(Map.gameObject);
             }
-            
+
             Map = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             Map.Initialize(width, height);
             MapInitialized?.Invoke();
@@ -74,7 +61,7 @@ namespace Warlander.Deedplanner.Logic
             Map.gameObject.SetActive(false);
             Map newMap = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             newMap.Initialize(Map, left, right, bottom, top);
-            Destroy(Map.gameObject);
+            UnityEngine.Object.Destroy(Map.gameObject);
             Map = newMap;
             MapInitialized?.Invoke();
         }
@@ -83,12 +70,12 @@ namespace Warlander.Deedplanner.Logic
         {
             int width = Map.Width;
             int height = Map.Height;
-            
+
             if (Map)
             {
-                Destroy(Map.gameObject);
+                UnityEngine.Object.Destroy(Map.gameObject);
             }
-            
+
             Map = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             Map.Initialize(width, height);
             MapInitialized?.Invoke();
@@ -121,7 +108,7 @@ namespace Warlander.Deedplanner.Logic
 
             LoadMap(requestText);
         }
-        
+
         public void LoadMap(string mapString)
         {
             XmlDocument doc = new XmlDocument();
@@ -130,14 +117,14 @@ namespace Warlander.Deedplanner.Logic
             {
                 GameObject oldMapObject = Map.gameObject;
                 oldMapObject.SetActive(false);
-                Destroy(oldMapObject);
+                UnityEngine.Object.Destroy(oldMapObject);
             }
-            
+
             Map = _instantiator.InstantiateComponentOnNewGameObject<Map>("Map");
             Map.Initialize(doc);
             MapInitialized?.Invoke();
         }
-        
+
         private async Task<byte[]> DecompressGzipAsync(byte[] gzip)
         {
             using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
@@ -147,28 +134,6 @@ namespace Warlander.Deedplanner.Logic
                     await stream.CopyToAsync(memory);
                     return memory.ToArray();
                 }
-            }
-        }
-
-        private void OnTabChange(Tab tab)
-        {
-            _currentUpdater?.Disable();
-
-            _currentUpdater = null;
-            foreach (AbstractUpdater updater in _updaters)
-            {
-                if (updater.TargetTab == tab)
-                {
-                    _currentUpdater = updater;
-                    break;
-                }
-            }
-
-            _currentUpdater?.Enable();
-
-            if (Map != null)
-            {
-                Map.RenderGrid = tab != Tab.Menu;
             }
         }
     }

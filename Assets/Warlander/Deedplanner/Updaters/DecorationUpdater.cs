@@ -24,7 +24,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPSettings _settings;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
         [Inject] private IOutlineCoordinator _outlineCoordinator;
 
         [SerializeField] private UnityTree _decorationsTree;
@@ -155,7 +155,7 @@ namespace Warlander.Deedplanner.Updaters
                 targetFloor = 0;
             }
 
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
 
             if (targetedTile != null)
             {
@@ -412,7 +412,7 @@ namespace Warlander.Deedplanner.Updaters
             placingDecoration = false;
             dragStartPos = new Vector2();
 
-            _gameManager.Map.CommandManager.UndoAction();
+            _mapHandler.Map.CommandManager.UndoAction();
         }
     }
 }

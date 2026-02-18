@@ -16,7 +16,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private TooltipHandler _tooltipHandler;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
 
         [SerializeField] private UnityList _roofsList;
 
@@ -71,16 +71,16 @@ namespace Warlander.Deedplanner.Updaters
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
                 RoofData data = _roofsList.SelectedValue as RoofData;
-                _gameManager.Map[x, y].SetRoof(data, floor);
+                _mapHandler.Map[x, y].SetRoof(data, floor);
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
             {
-                _gameManager.Map[x, y].SetRoof(null, floor);
+                _mapHandler.Map[x, y].SetRoof(null, floor);
             }
             
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
-                _gameManager.Map.CommandManager.FinishAction();
+                _mapHandler.Map.CommandManager.FinishAction();
             }
         }
     }

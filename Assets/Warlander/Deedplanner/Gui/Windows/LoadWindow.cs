@@ -20,7 +20,7 @@ namespace Warlander.Deedplanner.Gui.Windows
     public class LoadWindow : MonoBehaviour
     {
         [Inject] private Window _window;
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
 
         [SerializeField] private Button _loadFromFileButton;
         [SerializeField] private Button _loadFromWebButton;
@@ -69,11 +69,11 @@ namespace Warlander.Deedplanner.Gui.Windows
                         byte[] pasteBytes = Decompress(compressedBytes);
                         string pasteString = Encoding.Default.GetString(pasteBytes);
 
-                        _gameManager.LoadMap(pasteString);
+                        _mapHandler.LoadMap(pasteString);
                     }
                     catch
                     {
-                        _gameManager.LoadMap(downloadedString);
+                        _mapHandler.LoadMap(downloadedString);
                     }
                 },
                 completion =>
@@ -106,7 +106,7 @@ namespace Warlander.Deedplanner.Gui.Windows
                 return;
             }
             
-            _gameManager.LoadMap(result);
+            _mapHandler.LoadMap(result);
             _window.Close();
         }
 
@@ -132,7 +132,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             byte[] mapBytes = File.ReadAllBytes(path);
             string mapString = Encoding.Default.GetString(mapBytes);
 
-            _gameManager.LoadMap(mapString);
+            _mapHandler.LoadMap(mapString);
             _window.Close();
         }
 

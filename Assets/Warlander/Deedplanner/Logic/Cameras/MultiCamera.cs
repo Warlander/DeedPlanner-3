@@ -27,7 +27,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [Inject] private TooltipHandler _tooltipHandler;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
         [Inject] private MapProjectorManager _mapProjectorManager;
         [Inject] private IOutlineCoordinator _outlineCoordinator;
 
@@ -182,12 +182,12 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private void Update()
         {
-            if (_gameManager.Map == null)
+            if (_mapHandler.Map == null)
             {
                 return;
             }
             
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
 
             GameObject focusedObject = EventSystem.current.currentSelectedGameObject;
             bool shouldUpdateCameras = !focusedObject;
@@ -204,7 +204,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private void OnPreCull()
         {
-            if (_gameManager.Map == null)
+            if (_mapHandler.Map == null)
             {
                 return;
             }
@@ -237,7 +237,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     TileEntity tileEntity = hitObject.GetComponent<TileEntity>();
                     GroundMesh groundMesh = hitObject.GetComponent<GroundMesh>();
                     OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
-                    HeightmapHandle heightmapHandle = _gameManager.Map.SurfaceGridMesh.RaycastHandles();
+                    HeightmapHandle heightmapHandle = _mapHandler.Map.SurfaceGridMesh.RaycastHandles();
 
                     if (tileEntity)
                     {
@@ -250,13 +250,13 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
                         if (heightmapHandle != null)
                         {
-                            tooltipBuild.Append(heightmapHandle.ToRichString(_gameManager.Map, Level));
+                            tooltipBuild.Append(heightmapHandle.ToRichString(_mapHandler.Map, Level));
                         }
                         else if (isHeightEditing)
                         {
                             tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
 
-                            Map map = _gameManager.Map;
+                            Map map = _mapHandler.Map;
                             Vector3 raycastPoint = raycastHit.point;
                             Vector2Int tileCoords = new Vector2Int(Mathf.FloorToInt(raycastPoint.x / 4), Mathf.FloorToInt(raycastPoint.z / 4));
                             int clampedX = Mathf.Clamp(tileCoords.x, 0, map.Width);
@@ -281,7 +281,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                         else
                         {
                             tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
-                            tooltipBuild.Append(_gameManager.Map[x, y].Ground.Data.Name);
+                            tooltipBuild.Append(_mapHandler.Map[x, y].Ground.Data.Name);
                         }
                     }
                     else if (overlayMesh)
@@ -292,7 +292,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     }
                     else if (heightmapHandle != null)
                     {
-                        tooltipBuild.Append(heightmapHandle.ToRichString(_gameManager.Map, Level));
+                        tooltipBuild.Append(heightmapHandle.ToRichString(_mapHandler.Map, Level));
                     }
                 }
 
@@ -350,7 +350,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
             int currentlyEditedLevel = forceSurfaceEditing ? 0 : Level;
 
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
             if (map.RenderedLevel != currentlyEditedLevel)
             {
                 map.RenderedLevel = currentlyEditedLevel;
@@ -431,7 +431,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             GameObject hitObject = CurrentRaycast.collider.gameObject;
             GroundMesh groundMesh = hitObject.GetComponent<GroundMesh>();
             OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
-            HeightmapHandle heightmapHandle = _gameManager.Map.SurfaceGridMesh.RaycastHandles();
+            HeightmapHandle heightmapHandle = _mapHandler.Map.SurfaceGridMesh.RaycastHandles();
 
             bool gridOrGroundHit = groundMesh || overlayMesh || heightmapHandle != null;
 

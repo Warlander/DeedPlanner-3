@@ -10,7 +10,7 @@ namespace Warlander.Deedplanner.Logic
     // ReSharper disable once ClassNeverInstantiated.Global
     public class StartupMapLoader : IInitializable
     {
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
         [InjectOptional] private DebugProperties _debugProperties;
         
         public void Initialize()
@@ -31,15 +31,15 @@ namespace Warlander.Deedplanner.Logic
 
             if (!string.IsNullOrEmpty(mapLocationString))
             {
-                await _gameManager.LoadMapAsync(new Uri(mapLocationString));
+                await _mapHandler.LoadMapAsync(new Uri(mapLocationString));
             }
             else if ((Application.isEditor || Debug.isDebugBuild) && _debugProperties != null)
             {
-                await _gameManager.LoadMapAsync(new Uri(_debugProperties.TestMapPath));
+                await _mapHandler.LoadMapAsync(new Uri(_debugProperties.TestMapPath));
             }
             else
             {
-                _gameManager.CreateNewMap(25, 25);
+                _mapHandler.CreateNewMap(25, 25);
             }
         }
     }

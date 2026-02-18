@@ -14,7 +14,7 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class BridgesUpdater : AbstractUpdater
     {
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private TooltipHandler _tooltipHandler;
