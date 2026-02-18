@@ -63,7 +63,8 @@ namespace Warlander.Deedplanner.Installers
             Container.BindInterfacesAndSelfTo<InputSettings>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<MapRenderSettings>().AsSingle();
             
-            Container.BindInterfacesAndSelfTo<MapHandler>().AsSingle().NonLazy();
+            Container.Bind<MapHandler>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<UndoRedoInputHandler>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<UpdaterCoordinator>().AsSingle().NonLazy();
             Container.Bind<MapProjectorManager>().FromComponentInNewPrefab(_mapProjectorManager).AsSingle();
 
