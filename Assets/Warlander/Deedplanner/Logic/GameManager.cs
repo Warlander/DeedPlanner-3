@@ -21,15 +21,9 @@ namespace Warlander.Deedplanner.Logic
         [Inject] private DPInput _input;
         [Inject] private AbstractUpdater[] _updaters;
 
-        [SerializeField] private OverlayMesh overlayMeshPrefab = null;
-        [SerializeField] private Mesh heightmapHandleMesh = null;
-
         public event Action MapInitialized;
 
         public Map Map { get; private set; }
-
-        public OverlayMesh OverlayMeshPrefab => overlayMeshPrefab;
-        public Mesh HeightmapHandleMesh => heightmapHandleMesh;
 
         private AbstractUpdater _currentUpdater;
 

@@ -68,6 +68,9 @@ namespace Warlander.Deedplanner.Installers
 
             Container.BindInterfacesTo<StartupMapLoader>().AsSingle().NonLazy();
             
+            Container.Bind<OverlayMeshLoader>().AsSingle();
+            Container.Bind<HeightmapHandleMeshLoader>().AsSingle();
+            
             // Factories.
             Container.Bind<TileFactory>().AsSingle();
             Container.Bind<BridgeFactory>().AsSingle();

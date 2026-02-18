@@ -21,7 +21,7 @@ namespace Warlander.Deedplanner.Data
     public class Map : MonoBehaviour, IXmlSerializable, IEnumerable<Tile>
     {
         [Inject] private IInstantiator _instantiator;
-        [Inject] private GameManager _gameManager;
+        [Inject] private OverlayMeshLoader _overlayMeshLoader;
         [Inject] private TileFactory _tileFactory;
         [Inject] private BridgeFactory _bridgeFactory;
         [Inject] private IMapRenderSettingsRetriever _mapRenderSettingsRetriever;
@@ -231,8 +231,7 @@ namespace Warlander.Deedplanner.Data
                 _caveLevelRoots[i] = root;
             }
 
-            OverlayMesh surfaceOverlayMesh = 
-                _instantiator.InstantiatePrefabForComponent<OverlayMesh>(_gameManager.OverlayMeshPrefab, transform);
+            OverlayMesh surfaceOverlayMesh = _overlayMeshLoader.CreateInstance(transform);
             
             _surfaceGridRoot = surfaceOverlayMesh.transform;
 
