@@ -39,7 +39,7 @@ namespace Warlander.Deedplanner.Logic
             {
                 foreach (MultiCamera camera in _cameraCoordinator.Cameras)
                 {
-                    camera.OutlineEffect.AddGameObject(behaviour.Model, (int)type);
+                    // TODO: implement new outline shader (add effect here)
                 }
             }
 
@@ -52,7 +52,7 @@ namespace Warlander.Deedplanner.Logic
             
             foreach (MultiCamera camera in _cameraCoordinator.Cameras)
             {
-                camera.OutlineEffect.AddGameObject(newModel, (int)typeToUse);
+                // TODO: implement new outline shader (add effect here)
             }
         }
 
@@ -72,7 +72,7 @@ namespace Warlander.Deedplanner.Logic
             
             foreach (MultiCamera camera in _cameraCoordinator.Cameras)
             {
-                camera.OutlineEffect.RemoveGameObject(behaviour.Model);
+                // TODO: implement new outline shader (remove effect here)
             }
         }
     }

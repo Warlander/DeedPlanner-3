@@ -42,3 +42,4 @@ sysinfo.txt
 UserSettings/
 .output.txt
 .ai/
+.claude/settings.local.json

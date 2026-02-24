@@ -4,7 +4,7 @@ using System.Text;
 using Plugins.Warlander.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityFx.Outline;
+using UnityEngine.Rendering;
 using UnityStandardAssets.Water;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
@@ -46,8 +46,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [SerializeField] private GameObject simpleQualityWater = null;
 
         [SerializeField] private RectTransform selectionBox = null;
-
-        [SerializeField] private OutlineEffect _outlineEffect;
 
         [SerializeField] private Color pickerColor = new Color(1f, 1f, 0, 0.3f);
 
@@ -93,7 +91,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
         public bool RenderEntireMap => CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian;
 
         public GameObject Screen => screen;
-        public OutlineEffect OutlineEffect => _outlineEffect;
 
         public bool RenderSelectionBox
         {
@@ -129,6 +126,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
             attachedProjector = _mapProjectorManager.RequestProjector(ProjectorColor.Yellow);
             attachedProjector.SetRenderCameraId(screenId);
             attachedProjector.gameObject.SetActive(false);
+            
+            RenderPipelineManager.beginCameraRendering += RenderPipelineManagerOnbeginCameraRendering;
         }
         
         private void Start()
@@ -202,8 +201,13 @@ namespace Warlander.Deedplanner.Logic.Cameras
             UpdateState();
         }
 
-        private void OnPreCull()
+        private void RenderPipelineManagerOnbeginCameraRendering(ScriptableRenderContext context, Camera camera)
         {
+            if (camera != AttachedCamera)
+            {
+                return;
+            }
+            
             if (_mapHandler.Map == null)
             {
                 return;
