@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
@@ -8,23 +10,38 @@ namespace Warlander.Deedplanner.Graphics.Projectors
 {
     public class MapProjector : MonoBehaviour
     {
+        private const float RenderDistance = 20000f;
+        
         [Inject] private MapHandler _mapHandler;
-        
+
         [SerializeField] private ProjectorColor color = default;
-        [SerializeField] private Projector attachedProjector = null;
-        
+        [SerializeField] private DecalProjector attachedProjector = null;
+
         public ProjectorColor Color => color;
 
-        private int renderCameraId = -1;
-        
+        private int _renderCameraId = -1;
+
+        private void Awake()
+        {
+            RenderPipelineManager.beginCameraRendering += OnBeginCameraRendering;
+        }
+
+        private void OnBeginCameraRendering(ScriptableRenderContext context, Camera camera)
+        {
+            MultiCamera multiCamera = camera.GetComponent<MultiCamera>();
+            bool shouldProjectorBeEnabled = multiCamera != null
+                && (_renderCameraId == -1 || multiCamera.ScreenId == _renderCameraId);
+            attachedProjector.enabled = shouldProjectorBeEnabled;
+        }
+
         public void MarkRenderWithAllCameras()
         {
-            renderCameraId = -1;
+            _renderCameraId = -1;
         }
-        
+
         public void SetRenderCameraId(int id)
         {
-            renderCameraId = id;
+            _renderCameraId = id;
         }
 
         public void ProjectTile(Vector2Int tileCoord, TileSelectionTarget target = TileSelectionTarget.Tile)
@@ -32,33 +49,36 @@ namespace Warlander.Deedplanner.Graphics.Projectors
             int tileX = tileCoord.x;
             int tileY = tileCoord.y;
             const float borderThickness = TileSelection.BorderThickness;
-            
+            const float borderThicknessWorld = borderThickness * 4f;
+
             switch (target)
             {
                 case TileSelectionTarget.Tile:
-                    attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4 + 2);
-                    attachedProjector.orthographicSize = 2;
-                    attachedProjector.aspectRatio = 1;
+                    attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 500, tileY * 4 + 2);
+                    attachedProjector.size = new Vector3(4f, 4f, RenderDistance);
                     break;
                 case TileSelectionTarget.InnerTile:
-                    attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4 + 2);
-                    attachedProjector.orthographicSize = 2 - borderThickness * 4;
-                    attachedProjector.aspectRatio = 1;
+                    float innerTileSize = (2f - borderThicknessWorld) * 2f;
+                    attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 500, tileY * 4 + 2);
+                    attachedProjector.size = new Vector3(innerTileSize, innerTileSize, RenderDistance);
                     break;
                 case TileSelectionTarget.BottomBorder:
-                    attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 10000, tileY * 4);
-                    attachedProjector.orthographicSize = borderThickness * 4;
-                    attachedProjector.aspectRatio = 2f / (borderThickness * 4) - (borderThickness * 6);
+                    float bottomBorderWidth = 4f - 12f * borderThicknessWorld * borderThickness;
+                    float bottomBorderHeight = borderThicknessWorld * 2f;
+                    attachedProjector.transform.position = new Vector3(tileX * 4 + 2, 500, tileY * 4);
+                    attachedProjector.size = new Vector3(bottomBorderWidth, bottomBorderHeight, RenderDistance);
                     break;
                 case TileSelectionTarget.LeftBorder:
-                    attachedProjector.transform.position = new Vector3(tileX * 4, 10000, tileY * 4 + 2);
-                    attachedProjector.orthographicSize = 2 - (borderThickness * 4);
-                    attachedProjector.aspectRatio = (borderThickness * 4) / 1.5f;
+                    float leftBorderHalfLength = 2f - borderThicknessWorld;
+                    float leftBorderWidth = 2f * leftBorderHalfLength * (borderThicknessWorld / 1.5f);
+                    float leftBorderLength = 2f * leftBorderHalfLength;
+                    attachedProjector.transform.position = new Vector3(tileX * 4, 500, tileY * 4 + 2);
+                    attachedProjector.size = new Vector3(leftBorderWidth, leftBorderLength, RenderDistance);
                     break;
                 case TileSelectionTarget.Corner:
-                    attachedProjector.transform.position = new Vector3(tileX * 4, 10000, tileY * 4);
-                    attachedProjector.orthographicSize = borderThickness * 4;
-                    attachedProjector.aspectRatio = 1;
+                    float cornerSize = borderThicknessWorld * 2f;
+                    attachedProjector.transform.position = new Vector3(tileX * 4, 500, tileY * 4);
+                    attachedProjector.size = new Vector3(cornerSize, cornerSize, RenderDistance);
                     break;
             }
         }
@@ -66,29 +86,23 @@ namespace Warlander.Deedplanner.Graphics.Projectors
         public void ProjectLine(Vector2Int tileCoord, PlaneAlignment alignment)
         {
             Map map = _mapHandler.Map;
-            
+
             switch (alignment)
             {
                 case PlaneAlignment.Horizontal:
-                    attachedProjector.transform.localPosition = new Vector3(map.Width * 2f, 10000, tileCoord.y * 4);
-                    attachedProjector.orthographicSize = 0.25f;
-                    attachedProjector.aspectRatio = map.Width * 2 / attachedProjector.orthographicSize;
+                    attachedProjector.transform.position = new Vector3(map.Width * 2f, 500, tileCoord.y * 4);
+                    attachedProjector.size = new Vector3(map.Width * 4f, 0.5f, RenderDistance);
                     break;
                 case PlaneAlignment.Vertical:
-                    attachedProjector.transform.localPosition = new Vector3(tileCoord.x * 4, 10000, map.Height * 2f);
-                    attachedProjector.orthographicSize = map.Height * 2;
-                    attachedProjector.aspectRatio = 0.25f / attachedProjector.orthographicSize;
+                    attachedProjector.transform.position = new Vector3(tileCoord.x * 4, 500, map.Height * 2f);
+                    attachedProjector.size = new Vector3(0.5f, map.Height * 4f, RenderDistance);
                     break;
             }
         }
-
-        private void OnWillRenderObject()
+        
+        private void OnDestroy()
         {
-            Camera currentCamera = Camera.current;
-            MultiCamera currentMultiCamera = currentCamera.GetComponent<MultiCamera>();
-            
-            bool shouldProjectorBeEnabled = currentMultiCamera != null && (renderCameraId == -1 || currentMultiCamera.ScreenId == renderCameraId);
-            attachedProjector.enabled = shouldProjectorBeEnabled;
+            RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;
         }
     }
 }
