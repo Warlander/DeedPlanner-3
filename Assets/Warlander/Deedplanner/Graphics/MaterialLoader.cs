@@ -24,11 +24,11 @@ namespace Warlander.Deedplanner.Graphics
                 var texture = await textureReference.LoadOrGetTextureAsync();
                 if (texture)
                 {
-                    material.SetTexture(ShaderPropertyIds.MainTex, texture);
+                    material.mainTexture = texture;
                 }
                 else
                 {
-                    material.SetColor(ShaderPropertyIds.Color, new Color(1, 1, 1, 0));
+                    material.color = new Color(1, 1, 1, 0);
                 }
             }
 
