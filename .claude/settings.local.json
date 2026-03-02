@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "mcp__UnityMCP__create_script"
-    ]
-  }
-}

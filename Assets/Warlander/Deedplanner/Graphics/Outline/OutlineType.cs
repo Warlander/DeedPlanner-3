@@ -1,7 +1,7 @@
-﻿namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Graphics.Outline
 {
     /// <summary>
-    /// Indicates which kind of outline asset to use (with the main difference being color)
+    /// Indicates which kind of outline to use (the main difference being color).
     /// </summary>
     public enum OutlineType
     {

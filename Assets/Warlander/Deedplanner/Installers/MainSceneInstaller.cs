@@ -42,6 +42,7 @@ namespace Warlander.Deedplanner.Installers
             Container.Bind<LayoutManager>().FromInstance(_layoutManager);
             Container.Bind<CameraCoordinator>().FromInstance(_cameraCoordinator).AsSingle();
             Container.Bind<IOutlineCoordinator>().To<OutlineCoordinator>().AsSingle();
+            Container.BindInterfacesAndSelfTo<OutlineFeatureBridge>().AsSingle().NonLazy();
 
             Container.Bind<ICameraController>().To<FppCameraController>().AsTransient();
             Container.Bind<ICameraController>().To<IsoCameraController>().AsTransient();

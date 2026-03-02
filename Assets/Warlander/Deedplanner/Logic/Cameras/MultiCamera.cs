@@ -9,6 +9,7 @@ using UnityStandardAssets.Water;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Graphics.Outline;
 using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
@@ -216,7 +217,24 @@ namespace Warlander.Deedplanner.Logic.Cameras
             PrepareWater();
             PrepareMapState();
             UpdateRaycast();
+            UpdateHoverOutline();
             PrepareProjector();
+        }
+
+        private void UpdateHoverOutline()
+        {
+            DynamicModelBehaviour newTarget = CurrentRaycast.collider != null
+                ? CurrentRaycast.collider.GetComponent<DynamicModelBehaviour>()
+                : null;
+
+            if (newTarget == _outlinedModel) return;
+
+            if (_outlinedModel != null)
+                _outlineCoordinator.RemoveObject(_outlinedModel, 0);
+            if (newTarget != null)
+                _outlineCoordinator.AddObject(newTarget, OutlineType.Neutral, 0);
+
+            _outlinedModel = newTarget;
         }
 
         private void UpdateRaycast()
@@ -458,13 +476,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 return;
             }
 
-            _outlinedModel = hitCollider.GetComponent<DynamicModelBehaviour>();
-
-            if (_outlinedModel != null)
-            {
-                _outlineCoordinator.AddObject(_outlinedModel, OutlineType.Neutral, 0);
-            }
-            else if (hitCollider.GetType() == typeof(MeshCollider))
+            if (hitCollider.GetComponent<DynamicModelBehaviour>() == null
+                && hitCollider.GetType() == typeof(MeshCollider))
             {
                 MeshCollider meshCollider = (MeshCollider)hitCollider;
                 Mesh mesh = meshCollider.sharedMesh;
@@ -542,12 +555,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
             if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(false);
-            }
-
-            if (_outlinedModel != null)
-            {
-                _outlineCoordinator.RemoveObject(_outlinedModel, 0);
-                _outlinedModel = null;
             }
         }
     }
