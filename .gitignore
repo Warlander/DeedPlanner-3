@@ -43,3 +43,6 @@ UserSettings/
 .output.txt
 .ai/
 .claude/settings.local.json
+
+# Windows reserved device name (not a real file)
+nul
