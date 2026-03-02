@@ -407,6 +407,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
         
         private void PrepareProjector()
         {
+            attachedProjector.gameObject.SetActive(false);
+
             if (!CurrentRaycast.collider)
             {
                 return;
@@ -426,7 +428,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
             if (target == TileSelectionTarget.Nothing)
             {
-                attachedProjector.gameObject.SetActive(false);
                 return;
             }
 
@@ -549,13 +550,5 @@ namespace Warlander.Deedplanner.Logic.Cameras
             }
         }
 
-        private void OnPostRender()
-        {
-            attachedProjector.gameObject.SetActive(false);
-            if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
-            {
-                ultraQualityWater.gameObject.SetActive(false);
-            }
-        }
     }
 }
