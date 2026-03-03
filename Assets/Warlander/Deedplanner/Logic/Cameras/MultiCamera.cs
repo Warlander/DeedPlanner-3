@@ -4,11 +4,11 @@ using System.Text;
 using Plugins.Warlander.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityFx.Outline;
-using UnityStandardAssets.Water;
+using UnityEngine.Rendering;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Graphics.Outline;
 using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
@@ -41,13 +41,11 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [SerializeField] private int screenId = 0;
         [SerializeField] private GameObject screen = null;
 
-        [SerializeField] private Water ultraQualityWater = null;
+        [SerializeField] private WaterReflectionController ultraQualityWater = null;
         [SerializeField] private GameObject highQualityWater = null;
         [SerializeField] private GameObject simpleQualityWater = null;
 
         [SerializeField] private RectTransform selectionBox = null;
-
-        [SerializeField] private OutlineEffect _outlineEffect;
 
         [SerializeField] private Color pickerColor = new Color(1f, 1f, 0, 0.3f);
 
@@ -93,7 +91,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
         public bool RenderEntireMap => CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian;
 
         public GameObject Screen => screen;
-        public OutlineEffect OutlineEffect => _outlineEffect;
 
         public bool RenderSelectionBox
         {
@@ -129,6 +126,11 @@ namespace Warlander.Deedplanner.Logic.Cameras
             attachedProjector = _mapProjectorManager.RequestProjector(ProjectorColor.Yellow);
             attachedProjector.SetRenderCameraId(screenId);
             attachedProjector.gameObject.SetActive(false);
+
+            if (ultraQualityWater != null)
+                ultraQualityWater.SetMainCamera(AttachedCamera);
+
+            RenderPipelineManager.beginCameraRendering += RenderPipelineManagerOnbeginCameraRendering;
         }
         
         private void Start()
@@ -176,7 +178,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             Gui.WaterQuality waterQuality = _settings.WaterQuality;
             if (waterQuality != Gui.WaterQuality.Ultra)
             {
-                ultraQualityWater.gameObject.SetActive(false);
+                ultraQualityWater?.gameObject.SetActive(false);
             }
         }
 
@@ -202,8 +204,13 @@ namespace Warlander.Deedplanner.Logic.Cameras
             UpdateState();
         }
 
-        private void OnPreCull()
+        private void RenderPipelineManagerOnbeginCameraRendering(ScriptableRenderContext context, Camera camera)
         {
+            if (camera != AttachedCamera)
+            {
+                return;
+            }
+            
             if (_mapHandler.Map == null)
             {
                 return;
@@ -212,7 +219,24 @@ namespace Warlander.Deedplanner.Logic.Cameras
             PrepareWater();
             PrepareMapState();
             UpdateRaycast();
+            UpdateHoverOutline();
             PrepareProjector();
+        }
+
+        private void UpdateHoverOutline()
+        {
+            DynamicModelBehaviour newTarget = CurrentRaycast.collider != null
+                ? CurrentRaycast.collider.GetComponent<DynamicModelBehaviour>()
+                : null;
+
+            if (newTarget == _outlinedModel) return;
+
+            if (_outlinedModel != null)
+                _outlineCoordinator.RemoveObject(_outlinedModel, 0);
+            if (newTarget != null)
+                _outlineCoordinator.AddObject(newTarget, OutlineType.Neutral, 0);
+
+            _outlinedModel = newTarget;
         }
 
         private void UpdateRaycast()
@@ -328,10 +352,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(renderWater);
-                Vector3 ultraQualityWaterPosition;
-                ultraQualityWaterPosition = new Vector3(waterPosition.x, ultraQualityWater.transform.position.y, waterPosition.y);
-                ultraQualityWater.transform.position = ultraQualityWaterPosition;
-                ultraQualityWater.Update();
+                ultraQualityWater.transform.position = new Vector3(waterPosition.x, ultraQualityWater.transform.position.y, waterPosition.y);
             }
             else if (_settings.WaterQuality == Gui.WaterQuality.High)
             {
@@ -385,6 +406,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
         
         private void PrepareProjector()
         {
+            attachedProjector.gameObject.SetActive(false);
+
             if (!CurrentRaycast.collider)
             {
                 return;
@@ -404,7 +427,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
             if (target == TileSelectionTarget.Nothing)
             {
-                attachedProjector.gameObject.SetActive(false);
                 return;
             }
 
@@ -420,10 +442,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private void OnRenderObject()
         {
-            Camera[] waterCameras = ultraQualityWater.GetComponentsInChildren<Camera>();
-            bool currentWaterCamera = waterCameras.Contains(Camera.current);
-            bool currentAttachedCamera = Camera.current == AttachedCamera;
-            if (!currentWaterCamera && !currentAttachedCamera || !CurrentRaycast.collider)
+            if (Camera.current != AttachedCamera || !CurrentRaycast.collider)
             {
                 return;
             }
@@ -454,13 +473,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 return;
             }
 
-            _outlinedModel = hitCollider.GetComponent<DynamicModelBehaviour>();
-
-            if (_outlinedModel != null)
-            {
-                _outlineCoordinator.AddObject(_outlinedModel, OutlineType.Neutral, 0);
-            }
-            else if (hitCollider.GetType() == typeof(MeshCollider))
+            if (hitCollider.GetComponent<DynamicModelBehaviour>() == null
+                && hitCollider.GetType() == typeof(MeshCollider))
             {
                 MeshCollider meshCollider = (MeshCollider)hitCollider;
                 Mesh mesh = meshCollider.sharedMesh;
@@ -532,19 +546,5 @@ namespace Warlander.Deedplanner.Logic.Cameras
             }
         }
 
-        private void OnPostRender()
-        {
-            attachedProjector.gameObject.SetActive(false);
-            if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
-            {
-                ultraQualityWater.gameObject.SetActive(false);
-            }
-
-            if (_outlinedModel != null)
-            {
-                _outlineCoordinator.RemoveObject(_outlinedModel, 0);
-                _outlinedModel = null;
-            }
-        }
     }
 }

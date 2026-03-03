@@ -1,47 +1,30 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Logic.Cameras;
-using Zenject;
+using Warlander.Deedplanner.Graphics.Outline;
 
 namespace Warlander.Deedplanner.Logic
 {
     public class OutlineCoordinator : IOutlineCoordinator
     {
-        private readonly CameraCoordinator _cameraCoordinator;
+        private readonly Dictionary<DynamicModelBehaviour, OutlineType> _outlinesToUse = new Dictionary<DynamicModelBehaviour, OutlineType>();
+        private readonly Dictionary<DynamicModelBehaviour, int> _outlinesPriority  = new Dictionary<DynamicModelBehaviour, int>();
+        private readonly Dictionary<DynamicModelBehaviour, OutlineEntry> _activeOutlines = new Dictionary<DynamicModelBehaviour, OutlineEntry>();
 
-        [Inject]
-        public OutlineCoordinator(CameraCoordinator cameraCoordinator)
-        {
-            _cameraCoordinator = cameraCoordinator;
-        }
+        public bool HasOutlinedObjects => _activeOutlines.Count > 0;
 
-        private readonly Dictionary<DynamicModelBehaviour, OutlineType> _outlinesToUse =
-            new Dictionary<DynamicModelBehaviour, OutlineType>();
-
-        private readonly Dictionary<DynamicModelBehaviour, int> _outlinesPriority =
-            new Dictionary<DynamicModelBehaviour, int>();
-        
         public void AddObject(DynamicModelBehaviour behaviour, OutlineType type, int priority)
         {
             if (_outlinesPriority.TryGetValue(behaviour, out int currentPriority))
             {
-                if (currentPriority > priority)
-                {
-                    return;
-                }
+                if (currentPriority > priority) return;
             }
-            
+
             _outlinesToUse[behaviour] = type;
             _outlinesPriority[behaviour] = priority;
 
             if (behaviour.Model != null)
-            {
-                foreach (MultiCamera camera in _cameraCoordinator.Cameras)
-                {
-                    camera.OutlineEffect.AddGameObject(behaviour.Model, (int)type);
-                }
-            }
+                ApplyOutline(behaviour, type);
 
             behaviour.ModelLoaded += OnModelLoaded;
         }
@@ -49,31 +32,49 @@ namespace Warlander.Deedplanner.Logic
         private void OnModelLoaded(DynamicModelBehaviour rootObject, GameObject newModel)
         {
             OutlineType typeToUse = _outlinesToUse[rootObject];
-            
-            foreach (MultiCamera camera in _cameraCoordinator.Cameras)
-            {
-                camera.OutlineEffect.AddGameObject(newModel, (int)typeToUse);
-            }
+            RemoveOutline(rootObject);
+            ApplyOutline(rootObject, typeToUse);
         }
 
         public void RemoveObject(DynamicModelBehaviour behaviour, int priority)
         {
             if (_outlinesPriority.TryGetValue(behaviour, out int currentPriority))
             {
-                if (currentPriority > priority)
-                {
-                    return;
-                }
+                if (currentPriority > priority) return;
             }
-            
+
             behaviour.ModelLoaded -= OnModelLoaded;
             _outlinesToUse.Remove(behaviour);
             _outlinesPriority.Remove(behaviour);
-            
-            foreach (MultiCamera camera in _cameraCoordinator.Cameras)
+            RemoveOutline(behaviour);
+        }
+
+        private void ApplyOutline(DynamicModelBehaviour behaviour, OutlineType type)
+        {
+            GameObject modelRoot = behaviour.Model;
+            if (modelRoot == null) return;
+
+            if (_activeOutlines.TryGetValue(behaviour, out OutlineEntry existing))
             {
-                camera.OutlineEffect.RemoveGameObject(behaviour.Model);
+                _activeOutlines[behaviour] = new OutlineEntry(existing.Renderers, type);
+                return;
             }
+
+            Renderer[] renderers = modelRoot.GetComponentsInChildren<Renderer>();
+            _activeOutlines[behaviour] = new OutlineEntry(renderers, type);
+        }
+
+        private void RemoveOutline(DynamicModelBehaviour behaviour)
+        {
+            _activeOutlines.Remove(behaviour);
+        }
+        
+        public List<OutlineEntry> GetOutlinedObjectsSnapshot()
+        {
+            var result = new List<OutlineEntry>(_activeOutlines.Count);
+            foreach (var kvp in _activeOutlines)
+                result.Add(kvp.Value);
+            return result;
         }
     }
 }

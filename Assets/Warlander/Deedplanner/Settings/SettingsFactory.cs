@@ -3,6 +3,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using UnityEngine;
+using Warlander.Deedplanner.Gui;
 using Zenject;
 
 namespace Warlander.Deedplanner.Settings
@@ -23,7 +24,8 @@ namespace Warlander.Deedplanner.Settings
                 {
                     using (XmlReader xmlReader = new XmlTextReader(reader))
                     {
-                        return (DPSettings) xmlSerializer.Deserialize(xmlReader);
+                        DPSettings settings = (DPSettings) xmlSerializer.Deserialize(xmlReader);
+                        return settings;
                     }
                 }
             }
