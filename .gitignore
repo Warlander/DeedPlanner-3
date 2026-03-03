@@ -41,8 +41,11 @@ sysinfo.txt
 *.unitypackage
 UserSettings/
 .output.txt
+
+# AI
 .ai/
 .claude/settings.local.json
+.mcp.json
 
 # Windows reserved device name (not a real file)
 nul
