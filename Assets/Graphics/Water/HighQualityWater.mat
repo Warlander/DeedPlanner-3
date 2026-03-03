@@ -105,7 +105,7 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DepthFade: 0
+    - _DepthFade: 2
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -113,6 +113,9 @@ Material:
     - _EnvironmentReflections: 1
     - _FresnelBias: 0.02
     - _FresnelPower: 4
+    - _MinWaterAlpha: 0.5
+    - _ShoreFadeDistance: 0.5
+    - _ShoreStrength: 0.65
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -137,6 +140,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.15, g: 0.45, b: 0.7, a: 0.65}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ShoreColor: {r: 0.5, g: 0.8, b: 0.92, a: 1}
     - _DeepColor: {r: 0.02, g: 0.1, b: 0.28, a: 0.9}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _ScrollSpeed1: {r: 0.009, g: 0.006, b: 0, a: 0}

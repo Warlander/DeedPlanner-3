@@ -26,6 +26,12 @@ Shader "DeedPlanner/URPWater"
         // --- Planar reflections (Ultra / PLANAR_REFLECTIONS keyword) ---
         _ReflectionTex      ("Reflection Texture",      2D)             = "black" {}
         _ReflectionStrength ("Reflection Strength",     Range(0,1))     = 0.85
+
+        // --- Shore highlight (readability in map editor) ---
+        _ShoreColor         ("Shore Highlight Color",   Color)          = (0.50, 0.80, 0.92, 1.0)
+        _ShoreFadeDistance  ("Shore Fade Distance",     Float)          = 0.5
+        _ShoreStrength      ("Shore Strength",          Range(0,1))     = 0.65
+        _MinWaterAlpha      ("Min Water Alpha",         Range(0,1))     = 0.50
     }
 
     SubShader
@@ -88,6 +94,11 @@ Shader "DeedPlanner/URPWater"
 
                 float4  _ReflectionTex_ST;
                 float   _ReflectionStrength;
+
+                half4   _ShoreColor;
+                float   _ShoreFadeDistance;
+                float   _ShoreStrength;
+                float   _MinWaterAlpha;
             CBUFFER_END
 
             // -------------------------------------------------------------------
@@ -160,6 +171,8 @@ Shader "DeedPlanner/URPWater"
                 float surfDepth  = input.screenPos.w;
                 float depthDiff  = sceneDepth - surfDepth;
                 half  depthAlpha = saturate(depthDiff / max(_DepthFade, 0.001));
+                // Shore factor: 1.0 right at the shoreline edge, 0.0 in open water
+                float shoreFactor = 1.0 - saturate(depthDiff / max(_ShoreFadeDistance, 0.001));
 
                 // --- Fresnel ---
                 float3 viewDirWS = normalize(GetWorldSpaceViewDir(input.positionWS));
@@ -174,6 +187,8 @@ Shader "DeedPlanner/URPWater"
 
                 // --- Base water color (depth-blended) ---
                 half4 waterColor = lerp(_BaseColor, _DeepColor, depthAlpha);
+                // Blend toward lighter shore color near the waterline for editor readability
+                waterColor.rgb = lerp(waterColor.rgb, _ShoreColor.rgb, shoreFactor * _ShoreStrength);
 
                 // --- Reflections (Ultra quality: PLANAR_REFLECTIONS keyword) ---
                 #ifdef PLANAR_REFLECTIONS
@@ -187,8 +202,10 @@ Shader "DeedPlanner/URPWater"
                 // Add specular highlight
                 waterColor.rgb += spec * _SpecColor.rgb * mainLight.color;
 
-                // Final alpha: deeper = more opaque, grazing angles = more opaque
-                waterColor.a = saturate(waterColor.a * (depthAlpha + fresnel * 0.4));
+                // Final alpha: minimum opacity so shallow/shore water is always visible;
+                // linearly grows from _MinWaterAlpha (shore) to full material alpha (deep).
+                float baseAlpha = lerp(_MinWaterAlpha, waterColor.a, depthAlpha);
+                waterColor.a = saturate(baseAlpha + fresnel * 0.25);
 
                 return waterColor;
             }
