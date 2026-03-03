@@ -5,7 +5,6 @@ using Plugins.Warlander.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
-using UnityStandardAssets.Water;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
@@ -42,7 +41,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [SerializeField] private int screenId = 0;
         [SerializeField] private GameObject screen = null;
 
-        [SerializeField] private Water ultraQualityWater = null;
+        [SerializeField] private WaterReflectionController ultraQualityWater = null;
         [SerializeField] private GameObject highQualityWater = null;
         [SerializeField] private GameObject simpleQualityWater = null;
 
@@ -127,7 +126,10 @@ namespace Warlander.Deedplanner.Logic.Cameras
             attachedProjector = _mapProjectorManager.RequestProjector(ProjectorColor.Yellow);
             attachedProjector.SetRenderCameraId(screenId);
             attachedProjector.gameObject.SetActive(false);
-            
+
+            if (ultraQualityWater != null)
+                ultraQualityWater.SetMainCamera(AttachedCamera);
+
             RenderPipelineManager.beginCameraRendering += RenderPipelineManagerOnbeginCameraRendering;
         }
         
@@ -176,7 +178,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             Gui.WaterQuality waterQuality = _settings.WaterQuality;
             if (waterQuality != Gui.WaterQuality.Ultra)
             {
-                ultraQualityWater.gameObject.SetActive(false);
+                ultraQualityWater?.gameObject.SetActive(false);
             }
         }
 
@@ -350,10 +352,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
             {
                 ultraQualityWater.gameObject.SetActive(renderWater);
-                Vector3 ultraQualityWaterPosition;
-                ultraQualityWaterPosition = new Vector3(waterPosition.x, ultraQualityWater.transform.position.y, waterPosition.y);
-                ultraQualityWater.transform.position = ultraQualityWaterPosition;
-                ultraQualityWater.Update();
+                ultraQualityWater.transform.position = new Vector3(waterPosition.x, ultraQualityWater.transform.position.y, waterPosition.y);
             }
             else if (_settings.WaterQuality == Gui.WaterQuality.High)
             {
@@ -443,10 +442,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private void OnRenderObject()
         {
-            Camera[] waterCameras = ultraQualityWater.GetComponentsInChildren<Camera>();
-            bool currentWaterCamera = waterCameras.Contains(Camera.current);
-            bool currentAttachedCamera = Camera.current == AttachedCamera;
-            if (!currentWaterCamera && !currentAttachedCamera || !CurrentRaycast.collider)
+            if (Camera.current != AttachedCamera || !CurrentRaycast.collider)
             {
                 return;
             }

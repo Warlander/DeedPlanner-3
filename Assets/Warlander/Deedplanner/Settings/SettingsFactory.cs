@@ -25,7 +25,6 @@ namespace Warlander.Deedplanner.Settings
                     using (XmlReader xmlReader = new XmlTextReader(reader))
                     {
                         DPSettings settings = (DPSettings) xmlSerializer.Deserialize(xmlReader);
-                        settings.WaterQuality = WaterQuality.Simple;
                         return settings;
                     }
                 }
