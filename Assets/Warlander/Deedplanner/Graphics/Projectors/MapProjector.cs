@@ -8,10 +8,10 @@ using Zenject;
 
 namespace Warlander.Deedplanner.Graphics.Projectors
 {
-    public class MapProjector : MonoBehaviour
+    public class MapProjector : MonoBehaviour, IToggleableMapProjector
     {
         private const float RenderDistance = 20000f;
-        
+
         [Inject] private MapHandler _mapHandler;
 
         [SerializeField] private ProjectorColor color = default;
@@ -33,6 +33,10 @@ namespace Warlander.Deedplanner.Graphics.Projectors
                 && (_renderCameraId == -1 || multiCamera.ScreenId == _renderCameraId);
             attachedProjector.enabled = shouldProjectorBeEnabled;
         }
+
+        public void Activate() => gameObject.SetActive(true);
+
+        public void Deactivate() => gameObject.SetActive(false);
 
         public void MarkRenderWithAllCameras()
         {
@@ -99,7 +103,7 @@ namespace Warlander.Deedplanner.Graphics.Projectors
                     break;
             }
         }
-        
+
         private void OnDestroy()
         {
             RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;

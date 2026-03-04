@@ -28,7 +28,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private MapHandler _mapHandler;
-        [Inject] private MapProjectorManager _mapProjectorManager;
+        [Inject] private IMapProjectorFacade _mapProjectorFacade;
         [Inject] private IOutlineCoordinator _outlineCoordinator;
 
         public event Action LevelChanged;
@@ -114,7 +114,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             set => selectionBox.sizeDelta = value;
         }
         
-        private MapProjector attachedProjector = null;
+        private IMapProjector _attachedProjector;
         private DynamicModelBehaviour _outlinedModel;
         
         private CameraMode cameraMode = CameraMode.Top;
@@ -123,9 +123,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
         private void Awake()
         {
             AttachedCamera = GetComponent<Camera>();
-            attachedProjector = _mapProjectorManager.RequestProjector(ProjectorColor.Yellow);
-            attachedProjector.SetRenderCameraId(screenId);
-            attachedProjector.gameObject.SetActive(false);
 
             if (ultraQualityWater != null)
                 ultraQualityWater.SetMainCamera(AttachedCamera);
@@ -406,19 +403,19 @@ namespace Warlander.Deedplanner.Logic.Cameras
         
         private void PrepareProjector()
         {
-            attachedProjector.gameObject.SetActive(false);
+            if (_attachedProjector != null)
+            {
+                _mapProjectorFacade.FreeProjector(_attachedProjector);
+                _attachedProjector = null;
+            }
 
             if (!CurrentRaycast.collider)
-            {
                 return;
-            }
 
             GameObject hitObject = CurrentRaycast.collider.gameObject;
             bool gridOrGroundHit = hitObject.GetComponent<GroundMesh>() || hitObject.GetComponent<OverlayMesh>();
             if (!gridOrGroundHit)
-            {
                 return;
-            }
 
             TileSelectionMode tileSelectionMode = LayoutManager.Instance.TileSelectionMode;
             Vector3 raycastPosition = CurrentRaycast.point;
@@ -426,13 +423,12 @@ namespace Warlander.Deedplanner.Logic.Cameras
             TileSelectionTarget target = tileSelectionHit.Target;
 
             if (target == TileSelectionTarget.Nothing)
-            {
                 return;
-            }
 
-            attachedProjector.gameObject.SetActive(true);
+            _attachedProjector = _mapProjectorFacade.RequestProjector(ProjectorColor.Yellow);
+            _attachedProjector.SetRenderCameraId(screenId);
             Vector2Int tileCoords = new Vector2Int(tileSelectionHit.X, tileSelectionHit.Y);
-            attachedProjector.ProjectTile(tileCoords, target);
+            _attachedProjector.ProjectTile(tileCoords, target);
         }
 
         private void UpdateState()

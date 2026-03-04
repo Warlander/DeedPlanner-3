@@ -19,8 +19,6 @@ namespace Warlander.Deedplanner.Installers
         [SerializeField] private DebugProperties _debugProperties;
         [SerializeField] private LayoutManager _layoutManager;
         [SerializeField] private CameraCoordinator _cameraCoordinator;
-        [SerializeField] private MapProjectorManager _mapProjectorManager;
-
         [SerializeField] private AbstractUpdater[] _updaters;
         
         [SerializeField] private BridgeTabSwapper _bridgeTabSwapper;
@@ -55,7 +53,7 @@ namespace Warlander.Deedplanner.Installers
             Container.Bind<MapHandler>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<UndoRedoInputHandler>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<UpdaterCoordinator>().AsSingle().NonLazy();
-            Container.Bind<MapProjectorManager>().FromComponentInNewPrefab(_mapProjectorManager).AsSingle();
+            Container.BindInterfacesTo<MapProjectorFacade>().AsSingle();
 
             Container.BindInterfacesTo<StartupMapLoader>().AsSingle().NonLazy();
             
