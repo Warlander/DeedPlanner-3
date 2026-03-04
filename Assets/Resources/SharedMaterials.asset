@@ -16,5 +16,6 @@ MonoBehaviour:
     type: 2}
   _simpleSubtleDrawingMaterial: {fileID: 2100000, guid: 93abf6afb4e23074c81069e12f87f9a0,
     type: 2}
-  _terrainMaterial: {fileID: 2100000, guid: 513745b12b2a57b44b0262587e2cb2c7, type: 2}
+  _terrainMaterial: {fileID: -876546973899608171, guid: de79bf08bc5080f4dae0f6429a577874,
+    type: 3}
   _ghostMaterial: {fileID: 2100000, guid: 8f0ac5ff2be70c9458e974013c318ccc, type: 2}

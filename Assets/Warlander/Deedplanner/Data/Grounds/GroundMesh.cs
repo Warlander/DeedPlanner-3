@@ -60,7 +60,7 @@ namespace Warlander.Deedplanner.Data.Grounds
             if (!material)
             {
                 material = new Material(_sharedMaterials.TerrainMaterial);
-                material.mainTexture = groundTexturesArray.TextureArray;
+                material.SetTexture("_MainTex", groundTexturesArray.TextureArray);
             }
 
             if (!meshRenderer)
