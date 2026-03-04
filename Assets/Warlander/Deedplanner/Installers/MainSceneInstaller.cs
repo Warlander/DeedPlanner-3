@@ -21,19 +21,7 @@ namespace Warlander.Deedplanner.Installers
         [SerializeField] private CameraCoordinator _cameraCoordinator;
         [SerializeField] private MapProjectorManager _mapProjectorManager;
 
-        [SerializeField] private GroundUpdater _groundUpdater;
-        [SerializeField] private CaveUpdater _caveUpdater;
-        [SerializeField] private HeightUpdater _heightUpdater;
-        [SerializeField] private FloorUpdater _floorsUpdater;
-        [SerializeField] private WallUpdater _wallUpdater;
-        [SerializeField] private RoofUpdater _roofUpdater;
-        [SerializeField] private DecorationUpdater _decorationUpdater;
-        [SerializeField] private LabelUpdater _labelUpdater;
-        [SerializeField] private BorderUpdater _borderUpdater;
-        [SerializeField] private BridgesUpdater _bridgesUpdater;
-        [SerializeField] private MirrorUpdater _mirrorUpdater;
-        [SerializeField] private ToolsUpdater _toolsUpdater;
-        [SerializeField] private MenuUpdater _menuUpdater;
+        [SerializeField] private AbstractUpdater[] _updaters;
         
         [SerializeField] private BridgeTabSwapper _bridgeTabSwapper;
         
@@ -82,26 +70,15 @@ namespace Warlander.Deedplanner.Installers
             Container.BindInterfacesAndSelfTo<MapRoofCalculator>().AsSingle();
             
             //Updaters.
-            BindUpdater(_groundUpdater);
-            BindUpdater(_caveUpdater);
-            BindUpdater(_heightUpdater);
-            BindUpdater(_floorsUpdater);
-            BindUpdater(_wallUpdater);
-            BindUpdater(_roofUpdater);
-            BindUpdater(_decorationUpdater);
-            BindUpdater(_labelUpdater);
-            BindUpdater(_borderUpdater);
-            BindUpdater(_bridgesUpdater);
-            BindUpdater(_mirrorUpdater);
-            BindUpdater(_toolsUpdater);
-            BindUpdater(_menuUpdater);
+            foreach (var updater in _updaters)
+                BindUpdater(updater);
 
             Container.Bind<BridgeTabSwapper>().FromInstance(_bridgeTabSwapper);
         }
 
-        private void BindUpdater<T>(T updater) where T : AbstractUpdater
+        private void BindUpdater(AbstractUpdater updater)
         {
-            Container.BindInterfacesAndSelfTo<T>().FromInstance(updater).AsSingle();
+            Container.BindInterfacesAndSelfTo(updater.GetType()).FromInstance(updater).AsSingle();
             Container.Bind<AbstractUpdater>().FromInstance(updater).AsCached();
         }
     }

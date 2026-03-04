@@ -33103,19 +33103,20 @@ MonoBehaviour:
   _cameraCoordinator: {fileID: 1890273981}
   _mapProjectorManager: {fileID: 4600826319021692651, guid: 96c65a1d2a7e4c2428356c91263c4fd0,
     type: 3}
-  _groundUpdater: {fileID: 1200891937}
-  _caveUpdater: {fileID: 650922445}
-  _heightUpdater: {fileID: 1165461625}
-  _floorsUpdater: {fileID: 716036715}
-  _wallUpdater: {fileID: 835980717}
-  _roofUpdater: {fileID: 103496097}
-  _decorationUpdater: {fileID: 1604227846}
-  _labelUpdater: {fileID: 211449320}
-  _borderUpdater: {fileID: 1828645446}
-  _bridgesUpdater: {fileID: 475321930}
-  _mirrorUpdater: {fileID: 205400789}
-  _toolsUpdater: {fileID: 2018367164}
-  _menuUpdater: {fileID: 860138627}
+  _updaters:
+  - {fileID: 1200891937}
+  - {fileID: 650922445}
+  - {fileID: 1165461625}
+  - {fileID: 716036715}
+  - {fileID: 835980717}
+  - {fileID: 103496097}
+  - {fileID: 1604227846}
+  - {fileID: 211449320}
+  - {fileID: 1828645446}
+  - {fileID: 475321930}
+  - {fileID: 205400789}
+  - {fileID: 2018367164}
+  - {fileID: 860138627}
   _bridgeTabSwapper: {fileID: 1731037936}
 --- !u!114 &1412727819
 MonoBehaviour:
