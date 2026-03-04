@@ -20,6 +20,8 @@ namespace Warlander.Deedplanner.Data.Grounds
         private const float TileSize = 4f;
         private const float SlopeToHeight = 0.1f;
 
+        private ISharedMaterials _sharedMaterials;
+
         private Material material;
         private MeshRenderer meshRenderer;
         private MeshFilter meshFilter;
@@ -43,20 +45,21 @@ namespace Warlander.Deedplanner.Data.Grounds
         private bool needsVerticesUpdate = false;
         private bool needsUvUpdate = false;
 
-        public void Initialize(int width, int height, OverlayMesh newOverlayMesh)
+        public void Initialize(int width, int height, OverlayMesh newOverlayMesh, ISharedMaterials sharedMaterials)
         {
+            _sharedMaterials = sharedMaterials;
             gameObject.layer = LayerMasks.GroundLayer;
             if (groundTexturesArray == null)
             {
                 int groundTexturesCount = CalculateGroundTexturesCount();
                 groundTexturesArray = new IndexedTextureArray<TextureReference>(GroundTexturesWidth, GroundTexturesHeight, groundTexturesCount);
             }
-            
+
             gameObject.layer = LayerMasks.GroundLayer;
 
             if (!material)
             {
-                material = new Material(GraphicsManager.Instance.TerrainMaterial);
+                material = new Material(_sharedMaterials.TerrainMaterial);
                 material.mainTexture = groundTexturesArray.TextureArray;
             }
 

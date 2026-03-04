@@ -10,6 +10,7 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Features;
+using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Settings;
@@ -28,6 +29,7 @@ namespace Warlander.Deedplanner.Data
         [Inject] private IFeatureStateRetriever _featureStateRetriever;
         [Inject] private MapHeightTracker _heightTracker;
         [Inject] private MapRoofCalculator _roofCalculator;
+        [Inject] private ISharedMaterials _sharedMaterials;
 
         public GroundMesh Ground { get; private set; }
 
@@ -245,7 +247,7 @@ namespace Warlander.Deedplanner.Data
 
             GameObject groundObject = new GameObject("Ground Mesh", typeof(GroundMesh));
             Ground = groundObject.GetComponent<GroundMesh>();
-            Ground.Initialize(width, height, surfaceOverlayMesh);
+            Ground.Initialize(width, height, surfaceOverlayMesh, _sharedMaterials);
             surfaceOverlayMesh.Initialize(Ground.ColliderMesh);
             AddEntityToMap(groundObject, 0);
 

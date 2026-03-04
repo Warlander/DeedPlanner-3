@@ -27,6 +27,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPInput _input;
         [Inject] private MapHandler _mapHandler;
         [Inject] private IOutlineCoordinator _outlineCoordinator;
+        [Inject] private ISharedMaterials _sharedMaterials;
 
         [SerializeField] private UnityTree _decorationsTree;
 
@@ -133,7 +134,7 @@ namespace Warlander.Deedplanner.Updaters
             GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             LevelEntity levelEntity = raycast.transform.GetComponent<LevelEntity>();
 
-            Material ghostMaterial = GraphicsManager.Instance.GhostMaterial;
+            Material ghostMaterial = _sharedMaterials.GhostMaterial;
             if (dataChanged)
             {
                 data.Model.CreateOrGetModel(ghostMaterial, OnGhostCreated);

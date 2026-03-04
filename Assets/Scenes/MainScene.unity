@@ -10847,58 +10847,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16fe2af633ae7014c93e84822782ad0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &412287672
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 412287673}
-  - component: {fileID: 412287674}
-  m_Layer: 0
-  m_Name: Graphics Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &412287673
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 412287672}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 661221209}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &412287674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 412287672}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b51aab060646be4191936d5fcea33e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  womDefaultMaterial: {fileID: 2100000, guid: 2569ae703d907e84ebd14b1703b732fb, type: 2}
-  simpleDrawingMaterial: {fileID: 2100000, guid: 2fe49197c8e00db479d9bcddc842c4a5,
-    type: 2}
-  simpleSubtleDrawingMaterial: {fileID: 2100000, guid: 93abf6afb4e23074c81069e12f87f9a0,
-    type: 2}
-  terrainMaterial: {fileID: -876546973899608171, guid: de79bf08bc5080f4dae0f6429a577874,
-    type: 3}
-  ghostMaterial: {fileID: 2100000, guid: 8f0ac5ff2be70c9458e974013c318ccc, type: 2}
 --- !u!114 &417295211 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
@@ -14519,7 +14467,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 167561237}
-  - {fileID: 412287673}
   m_Father: {fileID: 1145859125}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &661367297
@@ -33101,8 +33048,6 @@ MonoBehaviour:
   _debugProperties: {fileID: 11400000, guid: 814971153ac067e47b61f466e9322aa6, type: 2}
   _layoutManager: {fileID: 167561238}
   _cameraCoordinator: {fileID: 1890273981}
-  _mapProjectorManager: {fileID: 4600826319021692651, guid: 96c65a1d2a7e4c2428356c91263c4fd0,
-    type: 3}
   _updaters:
   - {fileID: 1200891937}
   - {fileID: 650922445}

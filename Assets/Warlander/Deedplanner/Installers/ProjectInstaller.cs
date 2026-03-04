@@ -29,6 +29,8 @@ namespace Warlander.Deedplanner.Installers
 
             Container.BindInterfacesAndSelfTo<DefaultTargetFrameRateSetter>().AsSingle().NonLazy();
 
+            Container.Bind<ISharedMaterials>().To<SharedMaterials>().FromResource("SharedMaterials").AsSingle();
+
             Container.Bind<ITextureReferenceFactory>().To<TextureReferenceFactory>().AsSingle();
             Container.Bind<IWurmMeshLoader>().To<WurmMeshLoader>().AsSingle();
             Container.Bind<ITextureLoader>().To<AggregateTextureLoader>().AsSingle();

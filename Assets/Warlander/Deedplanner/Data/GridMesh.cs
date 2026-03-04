@@ -15,6 +15,7 @@ namespace Warlander.Deedplanner.Data
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private HeightmapHandleMeshLoader _heightmapHandleMeshLoader;
+        [Inject] private ISharedMaterials _sharedMaterials;
         
         private Map map;
         private bool cave;
@@ -99,7 +100,7 @@ namespace Warlander.Deedplanner.Data
             mesh.SetIndices(indices, MeshTopology.Lines, 0, true);
 
             meshFilter.sharedMesh = mesh;
-            meshRenderer.sharedMaterial = GraphicsManager.Instance.SimpleSubtleDrawingMaterial;
+            meshRenderer.sharedMaterial = _sharedMaterials.SimpleSubtleDrawingMaterial;
 
             verticesChanged = false;
             dirty = false;
@@ -132,7 +133,7 @@ namespace Warlander.Deedplanner.Data
                 heightmapRenderCache[color].Add(heightmapHandle.TransformMatrix);
             }
 
-            Material drawMaterial = GraphicsManager.Instance.SimpleDrawingMaterial;
+            Material drawMaterial = _sharedMaterials.SimpleDrawingMaterial;
             
             foreach (KeyValuePair<Color, List<Matrix4x4>> pair in heightmapRenderCache)
             {

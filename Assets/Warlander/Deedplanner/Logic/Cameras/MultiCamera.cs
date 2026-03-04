@@ -30,6 +30,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [Inject] private MapHandler _mapHandler;
         [Inject] private IMapProjectorFacade _mapProjectorFacade;
         [Inject] private IOutlineCoordinator _outlineCoordinator;
+        [Inject] private ISharedMaterials _sharedMaterials;
 
         public event Action LevelChanged;
         public event Action ModeChanged;
@@ -393,11 +394,11 @@ namespace Warlander.Deedplanner.Logic.Cameras
             switch (gridMaterialType)
             {
                 case GridMaterialType.Uniform:
-                    return GraphicsManager.Instance.SimpleDrawingMaterial;
+                    return _sharedMaterials.SimpleDrawingMaterial;
                 case GridMaterialType.ProximityBased:
-                    return GraphicsManager.Instance.SimpleSubtleDrawingMaterial;
+                    return _sharedMaterials.SimpleSubtleDrawingMaterial;
                 default:
-                    return GraphicsManager.Instance.SimpleDrawingMaterial;
+                    return _sharedMaterials.SimpleDrawingMaterial;
             }
         }
         
@@ -453,7 +454,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             if (!gridOrGroundHit)
             {
                 GL.PushMatrix();
-                GraphicsManager.Instance.SimpleDrawingMaterial.SetPass(0);
+                _sharedMaterials.SimpleDrawingMaterial.SetPass(0);
                 Matrix4x4 rotationMatrix = Matrix4x4.TRS(hitObject.transform.position, hitObject.transform.rotation, hitObject.transform.lossyScale);
                 GL.MultMatrix(rotationMatrix);
                 RenderRaytrace();
