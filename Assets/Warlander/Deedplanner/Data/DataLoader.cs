@@ -27,8 +27,7 @@ namespace Warlander.Deedplanner.Data
         private readonly ITextureReferenceFactory _textureReferenceFactory;
         private readonly IWurmModelFactory _modelFactory;
         private readonly BridgePartDataFactory _bridgePartDataFactory;
-
-        [Inject]
+        
         public DataLoader(UnityThreadRunner unityThreadRunner, ITextureReferenceFactory textureReferenceFactory,
             IWurmModelFactory modelFactory, BridgePartDataFactory bridgePartDataFactory)
         {
