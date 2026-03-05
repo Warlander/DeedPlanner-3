@@ -7,12 +7,12 @@ using UnityEngine.Rendering.Universal;
 using Warlander.Deedplanner.Graphics.Outline;
 using Zenject;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Logic.Outlines
 {
     public class OutlineFeatureBridge : IInitializable, IDisposable
     {
         private readonly IOutlineCoordinator _coordinator;
-        
+
         private List<ScreenSpaceOutlineFeature> _registeredFeatures;
 
         public OutlineFeatureBridge(IOutlineCoordinator coordinator)
@@ -27,7 +27,7 @@ namespace Warlander.Deedplanner.Logic
             {
                 feature.RegisterCoordinator(_coordinator);
             }
-                
+
         }
 
         void IDisposable.Dispose()
@@ -36,14 +36,14 @@ namespace Warlander.Deedplanner.Logic
             {
                 feature.UnregisterCoordinator();
             }
-            
+
             _registeredFeatures.Clear();
         }
 
         private List<ScreenSpaceOutlineFeature> FindAllFeatures()
         {
             List<ScreenSpaceOutlineFeature> results = new List<ScreenSpaceOutlineFeature>();
-            
+
             int levelCount = QualitySettings.count;
             var seen = new HashSet<UniversalRenderPipelineAsset>();
 

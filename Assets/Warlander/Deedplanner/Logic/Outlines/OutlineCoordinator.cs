@@ -3,7 +3,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Graphics.Outline;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Logic.Outlines
 {
     public class OutlineCoordinator : IOutlineCoordinator
     {
@@ -68,7 +68,7 @@ namespace Warlander.Deedplanner.Logic
         {
             _activeOutlines.Remove(behaviour);
         }
-        
+
         public List<OutlineEntry> GetOutlinedObjectsSnapshot()
         {
             var result = new List<OutlineEntry>(_activeOutlines.Count);

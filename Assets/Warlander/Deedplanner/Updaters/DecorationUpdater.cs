@@ -15,6 +15,7 @@ using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Graphics.Outline;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Settings;
 using Zenject;
 

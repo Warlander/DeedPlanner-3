@@ -4,7 +4,7 @@ using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
-using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Outlines;
 
 namespace Warlander.Deedplanner.Graphics.Outline
 {
