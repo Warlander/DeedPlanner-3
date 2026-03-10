@@ -1,65 +1,74 @@
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {
     /// <summary>
     /// Manages a planar reflection camera for Ultra quality water.
-    /// Attach to the Ultra Quality Water GameObject alongside a MeshRenderer.
-    /// Call SetMainCamera from MultiCamera.Awake() to wire the source camera.
+    /// Plain C# class — not a MonoBehaviour. Unity lifecycle calls are delegated from MultiCamera.
+    /// Call Initialize() once from MultiCamera.Start() to wire the source camera and water renderer.
+    /// Call OnBeginCameraRendering() from MultiCamera's beginCameraRendering hook (Ultra quality only).
+    /// Call Dispose() from MultiCamera.OnDestroy() to clean up GPU resources.
     /// </summary>
-    [RequireComponent(typeof(Renderer))]
-    public class WaterReflectionController : MonoBehaviour
+    public class WaterReflectionController
     {
-        [SerializeField] private int _textureSize = 512;
-        [SerializeField] private LayerMask _reflectLayers = -1;
-        [SerializeField] private float _clipPlaneOffset = 0.07f;
+        private static readonly int ReflectionTexId = Shader.PropertyToID("_ReflectionTex");
+        private const int TextureSize = 512;
+        private const float ClipPlaneOffset = 0.07f;
 
         private Camera _sourceCamera;
+        private Renderer _waterRenderer;
         private Camera _reflectionCamera;
         private RenderTexture _reflectionRT;
-        private Material _waterMaterialInstance;
+        private MaterialPropertyBlock _propertyBlock;
 
-        // Static guard: prevents the reflection camera from recursively triggering
-        // another reflection render when beginCameraRendering fires for it.
-        private static bool s_RenderingReflection;
-
-        private static readonly int ReflectionTexId = Shader.PropertyToID("_ReflectionTex");
-
-        private void Awake()
+        /// <summary>
+        /// Wire the source camera and the shared ComplexWater renderer.
+        /// Called by MultiCamera.Start() after Zenject injection and Awake have both run.
+        /// </summary>
+        public void Initialize(Camera sourceCamera, Renderer waterRenderer)
         {
-            // Obtain an instanced material so each water object has its own _ReflectionTex
-            // binding. .material creates the instance; .sharedMaterial would be shared across all.
-            _waterMaterialInstance = GetComponent<Renderer>().material;
+            _sourceCamera = sourceCamera;
+            _waterRenderer = waterRenderer;
+            _propertyBlock = new MaterialPropertyBlock();
+            CreateReflectionCamera();
         }
 
         /// <summary>
-        /// Wire the source camera this water object belongs to.
-        /// Called by MultiCamera.Awake() immediately after obtaining AttachedCamera.
+        /// Render this camera's reflection and push it to the global _ReflectionTex slot.
+        /// Must be called from MultiCamera's beginCameraRendering hook, before the camera renders.
+        /// Cameras render sequentially in URP, so setting the global texture here is safe —
+        /// each camera reads its own RT during its own render pass.
         /// </summary>
-        public void SetMainCamera(Camera sourceCamera)
+        public void OnBeginCameraRendering()
         {
-            if (_sourceCamera != null)
-            {
-                Debug.LogWarning("[WaterReflectionController] SetMainCamera called more than once.", this);
-                return;
-            }
+            if (_reflectionCamera == null) return;
+            EnsureReflectionRT();
+            RenderReflection();
+        }
 
-            _sourceCamera = sourceCamera;
-            CreateReflectionCamera();
-            EnsureRenderTexture();
-            RenderPipelineManager.beginCameraRendering += OnBeginCameraRendering;
+        /// <summary>
+        /// Destroy the hidden reflection camera and release the render texture.
+        /// Called by MultiCamera.OnDestroy().
+        /// </summary>
+        public void Dispose()
+        {
+            if (_reflectionCamera != null)
+                Object.Destroy(_reflectionCamera.gameObject);
+
+            if (_reflectionRT != null)
+            {
+                _reflectionRT.Release();
+                Object.Destroy(_reflectionRT);
+            }
         }
 
         private void CreateReflectionCamera()
         {
             GameObject camGO = new GameObject("__WaterReflCam__" + _sourceCamera.GetInstanceID());
             camGO.hideFlags = HideFlags.HideAndDontSave;
-            camGO.transform.SetParent(transform, false);
 
             _reflectionCamera = camGO.AddComponent<Camera>();
-            // Disabled so URP never auto-renders this camera in its own pass
             _reflectionCamera.enabled = false;
 
             UniversalAdditionalCameraData addData = camGO.AddComponent<UniversalAdditionalCameraData>();
@@ -68,109 +77,58 @@ namespace Warlander.Deedplanner.Logic.Cameras
             addData.requiresDepthOption = CameraOverrideOption.Off;
         }
 
-        private void EnsureRenderTexture()
+        private void EnsureReflectionRT()
         {
-            if (_reflectionRT != null && _reflectionRT.IsCreated() && _reflectionRT.width == _textureSize)
+            if (_reflectionRT != null && _reflectionRT.IsCreated() && _reflectionRT.width == TextureSize)
                 return;
 
+            _reflectionRT?.Release();
             if (_reflectionRT != null)
-            {
-                _reflectionRT.Release();
-                Destroy(_reflectionRT);
-            }
+                Object.Destroy(_reflectionRT);
 
-            _reflectionRT = new RenderTexture(_textureSize, _textureSize, 16, RenderTextureFormat.Default);
-            _reflectionRT.name = "__WaterReflRT__" + GetInstanceID();
+            _reflectionRT = new RenderTexture(TextureSize, TextureSize, 16, RenderTextureFormat.Default);
+            _reflectionRT.name = "__WaterReflRT__" + _sourceCamera.GetInstanceID();
             _reflectionRT.hideFlags = HideFlags.DontSave;
             _reflectionRT.Create();
         }
 
-        private void OnBeginCameraRendering(ScriptableRenderContext context, Camera camera)
-        {
-            if (camera != _sourceCamera) return;
-            if (s_RenderingReflection) return;
-            if (_reflectionCamera == null) return;
-            if (!gameObject.activeInHierarchy) return;
-
-            EnsureRenderTexture();
-            RenderReflection();
-        }
-
         private void RenderReflection()
         {
-            s_RenderingReflection = true;
-            try
-            {
-                Vector3 waterNormal = Vector3.up;
-                Vector3 waterPos    = transform.position;
+            Vector3 waterNormal = Vector3.up;
+            Vector3 waterPos    = _waterRenderer.transform.position;
 
-                // Build the reflection matrix about the water plane
-                float    d           = -Vector3.Dot(waterNormal, waterPos) - _clipPlaneOffset;
-                Vector4  reflPlane   = new Vector4(waterNormal.x, waterNormal.y, waterNormal.z, d);
-                Matrix4x4 reflMatrix = Matrix4x4.zero;
-                CalculateReflectionMatrix(ref reflMatrix, reflPlane);
+            float     d          = -Vector3.Dot(waterNormal, waterPos) - ClipPlaneOffset;
+            Vector4   reflPlane  = new Vector4(waterNormal.x, waterNormal.y, waterNormal.z, d);
+            Matrix4x4 reflMatrix = Matrix4x4.zero;
+            CalculateReflectionMatrix(ref reflMatrix, reflPlane);
 
-                // Mirror camera position
-                Vector3 newCamPos = reflMatrix.MultiplyPoint(_sourceCamera.transform.position);
-                _reflectionCamera.transform.position = newCamPos;
+            _reflectionCamera.transform.position    = reflMatrix.MultiplyPoint(_sourceCamera.transform.position);
+            Vector3 euler = _sourceCamera.transform.eulerAngles;
+            _reflectionCamera.transform.eulerAngles = new Vector3(-euler.x, euler.y, euler.z);
+            _reflectionCamera.worldToCameraMatrix   = _sourceCamera.worldToCameraMatrix * reflMatrix;
 
-                // Flip pitch to get mirrored orientation
-                Vector3 euler = _sourceCamera.transform.eulerAngles;
-                _reflectionCamera.transform.eulerAngles = new Vector3(-euler.x, euler.y, euler.z);
+            Vector4 clipPlane = CameraSpacePlane(_reflectionCamera, waterPos, waterNormal, 1.0f);
+            _reflectionCamera.projectionMatrix = _sourceCamera.CalculateObliqueMatrix(clipPlane);
+            // Preserve correct frustum culling from the source camera perspective
+            _reflectionCamera.cullingMatrix    = _sourceCamera.projectionMatrix * _sourceCamera.worldToCameraMatrix;
 
-                // Reflected worldToCameraMatrix
-                _reflectionCamera.worldToCameraMatrix = _sourceCamera.worldToCameraMatrix * reflMatrix;
+            _reflectionCamera.clearFlags       = _sourceCamera.clearFlags;
+            _reflectionCamera.backgroundColor  = _sourceCamera.backgroundColor;
+            _reflectionCamera.farClipPlane     = _sourceCamera.farClipPlane;
+            _reflectionCamera.nearClipPlane    = _sourceCamera.nearClipPlane;
+            _reflectionCamera.fieldOfView      = _sourceCamera.fieldOfView;
+            _reflectionCamera.aspect           = _sourceCamera.aspect;
+            _reflectionCamera.orthographic     = _sourceCamera.orthographic;
+            _reflectionCamera.orthographicSize = _sourceCamera.orthographicSize;
+            _reflectionCamera.cullingMask      = ~(1 << 4); // exclude Water layer from its own reflection
 
-                // Oblique projection matrix clips geometry below the water surface for free
-                Vector4 clipPlane = CameraSpacePlane(_reflectionCamera, waterPos, waterNormal, 1.0f);
-                _reflectionCamera.projectionMatrix = _sourceCamera.CalculateObliqueMatrix(clipPlane);
+            _reflectionCamera.targetTexture = _reflectionRT;
+            GL.invertCulling = true;
+            _reflectionCamera.Render();
+            GL.invertCulling = false;
 
-                // Culling matrix preserves correct frustum culling from the source camera perspective
-                _reflectionCamera.cullingMatrix = _sourceCamera.projectionMatrix * _sourceCamera.worldToCameraMatrix;
-
-                // Mirror source camera settings
-                _reflectionCamera.clearFlags      = _sourceCamera.clearFlags;
-                _reflectionCamera.backgroundColor = _sourceCamera.backgroundColor;
-                _reflectionCamera.farClipPlane    = _sourceCamera.farClipPlane;
-                _reflectionCamera.nearClipPlane   = _sourceCamera.nearClipPlane;
-                _reflectionCamera.fieldOfView     = _sourceCamera.fieldOfView;
-                _reflectionCamera.aspect          = _sourceCamera.aspect;
-                _reflectionCamera.orthographic    = _sourceCamera.orthographic;
-                _reflectionCamera.orthographicSize = _sourceCamera.orthographicSize;
-
-                // Never render the Water layer in its own reflection
-                _reflectionCamera.cullingMask = ~(1 << 4) & _reflectLayers.value;
-
-                _reflectionCamera.targetTexture = _reflectionRT;
-
-                GL.invertCulling = true;
-                _reflectionCamera.Render();
-                GL.invertCulling = false;
-
-                _waterMaterialInstance.SetTexture(ReflectionTexId, _reflectionRT);
-            }
-            finally
-            {
-                s_RenderingReflection = false;
-            }
-        }
-
-        private void OnDestroy()
-        {
-            RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;
-
-            if (_reflectionCamera != null)
-                Destroy(_reflectionCamera.gameObject);
-
-            if (_reflectionRT != null)
-            {
-                _reflectionRT.Release();
-                Destroy(_reflectionRT);
-            }
-
-            // Destroy the instanced material to avoid memory leaks
-            if (_waterMaterialInstance != null)
-                Destroy(_waterMaterialInstance);
+            _propertyBlock.SetTexture(ReflectionTexId, _reflectionRT);
+            _waterRenderer.SetPropertyBlock(_propertyBlock);
         }
 
         // -------------------------------------------------------------------
@@ -202,7 +160,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private Vector4 CameraSpacePlane(Camera cam, Vector3 pos, Vector3 normal, float sideSign)
         {
-            Vector3 offsetPos = pos + normal * _clipPlaneOffset;
+            Vector3 offsetPos = pos + normal * ClipPlaneOffset;
             Matrix4x4 m = cam.worldToCameraMatrix;
             Vector3 cpos    = m.MultiplyPoint(offsetPos);
             Vector3 cnormal = m.MultiplyVector(normal).normalized * sideSign;

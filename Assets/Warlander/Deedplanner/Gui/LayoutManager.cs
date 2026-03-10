@@ -29,7 +29,7 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField] private Toggle groundToggle = null;
         [SerializeField] private Toggle cavesToggle = null;
 
-        [SerializeField] private GameObject highQualityWaterObject = null;
+        [SerializeField] private GameObject complexWaterObject = null;
         [SerializeField] private GameObject simpleQualityWaterObject = null;
 
         public event Action<Tab> TabChanged;
@@ -123,8 +123,16 @@ namespace Warlander.Deedplanner.Gui
         private void ValidateState()
         {
             WaterQuality waterQuality = _settings.WaterQuality;
-            highQualityWaterObject.SetActive(waterQuality == WaterQuality.High);
+            bool complexWaterActive = waterQuality == WaterQuality.High || waterQuality == WaterQuality.Ultra;
+            complexWaterObject.SetActive(complexWaterActive);
             simpleQualityWaterObject.SetActive(waterQuality == WaterQuality.Simple);
+
+            // Toggle the planar reflections shader variant on the shared material
+            Material mat = complexWaterObject.GetComponent<Renderer>().sharedMaterial;
+            if (waterQuality == WaterQuality.Ultra)
+                mat.EnableKeyword("PLANAR_REFLECTIONS");
+            else
+                mat.DisableKeyword("PLANAR_REFLECTIONS");
         }
 
         public void ChangeLayout(Layout layout)

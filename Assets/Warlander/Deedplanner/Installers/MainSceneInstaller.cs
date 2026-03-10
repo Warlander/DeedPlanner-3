@@ -33,6 +33,7 @@ namespace Warlander.Deedplanner.Installers
             Container.Bind<ICameraController>().To<FppCameraController>().AsTransient();
             Container.Bind<ICameraController>().To<IsoCameraController>().AsTransient();
             Container.Bind<ICameraController>().To<TopCameraController>().AsTransient();
+            Container.Bind<WaterReflectionController>().AsTransient();
             
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
             Container.BindInterfacesAndSelfTo<FileDragManager>().AsSingle().NonLazy();

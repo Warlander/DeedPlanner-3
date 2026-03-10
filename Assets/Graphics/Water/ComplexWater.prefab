@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 400000}
   - component: {fileID: 3300000}
   - component: {fileID: 2300000}
-  - component: {fileID: 11400000}
   m_Layer: 4
-  m_Name: UltraQualityWater
+  m_Name: ComplexWater
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -91,20 +90,4 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f9650bbb6bce9d429ecdb8bc4cb251c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _textureSize: 512
-  _reflectLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  _clipPlaneOffset: 0.07
+

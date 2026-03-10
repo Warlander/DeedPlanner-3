@@ -31,6 +31,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [Inject] private IMapProjectorFacade _mapProjectorFacade;
         [Inject] private IOutlineCoordinator _outlineCoordinator;
         [Inject] private ISharedMaterials _sharedMaterials;
+        [Inject] private WaterReflectionController _waterReflectionController;
 
         public event Action LevelChanged;
         public event Action ModeChanged;
@@ -42,8 +43,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [SerializeField] private int screenId = 0;
         [SerializeField] private GameObject screen = null;
 
-        [SerializeField] private WaterReflectionController ultraQualityWater = null;
-        [SerializeField] private GameObject highQualityWater = null;
+        [SerializeField] private GameObject complexWater = null;
         [SerializeField] private GameObject simpleQualityWater = null;
 
         [SerializeField] private RectTransform selectionBox = null;
@@ -124,15 +124,13 @@ namespace Warlander.Deedplanner.Logic.Cameras
         private void Awake()
         {
             AttachedCamera = GetComponent<Camera>();
-
-            if (ultraQualityWater != null)
-                ultraQualityWater.SetMainCamera(AttachedCamera);
-
             RenderPipelineManager.beginCameraRendering += RenderPipelineManagerOnbeginCameraRendering;
         }
         
         private void Start()
         {
+            _waterReflectionController.Initialize(AttachedCamera, complexWater.GetComponent<Renderer>());
+
             MouseEventCatcher eventCatcher = screen.GetComponent<MouseEventCatcher>();
 
             eventCatcher.OnDragEvent.AddListener(data =>
@@ -171,12 +169,18 @@ namespace Warlander.Deedplanner.Logic.Cameras
             ValidateState();
         }
 
+        private void OnDestroy()
+        {
+            RenderPipelineManager.beginCameraRendering -= RenderPipelineManagerOnbeginCameraRendering;
+            _waterReflectionController.Dispose();
+        }
+
         private void ValidateState()
         {
             Gui.WaterQuality waterQuality = _settings.WaterQuality;
-            if (waterQuality != Gui.WaterQuality.Ultra)
+            if (waterQuality == Gui.WaterQuality.Simple)
             {
-                ultraQualityWater?.gameObject.SetActive(false);
+                complexWater?.SetActive(false);
             }
         }
 
@@ -213,7 +217,10 @@ namespace Warlander.Deedplanner.Logic.Cameras
             {
                 return;
             }
-            
+
+            if (_settings.WaterQuality == Gui.WaterQuality.Ultra && complexWater.activeSelf)
+                _waterReflectionController.OnBeginCameraRendering();
+
             PrepareWater();
             PrepareMapState();
             UpdateRaycast();
@@ -347,15 +354,10 @@ namespace Warlander.Deedplanner.Logic.Cameras
             bool renderWater = RenderEntireMap || currentlyEditedLevel == 0 || currentlyEditedLevel == -1;
             Vector2 waterPosition = CameraController.CalculateWaterTablePosition(AttachedCamera.transform.position);
 
-            if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
+            if (_settings.WaterQuality == Gui.WaterQuality.Ultra || _settings.WaterQuality == Gui.WaterQuality.High)
             {
-                ultraQualityWater.gameObject.SetActive(renderWater);
-                ultraQualityWater.transform.position = new Vector3(waterPosition.x, ultraQualityWater.transform.position.y, waterPosition.y);
-            }
-            else if (_settings.WaterQuality == Gui.WaterQuality.High)
-            {
-                highQualityWater.gameObject.SetActive(renderWater);
-                highQualityWater.transform.position = new Vector3(waterPosition.x, highQualityWater.transform.position.y, waterPosition.y);
+                complexWater.SetActive(renderWater);
+                complexWater.transform.position = new Vector3(waterPosition.x, complexWater.transform.position.y, waterPosition.y);
             }
             else if (_settings.WaterQuality == Gui.WaterQuality.Simple)
             {
