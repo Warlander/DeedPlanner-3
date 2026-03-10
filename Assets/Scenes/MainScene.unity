@@ -11891,7 +11891,7 @@ GameObject:
   - component: {fileID: 474621808}
   - component: {fileID: 474621807}
   m_Layer: 4
-  m_Name: Simple Quality Water
+  m_Name: Simple Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
