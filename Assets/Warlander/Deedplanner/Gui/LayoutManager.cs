@@ -1,12 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Logic;
-using System.Linq;
 using System;
 using DG.Tweening;
-using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic.Cameras;
-using Warlander.Deedplanner.Settings;
 using Zenject;
 
 namespace Warlander.Deedplanner.Gui
@@ -14,9 +11,7 @@ namespace Warlander.Deedplanner.Gui
     public class LayoutManager : MonoBehaviour
     {
         public static LayoutManager Instance { get; private set; }
-
-
-        [Inject] private DPSettings _settings;
+        
         [Inject] private CameraCoordinator _cameraCoordinator;
         
         [SerializeField] private Toggle[] indicatorButtons = new Toggle[4];
@@ -28,9 +23,6 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField] private UIContentTab[] tabs = new UIContentTab[12];
         [SerializeField] private Toggle groundToggle = null;
         [SerializeField] private Toggle cavesToggle = null;
-
-        [SerializeField] private GameObject complexWaterObject = null;
-        [SerializeField] private GameObject simpleQualityWaterObject = null;
 
         public event Action<Tab> TabChanged;
         public TileSelectionMode TileSelectionMode { get; set; }
@@ -66,10 +58,8 @@ namespace Warlander.Deedplanner.Gui
             // state validation at launch - it makes development and debugging easier as you don't need to make sure tab is set to the proper one when commiting
             CurrentTab = currentTab;
             
-            ValidateState();
             ChangeLayout(CurrentLayout);
             
-            _settings.Modified += ValidateState;
             _cameraCoordinator.CurrentCameraChanged += CameraCoordinatorOnCurrentCameraChanged;
             _cameraCoordinator.LevelChanged += CameraCoordinatorOnLevelChanged;
         }
@@ -118,21 +108,6 @@ namespace Warlander.Deedplanner.Gui
             newSequence.OnKill(() => tabFadeSequence = null);
 
             tabFadeSequence = newSequence;
-        }
-        
-        private void ValidateState()
-        {
-            WaterQuality waterQuality = _settings.WaterQuality;
-            bool complexWaterActive = waterQuality == WaterQuality.High || waterQuality == WaterQuality.Ultra;
-            complexWaterObject.SetActive(complexWaterActive);
-            simpleQualityWaterObject.SetActive(waterQuality == WaterQuality.Simple);
-
-            // Toggle the planar reflections shader variant on the shared material
-            Material mat = complexWaterObject.GetComponent<Renderer>().sharedMaterial;
-            if (waterQuality == WaterQuality.Ultra)
-                mat.EnableKeyword("PLANAR_REFLECTIONS");
-            else
-                mat.DisableKeyword("PLANAR_REFLECTIONS");
         }
 
         public void ChangeLayout(Layout layout)
@@ -280,7 +255,6 @@ namespace Warlander.Deedplanner.Gui
         {
             tabFadeSequence?.Kill();
             
-            _settings.Modified -= ValidateState;
             _cameraCoordinator.CurrentCameraChanged -= CameraCoordinatorOnCurrentCameraChanged;
             _cameraCoordinator.LevelChanged -= CameraCoordinatorOnLevelChanged;
         }
