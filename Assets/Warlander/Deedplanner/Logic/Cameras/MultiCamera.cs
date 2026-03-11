@@ -117,7 +117,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
         
         private IMapProjector _attachedProjector;
         private DynamicModelBehaviour _outlinedModel;
-        
+        private Renderer _waterRenderer;
+
         private CameraMode cameraMode = CameraMode.Top;
         private int _level = 0;
 
@@ -129,7 +130,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         
         private void Start()
         {
-            _waterReflectionController.Initialize(AttachedCamera, complexWater.GetComponent<Renderer>());
+            _waterRenderer = complexWater.GetComponent<Renderer>();
 
             MouseEventCatcher eventCatcher = screen.GetComponent<MouseEventCatcher>();
 
@@ -172,7 +173,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
         private void OnDestroy()
         {
             RenderPipelineManager.beginCameraRendering -= RenderPipelineManagerOnbeginCameraRendering;
-            _waterReflectionController.Dispose();
         }
 
         private void ValidateState()
@@ -219,7 +219,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             }
 
             if (_settings.WaterQuality == Gui.WaterQuality.Ultra && complexWater.activeSelf)
-                _waterReflectionController.OnBeginCameraRendering();
+                _waterReflectionController.RenderForCamera(AttachedCamera, _waterRenderer);
 
             PrepareWater();
             PrepareMapState();

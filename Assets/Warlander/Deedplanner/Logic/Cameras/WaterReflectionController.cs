@@ -1,71 +1,61 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {
     /// <summary>
-    /// Manages a planar reflection camera for Ultra quality water.
-    /// Plain C# class — not a MonoBehaviour. Unity lifecycle calls are delegated from MultiCamera.
-    /// Call Initialize() once from MultiCamera.Start() to wire the source camera and water renderer.
-    /// Call OnBeginCameraRendering() from MultiCamera's beginCameraRendering hook (Ultra quality only).
-    /// Call Dispose() from MultiCamera.OnDestroy() to clean up GPU resources.
+    /// Manages a shared planar reflection camera for Ultra quality water.
+    /// Plain C# class — not a MonoBehaviour. Bound as a singleton; all MultiCamera instances share
+    /// one reflection camera and one render texture.
+    /// Call RenderForCamera() from MultiCamera's beginCameraRendering hook (Ultra quality only),
+    /// passing that camera's source Camera and water Renderer as arguments.
+    /// Zenject disposes this singleton (IDisposable) when the scene container is torn down.
     /// </summary>
-    public class WaterReflectionController
+    public class WaterReflectionController : IDisposable
     {
         private static readonly int ReflectionTexId = Shader.PropertyToID("_ReflectionTex");
         private const int TextureSize = 512;
         private const float ClipPlaneOffset = 0.07f;
 
-        private Camera _sourceCamera;
-        private Renderer _waterRenderer;
         private Camera _reflectionCamera;
         private RenderTexture _reflectionRT;
         private MaterialPropertyBlock _propertyBlock;
 
         /// <summary>
-        /// Wire the source camera and the shared ComplexWater renderer.
-        /// Called by MultiCamera.Start() after Zenject injection and Awake have both run.
+        /// Render a reflection for the given source camera and push it to the water renderer's
+        /// property block. Safe to call from multiple MultiCamera instances per frame — URP renders
+        /// cameras sequentially, so the shared RT always holds the correct reflection when the
+        /// corresponding camera's water draw occurs.
         /// </summary>
-        public void Initialize(Camera sourceCamera, Renderer waterRenderer)
+        public void RenderForCamera(Camera sourceCamera, Renderer waterRenderer)
         {
-            _sourceCamera = sourceCamera;
-            _waterRenderer = waterRenderer;
-            _propertyBlock = new MaterialPropertyBlock();
-            CreateReflectionCamera();
-        }
-
-        /// <summary>
-        /// Render this camera's reflection and push it to the global _ReflectionTex slot.
-        /// Must be called from MultiCamera's beginCameraRendering hook, before the camera renders.
-        /// Cameras render sequentially in URP, so setting the global texture here is safe —
-        /// each camera reads its own RT during its own render pass.
-        /// </summary>
-        public void OnBeginCameraRendering()
-        {
-            if (_reflectionCamera == null) return;
+            EnsureReflectionCamera();
             EnsureReflectionRT();
-            RenderReflection();
+            RenderReflection(sourceCamera, waterRenderer);
         }
 
         /// <summary>
         /// Destroy the hidden reflection camera and release the render texture.
-        /// Called by MultiCamera.OnDestroy().
+        /// Called once by Zenject when the scene container is disposed.
         /// </summary>
         public void Dispose()
         {
             if (_reflectionCamera != null)
-                Object.Destroy(_reflectionCamera.gameObject);
+                UnityEngine.Object.Destroy(_reflectionCamera.gameObject);
 
             if (_reflectionRT != null)
             {
                 _reflectionRT.Release();
-                Object.Destroy(_reflectionRT);
+                UnityEngine.Object.Destroy(_reflectionRT);
             }
         }
 
-        private void CreateReflectionCamera()
+        private void EnsureReflectionCamera()
         {
-            GameObject camGO = new GameObject("__WaterReflCam__" + _sourceCamera.GetInstanceID());
+            if (_reflectionCamera != null) return;
+
+            GameObject camGO = new GameObject("__WaterReflCam__Shared");
             camGO.hideFlags = HideFlags.HideAndDontSave;
 
             _reflectionCamera = camGO.AddComponent<Camera>();
@@ -75,6 +65,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
             addData.renderShadows = false;
             addData.requiresColorOption = CameraOverrideOption.Off;
             addData.requiresDepthOption = CameraOverrideOption.Off;
+
+            _propertyBlock = new MaterialPropertyBlock();
         }
 
         private void EnsureReflectionRT()
@@ -84,42 +76,42 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
             _reflectionRT?.Release();
             if (_reflectionRT != null)
-                Object.Destroy(_reflectionRT);
+                UnityEngine.Object.Destroy(_reflectionRT);
 
             _reflectionRT = new RenderTexture(TextureSize, TextureSize, 16, RenderTextureFormat.Default);
-            _reflectionRT.name = "__WaterReflRT__" + _sourceCamera.GetInstanceID();
+            _reflectionRT.name = "__WaterReflRT__Shared";
             _reflectionRT.hideFlags = HideFlags.DontSave;
             _reflectionRT.Create();
         }
 
-        private void RenderReflection()
+        private void RenderReflection(Camera sourceCamera, Renderer waterRenderer)
         {
             Vector3 waterNormal = Vector3.up;
-            Vector3 waterPos    = _waterRenderer.transform.position;
+            Vector3 waterPos    = waterRenderer.transform.position;
 
             float     d          = -Vector3.Dot(waterNormal, waterPos) - ClipPlaneOffset;
             Vector4   reflPlane  = new Vector4(waterNormal.x, waterNormal.y, waterNormal.z, d);
             Matrix4x4 reflMatrix = Matrix4x4.zero;
             CalculateReflectionMatrix(ref reflMatrix, reflPlane);
 
-            _reflectionCamera.transform.position    = reflMatrix.MultiplyPoint(_sourceCamera.transform.position);
-            Vector3 euler = _sourceCamera.transform.eulerAngles;
+            _reflectionCamera.transform.position    = reflMatrix.MultiplyPoint(sourceCamera.transform.position);
+            Vector3 euler = sourceCamera.transform.eulerAngles;
             _reflectionCamera.transform.eulerAngles = new Vector3(-euler.x, euler.y, euler.z);
-            _reflectionCamera.worldToCameraMatrix   = _sourceCamera.worldToCameraMatrix * reflMatrix;
+            _reflectionCamera.worldToCameraMatrix   = sourceCamera.worldToCameraMatrix * reflMatrix;
 
             Vector4 clipPlane = CameraSpacePlane(_reflectionCamera, waterPos, waterNormal, 1.0f);
-            _reflectionCamera.projectionMatrix = _sourceCamera.CalculateObliqueMatrix(clipPlane);
+            _reflectionCamera.projectionMatrix = sourceCamera.CalculateObliqueMatrix(clipPlane);
             // Preserve correct frustum culling from the source camera perspective
-            _reflectionCamera.cullingMatrix    = _sourceCamera.projectionMatrix * _sourceCamera.worldToCameraMatrix;
+            _reflectionCamera.cullingMatrix    = sourceCamera.projectionMatrix * sourceCamera.worldToCameraMatrix;
 
-            _reflectionCamera.clearFlags       = _sourceCamera.clearFlags;
-            _reflectionCamera.backgroundColor  = _sourceCamera.backgroundColor;
-            _reflectionCamera.farClipPlane     = _sourceCamera.farClipPlane;
-            _reflectionCamera.nearClipPlane    = _sourceCamera.nearClipPlane;
-            _reflectionCamera.fieldOfView      = _sourceCamera.fieldOfView;
-            _reflectionCamera.aspect           = _sourceCamera.aspect;
-            _reflectionCamera.orthographic     = _sourceCamera.orthographic;
-            _reflectionCamera.orthographicSize = _sourceCamera.orthographicSize;
+            _reflectionCamera.clearFlags       = sourceCamera.clearFlags;
+            _reflectionCamera.backgroundColor  = sourceCamera.backgroundColor;
+            _reflectionCamera.farClipPlane     = sourceCamera.farClipPlane;
+            _reflectionCamera.nearClipPlane    = sourceCamera.nearClipPlane;
+            _reflectionCamera.fieldOfView      = sourceCamera.fieldOfView;
+            _reflectionCamera.aspect           = sourceCamera.aspect;
+            _reflectionCamera.orthographic     = sourceCamera.orthographic;
+            _reflectionCamera.orthographicSize = sourceCamera.orthographicSize;
             _reflectionCamera.cullingMask      = ~(1 << 4); // exclude Water layer from its own reflection
 
             _reflectionCamera.targetTexture = _reflectionRT;
@@ -128,7 +120,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             GL.invertCulling = false;
 
             _propertyBlock.SetTexture(ReflectionTexId, _reflectionRT);
-            _waterRenderer.SetPropertyBlock(_propertyBlock);
+            waterRenderer.SetPropertyBlock(_propertyBlock);
         }
 
         // -------------------------------------------------------------------
