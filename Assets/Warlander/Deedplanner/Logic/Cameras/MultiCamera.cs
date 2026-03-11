@@ -31,6 +31,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [Inject] private IOutlineCoordinator _outlineCoordinator;
         [Inject] private ISharedMaterials _sharedMaterials;
         [Inject] private IWaterFacade _waterFacade;
+        [Inject] private LayoutManager _layoutManager;
 
         public event Action LevelChanged;
         public event Action ModeChanged;
@@ -199,7 +200,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 return;
             }
 
-            Tab tab = LayoutManager.Instance.CurrentTab;
+            Tab tab = _layoutManager.CurrentTab;
             bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
             int currentlyEditedLevel = forceSurfaceEditing ? 0 : _level;
             bool renderWater = RenderEntireMap || currentlyEditedLevel == 0 || currentlyEditedLevel == -1;
@@ -234,7 +235,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             {
                 Ray ray = CreateMouseRay();
                 RaycastHit raycastHit;
-                int mask = LayerMasks.GetMaskForTab(LayoutManager.Instance.CurrentTab);
+                int mask = LayerMasks.GetMaskForTab(_layoutManager.CurrentTab);
                 bool hit = Physics.Raycast(ray, out raycastHit, 20000, mask);
                 StringBuilder tooltipBuild = new StringBuilder();
 
@@ -242,7 +243,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 {
                     CurrentRaycast = raycastHit;
 
-                    bool isHeightEditing = LayoutManager.Instance.CurrentTab == Tab.Height;
+                    bool isHeightEditing = _layoutManager.CurrentTab == Tab.Height;
 
                     GameObject hitObject = raycastHit.transform.gameObject;
                     TileEntity tileEntity = hitObject.GetComponent<TileEntity>();
@@ -330,7 +331,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private void PrepareMapState()
         {
-            Tab tab = LayoutManager.Instance.CurrentTab;
+            Tab tab = _layoutManager.CurrentTab;
             bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
             int currentlyEditedLevel = forceSurfaceEditing ? 0 : Level;
 
@@ -383,7 +384,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             if (!gridOrGroundHit)
                 return;
 
-            TileSelectionMode tileSelectionMode = LayoutManager.Instance.TileSelectionMode;
+            TileSelectionMode tileSelectionMode = _layoutManager.TileSelectionMode;
             Vector3 raycastPosition = CurrentRaycast.point;
             TileSelectionHit tileSelectionHit = TileSelection.PositionToTileSelectionHit(raycastPosition, tileSelectionMode);
             TileSelectionTarget target = tileSelectionHit.Target;

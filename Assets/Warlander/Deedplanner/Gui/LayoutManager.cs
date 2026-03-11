@@ -10,8 +10,6 @@ namespace Warlander.Deedplanner.Gui
 {
     public class LayoutManager : MonoBehaviour
     {
-        public static LayoutManager Instance { get; private set; }
-        
         [Inject] private CameraCoordinator _cameraCoordinator;
         
         [SerializeField] private Toggle[] indicatorButtons = new Toggle[4];
@@ -42,17 +40,6 @@ namespace Warlander.Deedplanner.Gui
         private Tab currentTab;
         private Sequence tabFadeSequence;
         
-        public LayoutManager()
-        {
-            if (Instance)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-        }
-
         private void Start()
         {
             // state validation at launch - it makes development and debugging easier as you don't need to make sure tab is set to the proper one when commiting

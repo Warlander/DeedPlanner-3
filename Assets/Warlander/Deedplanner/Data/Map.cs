@@ -30,6 +30,7 @@ namespace Warlander.Deedplanner.Data
         [Inject] private MapHeightTracker _heightTracker;
         [Inject] private MapRoofCalculator _roofCalculator;
         [Inject] private ISharedMaterials _sharedMaterials;
+        [Inject] private LayoutManager _layoutManager;
 
         public GroundMesh Ground { get; private set; }
 
@@ -266,7 +267,7 @@ namespace Warlander.Deedplanner.Data
             _heightTracker.SetCurrentMap(this);
             _roofCalculator.SetCurrentMap(this);
 
-            RenderGrid = LayoutManager.Instance.CurrentTab != Tab.Menu;
+            RenderGrid = _layoutManager.CurrentTab != Tab.Menu;
             CommandManager.ForgetAction();
         }
 

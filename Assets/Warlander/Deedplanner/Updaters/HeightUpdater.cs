@@ -24,7 +24,8 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPInput _input;
         [Inject] private MapHandler _mapHandler;
         [Inject] private IMapProjectorFacade _mapProjectorFacade;
-        
+        [Inject] private LayoutManager _layoutManager;
+
         [SerializeField] private Toggle selectAndDragToggle = null;
         [SerializeField] private Toggle createRampsToggle = null;
         [SerializeField] private Toggle levelAreaToggle = null;
@@ -136,11 +137,11 @@ namespace Warlander.Deedplanner.Updaters
         {
             if (ComplexSelectionEnabled)
             {
-                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+                _layoutManager.TileSelectionMode = TileSelectionMode.Tiles;
             }
             else
             {
-                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Everything;
+                _layoutManager.TileSelectionMode = TileSelectionMode.Everything;
             }
         }
 

@@ -12,12 +12,13 @@ namespace Warlander.Deedplanner.Updaters
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        
+        [Inject] private LayoutManager _layoutManager;
+
         public override void Initialize() { }
 
         public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
+            _layoutManager.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
         public override void Disable() { }

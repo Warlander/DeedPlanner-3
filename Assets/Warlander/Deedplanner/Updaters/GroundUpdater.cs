@@ -19,6 +19,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private MapHandler _mapHandler;
+        [Inject] private LayoutManager _layoutManager;
 
         [SerializeField] private UnityTree _groundsTree;
         
@@ -89,11 +90,11 @@ namespace Warlander.Deedplanner.Updaters
         {
             if (editCorners)
             {
-                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Everything;
+                _layoutManager.TileSelectionMode = TileSelectionMode.Everything;
             }
             else
             {
-                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+                _layoutManager.TileSelectionMode = TileSelectionMode.Tiles;
             }
         }
 

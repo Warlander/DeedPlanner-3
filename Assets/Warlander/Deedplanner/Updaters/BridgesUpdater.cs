@@ -20,6 +20,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPInput _input;
         [Inject] private TooltipHandler _tooltipHandler;
         [Inject] private BridgeTabSwapper _bridgeTabSwapper;
+        [Inject] private LayoutManager _layoutManager;
 
         public event Action SelectedBridgeChanged;
         
@@ -33,7 +34,7 @@ namespace Warlander.Deedplanner.Updaters
 
         public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
+            _layoutManager.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
         public override void Tick()

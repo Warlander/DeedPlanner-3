@@ -17,6 +17,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private MapHandler _mapHandler;
+        [Inject] private LayoutManager _layoutManager;
 
         [SerializeField] private UnityList _roofsList;
 
@@ -30,7 +31,7 @@ namespace Warlander.Deedplanner.Updaters
 
         public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+            _layoutManager.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
         public override void Disable() { }

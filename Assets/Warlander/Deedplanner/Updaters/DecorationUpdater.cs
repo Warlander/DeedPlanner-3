@@ -28,6 +28,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private MapHandler _mapHandler;
         [Inject] private IOutlineCoordinator _outlineCoordinator;
         [Inject] private ISharedMaterials _sharedMaterials;
+        [Inject] private LayoutManager _layoutManager;
 
         [SerializeField] private UnityTree _decorationsTree;
 
@@ -80,7 +81,7 @@ namespace Warlander.Deedplanner.Updaters
 
         public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
+            _layoutManager.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
         private void RotationSensitivityInputOnValueChanged(string value)

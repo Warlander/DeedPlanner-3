@@ -12,6 +12,7 @@ namespace Warlander.Deedplanner.Debugging
     {
         [Inject] private DebugProperties _debugProperties;
         [Inject] private IMapProjectorFacade _mapProjectorFacade;
+        [Inject] private LayoutManager _layoutManager;
         
         void IInitializable.Initialize()
         {
@@ -39,7 +40,7 @@ namespace Warlander.Deedplanner.Debugging
         {
             if (_debugProperties.OverrideStartingTileSelectionMode)
             {
-                LayoutManager.Instance.TileSelectionMode = _debugProperties.TileSelectionMode;
+                _layoutManager.TileSelectionMode = _debugProperties.TileSelectionMode;
             }
         }
     }

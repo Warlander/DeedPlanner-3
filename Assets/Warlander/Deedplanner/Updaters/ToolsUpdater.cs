@@ -24,7 +24,8 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private MapHandler _mapHandler;
         [Inject] private DPInput _input;
-        
+        [Inject] private LayoutManager _layoutManager;
+
         [SerializeField] private Toggle calculateMaterialsToggle = null;
         [SerializeField] private Toggle mapWarningsToggle = null;
         
@@ -43,7 +44,7 @@ namespace Warlander.Deedplanner.Updaters
 
         public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+            _layoutManager.TileSelectionMode = TileSelectionMode.Tiles;
 
             RefreshMode();
             RefreshGui();
