@@ -3899,9 +3899,6 @@ MonoBehaviour:
   - {fileID: 154813127}
   - {fileID: 1097217362}
   - {fileID: 218983208}
-  groundToggle: {fileID: 417295211}
-  cavesToggle: {fileID: 660700862}
-  tabToggleGroup: {fileID: 688529920}
 --- !u!1 &169338379
 GameObject:
   m_ObjectHideFlags: 0
@@ -11137,6 +11134,7 @@ GameObject:
   - component: {fileID: 449407255}
   - component: {fileID: 449407256}
   - component: {fileID: 449407257}
+  - component: {fileID: 449407258}
   m_Layer: 5
   m_Name: Tabs Panel
   m_TagString: Untagged
@@ -11289,6 +11287,19 @@ MonoBehaviour:
   - {fileID: 977984559}
   - {fileID: 1236941210}
   - {fileID: 500953203}
+--- !u!114 &449407258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 449407251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4953bf78c9f5f7e429f16f2d1ee473a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.TabSelectionHandler
+  tabToggleGroup: {fileID: 688529920}
 --- !u!1 &460407318 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
@@ -14927,6 +14938,7 @@ GameObject:
   m_Component:
   - component: {fileID: 688529919}
   - component: {fileID: 688529920}
+  - component: {fileID: 688529921}
   m_Layer: 5
   m_Name: Tab Toggle Group
   m_TagString: Untagged
@@ -14966,6 +14978,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.ObservableToggleGroup
   m_AllowSwitchOff: 0
+--- !u!114 &688529921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688529918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79c3448575ae4354bacea8ce4a184307, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.VisibleTabsToggler
+  groundToggle: {fileID: 417295211}
+  cavesToggle: {fileID: 660700862}
 --- !u!1 &701907564
 GameObject:
   m_ObjectHideFlags: 0

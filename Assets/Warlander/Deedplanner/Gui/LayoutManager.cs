@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Zenject;
 
@@ -14,20 +13,14 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField] private RectTransform horizontalBottomScreenHolder = null;
         [SerializeField] private RectTransform[] splits = new RectTransform[5];
 
-        [SerializeField] private Toggle groundToggle = null;
-        [SerializeField] private Toggle cavesToggle = null;
-        [SerializeField] private ObservableToggleGroup tabToggleGroup = null;
-
         public Layout CurrentLayout { get; private set; } = Layout.Single;
 
         private CameraCoordinator _cameraCoordinator;
-        private TabContext _tabContext;
 
         [Inject]
-        private void Inject(CameraCoordinator cameraCoordinator, TabContext tabContext)
+        private void Inject(CameraCoordinator cameraCoordinator)
         {
             _cameraCoordinator = cameraCoordinator;
-            _tabContext = tabContext;
         }
 
         private void Start()
@@ -35,8 +28,6 @@ namespace Warlander.Deedplanner.Gui
             ChangeLayout(CurrentLayout);
 
             _cameraCoordinator.CurrentCameraChanged += CameraCoordinatorOnCurrentCameraChanged;
-            _tabContext.TabChanged += TabContextOnTabChanged;
-            tabToggleGroup.ActiveToggleChanged += OnTabToggleActiveChanged;
         }
 
         private void CameraCoordinatorOnCurrentCameraChanged()
@@ -44,11 +35,6 @@ namespace Warlander.Deedplanner.Gui
             OnActiveWindowChange();
         }
         
-        private void TabContextOnTabChanged(Tab obj)
-        {
-            UpdateTabToggles();
-        }
-
         public void ChangeLayout(Layout layout)
         {
             CurrentLayout = layout;
@@ -139,49 +125,9 @@ namespace Warlander.Deedplanner.Gui
             }
         }
 
-        private void OnTabToggleActiveChanged(Toggle toggle)
-        {
-            if (toggle.TryGetComponent(out TabReference tabReference))
-            {
-                _tabContext.CurrentTab = tabReference.Tab;
-                UpdateTabToggles();
-            }
-        }
-
-        private void UpdateTabToggles()
-        {
-            int floor = _cameraCoordinator.Current.Level;
-            if (floor < 0)
-            {
-                groundToggle.gameObject.SetActive(false);
-                cavesToggle.gameObject.SetActive(true);
-                if (groundToggle.isOn)
-                {
-                    groundToggle.isOn = false;
-                    cavesToggle.isOn = true;
-                }
-            }
-            else if (floor >= 0)
-            {
-                groundToggle.gameObject.SetActive(true);
-                cavesToggle.gameObject.SetActive(false);
-                if (cavesToggle.isOn)
-                {
-                    groundToggle.isOn = true;
-                    cavesToggle.isOn = false;
-                }
-            }
-        }
-
         private void OnDestroy()
         {
-            if (tabToggleGroup)
-            {
-                tabToggleGroup.ActiveToggleChanged -= OnTabToggleActiveChanged;
-            }
-            
             _cameraCoordinator.CurrentCameraChanged -= CameraCoordinatorOnCurrentCameraChanged;
-            _tabContext.TabChanged -= TabContextOnTabChanged;
         }
     }
 }
