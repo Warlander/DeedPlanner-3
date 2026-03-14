@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Outlines;
 using Zenject;
 
 namespace Warlander.Deedplanner.Data.Bridges

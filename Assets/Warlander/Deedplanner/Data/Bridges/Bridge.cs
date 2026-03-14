@@ -5,7 +5,7 @@ using System.Xml;
 using UnityEngine;
 using UnityEngine.InputSystem.Utilities;
 using Warlander.Deedplanner.Graphics.Outline;
-using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data.Bridges

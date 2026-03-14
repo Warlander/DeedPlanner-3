@@ -11,6 +11,8 @@ using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Graphics.Outline;
 using Warlander.Deedplanner.Graphics.Water;
 using Warlander.Deedplanner.Graphics.Projectors;
+using Warlander.Deedplanner.Logic.Outlines;
+using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Outlines;
 
 namespace Warlander.Deedplanner.Graphics.Outline
 {

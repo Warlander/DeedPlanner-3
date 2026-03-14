@@ -11,7 +11,7 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
-using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Utils;
 using Object = UnityEngine.Object;
 

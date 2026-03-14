@@ -9,6 +9,7 @@ using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Graphics.Water;
 using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Updaters;
 using Zenject;
