@@ -16,6 +16,7 @@ namespace Warlander.Deedplanner.Gui
 
         [SerializeField] private Toggle groundToggle = null;
         [SerializeField] private Toggle cavesToggle = null;
+        [SerializeField] private ObservableToggleGroup tabToggleGroup = null;
 
         public Layout CurrentLayout { get; private set; } = Layout.Single;
 
@@ -34,15 +35,16 @@ namespace Warlander.Deedplanner.Gui
             ChangeLayout(CurrentLayout);
 
             _cameraCoordinator.CurrentCameraChanged += CameraCoordinatorOnCurrentCameraChanged;
-            _cameraCoordinator.LevelChanged += CameraCoordinatorOnLevelChanged;
+            _tabContext.TabChanged += TabContextOnTabChanged;
+            tabToggleGroup.ActiveToggleChanged += OnTabToggleActiveChanged;
         }
 
         private void CameraCoordinatorOnCurrentCameraChanged()
         {
             OnActiveWindowChange();
         }
-
-        private void CameraCoordinatorOnLevelChanged()
+        
+        private void TabContextOnTabChanged(Tab obj)
         {
             UpdateTabToggles();
         }
@@ -137,10 +139,13 @@ namespace Warlander.Deedplanner.Gui
             }
         }
 
-        public void OnTabChange(TabReference tabReference)
+        private void OnTabToggleActiveChanged(Toggle toggle)
         {
-            _tabContext.CurrentTab = tabReference.Tab;
-            UpdateTabToggles();
+            if (toggle.TryGetComponent(out TabReference tabReference))
+            {
+                _tabContext.CurrentTab = tabReference.Tab;
+                UpdateTabToggles();
+            }
         }
 
         private void UpdateTabToggles()
@@ -170,8 +175,13 @@ namespace Warlander.Deedplanner.Gui
 
         private void OnDestroy()
         {
+            if (tabToggleGroup)
+            {
+                tabToggleGroup.ActiveToggleChanged -= OnTabToggleActiveChanged;
+            }
+            
             _cameraCoordinator.CurrentCameraChanged -= CameraCoordinatorOnCurrentCameraChanged;
-            _cameraCoordinator.LevelChanged -= CameraCoordinatorOnLevelChanged;
+            _tabContext.TabChanged -= TabContextOnTabChanged;
         }
     }
 }

@@ -875,46 +875,6 @@ PrefabInstance:
       propertyPath: m_Interactable
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 42500069}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -1153,18 +1113,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1599263358}
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
---- !u!114 &42500069 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 42500068}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1599263357}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &44378677
 GameObject:
   m_ObjectHideFlags: 0
@@ -3953,6 +3901,7 @@ MonoBehaviour:
   - {fileID: 218983208}
   groundToggle: {fileID: 417295211}
   cavesToggle: {fileID: 660700862}
+  tabToggleGroup: {fileID: 688529920}
 --- !u!1 &169338379
 GameObject:
   m_ObjectHideFlags: 0
@@ -4301,46 +4250,6 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 688529920}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 177176949}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -4575,18 +4484,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
---- !u!114 &177176949 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 177176948}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &183126204
 GameObject:
   m_ObjectHideFlags: 0
@@ -4981,46 +4878,6 @@ PrefabInstance:
       propertyPath: m_Interactable
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 204942656}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -5255,18 +5112,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
---- !u!114 &204942656 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 204942655}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &205400787
 GameObject:
   m_ObjectHideFlags: 0
@@ -7315,46 +7160,6 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 688529920}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 291301582}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -7612,18 +7417,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 291301580}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &291301582 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 291301580}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &292219007 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
@@ -9593,46 +9386,6 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 688529920}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 378971135}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -9852,18 +9605,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 378971133}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &378971135 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 378971133}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &381173785
 GameObject:
   m_ObjectHideFlags: 0
@@ -14236,46 +13977,6 @@ PrefabInstance:
       propertyPath: m_Interactable
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 661367298}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -14514,18 +14215,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1215131535}
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
---- !u!114 &661367298 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 661367297}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1215131534}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &663852061
 GameObject:
   m_ObjectHideFlags: 0
@@ -15273,9 +14962,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 688529918}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
+  m_Script: {fileID: 11500000, guid: 22bae44d728c9cc42ad713516273f6d9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.ObservableToggleGroup
   m_AllowSwitchOff: 0
 --- !u!1 &701907564
 GameObject:
@@ -18420,46 +18109,6 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 688529920}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 798887107}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -18689,18 +18338,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
---- !u!114 &798887107 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 798887106}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &805946008
 GameObject:
   m_ObjectHideFlags: 0
@@ -23941,46 +23578,6 @@ PrefabInstance:
       propertyPath: m_Interactable
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 1033958643}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -24219,18 +23816,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1583187016}
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
---- !u!114 &1033958643 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 1033958642}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1583187015}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1035413202
 GameObject:
   m_ObjectHideFlags: 0
@@ -27058,46 +26643,6 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 688529920}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 1182578827}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -27337,18 +26882,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
---- !u!114 &1182578827 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 1182578826}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1194747557 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4004065367148079115, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
@@ -29187,46 +28720,6 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 688529920}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 1279802837}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -29467,18 +28960,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1279802835}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1279802837 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 1279802835}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!84 &1283745292
 RenderTexture:
   m_ObjectHideFlags: 0
@@ -41515,46 +40996,6 @@ PrefabInstance:
       propertyPath: m_Interactable
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 1827277263}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -41793,18 +41234,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1827277266}
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
---- !u!114 &1827277263 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 1827277262}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1827277265}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1827277264 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
@@ -47725,46 +47154,6 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 688529920}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 2088967195}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -47999,18 +47388,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
---- !u!114 &2088967195 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 2088967194}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2095485025
 GameObject:
   m_ObjectHideFlags: 0
@@ -50183,61 +49560,6 @@ PrefabInstance:
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 688529920}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 167561238}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnTabChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
-      value: 
-      objectReference: {fileID: 5575850793188269204}
-    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.TabReference, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 5482825711390453027, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: m_Sprite
@@ -50441,18 +49763,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
---- !u!114 &5575850793188269204 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 5575850793188269203}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9d1498f15992094090a94f033b5a29b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!223 &6302735705140747706
 Canvas:
   m_ObjectHideFlags: 0
