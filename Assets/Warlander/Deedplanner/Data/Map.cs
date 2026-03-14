@@ -11,7 +11,6 @@ using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Features;
 using Warlander.Deedplanner.Graphics;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Utils;
@@ -30,7 +29,7 @@ namespace Warlander.Deedplanner.Data
         [Inject] private MapHeightTracker _heightTracker;
         [Inject] private MapRoofCalculator _roofCalculator;
         [Inject] private ISharedMaterials _sharedMaterials;
-        [Inject] private LayoutManager _layoutManager;
+        [Inject] private TabContext _tabContext;
 
         public GroundMesh Ground { get; private set; }
 
@@ -267,7 +266,7 @@ namespace Warlander.Deedplanner.Data
             _heightTracker.SetCurrentMap(this);
             _roofCalculator.SetCurrentMap(this);
 
-            RenderGrid = _layoutManager.CurrentTab != Tab.Menu;
+            RenderGrid = _tabContext.CurrentTab != Tab.Menu;
             CommandManager.ForgetAction();
         }
 

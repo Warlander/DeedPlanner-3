@@ -27,6 +27,7 @@ namespace Warlander.Deedplanner.Installers
         public override void InstallBindings()
         {
             Container.Bind<LayoutManager>().FromInstance(_layoutManager);
+            Container.BindInterfacesAndSelfTo<TabContext>().AsSingle().NonLazy();
             Container.Bind<CameraCoordinator>().FromInstance(_cameraCoordinator).AsSingle();
             Container.Bind<IOutlineCoordinator>().To<OutlineCoordinator>().AsSingle();
             Container.BindInterfacesAndSelfTo<OutlineFeatureBridge>().AsSingle().NonLazy();

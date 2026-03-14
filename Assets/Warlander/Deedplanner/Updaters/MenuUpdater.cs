@@ -26,7 +26,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPSettings _settings;
         [Inject] private WindowCoordinator _windowCoordinator;
         [Inject] private ISteamConnection _steamConnection;
-        [Inject] private LayoutManager _layoutManager;
+        [Inject] private TabContext _tabContext;
 
         [SerializeField] private Button _resizeButton;
         [SerializeField] private Button _clearButton;
@@ -75,7 +75,7 @@ namespace Warlander.Deedplanner.Updaters
 
         public override void Enable()
         {
-            _layoutManager.TileSelectionMode = TileSelectionMode.Nothing;
+            _tabContext.TileSelectionMode = TileSelectionMode.Nothing;
 
             _steamConnectionText.gameObject.SetActive(_steamConnection.Connected);
             if (_steamConnection.Connected)

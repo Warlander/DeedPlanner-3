@@ -1,8 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Logic;
-using System;
-using DG.Tweening;
 using Warlander.Deedplanner.Logic.Cameras;
 using Zenject;
 
@@ -10,43 +8,31 @@ namespace Warlander.Deedplanner.Gui
 {
     public class LayoutManager : MonoBehaviour
     {
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        
         [SerializeField] private Toggle[] indicatorButtons = new Toggle[4];
         [SerializeField] private RectTransform horizontalBottomIndicatorHolder = null;
         [SerializeField] private RawImage[] screens = new RawImage[4];
         [SerializeField] private RectTransform horizontalBottomScreenHolder = null;
         [SerializeField] private RectTransform[] splits = new RectTransform[5];
 
-        [SerializeField] private UIContentTab[] tabs = new UIContentTab[12];
         [SerializeField] private Toggle groundToggle = null;
         [SerializeField] private Toggle cavesToggle = null;
 
-        public event Action<Tab> TabChanged;
-        public TileSelectionMode TileSelectionMode { get; set; }
         public Layout CurrentLayout { get; private set; } = Layout.Single;
-        public Tab CurrentTab {
-            get => currentTab;
-            set
-            {
-                CreateAndStartTabFadeAnimation(currentTab, value);
-                
-                currentTab = value;
-                TabChanged?.Invoke(currentTab);
-            }
+
+        private CameraCoordinator _cameraCoordinator;
+        private TabContext _tabContext;
+
+        [Inject]
+        private void Inject(CameraCoordinator cameraCoordinator, TabContext tabContext)
+        {
+            _cameraCoordinator = cameraCoordinator;
+            _tabContext = tabContext;
         }
 
-        private int activeWindow;
-        private Tab currentTab;
-        private Sequence tabFadeSequence;
-        
         private void Start()
         {
-            // state validation at launch - it makes development and debugging easier as you don't need to make sure tab is set to the proper one when commiting
-            CurrentTab = currentTab;
-            
             ChangeLayout(CurrentLayout);
-            
+
             _cameraCoordinator.CurrentCameraChanged += CameraCoordinatorOnCurrentCameraChanged;
             _cameraCoordinator.LevelChanged += CameraCoordinatorOnLevelChanged;
         }
@@ -58,43 +44,7 @@ namespace Warlander.Deedplanner.Gui
 
         private void CameraCoordinatorOnLevelChanged()
         {
-            UpdateTabs();
-        }
-
-        private void CreateAndStartTabFadeAnimation(Tab previousTab, Tab newTab)
-        {
-            // If tabs are the same and there is no animation running, perform sanity check and force update the state without playing animation.
-            if (previousTab == newTab)
-            {
-                if (tabFadeSequence == null)
-                {
-                    foreach (UIContentTab tab in tabs)
-                    {
-                        tab.gameObject.SetActive(tab.Tab == newTab);
-                    }
-                }
-
-                return;
-            }
-
-            tabFadeSequence?.Complete(true);
-
-            UIContentTab previousTabObject = FindObjectForTab(previousTab);
-            UIContentTab newTabObject = FindObjectForTab(newTab);
-            
-            newTabObject.FadeGroup.alpha = 0;
-            
-            Sequence newSequence = DOTween.Sequence();
-            newSequence.Append(previousTabObject.FadeGroup.DOFade(0, 0.15f));
-            newSequence.AppendCallback(() =>
-            {
-                previousTabObject.gameObject.SetActive(false);
-                newTabObject.gameObject.SetActive(true);
-            });
-            newSequence.Append(newTabObject.FadeGroup.DOFade(1, 0.2f));
-            newSequence.OnKill(() => tabFadeSequence = null);
-
-            tabFadeSequence = newSequence;
+            UpdateTabToggles();
         }
 
         public void ChangeLayout(Layout layout)
@@ -139,7 +89,7 @@ namespace Warlander.Deedplanner.Gui
             bool onlyOneBottomActive = bottomRightWindowVisible ^ bottomLeftWindowVisible;
             bool onlyOneLeftActive = topLeftWindowVisible ^ bottomLeftWindowVisible;
             bool onlyOneRightActive = topRightWindowVisible ^ bottomRightWindowVisible;
-            
+
             // "-" shaped split
             splits[0].gameObject.SetActive(onlyOneTopActive && onlyOneBottomActive);
             // "|" shaped split
@@ -157,7 +107,7 @@ namespace Warlander.Deedplanner.Gui
             _cameraCoordinator.ToggleCamera(index, enable);
             indicatorButtons[index].gameObject.SetActive(enable);
             screens[index].gameObject.SetActive(enable);
-            
+
             // if screen is being toggled off, focus primary screen instead
             if (!enable && _cameraCoordinator.ActiveId == index)
             {
@@ -179,7 +129,7 @@ namespace Warlander.Deedplanner.Gui
         private void OnActiveWindowChange()
         {
             int activeId = _cameraCoordinator.ActiveId;
-            
+
             for (int i = 0; i < indicatorButtons.Length; i++)
             {
                 Toggle indicatorButton = indicatorButtons[i];
@@ -189,12 +139,11 @@ namespace Warlander.Deedplanner.Gui
 
         public void OnTabChange(TabReference tabReference)
         {
-            Tab tab = tabReference.Tab;
-            CurrentTab = tab;
-            UpdateTabs();
+            _tabContext.CurrentTab = tabReference.Tab;
+            UpdateTabToggles();
         }
 
-        private void UpdateTabs()
+        private void UpdateTabToggles()
         {
             int floor = _cameraCoordinator.Current.Level;
             if (floor < 0)
@@ -203,11 +152,8 @@ namespace Warlander.Deedplanner.Gui
                 cavesToggle.gameObject.SetActive(true);
                 if (groundToggle.isOn)
                 {
-                    FindObjectForTab(Tab.Ground).gameObject.SetActive(false);
-                    FindObjectForTab(Tab.Caves).gameObject.SetActive(true);
                     groundToggle.isOn = false;
                     cavesToggle.isOn = true;
-                    CurrentTab = Tab.Caves;
                 }
             }
             else if (floor >= 0)
@@ -216,32 +162,14 @@ namespace Warlander.Deedplanner.Gui
                 cavesToggle.gameObject.SetActive(false);
                 if (cavesToggle.isOn)
                 {
-                    FindObjectForTab(Tab.Ground).gameObject.SetActive(true);
-                    FindObjectForTab(Tab.Caves).gameObject.SetActive(false);
                     groundToggle.isOn = true;
                     cavesToggle.isOn = false;
-                    CurrentTab = Tab.Ground;
                 }
             }
-        }
-
-        private UIContentTab FindObjectForTab(Tab tab)
-        {
-            foreach (UIContentTab uiTab in tabs)
-            {
-                if (uiTab.Tab == tab)
-                {
-                    return uiTab;
-                }
-            }
-
-            return null;
         }
 
         private void OnDestroy()
         {
-            tabFadeSequence?.Kill();
-            
             _cameraCoordinator.CurrentCameraChanged -= CameraCoordinatorOnCurrentCameraChanged;
             _cameraCoordinator.LevelChanged -= CameraCoordinatorOnLevelChanged;
         }

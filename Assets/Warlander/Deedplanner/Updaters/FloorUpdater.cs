@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Floors;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
@@ -19,7 +18,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private MapHandler _mapHandler;
-        [Inject] private LayoutManager _layoutManager;
+        [Inject] private TabContext _tabContext;
 
         [SerializeField] private UnityTree _floorsTree;
 
@@ -41,7 +40,7 @@ namespace Warlander.Deedplanner.Updaters
 
         public override void Enable()
         {
-            _layoutManager.TileSelectionMode = TileSelectionMode.Tiles;
+            _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
         public override void Disable() { }
