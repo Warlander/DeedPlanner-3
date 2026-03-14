@@ -46,7 +46,15 @@ Injection style depends on class type:
 Each editing mode maps to a UI tab and a corresponding `*Updater` MonoBehaviour in `Assets/Warlander/Deedplanner/Updaters/`. All updaters extend `AbstractUpdater` and activate/deactivate based on `LayoutManager.TabChanged` events.
 
 ### Camera System
-`CameraCoordinator` in `Logic/Cameras/` manages three modes: First-Person (FPP), Isometric (ISO), Top-Down. Each camera renders a specific level via independent camera controllers implementing `ICameraController`.
+`CameraCoordinator` in `Logic/Cameras/` manages four modes: Perspective (FPP), Wurmian, Isometric (ISO), and Top-Down. Each camera renders a specific level via independent camera controllers implementing `ICameraController`.
+
+### Screen-Space Outline System
+Custom screen-space selection outline split across `Graphics/Outline/` and `Logic/`:
+- `ScreenSpaceOutlineFeature` — `ScriptableRendererFeature`; renders outlined objects to a mask RT, dilates, composites border over scene
+- `OutlineCoordinator` — pure plain C# class tracking `Dictionary<DynamicModelBehaviour, OutlineEntry>`; no statics
+- `OutlineFeatureBridge` — `IInitializable`+`IDisposable`, bound NonLazy; discovers and wires the feature on startup via reflection
+- `OutlineEntry` — readonly struct grouping renderers and outline type
+- Auto-setup: `Editor/OutlineFeatureSetup.cs` uses `[InitializeOnLoad]` + `EditorApplication.update`
 
 ### Command Pattern (Undo/Redo)
 All map edits are implemented as `IReversibleCommand` objects managed by `CommandManager`. Never modify map state directly — always go through commands.
@@ -83,6 +91,16 @@ Warlander.Deedplanner.Features     # Feature flag system
 - Avoid `FindObjectOfType` or manual component wiring — use Zenject injection instead
 - Prefer `[SerializeField]` for inspector-assigned component references over `GetComponent` calls
 - Input handling uses the modern Unity Input System; input definitions are in `Assets/Prefabs/Input/DPInput.inputactions`
+- **Class naming**: avoid generic, undescriptive suffixes — `Manager`, `Handler`, `Controller`, `Helper`, `Util`, `Service`, `Provider`, `Processor`, and similar vague nouns. These say *where* something lives but not *what it does*. Prefer names that describe the specific responsibility (e.g. `WaterFacade`, `WaterObjectContainer`, `MapHeightTracker`). Existing legacy names (`CommandManager`, `GameManager`) are grandfathered in; new classes must follow this rule.
+- **Property formatting**: auto-properties and single-expression `get`-only properties stay on one line. Anything more complex splits `get`/`set` onto their own lines. If `get` or `set` contains more than one statement, use expanded block syntax (`{ ... }`) rather than expression-body (`=>`) shorthand.
+
+## After Code Changes
+
+After all code edits are complete, use the MCP `refresh_unity` + `read_console` tools to check for compilation errors and warnings. Do not consider a task finished until compilation is clean.
+
+## Honesty About Feasibility
+
+If a proposed approach is architecturally poor, has no clean implementation path, or would require unreasonable workarounds — say so clearly and explain why. Do not attempt to implement it anyway. Proposing a better alternative or declining with reasoning is preferable to producing bad code.
 
 ## Notable Third-Party Packages
 
@@ -90,5 +108,4 @@ Warlander.Deedplanner.Features     # Feature flag system
 - **R3** — reactive extensions
 - **Unity InputSystem** 1.18.0
 - **TextMesh Pro** — UI text
-- **UnityFX Outline** 0.8.5 — selection outline effects
 - **Steamworks.NET** — Steam distribution/achievements

@@ -3,7 +3,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Graphics.Projectors;
-using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Logic;
 using Zenject;
 
 namespace Warlander.Deedplanner.Debugging
@@ -12,7 +12,8 @@ namespace Warlander.Deedplanner.Debugging
     {
         [Inject] private DebugProperties _debugProperties;
         [Inject] private IMapProjectorFacade _mapProjectorFacade;
-        
+        [Inject] private TabContext _tabContext;
+
         void IInitializable.Initialize()
         {
             if (_debugProperties.DrawDebugPlaneLines)
@@ -39,7 +40,7 @@ namespace Warlander.Deedplanner.Debugging
         {
             if (_debugProperties.OverrideStartingTileSelectionMode)
             {
-                LayoutManager.Instance.TileSelectionMode = _debugProperties.TileSelectionMode;
+                _tabContext.TileSelectionMode = _debugProperties.TileSelectionMode;
             }
         }
     }

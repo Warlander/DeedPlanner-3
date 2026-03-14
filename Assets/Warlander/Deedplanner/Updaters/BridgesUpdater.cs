@@ -2,7 +2,6 @@
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets.Bridges;
 using Warlander.Deedplanner.Inputs;
@@ -20,6 +19,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPInput _input;
         [Inject] private TooltipHandler _tooltipHandler;
         [Inject] private BridgeTabSwapper _bridgeTabSwapper;
+        [Inject] private TabContext _tabContext;
 
         public event Action SelectedBridgeChanged;
         
@@ -33,7 +33,7 @@ namespace Warlander.Deedplanner.Updaters
 
         public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
+            _tabContext.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
         public override void Tick()

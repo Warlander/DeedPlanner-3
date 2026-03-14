@@ -7,6 +7,7 @@ using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets.Bridges;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Graphics.Water;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Settings;
@@ -27,6 +28,7 @@ namespace Warlander.Deedplanner.Installers
         public override void InstallBindings()
         {
             Container.Bind<LayoutManager>().FromInstance(_layoutManager);
+            Container.BindInterfacesAndSelfTo<TabContext>().AsSingle().NonLazy();
             Container.Bind<CameraCoordinator>().FromInstance(_cameraCoordinator).AsSingle();
             Container.Bind<IOutlineCoordinator>().To<OutlineCoordinator>().AsSingle();
             Container.BindInterfacesAndSelfTo<OutlineFeatureBridge>().AsSingle().NonLazy();
@@ -34,6 +36,7 @@ namespace Warlander.Deedplanner.Installers
             Container.Bind<ICameraController>().To<FppCameraController>().AsTransient();
             Container.Bind<ICameraController>().To<IsoCameraController>().AsTransient();
             Container.Bind<ICameraController>().To<TopCameraController>().AsTransient();
+            Container.BindInterfacesAndSelfTo<WaterFacade>().AsSingle().NonLazy();
             
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
             Container.BindInterfacesAndSelfTo<FileDragManager>().AsSingle().NonLazy();

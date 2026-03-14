@@ -2,7 +2,6 @@
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Caves;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
@@ -15,7 +14,8 @@ namespace Warlander.Deedplanner.Updaters
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        
+        [Inject] private TabContext _tabContext;
+
         [SerializeField] private UnityTree _cavesTree;
 
         public override void Initialize()
@@ -31,7 +31,7 @@ namespace Warlander.Deedplanner.Updaters
 
         public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+            _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
         public override void Disable() { }

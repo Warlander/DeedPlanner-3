@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Graphics.Projectors;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
@@ -24,7 +23,8 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPInput _input;
         [Inject] private MapHandler _mapHandler;
         [Inject] private IMapProjectorFacade _mapProjectorFacade;
-        
+        [Inject] private TabContext _tabContext;
+
         [SerializeField] private Toggle selectAndDragToggle = null;
         [SerializeField] private Toggle createRampsToggle = null;
         [SerializeField] private Toggle levelAreaToggle = null;
@@ -136,11 +136,11 @@ namespace Warlander.Deedplanner.Updaters
         {
             if (ComplexSelectionEnabled)
             {
-                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+                _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
             }
             else
             {
-                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Everything;
+                _tabContext.TileSelectionMode = TileSelectionMode.Everything;
             }
         }
 

@@ -1,4 +1,3 @@
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Updaters;
 using Zenject;
 
@@ -7,15 +6,15 @@ namespace Warlander.Deedplanner.Logic
     public class UpdaterCoordinator : IInitializable, ITickable
     {
         private readonly AbstractUpdater[] _updaters;
-        private readonly LayoutManager _layoutManager;
+        private readonly TabContext _tabContext;
         private readonly MapHandler _mapHandler;
 
         private AbstractUpdater _currentUpdater;
 
-        public UpdaterCoordinator(AbstractUpdater[] updaters, LayoutManager layoutManager, MapHandler mapHandler)
+        public UpdaterCoordinator(AbstractUpdater[] updaters, TabContext tabContext, MapHandler mapHandler)
         {
             _updaters = updaters;
-            _layoutManager = layoutManager;
+            _tabContext = tabContext;
             _mapHandler = mapHandler;
         }
 
@@ -26,8 +25,8 @@ namespace Warlander.Deedplanner.Logic
                 updater.Initialize();
             }
 
-            _layoutManager.TabChanged += OnTabChange;
-            OnTabChange(_layoutManager.CurrentTab);
+            _tabContext.TabChanged += OnTabChange;
+            OnTabChange(_tabContext.CurrentTab);
         }
 
         void ITickable.Tick()

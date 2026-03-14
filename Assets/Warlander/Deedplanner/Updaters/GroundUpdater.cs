@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
@@ -19,6 +18,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private MapHandler _mapHandler;
+        [Inject] private TabContext _tabContext;
 
         [SerializeField] private UnityTree _groundsTree;
         
@@ -89,11 +89,11 @@ namespace Warlander.Deedplanner.Updaters
         {
             if (editCorners)
             {
-                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Everything;
+                _tabContext.TileSelectionMode = TileSelectionMode.Everything;
             }
             else
             {
-                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+                _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
             }
         }
 

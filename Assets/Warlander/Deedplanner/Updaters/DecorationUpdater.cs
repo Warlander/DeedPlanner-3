@@ -9,7 +9,6 @@ using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Graphics.Outline;
@@ -29,6 +28,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private MapHandler _mapHandler;
         [Inject] private IOutlineCoordinator _outlineCoordinator;
         [Inject] private ISharedMaterials _sharedMaterials;
+        [Inject] private TabContext _tabContext;
 
         [SerializeField] private UnityTree _decorationsTree;
 
@@ -81,7 +81,7 @@ namespace Warlander.Deedplanner.Updaters
 
         public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
+            _tabContext.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
         private void RotationSensitivityInputOnValueChanged(string value)

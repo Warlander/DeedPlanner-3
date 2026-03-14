@@ -12,8 +12,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
     {
         private readonly DPSettings _settings;
         private readonly DPInput _input;
-
-        [Inject]
+        
         public IsoCameraController(DPSettings settings, DPInput input)
         {
             _settings = settings;
