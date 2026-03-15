@@ -22,6 +22,7 @@ namespace Warlander.Deedplanner.Logic
         {
             foreach (AbstractUpdater updater in _updaters)
             {
+                updater.gameObject.SetActive(false);
                 updater.Initialize();
             }
 
@@ -37,6 +38,8 @@ namespace Warlander.Deedplanner.Logic
         private void OnTabChange(Tab tab)
         {
             _currentUpdater?.Disable();
+            if (_currentUpdater != null)
+                _currentUpdater.gameObject.SetActive(false);
 
             _currentUpdater = null;
             foreach (AbstractUpdater updater in _updaters)
@@ -48,6 +51,8 @@ namespace Warlander.Deedplanner.Logic
                 }
             }
 
+            if (_currentUpdater != null)
+                _currentUpdater.gameObject.SetActive(true);
             _currentUpdater?.Enable();
 
             if (_mapHandler.Map != null)
