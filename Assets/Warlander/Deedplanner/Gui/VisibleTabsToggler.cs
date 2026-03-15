@@ -29,10 +29,6 @@ namespace Warlander.Deedplanner.Gui
             bool caves = _cameraCoordinator.Current.Level < 0;
             groundToggle.gameObject.SetActive(!caves);
             cavesToggle.gameObject.SetActive(caves);
-            if (caves)
-                cavesToggle.isOn = true;
-            else
-                groundToggle.isOn = true;
         }
 
         private void OnDestroy()
