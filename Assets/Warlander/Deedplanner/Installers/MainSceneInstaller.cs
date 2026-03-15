@@ -19,7 +19,6 @@ namespace Warlander.Deedplanner.Installers
     public class MainSceneInstaller : MonoInstaller
     {
         [SerializeField] private DebugProperties _debugProperties;
-        [SerializeField] private LayoutManager _layoutManager;
         [SerializeField] private CameraCoordinator _cameraCoordinator;
         [SerializeField] private AbstractUpdater[] _updaters;
         
@@ -27,7 +26,7 @@ namespace Warlander.Deedplanner.Installers
         
         public override void InstallBindings()
         {
-            Container.Bind<LayoutManager>().FromInstance(_layoutManager);
+            Container.Bind<LayoutContext>().AsSingle();
             Container.BindInterfacesAndSelfTo<TabContext>().AsSingle().NonLazy();
             Container.Bind<CameraCoordinator>().FromInstance(_cameraCoordinator).AsSingle();
             Container.Bind<IOutlineCoordinator>().To<OutlineCoordinator>().AsSingle();

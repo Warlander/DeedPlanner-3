@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Zenject;
 
@@ -9,22 +10,22 @@ namespace Warlander.Deedplanner.Gui
     {
         [SerializeField] private Toggle[] indicatorButtons = new Toggle[4];
 
-        private LayoutManager _layoutManager;
+        private LayoutContext _layoutContext;
         private CameraCoordinator _cameraCoordinator;
 
         [Inject]
-        private void Inject(LayoutManager layoutManager, CameraCoordinator cameraCoordinator)
+        private void Inject(LayoutContext layoutContext, CameraCoordinator cameraCoordinator)
         {
-            _layoutManager = layoutManager;
+            _layoutContext = layoutContext;
             _cameraCoordinator = cameraCoordinator;
         }
 
         private void Start()
         {
-            _layoutManager.LayoutChanged += OnLayoutChanged;
+            _layoutContext.LayoutChanged += OnLayoutChanged;
             _cameraCoordinator.CurrentCameraChanged += OnActiveWindowChange;
 
-            OnLayoutChanged(_layoutManager.CurrentLayout);
+            OnLayoutChanged(_layoutContext.CurrentLayout);
             OnActiveWindowChange();
         }
 
@@ -41,7 +42,7 @@ namespace Warlander.Deedplanner.Gui
         {
             bool[] visible = layout switch
             {
-                Layout.Single         => new[] { true,  false, false, false },
+                Layout.Single          => new[] { true,  false, false, false },
                 Layout.HorizontalSplit => new[] { true,  false, true,  false },
                 Layout.VerticalSplit   => new[] { true,  true,  false, false },
                 Layout.HorizontalTop   => new[] { true,  false, true,  true  },
@@ -68,7 +69,7 @@ namespace Warlander.Deedplanner.Gui
 
         private void OnDestroy()
         {
-            _layoutManager.LayoutChanged -= OnLayoutChanged;
+            _layoutContext.LayoutChanged -= OnLayoutChanged;
             _cameraCoordinator.CurrentCameraChanged -= OnActiveWindowChange;
         }
     }

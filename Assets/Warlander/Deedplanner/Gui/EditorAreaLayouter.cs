@@ -1,39 +1,41 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Zenject;
 
 namespace Warlander.Deedplanner.Gui
 {
-    public class LayoutManager : MonoBehaviour
+    public class EditorAreaLayouter : MonoBehaviour
     {
         [SerializeField] private RectTransform horizontalBottomIndicatorHolder = null;
         [SerializeField] private RawImage[] screens = new RawImage[4];
         [SerializeField] private RectTransform horizontalBottomScreenHolder = null;
         [SerializeField] private RectTransform[] splits = new RectTransform[5];
 
-        public event Action<Layout> LayoutChanged;
-
-        public Layout CurrentLayout { get; private set; } = Layout.Single;
-
         private CameraCoordinator _cameraCoordinator;
+        private LayoutContext _layoutContext;
 
         [Inject]
-        private void Inject(CameraCoordinator cameraCoordinator)
+        private void Inject(CameraCoordinator cameraCoordinator, LayoutContext layoutContext)
         {
             _cameraCoordinator = cameraCoordinator;
+            _layoutContext = layoutContext;
         }
 
         private void Start()
         {
-            ChangeLayout(CurrentLayout);
+            _layoutContext.LayoutChanged += OnLayoutChanged;
+            OnLayoutChanged(_layoutContext.CurrentLayout);
         }
 
-        public void ChangeLayout(Layout layout)
+        private void OnDestroy()
         {
-            CurrentLayout = layout;
+            _layoutContext.LayoutChanged -= OnLayoutChanged;
+        }
 
+        private void OnLayoutChanged(Layout layout)
+        {
             switch (layout)
             {
                 case Layout.Single:
@@ -55,8 +57,6 @@ namespace Warlander.Deedplanner.Gui
                     ToggleMainScreenObjects(true, true, true, true);
                     break;
             }
-
-            LayoutChanged?.Invoke(layout);
         }
 
         private void ToggleMainScreenObjects(bool topRightWindowVisible, bool topLeftWindowVisible, bool bottomRightWindowVisible, bool bottomLeftWindowVisible)
