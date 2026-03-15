@@ -36,8 +36,8 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private Toggle rotationSnappingToggle;
         [SerializeField] private TMP_InputField rotationSensitivityInput;
 
-        [SerializeField] private Color allowedGhostColor = Color.green;
-        [SerializeField] private Color disabledGhostColor = Color.red;
+        [SerializeField] private Color allowedGhostColor = new Color(0f, 1f, 0f, 0.3f);
+        [SerializeField] private Color disabledGhostColor = new Color(1f, 0f, 0f, 0.3f);
         [SerializeField] private float minimumPlacementGap = 0.25f;
         [SerializeField] private float cornerSnapDistance = 0.25f;
 
@@ -58,9 +58,9 @@ namespace Warlander.Deedplanner.Updaters
         public override void Initialize()
         {
             allowedGhostPropertyBlock = new MaterialPropertyBlock();
-            allowedGhostPropertyBlock.SetColor(ShaderPropertyIds.Color, allowedGhostColor);
+            allowedGhostPropertyBlock.SetColor(ShaderPropertyIds.BaseColor, allowedGhostColor);
             disabledGhostPropertyBlock = new MaterialPropertyBlock();
-            disabledGhostPropertyBlock.SetColor(ShaderPropertyIds.Color, disabledGhostColor);
+            disabledGhostPropertyBlock.SetColor(ShaderPropertyIds.BaseColor, disabledGhostColor);
 
             foreach (DecorationData data in Database.Decorations.Values)
             {

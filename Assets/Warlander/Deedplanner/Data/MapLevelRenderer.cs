@@ -123,7 +123,7 @@ namespace Warlander.Deedplanner.Data
             if (renderLevel)
             {
                 var propertyBlock = new MaterialPropertyBlock();
-                propertyBlock.SetColor(ShaderPropertyIds.Color, new Color(opacity, opacity, opacity));
+                propertyBlock.SetColor(ShaderPropertyIds.BaseColor, new Color(opacity, opacity, opacity));
                 foreach (Renderer r in root.GetComponentsInChildren<Renderer>())
                     r.SetPropertyBlock(propertyBlock);
             }
@@ -158,7 +158,7 @@ namespace Warlander.Deedplanner.Data
                 if (renderBridge)
                 {
                     var propertyBlock = new MaterialPropertyBlock();
-                    propertyBlock.SetColor(ShaderPropertyIds.Color, new Color(opacity, opacity, opacity));
+                    propertyBlock.SetColor(ShaderPropertyIds.BaseColor, new Color(opacity, opacity, opacity));
                     bridge.SetPropertyBlock(propertyBlock);
                 }
             }

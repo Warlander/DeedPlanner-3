@@ -125,7 +125,7 @@ namespace Warlander.Deedplanner.Data
                     heightmapRenderCache[color] = new List<Matrix4x4>();
 
                     MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                    propertyBlock.SetColor(ShaderPropertyIds.Color, color);
+                    propertyBlock.SetColor(ShaderPropertyIds.BaseColor, color);
                     heightmapPropertiesCache[color] = propertyBlock;
 
                 }

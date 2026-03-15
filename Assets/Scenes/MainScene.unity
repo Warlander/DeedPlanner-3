@@ -37250,8 +37250,8 @@ MonoBehaviour:
   snapToGridToggle: {fileID: 987679741}
   rotationSnappingToggle: {fileID: 39991406}
   rotationSensitivityInput: {fileID: 1586115284}
-  allowedGhostColor: {r: 0, g: 1, b: 0, a: 1}
-  disabledGhostColor: {r: 1, g: 0, b: 0, a: 1}
+  allowedGhostColor: {r: 0, g: 1, b: 0, a: 0.5882353}
+  disabledGhostColor: {r: 1, g: 0, b: 0, a: 0.5882353}
   minimumPlacementGap: 0.25
   cornerSnapDistance: 0.25
 --- !u!1 &1604953536
