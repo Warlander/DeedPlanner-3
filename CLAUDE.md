@@ -65,7 +65,7 @@ All map edits are implemented as `IReversibleCommand` objects managed by `Comman
 - `TextureLoader`, `WurmModelLoader`, `MaterialLoader` load Wurm assets asynchronously
 
 ### Save/Load
-Map serialization uses a custom `IXmlSerializable` interface. `GameManager` orchestrates load/save; `StartupMapLoader` (plain C# class) handles initial load on startup.
+Map serialization uses a custom `IXmlSerializable` interface. `MapHandler` orchestrates load/save (backed by `MapLoader` and `MapFactory`); `StartupMapLoader` (plain C# class) handles initial load on startup.
 
 ### Settings & Features
 - `DPSettings`, `InputSettings`, `MapRenderSettings` — global settings classes
@@ -75,7 +75,7 @@ Map serialization uses a custom `IXmlSerializable` interface. `GameManager` orch
 
 ```
 Warlander.Deedplanner.Data         # Tile, Map, Database, entity types
-Warlander.Deedplanner.Logic        # GameManager, CameraCoordinator, TileSelection
+Warlander.Deedplanner.Logic        # MapHandler, CameraCoordinator, TileSelection
 Warlander.Deedplanner.Gui          # LayoutManager, windows, widgets
 Warlander.Deedplanner.Updaters     # Per-tab editing updaters
 Warlander.Deedplanner.Graphics     # Model/texture/material loading and caching
@@ -91,7 +91,7 @@ Warlander.Deedplanner.Features     # Feature flag system
 - Avoid `FindObjectOfType` or manual component wiring — use Zenject injection instead
 - Prefer `[SerializeField]` for inspector-assigned component references over `GetComponent` calls
 - Input handling uses the modern Unity Input System; input definitions are in `Assets/Prefabs/Input/DPInput.inputactions`
-- **Class naming**: avoid generic, undescriptive suffixes — `Manager`, `Handler`, `Controller`, `Helper`, `Util`, `Service`, `Provider`, `Processor`, and similar vague nouns. These say *where* something lives but not *what it does*. Prefer names that describe the specific responsibility (e.g. `WaterFacade`, `WaterObjectContainer`, `MapHeightTracker`). Existing legacy names (`CommandManager`, `GameManager`) are grandfathered in; new classes must follow this rule.
+- **Class naming**: avoid generic, undescriptive suffixes — `Manager`, `Handler`, `Controller`, `Helper`, `Util`, `Service`, `Provider`, `Processor`, and similar vague nouns. These say *where* something lives but not *what it does*. Prefer names that describe the specific responsibility (e.g. `WaterFacade`, `WaterObjectContainer`, `MapHeightTracker`). Existing legacy names (`CommandManager`) are grandfathered in; new classes must follow this rule.
 - **Property formatting**: auto-properties and single-expression `get`-only properties stay on one line. Anything more complex splits `get`/`set` onto their own lines. If `get` or `set` contains more than one statement, use expanded block syntax (`{ ... }`) rather than expression-body (`=>`) shorthand.
 - **No tuples**: do not use tuples — neither implicit (`(int x, string y)`) nor explicit (`Tuple<int, string>`). Define a named `struct` or value class instead. Named types are self-documenting, refactorable, and avoid accidental structural coupling.
 
