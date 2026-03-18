@@ -26,7 +26,7 @@ namespace Warlander.Deedplanner.Graphics
                 var texture = await textureReference.LoadOrGetTextureAsync();
                 if (texture)
                 {
-                    material.mainTexture = texture;
+                    material.SetTexture("_BaseMap", texture);
                 }
                 else
                 {
@@ -41,21 +41,11 @@ namespace Warlander.Deedplanner.Graphics
 
         private static Material CreateWomDefaultMaterial()
         {
-            Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+            Shader shader = Shader.Find("Warlander/ModelShader");
             Material mat = new Material(shader);
             mat.renderQueue = 2450;
             mat.SetOverrideTag("RenderType", "TransparentCutout");
-            mat.SetFloat("_AlphaClip", 1f);
-            mat.SetFloat("_AlphaToMask", 1f);
-            mat.SetFloat("_Cutoff", 0.5f);
-            mat.SetFloat("_Smoothness", 0f);
-            mat.SetFloat("_Metallic", 0f);
-            mat.SetFloat("_SpecularHighlights", 0f);
-            mat.SetFloat("_EnvironmentReflections", 0f);
             mat.enableInstancing = true;
-            mat.EnableKeyword("_ALPHATEST_ON");
-            mat.EnableKeyword("_ENVIRONMENTREFLECTIONS_OFF");
-            mat.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");
             return mat;
         }
     }

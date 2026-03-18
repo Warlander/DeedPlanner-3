@@ -4,7 +4,7 @@ Shader "DeedPlanner/ScreenSpaceOutline"
     {
         _OutlineColor ("Outline Color", Color) = (1, 1, 1, 1)
         _OutlineWidth ("Outline Width", Float) = 5.0
-        // _BlitTexture and _MaskTex are bound globally by C# at runtime.
+        // _BlitTexture, _MaskTex, and _ShearY are bound globally by C# at runtime.
         // NOT declared here: per-material Property slots would shadow the global bindings.
     }
 
@@ -35,6 +35,9 @@ Shader "DeedPlanner/ScreenSpaceOutline"
                 float4 _OutlineColor;
             CBUFFER_END
 
+            // Declared outside CBUFFER so cmd.SetGlobalVector can override it per-draw.
+            float4 _ShearY;
+
             struct Attributes
             {
                 float4 positionOS : POSITION;
@@ -52,6 +55,8 @@ Shader "DeedPlanner/ScreenSpaceOutline"
                 Varyings output;
                 UNITY_SETUP_INSTANCE_ID(input);
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
+                // Apply the same shear as ModelShader so the mask aligns with the rendered geometry.
+                input.positionOS.y += _ShearY.x * input.positionOS.x + _ShearY.y * input.positionOS.z;
                 output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
                 return output;
             }

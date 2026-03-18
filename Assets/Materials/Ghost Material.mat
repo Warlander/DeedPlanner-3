@@ -20,7 +20,7 @@ Material:
   stringTagMap:
     RenderType: Transparent
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -31,6 +31,6 @@ Material:
     m_Ints: []
     m_Floats: []
     m_Colors:
-    - _BaseColor: {r: 0, g: 1, b: 0, a: 0.29803923}
+    - _BaseColor: {r: 0.60382754, g: 0.10946172, b: 0.22322798, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

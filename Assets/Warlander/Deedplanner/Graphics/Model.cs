@@ -113,7 +113,7 @@ namespace Warlander.Deedplanner.Graphics
 
         private void CreateOrGetModel(ModelProperties properties, Action<GameObject> callback)
         {
-            InitializeModel(properties, () =>
+            InitializeModel(() =>
             {
                 if (loadingOriginalModel)
                 {
@@ -121,11 +121,59 @@ namespace Warlander.Deedplanner.Graphics
                 }
                 else if (originalModel)
                 {
-                    InitializeModifiedModel(properties);
-                    GameObject instance = Object.Instantiate(modifiedModels[properties]);
-                    callback.Invoke(instance);
+                    CreateModelInstance(properties, callback);
                 }
             });
+        }
+
+        private void CreateModelInstance(ModelProperties properties, Action<GameObject> callback)
+        {
+            if (properties.CustomMaterial)
+            {
+                InitializeModifiedModel(properties);
+                callback.Invoke(Object.Instantiate(modifiedModels[properties]));
+            }
+            else
+            {
+                GameObject instance = Object.Instantiate(originalModel);
+                ApplySkewToInstance(instance, properties.Skew);
+                callback.Invoke(instance);
+            }
+        }
+
+        private void ApplySkewToInstance(GameObject instance, Vector2 skew)
+        {
+            float skewXPerUnit = skew.x * 0.1f * 0.25f;
+            float skewZPerUnit = skew.y * 0.1f * 0.25f;
+            float reduction = (skew.x - skew.y) * 0.1f;
+
+            Vector3 pos = instance.transform.localPosition;
+            instance.transform.localPosition = new Vector3(pos.x, pos.y - reduction, pos.z);
+
+            if (skew == Vector2.zero)
+            {
+                return;
+            }
+
+            var block = new MaterialPropertyBlock();
+            block.SetVector(ShaderPropertyIds.ShearY, new Vector4(skewXPerUnit, skewZPerUnit, 0, 0));
+            foreach (MeshRenderer renderer in instance.GetComponentsInChildren<MeshRenderer>())
+            {
+                renderer.SetPropertyBlock(block);
+
+                // The shader shifts each vertex's Y by (x * skewXPerUnit + z * skewZPerUnit).
+                // Unity's frustum culling uses the original localBounds, which no longer encloses
+                // the skewed geometry, causing models to disappear prematurely. Recompute the
+                // bounds to cover the actual rendered positions.
+                Bounds b = renderer.localBounds;
+                float centerYShift = b.center.x * skewXPerUnit + b.center.z * skewZPerUnit;
+                float extraYExtent = Mathf.Abs(skewXPerUnit) * b.extents.x
+                                   + Mathf.Abs(skewZPerUnit) * b.extents.z;
+                renderer.localBounds = new Bounds(
+                    new Vector3(b.center.x, b.center.y + centerYShift, b.center.z),
+                    new Vector3(b.size.x, b.size.y + 2f * extraYExtent, b.size.z)
+                );
+            }
         }
 
         public void CreateOrGetModel(Material customMaterial, Action<GameObject> callback)
@@ -152,7 +200,7 @@ namespace Warlander.Deedplanner.Graphics
             CreateOrGetModel(properties, callback);
         }
 
-        private void InitializeModel(ModelProperties modelProperties, Action onDone)
+        private void InitializeModel(Action onDone)
         {
             if (!modelsRoot)
             {
@@ -172,13 +220,11 @@ namespace Warlander.Deedplanner.Graphics
                     .Subscribe(model =>
                     {
                         OnMasterModelLoaded(model);
-                        InitializeModifiedModel(modelProperties);
                         onDone();
                     });
             }
             else
             {
-                InitializeModifiedModel(modelProperties);
                 onDone();
             }
         }
@@ -219,9 +265,7 @@ namespace Warlander.Deedplanner.Graphics
 
             foreach (ModelRequest modelRequest in modelRequests)
             {
-                InitializeModifiedModel(modelRequest.ModelProperties);
-                GameObject instance = Object.Instantiate(modifiedModels[modelRequest.ModelProperties]);
-                modelRequest.Callback.Invoke(instance);
+                CreateModelInstance(modelRequest.ModelProperties, modelRequest.Callback);
             }
             modelRequests.Clear();
         }
@@ -246,39 +290,7 @@ namespace Warlander.Deedplanner.Graphics
 
         private GameObject CreateModel(ModelProperties modelProperties)
         {
-            Vector2 skew = modelProperties.Skew;
-            // skew is in Wurm units that are 4 Unity units long and 0.1 units high
-            float skewXPerUnit = skew.x * 0.1f * 0.25f;
-            float skewZPerUnit = skew.y * 0.1f * 0.25f;
-            
             GameObject clone = Object.Instantiate(originalModel);
-
-            MeshFilter[] filters = clone.GetComponentsInChildren<MeshFilter>();
-            foreach (MeshFilter filter in filters)
-            {
-                Mesh mesh = filter.mesh;
-                Mesh newMesh = new Mesh();
-                newMesh.name = mesh.name;
-                Vector3[] originalVertices = mesh.vertices;
-                Vector3[] newVertices = new Vector3[originalVertices.Length];
-                float reduction = (skew.x - skew.y) * .1f;
-                for (int i = 0; i < originalVertices.Length; i++)
-                {
-                    Vector3 vec = originalVertices[i];
-                    newVertices[i] = new Vector3(vec.x, vec.y - reduction + (skewXPerUnit * vec.x + skewZPerUnit * vec.z), vec.z);
-                }
-                newMesh.vertices = newVertices;
-                newMesh.uv = mesh.uv;
-                newMesh.triangles = mesh.triangles;
-                newMesh.normals = mesh.normals;
-                newMesh.tangents = mesh.tangents;
-                newMesh.RecalculateBounds();
-                if (!modelProperties.IsOriginalModel())
-                {
-                    newMesh.UploadMeshData(true);
-                }
-                filter.sharedMesh = newMesh;
-            }
 
             if (modelProperties.CustomMaterial)
             {

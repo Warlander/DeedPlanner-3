@@ -13,6 +13,7 @@ namespace Warlander.Deedplanner.Graphics.Outline
         private static readonly int BlitTextureId = Shader.PropertyToID("_BlitTexture");
         private static readonly int MaskTexId = Shader.PropertyToID("_MaskTex");
         private static readonly int MaskTexelSizeId = Shader.PropertyToID("_MaskTex_TexelSize");
+        private static readonly int ShearYId = Shader.PropertyToID("_ShearY");
 
         private readonly Dictionary<OutlineType, Material> _solidMats;
         private readonly Material _dilateMat;
@@ -24,6 +25,7 @@ namespace Warlander.Deedplanner.Graphics.Outline
             public TextureHandle MaskTarget;
             public Dictionary<OutlineType, Material> SolidMats;
             public List<OutlineEntry> Snapshot;
+            public int ShearYPropertyId;
         }
 
         private class CompositePassData
@@ -86,6 +88,7 @@ namespace Warlander.Deedplanner.Graphics.Outline
                 maskData.MaskTarget = maskHandle;
                 maskData.SolidMats = _solidMats;
                 maskData.Snapshot = snapshot;
+                maskData.ShearYPropertyId = ShearYId;
 
                 builder.UseTexture(maskHandle, AccessFlags.Write);
                 builder.AllowPassCulling(false);
@@ -105,11 +108,20 @@ namespace Warlander.Deedplanner.Graphics.Outline
                             if (r == null || !r.enabled || !r.gameObject.activeInHierarchy)
                                 continue;
 
+                            // Feed the shear from this renderer's material so the mask aligns
+                            // with the geometry as rendered by ModelShader.
+                            Vector4 shear = r.sharedMaterial != null
+                                ? r.sharedMaterial.GetVector(d.ShearYPropertyId)
+                                : Vector4.zero;
+                            cmd.SetGlobalVector(d.ShearYPropertyId, shear);
+
                             int subCount = r.sharedMaterials.Length;
                             for (int sub = 0; sub < subCount; sub++)
                                 cmd.DrawRenderer(r, mat, sub, 0);
                         }
                     }
+                    // Reset to zero so this global doesn't bleed into subsequent draw calls.
+                    cmd.SetGlobalVector(d.ShearYPropertyId, Vector4.zero);
                 });
             }
 

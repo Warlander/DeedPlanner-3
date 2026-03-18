@@ -1033,10 +1033,12 @@ namespace Warlander.Deedplanner.Data
                 if (renderLevel)
                 {
                     MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                    propertyBlock.SetColor(ShaderPropertyIds.BaseColor, new Color(opacity, opacity, opacity));
+                    Color opacityColor = new Color(opacity, opacity, opacity);
                     Renderer[] renderers = entity.GetComponentsInChildren<Renderer>();
                     foreach (Renderer renderer in renderers)
                     {
+                        renderer.GetPropertyBlock(propertyBlock);
+                        propertyBlock.SetColor(ShaderPropertyIds.BaseColor, opacityColor);
                         renderer.SetPropertyBlock(propertyBlock);
                     }
                 }
