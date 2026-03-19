@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using B83.Win32;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Logic
 {

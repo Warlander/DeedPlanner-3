@@ -3,14 +3,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logic;
+using VContainer;
 using Warlander.UI.Windows;
-using Zenject;
 
 namespace Warlander.Deedplanner.Gui.Windows
 {
     public class ResizeWindow : MonoBehaviour
     {
-        [Inject] private Window _window;
+        private Window _window;
         [Inject] private MapHandler _mapHandler;
 
         [SerializeField] private Button _acceptButton;
@@ -24,6 +24,11 @@ namespace Warlander.Deedplanner.Gui.Windows
         [SerializeField] private TMP_Text originalHeightText;
         [SerializeField] private TMP_Text newWidthText;
         [SerializeField] private TMP_Text newHeightText;
+
+        private void Awake()
+        {
+            _window = GetComponentInParent<Window>(true);
+        }
 
         private void Start()
         {

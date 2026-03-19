@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.UI.Windows;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Gui.Tooltips
 {

@@ -1,5 +1,5 @@
 ﻿using Warlander.Deedplanner.Logic.Outlines;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Data
 {

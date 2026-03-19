@@ -1,17 +1,19 @@
+using System.Collections.Generic;
 using Warlander.Deedplanner.Updaters;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Logic
 {
     public class UpdaterCoordinator : IInitializable, ITickable
     {
-        private readonly AbstractUpdater[] _updaters;
+        private readonly IReadOnlyList<AbstractUpdater> _updaters;
         private readonly TabContext _tabContext;
         private readonly MapHandler _mapHandler;
 
         private AbstractUpdater _currentUpdater;
 
-        public UpdaterCoordinator(AbstractUpdater[] updaters, TabContext tabContext, MapHandler mapHandler)
+        public UpdaterCoordinator(IReadOnlyList<AbstractUpdater> updaters, TabContext tabContext, MapHandler mapHandler)
         {
             _updaters = updaters;
             _tabContext = tabContext;

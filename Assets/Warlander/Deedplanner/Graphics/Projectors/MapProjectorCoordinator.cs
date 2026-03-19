@@ -1,20 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Graphics.Projectors
 {
     public class MapProjectorCoordinator : IMapProjectorCoordinator
     {
         private readonly IMapProjectorPrefabs _prefabs;
-        private readonly IInstantiator _instantiator;
+        private readonly IObjectResolver _resolver;
         private readonly Transform _container;
         private readonly Dictionary<ProjectorColor, Stack<IToggleableMapProjector>> _freeProjectors = new();
 
-        public MapProjectorCoordinator(IMapProjectorPrefabs prefabs, IInstantiator instantiator)
+        public MapProjectorCoordinator(IMapProjectorPrefabs prefabs, IObjectResolver resolver)
         {
             _prefabs = prefabs;
-            _instantiator = instantiator;
+            _resolver = resolver;
             _container = new GameObject("MapProjectors Pool").transform;
         }
 
@@ -47,7 +48,7 @@ namespace Warlander.Deedplanner.Graphics.Projectors
             if (prefab == null)
                 return null;
 
-            return _instantiator.InstantiatePrefabForComponent<MapProjector>((MapProjector)prefab, _container);
+            return _resolver.Instantiate<MapProjector>((MapProjector)prefab, _container);
         }
 
         private void EnsureColorStack(ProjectorColor color)

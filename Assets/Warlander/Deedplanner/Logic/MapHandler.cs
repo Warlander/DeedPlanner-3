@@ -2,7 +2,8 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Logic
 {
@@ -23,10 +24,10 @@ namespace Warlander.Deedplanner.Logic
             remove => _registry.MapInitialized -= value;
         }
 
-        public MapHandler(IInstantiator instantiator)
+        public MapHandler(IObjectResolver resolver)
         {
             _registry = new MapRegistry();
-            _factory = new MapFactory(instantiator);
+            _factory = new MapFactory(resolver);
             _loader = new MapLoader(_factory);
         }
 

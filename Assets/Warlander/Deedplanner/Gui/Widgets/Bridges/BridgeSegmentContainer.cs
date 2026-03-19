@@ -5,13 +5,14 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Updaters;
 using Warlander.UI.Utils;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 {
     public class BridgeSegmentContainer : MonoBehaviour
     {
-        [Inject] private IInstantiator _instantiator;
+        [Inject] private IObjectResolver _resolver;
         [Inject] private BridgesUpdater _bridgesUpdater;
         
         [SerializeField] private BridgeSegmentItem _bridgeSegmentPrefab;
@@ -102,7 +103,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             for (int i = 0; i < parts.Count; i++)
             {
                 BridgeSegmentItem item =
-                    _instantiator.InstantiatePrefabForComponent<BridgeSegmentItem>(_bridgeSegmentPrefab, _bridgeSegmentRoot);
+                    _resolver.Instantiate<BridgeSegmentItem>(_bridgeSegmentPrefab, _bridgeSegmentRoot);
                 _bridgeSegments.Add(item);
                 item.gameObject.SetActive(true);
             }

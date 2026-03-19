@@ -4,11 +4,10 @@ using System.Xml;
 using System.Xml.Serialization;
 using UnityEngine;
 using Warlander.Deedplanner.Gui;
-using Zenject;
 
 namespace Warlander.Deedplanner.Settings
 {
-    public class SettingsFactory : IFactory<DPSettings>
+    public class SettingsFactory
     {
         public DPSettings Create()
         {

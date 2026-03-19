@@ -1,7 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using Warlander.Deedplanner.Logic;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Gui
 {

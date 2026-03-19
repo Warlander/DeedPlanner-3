@@ -31343,80 +31343,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1412727820}
-  - component: {fileID: 1412727819}
-  - component: {fileID: 1412727818}
-  - component: {fileID: 1412727821}
   - component: {fileID: 1412727822}
   m_Layer: 0
-  m_Name: SceneContext
+  m_Name: SceneScope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1412727818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1412727817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd348c95c2fa4fd79d7bf02efa053f96, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _debugProperties: {fileID: 11400000, guid: 814971153ac067e47b61f466e9322aa6, type: 2}
-  _cameraCoordinator: {fileID: 1890273981}
-  _updaters:
-  - {fileID: 1200891937}
-  - {fileID: 650922445}
-  - {fileID: 1165461625}
-  - {fileID: 716036715}
-  - {fileID: 835980717}
-  - {fileID: 103496097}
-  - {fileID: 1604227846}
-  - {fileID: 211449320}
-  - {fileID: 1828645446}
-  - {fileID: 475321930}
-  - {fileID: 205400789}
-  - {fileID: 2018367164}
-  - {fileID: 860138627}
-  _bridgeTabSwapper: {fileID: 1731037936}
---- !u!114 &1412727819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1412727817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89715ad69b973a14899afa2c6730b30b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 1412727818}
-  - {fileID: 1412727821}
-  - {fileID: 1412727822}
-  _installerPrefabs: []
-  _autoRun: 1
-  OnPreInstall:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPostInstall:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPreResolve:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPostResolve:
-    m_PersistentCalls:
-      m_Calls: []
-  _parentNewObjectsUnderSceneContext: 0
-  _contractNames: []
-  _parentContractNames: []
 --- !u!4 &1412727820
 Transform:
   m_ObjectHideFlags: 0
@@ -31432,18 +31366,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1412727821
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1412727817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 470de16e7371415ab8e3445751635f01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1412727822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31453,9 +31375,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 1412727817}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da2526ca1bbf40d48bb9d67035023e92, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b60972efcb08f9488f17e46229d4fab, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Installers.MainSceneLifetimeScope
+  parentReference:
+    TypeName: Warlander.Deedplanner.Scopes.ProjectLifetimeScope
+  autoRun: 1
+  autoInjectGameObjects: []
+  _debugProperties: {fileID: 11400000, guid: 814971153ac067e47b61f466e9322aa6, type: 2}
+  _cameraCoordinator: {fileID: 1890273981}
+  _updaters:
+  - {fileID: 475321930}
+  - {fileID: 1200891937}
+  - {fileID: 2018367164}
+  - {fileID: 1828645446}
+  - {fileID: 103496097}
+  - {fileID: 835980717}
+  - {fileID: 1604227846}
+  - {fileID: 205400789}
+  - {fileID: 650922445}
+  - {fileID: 860138627}
+  - {fileID: 1165461625}
+  - {fileID: 716036715}
+  - {fileID: 211449320}
+  _bridgeTabSwapper: {fileID: 1731037936}
 --- !u!1001 &1417597095
 PrefabInstance:
   m_ObjectHideFlags: 0

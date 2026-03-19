@@ -14,13 +14,14 @@ using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Utils;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Data
 {
     public class Map : MonoBehaviour, IXmlSerializable, IEnumerable<Tile>
     {
-        [Inject] private IInstantiator _instantiator;
+        [Inject] private IObjectResolver _resolver;
         [Inject] private OverlayMeshLoader _overlayMeshLoader;
         [Inject] private TileFactory _tileFactory;
         [Inject] private BridgeFactory _bridgeFactory;
@@ -280,7 +281,9 @@ namespace Warlander.Deedplanner.Data
 
         private GridMesh PrepareGridMesh(string name, Transform parent, bool cave)
         {
-            GridMesh gridMesh = _instantiator.InstantiateComponentOnNewGameObject<GridMesh>(name);
+            var gridMeshGO = new GameObject(name);
+            GridMesh gridMesh = gridMeshGO.AddComponent<GridMesh>();
+            _resolver.InjectGameObject(gridMeshGO);
             gridMesh.Initialize(this, cave);
             gridMesh.transform.SetParent(parent);
             gridMesh.transform.localPosition = new Vector3(0, 0.01f, 0);

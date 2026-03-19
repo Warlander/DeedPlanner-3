@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Zenject;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Utils
 {

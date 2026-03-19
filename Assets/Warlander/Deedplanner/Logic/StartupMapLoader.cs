@@ -1,18 +1,25 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using R3;
 using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 using Warlander.Deedplanner.Debugging;
-using Zenject;
 
 namespace Warlander.Deedplanner.Logic
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class StartupMapLoader : IInitializable
     {
-        [Inject] private MapHandler _mapHandler;
-        [InjectOptional] private DebugProperties _debugProperties;
-        
+        private readonly MapHandler _mapHandler;
+        private readonly IObjectResolver _resolver;
+
+        public StartupMapLoader(MapHandler mapHandler, IObjectResolver resolver)
+        {
+            _mapHandler = mapHandler;
+            _resolver = resolver;
+        }
+
         public void Initialize()
         {
             LoadMapAsync().ToObservable().Subscribe();
@@ -29,13 +36,15 @@ namespace Warlander.Deedplanner.Logic
             }
 #endif
 
+            DebugProperties debugProperties = _resolver.ResolveOrDefault<DebugProperties>();
+
             if (!string.IsNullOrEmpty(mapLocationString))
             {
                 await _mapHandler.LoadMapAsync(new Uri(mapLocationString));
             }
-            else if ((Application.isEditor || Debug.isDebugBuild) && _debugProperties != null)
+            else if ((Application.isEditor || Debug.isDebugBuild) && debugProperties != null)
             {
-                await _mapHandler.LoadMapAsync(new Uri(_debugProperties.TestMapPath));
+                await _mapHandler.LoadMapAsync(new Uri(debugProperties.TestMapPath));
             }
             else
             {
