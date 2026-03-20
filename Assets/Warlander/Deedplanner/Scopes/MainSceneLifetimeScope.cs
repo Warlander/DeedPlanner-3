@@ -49,6 +49,13 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterComponentInHierarchy<TabSelectionView>().As<ITabSelectionView>();
             builder.RegisterEntryPoint<TabSelectionPresenter>();
 
+            foreach (GameObject root in gameObject.scene.GetRootGameObjects())
+            {
+                foreach (WindowOpenerButtonView view in root.GetComponentsInChildren<WindowOpenerButtonView>(true))
+                    builder.RegisterInstance(view).As<IWindowOpenerButtonView>();
+            }
+            builder.RegisterEntryPoint<WindowOpenerPresenter>();
+
             builder.Register<LayoutContext>(Lifetime.Singleton);
             builder.RegisterEntryPoint<TabContext>().AsSelf();
             builder.RegisterInstance(_cameraCoordinator);

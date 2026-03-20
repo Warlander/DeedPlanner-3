@@ -10904,7 +10904,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0296fbb173529f54e93e41f13f6d5b0f, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.TabTransitionView
   _tabs:
   - {fileID: 1130172341}
@@ -10930,7 +10930,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 49e321de111fda147a246c90e52efe48, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.TabSelectionView
   _tabToggleGroup: {fileID: 688529920}
 --- !u!1 &460407318 stripped
@@ -40909,7 +40909,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1845217158}
   - component: {fileID: 1845217159}
-  - component: {fileID: 1845217160}
   - component: {fileID: 1845217161}
   m_Layer: 5
   m_Name: Side Panel
@@ -40965,19 +40964,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &1845217160
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1845217157}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fb95cc769a54a90a2814391a9681ce4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _layoutsButton: {fileID: 1652071403132846306}
 --- !u!114 &1845217161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47094,6 +47080,7 @@ GameObject:
   - component: {fileID: 1652071403132846310}
   - component: {fileID: 1652071403132846306}
   - component: {fileID: 1652071403132846307}
+  - component: {fileID: 1652071403132846312}
   m_Layer: 5
   m_Name: Layouts
   m_TagString: Untagged
@@ -47217,6 +47204,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1652071403132846304}
   m_CullTransparentMesh: 0
+--- !u!114 &1652071403132846312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652071403132846304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fb95cc769a54a90a2814391a9681ce4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _button: {fileID: 1652071403132846306}
+  _windowName: Windows/LayoutStyleWindow
+  _exclusive: 1
 --- !u!114 &1941515110973275720
 MonoBehaviour:
   m_ObjectHideFlags: 0
