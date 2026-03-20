@@ -2632,7 +2632,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: -9
+  m_Spacing: -6
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
@@ -7899,7 +7899,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: -9
+  m_Spacing: -7
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
@@ -16540,14 +16540,8 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1652071402628677648, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: bd769f2168cb84a90bbf79c758989099,
-        type: 3}
-    - target: {fileID: 1652071402628677648, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
       propertyPath: m_Color.a
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -16597,12 +16591,12 @@ PrefabInstance:
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 20
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 20
+      value: 23.5
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -16642,12 +16636,12 @@ PrefabInstance:
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 30
+      value: 28.5
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -10
+      value: -11.75
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -16673,46 +16667,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Interactable
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnActiveIndicatorChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 9100342275960958927, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -16763,6 +16717,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_firstOverflowCharacterIndex
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100342275960958927, guid: 19574092408115b4393b449b1e80f5db,
+        type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -30827,14 +30786,8 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1652071402628677648, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: bd769f2168cb84a90bbf79c758989099,
-        type: 3}
-    - target: {fileID: 1652071402628677648, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
       propertyPath: m_Color.a
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -30960,41 +30913,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Interactable
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnActiveIndicatorChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 9100342275960958927, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -33649,14 +33567,8 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1652071402628677648, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: bd769f2168cb84a90bbf79c758989099,
-        type: 3}
-    - target: {fileID: 1652071402628677648, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
       propertyPath: m_Color.a
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -33706,12 +33618,12 @@ PrefabInstance:
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 24.5
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 47
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -33751,12 +33663,12 @@ PrefabInstance:
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 12.25
+      value: 11.5
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: -23.5
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -33782,46 +33694,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Interactable
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnActiveIndicatorChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 9100342275960958927, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -33872,6 +33744,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_firstOverflowCharacterIndex
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100342275960958927, guid: 19574092408115b4393b449b1e80f5db,
+        type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -38824,14 +38701,8 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1652071402628677648, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: bd769f2168cb84a90bbf79c758989099,
-        type: 3}
-    - target: {fileID: 1652071402628677648, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
       propertyPath: m_Color.a
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -38886,7 +38757,7 @@ PrefabInstance:
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 20
+      value: 23.5
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -38931,7 +38802,7 @@ PrefabInstance:
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -10
+      value: -11.75
       objectReference: {fileID: 0}
     - target: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -38957,46 +38828,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Interactable
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnActiveIndicatorChange
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Gui.LayoutManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2677359101550328492, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 9100342275960958927, guid: 19574092408115b4393b449b1e80f5db,
         type: 3}
@@ -39047,6 +38878,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_firstOverflowCharacterIndex
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9100342275960958927, guid: 19574092408115b4393b449b1e80f5db,
+        type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -41055,7 +40891,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: -9
+  m_Spacing: -6
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
