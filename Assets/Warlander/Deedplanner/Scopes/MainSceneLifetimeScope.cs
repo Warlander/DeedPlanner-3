@@ -43,6 +43,12 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterComponentInHierarchy<EditorAreaLayouterView>().As<IEditorAreaLayouterView>();
             builder.RegisterEntryPoint<EditorAreaLayouterPresenter>();
 
+            builder.RegisterComponentInHierarchy<TabTransitionView>().As<ITabTransitionView>();
+            builder.RegisterEntryPoint<TabTransitionPresenter>();
+
+            builder.RegisterComponentInHierarchy<TabSelectionView>().As<ITabSelectionView>();
+            builder.RegisterEntryPoint<TabSelectionPresenter>();
+
             builder.Register<LayoutContext>(Lifetime.Singleton);
             builder.RegisterEntryPoint<TabContext>().AsSelf();
             builder.RegisterInstance(_cameraCoordinator);

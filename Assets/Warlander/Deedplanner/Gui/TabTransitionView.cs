@@ -1,44 +1,29 @@
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
 using Warlander.Deedplanner.Logic;
-using VContainer;
 
 namespace Warlander.Deedplanner.Gui
 {
-    public class TabAnimator : MonoBehaviour
+    public class TabTransitionView : MonoBehaviour, ITabTransitionView
     {
-        [SerializeField] private UIContentTab[] tabs = new UIContentTab[12];
-
-        private TabContext _tabContext;
+        [SerializeField] private UIContentTab[] _tabs = new UIContentTab[12];
 
         private Tab _displayedTab;
         private Sequence _tabFadeSequence;
 
-        [Inject]
-        private void Inject(TabContext tabContext)
+        public void ShowTab(Tab tab, bool animated)
         {
-            _tabContext = tabContext;
+            if (animated)
+                AnimateToTab(tab);
+            else
+                ShowTabInstantly(tab);
         }
 
-        private void Start()
-        {
-            _displayedTab = _tabContext.CurrentTab;
-            _tabContext.TabChanged += OnTabContextTabChanged;
-
-            SwitchToTabInstantly(_displayedTab);
-        }
-
-        private void OnTabContextTabChanged(Tab newTab)
-        {
-            CreateAndStartTabFadeAnimation(_displayedTab, newTab);
-            _displayedTab = newTab;
-        }
-
-        private void SwitchToTabInstantly(Tab tab)
+        private void ShowTabInstantly(Tab tab)
         {
             _tabFadeSequence?.Complete(true);
 
-            foreach (UIContentTab contentTab in tabs)
+            foreach (UIContentTab contentTab in _tabs)
             {
                 bool isTarget = contentTab.Tab == tab;
                 contentTab.gameObject.SetActive(isTarget);
@@ -49,12 +34,12 @@ namespace Warlander.Deedplanner.Gui
             _displayedTab = tab;
         }
 
-        private void CreateAndStartTabFadeAnimation(Tab previousTab, Tab newTab)
+        private void AnimateToTab(Tab tab)
         {
             _tabFadeSequence?.Complete(true);
 
-            UIContentTab previousTabObject = FindObjectForTab(previousTab);
-            UIContentTab newTabObject = FindObjectForTab(newTab);
+            UIContentTab previousTabObject = FindTabObject(_displayedTab);
+            UIContentTab newTabObject = FindTabObject(tab);
 
             newTabObject.FadeGroup.alpha = 0;
 
@@ -69,11 +54,12 @@ namespace Warlander.Deedplanner.Gui
             newSequence.OnKill(() => _tabFadeSequence = null);
 
             _tabFadeSequence = newSequence;
+            _displayedTab = tab;
         }
 
-        private UIContentTab FindObjectForTab(Tab tab)
+        private UIContentTab FindTabObject(Tab tab)
         {
-            foreach (UIContentTab uiTab in tabs)
+            foreach (UIContentTab uiTab in _tabs)
             {
                 if (uiTab.Tab == tab)
                     return uiTab;
@@ -85,7 +71,6 @@ namespace Warlander.Deedplanner.Gui
         private void OnDestroy()
         {
             _tabFadeSequence?.Kill();
-            _tabContext.TabChanged -= OnTabContextTabChanged;
         }
     }
 }
