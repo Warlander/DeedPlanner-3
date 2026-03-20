@@ -6,6 +6,7 @@ using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Graphics.Water;
+using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets.Bridges;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
@@ -38,6 +39,9 @@ namespace Warlander.Deedplanner.Scopes
             });
             
             base.Configure(builder);
+
+            builder.RegisterComponentInHierarchy<EditorAreaLayouterView>().As<IEditorAreaLayouterView>();
+            builder.RegisterEntryPoint<EditorAreaLayouterPresenter>();
 
             builder.Register<LayoutContext>(Lifetime.Singleton);
             builder.RegisterEntryPoint<TabContext>().AsSelf();
