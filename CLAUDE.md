@@ -25,12 +25,17 @@ There is no automated test suite despite the Test Framework package being presen
 
 ## Architecture
 
-### Dependency Injection
-The project uses **Zenject** (Extenject) as its IoC container throughout. Installer classes in `Assets/Warlander/Deedplanner/Installers/` wire bindings.
+### Dependency Injection & MVP Pattern
+The project uses **VContainer** as its IoC container. Installer classes in `Assets/Warlander/Deedplanner/Installers/` wire bindings.
 
-Injection style depends on class type:
-- **Plain C# classes**: constructor injection (preferred)
-- **MonoBehaviours**: a dedicated method annotated with `[Inject]` (field injection with `[Inject]` is not recommended)
+The UI follows a strict **MVP (Model-View-Presenter)** pattern:
+- **View** (MonoBehaviour): thin view only — handles its own internal visual state at most; all logic belongs in the presenter; no container access allowed
+- **Presenter** (plain C# class): mediates between view and model; container use is discouraged — prefer pure DI (constructor injection) except in exceptional situations
+- Each presenter handles exactly one view. When multiple instances of a view type can exist simultaneously, each instance gets its own presenter. When such presenters need to share model state, the approach is decided case by case.
+
+Injection style:
+- **Plain C# classes (presenters, etc.)**: constructor injection (preferred)
+- **MonoBehaviours (views)**: no container injection — the presenter receives the view, not the other way around; views must not reference their presenter
 
 ### Core Data Model
 - **Map** (`Data/Map*.cs`) — central data structure, recently split into:
@@ -88,7 +93,7 @@ Warlander.Deedplanner.Features     # Feature flag system
 - **Private fields**: `_camelCase` prefix
 - **Methods/Properties/Classes**: PascalCase
 - **Async methods**: must end with `Async` suffix
-- Avoid `FindObjectOfType` or manual component wiring — use Zenject injection instead
+- Avoid `FindObjectOfType` or manual component wiring — use VContainer injection instead
 - Prefer `[SerializeField]` for inspector-assigned component references over `GetComponent` calls
 - Input handling uses the modern Unity Input System; input definitions are in `Assets/Prefabs/Input/DPInput.inputactions`
 - **Class naming**: avoid generic, undescriptive suffixes — `Manager`, `Handler`, `Controller`, `Helper`, `Util`, `Service`, `Provider`, `Processor`, and similar vague nouns. These say *where* something lives but not *what it does*. Prefer names that describe the specific responsibility (e.g. `WaterFacade`, `WaterObjectContainer`, `MapHeightTracker`). Existing legacy names (`CommandManager`) are grandfathered in; new classes must follow this rule.
@@ -105,7 +110,7 @@ If a proposed approach is architecturally poor, has no clean implementation path
 
 ## Notable Third-Party Packages
 
-- **Zenject/Extenject** — DI container (in `Assets/Plugins/`)
+- **VContainer** — DI container
 - **R3** — reactive extensions
 - **Unity InputSystem** 1.18.0
 - **TextMesh Pro** — UI text

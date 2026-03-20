@@ -1,5 +1,6 @@
 using System;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Graphics.Projectors
 {
@@ -7,11 +8,11 @@ namespace Warlander.Deedplanner.Graphics.Projectors
     {
         private readonly IMapProjectorCoordinator _coordinator;
 
-        public MapProjectorFacade(IInstantiator instantiator)
+        public MapProjectorFacade(IObjectResolver resolver)
         {
             IMapProjectorPrefabsRetriever retriever = new MapProjectorPrefabsRetriever();
             IMapProjectorPrefabs prefabs = retriever.RetrievePrefabs();
-            _coordinator = new MapProjectorCoordinator(prefabs, instantiator);
+            _coordinator = new MapProjectorCoordinator(prefabs, resolver);
         }
 
         public IMapProjector RequestProjector(ProjectorColor color)

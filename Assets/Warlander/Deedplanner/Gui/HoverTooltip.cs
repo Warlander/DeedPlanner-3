@@ -3,7 +3,7 @@ using R3;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Warlander.Deedplanner.Gui.Tooltips;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Gui
 {

@@ -1,7 +1,7 @@
 ﻿using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Logic.Outlines;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Data.Bridges
 {

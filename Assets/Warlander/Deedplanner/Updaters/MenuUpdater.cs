@@ -17,7 +17,7 @@ using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Steam;
 using Warlander.UI.Windows;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {

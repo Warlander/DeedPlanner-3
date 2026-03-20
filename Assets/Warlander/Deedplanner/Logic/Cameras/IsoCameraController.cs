@@ -4,7 +4,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Settings;
 using Warlander.ExtensionUtils;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {

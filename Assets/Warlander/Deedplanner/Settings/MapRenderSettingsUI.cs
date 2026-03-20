@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Settings
 {

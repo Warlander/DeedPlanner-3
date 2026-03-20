@@ -5,7 +5,8 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using Warlander.Deedplanner.Graphics.Outline;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Logic.Outlines
 {

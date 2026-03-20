@@ -10,14 +10,14 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logic;
+using VContainer;
 using Warlander.UI.Windows;
-using Zenject;
 
 namespace Warlander.Deedplanner.Gui.Windows
 {
     public class SaveWindow : MonoBehaviour
     {
-        [Inject] private Window _window;
+        private Window _window;
         [Inject] private MapHandler _mapHandler;
 
         [SerializeField] private Button _saveToFileButton;
@@ -28,6 +28,11 @@ namespace Warlander.Deedplanner.Gui.Windows
         [SerializeField] private GameObject _webSaveGroup;
 
         private UnityWebRequest _currentPastebinRequest;
+
+        private void Awake()
+        {
+            _window = GetComponentInParent<Window>(true);
+        }
 
         private void Start()
         {

@@ -6,8 +6,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
+using VContainer;
 using Warlander.UI.Windows;
-using Zenject;
 using InputSettings = Warlander.Deedplanner.Settings.InputSettings;
 
 namespace Warlander.Deedplanner.Gui.Windows
@@ -16,7 +16,7 @@ namespace Warlander.Deedplanner.Gui.Windows
     {
         [Inject] private DPInput _input;
         [Inject] private InputSettings _inputSettings;
-        [Inject] private Window _window;
+        private Window _window;
 
         [SerializeField] private CanvasGroup _rebindFade;
         [SerializeField] private TMP_Text _rebindText;
@@ -28,6 +28,11 @@ namespace Warlander.Deedplanner.Gui.Windows
         [SerializeField] private Button _resetBindingsButton;
 
         private List<InputSettingElement> _inputElements;
+
+        private void Awake()
+        {
+            _window = GetComponentInParent<Window>(true);
+        }
 
         private void Start()
         {

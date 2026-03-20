@@ -1,16 +1,16 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 using Warlander.Deedplanner.Settings;
 using Warlander.UI.Windows;
-using Zenject;
 
 namespace Warlander.Deedplanner.Gui.Windows
 {
     public class GraphicSettingsWindow : MonoBehaviour
     {
         [Inject] private DPSettings _settings;
-        [Inject] private Window _window;
+        private Window _window;
         
         [SerializeField] private Toggle simpleWaterToggle;
         [SerializeField] private Toggle highWaterToggle;
@@ -24,6 +24,11 @@ namespace Warlander.Deedplanner.Gui.Windows
         [SerializeField] private Toggle compassToggle; 
 
         [SerializeField] private Button _saveButton;
+
+        private void Awake()
+        {
+            _window = GetComponentInParent<Window>(true);
+        }
 
         private void Start()
         {

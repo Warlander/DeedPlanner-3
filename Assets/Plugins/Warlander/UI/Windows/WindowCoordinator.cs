@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.UI.Windows
 {
@@ -10,7 +11,8 @@ namespace Warlander.UI.Windows
         private const int MinWindowSortOrder = 1000;
         private const int SupportedWindows = 1000;
 
-        [Inject] private DiContainer _diContainer;
+        [Inject] private IObjectResolver _resolver;
+        private Transform _windowRoot;
 
         private Dictionary<int, Window> _windows = new Dictionary<int, Window>();
         private List<string> _spawnedPrefabInstances = new List<string>();
@@ -40,50 +42,46 @@ namespace Warlander.UI.Windows
         {
             return CreateWindow<T>(windowPath, windowLayer, exclusive: false);
         }
-        
+
         private Window CreateWindow(string windowPath, WindowLayer? windowLayer = null, bool exclusive = false)
         {
             return CreateWindow<Window>(windowPath, windowLayer, exclusive);
         }
-        
+
         private T CreateWindow<T>(string windowPath, WindowLayer? windowLayer = null, bool exclusive = false) where T : MonoBehaviour
         {
             if (exclusive && _spawnedPrefabInstances.Contains(windowPath))
             {
                 return null;
             }
-            
+
             Window windowPrefab = Resources.Load<Window>(windowPath);
             windowPrefab.gameObject.SetActive(false);
-            
+
             _spawnedPrefabInstances.Add(windowPath);
 
-            Window window = Object.Instantiate(windowPrefab, _diContainer.DefaultParent);
+            Window window = Object.Instantiate(windowPrefab, _windowRoot);
 
             WindowLayer layer = windowLayer.GetValueOrDefault(window.DefaultLayer);
             int layerNumber = (int)layer;
             int windowIndex = CalculateNextWindowIndex();
             int targetDepth = MinWindowSortOrder + layerNumber * SupportedWindows + windowIndex;
-            
+
             _windows[windowIndex] = window;
 
-            // Make sub-container so windows can request to have Window injected.
-            DiContainer subContainer = _diContainer.CreateSubContainer();
-            subContainer.Bind<Window>().FromInstance(window);
-            
-            subContainer.InjectGameObject(window.gameObject);
+            _resolver.InjectGameObject(window.gameObject);
 
             window.Initialize(targetDepth);
             window.gameObject.SetActive(true);
-            
+
             window.Closed += () =>
             {
                 RemoveWindow(windowIndex);
                 _spawnedPrefabInstances.Remove(windowPath);
             };
-            
+
             window.Show();
-            
+
             return window.GetComponent<T>();
         }
 

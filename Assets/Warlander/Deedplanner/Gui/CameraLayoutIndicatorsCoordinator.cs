@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Gui
 {
@@ -12,6 +12,7 @@ namespace Warlander.Deedplanner.Gui
 
         private LayoutContext _layoutContext;
         private CameraCoordinator _cameraCoordinator;
+        private bool _isUpdatingFromCode;
 
         [Inject]
         private void Inject(LayoutContext layoutContext, CameraCoordinator cameraCoordinator)
@@ -22,6 +23,12 @@ namespace Warlander.Deedplanner.Gui
 
         private void Start()
         {
+            for (int i = 0; i < indicatorButtons.Length; i++)
+            {
+                int index = i;
+                indicatorButtons[i].onValueChanged.AddListener(_ => OnActiveIndicatorChange(index));
+            }
+
             _layoutContext.LayoutChanged += OnLayoutChanged;
             _cameraCoordinator.CurrentCameraChanged += OnActiveWindowChange;
 
@@ -29,8 +36,10 @@ namespace Warlander.Deedplanner.Gui
             OnActiveWindowChange();
         }
 
-        public void OnActiveIndicatorChange(int window)
+        private void OnActiveIndicatorChange(int window)
         {
+            if (_isUpdatingFromCode)
+                return;
             if (indicatorButtons[window].isOn)
             {
                 _cameraCoordinator.ChangeCurrentCamera(window);
@@ -59,12 +68,13 @@ namespace Warlander.Deedplanner.Gui
 
         private void OnActiveWindowChange()
         {
+            _isUpdatingFromCode = true;
             int activeId = _cameraCoordinator.ActiveId;
-
             for (int i = 0; i < indicatorButtons.Length; i++)
             {
                 indicatorButtons[i].isOn = activeId == i;
             }
+            _isUpdatingFromCode = false;
         }
 
         private void OnDestroy()

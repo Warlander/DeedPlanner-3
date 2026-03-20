@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {

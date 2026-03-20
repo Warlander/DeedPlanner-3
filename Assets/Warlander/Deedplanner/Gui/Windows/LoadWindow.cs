@@ -12,20 +12,25 @@ using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Utils;
+using VContainer;
 using Warlander.UI.Windows;
-using Zenject;
 
 namespace Warlander.Deedplanner.Gui.Windows
 {
     public class LoadWindow : MonoBehaviour
     {
-        [Inject] private Window _window;
+        private Window _window;
         [Inject] private MapHandler _mapHandler;
 
         [SerializeField] private Button _loadFromFileButton;
         [SerializeField] private Button _loadFromWebButton;
         [SerializeField] private TMP_InputField _pastebinInput = null;
         [SerializeField] private GameObject _webSaveGroup;
+
+        private void Awake()
+        {
+            _window = GetComponentInParent<Window>(true);
+        }
 
         private void Start()
         {

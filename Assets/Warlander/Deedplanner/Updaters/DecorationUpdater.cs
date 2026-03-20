@@ -16,7 +16,7 @@ using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Settings;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {

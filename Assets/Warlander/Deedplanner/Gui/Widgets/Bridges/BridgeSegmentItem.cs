@@ -6,7 +6,7 @@ using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.UI.Utils;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 {

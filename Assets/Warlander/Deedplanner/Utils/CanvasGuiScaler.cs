@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Settings;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Utils
 {

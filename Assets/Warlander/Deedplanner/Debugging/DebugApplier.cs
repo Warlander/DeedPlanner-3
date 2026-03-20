@@ -4,7 +4,8 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Logic;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Debugging
 {
