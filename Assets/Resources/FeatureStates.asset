@@ -13,15 +13,17 @@ MonoBehaviour:
   m_Name: FeatureStates
   m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Features.FeatureStateRepository
   featureStates:
-  - _feature: 0
+  - _featureName: Bridges
+    _enabledInProduction: 0
+    _enabledInDebug: 1
+    _enabledInEditor: 1
+  - _featureName: Caves
     _enabledInProduction: 0
     _enabledInDebug: 0
     _enabledInEditor: 1
-  - _feature: 1
+  - _featureName: Docks
     _enabledInProduction: 0
     _enabledInDebug: 0
     _enabledInEditor: 1
-  - _feature: 2
-    _enabledInProduction: 0
-    _enabledInDebug: 0
-    _enabledInEditor: 1
+  _featureNamesSource: {fileID: 11500000, guid: d8321ff6bca04b94892b92e4622c135e,
+    type: 3}

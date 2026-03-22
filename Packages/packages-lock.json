@@ -322,6 +322,12 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
+    "com.warlogic.featurestates": {
+      "version": "file:com.warlogic.featurestates",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "jp.hadashikick.vcontainer": {
       "version": "1.17.0",
       "depth": 0,

@@ -4,6 +4,7 @@ using VContainer;
 using VContainer.Unity;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Features;
+using Warlogic.Features;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Steam;
@@ -55,7 +56,7 @@ namespace Warlander.Deedplanner.Scopes
             builder.Register<BridgePartDataFactory>(Lifetime.Singleton);
             builder.Register<WurmModelLoader>(Lifetime.Singleton).As<IWurmModelLoader>();
 
-            builder.RegisterInstance(new FeatureStateRepositoryRetriever().Get());
+            builder.RegisterInstance(new ResourceFeatureStateRepositoryRetriever("FeatureStates").Get());
             builder.Register<FeatureStateRetriever>(Lifetime.Singleton).As<IFeatureStateRetriever>();
         }
     }

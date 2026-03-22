@@ -40319,7 +40319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed9570f52f7b4dd28ae865fc28e26901, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Features.UIToggleFeatureStateToggler
-  _feature: 0
+  _featureName: Bridges
   _toggle: {fileID: 1827277264}
 --- !u!1 &1828645444
 GameObject:

@@ -1,13 +1,14 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
+using Warlogic.Features;
 
 namespace Warlander.Deedplanner.Features
 {
     [RequireComponent(typeof(Toggle))]
     public class UIToggleFeatureStateToggler : MonoBehaviour
     {
-        [SerializeField] private Feature _feature;
+        [SerializeField] private string _featureName;
         [SerializeField] private Toggle _toggle;
 
         private IFeatureStateRetriever _featureStateRetriever;
@@ -25,7 +26,7 @@ namespace Warlander.Deedplanner.Features
 
         private void UpdateToggle()
         {
-            _toggle.interactable = _featureStateRetriever.IsFeatureEnabled(_feature);
+            _toggle.interactable = _featureStateRetriever.IsFeatureEnabled(_featureName);
         }
     }
 }

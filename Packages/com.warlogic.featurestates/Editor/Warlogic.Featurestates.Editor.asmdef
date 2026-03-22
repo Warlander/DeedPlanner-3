@@ -1,0 +1,10 @@
+{
+    "name": "Warlogic.Featurestates.Editor",
+    "references": [
+      "Warlogic.Featurestates"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}

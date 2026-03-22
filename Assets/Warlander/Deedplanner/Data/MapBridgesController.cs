@@ -3,6 +3,7 @@ using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Features;
+using Warlogic.Features;
 
 namespace Warlander.Deedplanner.Data
 {
@@ -24,7 +25,7 @@ namespace Warlander.Deedplanner.Data
 
         public void InitializeBridges(XmlElement mapRoot)
         {
-            if (!_featureStateRetriever.IsFeatureEnabled(Feature.Bridges))
+            if (!_featureStateRetriever.IsFeatureEnabled(FeatureNames.Bridges))
                 return;
 
             XmlNodeList bridgesList = mapRoot.GetElementsByTagName("bridge");
@@ -37,7 +38,7 @@ namespace Warlander.Deedplanner.Data
 
         public void InitializeBridgesAfterResize(Map originalMap, int addLeft, int addBottom)
         {
-            if (!_featureStateRetriever.IsFeatureEnabled(Feature.Bridges))
+            if (!_featureStateRetriever.IsFeatureEnabled(FeatureNames.Bridges))
                 return;
 
             Vector2Int bridgeShift = new Vector2Int(addLeft, addBottom);

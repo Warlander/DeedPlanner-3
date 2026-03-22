@@ -1,24 +1,24 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Features
+namespace Warlogic.Features
 {
     [Serializable]
     public struct FeatureState
     {
-        [SerializeField] private Feature _feature;
+        [SerializeField] private string _featureName;
         [SerializeField] private bool _enabledInProduction;
         [SerializeField] private bool _enabledInDebug;
         [SerializeField] private bool _enabledInEditor;
 
-        public Feature Feature => _feature;
+        public string FeatureName => _featureName;
         public bool EnabledInProduction => _enabledInProduction;
         public bool EnabledInDebug => _enabledInDebug;
         public bool EnabledInEditor => _enabledInEditor;
-        
-        public FeatureState(Feature feature)
+
+        public FeatureState(string featureName)
         {
-            _feature = feature;
+            _featureName = featureName;
             _enabledInProduction = false;
             _enabledInDebug = false;
             _enabledInEditor = false;

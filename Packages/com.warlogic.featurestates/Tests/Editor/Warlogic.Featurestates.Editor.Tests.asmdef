@@ -1,0 +1,14 @@
+{
+    "name": "Warlogic.Featurestates.Editor.Tests",
+    "references": [
+        "Warlogic.Featurestates.Editor",
+        "Warlogic.Featurestates"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using Warlogic.Features;
 
-namespace Warlander.Deedplanner.Features.Editor
+namespace Warlogic.Features.Editor
 {
     [CustomEditor(typeof(FeatureStateRepository))]
     public class FeatureStateRepositoryEditor : UnityEditor.Editor
@@ -20,19 +22,45 @@ namespace Warlander.Deedplanner.Features.Editor
 
         private void SyncFeatureStates()
         {
+            SerializedProperty sourceProperty = serializedObject.FindProperty("_featureNamesSource");
+            if (sourceProperty == null)
+            {
+                return;
+            }
+
+            MonoScript monoScript = sourceProperty.objectReferenceValue as MonoScript;
+            if (monoScript == null)
+            {
+                return;
+            }
+
+            System.Type featureNamesType = monoScript.GetClass();
+            if (featureNamesType == null)
+            {
+                return;
+            }
+
+            FieldInfo[] fields = featureNamesType.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            List<string> featureNames = new List<string>();
+            foreach (FieldInfo field in fields)
+            {
+                if (field.IsLiteral && !field.IsInitOnly && field.FieldType == typeof(string))
+                {
+                    featureNames.Add((string)field.GetValue(null));
+                }
+            }
+
             SerializedProperty featureStatesProperty = serializedObject.FindProperty("featureStates");
-            System.Array enumValues = System.Enum.GetValues(typeof(Feature));
-            
             bool changed = false;
-            
+
             // Add missing features
-            foreach (Feature feature in enumValues)
+            foreach (string featureName in featureNames)
             {
                 bool found = false;
                 for (int i = 0; i < featureStatesProperty.arraySize; i++)
                 {
                     SerializedProperty element = featureStatesProperty.GetArrayElementAtIndex(i);
-                    if ((Feature)element.FindPropertyRelative("_feature").enumValueIndex == feature)
+                    if (element.FindPropertyRelative("_featureName").stringValue == featureName)
                     {
                         found = true;
                         break;
@@ -44,30 +72,20 @@ namespace Warlander.Deedplanner.Features.Editor
                     int index = featureStatesProperty.arraySize;
                     featureStatesProperty.InsertArrayElementAtIndex(index);
                     SerializedProperty element = featureStatesProperty.GetArrayElementAtIndex(index);
-                    element.FindPropertyRelative("_feature").enumValueIndex = (int)feature;
+                    element.FindPropertyRelative("_featureName").stringValue = featureName;
                     element.FindPropertyRelative("_enabledInProduction").boolValue = false;
                     element.FindPropertyRelative("_enabledInDebug").boolValue = false;
                     element.FindPropertyRelative("_enabledInEditor").boolValue = false;
                     changed = true;
                 }
             }
-            
-            // Remove extra features (optional, but cleaner)
+
+            // Remove stale features
             for (int i = featureStatesProperty.arraySize - 1; i >= 0; i--)
             {
                 SerializedProperty element = featureStatesProperty.GetArrayElementAtIndex(i);
-                Feature feature = (Feature)element.FindPropertyRelative("_feature").enumValueIndex;
-                bool found = false;
-                foreach (Feature enumFeature in enumValues)
-                {
-                    if (feature == enumFeature)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
+                string featureName = element.FindPropertyRelative("_featureName").stringValue;
+                if (!featureNames.Contains(featureName))
                 {
                     featureStatesProperty.DeleteArrayElementAtIndex(i);
                     changed = true;
@@ -89,6 +107,16 @@ namespace Warlander.Deedplanner.Features.Editor
             }
 
             serializedObject.Update();
+
+            SerializedProperty sourceProperty = serializedObject.FindProperty("_featureNamesSource");
+            EditorGUI.BeginChangeCheck();
+            EditorGUILayout.ObjectField(sourceProperty, typeof(MonoScript), new GUIContent("Feature Names Source"));
+            if (EditorGUI.EndChangeCheck())
+            {
+                serializedObject.ApplyModifiedProperties();
+                SyncFeatureStates();
+                _treeView = new FeatureStateTreeView(_treeViewState, serializedObject.FindProperty("featureStates"));
+            }
 
             Rect rect = EditorGUILayout.GetControlRect(false, 200);
             _treeView.OnGUI(rect);
@@ -153,8 +181,7 @@ namespace Warlander.Deedplanner.Features.Editor
             for (int i = 0; i < _featureStatesProperty.arraySize; i++)
             {
                 SerializedProperty stateProp = _featureStatesProperty.GetArrayElementAtIndex(i);
-                SerializedProperty featureProp = stateProp.FindPropertyRelative("_feature");
-                string featureName = ((Feature)featureProp.enumValueIndex).ToString();
+                string featureName = stateProp.FindPropertyRelative("_featureName").stringValue;
                 root.AddChild(new TreeViewItem<int> { id = i + 1, depth = 0, displayName = featureName });
             }
 

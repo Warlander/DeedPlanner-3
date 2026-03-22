@@ -1,0 +1,6 @@
+{
+  "name": "com.warlogic.featurestates",
+  "displayName": "Feature States",
+  "version": "1.0.0",
+  "description": "This package allows users to configure and use feature flags that apply for different environments.\n\nCurrently supported environments:\n- production builds\n- debug builds\n- Unity editor"
+}

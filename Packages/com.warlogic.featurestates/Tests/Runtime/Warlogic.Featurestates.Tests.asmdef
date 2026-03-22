@@ -1,0 +1,11 @@
+{
+    "name": "Warlogic.Featurestates.Tests",
+    "references": [
+        "Warlogic.Featurestates"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}
