@@ -11,12 +11,12 @@ namespace Warlander.Deedplanner.Data
     {
         private readonly Map _map;
         private readonly BridgeFactory _bridgeFactory;
-        private readonly IFeatureStateRetriever _featureStateRetriever;
+        private readonly IFeatureStateRetriever<Feature> _featureStateRetriever;
         private readonly List<Bridge> _bridges = new List<Bridge>();
 
         public IReadOnlyList<Bridge> Bridges => _bridges;
 
-        public MapBridgesController(Map map, BridgeFactory bridgeFactory, IFeatureStateRetriever featureStateRetriever)
+        public MapBridgesController(Map map, BridgeFactory bridgeFactory, IFeatureStateRetriever<Feature> featureStateRetriever)
         {
             _map = map;
             _bridgeFactory = bridgeFactory;
@@ -25,7 +25,7 @@ namespace Warlander.Deedplanner.Data
 
         public void InitializeBridges(XmlElement mapRoot)
         {
-            if (!_featureStateRetriever.IsFeatureEnabled(FeatureNames.Bridges))
+            if (!_featureStateRetriever.IsFeatureEnabled(Feature.Bridges))
                 return;
 
             XmlNodeList bridgesList = mapRoot.GetElementsByTagName("bridge");
@@ -38,7 +38,7 @@ namespace Warlander.Deedplanner.Data
 
         public void InitializeBridgesAfterResize(Map originalMap, int addLeft, int addBottom)
         {
-            if (!_featureStateRetriever.IsFeatureEnabled(FeatureNames.Bridges))
+            if (!_featureStateRetriever.IsFeatureEnabled(Feature.Bridges))
                 return;
 
             Vector2Int bridgeShift = new Vector2Int(addLeft, addBottom);

@@ -1,13 +1,12 @@
+using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using Warlogic.Features;
 
 namespace Warlogic.Features.Editor
 {
-    [CustomEditor(typeof(FeatureStateRepository))]
+    [CustomEditor(typeof(FeatureStateRepositoryBase), true)]
     public class FeatureStateRepositoryEditor : UnityEditor.Editor
     {
         private FeatureStateTreeView _treeView;
@@ -17,50 +16,30 @@ namespace Warlogic.Features.Editor
         {
             SyncFeatureStates();
             _treeViewState = new TreeViewState<int>();
-            _treeView = new FeatureStateTreeView(_treeViewState, serializedObject.FindProperty("featureStates"));
+            _treeView = new FeatureStateTreeView(_treeViewState, serializedObject.FindProperty("_featureStates"));
         }
 
         private void SyncFeatureStates()
         {
-            SerializedProperty sourceProperty = serializedObject.FindProperty("_featureNamesSource");
-            if (sourceProperty == null)
+            Type featureType = GetFeatureType();
+            if (featureType == null)
             {
                 return;
             }
 
-            MonoScript monoScript = sourceProperty.objectReferenceValue as MonoScript;
-            if (monoScript == null)
-            {
-                return;
-            }
-
-            System.Type featureNamesType = monoScript.GetClass();
-            if (featureNamesType == null)
-            {
-                return;
-            }
-
-            FieldInfo[] fields = featureNamesType.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-            List<string> featureNames = new List<string>();
-            foreach (FieldInfo field in fields)
-            {
-                if (field.IsLiteral && !field.IsInitOnly && field.FieldType == typeof(string))
-                {
-                    featureNames.Add((string)field.GetValue(null));
-                }
-            }
-
-            SerializedProperty featureStatesProperty = serializedObject.FindProperty("featureStates");
+            Array enumValues = Enum.GetValues(featureType);
+            SerializedProperty featureStatesProperty = serializedObject.FindProperty("_featureStates");
             bool changed = false;
 
             // Add missing features
-            foreach (string featureName in featureNames)
+            foreach (object enumValue in enumValues)
             {
+                int enumInt = (int)enumValue;
                 bool found = false;
                 for (int i = 0; i < featureStatesProperty.arraySize; i++)
                 {
                     SerializedProperty element = featureStatesProperty.GetArrayElementAtIndex(i);
-                    if (element.FindPropertyRelative("_featureName").stringValue == featureName)
+                    if (element.FindPropertyRelative("_feature").intValue == enumInt)
                     {
                         found = true;
                         break;
@@ -72,7 +51,7 @@ namespace Warlogic.Features.Editor
                     int index = featureStatesProperty.arraySize;
                     featureStatesProperty.InsertArrayElementAtIndex(index);
                     SerializedProperty element = featureStatesProperty.GetArrayElementAtIndex(index);
-                    element.FindPropertyRelative("_featureName").stringValue = featureName;
+                    element.FindPropertyRelative("_feature").intValue = enumInt;
                     element.FindPropertyRelative("_enabledInProduction").boolValue = false;
                     element.FindPropertyRelative("_enabledInDebug").boolValue = false;
                     element.FindPropertyRelative("_enabledInEditor").boolValue = false;
@@ -81,11 +60,16 @@ namespace Warlogic.Features.Editor
             }
 
             // Remove stale features
+            HashSet<int> validEnumInts = new HashSet<int>();
+            foreach (object enumValue in enumValues)
+            {
+                validEnumInts.Add((int)enumValue);
+            }
+
             for (int i = featureStatesProperty.arraySize - 1; i >= 0; i--)
             {
                 SerializedProperty element = featureStatesProperty.GetArrayElementAtIndex(i);
-                string featureName = element.FindPropertyRelative("_featureName").stringValue;
-                if (!featureNames.Contains(featureName))
+                if (!validEnumInts.Contains(element.FindPropertyRelative("_feature").intValue))
                 {
                     featureStatesProperty.DeleteArrayElementAtIndex(i);
                     changed = true;
@@ -99,6 +83,25 @@ namespace Warlogic.Features.Editor
             }
         }
 
+        private Type GetFeatureType()
+        {
+            Type concreteType = target.GetType();
+            Type baseType = concreteType.BaseType;
+            if (baseType == null || !baseType.IsGenericType)
+            {
+                return null;
+            }
+
+            Type[] genericArgs = baseType.GetGenericArguments();
+            if (genericArgs.Length == 0)
+            {
+                return null;
+            }
+
+            Type featureType = genericArgs[0];
+            return featureType.IsEnum ? featureType : null;
+        }
+
         public override void OnInspectorGUI()
         {
             if (_treeView == null)
@@ -107,16 +110,6 @@ namespace Warlogic.Features.Editor
             }
 
             serializedObject.Update();
-
-            SerializedProperty sourceProperty = serializedObject.FindProperty("_featureNamesSource");
-            EditorGUI.BeginChangeCheck();
-            EditorGUILayout.ObjectField(sourceProperty, typeof(MonoScript), new GUIContent("Feature Names Source"));
-            if (EditorGUI.EndChangeCheck())
-            {
-                serializedObject.ApplyModifiedProperties();
-                SyncFeatureStates();
-                _treeView = new FeatureStateTreeView(_treeViewState, serializedObject.FindProperty("featureStates"));
-            }
 
             Rect rect = EditorGUILayout.GetControlRect(false, 200);
             _treeView.OnGUI(rect);
@@ -127,7 +120,7 @@ namespace Warlogic.Features.Editor
 
     public class FeatureStateTreeView : TreeView<int>
     {
-        private SerializedProperty _featureStatesProperty;
+        private readonly SerializedProperty _featureStatesProperty;
 
         public FeatureStateTreeView(TreeViewState<int> state, SerializedProperty featureStatesProperty) : base(state, CreateHeader())
         {
@@ -181,8 +174,11 @@ namespace Warlogic.Features.Editor
             for (int i = 0; i < _featureStatesProperty.arraySize; i++)
             {
                 SerializedProperty stateProp = _featureStatesProperty.GetArrayElementAtIndex(i);
-                string featureName = stateProp.FindPropertyRelative("_featureName").stringValue;
-                root.AddChild(new TreeViewItem<int> { id = i + 1, depth = 0, displayName = featureName });
+                SerializedProperty featureProp = stateProp.FindPropertyRelative("_feature");
+                string displayName = featureProp.enumDisplayNames.Length > featureProp.enumValueIndex && featureProp.enumValueIndex >= 0
+                    ? featureProp.enumDisplayNames[featureProp.enumValueIndex]
+                    : featureProp.intValue.ToString();
+                root.AddChild(new TreeViewItem<int> { id = i + 1, depth = 0, displayName = displayName });
             }
 
             return root;

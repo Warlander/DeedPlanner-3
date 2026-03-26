@@ -56,8 +56,8 @@ namespace Warlander.Deedplanner.Scopes
             builder.Register<BridgePartDataFactory>(Lifetime.Singleton);
             builder.Register<WurmModelLoader>(Lifetime.Singleton).As<IWurmModelLoader>();
 
-            builder.RegisterInstance(new ResourceFeatureStateRepositoryRetriever("FeatureStates").Get());
-            builder.Register<FeatureStateRetriever>(Lifetime.Singleton).As<IFeatureStateRetriever>();
+            builder.RegisterInstance(new ResourceFeatureStateRepositoryRetriever<Feature>("FeatureStates").Get());
+            builder.Register<FeatureStateRetriever<Feature>>(Lifetime.Singleton).As<IFeatureStateRetriever<Feature>>();
         }
     }
 }

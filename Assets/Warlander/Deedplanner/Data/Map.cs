@@ -10,6 +10,7 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Summary;
 using Warlogic.Features;
+using Warlander.Deedplanner.Features;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Settings;
@@ -26,7 +27,7 @@ namespace Warlander.Deedplanner.Data
         [Inject] private TileFactory _tileFactory;
         [Inject] private BridgeFactory _bridgeFactory;
         [Inject] private IMapRenderSettingsRetriever _mapRenderSettingsRetriever;
-        [Inject] private IFeatureStateRetriever _featureStateRetriever;
+        [Inject] private IFeatureStateRetriever<Feature> _featureStateRetriever;
         [Inject] private MapHeightTracker _heightTracker;
         [Inject] private MapRoofCalculator _roofCalculator;
         [Inject] private ISharedMaterials _sharedMaterials;

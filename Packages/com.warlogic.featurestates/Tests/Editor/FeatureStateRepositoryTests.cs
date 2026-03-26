@@ -9,12 +9,20 @@ namespace Warlogic.Featurestates.Editor.Tests
 {
     class FeatureStateRepositoryTests
     {
-        private FeatureStateRepository _repo;
+        private enum TestFeature
+        {
+            Known = 1,
+            Other = 2
+        }
+
+        private class TestRepository : FeatureStateRepository<TestFeature> { }
+
+        private TestRepository _repo;
 
         [SetUp]
         public void SetUp()
         {
-            _repo = ScriptableObject.CreateInstance<FeatureStateRepository>();
+            _repo = ScriptableObject.CreateInstance<TestRepository>();
         }
 
         [TearDown]
@@ -27,10 +35,10 @@ namespace Warlogic.Featurestates.Editor.Tests
         public void IsEnabled_UnknownFeature_ReturnsFalse()
         {
             // Arrange
-            SetFeatureStates(_repo, new FeatureState[0]);
+            SetFeatureStates(_repo, new FeatureStateEntry<TestFeature>[0]);
 
             // Act
-            bool result = _repo.IsEnabledInProduction("Unknown");
+            bool result = _repo.IsEnabledInProduction(TestFeature.Other);
 
             // Assert
             Assert.IsFalse(result);
@@ -40,21 +48,21 @@ namespace Warlogic.Featurestates.Editor.Tests
         public void IsEnabled_UnknownFeature_LogsWarning()
         {
             // Arrange
-            SetFeatureStates(_repo, new FeatureState[0]);
+            SetFeatureStates(_repo, new FeatureStateEntry<TestFeature>[0]);
 
             // Act and assert
             LogAssert.Expect(LogType.Warning, new Regex("No feature state found for feature"));
-            _repo.IsEnabledInProduction("Unknown");
+            _repo.IsEnabledInProduction(TestFeature.Other);
         }
 
         [Test]
         public void IsEnabled_KnownEnabledFeature_ReturnsTrue()
         {
             // Arrange
-            SetFeatureStates(_repo, new[] { MakeState("KnownFeature", production: true) });
+            SetFeatureStates(_repo, new[] { MakeState(TestFeature.Known, production: true) });
 
             // Act
-            bool result = _repo.IsEnabledInProduction("KnownFeature");
+            bool result = _repo.IsEnabledInProduction(TestFeature.Known);
 
             // Assert
             Assert.IsTrue(result);
@@ -64,29 +72,29 @@ namespace Warlogic.Featurestates.Editor.Tests
         public void IsEnabled_KnownDisabledFeature_ReturnsFalse()
         {
             // Arrange
-            SetFeatureStates(_repo, new[] { MakeState("KnownFeature", production: false) });
+            SetFeatureStates(_repo, new[] { MakeState(TestFeature.Known, production: false) });
 
             // Act
-            bool result = _repo.IsEnabledInProduction("KnownFeature");
+            bool result = _repo.IsEnabledInProduction(TestFeature.Known);
 
             // Assert
             Assert.IsFalse(result);
         }
 
-        private static void SetFeatureStates(FeatureStateRepository repo, FeatureState[] states)
+        private static void SetFeatureStates(TestRepository repo, FeatureStateEntry<TestFeature>[] states)
         {
-            typeof(FeatureStateRepository)
-                .GetField("featureStates", BindingFlags.NonPublic | BindingFlags.Instance)
+            typeof(FeatureStateRepository<TestFeature>)
+                .GetField("_featureStates", BindingFlags.NonPublic | BindingFlags.Instance)
                 .SetValue(repo, states);
         }
 
-        private static FeatureState MakeState(string name, bool production)
+        private static FeatureStateEntry<TestFeature> MakeState(TestFeature feature, bool production)
         {
-            object boxed = new FeatureState(name);
-            typeof(FeatureState)
+            object boxed = new FeatureStateEntry<TestFeature>(feature);
+            typeof(FeatureStateEntry<TestFeature>)
                 .GetField("_enabledInProduction", BindingFlags.NonPublic | BindingFlags.Instance)
                 .SetValue(boxed, production);
-            return (FeatureState)boxed;
+            return (FeatureStateEntry<TestFeature>)boxed;
         }
     }
 }

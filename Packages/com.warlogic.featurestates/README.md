@@ -1,51 +1,56 @@
 # Setup
 
-1. Create Feature Names class somewhere in the project. It can be called anything. Example:
+1. Create a `Feature` enum somewhere in the project. Assign explicit integer values starting at 1; `0` is reserved as an unset sentinel, which makes it safe to add or remove values later. Example:
 ```csharp
-public static class FeatureNames
+public enum Feature
 {
-    public const string FeatureA = "FeatureA";
-    public const string FeatureB = "FeatureB";
-    public const string FeatureC = "FeatureC";
+    FeatureA = 1,
+    FeatureB = 2,
+    FeatureC = 3
 }
 ```
-2. Create ScriptableObject `FeatureStates` anywhere in "Resources" of your chosing.
-3. Wire previously created class to "Feature Names Source".
-4. Obtain an `IFeatureStateRetriever` at runtime. Manual wiring (no DI framework required):
+
+2. Create a concrete ScriptableObject subclass that extends `FeatureStateRepository<Feature>`. Include a `[CreateAssetMenu]` attribute so Unity can create the asset from the menu. Example:
 ```csharp
-IFeatureStateRepository repository = new ResourceFeatureStateRepositoryRetriever("FeatureStates").Get();
-IFeatureStateRetriever featureStateRetriever = new FeatureStateRetriever(repository);
+[CreateAssetMenu(fileName = "FeatureStates", menuName = "MyProject/Feature States")]
+public class MyFeatureStateRepository : FeatureStateRepository<Feature> { }
 ```
-Example DI With VContainer:
+
+3. Create a `FeatureStates` asset anywhere inside a `Resources/` folder using the menu item you declared above. Open the asset in the Inspector — the custom inspector automatically syncs all enum values as rows. Configure the Production, Debug, and Editor toggles for each feature.
+
+4. Obtain an `IFeatureStateRetriever<Feature>` at runtime. Manual wiring (no DI framework required):
 ```csharp
-builder.RegisterInstance(new ResourceFeatureStateRepositoryRetriever("FeatureStates").Get());
-builder.Register<FeatureStateRetriever>(Lifetime.Singleton).As<IFeatureStateRetriever>();
+IFeatureStateRepository<Feature> repository = new ResourceFeatureStateRepositoryRetriever<Feature>("FeatureStates").Get();
+IFeatureStateRetriever<Feature> featureStateRetriever = new FeatureStateRetriever<Feature>(repository);
+```
+Example DI with VContainer:
+```csharp
+builder.RegisterInstance(new ResourceFeatureStateRepositoryRetriever<Feature>("FeatureStates").Get());
+builder.Register<FeatureStateRetriever<Feature>>(Lifetime.Singleton).As<IFeatureStateRetriever<Feature>>();
 ```
 > The string `"FeatureStates"` is the name of the ScriptableObject asset inside a `Resources/` folder (without extension).
 
 # Usage
 
-Inject `IFeatureStateRetriever` and call `IsFeatureEnabled` with one of your feature name constants:
+Inject `IFeatureStateRetriever<Feature>` and call `IsFeatureEnabled` with an enum value:
 ```csharp
 public class MyClass
 {
-    private readonly IFeatureStateRetriever _featureStateRetriever;
+    private readonly IFeatureStateRetriever<Feature> _featureStateRetriever;
 
-    public MyClass(IFeatureStateRetriever featureStateRetriever)
+    public MyClass(IFeatureStateRetriever<Feature> featureStateRetriever)
     {
         _featureStateRetriever = featureStateRetriever;
     }
 
     public void DoSomething()
     {
-        if (!_featureStateRetriever.IsFeatureEnabled(FeatureNames.FeatureA))
+        if (!_featureStateRetriever.IsFeatureEnabled(Feature.FeatureA))
             return;
         // feature-specific logic
     }
 }
 ```
-
-Always use your `FeatureNames` constants rather than inline strings to prevent typos and keep renaming safe.
 
 # Environments
 
@@ -58,3 +63,7 @@ The system supports three environments, resolved automatically at runtime:
 | **Production** | Release builds |
 
 Configure which features are enabled per environment in the Inspector on your `FeatureStates` ScriptableObject.
+
+# Adding or Removing Features
+
+Add or remove values from your `Feature` enum. The next time you open the `FeatureStates` asset in the Inspector, the custom editor automatically adds rows for new values and removes rows for deleted values, preserving the existing toggle settings for unchanged values.

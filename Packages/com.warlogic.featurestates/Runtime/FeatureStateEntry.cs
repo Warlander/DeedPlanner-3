@@ -1,24 +1,24 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace Warlogic.Features
 {
     [Serializable]
-    public struct FeatureState
+    public struct FeatureStateEntry<TFeature> where TFeature : Enum
     {
-        [SerializeField] private string _featureName;
+        [SerializeField] private TFeature _feature;
         [SerializeField] private bool _enabledInProduction;
         [SerializeField] private bool _enabledInDebug;
         [SerializeField] private bool _enabledInEditor;
 
-        public string FeatureName => _featureName;
+        public TFeature Feature => _feature;
         public bool EnabledInProduction => _enabledInProduction;
         public bool EnabledInDebug => _enabledInDebug;
         public bool EnabledInEditor => _enabledInEditor;
 
-        public FeatureState(string featureName)
+        public FeatureStateEntry(TFeature feature)
         {
-            _featureName = featureName;
+            _feature = feature;
             _enabledInProduction = false;
             _enabledInDebug = false;
             _enabledInEditor = false;

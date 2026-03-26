@@ -9,21 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b8ebff340cb48b5b0b7752f0c25741b, type: 3}
+  m_Script: {fileID: 11500000, guid: a8aa11ffb330181458a864c99187aa4f, type: 3}
   m_Name: FeatureStates
-  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Features.FeatureStateRepository
-  featureStates:
-  - _featureName: Bridges
+  m_EditorClassIdentifier: Assembly-CSharp::DPFeatureStateRepository
+  _featureStates:
+  - _feature: 1
     _enabledInProduction: 0
     _enabledInDebug: 1
     _enabledInEditor: 1
-  - _featureName: Caves
+  - _feature: 2
     _enabledInProduction: 0
     _enabledInDebug: 0
     _enabledInEditor: 1
-  - _featureName: Docks
+  - _feature: 3
     _enabledInProduction: 0
     _enabledInDebug: 0
     _enabledInEditor: 1
-  _featureNamesSource: {fileID: 11500000, guid: d8321ff6bca04b94892b92e4622c135e,
-    type: 3}

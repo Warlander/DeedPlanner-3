@@ -1,29 +1,31 @@
+using System;
 using UnityEngine;
 
 namespace Warlogic.Features
 {
-    public class FeatureStateRetriever : IFeatureStateRetriever
+    public class FeatureStateRetriever<TFeature> : IFeatureStateRetriever<TFeature>
+        where TFeature : Enum
     {
-        private readonly IFeatureStateRepository _featureStateRepository;
+        private readonly IFeatureStateRepository<TFeature> _repository;
 
-        public FeatureStateRetriever(IFeatureStateRepository featureStateRepository)
+        public FeatureStateRetriever(IFeatureStateRepository<TFeature> repository)
         {
-            _featureStateRepository = featureStateRepository;
+            _repository = repository;
         }
 
-        public bool IsFeatureEnabled(string featureName)
+        public bool IsFeatureEnabled(TFeature feature)
         {
             if (Application.isEditor)
             {
-                return _featureStateRepository.IsEnabledInEditor(featureName);
+                return _repository.IsEnabledInEditor(feature);
             }
 
             if (Debug.isDebugBuild)
             {
-                return _featureStateRepository.IsEnabledInDebug(featureName);
+                return _repository.IsEnabledInDebug(feature);
             }
 
-            return _featureStateRepository.IsEnabledInProduction(featureName);
+            return _repository.IsEnabledInProduction(feature);
         }
     }
 }

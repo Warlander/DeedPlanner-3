@@ -1,7 +1,9 @@
+using System;
+
 namespace Warlogic.Features
 {
-    public interface IFeatureStateRetriever
+    public interface IFeatureStateRetriever<TFeature> where TFeature : Enum
     {
-        bool IsFeatureEnabled(string featureName);
+        bool IsFeatureEnabled(TFeature feature);
     }
 }

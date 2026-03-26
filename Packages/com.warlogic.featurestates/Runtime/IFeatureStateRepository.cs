@@ -1,9 +1,11 @@
-﻿namespace Warlogic.Features
+using System;
+
+namespace Warlogic.Features
 {
-    public interface IFeatureStateRepository
+    public interface IFeatureStateRepository<TFeature> where TFeature : Enum
     {
-        bool IsEnabledInProduction(string featureName);
-        bool IsEnabledInDebug(string featureName);
-        bool IsEnabledInEditor(string featureName);
+        bool IsEnabledInProduction(TFeature feature);
+        bool IsEnabledInDebug(TFeature feature);
+        bool IsEnabledInEditor(TFeature feature);
     }
 }

@@ -1,43 +1,64 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Warlogic.Features
 {
-    [CreateAssetMenu(fileName = "FeatureStates", menuName = "Features/Feature States", order = 0)]
-    public class FeatureStateRepository : ScriptableObject, IFeatureStateRepository
+    public abstract class FeatureStateRepository<TFeature> : FeatureStateRepositoryBase, IFeatureStateRepository<TFeature>
+        where TFeature : Enum
     {
-        [SerializeField] private FeatureState[] featureStates;
+        [SerializeField] private FeatureStateEntry<TFeature>[] _featureStates;
 
-#if UNITY_EDITOR
-        [SerializeField] private UnityEditor.MonoScript _featureNamesSource;
-#endif
+        private Dictionary<TFeature, FeatureStateEntry<TFeature>> _lookup;
 
-        public bool IsEnabledInProduction(string featureName)
+        private void OnEnable()
         {
-            return GetFeatureState(featureName).EnabledInProduction;
+            BuildLookup();
         }
 
-        public bool IsEnabledInDebug(string featureName)
+        private void BuildLookup()
         {
-            return GetFeatureState(featureName).EnabledInDebug;
-        }
-
-        public bool IsEnabledInEditor(string featureName)
-        {
-            return GetFeatureState(featureName).EnabledInEditor;
-        }
-
-        private FeatureState GetFeatureState(string featureName)
-        {
-            foreach (FeatureState state in featureStates)
+            _lookup = new Dictionary<TFeature, FeatureStateEntry<TFeature>>();
+            if (_featureStates == null)
             {
-                if (state.FeatureName == featureName)
-                {
-                    return state;
-                }
+                return;
             }
 
-            Debug.LogWarning($"No feature state found for feature {featureName}");
-            return new FeatureState(featureName);
+            foreach (FeatureStateEntry<TFeature> entry in _featureStates)
+            {
+                _lookup[entry.Feature] = entry;
+            }
+        }
+
+        public bool IsEnabledInProduction(TFeature feature)
+        {
+            return Get(feature).EnabledInProduction;
+        }
+
+        public bool IsEnabledInDebug(TFeature feature)
+        {
+            return Get(feature).EnabledInDebug;
+        }
+
+        public bool IsEnabledInEditor(TFeature feature)
+        {
+            return Get(feature).EnabledInEditor;
+        }
+
+        private FeatureStateEntry<TFeature> Get(TFeature feature)
+        {
+            if (_lookup == null)
+            {
+                BuildLookup();
+            }
+
+            if (_lookup.TryGetValue(feature, out FeatureStateEntry<TFeature> entry))
+            {
+                return entry;
+            }
+
+            Debug.LogWarning($"No feature state found for feature {feature}");
+            return new FeatureStateEntry<TFeature>(feature);
         }
     }
 }
