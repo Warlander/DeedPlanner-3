@@ -26,7 +26,7 @@ There is no automated test suite despite the Test Framework package being presen
 ## Architecture
 
 ### Dependency Injection & MVP Pattern
-The project uses **VContainer** as its IoC container. Installer classes in `Assets/Warlander/Deedplanner/Installers/` wire bindings.
+The project uses **VContainer** as its IoC container. Scope classes in `Assets/Warlander/Deedplanner/Scopes/` (VContainer `LifetimeScope` subclasses) wire bindings.
 
 The UI follows a strict **MVP (Model-View-Presenter)** pattern:
 - **View** (MonoBehaviour): thin view only — handles its own internal visual state at most; all logic belongs in the presenter; no container access allowed
@@ -48,17 +48,17 @@ Injection style:
 - **Database** (`Data/Database.cs`) — static dictionaries for all game asset metadata (ground/floor/wall/roof/decoration types)
 
 ### Tab-Based Updater Pattern
-Each editing mode maps to a UI tab and a corresponding `*Updater` MonoBehaviour in `Assets/Warlander/Deedplanner/Updaters/`. All updaters extend `AbstractUpdater` and activate/deactivate based on `LayoutManager.TabChanged` events.
+Each editing mode maps to a UI tab and a corresponding `*Updater` MonoBehaviour in `Assets/Warlander/Deedplanner/Updaters/`. All updaters extend `AbstractUpdater` and activate/deactivate based on `TabContext.TabChanged` events.
 
 ### Camera System
-`CameraCoordinator` in `Logic/Cameras/` manages four modes: Perspective (FPP), Wurmian, Isometric (ISO), and Top-Down. Each camera renders a specific level via independent camera controllers implementing `ICameraController`.
+`CameraCoordinator` in `Logic/Cameras/` manages four modes: Perspective (FPP), Wurmian, Isometric (ISO), and Top. Each camera renders a specific level via independent camera controllers implementing `ICameraController`.
 
 ### Screen-Space Outline System
-Custom screen-space selection outline split across `Graphics/Outline/` and `Logic/`:
-- `ScreenSpaceOutlineFeature` — `ScriptableRendererFeature`; renders outlined objects to a mask RT, dilates, composites border over scene
-- `OutlineCoordinator` — pure plain C# class tracking `Dictionary<DynamicModelBehaviour, OutlineEntry>`; no statics
-- `OutlineFeatureBridge` — `IInitializable`+`IDisposable`, bound NonLazy; discovers and wires the feature on startup via reflection
-- `OutlineEntry` — readonly struct grouping renderers and outline type
+Custom screen-space selection outline split across `Graphics/Outline/` and `Logic/Outlines/`:
+- `ScreenSpaceOutlineFeature` (`Graphics/Outline/`) — `ScriptableRendererFeature`; renders outlined objects to a mask RT, dilates, composites border over scene
+- `OutlineCoordinator` (`Logic/Outlines/`) — pure plain C# class tracking `Dictionary<DynamicModelBehaviour, OutlineEntry>`; no statics
+- `OutlineFeatureBridge` (`Logic/Outlines/`) — `IInitializable`+`IDisposable`, bound NonLazy; discovers and wires the feature on startup via reflection
+- `OutlineEntry` (`Graphics/Outline/`) — readonly struct grouping renderers and outline type
 - Auto-setup: `Editor/OutlineFeatureSetup.cs` uses `[InitializeOnLoad]` + `EditorApplication.update`
 
 ### Command Pattern (Undo/Redo)
@@ -74,14 +74,14 @@ Map serialization uses a custom `IXmlSerializable` interface. `MapHandler` orche
 
 ### Settings & Features
 - `DPSettings`, `InputSettings`, `MapRenderSettings` — global settings classes
-- `FeatureStateRepository` — feature flags for experimental features
+- `DPFeatureStateRepository` — feature flags for experimental features
 
 ## Key Namespaces
 
 ```
 Warlander.Deedplanner.Data         # Tile, Map, Database, entity types
 Warlander.Deedplanner.Logic        # MapHandler, CameraCoordinator, TileSelection
-Warlander.Deedplanner.Gui          # LayoutManager, windows, widgets
+Warlander.Deedplanner.Gui          # Windows, widgets, tab layout
 Warlander.Deedplanner.Updaters     # Per-tab editing updaters
 Warlander.Deedplanner.Graphics     # Model/texture/material loading and caching
 Warlander.Deedplanner.Settings     # Application settings
