@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
-namespace Warlander.Deedplanner.Editor
+namespace Warlogic.LaunchRedirect
 {
     /// <summary>
     /// Redirects to the configured startup scene when pressing Play, so the program can initialize correctly.

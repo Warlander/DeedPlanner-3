@@ -3,7 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Editor
+namespace Warlogic.LaunchRedirect
 {
     public static class LaunchRedirectSettings
     {

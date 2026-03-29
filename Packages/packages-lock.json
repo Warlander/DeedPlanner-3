@@ -328,6 +328,12 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.warlogic.launchredirect": {
+      "version": "file:com.warlogic.launchredirect",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "jp.hadashikick.vcontainer": {
       "version": "1.17.0",
       "depth": 0,
