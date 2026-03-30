@@ -323,16 +323,18 @@
       }
     },
     "com.warlogic.featurestates": {
-      "version": "file:com.warlogic.featurestates",
+      "version": "2.0.0",
       "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://upm.maciejcyranowicz.com"
     },
     "com.warlogic.launchredirect": {
-      "version": "file:com.warlogic.launchredirect",
+      "version": "1.0.0",
       "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://upm.maciejcyranowicz.com"
     },
     "jp.hadashikick.vcontainer": {
       "version": "1.17.0",
