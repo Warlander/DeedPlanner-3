@@ -1,0 +1,8 @@
+{
+    "registries": [
+        {
+            "_scope": "com.warlogic",
+            "_registryUrl": "https://upm.maciejcyranowicz.com"
+        }
+    ]
+}
