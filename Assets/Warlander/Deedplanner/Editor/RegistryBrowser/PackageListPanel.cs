@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine.UIElements;
 
 namespace Warlander.Deedplanner.Editor.RegistryBrowser
@@ -10,9 +9,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         private ListView _listView;
         private Label _statusLabel;
         private IReadOnlyList<PackageSummary> _packages = Array.Empty<PackageSummary>();
-        private bool _animating;
-        private double _animationTimer;
-        private int _dotCount;
+        private LabelLoadingAnimation _loadingAnimation;
 
         public event Action<PackageSummary> PackageSelected;
 
@@ -30,7 +27,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             header.style.paddingBottom = 4;
             root.Add(header);
 
-            _statusLabel = new Label("Loading packages");
+            _statusLabel = new Label();
             _statusLabel.style.paddingLeft = 6;
             _statusLabel.style.paddingRight = 6;
             _statusLabel.style.paddingTop = 4;
@@ -49,13 +46,25 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             _listView.selectionChanged += OnSelectionChanged;
             root.Add(_listView);
 
-            StartLoadingAnimation();
+            _loadingAnimation = new LabelLoadingAnimation(_statusLabel, "Loading packages");
+            _loadingAnimation.Start();
             return root;
+        }
+
+        public void ShowLoading()
+        {
+            _loadingAnimation.Stop();
+            _packages = Array.Empty<PackageSummary>();
+            _listView.itemsSource = null;
+            _listView.RefreshItems();
+            _statusLabel.style.color = new UnityEngine.Color(0.6f, 0.6f, 0.6f);
+            _statusLabel.style.display = DisplayStyle.Flex;
+            _loadingAnimation.Start();
         }
 
         public void SetPackages(IReadOnlyList<PackageSummary> packages)
         {
-            StopLoadingAnimation();
+            _loadingAnimation.Stop();
             _statusLabel.style.display = DisplayStyle.None;
             _packages = packages;
             _listView.itemsSource = (System.Collections.IList)packages;
@@ -64,36 +73,10 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
 
         public void ShowNoRegistriesConfigured()
         {
-            StopLoadingAnimation();
+            _loadingAnimation.Stop();
             _statusLabel.text = "No registries configured.\nUse the Registry Config button to set up scopes.";
             _statusLabel.style.color = new UnityEngine.Color(0.9f, 0.7f, 0.2f);
             _statusLabel.style.display = DisplayStyle.Flex;
-        }
-
-        private void StartLoadingAnimation()
-        {
-            _animating = true;
-            _dotCount = 0;
-            _animationTimer = EditorApplication.timeSinceStartup;
-            EditorApplication.update += AnimateLoading;
-        }
-
-        private void StopLoadingAnimation()
-        {
-            _animating = false;
-            EditorApplication.update -= AnimateLoading;
-        }
-
-        private void AnimateLoading()
-        {
-            if (!_animating)
-                return;
-            double now = EditorApplication.timeSinceStartup;
-            if (now - _animationTimer < 0.5)
-                return;
-            _animationTimer = now;
-            _dotCount = (_dotCount + 1) % 4;
-            _statusLabel.text = "Loading packages" + new string('.', _dotCount);
         }
 
         private static VisualElement MakeItem()
@@ -103,7 +86,21 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             container.style.paddingRight = 6;
             container.style.paddingTop = 3;
             container.style.paddingBottom = 3;
-            container.style.justifyContent = Justify.Center;
+            container.style.flexDirection = FlexDirection.Row;
+            container.style.alignItems = Align.Center;
+
+            var statusIcon = new Label();
+            statusIcon.name = "status-icon";
+            statusIcon.style.width = 32;
+            statusIcon.style.minWidth = 32;
+            statusIcon.style.fontSize = 24;
+            statusIcon.style.unityTextAlign = UnityEngine.TextAnchor.MiddleCenter;
+            statusIcon.style.unityFontStyleAndWeight = UnityEngine.FontStyle.Bold;
+            statusIcon.style.marginRight = 4;
+
+            var textContainer = new VisualElement();
+            textContainer.style.flexDirection = FlexDirection.Column;
+            textContainer.style.flexGrow = 1;
 
             var idLabel = new Label();
             idLabel.name = "id-label";
@@ -115,16 +112,38 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             versionLabel.style.color = new UnityEngine.Color(0.6f, 0.6f, 0.6f);
             versionLabel.style.whiteSpace = WhiteSpace.Normal;
 
-            container.Add(idLabel);
-            container.Add(versionLabel);
+            textContainer.Add(idLabel);
+            textContainer.Add(versionLabel);
+            container.Add(statusIcon);
+            container.Add(textContainer);
             return container;
         }
 
         private void BindItem(VisualElement element, int index)
         {
             PackageSummary summary = _packages[index];
-            element.Q<Label>("id-label").text = summary.Id;
+            element.Q<Label>("id-label").text = summary.DisplayName;
             element.Q<Label>("version-label").text = summary.LatestVersion;
+
+            Label statusIcon = element.Q<Label>("status-icon");
+            switch (summary.Status)
+            {
+                case PackageInstallStatus.NotInProject:
+                    statusIcon.text = "\u2717";
+                    statusIcon.style.color = new UnityEngine.Color(0.85f, 0.25f, 0.25f);
+                    statusIcon.tooltip = "Package not present in the project";
+                    break;
+                case PackageInstallStatus.InstalledFromRegistry:
+                    statusIcon.text = "\u2713";
+                    statusIcon.style.color = new UnityEngine.Color(0.35f, 0.75f, 0.35f);
+                    statusIcon.tooltip = "Package present in the project, from registry";
+                    break;
+                case PackageInstallStatus.Embedded:
+                    statusIcon.text = "!";
+                    statusIcon.style.color = new UnityEngine.Color(0.9f, 0.7f, 0.2f);
+                    statusIcon.tooltip = "Package present in the project, embedded";
+                    break;
+            }
         }
 
         private void OnSelectionChanged(System.Collections.Generic.IEnumerable<object> selection)
