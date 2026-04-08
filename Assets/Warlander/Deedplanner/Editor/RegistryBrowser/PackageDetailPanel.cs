@@ -15,6 +15,9 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         private VisualElement _root;
         private Label _statusLabel;
         private VisualElement _detailContent;
+        private Button _addButton;
+        private Button _removeButton;
+        private Button _changeVersionButton;
         private Label _displayNameLabel;
         private Label _idLabel;
         private Label _descriptionLabel;
@@ -23,11 +26,15 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         private Label _registryUrlLabel;
         private VisualElement _versionsContainer;
 
+        private PackageDetails _currentDetails;
+        private PackageSummary _currentSummary;
         private string _repositoryUrl;
         private string _changelogUrl;
         private bool _changelogFetched;
         private IReadOnlyDictionary<string, string> _changelogCache;
         private readonly Dictionary<string, VisualElement> _versionChangelogLabels = new();
+
+        public event Action OperationCompleted;
 
         public PackageDetailPanel(RegistryApiClient apiClient)
         {
@@ -52,6 +59,23 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             _detailContent = new VisualElement();
             _detailContent.style.display = DisplayStyle.None;
             root.Add(_detailContent);
+
+            var actionRow = new VisualElement();
+            actionRow.style.flexDirection = FlexDirection.Row;
+            actionRow.style.marginBottom = 10;
+            _detailContent.Add(actionRow);
+
+            _addButton = new Button(OnAddToProjectClicked) { text = "Add to project" };
+            _addButton.style.display = DisplayStyle.None;
+            actionRow.Add(_addButton);
+
+            _removeButton = new Button(OnRemoveFromProjectClicked) { text = "Remove from project" };
+            _removeButton.style.display = DisplayStyle.None;
+            actionRow.Add(_removeButton);
+
+            _changeVersionButton = new Button(OnChangeVersionClicked) { text = "Change version" };
+            _changeVersionButton.style.display = DisplayStyle.None;
+            actionRow.Add(_changeVersionButton);
 
             _displayNameLabel = new Label();
             _displayNameLabel.style.fontSize = 18;
@@ -78,16 +102,39 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             return root;
         }
 
-        public void ShowPackage(PackageDetails details)
+        public void ShowPackage(PackageDetails details, PackageSummary summary)
         {
+            _currentDetails = details;
+            _currentSummary = summary;
+
             _statusLabel.text = "";
             _statusLabel.style.display = DisplayStyle.None;
             _detailContent.style.display = DisplayStyle.Flex;
 
             _displayNameLabel.text = details.DisplayName;
             _idLabel.text = details.Id;
-            _latestVersionLabel.text = details.LatestVersion;
             _descriptionLabel.text = details.Description;
+
+            VersionUpdateLevel updateLevel = summary.Status != PackageInstallStatus.NotInProject
+                ? PackageVersionComparator.Compare(summary.InstalledVersion, details.LatestVersion)
+                : VersionUpdateLevel.None;
+
+            if (updateLevel != VersionUpdateLevel.None)
+            {
+                _latestVersionLabel.text = $"{details.LatestVersion} [{summary.InstalledVersion}]";
+                _latestVersionLabel.style.color = updateLevel switch
+                {
+                    VersionUpdateLevel.Patch => new Color(0.9f, 0.85f, 0.2f),
+                    VersionUpdateLevel.Minor => new Color(0.95f, 0.55f, 0.1f),
+                    VersionUpdateLevel.Major => new Color(0.85f, 0.25f, 0.25f),
+                    _ => StyleKeyword.Null,
+                };
+            }
+            else
+            {
+                _latestVersionLabel.text = details.LatestVersion;
+                _latestVersionLabel.style.color = StyleKeyword.Null;
+            }
             _repositoryLabel.text = details.RepositoryUrl;
             _registryUrlLabel.text = details.RegistryUrl;
 
@@ -97,6 +144,8 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             _changelogCache = null;
             _versionChangelogLabels.Clear();
             _versionsContainer.Clear();
+
+            UpdateActionButtons();
 
             foreach (string version in details.Versions)
             {
@@ -135,6 +184,54 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         public Task FadeOutAsync(CancellationToken ct = default) => FadeAsync(1f, 0f, 0.1f, ct);
 
         public Task FadeInAsync(CancellationToken ct = default) => FadeAsync(0f, 1f, 0.1f, ct);
+
+        private void UpdateActionButtons()
+        {
+            bool notInProject = _currentSummary.Status == PackageInstallStatus.NotInProject;
+            _addButton.style.display = notInProject ? DisplayStyle.Flex : DisplayStyle.None;
+            _removeButton.style.display = notInProject ? DisplayStyle.None : DisplayStyle.Flex;
+            _changeVersionButton.style.display = notInProject ? DisplayStyle.None : DisplayStyle.Flex;
+        }
+
+        private void OnAddToProjectClicked()
+        {
+            PackageVersionSelectorWindow.Open(_currentDetails, null, _apiClient, OnOperationCompleted);
+        }
+
+        private void OnChangeVersionClicked()
+        {
+            PackageVersionSelectorWindow.Open(_currentDetails, _currentSummary.InstalledVersion, _apiClient, OnOperationCompleted);
+        }
+
+        private void OnRemoveFromProjectClicked()
+        {
+            _ = RemoveAsync();
+        }
+
+        private async Task RemoveAsync()
+        {
+            _removeButton.SetEnabled(false);
+            _changeVersionButton.SetEnabled(false);
+            try
+            {
+                await _apiClient.RemovePackageAsync(_currentSummary.Id);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[RegistryBrowser] Failed to remove package: {ex.Message}");
+            }
+            finally
+            {
+                _removeButton.SetEnabled(true);
+                _changeVersionButton.SetEnabled(true);
+            }
+            OnOperationCompleted();
+        }
+
+        private void OnOperationCompleted()
+        {
+            OperationCompleted?.Invoke();
+        }
 
         private Task FadeAsync(float from, float to, float durationSec, CancellationToken ct)
         {

@@ -32,6 +32,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             _detailPanel = new PackageDetailPanel(_apiClient);
 
             _listPanel.PackageSelected += OnPackageSelected;
+            _detailPanel.OperationCompleted += OnPackageOperationCompleted;
 
             var toolbar = new VisualElement();
             toolbar.style.flexDirection = FlexDirection.Row;
@@ -97,6 +98,11 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             AnimateRefresh();
         }
 
+        private void OnPackageOperationCompleted()
+        {
+            _ = LoadPackagesAsync();
+        }
+
         private void AnimateRefresh()
         {
             if (_refreshAnimating)
@@ -153,7 +159,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             if (ct.IsCancellationRequested)
                 return;
 
-            _detailPanel.ShowPackage(details);
+            _detailPanel.ShowPackage(details, summary);
             await _detailPanel.FadeInAsync(ct);
         }
     }

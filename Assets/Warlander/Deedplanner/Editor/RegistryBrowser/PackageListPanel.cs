@@ -109,7 +109,6 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             var versionLabel = new Label();
             versionLabel.name = "version-label";
             versionLabel.style.fontSize = 10;
-            versionLabel.style.color = new UnityEngine.Color(0.6f, 0.6f, 0.6f);
             versionLabel.style.whiteSpace = WhiteSpace.Normal;
 
             textContainer.Add(idLabel);
@@ -123,7 +122,28 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         {
             PackageSummary summary = _packages[index];
             element.Q<Label>("id-label").text = summary.DisplayName;
-            element.Q<Label>("version-label").text = summary.LatestVersion;
+
+            Label versionLabel = element.Q<Label>("version-label");
+            VersionUpdateLevel updateLevel = summary.Status != PackageInstallStatus.NotInProject
+                ? PackageVersionComparator.Compare(summary.InstalledVersion, summary.LatestVersion)
+                : VersionUpdateLevel.None;
+
+            if (updateLevel != VersionUpdateLevel.None)
+            {
+                versionLabel.text = $"{summary.LatestVersion} [{summary.InstalledVersion}]";
+                versionLabel.style.color = updateLevel switch
+                {
+                    VersionUpdateLevel.Patch => new UnityEngine.Color(0.9f, 0.85f, 0.2f),
+                    VersionUpdateLevel.Minor => new UnityEngine.Color(0.95f, 0.55f, 0.1f),
+                    VersionUpdateLevel.Major => new UnityEngine.Color(0.85f, 0.25f, 0.25f),
+                    _ => new UnityEngine.Color(0.6f, 0.6f, 0.6f),
+                };
+            }
+            else
+            {
+                versionLabel.text = summary.LatestVersion;
+                versionLabel.style.color = new UnityEngine.Color(0.6f, 0.6f, 0.6f);
+            }
 
             Label statusIcon = element.Q<Label>("status-icon");
             switch (summary.Status)

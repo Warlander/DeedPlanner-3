@@ -31,9 +31,13 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             UpmPackageInfo[] searchResults = await WaitForRequestAsync(searchRequest);
             PackageCollection installedPackages = await WaitForListRequestAsync(listRequest);
 
-            var installed = new Dictionary<string, PackageSource>();
+            var installedSources = new Dictionary<string, PackageSource>();
+            var installedVersions = new Dictionary<string, string>();
             foreach (UpmPackageInfo pkg in installedPackages)
-                installed[pkg.name] = pkg.source;
+            {
+                installedSources[pkg.name] = pkg.source;
+                installedVersions[pkg.name] = pkg.version;
+            }
 
             var summaries = new List<PackageSummary>();
             foreach (UpmPackageInfo pkg in searchResults)
@@ -43,14 +47,15 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
                     continue;
 
                 PackageInstallStatus status;
-                if (!installed.TryGetValue(pkg.name, out PackageSource source))
+                if (!installedSources.TryGetValue(pkg.name, out PackageSource source))
                     status = PackageInstallStatus.NotInProject;
                 else if (source == PackageSource.Embedded)
                     status = PackageInstallStatus.Embedded;
                 else
                     status = PackageInstallStatus.InstalledFromRegistry;
 
-                summaries.Add(new PackageSummary(pkg.name, pkg.displayName, pkg.description, pkg.version, match.RegistryUrl, status));
+                string installedVersion = installedVersions.TryGetValue(pkg.name, out string iv) ? iv : null;
+                summaries.Add(new PackageSummary(pkg.name, pkg.displayName, pkg.description, pkg.version, match.RegistryUrl, status, installedVersion));
             }
 
             return summaries;
@@ -74,6 +79,18 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             string changelogUrl = await FetchChangelogUrlAsync(registryUrl, pkg.name);
 
             return new PackageDetails(pkg.name, pkg.displayName, pkg.description, pkg.version, versionsCopy, repositoryUrl, changelogUrl, registryUrl);
+        }
+
+        public async Task AddPackageAsync(string id, string version)
+        {
+            AddRequest request = Client.Add($"{id}@{version}");
+            await WaitForAddRequestAsync(request);
+        }
+
+        public async Task RemovePackageAsync(string id)
+        {
+            RemoveRequest request = Client.Remove(id);
+            await WaitForRemoveRequestAsync(request);
         }
 
         public async Task<IReadOnlyDictionary<string, string>> FetchChangelogsAsync(string changelogUrl, string repositoryUrl)
@@ -225,6 +242,48 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
 
                 if (request.Status == StatusCode.Success)
                     tcs.SetResult(request.Result);
+                else
+                    tcs.SetException(new Exception(request.Error?.message ?? "Unknown error"));
+            }
+
+            EditorApplication.update += CheckCompletion;
+            return tcs.Task;
+        }
+
+        private static Task WaitForAddRequestAsync(AddRequest request)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            void CheckCompletion()
+            {
+                if (!request.IsCompleted)
+                    return;
+
+                EditorApplication.update -= CheckCompletion;
+
+                if (request.Status == StatusCode.Success)
+                    tcs.SetResult(true);
+                else
+                    tcs.SetException(new Exception(request.Error?.message ?? "Unknown error"));
+            }
+
+            EditorApplication.update += CheckCompletion;
+            return tcs.Task;
+        }
+
+        private static Task WaitForRemoveRequestAsync(RemoveRequest request)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            void CheckCompletion()
+            {
+                if (!request.IsCompleted)
+                    return;
+
+                EditorApplication.update -= CheckCompletion;
+
+                if (request.Status == StatusCode.Success)
+                    tcs.SetResult(true);
                 else
                     tcs.SetException(new Exception(request.Error?.message ?? "Unknown error"));
             }

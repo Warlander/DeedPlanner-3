@@ -323,14 +323,21 @@
       }
     },
     "com.warlogic.featurestates": {
-      "version": "2.0.0",
+      "version": "2.0.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
       "url": "https://upm.maciejcyranowicz.com"
     },
     "com.warlogic.launchredirect": {
-      "version": "1.0.0",
+      "version": "1.0.4",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://upm.maciejcyranowicz.com"
+    },
+    "com.warlogic.utils.markdown": {
+      "version": "1.0.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
