@@ -18,6 +18,8 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         private Button _addButton;
         private Button _removeButton;
         private Button _changeVersionButton;
+        private Button _embedButton;
+        private Button _deEmbedButton;
         private Label _displayNameLabel;
         private Label _idLabel;
         private Label _descriptionLabel;
@@ -76,6 +78,14 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             _changeVersionButton = new Button(OnChangeVersionClicked) { text = "Change version" };
             _changeVersionButton.style.display = DisplayStyle.None;
             actionRow.Add(_changeVersionButton);
+
+            _embedButton = new Button(OnEmbedClicked) { text = "Embed" };
+            _embedButton.style.display = DisplayStyle.None;
+            actionRow.Add(_embedButton);
+
+            _deEmbedButton = new Button(OnDeEmbedClicked) { text = "De-embed" };
+            _deEmbedButton.style.display = DisplayStyle.None;
+            actionRow.Add(_deEmbedButton);
 
             _displayNameLabel = new Label();
             _displayNameLabel.style.fontSize = 18;
@@ -188,9 +198,14 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         private void UpdateActionButtons()
         {
             bool notInProject = _currentSummary.Status == PackageInstallStatus.NotInProject;
+            bool fromRegistry = _currentSummary.Status == PackageInstallStatus.InstalledFromRegistry;
+            bool embedded = _currentSummary.Status == PackageInstallStatus.Embedded;
+
             _addButton.style.display = notInProject ? DisplayStyle.Flex : DisplayStyle.None;
-            _removeButton.style.display = notInProject ? DisplayStyle.None : DisplayStyle.Flex;
-            _changeVersionButton.style.display = notInProject ? DisplayStyle.None : DisplayStyle.Flex;
+            _removeButton.style.display = fromRegistry ? DisplayStyle.Flex : DisplayStyle.None;
+            _changeVersionButton.style.display = fromRegistry ? DisplayStyle.Flex : DisplayStyle.None;
+            _embedButton.style.display = (notInProject || fromRegistry) ? DisplayStyle.Flex : DisplayStyle.None;
+            _deEmbedButton.style.display = embedded ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         private void OnAddToProjectClicked()
@@ -206,6 +221,67 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         private void OnRemoveFromProjectClicked()
         {
             _ = RemoveAsync();
+        }
+
+        private void OnEmbedClicked()
+        {
+            EmbedSelectorWindow.Open(_currentDetails, _apiClient, OnOperationCompleted);
+        }
+
+        private void OnDeEmbedClicked()
+        {
+            _ = DeEmbedAsync();
+        }
+
+        private async Task DeEmbedAsync()
+        {
+            _deEmbedButton.SetEnabled(false);
+            try
+            {
+                bool hasChanges = await GitSubmoduleOperations.SubmoduleHasChangesAsync(_currentSummary.Id);
+
+                if (hasChanges)
+                {
+                    bool confirmed = EditorUtility.DisplayDialog(
+                        "Discard submodule changes?",
+                        $"The embedded package \"{_currentSummary.DisplayName}\" has uncommitted changes. " +
+                        "These will be permanently discarded. Continue?",
+                        "Discard and De-embed",
+                        "Cancel");
+
+                    if (!confirmed)
+                    {
+                        _deEmbedButton.SetEnabled(true);
+                        return;
+                    }
+                }
+
+                PackageVersionSelectorWindow.Open(_currentDetails, _apiClient, OnDeEmbedVersionSelected);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[RegistryBrowser] De-embed pre-check failed: {ex.Message}");
+                _deEmbedButton.SetEnabled(true);
+            }
+        }
+
+        private void OnDeEmbedVersionSelected(string selectedVersion)
+        {
+            _ = PerformDeEmbedAsync(selectedVersion);
+        }
+
+        private async Task PerformDeEmbedAsync(string targetVersion)
+        {
+            try
+            {
+                await GitSubmoduleOperations.RemoveSubmoduleAsync(_currentSummary.Id);
+                PackageManifestEditor.SetRegistryVersion(_currentSummary.Id, targetVersion);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[RegistryBrowser] De-embed failed: {ex.Message}");
+            }
+            OnOperationCompleted();
         }
 
         private async Task RemoveAsync()

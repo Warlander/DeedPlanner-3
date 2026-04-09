@@ -21,6 +21,18 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         private static readonly Regex ChangelogFieldRegex = new Regex(
             @"""changelog""\s*:\s*""(https?://[^""\\]+)""",
             RegexOptions.Compiled);
+        private static readonly Regex CommitShaRegex = new Regex(
+            @"""sha""\s*:\s*""([0-9a-f]{40})""",
+            RegexOptions.Compiled);
+        private static readonly Regex CommitMessageRegex = new Regex(
+            @"""message""\s*:\s*""((?:[^""\\]|\\.)*)""",
+            RegexOptions.Compiled);
+        private static readonly Regex TagNameRegex = new Regex(
+            @"""name""\s*:\s*""([^""]+)""",
+            RegexOptions.Compiled);
+        private static readonly Regex TagCommitShaRegex = new Regex(
+            @"""commit""\s*:\s*\{[^}]*""sha""\s*:\s*""([0-9a-f]{40})""",
+            RegexOptions.Compiled);
 
 
         public async Task<IReadOnlyList<PackageSummary>> FetchPackagesAsync(IReadOnlyList<RegistryScope> registries)
@@ -49,7 +61,8 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
                 PackageInstallStatus status;
                 if (!installedSources.TryGetValue(pkg.name, out PackageSource source))
                     status = PackageInstallStatus.NotInProject;
-                else if (source == PackageSource.Embedded)
+                else if (source == PackageSource.Embedded ||
+                         (source == PackageSource.Local && GitSubmoduleOperations.IsEmbeddedAsSubmodule(pkg.name)))
                     status = PackageInstallStatus.Embedded;
                 else
                     status = PackageInstallStatus.InstalledFromRegistry;
@@ -91,6 +104,162 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         {
             RemoveRequest request = Client.Remove(id);
             await WaitForRemoveRequestAsync(request);
+        }
+
+        public async Task<IReadOnlyList<CommitInfo>> FetchCommitsAsync(string repositoryUrl, int count = 20)
+        {
+            string ownerRepo = ParseOwnerRepo(repositoryUrl);
+            if (ownerRepo == null)
+                return Array.Empty<CommitInfo>();
+
+            string apiBase = $"https://api.github.com/repos/{ownerRepo}";
+
+            Task<string> commitsTask = TryFetchGitHubApiAsync($"{apiBase}/commits?sha=master&per_page={count}");
+            Task<string> tagsTask = TryFetchGitHubApiAsync($"{apiBase}/tags?per_page=100");
+            await Task.WhenAll(commitsTask, tagsTask);
+
+            string commitsJson = commitsTask.Result;
+
+            // If master branch returned nothing, try main
+            if (string.IsNullOrEmpty(commitsJson))
+                commitsJson = await TryFetchGitHubApiAsync($"{apiBase}/commits?sha=main&per_page={count}");
+
+            if (string.IsNullOrEmpty(commitsJson))
+                return Array.Empty<CommitInfo>();
+
+            var tagsBySha = ParseTagsBySha(tagsTask.Result ?? "");
+            return ParseCommits(commitsJson, tagsBySha, count);
+        }
+
+        private static Dictionary<string, List<string>> ParseTagsBySha(string tagsJson)
+        {
+            var result = new Dictionary<string, List<string>>();
+            if (string.IsNullOrEmpty(tagsJson))
+                return result;
+
+            MatchCollection nameMatches = TagNameRegex.Matches(tagsJson);
+            MatchCollection shaMatches = TagCommitShaRegex.Matches(tagsJson);
+
+            int pairCount = Math.Min(nameMatches.Count, shaMatches.Count);
+            for (int i = 0; i < pairCount; i++)
+            {
+                string tagName = nameMatches[i].Groups[1].Value;
+                string sha = shaMatches[i].Groups[1].Value;
+                if (!result.TryGetValue(sha, out List<string> tags))
+                {
+                    tags = new List<string>();
+                    result[sha] = tags;
+                }
+                tags.Add(tagName);
+            }
+
+            return result;
+        }
+
+        private static IReadOnlyList<CommitInfo> ParseCommits(string commitsJson, Dictionary<string, List<string>> tagsBySha, int maxCount)
+        {
+            var commits = new List<CommitInfo>();
+            MatchCollection shaMatches = CommitShaRegex.Matches(commitsJson);
+            MatchCollection msgMatches = CommitMessageRegex.Matches(commitsJson);
+
+            // GitHub commit objects contain multiple sha fields (top-level, tree.sha, parents[].sha).
+            // Top-level sha always appears BEFORE its commit.message. Tree/parent shas appear AFTER it.
+            // A sha is top-level when no other sha appears between it and the next message match.
+            int shaCount = shaMatches.Count;
+            int msgIdx = 0;
+            for (int shaIdx = 0; shaIdx < shaCount; shaIdx++)
+            {
+                if (commits.Count >= maxCount)
+                    break;
+
+                Match shaMatch = shaMatches[shaIdx];
+
+                // Find the first message that comes after this sha
+                while (msgIdx < msgMatches.Count && msgMatches[msgIdx].Index <= shaMatch.Index)
+                    msgIdx++;
+
+                if (msgIdx >= msgMatches.Count)
+                    break;
+
+                Match msgMatch = msgMatches[msgIdx];
+
+                // Only pair when there is no other sha between this sha and the message.
+                // Top-level sha: message comes before tree/parent shas.
+                // Nested sha: the next sha also precedes the message.
+                bool nextShaBeforeMsg = (shaIdx + 1 < shaCount) &&
+                                        (shaMatches[shaIdx + 1].Index < msgMatch.Index);
+                if (nextShaBeforeMsg)
+                    continue;
+
+                string sha = shaMatch.Groups[1].Value;
+                string rawMessage = msgMatch.Groups[1].Value;
+                string message = UnescapeJson(rawMessage).Split('\n')[0].Trim();
+
+                string[] tags = tagsBySha.TryGetValue(sha, out List<string> tagList)
+                    ? tagList.ToArray()
+                    : Array.Empty<string>();
+
+                commits.Add(new CommitInfo(sha, message, tags));
+                msgIdx++;
+            }
+
+            return commits;
+        }
+
+        private static string UnescapeJson(string s)
+        {
+            return s
+                .Replace("\\n", "\n")
+                .Replace("\\r", "")
+                .Replace("\\t", "\t")
+                .Replace("\\\"", "\"")
+                .Replace("\\\\", "\\");
+        }
+
+        private static string ParseOwnerRepo(string repositoryUrl)
+        {
+            if (string.IsNullOrEmpty(repositoryUrl))
+                return null;
+
+            string url = repositoryUrl;
+            if (url.StartsWith("git+"))
+                url = url.Substring(4);
+            if (url.EndsWith(".git"))
+                url = url.Substring(0, url.Length - 4);
+            if (url.StartsWith("git@github.com:"))
+                url = "https://github.com/" + url.Substring("git@github.com:".Length);
+
+            if (!url.Contains("github.com"))
+                return null;
+
+            int idx = url.IndexOf("github.com/", StringComparison.Ordinal);
+            if (idx < 0)
+                return null;
+
+            string ownerRepo = url.Substring(idx + "github.com/".Length).TrimEnd('/');
+            string[] parts = ownerRepo.Split('/');
+            if (parts.Length < 2)
+                return null;
+
+            return parts[0] + "/" + parts[1];
+        }
+
+        private static async Task<string> TryFetchGitHubApiAsync(string url)
+        {
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.TryAddWithoutValidation("User-Agent", "DeedPlanner-RegistryBrowser");
+                request.Headers.TryAddWithoutValidation("Accept", "application/vnd.github+json");
+                HttpResponseMessage response = await HttpClient.SendAsync(request);
+                if (!response.IsSuccessStatusCode)
+                    return null;
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public async Task<IReadOnlyDictionary<string, string>> FetchChangelogsAsync(string changelogUrl, string repositoryUrl)

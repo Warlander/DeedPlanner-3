@@ -13,6 +13,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         private string _installedVersion;
         private RegistryApiClient _apiClient;
         private Action _onOperationCompleted;
+        private Action<string> _onVersionSelected;
 
         private PopupField<string> _versionDropdown;
         private VisualElement _changelogContainer;
@@ -27,6 +28,18 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
 
             bool isAdding = string.IsNullOrEmpty(installedVersion);
             window.titleContent = new GUIContent(isAdding ? "Add to Project" : "Change Version");
+            window.minSize = new Vector2(480, 500);
+            window.ShowUtility();
+        }
+
+        public static void Open(PackageDetails details, RegistryApiClient apiClient, Action<string> onVersionSelected)
+        {
+            var window = CreateInstance<PackageVersionSelectorWindow>();
+            window._details = details;
+            window._apiClient = apiClient;
+            window._onVersionSelected = onVersionSelected;
+
+            window.titleContent = new GUIContent("Select Version to Restore");
             window.minSize = new Vector2(480, 500);
             window.ShowUtility();
         }
@@ -105,6 +118,15 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         private void OnConfirmClicked()
         {
             string selectedVersion = _versionDropdown.value;
+
+            if (_onVersionSelected != null)
+            {
+                Action<string> cb = _onVersionSelected;
+                Close();
+                cb(selectedVersion);
+                return;
+            }
+
             Action callback = _onOperationCompleted;
             RegistryApiClient apiClient = _apiClient;
             string id = _details.Id;
