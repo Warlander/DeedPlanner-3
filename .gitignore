@@ -49,3 +49,6 @@ UserSettings/
 
 # Windows reserved device name (not a real file)
 nul
+
+# Embedded packages (managed by Registry Browser — never committed)
+Packages/Embeds/

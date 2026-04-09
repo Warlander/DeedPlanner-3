@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Warlander.Deedplanner.Editor.RegistryBrowser
 {
-    public static class GitSubmoduleOperations
+    public static class GitEmbedOperations
     {
         private const string EmbedsRelativePath = "Packages/Embeds";
 
@@ -20,36 +20,29 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         public static string GetEmbedAbsolutePath(string packageId)
             => Path.Combine(GetProjectRoot(), EmbedsRelativePath, packageId);
 
-        public static bool IsEmbeddedAsSubmodule(string packageId)
+        public static bool IsEmbedded(string packageId)
             => Directory.Exists(GetEmbedAbsolutePath(packageId));
 
-        public static async Task AddSubmoduleAsync(string packageId, string repoUrl, string commitSha)
+        public static async Task CloneAndCheckoutAsync(string packageId, string repoUrl, string commitSha)
         {
             string projectRoot = GetProjectRoot();
             string cleanUrl = CleanRepoUrl(repoUrl);
             string relativePath = GetEmbedRelativePath(packageId);
+            string absPath = GetEmbedAbsolutePath(packageId);
 
             string embedsAbsPath = Path.Combine(projectRoot, EmbedsRelativePath);
             if (!Directory.Exists(embedsAbsPath))
                 Directory.CreateDirectory(embedsAbsPath);
 
-            // Clean up any stale git-modules directory left by a previous failed add or incomplete remove.
-            string gitModulesDir = Path.Combine(
-                projectRoot, ".git", "modules",
-                EmbedsRelativePath.Replace('/', Path.DirectorySeparatorChar),
-                packageId);
-            if (Directory.Exists(gitModulesDir))
-                DeleteDirectoryForce(gitModulesDir);
+            // Clean up any leftover directory from a previous failed attempt.
+            if (Directory.Exists(absPath))
+                DeleteDirectoryForce(absPath);
 
-            await RunGitAsync($"submodule add {QuoteArg(cleanUrl)} {QuoteArg(relativePath)}", projectRoot);
-
-            string absPath = GetEmbedAbsolutePath(packageId);
+            await RunGitAsync($"clone {QuoteArg(cleanUrl)} {QuoteArg(relativePath)}", projectRoot);
             await RunGitAsync($"checkout {commitSha}", absPath);
-
-            await RunGitAsync($"add {QuoteArg(relativePath)} .gitmodules", projectRoot);
         }
 
-        public static async Task<bool> SubmoduleHasChangesAsync(string packageId)
+        public static async Task<bool> EmbedHasChangesAsync(string packageId)
         {
             string absPath = GetEmbedAbsolutePath(packageId);
             if (!Directory.Exists(absPath))
@@ -59,49 +52,12 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             return !string.IsNullOrWhiteSpace(output);
         }
 
-        public static async Task RemoveSubmoduleAsync(string packageId)
+        public static Task RemoveEmbedAsync(string packageId)
         {
-            string projectRoot = GetProjectRoot();
-            string relativePath = GetEmbedRelativePath(packageId);
-
-            // deinit clears the working directory and removes the .git/config entry.
-            // Fails when the submodule was never committed (staged-only state).
-            try
-            {
-                await RunGitAsync($"submodule deinit -f {QuoteArg(relativePath)}", projectRoot);
-            }
-            catch (Exception ex) when (ex.Message.Contains("did not match"))
-            {
-                // Not in the committed index; clean .git/config manually and fall through.
-                await TryRunGitAsync($"config --remove-section submodule.{relativePath}", projectRoot);
-            }
-
-            // git rm removes the gitlink from the index and strips the entry from .gitmodules.
-            // Fails when the path was never staged as a gitlink (staged-only embed).
-            try
-            {
-                await RunGitAsync($"rm -f {QuoteArg(relativePath)}", projectRoot);
-            }
-            catch
-            {
-                // No gitlink in the index; clean .gitmodules directly and delete the directory.
-                string gitmodulesSection = $"submodule.{relativePath}";
-                await TryRunGitAsync(
-                    $"config --file .gitmodules --remove-section {QuoteArg(gitmodulesSection)}",
-                    projectRoot);
-                await TryRunGitAsync("add .gitmodules", projectRoot);
-
-                string absPath = GetEmbedAbsolutePath(packageId);
-                if (Directory.Exists(absPath))
-                    DeleteDirectoryForce(absPath);
-            }
-
-            string gitModulesDir = Path.Combine(
-                projectRoot, ".git", "modules",
-                EmbedsRelativePath.Replace('/', Path.DirectorySeparatorChar),
-                packageId);
-            if (Directory.Exists(gitModulesDir))
-                DeleteDirectoryForce(gitModulesDir);
+            string absPath = GetEmbedAbsolutePath(packageId);
+            if (Directory.Exists(absPath))
+                DeleteDirectoryForce(absPath);
+            return Task.CompletedTask;
         }
 
         // Directory.Delete with recursive:true throws on read-only files (common for git pack files on Windows).
@@ -124,12 +80,6 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
 
         private static string QuoteArg(string arg)
             => $"\"{arg.Replace("\"", "\\\"")}\"";
-
-        private static async Task TryRunGitAsync(string args, string workingDir)
-        {
-            try { await RunGitAsync(args, workingDir); }
-            catch { /* best-effort, ignore */ }
-        }
 
         private static Task RunGitAsync(string args, string workingDir)
         {

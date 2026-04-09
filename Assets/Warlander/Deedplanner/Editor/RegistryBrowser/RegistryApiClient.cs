@@ -62,7 +62,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
                 if (!installedSources.TryGetValue(pkg.name, out PackageSource source))
                     status = PackageInstallStatus.NotInProject;
                 else if (source == PackageSource.Embedded ||
-                         (source == PackageSource.Local && GitSubmoduleOperations.IsEmbeddedAsSubmodule(pkg.name)))
+                         (source == PackageSource.Local && GitEmbedOperations.IsEmbedded(pkg.name)))
                     status = PackageInstallStatus.Embedded;
                 else
                     status = PackageInstallStatus.InstalledFromRegistry;

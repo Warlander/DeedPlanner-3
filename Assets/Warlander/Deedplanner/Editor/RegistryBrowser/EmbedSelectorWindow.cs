@@ -38,7 +38,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             root.style.paddingTop = 12;
             root.style.paddingBottom = 12;
 
-            var titleLabel = new Label($"Embed \"{_details.DisplayName}\" as submodule");
+            var titleLabel = new Label($"Embed \"{_details.DisplayName}\"");
             titleLabel.style.fontSize = 15;
             titleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
             titleLabel.style.marginBottom = 8;
@@ -188,7 +188,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         {
             try
             {
-                await GitSubmoduleOperations.AddSubmoduleAsync(details.Id, details.RepositoryUrl, commit.Sha);
+                await GitEmbedOperations.CloneAndCheckoutAsync(details.Id, details.RepositoryUrl, commit.Sha);
                 PackageManifestEditor.AddOrUpdateDependency(details.Id, $"file:Embeds/{details.Id}");
             }
             catch (Exception ex)

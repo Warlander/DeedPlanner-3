@@ -39,7 +39,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         {
             try
             {
-                string projectRoot = GitSubmoduleOperations.GetProjectRoot();
+                string projectRoot = GitEmbedOperations.GetProjectRoot();
                 string hooksDir = Path.Combine(projectRoot, ".git", "hooks");
                 string hookPath = Path.Combine(hooksDir, "pre-commit");
 

@@ -239,13 +239,13 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             _deEmbedButton.SetEnabled(false);
             try
             {
-                bool hasChanges = await GitSubmoduleOperations.SubmoduleHasChangesAsync(_currentSummary.Id);
+                bool hasChanges = await GitEmbedOperations.EmbedHasChangesAsync(_currentSummary.Id);
 
                 if (hasChanges)
                 {
                     bool confirmed = EditorUtility.DisplayDialog(
-                        "Discard submodule changes?",
-                        $"The embedded package \"{_currentSummary.DisplayName}\" has uncommitted changes. " +
+                        "Discard local changes?",
+                        $"The embedded package \"{_currentSummary.DisplayName}\" has uncommitted local changes. " +
                         "These will be permanently discarded. Continue?",
                         "Discard and De-embed",
                         "Cancel");
@@ -276,7 +276,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         {
             try
             {
-                await GitSubmoduleOperations.RemoveSubmoduleAsync(_currentSummary.Id);
+                await GitEmbedOperations.RemoveEmbedAsync(_currentSummary.Id);
                 PackageManifestEditor.SetRegistryVersion(_currentSummary.Id, targetVersion);
             }
             catch (Exception ex)
