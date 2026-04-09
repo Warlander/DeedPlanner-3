@@ -206,6 +206,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             _changeVersionButton.style.display = fromRegistry ? DisplayStyle.Flex : DisplayStyle.None;
             _embedButton.style.display = (notInProject || fromRegistry) ? DisplayStyle.Flex : DisplayStyle.None;
             _deEmbedButton.style.display = embedded ? DisplayStyle.Flex : DisplayStyle.None;
+            _deEmbedButton.SetEnabled(true);
         }
 
         private void OnAddToProjectClicked()
@@ -256,7 +257,8 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
                     }
                 }
 
-                PackageVersionSelectorWindow.Open(_currentDetails, _apiClient, OnDeEmbedVersionSelected);
+                PackageVersionSelectorWindow.Open(_currentDetails, _apiClient, OnDeEmbedVersionSelected,
+                    onCancelled: () => _deEmbedButton.SetEnabled(true));
             }
             catch (Exception ex)
             {
