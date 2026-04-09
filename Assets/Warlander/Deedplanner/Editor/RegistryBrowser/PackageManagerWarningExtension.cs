@@ -63,7 +63,9 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             if (_root == null)
                 return;
 
-            bool managed = packageInfo != null && IsManagedByRegistryBrowser(packageInfo.name);
+            bool managed = packageInfo != null
+                && RegistryBrowserConfig.LoadShowPackageManagerWarning()
+                && IsManagedByRegistryBrowser(packageInfo.name);
             _root.style.display = managed ? DisplayStyle.Flex : DisplayStyle.None;
         }
 

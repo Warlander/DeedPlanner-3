@@ -1,4 +1,5 @@
 {
+    "showPackageManagerWarning": true,
     "registries": [
         {
             "_scope": "com.warlogic",

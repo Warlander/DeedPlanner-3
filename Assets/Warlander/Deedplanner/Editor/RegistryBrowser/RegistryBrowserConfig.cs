@@ -13,6 +13,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         [Serializable]
         private class SettingsData
         {
+            public bool showPackageManagerWarning = true;
             public List<RegistryScope> registries = new();
         }
 
@@ -25,9 +26,18 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             return data?.registries ?? new List<RegistryScope>();
         }
 
-        private static void Save(List<RegistryScope> registries)
+        public static bool LoadShowPackageManagerWarning()
         {
-            var data = new SettingsData { registries = registries };
+            if (!File.Exists(SettingsFilePath))
+                return true;
+
+            SettingsData data = JsonUtility.FromJson<SettingsData>(File.ReadAllText(SettingsFilePath));
+            return data?.showPackageManagerWarning ?? true;
+        }
+
+        private static void Save(bool showPackageManagerWarning, List<RegistryScope> registries)
+        {
+            var data = new SettingsData { showPackageManagerWarning = showPackageManagerWarning, registries = registries };
             File.WriteAllText(SettingsFilePath, JsonUtility.ToJson(data, true));
         }
 
@@ -35,18 +45,30 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         private static SettingsProvider CreateSettingsProvider()
         {
             List<RegistryScope> editing = null;
+            bool showWarning = true;
 
             var provider = new SettingsProvider("Project/Registry Browser", SettingsScope.Project)
             {
                 label = "Registry Browser",
                 guiHandler = _ =>
                 {
-                    editing ??= new List<RegistryScope>(LoadRegistries());
+                    if (editing == null)
+                    {
+                        editing = new List<RegistryScope>(LoadRegistries());
+                        showWarning = LoadShowPackageManagerWarning();
+                    }
+
+                    EditorGUILayout.LabelField("Package Manager Integration", EditorStyles.boldLabel);
+                    EditorGUILayout.Space(4);
+
+                    bool newShowWarning = EditorGUILayout.ToggleLeft("Show Warning for Managed Packages", showWarning);
+                    EditorGUILayout.Space(8);
 
                     EditorGUILayout.LabelField("Tracked Registries", EditorStyles.boldLabel);
                     EditorGUILayout.Space(4);
 
-                    bool changed = false;
+                    bool changed = newShowWarning != showWarning;
+                    showWarning = newShowWarning;
                     int removeIndex = -1;
 
                     for (int i = 0; i < editing.Count; i++)
@@ -82,7 +104,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
                     }
 
                     if (changed)
-                        Save(editing);
+                        Save(showWarning, editing);
                 }
             };
 
