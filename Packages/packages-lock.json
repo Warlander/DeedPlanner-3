@@ -336,6 +336,13 @@
       "dependencies": {},
       "url": "https://upm.maciejcyranowicz.com"
     },
+    "com.warlogic.registrybrowser": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://upm.maciejcyranowicz.com"
+    },
     "com.warlogic.utils.markdown": {
       "version": "1.0.4",
       "depth": 0,
