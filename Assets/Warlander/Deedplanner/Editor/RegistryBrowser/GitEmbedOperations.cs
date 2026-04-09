@@ -10,6 +10,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
     public static class GitEmbedOperations
     {
         private const string EmbedsRelativePath = "Packages/Embeds";
+        private const string EmbedsFolderGitIgnoreEntry = "Packages/Embeds/";
 
         public static string GetProjectRoot()
             => Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
@@ -22,6 +23,34 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
 
         public static bool IsEmbedded(string packageId)
             => Directory.Exists(GetEmbedAbsolutePath(packageId));
+
+        public static bool IsEmbedFolderInGitIgnore()
+        {
+            string gitIgnorePath = Path.Combine(GetProjectRoot(), ".gitignore");
+            if (!File.Exists(gitIgnorePath))
+                return false;
+            foreach (string line in File.ReadAllLines(gitIgnorePath))
+            {
+                string trimmed = line.Trim();
+                if (trimmed == "Packages/Embeds/" || trimmed == "Packages/Embeds")
+                    return true;
+            }
+            return false;
+        }
+
+        public static void AddEmbedFolderToGitIgnore()
+        {
+            if (IsEmbedFolderInGitIgnore())
+                return;
+            string gitIgnorePath = Path.Combine(GetProjectRoot(), ".gitignore");
+            string existing = File.Exists(gitIgnorePath) ? File.ReadAllText(gitIgnorePath) : "";
+            if (existing.Length > 0 && !existing.EndsWith("\n"))
+                existing += "\n";
+            existing += "\n";
+            existing += "# Embedded packages are temporary local git repos used for development — do not commit.\n";
+            existing += EmbedsFolderGitIgnoreEntry + "\n";
+            File.WriteAllText(gitIgnorePath, existing);
+        }
 
         public static async Task CloneAndCheckoutAsync(string packageId, string repoUrl, string commitSha)
         {

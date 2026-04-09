@@ -14,6 +14,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         private class SettingsData
         {
             public bool showPackageManagerWarning = true;
+            public bool gitIgnorePromptShown = false;
             public List<RegistryScope> registries = new();
         }
 
@@ -35,9 +36,36 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
             return data?.showPackageManagerWarning ?? true;
         }
 
-        private static void Save(bool showPackageManagerWarning, List<RegistryScope> registries)
+        public static bool LoadGitIgnorePromptShown()
         {
-            var data = new SettingsData { showPackageManagerWarning = showPackageManagerWarning, registries = registries };
+            if (!File.Exists(SettingsFilePath))
+                return false;
+
+            SettingsData data = JsonUtility.FromJson<SettingsData>(File.ReadAllText(SettingsFilePath));
+            return data?.gitIgnorePromptShown ?? false;
+        }
+
+        public static void MarkGitIgnorePromptShown()
+        {
+            bool showWarning = LoadShowPackageManagerWarning();
+            var registries = new List<RegistryScope>(LoadRegistries());
+            var data = new SettingsData
+            {
+                showPackageManagerWarning = showWarning,
+                gitIgnorePromptShown = true,
+                registries = registries,
+            };
+            File.WriteAllText(SettingsFilePath, JsonUtility.ToJson(data, true));
+        }
+
+        private static void Save(bool showPackageManagerWarning, bool gitIgnorePromptShown, List<RegistryScope> registries)
+        {
+            var data = new SettingsData
+            {
+                showPackageManagerWarning = showPackageManagerWarning,
+                gitIgnorePromptShown = gitIgnorePromptShown,
+                registries = registries,
+            };
             File.WriteAllText(SettingsFilePath, JsonUtility.ToJson(data, true));
         }
 
@@ -46,6 +74,8 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
         {
             List<RegistryScope> editing = null;
             bool showWarning = true;
+            bool gitIgnorePromptShown = false;
+            bool? gitIgnoreInPlace = null;
 
             var provider = new SettingsProvider("Project/Registry Browser", SettingsScope.Project)
             {
@@ -56,7 +86,28 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
                     {
                         editing = new List<RegistryScope>(LoadRegistries());
                         showWarning = LoadShowPackageManagerWarning();
+                        gitIgnorePromptShown = LoadGitIgnorePromptShown();
                     }
+
+                    if (gitIgnoreInPlace == null)
+                        gitIgnoreInPlace = GitEmbedOperations.IsEmbedFolderInGitIgnore();
+
+                    EditorGUILayout.LabelField("Git Ignore Setup", EditorStyles.boldLabel);
+                    EditorGUILayout.Space(4);
+
+                    bool alreadyIgnored = gitIgnoreInPlace == true;
+                    GUI.enabled = !alreadyIgnored;
+                    if (GUILayout.Button("Add Packages/Embeds/ to .gitignore"))
+                    {
+                        GitEmbedOperations.AddEmbedFolderToGitIgnore();
+                        gitIgnoreInPlace = true;
+                    }
+                    GUI.enabled = true;
+
+                    if (alreadyIgnored)
+                        EditorGUILayout.LabelField("Packages/Embeds/ is already in .gitignore.");
+
+                    EditorGUILayout.Space(12);
 
                     EditorGUILayout.LabelField("Package Manager Integration", EditorStyles.boldLabel);
                     EditorGUILayout.Space(4);
@@ -104,7 +155,7 @@ namespace Warlander.Deedplanner.Editor.RegistryBrowser
                     }
 
                     if (changed)
-                        Save(showWarning, editing);
+                        Save(showWarning, gitIgnorePromptShown, editing);
                 }
             };
 

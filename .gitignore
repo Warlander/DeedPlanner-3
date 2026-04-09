@@ -50,5 +50,5 @@ UserSettings/
 # Windows reserved device name (not a real file)
 nul
 
-# Embedded packages (managed by Registry Browser — never committed)
+# Embedded packages are temporary local git repos used for development — do not commit.
 Packages/Embeds/

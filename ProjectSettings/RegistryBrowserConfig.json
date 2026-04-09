@@ -1,5 +1,6 @@
 {
     "showPackageManagerWarning": true,
+    "gitIgnorePromptShown": true,
     "registries": [
         {
             "_scope": "com.warlogic",
