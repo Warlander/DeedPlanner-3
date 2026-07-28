@@ -20,6 +20,7 @@ ExportedObj/
 *.csproj.meta
 *.unityproj
 *.sln
+*.slnx
 *.suo
 *.tmp
 *.user
@@ -45,6 +46,7 @@ UserSettings/
 # AI
 .ai/
 .claude/settings.local.json
+.claude/worktrees/
 .mcp.json
 
 # Windows reserved device name (not a real file)
