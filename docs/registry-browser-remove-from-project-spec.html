@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registry Browser — Remove from Project Specification</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #fafafa;
+            --fg: #1a1a1a;
+            --muted: #555;
+            --accent: #0066cc;
+            --danger: #c00;
+            --warn: #b35900;
+            --success: #2a7;
+            --code-bg: rgba(128,128,128,0.1);
+            --callout-bg: rgba(0,102,204,0.05);
+            --danger-bg: rgba(204,0,0,0.05);
+            --warn-bg: rgba(179,89,0,0.05);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1a1a1a;
+                --fg: #e0e0e0;
+                --muted: #aaa;
+                --accent: #4da3ff;
+                --danger: #ff4444;
+                --warn: #ffaa44;
+                --success: #4da3ff;
+                --code-bg: rgba(255,255,255,0.08);
+                --callout-bg: rgba(77,163,255,0.08);
+                --danger-bg: rgba(255,68,68,0.08);
+                --warn-bg: rgba(255,170,68,0.08);
+            }
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: var(--fg);
+            background: var(--bg);
+        }
+        header { margin-bottom: 2rem; }
+        h1 { font-weight: 700; border-bottom: 2px solid var(--accent); padding-bottom: 0.3rem; margin-bottom: 0.5rem; }
+        h2 { font-weight: 600; margin-top: 2.5rem; color: var(--fg); }
+        h3 { font-weight: 600; margin-top: 1.8rem; color: var(--fg); }
+        p, li { color: var(--fg); }
+        .meta { color: var(--muted); font-size: 0.95rem; }
+        code, pre {
+            font-family: "SF Mono", Monaco, Inconsolata, monospace;
+            background: var(--code-bg);
+            border-radius: 4px;
+        }
+        code { padding: 0.15rem 0.35rem; font-size: 0.9em; }
+        pre { padding: 1rem; overflow-x: auto; font-size: 0.9rem; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+        th, td { padding: 0.55rem; border-bottom: 1px solid rgba(128,128,128,0.25); text-align: left; vertical-align: top; }
+        th { font-weight: 600; border-bottom-width: 2px; }
+        .callout {
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            background: var(--callout-bg);
+            border-radius: 0 6px 6px 0;
+        }
+        .danger { border-left-color: var(--danger); background: var(--danger-bg); }
+        .warn { border-left-color: var(--warn); background: var(--warn-bg); }
+        .success { border-left-color: var(--success); }
+        ul.checklist { list-style: none; padding-left: 0; }
+        ul.checklist li { padding-left: 1.5rem; position: relative; margin-bottom: 0.4rem; }
+        ul.checklist li::before { content: "☐"; position: absolute; left: 0; color: var(--muted); }
+        .mermaid { margin: 1.5rem 0; }
+        .decision { background: var(--callout-bg); border: 1px solid rgba(0,102,204,0.2); border-radius: 6px; padding: 1rem; margin: 1rem 0; }
+        .decision strong { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Registry Browser — Remove from Project</h1>
+        <p class="meta">Specification &nbsp;|&nbsp; Version 0.4 &nbsp;|&nbsp; 2026-07-29</p>
+    </header>
+
+    <main>
+        <section>
+            <h2>1. Problem</h2>
+            <p>Embedded packages (cloned into <code>Packages/Embeds/{id}</code> with a <code>file:Embeds/{id}</code> manifest entry) currently expose only <strong>De-embed</strong> in the Registry Browser window. De-embed deletes the local clone <em>and</em> reverts the manifest to a registry version.</p>
+            <p>There is no way to remove an embedded package from the project entirely — i.e. delete the local clone <em>and</em> remove the dependency line from <code>Packages/manifest.json</code> without reinstalling a registry version.</p>
+            <p>Additionally, the MCP tool currently has no removal action at all for registry-installed packages, even though the UI does.</p>
+        </section>
+
+        <section>
+            <h2>2. Goal</h2>
+            <p>Reuse the existing <strong>Remove from project</strong> button for embedded packages, branch the handler by package state, and expose a single MCP action that removes both registry-installed and embedded packages from the project.</p>
+        </section>
+
+        <section>
+            <h2>3. Scope</h2>
+            <h3>In scope</h3>
+            <ul>
+                <li>Reuse the existing <strong>Remove from project</strong> button in <code>PackageDetailPanel</code> for <code>Embedded</code> packages.</li>
+                <li>Branch the button handler by package status: registry-installed packages keep using <code>Client.Remove</code>; embedded packages use the new removal path.</li>
+                <li>Add <code>RegistryBrowserAPI.RemoveFromProjectAsync(string packageId, bool force = false)</code> API that works for both <code>InstalledFromRegistry</code> and <code>Embedded</code> packages.</li>
+                <li>Add <code>remove_from_project</code> action in the MCP tool, with an optional <code>Force</code> parameter for embedded packages.</li>
+                <li>Safety checks for embedded path: locked files always block; uncommitted changes block unless <code>force = true</code>.</li>
+            </ul>
+            <h3>Out of scope</h3>
+            <ul>
+                <li>Changing De-embed behavior.</li>
+                <li>Adding a second button; the existing button is reused.</li>
+                <li>Removing local-only packages via this action (still handled by the existing <em>Delete package</em> button / separate MCP concern).</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>4. Current vs. Proposed Behavior</h2>
+            <table>
+                <thead>
+                    <tr><th>Status</th><th>Current UI actions</th><th>Current MCP actions</th><th>Proposed UI/MCP</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>NotInProject</code></td><td>Add to project, Embed</td><td>status, embed, create_package</td><td>No change</td></tr>
+                    <tr><td><code>ImplicitlyReferenced</code></td><td>Add to project, Embed</td><td>status, embed</td><td>No change</td></tr>
+                    <tr><td><code>InstalledFromRegistry</code></td><td>Remove from project, Change version, Embed</td><td>no removal action</td><td>UI: no change; MCP: add remove_from_project</td></tr>
+                    <tr><td><code>Embedded</code></td><td>De-embed, Publish</td><td>de_embed, publish</td><td>UI: add Remove from project; MCP: add remove_from_project</td></tr>
+                    <tr><td><code>LocalOnly</code></td><td>Delete package, Init Git, Publish</td><td>no removal action</td><td>No change</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>5. UI Behavior</h2>
+            <p>The existing <code>_removeButton</code> ("Remove from project") is currently shown only for <code>InstalledFromRegistry</code>. It will now also be shown for <code>Embedded</code>.</p>
+            <pre><code>// PackageDetailPanel.UpdateActionButtons change
+_removeButton.style.display = (fromRegistry || embedded) ? DisplayStyle.Flex : DisplayStyle.None;</code></pre>
+
+            <div class="mermaid">
+flowchart TD
+    A[User clicks Remove from project] --> B{Package status}
+    B -->|InstalledFromRegistry| C[Existing path:<br/>Client.Remove]
+    B -->|Embedded| D[Call API force=false]
+    D --> E{Throws uncommitted changes?}
+    E -->|Yes| F[Show discard-warning dialog]
+    F -->|Cancel| G[Abort]
+    F -->|Discard| H[Call API force=true]
+    E -->|No| H
+    H --> I{Locked files?}
+    I -->|Yes| J[Show error dialog]
+    I -->|No| K[Delete Packages/Embeds/{id}]
+    K --> L[Remove line from Packages/manifest.json]
+    L --> M[Refresh package list]
+            </div>
+
+            <ul>
+                <li>Button label stays <strong>Remove from project</strong>.</li>
+                <li>For registry packages: existing behavior via <code>Client.Remove</code>, unchanged.</li>
+                <li>For embedded packages:
+                    <ul>
+                        <li>Call <code>RegistryBrowserAPI.RemoveFromProjectAsync(id, force: false)</code>.</li>
+                        <li>If it throws the uncommitted-changes exception, show a warning dialog. On <em>Discard and remove</em>, call again with <code>force: true</code>.</li>
+                        <li>Locked files always abort with the locked file name.</li>
+                    </ul>
+                </li>
+                <li>The API itself never shows UI. It only validates and throws.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>6. API Additions</h2>
+            <p>A single new API call handles both registry-installed and embedded removal.</p>
+            <pre><code>// RegistryBrowserAPI.cs
+public static async Task RemoveFromProjectAsync(string packageId, bool force = false)
+{
+    if (string.IsNullOrWhiteSpace(packageId))
+        throw new ArgumentException("Package ID cannot be empty.", nameof(packageId));
+
+    if (GitEmbedOperations.IsEmbedded(packageId))
+    {
+        if (GitEmbedOperations.IsEmbedDirectoryInUse(packageId, out string lockedFile))
+            throw new InvalidOperationException(
+                $"Cannot remove: the package directory has locked files ({Path.GetFileName(lockedFile)}). " +
+                "Close any applications accessing the package and try again.");
+
+        if (!force && GitEmbedOperations.HasGitRepo(packageId))
+        {
+            bool hasChanges = await GitEmbedOperations.EmbedHasChangesAsync(packageId);
+            if (hasChanges)
+                throw new InvalidOperationException(
+                    "Cannot remove: the package has uncommitted local changes. " +
+                    "Commit or discard changes before removing, or use force.");
+        }
+
+        await GitEmbedOperations.RemoveEmbedAsync(packageId);
+        PackageManifestEditor.RemoveDependency(packageId);
+        return;
+    }
+
+    // Registry-installed package: use Unity Package Manager.
+    var apiClient = new RegistryApiClient();
+    await apiClient.RemovePackageAsync(packageId);
+}</code></pre>
+            <p>For embedded packages the call mirrors <code>DeEmbedAsync</code> but calls <code>RemoveDependency</code> instead of <code>SetRegistryVersion</code>. The <code>force</code> parameter only affects the uncommitted-changes check; locked files always block. For registry packages it delegates to the existing <code>Client.Remove</code> path and <code>force</code> is ignored.</p>
+        </section>
+
+        <section>
+            <h2>7. MCP Tool Changes</h2>
+            <p>The <code>manage_registry_browser</code> tool gains a new <code>Action</code> value that works for both <code>InstalledFromRegistry</code> and <code>Embedded</code> packages.</p>
+            <table>
+                <thead>
+                    <tr><th>Field</th><th>Change</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>Action</code> allowed values</td><td>Add <code>remove_from_project</code> alongside existing values.</td></tr>
+                    <tr><td><code>PackageId</code></td><td>Required for <code>remove_from_project</code>.</td></tr>
+                    <tr><td><code>Force</code></td><td>Optional bool, default <code>false</code>. When <code>true</code>, removes an embedded package even if it has uncommitted changes. Ignored for registry-installed packages.</td></tr>
+                    <tr><td>Tool description</td><td>Add paragraph: "Remove a package from the project. For embedded packages, deletes Packages/Embeds/{PackageId} and removes the dependency from Packages/manifest.json. For registry-installed packages, uses Unity Package Manager Client.Remove. Fails if the embedded package has uncommitted changes or locked files; set Force=true to bypass the uncommitted-changes check."</td></tr>
+                    <tr><td>Success payload</td><td><code>{ package_id: string, force: bool }</code></td></tr>
+                </tbody>
+            </table>
+            <div class="callout">
+                <strong>Backward compatibility:</strong> <code>de_embed</code> keeps its current behavior. No existing parameters are renamed or removed.
+            </div>
+        </section>
+
+        <section>
+            <h2>8. Consequences & Risks</h2>
+            <div class="callout danger">
+                <strong>Data loss:</strong> <em>Remove from project</em> permanently deletes the <code>Packages/Embeds/{id}</code> directory. With <code>force = true</code> any uncommitted work is lost. The UI warns; the MCP caller must opt in explicitly.
+            </div>
+            <div class="callout warn">
+                <strong>Dependency breakage:</strong> Unlike <code>Client.Remove</code> for registry packages, the embedded path directly edits the manifest and does not validate whether other installed packages depend on the removed one. This is consistent with existing De-embed / Delete-local behavior but must be documented.
+            </div>
+            <div class="callout">
+                <strong>Package release chain:</strong> The change touches two published packages:
+                <ol>
+                    <li><code>com.warlogic.registrybrowser</code> — API + UI changes. Bump version (e.g. 1.7.0 → 1.8.0).</li>
+                    <li><code>com.warlogic.registrybrowser.mcp</code> — new action. Bump version (e.g. 2.0.0 → 2.1.0) and update its dependency on <code>com.warlogic.registrybrowser</code> to the new version.</li>
+                </ol>
+                DeedPlanner's <code>Packages/manifest.json</code> and <code>Packages/packages-lock.json</code> must then be updated to consume the new versions.
+            </div>
+            <div class="callout">
+                <strong>Git hook:</strong> The pre-commit hook that blocks commits while packages are embedded will naturally stop applying once the embedded directory is gone.
+            </div>
+        </section>
+
+        <section>
+            <h2>9. Implementation Plan</h2>
+            <ol>
+                <li>In the <code>registry-browser</code> repository:
+                    <ul>
+                        <li>Add <code>RegistryBrowserAPI.RemoveFromProjectAsync(string packageId, bool force = false)</code> for both states.</li>
+                        <li>Update <code>PackageDetailPanel.UpdateActionButtons</code> to show <code>_removeButton</code> for both <code>InstalledFromRegistry</code> and <code>Embedded</code>.</li>
+                        <li>Update <code>PackageDetailPanel.RemoveAsync</code> to branch by status and handle the force retry flow.</li>
+                        <li>Update CHANGELOG and version to 1.8.0.</li>
+                        <li>Publish 1.8.0 to the scoped registry.</li>
+                    </ul>
+                </li>
+                <li>In the <code>registry-browser-mcp</code> repository:
+                    <ul>
+                        <li>Add <code>remove_from_project</code> switch case with <code>Force</code> parameter.</li>
+                        <li>Update tool description and <code>Action</code> allowed-values description.</li>
+                        <li>Bump dependency on <code>com.warlogic.registrybrowser</code> to 1.8.0.</li>
+                        <li>Update CHANGELOG and version to 2.1.0.</li>
+                        <li>Publish 2.1.0 to the scoped registry.</li>
+                    </ul>
+                </li>
+                <li>In DeedPlanner:
+                    <ul>
+                        <li>Update <code>com.warlogic.registrybrowser</code> to 1.8.0 and <code>com.warlogic.registrybrowser.mcp</code> to 2.1.0 in <code>Packages/manifest.json</code>.</li>
+                        <li>Let Unity resolve packages and verify <code>Packages/packages-lock.json</code>.</li>
+                        <li>Smoke-test: embed a package, click <em>Remove from project</em>, confirm manifest no longer contains the package and <code>Packages/Embeds/{id}</code> is gone.</li>
+                    </ul>
+                </li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>10. Verification Checklist</h2>
+            <ul class="checklist">
+                <li>Existing "Remove from project" button is visible for embedded packages.</li>
+                <li>Clicking it for an embedded package with no local changes succeeds.</li>
+                <li>Clicking it for an embedded package with local changes shows a warning; cancel aborts, discard removes.</li>
+                <li>Operation deletes the embed directory and removes the manifest dependency.</li>
+                <li>Locked files block the operation with a clear error, even when force is used.</li>
+                <li>Existing "Remove from project" button still works for registry-installed packages.</li>
+                <li>MCP <code>remove_from_project</code> succeeds for a clean embedded package.</li>
+                <li>MCP <code>remove_from_project</code> fails for an embedded package with uncommitted changes unless <code>Force=true</code>.</li>
+                <li>MCP <code>remove_from_project</code> succeeds for a registry-installed package.</li>
+                <li>De-embed still works exactly as before.</li>
+                <li>Delete-package for local-only packages still works.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>11. Assumptions</h2>
+            <ul>
+                <li>The canonical source for <code>com.warlogic.registrybrowser</code> is the external repository <code>https://github.com/Warlander/registry-browser.git</code>; changes must be published as a new package version.</li>
+                <li>DeedPlanner consumes registry-browser through the scoped UPM registry, not through an embedded copy in this repo.</li>
+                <li>The requested feature applies to both the editor UI and the MCP tool.</li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>
