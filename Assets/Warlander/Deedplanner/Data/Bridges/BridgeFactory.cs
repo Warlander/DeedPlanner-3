@@ -27,5 +27,11 @@ namespace Warlander.Deedplanner.Data.Bridges
         {
             return new Bridge(map, originalBridge, tileShift, _outlineCoordinator);
         }
+
+        public Bridge CreateBridge(Map map, TileCoords start, TileCoords end, BridgeData data,
+            BridgeType type, int additionalData, string segments)
+        {
+            return new Bridge(map, start, end, data, type, additionalData, segments, _outlineCoordinator);
+        }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets.Bridges;
 using Warlander.Deedplanner.Inputs;
@@ -14,20 +16,27 @@ namespace Warlander.Deedplanner.Updaters
 {
     public class BridgesUpdater : AbstractUpdater
     {
-        [Inject] private MapHandler _mapHandler;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
         [Inject] private TooltipHandler _tooltipHandler;
         [Inject] private BridgeTabSwapper _bridgeTabSwapper;
         [Inject] private TabContext _tabContext;
+        [Inject] private IMapProjectorFacade _mapProjectorFacade;
 
         public event Action SelectedBridgeChanged;
-        
+        public event Action<TileCoords, TileCoords> TileSelectionChanged;
+
         public Bridge SelectedBridge { get; private set; }
-        
+        public TileCoords FirstClickedTile => _firstClickedTile;
+        public TileCoords SecondClickedTile => _secondClickedTile;
+
         private Bridge _lastFrameHoveredBridge;
         private TileCoords _firstClickedTile;
         private TileCoords _secondClickedTile;
+
+        private IMapProjector _firstTileProjector;
+        private IMapProjector _secondTileProjector;
+        private readonly List<IMapProjector> _spanProjectors = new List<IMapProjector>();
 
         public override void Initialize() { }
 
@@ -121,8 +130,9 @@ namespace Warlander.Deedplanner.Updaters
             _firstClickedTile = null;
             _secondClickedTile = null;
 
+            ClearProjectors();
             RefreshUIState();
-            
+
             if (bridgeChanged)
             {
                 SelectedBridgeChanged?.Invoke();
@@ -169,16 +179,192 @@ namespace Warlander.Deedplanner.Updaters
             {
                 _firstClickedTile = new TileCoords(x, y, floor);
             }
-            
+
+            TileSelectionChanged?.Invoke(_firstClickedTile, _secondClickedTile);
+            RefreshProjectors();
             RefreshUIState();
+        }
+
+        public void ClearTileSelection()
+        {
+            _firstClickedTile = null;
+            _secondClickedTile = null;
+            TileSelectionChanged?.Invoke(null, null);
+            ClearProjectors();
+            RefreshUIState();
+        }
+
+        public void SelectBridge(Bridge bridge)
+        {
+            OnBridgeClicked(bridge);
+        }
+
+        public void ClearBridgeSelection()
+        {
+            _lastFrameHoveredBridge = null;
+            OnBridgeDeselected();
         }
 
         private void OnMapDeselect()
         {
-            _firstClickedTile = null;
-            _secondClickedTile = null;
-            
-            RefreshUIState();
+            ClearTileSelection();
+        }
+
+        private void RefreshProjectors()
+        {
+            if (_firstClickedTile != null)
+            {
+                if (_firstTileProjector == null)
+                {
+                    _firstTileProjector = _mapProjectorFacade.RequestProjector(ProjectorColor.Red);
+                }
+
+                _firstTileProjector.ProjectTile(new Vector2Int(_firstClickedTile.X, _firstClickedTile.Y));
+            }
+            else
+            {
+                ReleaseProjector(ref _firstTileProjector);
+            }
+
+            if (_secondClickedTile != null)
+            {
+                if (_secondTileProjector == null)
+                {
+                    _secondTileProjector = _mapProjectorFacade.RequestProjector(ProjectorColor.Red);
+                }
+
+                _secondTileProjector.ProjectTile(new Vector2Int(_secondClickedTile.X, _secondClickedTile.Y));
+            }
+            else
+            {
+                ReleaseProjector(ref _secondTileProjector);
+            }
+
+            foreach (IMapProjector spanProjector in _spanProjectors)
+            {
+                _mapProjectorFacade.FreeProjector(spanProjector);
+            }
+
+            _spanProjectors.Clear();
+
+            if (_firstClickedTile == null || _secondClickedTile == null)
+            {
+                return;
+            }
+
+            int minX = Mathf.Min(_firstClickedTile.X, _secondClickedTile.X);
+            int maxX = Mathf.Max(_firstClickedTile.X, _secondClickedTile.X);
+            int minY = Mathf.Min(_firstClickedTile.Y, _secondClickedTile.Y);
+            int maxY = Mathf.Max(_firstClickedTile.Y, _secondClickedTile.Y);
+
+            bool vertical;
+            if (_firstClickedTile.X == _secondClickedTile.X)
+            {
+                vertical = true;
+            }
+            else if (_firstClickedTile.Y == _secondClickedTile.Y)
+            {
+                vertical = false;
+            }
+            else
+            {
+                vertical = Mathf.Abs(maxY - minY) > Mathf.Abs(maxX - minX);
+            }
+
+            if (vertical)
+            {
+                for (int x = minX; x <= maxX; x++)
+                {
+                    int startY = minY;
+                    int endY = maxY;
+
+                    if (_firstClickedTile.X == x && _firstClickedTile.Y == minY)
+                    {
+                        startY++;
+                    }
+                    else if (_firstClickedTile.X == x && _firstClickedTile.Y == maxY)
+                    {
+                        endY--;
+                    }
+
+                    if (_secondClickedTile.X == x && _secondClickedTile.Y == minY)
+                    {
+                        startY++;
+                    }
+                    else if (_secondClickedTile.X == x && _secondClickedTile.Y == maxY)
+                    {
+                        endY--;
+                    }
+
+                    if (startY > endY)
+                    {
+                        continue;
+                    }
+
+                    IMapProjector projector = _mapProjectorFacade.RequestProjector(ProjectorColor.Yellow);
+                    projector.ProjectArea(new Vector2Int(x, startY), new Vector2Int(x, endY));
+                    _spanProjectors.Add(projector);
+                }
+            }
+            else
+            {
+                for (int y = minY; y <= maxY; y++)
+                {
+                    int startX = minX;
+                    int endX = maxX;
+
+                    if (_firstClickedTile.Y == y && _firstClickedTile.X == minX)
+                    {
+                        startX++;
+                    }
+                    else if (_firstClickedTile.Y == y && _firstClickedTile.X == maxX)
+                    {
+                        endX--;
+                    }
+
+                    if (_secondClickedTile.Y == y && _secondClickedTile.X == minX)
+                    {
+                        startX++;
+                    }
+                    else if (_secondClickedTile.Y == y && _secondClickedTile.X == maxX)
+                    {
+                        endX--;
+                    }
+
+                    if (startX > endX)
+                    {
+                        continue;
+                    }
+
+                    IMapProjector projector = _mapProjectorFacade.RequestProjector(ProjectorColor.Yellow);
+                    projector.ProjectArea(new Vector2Int(startX, y), new Vector2Int(endX, y));
+                    _spanProjectors.Add(projector);
+                }
+            }
+        }
+
+        private void ClearProjectors()
+        {
+            ReleaseProjector(ref _firstTileProjector);
+            ReleaseProjector(ref _secondTileProjector);
+
+            foreach (IMapProjector spanProjector in _spanProjectors)
+            {
+                _mapProjectorFacade.FreeProjector(spanProjector);
+            }
+
+            _spanProjectors.Clear();
+        }
+
+        private void ReleaseProjector(ref IMapProjector projector)
+        {
+            if (projector == null)
+            {
+                return;
+            }
+
+            _mapProjectorFacade.FreeProjector(projector);
+            projector = null;
         }
 
         private void RefreshUIState()
@@ -214,9 +400,7 @@ namespace Warlander.Deedplanner.Updaters
                 SelectedBridge.DisableHighlighting();
             }
             SelectedBridge = null;
-            _firstClickedTile = null;
-            _secondClickedTile = null;
-            RefreshUIState();
+            ClearTileSelection();
             SelectedBridgeChanged?.Invoke();
         }
     }

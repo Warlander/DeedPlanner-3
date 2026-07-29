@@ -314,6 +314,17 @@ namespace Warlander.Deedplanner.Data
             _levelRenderer.AddEntityToMap(entity, level);
         }
 
+        public void AddBridge(Bridge bridge)
+        {
+            _bridgesController.AddBridge(bridge);
+        }
+
+        public void RemoveBridge(Bridge bridge)
+        {
+            bridge.Destroy();
+            _bridgesController.RemoveBridge(bridge);
+        }
+
         public void RecalculateSurfaceHeight(int x, int y)
         {
             _heightTracker.RecalculateSurfaceHeight(x, y);

@@ -49,6 +49,12 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterComponentInHierarchy<TabSelectionView>().As<ITabSelectionView>();
             builder.RegisterEntryPoint<TabSelectionPresenter>();
 
+            builder.RegisterComponentInHierarchy<BridgeCreationView>().As<IBridgeCreationView>();
+            builder.RegisterEntryPoint<BridgeCreationPresenter>();
+
+            builder.RegisterComponentInHierarchy<BridgeEditingView>().As<IBridgeEditingView>();
+            builder.RegisterEntryPoint<BridgeEditingPresenter>();
+
             foreach (GameObject root in gameObject.scene.GetRootGameObjects())
             {
                 foreach (WindowOpenerButtonView view in root.GetComponentsInChildren<WindowOpenerButtonView>(true))

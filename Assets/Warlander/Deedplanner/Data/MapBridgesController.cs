@@ -56,6 +56,16 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
+        public void AddBridge(Bridge bridge)
+        {
+            _bridges.Add(bridge);
+        }
+
+        public void RemoveBridge(Bridge bridge)
+        {
+            _bridges.Remove(bridge);
+        }
+
         private bool IsWithinBounds(Vector2Int tile)
         {
             return tile.x >= 0 && tile.x < _map.Width && tile.y >= 0 && tile.y < _map.Height;

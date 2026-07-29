@@ -100,6 +100,49 @@ namespace Warlander.Deedplanner.Data.Bridges
             ConstructBridge(map);
         }
 
+        /// <summary>
+        /// Constructor used for runtime bridge creation from the Bridges tab.
+        /// </summary>
+        public Bridge(Map map, TileCoords start, TileCoords end, BridgeData data,
+            BridgeType type, int additionalData, string segments,
+            IOutlineCoordinator outlineCoordinator)
+        {
+            _outlineCoordinator = outlineCoordinator;
+
+            Data = data;
+            this.segments = BridgePartTypeUtils.DecodeSegments(segments);
+            this.additionalData = additionalData;
+            bridgeType = type;
+            surfaced = start.Level >= 0;
+
+            int minX = Mathf.Min(start.X, end.X);
+            int maxX = Mathf.Max(start.X, end.X);
+            int minY = Mathf.Min(start.Y, end.Y);
+            int maxY = Mathf.Max(start.Y, end.Y);
+
+            if (maxY - minY > maxX - minX)
+            {
+                verticalOrientation = true;
+                minY += 1;
+                maxY -= 1;
+            }
+            else
+            {
+                verticalOrientation = false;
+                minX += 1;
+                maxX -= 1;
+            }
+
+            firstLevel = start.Level;
+            firstX = minX;
+            firstY = minY;
+            secondLevel = end.Level;
+            secondX = maxX;
+            secondY = maxY;
+
+            ConstructBridge(map);
+        }
+
         private void ConstructBridge(Map map)
         {
             if (bridgeParts.Count != 0)
@@ -263,6 +306,23 @@ namespace Warlander.Deedplanner.Data.Bridges
             {
                 part.gameObject.SetActive(state);
             }
+        }
+
+        public void Destroy()
+        {
+            DisableHighlighting();
+
+            foreach (BridgePart part in bridgeParts)
+            {
+                if (part.Tile != null)
+                {
+                    part.Tile.UnregisterBridgePart();
+                }
+
+                UnityEngine.Object.Destroy(part.gameObject);
+            }
+
+            bridgeParts.Clear();
         }
 
         public void EnableHighlighting(OutlineType type)

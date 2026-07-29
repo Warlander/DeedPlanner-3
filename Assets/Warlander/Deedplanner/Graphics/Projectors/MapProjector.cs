@@ -87,6 +87,22 @@ namespace Warlander.Deedplanner.Graphics.Projectors
             }
         }
 
+        public void ProjectArea(Vector2Int min, Vector2Int max)
+        {
+            int minX = Mathf.Min(min.x, max.x);
+            int maxX = Mathf.Max(min.x, max.x);
+            int minY = Mathf.Min(min.y, max.y);
+            int maxY = Mathf.Max(min.y, max.y);
+
+            float centerX = (minX + maxX) * 2f + 2f;
+            float centerY = (minY + maxY) * 2f + 2f;
+            float sizeX = (maxX - minX + 1) * 4f;
+            float sizeY = (maxY - minY + 1) * 4f;
+
+            attachedProjector.transform.position = new Vector3(centerX, 500, centerY);
+            attachedProjector.size = new Vector3(sizeX, sizeY, RenderDistance);
+        }
+
         public void ProjectLine(Vector2Int tileCoord, PlaneAlignment alignment)
         {
             Map map = _mapHandler.Map;
