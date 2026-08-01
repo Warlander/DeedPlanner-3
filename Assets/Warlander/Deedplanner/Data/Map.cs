@@ -316,13 +316,25 @@ namespace Warlander.Deedplanner.Data
 
         public void AddBridge(Bridge bridge)
         {
+            bridge.AttachToMap();
             _bridgesController.AddBridge(bridge);
         }
 
         public void RemoveBridge(Bridge bridge)
         {
-            bridge.Destroy();
             _bridgesController.RemoveBridge(bridge);
+            bridge.DetachFromMap();
+        }
+
+        public event Action BridgesChanged
+        {
+            add => _bridgesController.BridgesChanged += value;
+            remove => _bridgesController.BridgesChanged -= value;
+        }
+
+        public void RefreshBridgesRendering()
+        {
+            _levelRenderer.UpdateBridgesRendering();
         }
 
         public void RecalculateSurfaceHeight(int x, int y)

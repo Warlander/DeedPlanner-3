@@ -141,10 +141,12 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 
             int extraArgument = GetDefaultExtraArgument(type.Value);
             string segments = BuildDefaultSegments(_start, _end, material, type.Value);
-            Bridge bridge = _bridgeFactory.CreateBridge(_mapHandler.Map, _start, _end, material,
+            Map map = _mapHandler.Map;
+            Bridge bridge = _bridgeFactory.CreateBridge(map, _start, _end, material,
                 type.Value, extraArgument, segments);
 
-            _mapHandler.Map.AddBridge(bridge);
+            map.CommandManager.AddToActionAndExecute(new BridgePlacementCommand(map, bridge));
+            map.CommandManager.FinishAction();
             _bridgesUpdater.ClearTileSelection();
             _bridgesUpdater.SelectBridge(bridge);
         }

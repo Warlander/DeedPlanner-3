@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace Warlander.Deedplanner.Data
         private readonly List<Bridge> _bridges = new List<Bridge>();
 
         public IReadOnlyList<Bridge> Bridges => _bridges;
+
+        public event Action BridgesChanged;
 
         public MapBridgesController(Map map, BridgeFactory bridgeFactory, IFeatureStateRetriever<Feature> featureStateRetriever)
         {
@@ -59,11 +62,13 @@ namespace Warlander.Deedplanner.Data
         public void AddBridge(Bridge bridge)
         {
             _bridges.Add(bridge);
+            BridgesChanged?.Invoke();
         }
 
         public void RemoveBridge(Bridge bridge)
         {
             _bridges.Remove(bridge);
+            BridgesChanged?.Invoke();
         }
 
         private bool IsWithinBounds(Vector2Int tile)

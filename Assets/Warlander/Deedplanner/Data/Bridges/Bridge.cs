@@ -34,6 +34,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         private readonly BridgeType bridgeType;
 
         private List<BridgePart> bridgeParts = new List<BridgePart>();
+        private bool _attached;
         
         public Bridge(Map map, XmlElement element, IOutlineCoordinator outlineCoordinator)
         {
@@ -199,6 +200,8 @@ namespace Warlander.Deedplanner.Data.Bridges
                     map[x, y].RegisterBridgePart(bridgePart);
                 }
             }
+
+            _attached = true;
         }
 
         private float CalculateHeightAtPoint(int segment, IBridgeType bridgeTypeCalc, int bridgeLength,
@@ -308,6 +311,43 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
         }
 
+        public void AttachToMap()
+        {
+            if (_attached)
+            {
+                return;
+            }
+
+            foreach (BridgePart part in bridgeParts)
+            {
+                part.Tile.RegisterBridgePart(part);
+            }
+
+            SetVisible(true);
+            _attached = true;
+        }
+
+        public void DetachFromMap()
+        {
+            if (!_attached)
+            {
+                return;
+            }
+
+            DisableHighlighting();
+
+            foreach (BridgePart part in bridgeParts)
+            {
+                if (part.Tile != null)
+                {
+                    part.Tile.UnregisterBridgePart();
+                }
+            }
+
+            SetVisible(false);
+            _attached = false;
+        }
+
         public void Destroy()
         {
             DisableHighlighting();
@@ -323,6 +363,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
 
             bridgeParts.Clear();
+            _attached = false;
         }
 
         public void EnableHighlighting(OutlineType type)

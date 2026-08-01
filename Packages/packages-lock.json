@@ -340,6 +340,15 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
+    "com.unity.uiextensions": {
+      "version": "https://github.com/Unity-UI-Extensions/com.unity.uiextensions.git#d47f838ba918bbb9b26f242bd944940a711f525f",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.ugui": "2.0.0"
+      },
+      "hash": "d47f838ba918bbb9b26f242bd944940a711f525f"
+    },
     "com.warlogic.featurestates": {
       "version": "2.0.5",
       "depth": 0,

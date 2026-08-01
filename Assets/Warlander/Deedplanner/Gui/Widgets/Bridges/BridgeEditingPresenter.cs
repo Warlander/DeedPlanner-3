@@ -53,7 +53,9 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
                 return;
             }
 
-            _mapHandler.Map.RemoveBridge(selectedBridge);
+            Map map = _mapHandler.Map;
+            map.CommandManager.AddToActionAndExecute(new BridgeRemovalCommand(map, selectedBridge));
+            map.CommandManager.FinishAction();
             _bridgesUpdater.ClearBridgeSelection();
         }
 

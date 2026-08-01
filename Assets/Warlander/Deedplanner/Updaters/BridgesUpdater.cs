@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
@@ -22,6 +23,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private BridgeTabSwapper _bridgeTabSwapper;
         [Inject] private TabContext _tabContext;
         [Inject] private IMapProjectorFacade _mapProjectorFacade;
+        [Inject] private MapHandler _mapHandler;
 
         public event Action SelectedBridgeChanged;
         public event Action<TileCoords, TileCoords> TileSelectionChanged;
@@ -37,8 +39,54 @@ namespace Warlander.Deedplanner.Updaters
         private IMapProjector _firstTileProjector;
         private IMapProjector _secondTileProjector;
         private readonly List<IMapProjector> _spanProjectors = new List<IMapProjector>();
+        private Map _subscribedMap;
 
-        public override void Initialize() { }
+        public override void Initialize()
+        {
+            _mapHandler.MapInitialized += OnMapInitialized;
+            SubscribeToMap(_mapHandler.Map);
+        }
+
+        private void OnMapInitialized()
+        {
+            SubscribeToMap(_mapHandler.Map);
+        }
+
+        private void SubscribeToMap(Map map)
+        {
+            if (_subscribedMap == map)
+            {
+                return;
+            }
+
+            if (_subscribedMap != null)
+            {
+                _subscribedMap.BridgesChanged -= OnBridgesChanged;
+            }
+
+            _subscribedMap = map;
+
+            if (_subscribedMap != null)
+            {
+                _subscribedMap.BridgesChanged += OnBridgesChanged;
+            }
+        }
+
+        private void OnBridgesChanged()
+        {
+            IReadOnlyList<Bridge> bridges = _mapHandler.Map.Bridges;
+
+            if (SelectedBridge != null && !bridges.Contains(SelectedBridge))
+            {
+                ClearBridgeSelection();
+            }
+
+            if (_lastFrameHoveredBridge != null && !bridges.Contains(_lastFrameHoveredBridge))
+            {
+                _lastFrameHoveredBridge.DisableHighlighting();
+                _lastFrameHoveredBridge = null;
+            }
+        }
 
         public override void Enable()
         {

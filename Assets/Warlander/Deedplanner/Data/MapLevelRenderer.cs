@@ -133,6 +133,15 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
+        public void UpdateBridgesRendering()
+        {
+            if (_surfaceLevelRoots == null) return;
+
+            bool underground = _renderedLevel < 0;
+            int absoluteLevel = underground ? -_renderedLevel + 1 : _renderedLevel;
+            RefreshBridgesRendering(absoluteLevel);
+        }
+
         private void RefreshBridgesRendering(int absoluteLevel)
         {
             if (_getBridges == null) return;
