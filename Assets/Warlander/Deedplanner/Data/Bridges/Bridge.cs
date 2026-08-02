@@ -414,7 +414,18 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
         {
-            
+            localRoot.SetAttribute("data", Data.Name);
+            localRoot.SetAttribute("type", bridgeType.ToString().ToUpperInvariant());
+            localRoot.SetAttribute("firstFloor", firstLevel.ToString());
+            localRoot.SetAttribute("firstX", firstX.ToString());
+            localRoot.SetAttribute("firstY", firstY.ToString());
+            localRoot.SetAttribute("secondFloor", secondLevel.ToString());
+            localRoot.SetAttribute("secondX", secondX.ToString());
+            localRoot.SetAttribute("secondY", secondY.ToString());
+            localRoot.SetAttribute("sag", additionalData.ToString());
+            localRoot.SetAttribute("orientation", verticalOrientation ? "true" : "false");
+            localRoot.SetAttribute("surfaced", surfaced ? "true" : "false");
+            localRoot.InnerText = BridgePartTypeUtils.EncodeSegments(segments);
         }
     }
 }

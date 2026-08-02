@@ -399,6 +399,13 @@ namespace Warlander.Deedplanner.Data
                     localRoot.AppendChild(tile);
                 }
             }
+
+            foreach (Bridge bridge in _bridgesController.Bridges)
+            {
+                XmlElement bridgeElement = document.CreateElement("bridge");
+                bridge.Serialize(document, bridgeElement);
+                localRoot.AppendChild(bridgeElement);
+            }
         }
 
         public float GetRelativeLevelOpacity(int relativeLevel) => _levelRenderer.GetRelativeLevelOpacity(relativeLevel);
