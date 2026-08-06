@@ -20,6 +20,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         private TileCoords _end;
         private string _lastMaterial;
         private string _lastType;
+        private int _hiddenMaterials;
 
         public BridgeCreationPresenter(IBridgeCreationView view, BridgesUpdater bridgesUpdater,
             MapHandler mapHandler, BridgeFactory bridgeFactory)
@@ -77,15 +78,15 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             bool spanValid = ValidateSpan(first, second, out error);
             if (materials.Count == 0)
             {
-                _view.SetMessage("No bridge material supports this width.");
+                _view.SetMessage(BuildMessage("No bridge material supports this width.", false));
             }
             else if (!spanValid)
             {
-                _view.SetMessage(error);
+                _view.SetMessage(BuildMessage(error));
             }
             else
             {
-                _view.SetMessage("Select a bridge material and type, then click Place.");
+                _view.SetMessage(BuildMessage("Select a bridge material and type, then click Place."));
             }
 
             RefreshActionVisibility();
@@ -176,7 +177,28 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 
             string error = string.Empty;
             bool valid = ValidateSpan(_start, _end, out error);
-            _view.SetMessage(valid ? "Select a bridge material and type, then click Place." : error);
+            _view.SetMessage(BuildMessage(valid ? "Select a bridge material and type, then click Place." : error));
+        }
+
+        private string BuildMessage(string baseMessage, bool includeHiddenMaterialsHint = true)
+        {
+            if (_start == null || _end == null)
+            {
+                return baseMessage;
+            }
+
+            int spanX = Mathf.Abs(_end.X - _start.X);
+            int spanY = Mathf.Abs(_end.Y - _start.Y);
+            int length = Mathf.Max(spanX, spanY) - 1;
+            int width = Mathf.Min(spanX, spanY) + 1;
+            string message = $"Span: {length} long, {width} wide. {baseMessage}";
+
+            if (includeHiddenMaterialsHint && _hiddenMaterials > 0)
+            {
+                message += " Some materials are hidden - they cannot span a bridge this wide.";
+            }
+
+            return message;
         }
 
         private void RefreshActionVisibility()
@@ -211,6 +233,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
                 }
             }
 
+            _hiddenMaterials = Database.Bridges.Values.Count - materials.Count;
             return materials;
         }
 
@@ -305,6 +328,12 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
                 return false;
             }
 
+            if ((start.Level >= 0) != (end.Level >= 0))
+            {
+                error = "Bridge cannot go from surface to cave.";
+                return false;
+            }
+
             int minX = Mathf.Min(start.X, end.X);
             int maxX = Mathf.Max(start.X, end.X);
             int minY = Mathf.Min(start.Y, end.Y);
@@ -325,11 +354,89 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 
             if (minX < 0 || maxX >= map.Width - 1 || minY < 0 || maxY >= map.Height - 1)
             {
-                error = "Bridge endpoints are too close to the map edge.";
+                error = "Too close to the map edge - each end of a bridge needs an anchor tile.";
                 return false;
             }
 
+            bool vertical = (maxY - minY) > (maxX - minX);
+
+            bool startOnTerrain = start.Level == 0 || start.Level == -1;
+            bool endOnTerrain = end.Level == 0 || end.Level == -1;
+            if ((startOnTerrain && !AnchorBorderEven(map, start.Level, minX, maxX, minY, maxY, vertical, true))
+                || (endOnTerrain && !AnchorBorderEven(map, end.Level, minX, maxX, minY, maxY, vertical, false)))
+            {
+                error = "Bridge cannot start or end on uneven ground - all tiles at each end must have equal height.";
+                return false;
+            }
+
+            int spanMinX = minX;
+            int spanMaxX = maxX;
+            int spanMinY = minY;
+            int spanMaxY = maxY;
+            if (vertical)
+            {
+                spanMinY++;
+                spanMaxY--;
+            }
+            else
+            {
+                spanMinX++;
+                spanMaxX--;
+            }
+
+            for (int x = spanMinX; x <= spanMaxX; x++)
+            {
+                for (int y = spanMinY; y <= spanMaxY; y++)
+                {
+                    if (map[x, y].BridgePart != null)
+                    {
+                        error = "Bridge would intersect an existing bridge.";
+                        return false;
+                    }
+                }
+            }
+
             error = string.Empty;
+            return true;
+        }
+
+        // Heightmap is vertex-based: a tile corner at (x, y) takes its height from map[x, y].
+        // The deck border at each end of the bridge is a line of such vertices - all must match.
+        private static bool AnchorBorderEven(Map map, int level, int minX, int maxX, int minY, int maxY,
+            bool vertical, bool startEdge)
+        {
+            int from;
+            int to;
+            int fixedCoord;
+            if (vertical)
+            {
+                from = minX;
+                to = maxX + 1;
+                fixedCoord = startEdge ? minY + 1 : maxY;
+            }
+            else
+            {
+                from = minY;
+                to = maxY + 1;
+                fixedCoord = startEdge ? minX + 1 : maxX;
+            }
+
+            int? borderHeight = null;
+            for (int i = from; i <= to; i++)
+            {
+                Tile tile = vertical ? map[i, fixedCoord] : map[fixedCoord, i];
+                int height = level < 0 ? tile.CaveHeight : tile.SurfaceHeight;
+
+                if (borderHeight == null)
+                {
+                    borderHeight = height;
+                }
+                else if (height != borderHeight.Value)
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
 

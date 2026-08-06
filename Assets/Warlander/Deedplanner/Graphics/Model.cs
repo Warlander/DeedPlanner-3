@@ -19,6 +19,8 @@ namespace Warlander.Deedplanner.Graphics
         private readonly string oneIncludedMesh;
         private Dictionary<string, string> textureOverrides;
 
+        private readonly Dictionary<Mesh, Mesh> mirroredMeshes = new Dictionary<Mesh, Mesh>();
+
         private GameObject modelRoot;
         private GameObject originalModel;
         private readonly Dictionary<ModelProperties, GameObject> modifiedModels;
@@ -240,6 +242,7 @@ namespace Warlander.Deedplanner.Graphics
 
             originalModel = masterModel;
             originalModel.layer = Layer;
+
             foreach (Transform child in originalModel.transform)
             {
                 child.gameObject.layer = Layer;
@@ -256,7 +259,7 @@ namespace Warlander.Deedplanner.Graphics
                     Material newMaterial = new Material(renderer.sharedMaterial);
                     renderer.sharedMaterial = newMaterial;
 
-                    texture.LoadOrGetTextureAsync().ToObservable().Subscribe(loadedTexture => newMaterial.mainTexture = loadedTexture);
+                    texture.LoadOrGetTextureAsync().ToObservable().Subscribe(loadedTexture => newMaterial.SetTexture(ShaderPropertyIds.BaseMap, loadedTexture));
                 }
             }
             originalModel.transform.SetParent(modelRoot.transform);
@@ -270,9 +273,66 @@ namespace Warlander.Deedplanner.Graphics
             modelRequests.Clear();
         }
 
-        private void InitializeModifiedModel(ModelProperties modelProperties)
+        /// <summary>
+        /// Returns a cached copy of the mesh mirrored about the tile center plane.
+        /// Used by bridge parts that need per-instance mirroring (side and/or orientation).
+        /// </summary>
+        public Mesh GetMirroredMesh(Mesh source)
         {
-            if (!originalModel || modifiedModels.ContainsKey(modelProperties))
+            if (!mirroredMeshes.TryGetValue(source, out Mesh mirrored))
+            {
+                mirrored = MirrorMeshAboutTileCenter(source);
+                mirroredMeshes[source] = mirrored;
+            }
+
+            return mirrored;
+        }
+
+        // Wurm models are corner-anchored, not centered - mirroring must happen about the tile
+        // center plane (x = 2), not the model origin, and winding/normals are fixed in the mesh data
+        // because negative transform scale breaks backface culling.
+        private static Mesh MirrorMeshAboutTileCenter(Mesh source)
+        {
+            Mesh mirrored = Object.Instantiate(source);
+            mirrored.name = source.name + "_Mirrored";
+
+            Vector3[] vertices = mirrored.vertices;
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i].x = 4f - vertices[i].x;
+            }
+            mirrored.vertices = vertices;
+
+            Vector3[] normals = mirrored.normals;
+            for (int i = 0; i < normals.Length; i++)
+            {
+                normals[i].x = -normals[i].x;
+            }
+            mirrored.normals = normals;
+
+            Vector4[] tangents = mirrored.tangents;
+            for (int i = 0; i < tangents.Length; i++)
+            {
+                tangents[i].x = -tangents[i].x;
+                tangents[i].w = -tangents[i].w;
+            }
+            mirrored.tangents = tangents;
+
+            int[] triangles = mirrored.triangles;
+            for (int i = 0; i < triangles.Length; i += 3)
+            {
+                int temp = triangles[i];
+                triangles[i] = triangles[i + 2];
+                triangles[i + 2] = temp;
+            }
+            mirrored.triangles = triangles;
+
+            mirrored.RecalculateBounds();
+            return mirrored;
+        }
+
+        private void InitializeModifiedModel(ModelProperties modelProperties)
+        {            if (!originalModel || modifiedModels.ContainsKey(modelProperties))
             {
                 return;
             }
@@ -299,9 +359,9 @@ namespace Warlander.Deedplanner.Graphics
                 {
                     Material oldMaterial = renderer.sharedMaterial;
                     Material customMaterial = new Material(modelProperties.CustomMaterial);
-                    if (!customMaterial.mainTexture)
+                    if (!customMaterial.GetTexture(ShaderPropertyIds.BaseMap))
                     {
-                        customMaterial.mainTexture = oldMaterial.mainTexture;
+                        customMaterial.SetTexture(ShaderPropertyIds.BaseMap, oldMaterial.GetTexture(ShaderPropertyIds.BaseMap));
                     }
                     renderer.sharedMaterial = customMaterial;
                 }

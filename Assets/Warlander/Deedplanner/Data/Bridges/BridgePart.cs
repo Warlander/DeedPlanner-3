@@ -23,6 +23,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         private MeshCollider _selectionMeshCollider;
         private Mesh _selectionMesh;
         private int _skew;
+        private float _height;
 
         public void Initialise(Bridge parentBridge, BridgePartType partType, BridgePartSide partSide,
             EntityOrientation orientation, int x, int y, float height, int skew)
@@ -32,6 +33,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             this.partType = partType;
             this.partSide = partSide;
             this.orientation = orientation;
+            _height = height;
 
             // We need to use custom mesh collider here due to shape complexity of different kinds of bridges and their varying dimensions.
             if (!GetComponent<MeshCollider>())
@@ -154,11 +156,31 @@ namespace Warlander.Deedplanner.Data.Bridges
             {
                 Destroy(model);
             }
-            
+
             model = newModel;
             model.transform.SetParent(transform, false);
 
-            Bounds bounds = GetTotalModelBounds(ParentBridge.Data.GetModelForPart(partType, partSide).OriginalModel);
+            Model sourceModel = ParentBridge.Data.GetModelForPart(partType, partSide);
+
+            // DP2 parity: side RIGHT parts are mirrored, and Up/Right oriented parts get an extra
+            // flip - the two cancel out, so the total mirror is a XOR of the two conditions.
+            bool mirror = (partSide == BridgePartSide.RIGHT)
+                != (orientation == EntityOrientation.Up || orientation == EntityOrientation.Right);
+            if (mirror)
+            {
+                foreach (MeshFilter filter in model.GetComponentsInChildren<MeshFilter>())
+                {
+                    filter.sharedMesh = sourceModel.GetMirroredMesh(filter.sharedMesh);
+                }
+            }
+
+            CreateSupportExtensions(mirror);
+
+            Bounds bounds = GetTotalModelBounds(sourceModel.OriginalModel);
+            if (mirror)
+            {
+                bounds.center = new Vector3(4f - bounds.center.x, bounds.center.y, bounds.center.z);
+            }
             const float wallDepthComfortableMargin = 0.75f;
             float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthComfortableMargin);
             bounds.size = new Vector3(-bounds.size.x, bounds.size.y, comfortableWallDepth);
@@ -174,6 +196,45 @@ namespace Warlander.Deedplanner.Data.Bridges
             OnModelLoadedCallback(model);
         }
         
+        // Extensions are purely visual (never serialized): a chain of extension models under each
+        // support, from deck-supportHeight down in steps of 20 until terrain level (DP2 behavior).
+        private void CreateSupportExtensions(bool mirror)
+        {
+            if (partType != BridgePartType.Support)
+            {
+                return;
+            }
+
+            Model extensionModel = ParentBridge.Data.GetModelForPart(BridgePartType.Extension, partSide);
+            int supportHeight = ParentBridge.Data.SupportHeight;
+            float relativeHeight = _height - Tile.SurfaceHeight - supportHeight;
+            int extensionCount = Mathf.Max(0, Mathf.CeilToInt(relativeHeight / 20f));
+
+            for (int i = 0; i < extensionCount; i++)
+            {
+                float yOffset = -(supportHeight + 20f * i) * 0.1f;
+                extensionModel.CreateOrGetModel(new Vector2(0, _skew), instance =>
+                {
+                    // Parented under the main model so outline renderer snapshots include extensions.
+                    instance.transform.SetParent(model.transform, false);
+                    instance.transform.localPosition = new Vector3(0, yOffset, 0);
+
+                    foreach (MeshFilter filter in instance.GetComponentsInChildren<MeshFilter>())
+                    {
+                        if (mirror)
+                        {
+                            filter.sharedMesh = extensionModel.GetMirroredMesh(filter.sharedMesh);
+                        }
+
+                        MeshCollider extensionCollider = filter.gameObject.AddComponent<MeshCollider>();
+                        extensionCollider.sharedMesh = filter.sharedMesh;
+                    }
+
+                    OnModelLoadedCallback(model);
+                });
+            }
+        }
+
         private Bounds GetTotalModelBounds(GameObject model)
         {
             Bounds bounds = new Bounds();

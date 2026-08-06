@@ -101,7 +101,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
             
-            BridgePart bridgePart = raycast.transform.GetComponent<BridgePart>();
+            BridgePart bridgePart = raycast.transform.GetComponentInParent<BridgePart>();
             Bridge bridge = bridgePart != null ? bridgePart.ParentBridge : null;
 
             UpdateBridgeHover(bridge);
@@ -174,6 +174,7 @@ namespace Warlander.Deedplanner.Updaters
             bool bridgeChanged = SelectedBridge != bridge;
             SelectedBridge = bridge;
             SelectedBridge.EnableHighlighting(OutlineType.Positive);
+            SelectedBridge.Rebuilt += OnSelectedBridgeRebuilt;
 
             _firstClickedTile = null;
             _secondClickedTile = null;
@@ -187,10 +188,22 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
+        private void OnSelectedBridgeRebuilt()
+        {
+            if (SelectedBridge != null)
+            {
+                SelectedBridge.EnableHighlighting(OutlineType.Positive);
+            }
+
+            SelectedBridgeChanged?.Invoke();
+        }
+
         private void OnBridgeDeselected()
         {
             if (SelectedBridge != null)
             {
+                SelectedBridge.Rebuilt -= OnSelectedBridgeRebuilt;
+
                 if (SelectedBridge == _lastFrameHoveredBridge)
                 {
                     SelectedBridge.EnableHighlighting(OutlineType.Neutral);
@@ -445,6 +458,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (SelectedBridge != null)
             {
+                SelectedBridge.Rebuilt -= OnSelectedBridgeRebuilt;
                 SelectedBridge.DisableHighlighting();
             }
             SelectedBridge = null;

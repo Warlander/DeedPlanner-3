@@ -55,6 +55,9 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterComponentInHierarchy<BridgeEditingView>().As<IBridgeEditingView>();
             builder.RegisterEntryPoint<BridgeEditingPresenter>();
 
+            builder.RegisterComponentInHierarchy<BridgeSegmentContainer>().As<IBridgeSegmentBarView>();
+            builder.RegisterEntryPoint<BridgeSegmentBarPresenter>();
+
             foreach (GameObject root in gameObject.scene.GetRootGameObjects())
             {
                 foreach (WindowOpenerButtonView view in root.GetComponentsInChildren<WindowOpenerButtonView>(true))

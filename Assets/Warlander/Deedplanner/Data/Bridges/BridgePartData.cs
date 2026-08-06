@@ -39,7 +39,7 @@ namespace Warlander.Deedplanner.Data.Bridges
                         if (sideString.Equals("side", StringComparison.OrdinalIgnoreCase))
                         {
                             models.Add(BridgePartSide.LEFT, modelFactory.CreateModel(child, LayerMasks.BridgeLayer));
-                            models.Add(BridgePartSide.RIGHT, modelFactory.CreateModel(child, new Vector3(-1, 1, 1), LayerMasks.BridgeLayer));
+                            models.Add(BridgePartSide.RIGHT, modelFactory.CreateModel(child, LayerMasks.BridgeLayer));
                         }
                         else if (sideParseSuccess)
                         {
