@@ -74,7 +74,8 @@ jobs:
           name: DeedPlanner Windows
           path: |
             Build/
-            !Build/*BurstDebugInformation*/
+            !Build/*BurstDebugInformation*
+            !Build/*BackUpThisFolder*
           if-no-files-found: error
 
   build-linux:
@@ -125,5 +126,6 @@ jobs:
           name: DeedPlanner Linux
           path: |
             Build/
-            !Build/*BurstDebugInformation*/
+            !Build/*BurstDebugInformation*
+            !Build/*BackUpThisFolder*
           if-no-files-found: error
