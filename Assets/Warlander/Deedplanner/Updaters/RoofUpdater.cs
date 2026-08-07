@@ -1,41 +1,63 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Gui.Tooltips;
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
-using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class RoofUpdater : AbstractUpdater
+    public class RoofUpdater : IUpdater
     {
-        [Inject] private TooltipHandler _tooltipHandler;
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private DPInput _input;
-        [Inject] private MapHandler _mapHandler;
-        [Inject] private TabContext _tabContext;
+        private readonly IRoofUpdaterView _view;
+        private readonly TooltipHandler _tooltipHandler;
+        private readonly CameraCoordinator _cameraCoordinator;
+        private readonly DPInput _input;
+        private readonly MapHandler _mapHandler;
+        private readonly TabContext _tabContext;
 
-        [SerializeField] private UnityList _roofsList;
+        public Tab TargetTab => Tab.Roofs;
 
-        public override void Initialize()
+        private RoofData _selectedRoof;
+
+        public RoofUpdater(IRoofUpdaterView view, TooltipHandler tooltipHandler, CameraCoordinator cameraCoordinator,
+            DPInput input, MapHandler mapHandler, TabContext tabContext)
         {
-            foreach (RoofData data in Database.Roofs.Values)
-            {
-                _roofsList.Add(data);
-            }
+            _view = view;
+            _tooltipHandler = tooltipHandler;
+            _cameraCoordinator = cameraCoordinator;
+            _input = input;
+            _mapHandler = mapHandler;
+            _tabContext = tabContext;
         }
 
-        public override void Enable()
+        public void Initialize()
+        {
+            _view.RoofSelected += OnRoofSelected;
+
+            foreach (RoofData data in Database.Roofs.Values)
+            {
+                _view.AddRoofEntry(data);
+            }
+
+            _view.PushSelection();
+        }
+
+        public void Enable()
         {
             _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
-        public override void Disable() { }
+        public void Disable() { }
 
-        public override void Tick()
+        private void OnRoofSelected(RoofData data)
+        {
+            _selectedRoof = data;
+        }
+
+        public void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
@@ -70,14 +92,13 @@ namespace Warlander.Deedplanner.Updaters
 
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
-                RoofData data = _roofsList.SelectedValue as RoofData;
-                _mapHandler.Map[x, y].SetRoof(data, floor);
+                _mapHandler.Map[x, y].SetRoof(_selectedRoof, floor);
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
             {
                 _mapHandler.Map[x, y].SetRoof(null, floor);
             }
-            
+
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
                 _mapHandler.Map.CommandManager.FinishAction();

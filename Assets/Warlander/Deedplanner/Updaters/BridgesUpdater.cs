@@ -11,19 +11,32 @@ using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Graphics.Outline;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
-using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class BridgesUpdater : AbstractUpdater
+    public class BridgesUpdater : IUpdater
     {
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private DPInput _input;
-        [Inject] private TooltipHandler _tooltipHandler;
-        [Inject] private BridgeTabSwapper _bridgeTabSwapper;
-        [Inject] private TabContext _tabContext;
-        [Inject] private IMapProjectorFacade _mapProjectorFacade;
-        [Inject] private MapHandler _mapHandler;
+        private readonly CameraCoordinator _cameraCoordinator;
+        private readonly DPInput _input;
+        private readonly TooltipHandler _tooltipHandler;
+        private readonly BridgeTabSwapper _bridgeTabSwapper;
+        private readonly TabContext _tabContext;
+        private readonly IMapProjectorFacade _mapProjectorFacade;
+        private readonly MapHandler _mapHandler;
+
+        public Tab TargetTab => Tab.Bridges;
+
+        public BridgesUpdater(CameraCoordinator cameraCoordinator, DPInput input, TooltipHandler tooltipHandler,
+            BridgeTabSwapper bridgeTabSwapper, TabContext tabContext, IMapProjectorFacade mapProjectorFacade, MapHandler mapHandler)
+        {
+            _cameraCoordinator = cameraCoordinator;
+            _input = input;
+            _tooltipHandler = tooltipHandler;
+            _bridgeTabSwapper = bridgeTabSwapper;
+            _tabContext = tabContext;
+            _mapProjectorFacade = mapProjectorFacade;
+            _mapHandler = mapHandler;
+        }
 
         public event Action SelectedBridgeChanged;
         public event Action<TileCoords, TileCoords> TileSelectionChanged;
@@ -41,7 +54,7 @@ namespace Warlander.Deedplanner.Updaters
         private readonly List<IMapProjector> _spanProjectors = new List<IMapProjector>();
         private Map _subscribedMap;
 
-        public override void Initialize()
+        public void Initialize()
         {
             _mapHandler.MapInitialized += OnMapInitialized;
             SubscribeToMap(_mapHandler.Map);
@@ -88,12 +101,12 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        public override void Enable()
+        public void Enable()
         {
             _tabContext.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
-        public override void Tick()
+        public void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
@@ -448,7 +461,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
         
-        public override void Disable()
+        public void Disable()
         {
             if (_lastFrameHoveredBridge != null)
             {

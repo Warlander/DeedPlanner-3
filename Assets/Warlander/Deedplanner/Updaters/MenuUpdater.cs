@@ -4,126 +4,116 @@
     #undef DISABLESTEAMWORKS
 #endif
 
-#if !DISABLESTEAMWORKS
-using Steamworks;
-#endif
-using TMPro;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
 using Warlander.Deedplanner.Gui;
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Steam;
 using Warlander.UI.Windows;
-using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class MenuUpdater : AbstractUpdater
+    public class MenuUpdater : IUpdater
     {
-        [Inject] private DPSettings _settings;
-        [Inject] private WindowCoordinator _windowCoordinator;
-        [Inject] private ISteamConnection _steamConnection;
-        [Inject] private TabContext _tabContext;
+        private readonly IMenuUpdaterView _view;
+        private readonly DPSettings _settings;
+        private readonly WindowCoordinator _windowCoordinator;
+        private readonly ISteamConnection _steamConnection;
+        private readonly TabContext _tabContext;
 
-        [SerializeField] private Button _resizeButton;
-        [SerializeField] private Button _clearButton;
-        [SerializeField] private Button _saveButton;
-        [SerializeField] private Button _loadButton;
-        [SerializeField] private Button _graphicsSettingsButton;
-        [SerializeField] private Button _inputSettingsButton;
-        [SerializeField] private Button _creditsButton;
-        [SerializeField] private Button _fullscreenButton;
-        [SerializeField] private Button _quitButton;
-        [SerializeField] private Button _patreonButton;
-        [SerializeField] private Button _paypalButton;
-        
-        [SerializeField] private TMP_Text _steamConnectionText;
-        [SerializeField] private TMP_Text _versionText;
-        
-        public override void Initialize()
+        public Tab TargetTab => Tab.Menu;
+
+        public MenuUpdater(IMenuUpdaterView view, DPSettings settings, WindowCoordinator windowCoordinator,
+            ISteamConnection steamConnection, TabContext tabContext)
+        {
+            _view = view;
+            _settings = settings;
+            _windowCoordinator = windowCoordinator;
+            _steamConnection = steamConnection;
+            _tabContext = tabContext;
+        }
+
+        public void Initialize()
         {
             bool mobile = Application.isMobilePlatform;
             bool web = Application.platform == RuntimePlatform.WebGLPlayer;
 
             if (mobile || web)
             {
-                _quitButton.gameObject.SetActive(false);
+                _view.SetQuitButtonVisible(false);
             }
 
             if (mobile)
             {
-                _fullscreenButton.gameObject.SetActive(false);
+                _view.SetFullscreenButtonVisible(false);
             }
 
-            _versionText.text = Constants.TitleString;
+            _view.SetVersionText(Constants.TitleString);
 
-            _resizeButton.onClick.AddListener(ResizeButtonOnClick);
-            _clearButton.onClick.AddListener(ClearOnClick);
-            _saveButton.onClick.AddListener(SaveOnClick);
-            _loadButton.onClick.AddListener(LoadOnClick);
-            _graphicsSettingsButton.onClick.AddListener(GraphicsSettingsOnClick);
-            _inputSettingsButton.onClick.AddListener(InputSettingsOnClick);
-            _creditsButton.onClick.AddListener(CreditsOnClick);
-            _fullscreenButton.onClick.AddListener(FullscreenOnClick);
-            _quitButton.onClick.AddListener(QuitOnClick);
-            _patreonButton.onClick.AddListener(PatreonOnClick);
-            _paypalButton.onClick.AddListener(PaypalOnClick);
+            _view.ButtonClicked += OnButtonClicked;
         }
 
-        public override void Enable()
+        public void Enable()
         {
             _tabContext.TileSelectionMode = TileSelectionMode.Nothing;
 
-            _steamConnectionText.gameObject.SetActive(_steamConnection.Connected);
             if (_steamConnection.Connected)
             {
-                _steamConnectionText.text = "Connected to Steam as " + _steamConnection.GetName();
+                _view.SetSteamStatus(true, "Connected to Steam as " + _steamConnection.GetName());
+            }
+            else
+            {
+                _view.SetSteamStatus(false, null);
             }
         }
 
-        public override void Disable() { }
+        public void Disable() { }
 
-        public override void Tick() { }
+        public void Tick() { }
 
-        private void ResizeButtonOnClick()
+        private void OnButtonClicked(MenuAction action)
         {
-            _windowCoordinator.CreateWindowExclusive(WindowNames.ResizeMapWindow);
+            switch (action)
+            {
+                case MenuAction.Resize:
+                    _windowCoordinator.CreateWindowExclusive(WindowNames.ResizeMapWindow);
+                    break;
+                case MenuAction.Clear:
+                    _windowCoordinator.CreateWindowExclusive(WindowNames.ClearMapWindow);
+                    break;
+                case MenuAction.Save:
+                    _windowCoordinator.CreateWindowExclusive(WindowNames.SaveMapWindow);
+                    break;
+                case MenuAction.Load:
+                    _windowCoordinator.CreateWindowExclusive(WindowNames.LoadMapWindow);
+                    break;
+                case MenuAction.GraphicsSettings:
+                    _windowCoordinator.CreateWindowExclusive(WindowNames.GraphicsSettingsWindow);
+                    break;
+                case MenuAction.InputSettings:
+                    _windowCoordinator.CreateWindowExclusive(WindowNames.InputSettingsWindow);
+                    break;
+                case MenuAction.Credits:
+                    _windowCoordinator.CreateWindow(WindowNames.CreditsWindow);
+                    break;
+                case MenuAction.Fullscreen:
+                    ToggleFullscreen();
+                    break;
+                case MenuAction.Quit:
+                    Quit();
+                    break;
+                case MenuAction.Patreon:
+                    Application.OpenURL("https://www.patreon.com/warlander");
+                    break;
+                case MenuAction.Paypal:
+                    Application.OpenURL("https://www.paypal.me/MCyranowicz/10eur");
+                    break;
+            }
         }
 
-        private void ClearOnClick()
-        {
-            _windowCoordinator.CreateWindowExclusive(WindowNames.ClearMapWindow);
-        }
-
-        private void SaveOnClick()
-        {
-            _windowCoordinator.CreateWindowExclusive(WindowNames.SaveMapWindow);
-        }
-
-        private void LoadOnClick()
-        {
-            _windowCoordinator.CreateWindowExclusive(WindowNames.LoadMapWindow);
-        }
-
-        private void GraphicsSettingsOnClick()
-        {
-            _windowCoordinator.CreateWindowExclusive(WindowNames.GraphicsSettingsWindow);
-        }
-        
-        private void InputSettingsOnClick()
-        {
-            _windowCoordinator.CreateWindowExclusive(WindowNames.InputSettingsWindow);
-        }
-
-        private void CreditsOnClick()
-        {
-            _windowCoordinator.CreateWindow(WindowNames.CreditsWindow);
-        }
-
-        private void FullscreenOnClick()
+        private void ToggleFullscreen()
         {
             if (Screen.fullScreen)
             {
@@ -136,26 +126,16 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void QuitOnClick()
+        private void Quit()
         {
             // TODO: add auto-saving before quit logic
             _settings.Save();
-            
+
 #if UNITY_EDITOR
-                EditorApplication.ExitPlaymode();
+            EditorApplication.ExitPlaymode();
 #else
-                Application.Quit();
+            Application.Quit();
 #endif
-        }
-
-        private void PatreonOnClick()
-        {
-            Application.OpenURL("https://www.patreon.com/warlander");
-        }
-
-        private void PaypalOnClick()
-        {
-            Application.OpenURL("https://www.paypal.me/MCyranowicz/10eur");
         }
     }
 }

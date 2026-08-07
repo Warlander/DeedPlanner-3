@@ -1,42 +1,46 @@
-﻿using System.Collections.Generic;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Caves;
-using Warlander.Deedplanner.Gui.Widgets;
-using Warlander.Deedplanner.Inputs;
+using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
-using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class CaveUpdater : AbstractUpdater
+    public class CaveUpdater : IUpdater
     {
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private DPInput _input;
-        [Inject] private TabContext _tabContext;
+        private readonly ICaveUpdaterView _view;
+        private readonly CameraCoordinator _cameraCoordinator;
+        private readonly TabContext _tabContext;
 
-        [SerializeField] private UnityTree _cavesTree;
+        public Tab TargetTab => Tab.Caves;
 
-        public override void Initialize()
+        public CaveUpdater(ICaveUpdaterView view, CameraCoordinator cameraCoordinator, TabContext tabContext)
+        {
+            _view = view;
+            _cameraCoordinator = cameraCoordinator;
+            _tabContext = tabContext;
+        }
+
+        public void Initialize()
         {
             foreach (CaveData data in Database.Caves.Values)
             {
                 foreach (string[] category in data.Categories)
                 {
-                    _cavesTree.Add(data, category);
+                    _view.AddCaveEntry(data, category);
                 }
             }
         }
 
-        public override void Enable()
+        public void Enable()
         {
             _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
-        public override void Disable() { }
+        public void Disable() { }
 
-        public override void Tick()
+        public void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)

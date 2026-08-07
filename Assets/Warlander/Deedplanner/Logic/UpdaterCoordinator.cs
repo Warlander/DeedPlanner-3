@@ -1,19 +1,18 @@
 using System.Collections.Generic;
 using Warlander.Deedplanner.Updaters;
-using VContainer;
 using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Logic
 {
     public class UpdaterCoordinator : IInitializable, ITickable
     {
-        private readonly IReadOnlyList<AbstractUpdater> _updaters;
+        private readonly IReadOnlyList<IUpdater> _updaters;
         private readonly TabContext _tabContext;
         private readonly MapHandler _mapHandler;
 
-        private AbstractUpdater _currentUpdater;
+        private IUpdater _currentUpdater;
 
-        public UpdaterCoordinator(IReadOnlyList<AbstractUpdater> updaters, TabContext tabContext, MapHandler mapHandler)
+        public UpdaterCoordinator(IReadOnlyList<IUpdater> updaters, TabContext tabContext, MapHandler mapHandler)
         {
             _updaters = updaters;
             _tabContext = tabContext;
@@ -22,9 +21,8 @@ namespace Warlander.Deedplanner.Logic
 
         void IInitializable.Initialize()
         {
-            foreach (AbstractUpdater updater in _updaters)
+            foreach (IUpdater updater in _updaters)
             {
-                updater.gameObject.SetActive(false);
                 updater.Initialize();
             }
 
@@ -40,11 +38,9 @@ namespace Warlander.Deedplanner.Logic
         private void OnTabChange(Tab tab)
         {
             _currentUpdater?.Disable();
-            if (_currentUpdater != null)
-                _currentUpdater.gameObject.SetActive(false);
 
             _currentUpdater = null;
-            foreach (AbstractUpdater updater in _updaters)
+            foreach (IUpdater updater in _updaters)
             {
                 if (updater.TargetTab == tab)
                 {
@@ -53,8 +49,6 @@ namespace Warlander.Deedplanner.Logic
                 }
             }
 
-            if (_currentUpdater != null)
-                _currentUpdater.gameObject.SetActive(true);
             _currentUpdater?.Enable();
 
             if (_mapHandler.Map != null)

@@ -1541,7 +1541,7 @@ PrefabInstance:
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
@@ -1552,7 +1552,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2018367164}
+      objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -2099,52 +2099,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _level: 12
---- !u!1 &103496095
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 103496096}
-  - component: {fileID: 103496097}
-  m_Layer: 0
-  m_Name: Roof Updater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &103496096
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 103496095}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 825856258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &103496097
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 103496095}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e13ebb2138ae754e89f5afe9931b92a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 5
-  _roofsList: {fileID: 4875529235959106886}
 --- !u!1 &111401815
 GameObject:
   m_ObjectHideFlags: 0
@@ -2751,7 +2705,7 @@ PrefabInstance:
     - target: {fileID: 4004065367148079113, guid: ba1c0f31dc9ff4a688bde045f989446a,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: ba1c0f31dc9ff4a688bde045f989446a,
         type: 3}
@@ -2762,7 +2716,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 860138627}
+      objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: ba1c0f31dc9ff4a688bde045f989446a,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -3555,7 +3509,7 @@ PrefabInstance:
     - target: {fileID: 1984117482146686279, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1984117482146686279, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
@@ -3566,7 +3520,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1200891937}
+      objectReference: {fileID: 0}
     - target: {fileID: 1984117482146686279, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -3760,6 +3714,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &161642278 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1984117482146686279, guid: 5e144ec137108d04a8df14e4f780d6d1,
+    type: 3}
+  m_PrefabInstance: {fileID: 161642274}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161642276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &161642281
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4356,6 +4322,59 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
+--- !u!1 &179671832
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 179671833}
+  - component: {fileID: 179671834}
+  m_Layer: 0
+  m_Name: Tools Updater View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &179671833
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 179671832}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 825856258}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &179671834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 179671832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 440d1a7f1661ed7489fac33ef376c46a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.Updaters.ToolsUpdaterView
+  _calculateMaterialsToggle: {fileID: 2018141785}
+  _mapWarningsToggle: {fileID: 600140280}
+  _calculateMaterialsPanelTransform: {fileID: 218086806}
+  _mapWarningsPanelTransform: {fileID: 1493980051}
+  _warningsList: {fileID: 406117968}
+  _buildingAllLevelsMaterialsToggle: {fileID: 895665957}
+  _buildingCurrentLevelMaterialsToggle: {fileID: 124614395}
+  _roomCurrentLevelMaterialsToggle: {fileID: 732479351}
+  _calculateMapMaterialsButton: {fileID: 793995126}
 --- !u!1 &183126204
 GameObject:
   m_ObjectHideFlags: 0
@@ -4984,51 +5003,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dae8a6b11a88acd4eb4b607ff0bd4613, type: 3}
---- !u!1 &205400787
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 205400788}
-  - component: {fileID: 205400789}
-  m_Layer: 0
-  m_Name: Mirror Updater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &205400788
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 205400787}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 825856258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &205400789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 205400787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8881d98b33f839b458e83987b4fc30f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 10
 --- !u!1 &206237797
 GameObject:
   m_ObjectHideFlags: 0
@@ -5348,51 +5322,6 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!1 &211449318
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 211449319}
-  - component: {fileID: 211449320}
-  m_Layer: 0
-  m_Name: Label Updater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &211449319
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 211449318}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 825856258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &211449320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 211449318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 247d8c9be6bae3c42a25228ccb21c605, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 7
 --- !u!1 &218086805
 GameObject:
   m_ObjectHideFlags: 0
@@ -9234,6 +9163,53 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &369886435
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 369886436}
+  - component: {fileID: 369886437}
+  m_Layer: 0
+  m_Name: Wall Updater View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &369886436
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 369886435}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 825856258}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &369886437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 369886435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f911cce06f2544047a8ade78f025249a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.Updaters.WallUpdaterView
+  _wallsTree: {fileID: 349014249}
+  _reverseToggle: {fileID: 169382236}
+  _automaticReverseToggle: {fileID: 987493787}
 --- !u!224 &376697975 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
@@ -11074,6 +11050,55 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.TabSelectionView
   _tabToggleGroup: {fileID: 688529920}
+--- !u!1 &459499619
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 459499620}
+  - component: {fileID: 459499621}
+  m_Layer: 0
+  m_Name: Floor Updater View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &459499620
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459499619}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 825856258}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &459499621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459499619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e07823c6c6b4c45a85a53d0a3cb86f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.Updaters.FloorUpdaterView
+  _floorsTree: {fileID: 286422256}
+  _southToggle: {fileID: 1532161767}
+  _westToggle: {fileID: 1503939245}
+  _northToggle: {fileID: 952311532}
+  _eastToggle: {fileID: 2023058152}
 --- !u!1 &460407318 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
@@ -11251,7 +11276,7 @@ PrefabInstance:
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
@@ -11262,7 +11287,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1165461625}
+      objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -11413,51 +11438,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 397791435}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &475321928
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 475321929}
-  - component: {fileID: 475321930}
-  m_Layer: 0
-  m_Name: Bridges Updater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &475321929
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 475321928}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 825856258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &475321930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 475321928}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2829708a839b4734092b28b6dd6ef94a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 9
 --- !u!1 &476452796
 GameObject:
   m_ObjectHideFlags: 0
@@ -12694,7 +12674,7 @@ PrefabInstance:
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
@@ -12705,7 +12685,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2018367164}
+      objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -13440,7 +13420,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 860138627}
+      objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -13538,52 +13518,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 678933456}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &650922443
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 650922444}
-  - component: {fileID: 650922445}
-  m_Layer: 0
-  m_Name: Cave Updater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &650922444
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 650922443}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 825856258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &650922445
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 650922443}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f63181b4316fbe4f9512799e9c1e814, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 8
-  _cavesTree: {fileID: 1489062526}
 --- !u!1 &651162082
 GameObject:
   m_ObjectHideFlags: 0
@@ -14343,6 +14277,63 @@ MonoBehaviour:
   _materialToggleRoot: {fileID: 744907327}
   _togglePrefab: {fileID: 7912610396203863510, guid: 6a65c30246825634b906060b357284af,
     type: 3}
+--- !u!1 &677409572
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 677409573}
+  - component: {fileID: 677409574}
+  m_Layer: 0
+  m_Name: Menu Updater View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &677409573
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 677409572}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 825856258}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &677409574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 677409572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79d98a64b35982b44a028c27fe118a00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.Updaters.MenuUpdaterView
+  _resizeButton: {fileID: 955823814}
+  _clearButton: {fileID: 1574059282}
+  _saveButton: {fileID: 1058404866}
+  _loadButton: {fileID: 2005762266}
+  _graphicsSettingsButton: {fileID: 1522350740}
+  _inputSettingsButton: {fileID: 2014220264}
+  _creditsButton: {fileID: 2019280478}
+  _fullscreenButton: {fileID: 1832627880}
+  _quitButton: {fileID: 135511467}
+  _patreonButton: {fileID: 1948111851}
+  _paypalButton: {fileID: 2029179591}
+  _steamConnectionText: {fileID: 1553002010}
+  _versionText: {fileID: 1806993749}
 --- !u!1001 &678933456
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15904,56 +15895,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 712679065}
   m_CullTransparentMesh: 1
---- !u!1 &716036713
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 716036714}
-  - component: {fileID: 716036715}
-  m_Layer: 0
-  m_Name: Floor Updater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &716036714
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 716036713}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 825856258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &716036715
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 716036713}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66ca5b0068b732345bd96bc28dd6e5fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 2
-  _floorsTree: {fileID: 286422256}
-  southToggle: {fileID: 1532161767}
-  westToggle: {fileID: 1503939245}
-  northToggle: {fileID: 952311532}
-  eastToggle: {fileID: 2023058152}
 --- !u!1 &716319219
 GameObject:
   m_ObjectHideFlags: 0
@@ -17594,7 +17535,7 @@ PrefabInstance:
     - target: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
         type: 3}
@@ -17605,7 +17546,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 2018367164}
+      objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -17773,6 +17714,18 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &793995126 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
+    type: 3}
+  m_PrefabInstance: {fileID: 793995122}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793995124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &795632816
 GameObject:
   m_ObjectHideFlags: 0
@@ -18509,20 +18462,16 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1200891936}
-  - {fileID: 650922444}
-  - {fileID: 1165461626}
-  - {fileID: 716036714}
-  - {fileID: 835980716}
-  - {fileID: 103496096}
-  - {fileID: 1604227845}
-  - {fileID: 211449319}
-  - {fileID: 1828645445}
-  - {fileID: 475321929}
-  - {fileID: 205400788}
-  - {fileID: 2018367163}
-  - {fileID: 860138626}
-  m_Father: {fileID: 0}
+  - {fileID: 1520696973}
+  - {fileID: 2141975706}
+  - {fileID: 2040388097}
+  - {fileID: 459499620}
+  - {fileID: 369886436}
+  - {fileID: 677409573}
+  - {fileID: 857357866}
+  - {fileID: 179671833}
+  - {fileID: 1062265669}
+  m_Father: {fileID: 1646570543}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &826273362
 PrefabInstance:
@@ -18677,7 +18626,7 @@ PrefabInstance:
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
@@ -18688,7 +18637,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1165461625}
+      objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -18835,54 +18784,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8287329788473805200}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &835980715
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 835980716}
-  - component: {fileID: 835980717}
-  m_Layer: 0
-  m_Name: Wall Updater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &835980716
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 835980715}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 825856258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &835980717
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 835980715}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f37c10c61d000c74db94c4d192fc03a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 3
-  _wallsTree: {fileID: 349014249}
-  reverseToggle: {fileID: 169382236}
-  automaticReverseToggle: {fileID: 987493787}
 --- !u!1 &842417727 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
@@ -19552,13 +19453,7 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
---- !u!224 &859887341 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5575850793526680608, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
-    type: 3}
-  m_PrefabInstance: {fileID: 204942655}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &860138625
+--- !u!1 &857357865
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -19566,22 +19461,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 860138626}
-  - component: {fileID: 860138627}
+  - component: {fileID: 857357866}
+  - component: {fileID: 857357867}
   m_Layer: 0
-  m_Name: Menu Updater
+  m_Name: Decoration Updater View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &860138626
+  m_IsActive: 1
+--- !u!4 &857357866
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 860138625}
+  m_GameObject: {fileID: 857357865}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -19590,32 +19485,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 825856258}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &860138627
+--- !u!114 &857357867
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 860138625}
+  m_GameObject: {fileID: 857357865}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0af4838b0d24e4dacb7b5d7512dee3a, type: 3}
+  m_Script: {fileID: 11500000, guid: d5f513132ac06314192c4fe2ce916a45, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 11
-  _resizeButton: {fileID: 955823814}
-  _clearButton: {fileID: 1574059282}
-  _saveButton: {fileID: 1058404866}
-  _loadButton: {fileID: 2005762266}
-  _graphicsSettingsButton: {fileID: 1522350740}
-  _inputSettingsButton: {fileID: 2014220264}
-  _creditsButton: {fileID: 2019280478}
-  _fullscreenButton: {fileID: 1832627880}
-  _quitButton: {fileID: 135511467}
-  _patreonButton: {fileID: 1948111851}
-  _paypalButton: {fileID: 2029179591}
-  _steamConnectionText: {fileID: 1553002010}
-  _versionText: {fileID: 1806993749}
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.Updaters.DecorationUpdaterView
+  _decorationsTree: {fileID: 428208118}
+  _snapToGridToggle: {fileID: 987679741}
+  _rotationSnappingToggle: {fileID: 39991406}
+  _rotationSensitivityInput: {fileID: 1586115284}
+--- !u!224 &859887341 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5575850793526680608, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+    type: 3}
+  m_PrefabInstance: {fileID: 204942655}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &862384716
 GameObject:
   m_ObjectHideFlags: 0
@@ -20924,7 +20815,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 860138627}
+      objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -23510,7 +23401,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 860138627}
+      objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -23763,6 +23654,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1062260097}
   m_CullTransparentMesh: 0
+--- !u!1 &1062265668
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1062265669}
+  - component: {fileID: 1062265670}
+  m_Layer: 0
+  m_Name: Height Updater View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1062265669
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062265668}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 825856258}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1062265670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1062265668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e906f98e2252414282ff0262425e9e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.Updaters.HeightUpdaterView
+  _selectAndDragToggle: {fileID: 1531541071}
+  _createRampsToggle: {fileID: 1816352455}
+  _levelAreaToggle: {fileID: 1238870642}
+  _paintTerrainToggle: {fileID: 1495335848}
+  _handlesSettingsTransform: {fileID: 1885648448}
+  _paintingSettingsTransform: {fileID: 1738410446}
+  _selectAndDragInstructionsTransform: {fileID: 94927686}
+  _createRampsInstructionsTransform: {fileID: 1542561253}
+  _levelAreaInstructionsTransform: {fileID: 327985570}
+  _paintTerrainInstructionsTransform: {fileID: 856319040}
+  _dragSensitivityInput: {fileID: 206237800}
+  _respectOriginalSlopesToggle: {fileID: 1116428532}
+  _targetHeightInput: {fileID: 393426739}
 --- !u!1 &1065670276
 GameObject:
   m_ObjectHideFlags: 0
@@ -25798,70 +25746,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1148867123}
   m_CullTransparentMesh: 0
---- !u!1 &1165461624
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1165461626}
-  - component: {fileID: 1165461625}
-  m_Layer: 0
-  m_Name: Height Updater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1165461625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1165461624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff7c0597312e6834fac9054fdca38981, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 1
-  selectAndDragToggle: {fileID: 1531541071}
-  createRampsToggle: {fileID: 1816352455}
-  levelAreaToggle: {fileID: 1238870642}
-  paintTerrainToggle: {fileID: 1495335848}
-  handlesSettingsTransform: {fileID: 1885648448}
-  paintingSettingsTransform: {fileID: 1738410446}
-  selectAndDragInstructionsTransform: {fileID: 94927686}
-  createRampsInstructionsTransform: {fileID: 1542561253}
-  levelAreaInstructionsTransform: {fileID: 327985570}
-  paintTerrainInstructionsTransform: {fileID: 856319040}
-  dragSensitivityInput: {fileID: 206237800}
-  respectOriginalSlopesToggle: {fileID: 1116428532}
-  targetHeightInput: {fileID: 393426739}
-  neutralColor: {r: 1, g: 1, b: 1, a: 1}
-  hoveredColor: {r: 0.7, g: 0.7, b: 0, a: 1}
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
-  selectedHoveredColor: {r: 0.7, g: 0.39, b: 0, a: 1}
-  activeColor: {r: 1, g: 0, b: 0, a: 1}
-  anchorColor: {r: 0, g: 1, b: 1, a: 1}
---- !u!4 &1165461626
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1165461624}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 825856258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1176459228
 GameObject:
   m_ObjectHideFlags: 0
@@ -26407,59 +26291,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1874177406}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1200891935
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1200891936}
-  - component: {fileID: 1200891937}
-  m_Layer: 0
-  m_Name: Ground Updater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1200891936
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1200891935}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 825856258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1200891937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1200891935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28edc207f5bf5644fa32bab4e5eee015, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 0
-  _groundsTree: {fileID: 16709742}
-  leftClickImage: {fileID: 1222685802}
-  leftClickText: {fileID: 2012910539}
-  rightClickImage: {fileID: 1303508364}
-  rightClickText: {fileID: 1442419014}
-  leftClickToggle: {fileID: 1935841307}
-  pencilToggle: {fileID: 1911880802}
-  fillToggle: {fileID: 598531205}
 --- !u!1 &1201764354
 GameObject:
   m_ObjectHideFlags: 0
@@ -27488,7 +27319,7 @@ PrefabInstance:
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
@@ -27499,7 +27330,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1165461625}
+      objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -27730,7 +27561,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 860138627}
+      objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -31456,20 +31287,6 @@ MonoBehaviour:
   autoInjectGameObjects: []
   _debugProperties: {fileID: 11400000, guid: 814971153ac067e47b61f466e9322aa6, type: 2}
   _cameraCoordinator: {fileID: 1890273981}
-  _updaters:
-  - {fileID: 475321930}
-  - {fileID: 1200891937}
-  - {fileID: 2018367164}
-  - {fileID: 1828645446}
-  - {fileID: 103496097}
-  - {fileID: 835980717}
-  - {fileID: 1604227846}
-  - {fileID: 205400789}
-  - {fileID: 650922445}
-  - {fileID: 860138627}
-  - {fileID: 1165461625}
-  - {fileID: 716036715}
-  - {fileID: 211449320}
   _bridgeTabSwapper: {fileID: 1731037936}
 --- !u!1001 &1417597095
 PrefabInstance:
@@ -31599,7 +31416,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 860138627}
+      objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: ba1c0f31dc9ff4a688bde045f989446a,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -33584,7 +33401,7 @@ PrefabInstance:
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
@@ -33595,7 +33412,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1165461625}
+      objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -33971,6 +33788,59 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1113546215}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1520696972
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1520696973}
+  - component: {fileID: 1520696974}
+  m_Layer: 0
+  m_Name: Ground Updater View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1520696973
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520696972}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 825856258}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1520696974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520696972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfff02f4bd68bff4ca5b430bac2867e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.Updaters.GroundUpdaterView
+  _groundsTree: {fileID: 16709742}
+  _leftClickImage: {fileID: 1222685802}
+  _leftClickText: {fileID: 2012910539}
+  _rightClickImage: {fileID: 1303508364}
+  _rightClickText: {fileID: 1442419014}
+  _leftClickToggle: {fileID: 1935841307}
+  _pencilToggle: {fileID: 1911880802}
+  _fillToggle: {fileID: 598531205}
+  _editCornersToggle: {fileID: 161642278}
 --- !u!1001 &1522350738
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34098,7 +33968,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 860138627}
+      objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -35290,7 +35160,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1200891937}
+      objectReference: {fileID: 0}
     - target: {fileID: 1984117482146686279, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -35701,7 +35571,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 860138627}
+      objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -36805,59 +36675,6 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: 1
   m_LayoutPriority: 1
---- !u!1 &1604227844
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1604227845}
-  - component: {fileID: 1604227846}
-  m_Layer: 0
-  m_Name: Decoration Updater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1604227845
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1604227844}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 825856258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1604227846
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1604227844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5de956b52e0008e49aaa1a53851c9c86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 6
-  _decorationsTree: {fileID: 428208118}
-  snapToGridToggle: {fileID: 987679741}
-  rotationSnappingToggle: {fileID: 39991406}
-  rotationSensitivityInput: {fileID: 1586115284}
-  allowedGhostColor: {r: 0, g: 1, b: 0, a: 0.5882353}
-  disabledGhostColor: {r: 1, g: 0, b: 0, a: 0.5882353}
-  minimumPlacementGap: 0.25
-  cornerSnapDistance: 0.25
 --- !u!1 &1604953536
 GameObject:
   m_ObjectHideFlags: 0
@@ -37348,6 +37165,7 @@ Transform:
   m_Children:
   - {fileID: 615544190}
   - {fileID: 769762464}
+  - {fileID: 825856258}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1657024486
@@ -37978,7 +37796,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 860138627}
+      objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -41084,51 +40902,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Features.UIToggleFeatureStateToggler
   _feature: 1
   _toggle: {fileID: 1827277264}
---- !u!1 &1828645444
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1828645445}
-  - component: {fileID: 1828645446}
-  m_Layer: 0
-  m_Name: Border Updater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1828645445
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1828645444}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 825856258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1828645446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1828645444}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 276c808684646de41bb719ef90cc68c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 4
 --- !u!1001 &1829072411
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45129,7 +44902,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 860138627}
+      objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -45282,59 +45055,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &2018367162
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2018367163}
-  - component: {fileID: 2018367164}
-  m_Layer: 0
-  m_Name: Tools Updater
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &2018367163
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2018367162}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 825856258}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2018367164
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2018367162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0e7f648ed9a447391f734380541457b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetTab: 12
-  calculateMaterialsToggle: {fileID: 2018141785}
-  mapWarningsToggle: {fileID: 600140280}
-  calculateMaterialsPanelTransform: {fileID: 218086806}
-  mapWarningsPanelTransform: {fileID: 1493980051}
-  warningsList: {fileID: 406117968}
-  buildingAllLevelsMaterialsToggle: {fileID: 895665957}
-  buildingCurrentLevelMaterialsToggle: {fileID: 124614395}
-  roomCurrentLevelMaterialsToggle: {fileID: 732479351}
 --- !u!1001 &2019280476
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45462,7 +45182,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 860138627}
+      objectReference: {fileID: 0}
     - target: {fileID: 4004065367148079113, guid: 60c0b515a8eb8eb44b12c1ceae7480b8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -45861,6 +45581,51 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &2040388096
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2040388097}
+  - component: {fileID: 2040388098}
+  m_Layer: 0
+  m_Name: Roof Updater View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2040388097
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2040388096}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 825856258}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2040388098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2040388096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52af74d6ee973934ab3357a9813ec28e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.Updaters.RoofUpdaterView
+  _roofsList: {fileID: 4875529235959106886}
 --- !u!1 &2045880312
 GameObject:
   m_ObjectHideFlags: 0
@@ -47697,6 +47462,51 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: 100000
   m_LayoutPriority: 1
+--- !u!1 &2141975705
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2141975706}
+  - component: {fileID: 2141975707}
+  m_Layer: 0
+  m_Name: Cave Updater View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2141975706
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141975705}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 825856258}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2141975707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141975705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61faa850d7a0bc841bd83cd71fd885c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.Updaters.CaveUpdaterView
+  _cavesTree: {fileID: 1489062526}
 --- !u!1 &2145425128
 GameObject:
   m_ObjectHideFlags: 0
@@ -50264,5 +50074,4 @@ SceneRoots:
   - {fileID: 1412727820}
   - {fileID: 225585327}
   - {fileID: 1890273980}
-  - {fileID: 825856258}
   - {fileID: 1646570543}
