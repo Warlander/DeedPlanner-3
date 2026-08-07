@@ -34,29 +34,33 @@ jobs:
       - name: Build (IL2CPP)
         shell: pwsh
         run: |
-          $licenses = "$env:RUNNER_TEMP\unity-licenses"
-          New-Item -ItemType Directory -Force $licenses | Out-Null
-          [IO.File]::WriteAllText("$licenses\UnityEntitlementLicense.xml", '${{ secrets.UNITY_ENTITLEMENT_LICENSE }}')
+          $unityConfig = "$env:RUNNER_TEMP\unity-config"
+          New-Item -ItemType Directory -Force $unityConfig | Out-Null
 
           # IL2CPP needs MSVC + Windows SDK, which the container borrows from the
           # runner's preinstalled Visual Studio (same approach as game-ci/unity-builder).
           New-Item -ItemType Directory -Force C:\regkeys | Out-Null
           reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\Microsoft SDKs\Windows\v10.0" C:\regkeys\winsdk.reg /y
 
+          $licenseDir = "C:\Users\ContainerAdministrator\AppData\Local\Unity"
           docker run --rm `
             --workdir c:/workspace `
             --env GITHUB_WORKSPACE=c:/workspace `
             --env BEE_CACHE_DIRECTORY=c:/workspace/Library/bee_cache `
+            --env UNITY_EMAIL --env UNITY_PASSWORD `
             --volume "${env:GITHUB_WORKSPACE}:c:\workspace" `
-            --volume "${licenses}:C:\Users\ContainerAdministrator\AppData\Local\Unity\licenses" `
+            --volume "${unityConfig}:${licenseDir}" `
             --volume "C:\regkeys:C:\regkeys" `
             --volume "C:\Program Files\Microsoft Visual Studio:C:\Program Files\Microsoft Visual Studio" `
-            --volume "C:\Program Files (x86)\Microsoft Visual Studio:C:\Program Files (x86)\Microsoft Visual Studio" `
+            --volume "C:\Program Files (x86)\Microsoft Visual Studio:C:\Program Files\Microsoft Visual Studio" `
             --volume "C:\Program Files (x86)\Windows Kits:C:\Program Files (x86)\Windows Kits" `
             --volume "C:\ProgramData\Microsoft\VisualStudio:C:\ProgramData\Microsoft\VisualStudio" `
             unityci/editor:windows-6000.3.20f1-windows-il2cpp-3.2.2 `
-            powershell -NoProfile -Command "& 'C:/UnityEditor/6000.3.20f1/Editor/Unity.exe' -quit -batchmode -nographics -silent-crashes -logfile - -projectPath c:/workspace -executeMethod Warlander.Deedplanner.Editor.BuildSystem.BuildWindows64 | Out-Host; exit `$LASTEXITCODE"
+            powershell -NoProfile -Command "& 'C:/UnityEditor/6000.3.20f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe' --activate-all --include-personal --username `$env:UNITY_EMAIL --password `$env:UNITY_PASSWORD; if (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }; & 'C:/UnityEditor/6000.3.20f1/Editor/Unity.exe' -quit -batchmode -nographics -silent-crashes -logfile - -projectPath c:/workspace -executeMethod Warlander.Deedplanner.Editor.BuildSystem.BuildWindows64 | Out-Host; exit `$LASTEXITCODE"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
 
       - name: Verify build output
         shell: pwsh
@@ -90,14 +94,23 @@ jobs:
 
       - name: Build (IL2CPP)
         run: |
-          mkdir -p "$RUNNER_TEMP/unity-licenses"
-          printf '%s' "${{ secrets.UNITY_ENTITLEMENT_LICENSE }}" > "$RUNNER_TEMP/unity-licenses/UnityEntitlementLicense.xml"
+          mkdir -p "$RUNNER_TEMP/unity-config"
           docker run --rm \
+            -e UNITY_EMAIL -e UNITY_PASSWORD \
             -v "$GITHUB_WORKSPACE:/workspace" \
-            -v "$RUNNER_TEMP/unity-licenses:/root/.config/unity3d/Unity/licenses" \
+            -v "$RUNNER_TEMP/unity-config:/root/.config/unity3d" \
             unityci/editor:ubuntu-6000.3.20f1-linux-il2cpp-3.2.2 \
-            unity-editor -quit -nographics -logFile /dev/stdout -projectPath /workspace \
-              -executeMethod "Warlander.Deedplanner.Editor.BuildSystem.BuildLinux"
+            bash -lc '
+              set -e
+              /opt/unity/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client \
+                --activate-all --include-personal \
+                --username "$UNITY_EMAIL" --password "$UNITY_PASSWORD"
+              unity-editor -quit -nographics -logFile /dev/stdout -projectPath /workspace \
+                -executeMethod "Warlander.Deedplanner.Editor.BuildSystem.BuildLinux"
+            '
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
 
       - name: Restore workspace ownership
         run: sudo chown -R "$(id -u):$(id -g)" .
