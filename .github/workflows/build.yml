@@ -44,6 +44,7 @@ jobs:
 
           $licenseDir = "C:\Users\ContainerAdministrator\AppData\Local\Unity"
           docker run --rm `
+            --memory 14g `
             --workdir c:/workspace `
             --env GITHUB_WORKSPACE=c:/workspace `
             --env BEE_CACHE_DIRECTORY=c:/workspace/Library/bee_cache `
