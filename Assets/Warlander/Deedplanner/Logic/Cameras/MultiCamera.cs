@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Graphics.Outline;
@@ -308,6 +309,16 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     {
                         tooltipBuild.Append(heightmapHandle.ToRichString(_mapHandler.Map, Level));
                     }
+
+                    Decoration hoveredDecoration = FindClosestDecorationToCursor(ray, mask);
+                    if (hoveredDecoration != null)
+                    {
+                        if (tooltipBuild.Length > 0)
+                        {
+                            tooltipBuild.AppendLine();
+                        }
+                        tooltipBuild.Append(hoveredDecoration.Data.Name);
+                    }
                 }
 
                 string tooltip = tooltipBuild.ToString();
@@ -317,6 +328,48 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 }
                 
             }
+        }
+
+        private Decoration FindClosestDecorationToCursor(Ray ray, int mask)
+        {
+            if ((mask & LayerMasks.DecorationMask) == 0)
+            {
+                return null;
+            }
+
+            Map map = _mapHandler.Map;
+            int tileX = Mathf.FloorToInt(CurrentRaycast.point.x / 4f);
+            int tileY = Mathf.FloorToInt(CurrentRaycast.point.z / 4f);
+            Tile centerTile = map[tileX, tileY];
+            if (centerTile == null)
+            {
+                return null;
+            }
+
+            Decoration closestDecoration = null;
+            float closestDistance = float.MaxValue;
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    Tile tile = map.GetRelativeTile(centerTile, x, y);
+                    if (tile == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (Decoration decoration in tile.GetDecorations())
+                    {
+                        if (decoration.WorldBounds.IntersectRay(ray, out float distance) && distance < closestDistance)
+                        {
+                            closestDecoration = decoration;
+                            closestDistance = distance;
+                        }
+                    }
+                }
+            }
+
+            return closestDecoration;
         }
 
         public Ray CreateMouseRay()
