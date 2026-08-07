@@ -1,0 +1,115 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-windows:
+    # windows-2022 pinned deliberately: game-ci Windows images are ltsc2022-based,
+    # and Windows containers require host/image version match (game-ci#766).
+    runs-on: windows-2022
+    timeout-minutes: 240
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Cache Library
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: Library
+          key: library-windows-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}
+          restore-keys: library-windows-
+
+      - name: Build (IL2CPP)
+        shell: pwsh
+        run: |
+          $licenses = "$env:RUNNER_TEMP\unity-licenses"
+          New-Item -ItemType Directory -Force $licenses | Out-Null
+          [IO.File]::WriteAllText("$licenses\UnityEntitlementLicense.xml", '${{ secrets.UNITY_ENTITLEMENT_LICENSE }}')
+
+          # IL2CPP needs MSVC + Windows SDK, which the container borrows from the
+          # runner's preinstalled Visual Studio (same approach as game-ci/unity-builder).
+          New-Item -ItemType Directory -Force C:\regkeys | Out-Null
+          reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\Microsoft SDKs\Windows\v10.0" C:\regkeys\winsdk.reg /y
+
+          docker run --rm `
+            --workdir c:/workspace `
+            --env GITHUB_WORKSPACE=c:/workspace `
+            --env BEE_CACHE_DIRECTORY=c:/workspace/Library/bee_cache `
+            --volume "${env:GITHUB_WORKSPACE}:c:\workspace" `
+            --volume "${licenses}:C:\Users\ContainerAdministrator\AppData\Local\Unity\licenses" `
+            --volume "C:\regkeys:C:\regkeys" `
+            --volume "C:\Program Files\Microsoft Visual Studio:C:\Program Files\Microsoft Visual Studio" `
+            --volume "C:\Program Files (x86)\Microsoft Visual Studio:C:\Program Files (x86)\Microsoft Visual Studio" `
+            --volume "C:\Program Files (x86)\Windows Kits:C:\Program Files (x86)\Windows Kits" `
+            --volume "C:\ProgramData\Microsoft\VisualStudio:C:\ProgramData\Microsoft\VisualStudio" `
+            unityci/editor:windows-6000.3.20f1-windows-il2cpp-3.2.2 `
+            powershell -NoProfile -Command "& 'C:/UnityEditor/6000.3.20f1/Editor/Unity.exe' -quit -batchmode -nographics -silent-crashes -logfile - -projectPath c:/workspace -executeMethod Warlander.Deedplanner.Editor.BuildSystem.BuildWindows64 | Out-Host; exit `$LASTEXITCODE"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Verify build output
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "Build/DeedPlanner Windows/DeedPlanner.exe")) { exit 1 }
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: DeedPlanner Windows
+          path: |
+            Build/
+            !Build/*BurstDebugInformation*/
+          if-no-files-found: error
+
+  build-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Cache Library
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: Library
+          key: library-linux-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}
+          restore-keys: library-linux-
+
+      - name: Build (IL2CPP)
+        run: |
+          mkdir -p "$RUNNER_TEMP/unity-licenses"
+          printf '%s' "${{ secrets.UNITY_ENTITLEMENT_LICENSE }}" > "$RUNNER_TEMP/unity-licenses/UnityEntitlementLicense.xml"
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -v "$RUNNER_TEMP/unity-licenses:/root/.config/unity3d/Unity/licenses" \
+            unityci/editor:ubuntu-6000.3.20f1-linux-il2cpp-3.2.2 \
+            unity-editor -quit -nographics -logFile /dev/stdout -projectPath /workspace \
+              -executeMethod "Warlander.Deedplanner.Editor.BuildSystem.BuildLinux"
+
+      - name: Restore workspace ownership
+        run: sudo chown -R "$(id -u):$(id -g)" .
+
+      - name: Verify build output
+        run: test -f "Build/DeedPlanner Linux/DeedPlanner.x86_64"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: DeedPlanner Linux
+          path: |
+            Build/
+            !Build/*BurstDebugInformation*/
+          if-no-files-found: error
