@@ -57,7 +57,7 @@ jobs:
             --volume "C:/Program Files (x86)/Windows Kits:C:/Program Files (x86)/Windows Kits" `
             --volume "C:/ProgramData/Microsoft/VisualStudio:C:/ProgramData/Microsoft/VisualStudio" `
             unityci/editor:windows-6000.3.20f1-windows-il2cpp-3.2.2 `
-            powershell -NoProfile -Command "& 'c:/workspace/.github/workflows/install-llvmpipe.ps1' -EditorPath 'C:/UnityEditor/6000.3.20f1/Editor'; if (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }; & 'C:/UnityEditor/6000.3.20f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe' --activate-all --include-personal --username `$env:UNITY_EMAIL --password `$env:UNITY_PASSWORD; if (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }; & 'C:/UnityEditor/6000.3.20f1/Editor/Unity.exe' -force-opengl -quit -batchmode -nographics -silent-crashes -logfile - -projectPath c:/workspace -executeMethod Warlander.Deedplanner.Editor.BuildSystem.BuildWindows64 | Out-Host; exit `$LASTEXITCODE"
+            powershell -NoProfile -Command "& 'c:/workspace/.github/workflows/install-llvmpipe.ps1' -EditorPath 'C:/UnityEditor/6000.3.20f1/Editor'; if (-not `$?) { exit 1 }; & 'C:/UnityEditor/6000.3.20f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe' --activate-all --include-personal --username `$env:UNITY_EMAIL --password `$env:UNITY_PASSWORD; if (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }; & 'C:/UnityEditor/6000.3.20f1/Editor/Unity.exe' -force-opengl -quit -batchmode -nographics -silent-crashes -logfile - -projectPath c:/workspace -executeMethod Warlander.Deedplanner.Editor.BuildSystem.BuildWindows64 | Out-Host; exit `$LASTEXITCODE"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
