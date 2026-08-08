@@ -250,6 +250,8 @@ jobs:
           mkdir -p steam/StandaloneWindows64 steam/StandaloneLinux64
           cp -r "dl/windows/DeedPlanner Windows/." steam/StandaloneWindows64/
           cp -r "dl/linux/DeedPlanner Linux/." steam/StandaloneLinux64/
+          # steam_appid.txt is for out-of-Steam launches; Valve warns against shipping it in depots
+          rm -f steam/StandaloneWindows64/steam_appid.txt steam/StandaloneLinux64/steam_appid.txt
           ls steam/StandaloneWindows64 steam/StandaloneLinux64
 
       - name: Deploy to Steam
