@@ -131,6 +131,12 @@ namespace Warlander.Deedplanner.Editor
         [MenuItem("Build/WebGL", false, 100)]
         public static bool BuildWeb()
         {
+            // GitHub Pages serves compressed builds without Content-Encoding headers,
+            // so the loader cannot boot them. Ship uncompressed instead.
+            PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
+            PlayerSettings.WebGL.decompressionFallback = false;
+            PlayerSettings.WebGL.template = "PROJECT:DeedPlanner";
+
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.WebGL;
             buildOptions.target = BuildTarget.WebGL;

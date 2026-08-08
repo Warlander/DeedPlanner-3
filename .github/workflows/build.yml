@@ -129,3 +129,59 @@ jobs:
             !Build/**/*BurstDebugInformation*
             !Build/**/*BackUpThisFolder*
           if-no-files-found: error
+
+  build-webgl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Cache Library
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: Library
+          key: library-webgl-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}
+          restore-keys: library-webgl-
+
+      - name: Build (WebGL)
+        run: |
+          mkdir -p "$RUNNER_TEMP/unity-config"
+          docker run --rm \
+            -e UNITY_EMAIL -e UNITY_PASSWORD \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -v "$RUNNER_TEMP/unity-config:/root/.config/unity3d" \
+            unityci/editor:ubuntu-6000.3.20f1-webgl-3.2.2 \
+            bash -lc '
+              set -e
+              /opt/unity/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client \
+                --activate-all --include-personal \
+                --username "$UNITY_EMAIL" --password "$UNITY_PASSWORD"
+              unity-editor -quit -nographics -logFile /dev/stdout -projectPath /workspace \
+                -executeMethod "Warlander.Deedplanner.Editor.BuildSystem.BuildWeb"
+            '
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Restore workspace ownership
+        run: sudo chown -R "$(id -u):$(id -g)" .
+
+      - name: Verify build output
+        run: |
+          test -f "Build/DeedPlanner 3 WebGL/index.html"
+          compgen -G "Build/DeedPlanner 3 WebGL/Build/*.wasm" > /dev/null
+          compgen -G "Build/DeedPlanner 3 WebGL/Build/*.data" > /dev/null
+          if compgen -G "Build/DeedPlanner 3 WebGL/Build/*.gz" > /dev/null; then
+            echo "Compressed build files present - will not boot on GitHub Pages"
+            exit 1
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: DeedPlanner WebGL
+          path: Build/DeedPlanner 3 WebGL/
+          if-no-files-found: error

@@ -1,0 +1,104 @@
+name: Deploy Web
+
+# Manual trigger only by design: no push/tag/workflow_run triggers, so routine
+# builds can never deploy. Deploying requires dispatching this workflow by hand,
+# typing the confirmation string, and approving the web-deploy environment gate.
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Build workflow run ID to deploy (empty = latest successful Build run)'
+        required: false
+        type: string
+      confirm:
+        description: 'Type "deploy" to confirm'
+        required: true
+        type: string
+      dry_run:
+        description: 'Dry run: full pipeline except the final push'
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: web-deploy
+    steps:
+      - name: Check confirmation
+        run: |
+          if [ "${{ inputs.confirm }}" != "deploy" ]; then
+            echo "Aborting: confirmation input was not \"deploy\""
+            exit 1
+          fi
+
+      - name: Resolve build run
+        id: resolve
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          RUN_ID="${{ inputs.run_id }}"
+          if [ -z "$RUN_ID" ]; then
+            RUN_ID=$(gh run list --workflow build.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId')
+          fi
+          if [ -z "$RUN_ID" ]; then
+            echo "No successful Build run found"
+            exit 1
+          fi
+          echo "Deploying artifact from run $RUN_ID"
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Download WebGL artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: gh run download "${{ steps.resolve.outputs.run_id }}" --name "DeedPlanner WebGL" --dir web
+
+      - name: Preflight validation
+        run: |
+          test -f web/index.html
+          compgen -G "web/Build/*.wasm" > /dev/null
+          compgen -G "web/Build/*.data" > /dev/null
+          compgen -G "web/Build/*.loader.js" > /dev/null
+          if compgen -G "web/Build/*.gz" > /dev/null || compgen -G "web/Build/*.br" > /dev/null; then
+            echo "Compressed build files present - will not boot on GitHub Pages"
+            exit 1
+          fi
+
+      - name: Prepare deploy commit
+        id: prepare
+        env:
+          WEB_TOKEN: ${{ secrets.WEB_DEPLOY_TOKEN }}
+        run: |
+          git clone "https://x-access-token:${WEB_TOKEN}@github.com/Warlander/DeedPlanner-3-web.git" site
+          cd site
+          rm -rf Build TemplateData StreamingAssets index.html
+          cp -r ../web/. .
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to deploy"
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Deploy from build run ${{ steps.resolve.outputs.run_id }}"
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Dry-run summary (no push)
+        if: ${{ inputs.dry_run && steps.prepare.outputs.committed == 'true' }}
+        working-directory: site
+        run: |
+          echo "DRY RUN - nothing pushed. Would push:"
+          git log --oneline -1
+          git show --stat --oneline HEAD | head -50
+
+      - name: Push to DeedPlanner-3-web
+        if: ${{ !inputs.dry_run && steps.prepare.outputs.committed == 'true' }}
+        working-directory: site
+        run: git push
