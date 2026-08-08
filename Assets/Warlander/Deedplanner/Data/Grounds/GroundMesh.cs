@@ -125,6 +125,9 @@ namespace Warlander.Deedplanner.Data.Grounds
             RenderMesh.uv = uv;
             
             uv2 = InitializeRenderUV2(Width, Height);
+            // assign immediately - adding the UV2 channel after the mesh's first upload
+            // breaks TEXCOORD1 reads on WebGL (shader samples slice 0 forever)
+            RenderMesh.uv2 = uv2;
             
             int[] triangles = InitializeRenderTriangles(Width, Height);
             RenderMesh.triangles = triangles;
