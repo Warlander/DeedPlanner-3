@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using R3;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Warlander.Deedplanner.Graphics;
@@ -630,23 +629,28 @@ namespace Warlander.Deedplanner.Data.Grounds
             {
                 return;
             }
-            
-            data.Tex3d.LoadOrGetTextureAsync().ToObservable().Subscribe(loadedTexture =>
+
+            UpdateUV2Async(data, uvIndex, tileCoords);
+        }
+
+        // plain async/await instead of R3 ToObservable().Subscribe - on WebGL the
+        // observable never emits for already-completed tasks, killing ground repaints
+        private async void UpdateUV2Async(GroundData data, int uvIndex, Vector2Int tileCoords)
+        {
+            Texture2D loadedTexture = await data.Tex3d.LoadOrGetTextureAsync();
+            if (!loadedTexture)
             {
-                if (!loadedTexture)
-                {
-                    return;
-                }
-            
-                int texIndex = groundTexturesArray.PutOrGetTexture(data.Tex3d, loadedTexture);
-                Debug.Log($"Ground UV2 update: tile ({tileCoords.x}, {tileCoords.y}), ground {data.Name}, texIndex {texIndex}");
-                Vector2 texVector = new Vector2(texIndex, 0);
-                uv2[uvIndex] = texVector;
-                uv2[uvIndex + 1] = texVector;
-                uv2[uvIndex + 2] = texVector;
-            
-                needsUvUpdate = true;
-            });
+                return;
+            }
+
+            int texIndex = groundTexturesArray.PutOrGetTexture(data.Tex3d, loadedTexture);
+            Debug.Log($"Ground UV2 update: tile ({tileCoords.x}, {tileCoords.y}), ground {data.Name}, texIndex {texIndex}");
+            Vector2 texVector = new Vector2(texIndex, 0);
+            uv2[uvIndex] = texVector;
+            uv2[uvIndex + 1] = texVector;
+            uv2[uvIndex + 2] = texVector;
+
+            needsUvUpdate = true;
         }
     }
 }

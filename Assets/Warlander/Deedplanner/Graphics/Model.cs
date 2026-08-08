@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using R3;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -218,17 +217,19 @@ namespace Warlander.Deedplanner.Graphics
             {
                 loadingOriginalModel = true;
                 string fullLocation = Application.streamingAssetsPath + "/" + location;
-                _wurmModelLoader.LoadModelAsync(fullLocation, Scale).ToObservable()
-                    .Subscribe(model =>
-                    {
-                        OnMasterModelLoaded(model);
-                        onDone();
-                    });
+                LoadMasterModelAsync(fullLocation, onDone);
             }
             else
             {
                 onDone();
             }
+        }
+
+        private async void LoadMasterModelAsync(string fullLocation, Action onDone)
+        {
+            GameObject model = await _wurmModelLoader.LoadModelAsync(fullLocation, Scale);
+            OnMasterModelLoaded(model);
+            onDone();
         }
 
         private void OnMasterModelLoaded(GameObject masterModel)
@@ -259,7 +260,7 @@ namespace Warlander.Deedplanner.Graphics
                     Material newMaterial = new Material(renderer.sharedMaterial);
                     renderer.sharedMaterial = newMaterial;
 
-                    texture.LoadOrGetTextureAsync().ToObservable().Subscribe(loadedTexture => newMaterial.SetTexture(ShaderPropertyIds.BaseMap, loadedTexture));
+                    ApplyTextureOverrideAsync(texture, newMaterial);
                 }
             }
             originalModel.transform.SetParent(modelRoot.transform);
@@ -271,6 +272,12 @@ namespace Warlander.Deedplanner.Graphics
                 CreateModelInstance(modelRequest.ModelProperties, modelRequest.Callback);
             }
             modelRequests.Clear();
+        }
+
+        private static async void ApplyTextureOverrideAsync(TextureReference texture, Material material)
+        {
+            Texture2D loadedTexture = await texture.LoadOrGetTextureAsync();
+            material.SetTexture(ShaderPropertyIds.BaseMap, loadedTexture);
         }
 
         /// <summary>
