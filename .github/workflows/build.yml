@@ -246,9 +246,11 @@ jobs:
 
       - name: Stage depot payload
         run: |
+          # Artifacts contain Build/ contents directly (upload-artifact strips the common ancestor)
           mkdir -p steam/StandaloneWindows64 steam/StandaloneLinux64
-          cp -r "dl/windows/Build/DeedPlanner Windows/." steam/StandaloneWindows64/
-          cp -r "dl/linux/Build/DeedPlanner Linux/." steam/StandaloneLinux64/
+          cp -r "dl/windows/DeedPlanner Windows/." steam/StandaloneWindows64/
+          cp -r "dl/linux/DeedPlanner Linux/." steam/StandaloneLinux64/
+          ls steam/StandaloneWindows64 steam/StandaloneLinux64
 
       - name: Deploy to Steam
         uses: game-ci/steam-deploy@8bd9baca6407f9abd210bd1eef3c45f56e12d8d9 # v3
