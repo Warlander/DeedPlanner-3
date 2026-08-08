@@ -40,6 +40,17 @@ jobs:
           key: library-windows-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}
           restore-keys: library-windows-
 
+      - name: Ensure Docker daemon is running
+        shell: pwsh
+        run: |
+          # Runner image occasionally boots with the docker service stopped (seen 2026-08-08,
+          # image win22/20260802.262 - "failed to connect to the docker API at npipe").
+          $svc = Get-Service docker -ErrorAction SilentlyContinue
+          if (-not $svc) { Get-Service | Where-Object Name -match 'docker|containerd'; exit 1 }
+          if ($svc.Status -ne 'Running') { Start-Service docker }
+          docker version | Out-Host
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
       - name: Build (IL2CPP)
         shell: pwsh
         run: |
