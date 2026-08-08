@@ -45,11 +45,12 @@
         updateBannerVisibility();
       }
 
+      var buildUrl = "Build";
       var config = {
         arguments: [],
-        dataUrl: "{{{ DATA_FILENAME }}}",
-        frameworkUrl: "{{{ FRAMEWORK_FILENAME }}}",
-        codeUrl: "{{{ CODE_FILENAME }}}",
+        dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}",
+        frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}",
+        codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "{{{ COMPANY_NAME }}}",
         productName: "{{{ PRODUCT_NAME }}}",
@@ -67,7 +68,7 @@
       document.querySelector("#unity-loading-bar").style.display = "block";
 
       var script = document.createElement("script");
-      script.src = "{{{ LOADER_FILENAME }}}";
+      script.src = buildUrl + "/{{{ LOADER_FILENAME }}}";
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";

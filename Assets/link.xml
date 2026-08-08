@@ -1,0 +1,7 @@
+<linker>
+  <!-- VContainer instantiates registered types via reflection; without this the
+       IL2CPP linker strips their constructors and the container fails at boot
+       ("Type does not found injectable constructor"). -->
+  <assembly fullname="Assembly-CSharp" preserve="all"/>
+  <assembly fullname="Warlogic.Featurestates" preserve="all"/>
+</linker>
