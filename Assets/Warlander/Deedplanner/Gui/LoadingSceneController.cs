@@ -50,6 +50,14 @@ namespace Warlander.Deedplanner.Gui
 
         private void OnLoadingDone()
         {
+            // can fire twice (Completed check in Start + LoadingComplete event) depending on
+            // data loading timing - a second call would load MainScene additively again,
+            // spawning a duplicate untracked Map (zombie ground plane on WebGL)
+            if (_sceneLoadingOperation != null)
+            {
+                return;
+            }
+
             _loadingBar.value = ProgressAfterLoadingData;
             _loadingText.text = "Launching";
 
