@@ -83,7 +83,7 @@ Injection style:
 - **Database** (`Data/Database.cs`) — static dictionaries for all game asset metadata (ground/floor/wall/roof/decoration types)
 
 ### Tab-Based Updater Pattern
-Each editing mode maps to a UI tab and a corresponding `*Updater` MonoBehaviour in `Assets/Warlander/Deedplanner/Updaters/`. All updaters extend `AbstractUpdater` and activate/deactivate based on `TabContext.TabChanged` events.
+Each editing mode maps to a UI tab and a corresponding `*Updater` class in `Assets/Warlander/Deedplanner/Updaters/`. Updaters are plain C# classes implementing `IUpdater` (`TargetTab`, `Initialize`, `Enable`, `Disable`, `Tick`), constructor-injected, and registered in the VContainer scope. `UpdaterCoordinator` (`Logic/UpdaterCoordinator.cs`) receives them as `IReadOnlyList<IUpdater>`, initializes all, and on `TabContext.TabChanged` disables the active updater, enables the one whose `TargetTab` matches, and ticks only the active one. Views follow MVP: each updater holds an `I*UpdaterView` interface (implementations in `Gui/Updaters/`).
 
 ### Camera System
 `CameraCoordinator` in `Logic/Cameras/` manages four modes: Perspective (FPP), Wurmian, Isometric (ISO), and Top. Each camera renders a specific level via independent camera controllers implementing `ICameraController`.
