@@ -107,7 +107,9 @@ jobs:
               /opt/unity/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client \
                 --activate-all --include-personal \
                 --username "$UNITY_EMAIL" --password "$UNITY_PASSWORD"
-              unity-editor -quit -nographics -logFile /dev/stdout -projectPath /workspace \
+              # xvfb + swrast (both in image) give the editor a real GL device; without it
+              # headless builds bake a degraded shader variant set (missing shadows/lighting).
+              xvfb-run -a unity-editor -quit -batchmode -logFile /dev/stdout -projectPath /workspace \
                 -executeMethod "Warlander.Deedplanner.Editor.BuildSystem.BuildLinux"
             '
         env:
@@ -159,7 +161,9 @@ jobs:
               /opt/unity/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client \
                 --activate-all --include-personal \
                 --username "$UNITY_EMAIL" --password "$UNITY_PASSWORD"
-              unity-editor -quit -nographics -logFile /dev/stdout -projectPath /workspace \
+              # xvfb + swrast (both in image) give the editor a real GL device; without it
+              # headless builds bake a degraded shader variant set (missing shadows/lighting).
+              xvfb-run -a unity-editor -quit -batchmode -logFile /dev/stdout -projectPath /workspace \
                 -executeMethod "Warlander.Deedplanner.Editor.BuildSystem.BuildWeb"
             '
         env:
