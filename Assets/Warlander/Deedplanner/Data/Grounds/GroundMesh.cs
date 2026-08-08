@@ -639,6 +639,7 @@ namespace Warlander.Deedplanner.Data.Grounds
                 }
             
                 int texIndex = groundTexturesArray.PutOrGetTexture(data.Tex3d, loadedTexture);
+                Debug.Log($"Ground UV2 update: tile ({tileCoords.x}, {tileCoords.y}), ground {data.Name}, texIndex {texIndex}");
                 Vector2 texVector = new Vector2(texIndex, 0);
                 uv2[uvIndex] = texVector;
                 uv2[uvIndex + 1] = texVector;

@@ -116,7 +116,7 @@ namespace Warlander.Render
             {
                 var pixels =  texture.GetPixels();
                 TextureArray.SetPixels(pixels, index);
-                TextureArray.Apply(true);
+                TextureArray.Apply(false);
             }
         }
         
