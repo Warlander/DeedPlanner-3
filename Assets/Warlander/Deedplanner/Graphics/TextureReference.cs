@@ -10,6 +10,7 @@ namespace Warlander.Deedplanner.Graphics
 
         private Texture2D texture;
         private Sprite sprite;
+        private Task<Texture2D> textureLoadTask;
 
         public string Location { get; }
 
@@ -18,20 +19,28 @@ namespace Warlander.Deedplanner.Graphics
             _textureLoader = textureLoader;
             Location = location;
         }
-        
-        public async Task<Texture2D> LoadOrGetTextureAsync()
+
+        public Task<Texture2D> LoadOrGetTextureAsync()
         {
             if (texture)
             {
-                return texture;
+                return Task.FromResult(texture);
             }
 
-            string location = Path.IsPathRooted(Location) 
-                ? Location 
+            // concurrent callers must share the in-flight load - on WebGL thousands of
+            // duplicate requests exhaust the browser socket pool (ERR_INSUFFICIENT_RESOURCES)
+            textureLoadTask ??= LoadTextureInternalAsync();
+            return textureLoadTask;
+        }
+
+        private async Task<Texture2D> LoadTextureInternalAsync()
+        {
+            string location = Path.IsPathRooted(Location)
+                ? Location
                 : Application.streamingAssetsPath + "/" + Location;
 
             texture = await _textureLoader.LoadTextureAsync(location, false);
-            
+
             if (texture)
             {
                 texture.name = Location;
