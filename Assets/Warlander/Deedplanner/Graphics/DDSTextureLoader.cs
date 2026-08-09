@@ -73,7 +73,11 @@ namespace Warlander.Deedplanner.Graphics
             }
             finalTexture.SetPixels32(pixelBuffer);
             finalTexture.Apply();
-            finalTexture.Compress(true);
+            // WebGL DXT re-encode loses the alpha channel (foliage cutout breaks) - skip it
+            if (Application.platform != RuntimePlatform.WebGLPlayer)
+            {
+                finalTexture.Compress(true);
+            }
 
             return finalTexture;
         }
