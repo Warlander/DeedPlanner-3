@@ -89,10 +89,8 @@ namespace Warlander.Deedplanner.Data.Grounds
             {
                 if (newData != null)
                 {
-                    UnityEngine.Debug.Log($"GroundDataChangeCommand.Execute: {oldData?.Name} -> {newData.Name}, Map.Ground {(ground.Tile.Map.Ground ? "ok" : "NULL")}");
                     ground.data = newData;
                     ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection);
-                    UnityEngine.Debug.Log("GroundDataChangeCommand.Execute done");
                 }
             }
 

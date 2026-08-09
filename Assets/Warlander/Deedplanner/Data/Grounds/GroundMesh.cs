@@ -559,7 +559,6 @@ namespace Warlander.Deedplanner.Data.Grounds
 
             dataArray[x, y] = data;
             directionsArray[x, y] = direction;
-            Debug.Log($"SetGroundData ({x}, {y}) -> {data.Name}");
 
             UpdateUV2(x, y, true);
             UpdateUV2(x - 1, y, false);
@@ -638,16 +637,13 @@ namespace Warlander.Deedplanner.Data.Grounds
         // observable never emits for already-completed tasks, killing ground repaints
         private async void UpdateUV2Async(GroundData data, int uvIndex, Vector2Int tileCoords)
         {
-            Debug.Log($"UpdateUV2Async start: ({tileCoords.x}, {tileCoords.y}) {data.Name}");
             Texture2D loadedTexture = await data.Tex3d.LoadOrGetTextureAsync();
-            Debug.Log($"UpdateUV2Async post-await: ({tileCoords.x}, {tileCoords.y}) {data.Name}, texture {(loadedTexture ? loadedTexture.name : "NULL")}");
             if (!loadedTexture)
             {
                 return;
             }
 
             int texIndex = groundTexturesArray.PutOrGetTexture(data.Tex3d, loadedTexture);
-            Debug.Log($"Ground UV2 update: tile ({tileCoords.x}, {tileCoords.y}), ground {data.Name}, texIndex {texIndex}");
             Vector2 texVector = new Vector2(texIndex, 0);
             uv2[uvIndex] = texVector;
             uv2[uvIndex + 1] = texVector;

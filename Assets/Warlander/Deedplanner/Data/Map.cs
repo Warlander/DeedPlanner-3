@@ -423,8 +423,8 @@ namespace Warlander.Deedplanner.Data
         private void OnDestroy()
         {
             _mapRenderSettingsRetriever.Changed -= GameManagerOnRenderSettingsChanged;
-            _heightTracker.ClearCurrentMap();
-            _roofCalculator.ClearCurrentMap();
+            _heightTracker.ClearCurrentMap(this);
+            _roofCalculator.ClearCurrentMap(this);
         }
     }
 }
