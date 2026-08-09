@@ -35,6 +35,7 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         private BridgePartType partType;
         private BridgePartSide partSide;
+        private BridgePartSide modelSide;
         private EntityOrientation orientation;
 
         private GameObject model;
@@ -53,28 +54,46 @@ namespace Warlander.Deedplanner.Data.Bridges
             this.orientation = orientation;
             _height = height;
 
+            // Abutment and bracing have dedicated left/right models selected by lane and row
+            // facing; every other part type shares one side model and one lane is rotated 180.
+            // Mesh mirroring is never correct here - mirror and rotation differ by a length flip.
+            bool directional = partType == BridgePartType.Abutment || partType == BridgePartType.Bracing;
+            modelSide = partSide;
+            if (directional && (partSide == BridgePartSide.LEFT || partSide == BridgePartSide.RIGHT))
+            {
+                bool useLeftModel = (partSide == BridgePartSide.LEFT)
+                    == (orientation == EntityOrientation.Down || orientation == EntityOrientation.Right);
+                modelSide = useLeftModel ? BridgePartSide.LEFT : BridgePartSide.RIGHT;
+            }
+
+            bool flipLane = !directional && (partSide == BridgePartSide.LEFT || partSide == BridgePartSide.RIGHT)
+                && ((partSide == BridgePartSide.LEFT)
+                    == (orientation == EntityOrientation.Down || orientation == EntityOrientation.Right));
+            EntityOrientation renderOrientation = flipLane ? Opposite(orientation) : orientation;
+
             // We need to use custom mesh collider here due to shape complexity of different kinds of bridges and their varying dimensions.
             if (!GetComponent<MeshCollider>())
             {
                 _selectionMeshCollider = gameObject.AddComponent<MeshCollider>();
             }
-            
-            _skew = Mirrored ? -skew : skew;
-            
+
+            _skew = (renderOrientation == EntityOrientation.Right || renderOrientation == EntityOrientation.Up)
+                ? -skew : skew;
+
             _selectionMesh = CreateSelectionMesh(_skew);
             _selectionMeshCollider.sharedMesh = _selectionMesh;
-            
-            if (orientation == EntityOrientation.Left)
+
+            if (renderOrientation == EntityOrientation.Left)
             {
                 transform.position = new Vector3((x + 1) * 4, height * 0.1f, (y + 1) * 4);
                 transform.localRotation = Quaternion.Euler(0, 90, 0);
             }
-            else if (orientation == EntityOrientation.Up)
+            else if (renderOrientation == EntityOrientation.Up)
             {
                 transform.position = new Vector3((x + 1) * 4, height * 0.1f + skew * 0.1f, y * 4);
                 transform.localRotation = Quaternion.Euler(0, 180, 0);
             }
-            else if (orientation == EntityOrientation.Right)
+            else if (renderOrientation == EntityOrientation.Right)
             {
                 transform.position = new Vector3(x * 4, height * 0.1f + skew * 0.1f, y * 4);
                 transform.localRotation = Quaternion.Euler(0, 270, 0);
@@ -84,8 +103,23 @@ namespace Warlander.Deedplanner.Data.Bridges
                 transform.position = new Vector3(x * 4, height * 0.1f, (y + 1) * 4);
             }
 
-            Model rootModel = parentBridge.Data.GetModelForPart(partType, partSide);
+            Model rootModel = parentBridge.Data.GetModelForPart(partType, modelSide);
             rootModel.CreateOrGetModel(new Vector2(0, _skew), OnModelCreated);
+        }
+
+        private static EntityOrientation Opposite(EntityOrientation orientation)
+        {
+            switch (orientation)
+            {
+                case EntityOrientation.Up:
+                    return EntityOrientation.Down;
+                case EntityOrientation.Down:
+                    return EntityOrientation.Up;
+                case EntityOrientation.Left:
+                    return EntityOrientation.Right;
+                default:
+                    return EntityOrientation.Left;
+            }
         }
 
         private Mesh CreateSelectionMesh(int slopeDifference)
@@ -178,27 +212,11 @@ namespace Warlander.Deedplanner.Data.Bridges
             model = newModel;
             model.transform.SetParent(transform, false);
 
-            Model sourceModel = ParentBridge.Data.GetModelForPart(partType, partSide);
+            Model sourceModel = ParentBridge.Data.GetModelForPart(partType, modelSide);
 
-            // DP2 parity: side RIGHT parts are mirrored, and Up/Right oriented parts get an extra
-            // flip - the two cancel out, so the total mirror is a XOR of the two conditions.
-            bool mirror = (partSide == BridgePartSide.RIGHT)
-                != (orientation == EntityOrientation.Up || orientation == EntityOrientation.Right);
-            if (mirror)
-            {
-                foreach (MeshFilter filter in model.GetComponentsInChildren<MeshFilter>())
-                {
-                    filter.sharedMesh = sourceModel.GetMirroredMesh(filter.sharedMesh);
-                }
-            }
-
-            CreateSupportExtensions(mirror);
+            CreateSupportExtensions();
 
             Bounds bounds = GetTotalModelBounds(sourceModel.OriginalModel);
-            if (mirror)
-            {
-                bounds.center = new Vector3(4f - bounds.center.x, bounds.center.y, bounds.center.z);
-            }
             const float wallDepthComfortableMargin = 0.75f;
             float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthComfortableMargin);
             bounds.size = new Vector3(-bounds.size.x, bounds.size.y, comfortableWallDepth);
@@ -227,7 +245,7 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         // Extensions are purely visual (never serialized): a chain of extension models under each
         // support, from deck-supportHeight down in steps of 20 until terrain level (DP2 behavior).
-        private void CreateSupportExtensions(bool mirror)
+        private void CreateSupportExtensions()
         {
             if (partType != BridgePartType.Support)
             {
@@ -249,11 +267,6 @@ namespace Warlander.Deedplanner.Data.Bridges
 
                     foreach (MeshFilter filter in instance.GetComponentsInChildren<MeshFilter>())
                     {
-                        if (mirror)
-                        {
-                            filter.sharedMesh = extensionModel.GetMirroredMesh(filter.sharedMesh);
-                        }
-
                         MeshCollider extensionCollider = filter.gameObject.AddComponent<MeshCollider>();
                         extensionCollider.sharedMesh = filter.sharedMesh;
                     }

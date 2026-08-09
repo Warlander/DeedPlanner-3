@@ -9264,7 +9264,8 @@
 			</part>
 			<part type="abutment">
 				<model location="Bridges/Wooden/WoodBridgeAbutmentNarrow.wom" tag="narrow"/>
-				<model location="Bridges/Wooden/WoodBridgeAbutmentRight.wom" tag="side"/>
+				<model location="Bridges/Wooden/WoodBridgeAbutmentLeft.wom" tag="left"/>
+				<model location="Bridges/Wooden/WoodBridgeAbutmentRight.wom" tag="right"/>
 				<tex location="Bridges/Icons/WoodCrown.png"/>
 				<materials>
 					Wooden beams = 8,
@@ -9335,7 +9336,11 @@
 					<override mesh="Abutment10_Support_sep36_BridgeMesh" texture="Bridges/Stone/bridge.png"/>
 					<override mesh="Abutment10_Support_sep36_Bridge_TilingMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleLeft.wom" tag="left">
+					<override mesh="AbutmentDoubleWMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="right">
 					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridge.png"/>
 					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
@@ -9355,9 +9360,9 @@
 					<override mesh="EndWMesh" texture="Bridges/Stone/bridge.png"/>
 					<override mesh="DoubleAbutmentMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
-					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridge.png"/>
-					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				<model location="Bridges/Stone/StoneBridge_AbutmentSide.wom" tag="side">
+					<override mesh="StoneBridgeAbutmentSideWMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="StoneBridgeAbutmentSideMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
 				<model location="Bridges/Stone/StoneBridge_DoubleAbutmentCenter.wom" tag="center">
 					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridge.png"/>
@@ -9375,7 +9380,11 @@
 					<override mesh="Bracing10_Support_sep35_BridgeMesh" texture="Bridges/Stone/bridge.png"/>
 					<override mesh="Bracing10_Support_sep35_Bridge_TilingMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="side">
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleLeft.wom" tag="left">
+					<override mesh="BracingDoubleLeftWMesh" texture="Bridges/Stone/bridge.png"/>
+					<override mesh="BracingDoubleLeftTMesh" texture="Bridges/Stone/bridgeTiling.png"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="right">
 					<override mesh="BracingDoubleRightWMesh" texture="Bridges/Stone/bridge.png"/>
 					<override mesh="BracingDoubleRightTMesh" texture="Bridges/Stone/bridgeTiling.png"/>
 				</model>
@@ -9508,7 +9517,11 @@
 					<override mesh="Abutment10_Support_sep36_BridgeMesh" texture="Bridges/Stone/bridgeSlate.dds"/>
 					<override mesh="Abutment10_Support_sep36_Bridge_TilingMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleLeft.wom" tag="left">
+					<override mesh="AbutmentDoubleWMesh" texture="Bridges/Stone/bridgeSlate.dds"/>
+					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="right">
 					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeSlate.dds"/>
 					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
@@ -9528,9 +9541,9 @@
 					<override mesh="EndWMesh" texture="Bridges/Stone/bridgeSlate.dds"/>
 					<override mesh="DoubleAbutmentMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
-					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeSlate.dds"/>
-					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
+				<model location="Bridges/Stone/StoneBridge_AbutmentSide.wom" tag="side">
+					<override mesh="StoneBridgeAbutmentSideWMesh" texture="Bridges/Stone/bridgeSlate.dds"/>
+					<override mesh="StoneBridgeAbutmentSideMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
 				<model location="Bridges/Stone/StoneBridge_DoubleAbutmentCenter.wom" tag="center">
 					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridgeSlate.dds"/>
@@ -9548,7 +9561,11 @@
 					<override mesh="Bracing10_Support_sep35_BridgeMesh" texture="Bridges/Stone/bridgeSlate.dds"/>
 					<override mesh="Bracing10_Support_sep35_Bridge_TilingMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="side">
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleLeft.wom" tag="left">
+					<override mesh="BracingDoubleLeftWMesh" texture="Bridges/Stone/bridgeSlate.dds"/>
+					<override mesh="BracingDoubleLeftTMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="right">
 					<override mesh="BracingDoubleRightWMesh" texture="Bridges/Stone/bridgeSlate.dds"/>
 					<override mesh="BracingDoubleRightTMesh" texture="Bridges/Stone/bridgeSlateTiling.dds"/>
 				</model>
@@ -9681,7 +9698,11 @@
 					<override mesh="Abutment10_Support_sep36_BridgeMesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
 					<override mesh="Abutment10_Support_sep36_Bridge_TilingMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleLeft.wom" tag="left">
+					<override mesh="AbutmentDoubleWMesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
+					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="right">
 					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
 					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
@@ -9701,9 +9722,9 @@
 					<override mesh="EndWMesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
 					<override mesh="DoubleAbutmentMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
-					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
-					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
+				<model location="Bridges/Stone/StoneBridge_AbutmentSide.wom" tag="side">
+					<override mesh="StoneBridgeAbutmentSideWMesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
+					<override mesh="StoneBridgeAbutmentSideMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
 				<model location="Bridges/Stone/StoneBridge_DoubleAbutmentCenter.wom" tag="center">
 					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
@@ -9721,7 +9742,11 @@
 					<override mesh="Bracing10_Support_sep35_BridgeMesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
 					<override mesh="Bracing10_Support_sep35_Bridge_TilingMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="side">
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleLeft.wom" tag="left">
+					<override mesh="BracingDoubleLeftWMesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
+					<override mesh="BracingDoubleLeftTMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="right">
 					<override mesh="BracingDoubleRightWMesh" texture="Bridges/Stone/bridgeSandstone.dds"/>
 					<override mesh="BracingDoubleRightTMesh" texture="Bridges/Stone/bridgeSandstoneTiling.dds"/>
 				</model>
@@ -9854,7 +9879,11 @@
 					<override mesh="Abutment10_Support_sep36_BridgeMesh" texture="Bridges/Stone/bridgeRounded.dds"/>
 					<override mesh="Abutment10_Support_sep36_Bridge_TilingMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleLeft.wom" tag="left">
+					<override mesh="AbutmentDoubleWMesh" texture="Bridges/Stone/bridgeRounded.dds"/>
+					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="right">
 					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeRounded.dds"/>
 					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
@@ -9874,9 +9903,9 @@
 					<override mesh="EndWMesh" texture="Bridges/Stone/bridgeRounded.dds"/>
 					<override mesh="DoubleAbutmentMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
-					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeRounded.dds"/>
-					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
+				<model location="Bridges/Stone/StoneBridge_AbutmentSide.wom" tag="side">
+					<override mesh="StoneBridgeAbutmentSideWMesh" texture="Bridges/Stone/bridgeRounded.dds"/>
+					<override mesh="StoneBridgeAbutmentSideMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
 				<model location="Bridges/Stone/StoneBridge_DoubleAbutmentCenter.wom" tag="center">
 					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridgeRounded.dds"/>
@@ -9894,7 +9923,11 @@
 					<override mesh="Bracing10_Support_sep35_BridgeMesh" texture="Bridges/Stone/bridgeRounded.dds"/>
 					<override mesh="Bracing10_Support_sep35_Bridge_TilingMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="side">
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleLeft.wom" tag="left">
+					<override mesh="BracingDoubleLeftWMesh" texture="Bridges/Stone/bridgeRounded.dds"/>
+					<override mesh="BracingDoubleLeftTMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="right">
 					<override mesh="BracingDoubleRightWMesh" texture="Bridges/Stone/bridgeRounded.dds"/>
 					<override mesh="BracingDoubleRightTMesh" texture="Bridges/Stone/bridgeRoundedTiling.dds"/>
 				</model>
@@ -10030,7 +10063,11 @@
 					<override mesh="Abutment10_Support_sep36_BridgeMesh" texture="Bridges/Stone/bridgeRendered.dds"/>
 					<override mesh="Abutment10_Support_sep36_Bridge_TilingMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleLeft.wom" tag="left">
+					<override mesh="AbutmentDoubleWMesh" texture="Bridges/Stone/bridgeRendered.dds"/>
+					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="right">
 					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeRendered.dds"/>
 					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
@@ -10051,9 +10088,9 @@
 					<override mesh="EndWMesh" texture="Bridges/Stone/bridgeRendered.dds"/>
 					<override mesh="DoubleAbutmentMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
-					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeRendered.dds"/>
-					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
+				<model location="Bridges/Stone/StoneBridge_AbutmentSide.wom" tag="side">
+					<override mesh="StoneBridgeAbutmentSideWMesh" texture="Bridges/Stone/bridgeRendered.dds"/>
+					<override mesh="StoneBridgeAbutmentSideMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
 				<model location="Bridges/Stone/StoneBridge_DoubleAbutmentCenter.wom" tag="center">
 					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridgeRendered.dds"/>
@@ -10072,7 +10109,11 @@
 					<override mesh="Bracing10_Support_sep35_BridgeMesh" texture="Bridges/Stone/bridgeRendered.dds"/>
 					<override mesh="Bracing10_Support_sep35_Bridge_TilingMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="side">
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleLeft.wom" tag="left">
+					<override mesh="BracingDoubleLeftWMesh" texture="Bridges/Stone/bridgeRendered.dds"/>
+					<override mesh="BracingDoubleLeftTMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="right">
 					<override mesh="BracingDoubleRightWMesh" texture="Bridges/Stone/bridgeRendered.dds"/>
 					<override mesh="BracingDoubleRightTMesh" texture="Bridges/Stone/bridgeRenderedTiling.dds"/>
 				</model>
@@ -10210,7 +10251,11 @@
 					<override mesh="Abutment10_Support_sep36_BridgeMesh" texture="Bridges/Stone/bridgeBrick.dds"/>
 					<override mesh="Abutment10_Support_sep36_Bridge_TilingMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleLeft.wom" tag="left">
+					<override mesh="AbutmentDoubleWMesh" texture="Bridges/Stone/bridgeBrick.dds"/>
+					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="right">
 					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeBrick.dds"/>
 					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
@@ -10230,9 +10275,9 @@
 					<override mesh="EndWMesh" texture="Bridges/Stone/bridgeBrick.dds"/>
 					<override mesh="DoubleAbutmentMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_AbutmentDoubleRight.wom" tag="side">
-					<override mesh="AbutmentDoubleTMesh" texture="Bridges/Stone/bridgeBrick.dds"/>
-					<override mesh="AbutmentDoubleMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
+				<model location="Bridges/Stone/StoneBridge_AbutmentSide.wom" tag="side">
+					<override mesh="StoneBridgeAbutmentSideWMesh" texture="Bridges/Stone/bridgeBrick.dds"/>
+					<override mesh="StoneBridgeAbutmentSideMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
 				<model location="Bridges/Stone/StoneBridge_DoubleAbutmentCenter.wom" tag="center">
 					<override mesh="DoubleAbutmentCenter2Mesh" texture="Bridges/Stone/bridgeBrick.dds"/>
@@ -10250,7 +10295,11 @@
 					<override mesh="Bracing10_Support_sep35_BridgeMesh" texture="Bridges/Stone/bridgeBrick.dds"/>
 					<override mesh="Bracing10_Support_sep35_Bridge_TilingMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
-				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="side">
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleLeft.wom" tag="left">
+					<override mesh="BracingDoubleLeftWMesh" texture="Bridges/Stone/bridgeBrick.dds"/>
+					<override mesh="BracingDoubleLeftTMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
+				</model>
+				<model location="Bridges/Stone/StoneBridge_BracingDoubleRight.wom" tag="right">
 					<override mesh="BracingDoubleRightWMesh" texture="Bridges/Stone/bridgeBrick.dds"/>
 					<override mesh="BracingDoubleRightTMesh" texture="Bridges/Stone/bridgeBrickTiling.dds"/>
 				</model>
@@ -10371,7 +10420,8 @@
 			</part>
 			<part type="abutment">
 				<model location="Bridges/Marble/AbutmentMarble.wom" tag="narrow"/>
-				<model location="Bridges/Marble/AbutmentMarbleRight.wom" tag="side"/>
+				<model location="Bridges/Marble/AbutmentMarbleLeft.wom" tag="left"/>
+				<model location="Bridges/Marble/AbutmentMarbleRight.wom" tag="right"/>
 				<model location="Bridges/Marble/AbutmentMarbleCenter.wom" tag="center"/>
 				<tex location="Bridges/Icons/mAbutmentL.png"/>
 				<materials>
@@ -10393,7 +10443,8 @@
 			</part>
 			<part type="bracing">
 				<model location="Bridges/Marble/BracingMarble.wom" tag="narrow"/>
-				<model location="Bridges/Marble/BracingMarbleRight.wom" tag="side"/>
+				<model location="Bridges/Marble/BracingMarbleLeft.wom" tag="left"/>
+				<model location="Bridges/Marble/BracingMarbleRight.wom" tag="right"/>
 				<model location="Bridges/Marble/BracingMarbleCenter.wom" tag="center"/>
 				<tex location="Bridges/Icons/mBracingL.png"/>
 				<materials>

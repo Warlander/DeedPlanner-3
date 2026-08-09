@@ -18,8 +18,6 @@ namespace Warlander.Deedplanner.Graphics
         private readonly string oneIncludedMesh;
         private Dictionary<string, string> textureOverrides;
 
-        private readonly Dictionary<Mesh, Mesh> mirroredMeshes = new Dictionary<Mesh, Mesh>();
-
         private GameObject modelRoot;
         private GameObject originalModel;
         private readonly Dictionary<ModelProperties, GameObject> modifiedModels;
@@ -278,64 +276,6 @@ namespace Warlander.Deedplanner.Graphics
         {
             Texture2D loadedTexture = await texture.LoadOrGetTextureAsync();
             material.SetTexture(ShaderPropertyIds.BaseMap, loadedTexture);
-        }
-
-        /// <summary>
-        /// Returns a cached copy of the mesh mirrored about the tile center plane.
-        /// Used by bridge parts that need per-instance mirroring (side and/or orientation).
-        /// </summary>
-        public Mesh GetMirroredMesh(Mesh source)
-        {
-            if (!mirroredMeshes.TryGetValue(source, out Mesh mirrored))
-            {
-                mirrored = MirrorMeshAboutTileCenter(source);
-                mirroredMeshes[source] = mirrored;
-            }
-
-            return mirrored;
-        }
-
-        // Wurm models are corner-anchored, not centered - mirroring must happen about the tile
-        // center plane (x = 2), not the model origin, and winding/normals are fixed in the mesh data
-        // because negative transform scale breaks backface culling.
-        private static Mesh MirrorMeshAboutTileCenter(Mesh source)
-        {
-            Mesh mirrored = Object.Instantiate(source);
-            mirrored.name = source.name + "_Mirrored";
-
-            Vector3[] vertices = mirrored.vertices;
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                vertices[i].x = 4f - vertices[i].x;
-            }
-            mirrored.vertices = vertices;
-
-            Vector3[] normals = mirrored.normals;
-            for (int i = 0; i < normals.Length; i++)
-            {
-                normals[i].x = -normals[i].x;
-            }
-            mirrored.normals = normals;
-
-            Vector4[] tangents = mirrored.tangents;
-            for (int i = 0; i < tangents.Length; i++)
-            {
-                tangents[i].x = -tangents[i].x;
-                tangents[i].w = -tangents[i].w;
-            }
-            mirrored.tangents = tangents;
-
-            int[] triangles = mirrored.triangles;
-            for (int i = 0; i < triangles.Length; i += 3)
-            {
-                int temp = triangles[i];
-                triangles[i] = triangles[i + 2];
-                triangles[i + 2] = temp;
-            }
-            mirrored.triangles = triangles;
-
-            mirrored.RecalculateBounds();
-            return mirrored;
         }
 
         private void InitializeModifiedModel(ModelProperties modelProperties)
