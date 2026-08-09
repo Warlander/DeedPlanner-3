@@ -15,6 +15,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         public BridgeData Data { get; private set; }
 
         public BridgeType Type => bridgeType;
+        public int AdditionalData => additionalData;
         public int LowerLevel => Mathf.Min(firstLevel, secondLevel);
         public int HigherLevel => Mathf.Max(firstLevel, secondLevel);
         public Vector2Int FirstTile => new Vector2Int(firstX, firstY);
@@ -31,7 +32,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         private readonly int secondLevel;
         private readonly int secondX;
         private readonly int secondY;
-        private readonly int additionalData;
+        private int additionalData;
         private readonly bool verticalOrientation;
         private readonly bool surfaced;
         private readonly BridgeType bridgeType;
@@ -297,7 +298,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
         }
 
-        private IBridgeType GetTypeForBridge(BridgeType type)
+        internal static IBridgeType GetTypeForBridge(BridgeType type)
         {
             switch (type)
             {
@@ -450,7 +451,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             return supports;
         }
 
-        public void Rebuild(Map map, BridgeData newData, string newSegments)
+        public void Rebuild(Map map, BridgeData newData, string newSegments, int newAdditionalData)
         {
             DisableHighlighting();
 
@@ -470,6 +471,7 @@ namespace Warlander.Deedplanner.Data.Bridges
 
             Data = newData;
             segments = BridgePartTypeUtils.DecodeSegments(newSegments);
+            additionalData = newAdditionalData;
 
             ConstructBridge(map);
             Rebuilt?.Invoke();

@@ -24,13 +24,13 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         public void Execute()
         {
-            _bridge.Rebuild(_map, _newMaterial, _newSegments);
+            _bridge.Rebuild(_map, _newMaterial, _newSegments, _bridge.AdditionalData);
             _map.RefreshBridgesRendering();
         }
 
         public void Undo()
         {
-            _bridge.Rebuild(_map, _oldMaterial, _oldSegments);
+            _bridge.Rebuild(_map, _oldMaterial, _oldSegments, _bridge.AdditionalData);
             _map.RefreshBridgesRendering();
         }
 

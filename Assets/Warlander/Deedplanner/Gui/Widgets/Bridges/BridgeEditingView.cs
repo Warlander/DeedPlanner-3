@@ -15,6 +15,8 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         [SerializeField] private TextMeshProUGUI _typeLabel;
         [SerializeField] private GameObject _materialSection;
         [SerializeField] private Transform _materialToggleRoot;
+        [SerializeField] private GameObject _extraArgumentSection;
+        [SerializeField] private Transform _extraArgumentToggleRoot;
         [SerializeField] private LabeledToggle _togglePrefab;
 
         public event Action DeleteClicked;
@@ -22,12 +24,16 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         public event Action BecameActive;
         public event Action BecameInactive;
         public event Action<BridgeData> SelectedMaterialChanged;
+        public event Action<int> SelectedExtraArgumentChanged;
 
         public bool IsActive => gameObject.activeInHierarchy;
 
         private readonly List<BridgeData> _materials = new List<BridgeData>();
         private readonly List<LabeledToggle> _materialToggles = new List<LabeledToggle>();
         private int _selectedMaterialIndex = -1;
+        private readonly List<int> _extraArguments = new List<int>();
+        private readonly List<LabeledToggle> _extraArgumentToggles = new List<LabeledToggle>();
+        private int _selectedExtraArgumentIndex = -1;
 
         private void Awake()
         {
@@ -40,7 +46,8 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             _deleteButton.onClick.RemoveListener(OnDeleteClicked);
             _cancelButton.onClick.RemoveListener(OnCancelClicked);
 
-            ClearToggles();
+            ClearToggles(_materialToggles);
+            ClearToggles(_extraArgumentToggles);
         }
 
         private void OnEnable()
@@ -81,7 +88,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 
         public void SetMaterials(IReadOnlyList<BridgeData> materials, int selectedIndex)
         {
-            ClearToggles();
+            ClearToggles(_materialToggles);
             _materials.Clear();
             _selectedMaterialIndex = -1;
 
@@ -122,6 +129,57 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             SelectedMaterialChanged?.Invoke(_materials[index]);
         }
 
+        public void SetExtraArgumentsVisible(bool visible)
+        {
+            if (_extraArgumentSection != null)
+            {
+                _extraArgumentSection.SetActive(visible);
+            }
+        }
+
+        public void SetExtraArguments(IReadOnlyList<int> values, int selectedIndex)
+        {
+            ClearToggles(_extraArgumentToggles);
+            _extraArguments.Clear();
+            _selectedExtraArgumentIndex = -1;
+
+            if (values == null || values.Count == 0)
+            {
+                return;
+            }
+
+            _extraArguments.AddRange(values);
+            ToggleGroup group = GetOrCreateToggleGroup(_extraArgumentToggleRoot);
+
+            for (int i = 0; i < _extraArguments.Count; i++)
+            {
+                int value = _extraArguments[i];
+                LabeledToggle toggle = Instantiate(_togglePrefab, _extraArgumentToggleRoot);
+                toggle.LabelText = value.ToString();
+                toggle.Group = group;
+                toggle.gameObject.SetActive(true);
+
+                int capturedIndex = i;
+                toggle.Toggled += isOn => OnExtraArgumentToggleChanged(capturedIndex, isOn);
+                _extraArgumentToggles.Add(toggle);
+            }
+
+            int index = Mathf.Clamp(selectedIndex, 0, _extraArguments.Count - 1);
+            _selectedExtraArgumentIndex = index;
+            _extraArgumentToggles[index].IsOn = true;
+        }
+
+        private void OnExtraArgumentToggleChanged(int index, bool isOn)
+        {
+            if (!isOn)
+            {
+                return;
+            }
+
+            _selectedExtraArgumentIndex = index;
+            SelectedExtraArgumentChanged?.Invoke(_extraArguments[index]);
+        }
+
         private void OnDeleteClicked()
         {
             DeleteClicked?.Invoke();
@@ -132,9 +190,9 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             CancelClicked?.Invoke();
         }
 
-        private void ClearToggles()
+        private void ClearToggles(List<LabeledToggle> toggles)
         {
-            foreach (LabeledToggle toggle in _materialToggles)
+            foreach (LabeledToggle toggle in toggles)
             {
                 if (toggle != null)
                 {
@@ -142,7 +200,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
                 }
             }
 
-            _materialToggles.Clear();
+            toggles.Clear();
         }
 
         private ToggleGroup GetOrCreateToggleGroup(Transform root)

@@ -11,7 +11,25 @@ namespace Warlander.Deedplanner.Data.Bridges
     {
         public Bridge ParentBridge { get; private set; }
 
-        public override Materials Materials => ParentBridge.Data.GetMaterialsForPart(partType, partSide);
+        public override Materials Materials
+        {
+            get
+            {
+                Materials materials = ParentBridge.Data.GetMaterialsForPart(partType, partSide);
+
+                int extensionCount = GetExtensionCount();
+                if (extensionCount > 0)
+                {
+                    Materials extensionMaterials = ParentBridge.Data.GetMaterialsForPart(BridgePartType.Extension, partSide);
+                    for (int i = 0; i < extensionCount; i++)
+                    {
+                        materials.Add(extensionMaterials);
+                    }
+                }
+
+                return materials;
+            }
+        }
         public BridgePartType PartType => partType;
         public bool Mirrored => orientation == EntityOrientation.Right || orientation == EntityOrientation.Up;
 
@@ -196,6 +214,17 @@ namespace Warlander.Deedplanner.Data.Bridges
             OnModelLoadedCallback(model);
         }
         
+        private int GetExtensionCount()
+        {
+            if (partType != BridgePartType.Support || Tile == null)
+            {
+                return 0;
+            }
+
+            float relativeHeight = _height - Tile.SurfaceHeight - ParentBridge.Data.SupportHeight;
+            return Mathf.Max(0, Mathf.CeilToInt(relativeHeight / 20f));
+        }
+
         // Extensions are purely visual (never serialized): a chain of extension models under each
         // support, from deck-supportHeight down in steps of 20 until terrain level (DP2 behavior).
         private void CreateSupportExtensions(bool mirror)
@@ -207,8 +236,7 @@ namespace Warlander.Deedplanner.Data.Bridges
 
             Model extensionModel = ParentBridge.Data.GetModelForPart(BridgePartType.Extension, partSide);
             int supportHeight = ParentBridge.Data.SupportHeight;
-            float relativeHeight = _height - Tile.SurfaceHeight - supportHeight;
-            int extensionCount = Mathf.Max(0, Mathf.CeilToInt(relativeHeight / 20f));
+            int extensionCount = GetExtensionCount();
 
             for (int i = 0; i < extensionCount; i++)
             {

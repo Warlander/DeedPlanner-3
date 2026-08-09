@@ -65,6 +65,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             {
                 _view.SetMaterials(new List<BridgeData>());
                 _view.SetTypes(new List<BridgeType>(), false);
+                _view.SetExtraArguments(new List<int>(), false);
                 _view.SetMessage(string.Empty);
                 RefreshActionVisibility();
                 return;
@@ -118,6 +119,12 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             if (type.HasValue)
             {
                 _lastType = type.Value.ToString();
+                int[] extraArguments = Bridge.GetTypeForBridge(type.Value).ExtraArguments;
+                _view.SetExtraArguments(extraArguments, extraArguments.Length > 1);
+            }
+            else
+            {
+                _view.SetExtraArguments(new List<int>(), false);
             }
 
             RefreshMessage();
@@ -140,7 +147,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
                 return;
             }
 
-            int extraArgument = GetDefaultExtraArgument(type.Value);
+            int extraArgument = _view.SelectedExtraArgument;
             string segments = BuildDefaultSegments(_start, _end, material, type.Value);
             Map map = _mapHandler.Map;
             Bridge bridge = _bridgeFactory.CreateBridge(map, _start, _end, material,
@@ -294,21 +301,6 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             }
 
             return 0;
-        }
-
-        private int GetDefaultExtraArgument(BridgeType type)
-        {
-            switch (type)
-            {
-                case BridgeType.Flat:
-                    return 0;
-                case BridgeType.Arched:
-                    return 5;
-                case BridgeType.Rope:
-                    return 3;
-                default:
-                    return 0;
-            }
         }
 
         private bool ValidateSpan(TileCoords start, TileCoords end, out string error)

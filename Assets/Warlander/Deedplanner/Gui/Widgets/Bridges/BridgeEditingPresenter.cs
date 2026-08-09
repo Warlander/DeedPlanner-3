@@ -30,10 +30,12 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             _view.BecameActive += OnViewBecameActive;
             _view.BecameInactive += OnViewBecameInactive;
             _view.SelectedMaterialChanged += OnSelectedMaterialChanged;
+            _view.SelectedExtraArgumentChanged += OnSelectedExtraArgumentChanged;
             _bridgesUpdater.SelectedBridgeChanged += OnSelectedBridgeChanged;
 
             RefreshActionVisibility();
             RefreshMaterials();
+            RefreshExtraArguments();
         }
 
         public void Dispose()
@@ -43,6 +45,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             _view.BecameActive -= OnViewBecameActive;
             _view.BecameInactive -= OnViewBecameInactive;
             _view.SelectedMaterialChanged -= OnSelectedMaterialChanged;
+            _view.SelectedExtraArgumentChanged -= OnSelectedExtraArgumentChanged;
             _bridgesUpdater.SelectedBridgeChanged -= OnSelectedBridgeChanged;
         }
 
@@ -50,6 +53,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         {
             RefreshActionVisibility();
             RefreshMaterials();
+            RefreshExtraArguments();
         }
 
         private void OnDeleteClicked()
@@ -109,6 +113,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         {
             RefreshActionVisibility();
             RefreshMaterials();
+            RefreshExtraArguments();
         }
 
         private void OnViewBecameInactive()
@@ -116,6 +121,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             _view.SetDeleteButtonVisible(false);
             _view.SetCancelButtonVisible(false);
             _view.SetMaterialsVisible(false);
+            _view.SetExtraArgumentsVisible(false);
         }
 
         private void RefreshActionVisibility()
@@ -160,6 +166,41 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             _view.SetMaterialsVisible(true);
             int currentIndex = materials.IndexOf(bridge.Data);
             _view.SetMaterials(materials, Mathf.Max(currentIndex, 0));
+        }
+
+        private void OnSelectedExtraArgumentChanged(int value)
+        {
+            Bridge bridge = _bridgesUpdater.SelectedBridge;
+            if (bridge == null || value == bridge.AdditionalData)
+            {
+                return;
+            }
+
+            Map map = _mapHandler.Map;
+            map.CommandManager.AddToActionAndExecute(new BridgeExtraArgumentChangeCommand(
+                map, bridge, bridge.AdditionalData, value));
+            map.CommandManager.FinishAction();
+        }
+
+        private void RefreshExtraArguments()
+        {
+            Bridge bridge = _bridgesUpdater.SelectedBridge;
+            if (!_view.IsActive || bridge == null)
+            {
+                _view.SetExtraArgumentsVisible(false);
+                return;
+            }
+
+            int[] extraArguments = Bridge.GetTypeForBridge(bridge.Type).ExtraArguments;
+            if (extraArguments.Length <= 1)
+            {
+                _view.SetExtraArgumentsVisible(false);
+                return;
+            }
+
+            _view.SetExtraArgumentsVisible(true);
+            int currentIndex = System.Array.IndexOf(extraArguments, bridge.AdditionalData);
+            _view.SetExtraArguments(extraArguments, Mathf.Max(currentIndex, 0));
         }
     }
 }

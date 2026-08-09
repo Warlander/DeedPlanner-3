@@ -11,6 +11,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         event Action BecameActive;
         event Action BecameInactive;
         event Action<BridgeData> SelectedMaterialChanged;
+        event Action<int> SelectedExtraArgumentChanged;
 
         bool IsActive { get; }
 
@@ -19,5 +20,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         void SetTypeLabel(string text);
         void SetMaterials(IReadOnlyList<BridgeData> materials, int selectedIndex);
         void SetMaterialsVisible(bool visible);
+        void SetExtraArguments(IReadOnlyList<int> values, int selectedIndex);
+        void SetExtraArgumentsVisible(bool visible);
     }
 }
