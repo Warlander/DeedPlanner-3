@@ -16,7 +16,7 @@ on:
         type: boolean
         default: false
       draft_release:
-        description: 'Create draft GitHub release with Windows+Linux builds'
+        description: 'Create draft GitHub release with Windows+Linux+Mac builds'
         type: boolean
         default: false
       release_tag:
@@ -164,6 +164,84 @@ jobs:
             !Build/**/*BackUpThisFolder*
           if-no-files-found: error
 
+  # macOS IL2CPP needs the Xcode toolchain, so this runs on a real Mac runner
+  # (no Docker on GH macOS images). The editor is installed from Unity's CDN
+  # instead of caching it: the ~9.5GB install would blow the 10GB repo cache
+  # budget and evict the far more valuable Library caches.
+  build-macos:
+    runs-on: macos-14
+    timeout-minutes: 300
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Cache Library
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: Library
+          key: library-macos-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}
+          restore-keys: library-macos-
+
+      - name: Install Unity editor + Mac IL2CPP module
+        run: |
+          set -e
+          VERSION=$(sed -n 's/m_EditorVersion: //p' ProjectSettings/ProjectVersion.txt | tr -d '\r')
+          CHANGESET=$(sed -n 's/.*(\([0-9a-f]*\)).*/\1/p' ProjectSettings/ProjectVersion.txt | tr -d '\r')
+          BASE="https://download.unity3d.com/download_unity/$CHANGESET"
+          curl -fL -o "$RUNNER_TEMP/Unity.pkg" "$BASE/MacEditorInstallerArm64/Unity-$VERSION.pkg"
+          curl -fL -o "$RUNNER_TEMP/IL2CPP.pkg" "$BASE/MacEditorTargetInstaller/UnitySetup-Mac-IL2CPP-Support-for-Editor-$VERSION.pkg"
+          sudo installer -pkg "$RUNNER_TEMP/Unity.pkg" -target /
+          sudo installer -pkg "$RUNNER_TEMP/IL2CPP.pkg" -target /
+          # standard runners are disk-constrained; the pkgs are ~6GB combined
+          rm "$RUNNER_TEMP/Unity.pkg" "$RUNNER_TEMP/IL2CPP.pkg"
+          df -h /
+
+      - name: Activate Unity license
+        run: |
+          LICENSING_CLIENT=$(find "/Applications/Unity/Hub/Editor" -name "Unity.Licensing.Client" -type f | head -1)
+          test -n "$LICENSING_CLIENT"
+          "$LICENSING_CLIENT" --activate-all --include-personal \
+            --username "$UNITY_EMAIL" --password "$UNITY_PASSWORD"
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Build (IL2CPP, universal)
+        run: |
+          VERSION=$(sed -n 's/m_EditorVersion: //p' ProjectSettings/ProjectVersion.txt | tr -d '\r')
+          # no -nographics: batchmode still gets the real Metal device, so shader
+          # variants (shadows/lighting) bake correctly (same concern as xvfb on Linux)
+          "/Applications/Unity/Hub/Editor/$VERSION/Unity.app/Contents/MacOS/Unity" \
+            -quit -batchmode -logFile - -projectPath "$GITHUB_WORKSPACE" \
+            -executeMethod "Warlander.Deedplanner.Editor.BuildSystem.BuildMac"
+
+      - name: Ad-hoc sign
+        run: |
+          # no Developer ID secrets in the repo - self-sign so arm64 binaries have
+          # the mandatory (ad-hoc) signature after the build added steam_appid.txt
+          codesign --deep --force --sign - "Build/DeedPlanner Mac.app"
+          codesign --verify --deep --strict "Build/DeedPlanner Mac.app"
+
+      - name: Verify build output
+        run: |
+          test -d "Build/DeedPlanner Mac.app"
+          test -x "Build/DeedPlanner Mac.app/Contents/MacOS/DeedPlanner 3"
+
+      - name: Package
+        run: |
+          # ditto zip preserves symlinks and the executable bit; upload-artifact
+          # on a bare .app loses permissions and breaks the bundle
+          ditto -c -k --keepParent "Build/DeedPlanner Mac.app" "Build/DeedPlanner-Mac.zip"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: DeedPlanner Mac
+          path: Build/DeedPlanner-Mac.zip
+          if-no-files-found: error
+
   build-webgl:
     runs-on: ubuntu-latest
     timeout-minutes: 240
@@ -223,13 +301,15 @@ jobs:
           if-no-files-found: error
 
   # Steam upload runs on every v* tag push, or on manual dispatch with deploy_steam=true.
-  # Depot ID assumption: 1179761 = Windows, 1179762 = Linux (Steam default: appId+1, appId+2).
-  # If the partner site shows different IDs, add firstDepotIdOverride accordingly.
+  # Depot ID assumption: 1179761 = Windows, 1179762 = Linux, 1179763 = Mac (Steam default:
+  # appId+1, appId+2, appId+3). If the partner site shows different IDs, add
+  # firstDepotIdOverride accordingly. Depot 1179763 must be marked as a macOS depot and
+  # given a launch option in the App Admin panel - steam-deploy cannot set depot OS.
   # releaseBranch is a beta branch by design: players on default see nothing until the
   # build is set live manually in the App Admin panel (default cannot be set live via API).
   deploy-steam:
     if: startsWith(github.ref, 'refs/tags/v') || inputs.deploy_steam
-    needs: [build-windows, build-linux]
+    needs: [build-windows, build-linux, build-macos]
     runs-on: ubuntu-latest
     timeout-minutes: 60
     environment: steam-deploy
@@ -256,15 +336,24 @@ jobs:
           name: DeedPlanner Linux
           path: dl/linux
 
+      - name: Download Mac artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeedPlanner Mac
+          path: dl/mac
+
       - name: Stage depot payload
         run: |
           # Artifacts contain Build/ contents directly (upload-artifact strips the common ancestor)
-          mkdir -p steam/StandaloneWindows64 steam/StandaloneLinux64
+          mkdir -p steam/StandaloneWindows64 steam/StandaloneLinux64 steam/StandaloneMacOSX
           cp -r "dl/windows/DeedPlanner Windows/." steam/StandaloneWindows64/
           cp -r "dl/linux/DeedPlanner Linux/." steam/StandaloneLinux64/
+          # ditto-created zip carries unix permissions, so the .app keeps its executable bit
+          unzip -q "dl/mac/DeedPlanner-Mac.zip" -d steam/StandaloneMacOSX/
           # steam_appid.txt is for out-of-Steam launches; Valve warns against shipping it in depots
-          rm -f steam/StandaloneWindows64/steam_appid.txt steam/StandaloneLinux64/steam_appid.txt
-          ls steam/StandaloneWindows64 steam/StandaloneLinux64
+          rm -f steam/StandaloneWindows64/steam_appid.txt steam/StandaloneLinux64/steam_appid.txt \
+            "steam/StandaloneMacOSX/DeedPlanner Mac.app/steam_appid.txt"
+          ls steam/StandaloneWindows64 steam/StandaloneLinux64 steam/StandaloneMacOSX
 
       - name: Deploy to Steam
         uses: game-ci/steam-deploy@8bd9baca6407f9abd210bd1eef3c45f56e12d8d9 # v3
@@ -276,6 +365,7 @@ jobs:
           rootPath: steam
           depot1Path: StandaloneWindows64
           depot2Path: StandaloneLinux64
+          depot3Path: StandaloneMacOSX
           releaseBranch: ${{ inputs.steam_branch || 'beta' }}
 
   # Web deploy opens a PR in DeedPlanner-3-web instead of pushing to its default
@@ -337,7 +427,7 @@ jobs:
   # created at the dispatched commit if it does not exist yet.
   deploy-github:
     if: startsWith(github.ref, 'refs/tags/v') || inputs.draft_release
-    needs: [build-windows, build-linux]
+    needs: [build-windows, build-linux, build-macos]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -368,10 +458,18 @@ jobs:
           name: DeedPlanner Linux
           path: dl/linux
 
+      - name: Download Mac artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeedPlanner Mac
+          path: dl/mac
+
       - name: Zip builds
         run: |
           (cd "dl/windows/DeedPlanner Windows" && zip -qr "$GITHUB_WORKSPACE/DeedPlanner-Windows.zip" .)
           (cd "dl/linux/DeedPlanner Linux" && zip -qr "$GITHUB_WORKSPACE/DeedPlanner-Linux.zip" .)
+          # Mac is already a ditto zip (preserves .app permissions) - ship as-is
+          cp "dl/mac/DeedPlanner-Mac.zip" .
 
       - name: Create draft release
         env:
@@ -381,4 +479,4 @@ jobs:
           gh release create "${{ steps.tag.outputs.tag }}" \
             --draft --target "$GITHUB_SHA" \
             --title "${{ steps.tag.outputs.tag }}" --generate-notes \
-            DeedPlanner-Windows.zip DeedPlanner-Linux.zip
+            DeedPlanner-Windows.zip DeedPlanner-Linux.zip DeedPlanner-Mac.zip

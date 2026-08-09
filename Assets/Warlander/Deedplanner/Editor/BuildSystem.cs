@@ -106,7 +106,9 @@ namespace Warlander.Deedplanner.Editor
             {
                 PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
             }
-            
+
+            UnityEditor.OSXStandalone.UserBuildSettings.architecture = UnityEditor.Build.OSArchitecture.x64ARM64;
+
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.Standalone;
             buildOptions.target = BuildTarget.StandaloneOSX;
