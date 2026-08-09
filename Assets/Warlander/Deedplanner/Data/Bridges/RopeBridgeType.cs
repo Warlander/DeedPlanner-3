@@ -22,9 +22,6 @@ namespace Warlander.Deedplanner.Data.Bridges
             float sagDistance = (bridgeLength + 1) * 4f * totalSag;
             float scaleCosh = 5E-05f; //Math.cosh(1 / 100) - 1;
             float scaleFactor = sagDistance / scaleCosh;
-            
-            int heightDiffSlopes = endHeight - startHeight;
-            float heightDiffMeters = heightDiffSlopes / 10f;
 
             int centerRelativeSegment = currentSegment - halfLength;
             // if bridge length is even, make sure bridge center is 2 tiles long
@@ -32,15 +29,13 @@ namespace Warlander.Deedplanner.Data.Bridges
             {
                 centerRelativeSegment++;
             }
-            
-            float scale = (float)centerRelativeSegment / halfLength;
-            
-            float sag = (scaleFactor * (float)Math.Cosh(scale / 100) - scaleFactor - sagDistance);
-            float adjust = Math.Abs((Math.Sign(halfLength) * scale * heightDiffMeters) - heightDiffMeters) / 2f;
-            float realScaleSag = sag + adjust;
-            int dirtSag = (int) (realScaleSag * 10);
 
-            return dirtSag;
+            float scale = (float)centerRelativeSegment / halfLength;
+
+            // Pure sag below the chord - slope between ends is already handled by the caller's
+            // linear interpolation, so no height-difference adjustment belongs here.
+            float sag = scaleFactor * (float)Math.Cosh(scale / 100) - scaleFactor - sagDistance;
+            return (int)(sag * 10);
         }
     }
 }
