@@ -136,8 +136,6 @@ namespace Warlander.Deedplanner.Editor
             PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
             PlayerSettings.WebGL.decompressionFallback = false;
             PlayerSettings.WebGL.template = "PROJECT:DeedPlanner";
-            // temporary diagnostics: surface exceptions swallowed by minimal exception support
-            PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.FullWithStacktrace;
 
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.WebGL;
