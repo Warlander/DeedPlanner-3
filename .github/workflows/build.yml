@@ -11,6 +11,18 @@ on:
         description: 'Steam branch to set live (never "default")'
         type: string
         default: 'beta'
+      deploy_web:
+        description: 'Open deploy PR in DeedPlanner-3-web'
+        type: boolean
+        default: false
+      draft_release:
+        description: 'Create draft GitHub release with Windows+Linux builds'
+        type: boolean
+        default: false
+      release_tag:
+        description: 'Tag for draft release on manual dispatch (e.g. v3.2.3), created if missing. Ignored on tag push.'
+        type: string
+        default: ''
   push:
     tags: ['v*']
 
@@ -265,3 +277,108 @@ jobs:
           depot1Path: StandaloneWindows64
           depot2Path: StandaloneLinux64
           releaseBranch: ${{ inputs.steam_branch || 'beta' }}
+
+  # Web deploy opens a PR in DeedPlanner-3-web instead of pushing to its default
+  # branch directly: merging the PR is the manual gate (Pages publishes on merge).
+  # Uses a fixed branch name, so re-runs force-push and update the same open PR.
+  deploy-webgl:
+    if: startsWith(github.ref, 'refs/tags/v') || inputs.deploy_web
+    needs: [build-webgl]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: web-deploy
+    steps:
+      - name: Download WebGL artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeedPlanner WebGL
+          path: web
+
+      - name: Preflight validation
+        run: |
+          test -f web/index.html
+          compgen -G "web/Build/*.wasm" > /dev/null
+          compgen -G "web/Build/*.data" > /dev/null
+          compgen -G "web/Build/*.loader.js" > /dev/null
+          if compgen -G "web/Build/*.gz" > /dev/null || compgen -G "web/Build/*.br" > /dev/null; then
+            echo "Compressed build files present - will not boot on GitHub Pages"
+            exit 1
+          fi
+
+      - name: Push deploy branch and open PR
+        env:
+          WEB_TOKEN: ${{ secrets.WEB_DEPLOY_TOKEN }}
+          GH_TOKEN: ${{ secrets.WEB_DEPLOY_TOKEN }}
+        run: |
+          if [ -z "$WEB_TOKEN" ]; then
+            echo "Missing WEB_DEPLOY_TOKEN secret - cannot open deploy PR"
+            exit 1
+          fi
+          git clone "https://x-access-token:${WEB_TOKEN}@github.com/Warlander/DeedPlanner-3-web.git" site
+          cd site
+          git checkout -B deploy-webgl
+          rm -rf Build TemplateData StreamingAssets index.html
+          cp -r ../web/. .
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to deploy"
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Deploy ${GITHUB_REF_NAME} (build run ${GITHUB_RUN_ID})"
+          git push -f origin deploy-webgl
+          gh pr create --repo Warlander/DeedPlanner-3-web --base master --head deploy-webgl \
+            --title "Deploy ${GITHUB_REF_NAME}" \
+            --body "Automated deploy from ${GITHUB_REPOSITORY} run ${GITHUB_RUN_ID}. Merge to publish." \
+            || echo "PR already exists - branch updated instead"
+
+  # Draft release: publishing by hand in the Releases UI is the manual gate.
+  # On tag push uses that tag; on manual dispatch uses release_tag input,
+  # created at the dispatched commit if it does not exist yet.
+  deploy-github:
+    if: startsWith(github.ref, 'refs/tags/v') || inputs.draft_release
+    needs: [build-windows, build-linux]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - name: Resolve release tag
+        id: tag
+        run: |
+          TAG="${{ github.ref_name }}"
+          if [[ "${{ github.ref }}" != refs/tags/* ]]; then
+            TAG="${{ inputs.release_tag }}"
+          fi
+          if [ -z "$TAG" ]; then
+            echo "No release tag - set release_tag input for manual dispatch"
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeedPlanner Windows
+          path: dl/windows
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeedPlanner Linux
+          path: dl/linux
+
+      - name: Zip builds
+        run: |
+          (cd "dl/windows/DeedPlanner Windows" && zip -qr "$GITHUB_WORKSPACE/DeedPlanner-Windows.zip" .)
+          (cd "dl/linux/DeedPlanner Linux" && zip -qr "$GITHUB_WORKSPACE/DeedPlanner-Linux.zip" .)
+
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "${{ steps.tag.outputs.tag }}" \
+            --draft --target "$GITHUB_SHA" \
+            --title "${{ steps.tag.outputs.tag }}" --generate-notes \
+            DeedPlanner-Windows.zip DeedPlanner-Linux.zip
