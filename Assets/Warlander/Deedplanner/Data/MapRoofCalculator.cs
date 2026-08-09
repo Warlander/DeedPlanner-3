@@ -6,7 +6,9 @@ using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Data
 {
-    public class MapRoofCalculator : ILateTickable
+    // ITickable rather than ILateTickable - LateTick dispatch never fires in this setup,
+    // leaving roof recalculations permanently unprocessed (no roofs anywhere)
+    public class MapRoofCalculator : ITickable
     {
         private Map _currentMap;
         private bool _needsRoofUpdate;
@@ -26,7 +28,7 @@ namespace Warlander.Deedplanner.Data
             _needsRoofUpdate = true;
         }
 
-        public void LateTick()
+        public void Tick()
         {
             if (!_needsRoofUpdate || _currentMap == null) return;
             _needsRoofUpdate = false;
