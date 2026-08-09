@@ -492,7 +492,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
+          VERSION="${{ steps.tag.outputs.tag }}"
+          VERSION="${VERSION#v}"
           gh release create "${{ steps.tag.outputs.tag }}" \
             --draft --target "$GITHUB_SHA" \
-            --title "${{ steps.tag.outputs.tag }}" --generate-notes \
+            --title "DeedPlanner $VERSION ALPHA" \
+            --notes "Web version: https://deedplanner.warlander.app/
+
+          Changelog:
+          * (TODO: write changelog by hand)" \
             DeedPlanner-Windows.zip DeedPlanner-Linux.zip DeedPlanner-Mac.zip
