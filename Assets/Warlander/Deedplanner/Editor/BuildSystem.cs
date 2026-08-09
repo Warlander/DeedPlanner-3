@@ -107,7 +107,11 @@ namespace Warlander.Deedplanner.Editor
                 PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
             }
 
+#if UNITY_EDITOR_OSX
+            // OSXStandalone only exists in editors with the Mac build support module;
+            // Linux/Windows CI editor images lack it, so this must be compile-guarded
             UnityEditor.OSXStandalone.UserBuildSettings.architecture = UnityEditor.Build.OSArchitecture.x64ARM64;
+#endif
 
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.Standalone;

@@ -197,10 +197,17 @@ jobs:
           # standard runners are disk-constrained; the pkgs are ~6GB combined
           rm "$RUNNER_TEMP/Unity.pkg" "$RUNNER_TEMP/IL2CPP.pkg"
           df -h /
+          # pkg layout without Unity Hub is /Applications/Unity/Unity.app;
+          # with Hub it would be Hub/Editor/<version>/Unity.app - resolve dynamically
+          UNITY_APP=$(find /Applications -maxdepth 4 -name "Unity.app" -type d | head -1)
+          test -n "$UNITY_APP"
+          echo "UNITY_APP=$UNITY_APP" >> "$GITHUB_ENV"
+          # confirm the IL2CPP module landed inside the editor
+          ls "$UNITY_APP/Contents/PlaybackEngines/"
 
       - name: Activate Unity license
         run: |
-          LICENSING_CLIENT=$(find "/Applications/Unity/Hub/Editor" -name "Unity.Licensing.Client" -type f | head -1)
+          LICENSING_CLIENT=$(find "$UNITY_APP" -name "Unity.Licensing.Client" -type f | head -1)
           test -n "$LICENSING_CLIENT"
           "$LICENSING_CLIENT" --activate-all --include-personal \
             --username "$UNITY_EMAIL" --password "$UNITY_PASSWORD"
@@ -210,10 +217,9 @@ jobs:
 
       - name: Build (IL2CPP, universal)
         run: |
-          VERSION=$(sed -n 's/m_EditorVersion: //p' ProjectSettings/ProjectVersion.txt | tr -d '\r')
           # no -nographics: batchmode still gets the real Metal device, so shader
           # variants (shadows/lighting) bake correctly (same concern as xvfb on Linux)
-          "/Applications/Unity/Hub/Editor/$VERSION/Unity.app/Contents/MacOS/Unity" \
+          "$UNITY_APP/Contents/MacOS/Unity" \
             -quit -batchmode -logFile - -projectPath "$GITHUB_WORKSPACE" \
             -executeMethod "Warlander.Deedplanner.Editor.BuildSystem.BuildMac"
 
