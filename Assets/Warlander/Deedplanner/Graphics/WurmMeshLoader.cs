@@ -64,6 +64,53 @@ namespace Warlander.Deedplanner.Graphics
                 }
             }
 
+            // Some source meshes (e.g. stone bridge center parts) are authored fully inside-out:
+            // winding and normals both reversed. DeedPlanner 2's renderer did not backface-cull,
+            // so they rendered fine there; Unity culls them. Detect via centroid test and repair.
+            int triangleTotal = trianglesCount / 3;
+            if (triangleTotal > 0)
+            {
+                Vector3 centroid = Vector3.zero;
+                foreach (Vector3 vertex in vertexList)
+                {
+                    centroid += vertex;
+                }
+                centroid /= vertexList.Count;
+
+                int inward = 0;
+                for (int i = 0; i < trianglesCount; i += 3)
+                {
+                    Vector3 v0 = vertexList[triangles[i]];
+                    Vector3 v1 = vertexList[triangles[i + 1]];
+                    Vector3 v2 = vertexList[triangles[i + 2]];
+                    Vector3 geometricNormal = Vector3.Cross(v1 - v0, v2 - v0);
+                    Vector3 triangleCenter = (v0 + v1 + v2) / 3f;
+                    if (Vector3.Dot(geometricNormal, triangleCenter - centroid) < 0)
+                    {
+                        inward++;
+                    }
+                }
+
+                if ((float)inward / triangleTotal > 0.95f)
+                {
+                    Debug.LogWarning($"Mesh {name} is authored inside-out, flipping winding and normals");
+                    for (int i = 0; i < trianglesCount; i += 3)
+                    {
+                        int temp = triangles[i];
+                        triangles[i] = triangles[i + 2];
+                        triangles[i + 2] = temp;
+                    }
+                    for (int i = 0; i < normalList.Count; i++)
+                    {
+                        normalList[i] = -normalList[i];
+                    }
+                    for (int i = 0; i < tangentsList.Count; i++)
+                    {
+                        tangentsList[i] = new Vector4(tangentsList[i].x, tangentsList[i].y, tangentsList[i].z, -tangentsList[i].w);
+                    }
+                }
+            }
+
             Mesh mesh = new Mesh();
             mesh.name = name;
             mesh.SetVertices(vertexList);
