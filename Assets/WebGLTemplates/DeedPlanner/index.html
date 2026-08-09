@@ -26,6 +26,14 @@
     <script>
       var canvas = document.querySelector("#unity-canvas");
 
+      document.addEventListener('contextmenu', (e) => e.preventDefault());
+      canvas.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault(); });
+      canvas.addEventListener('auxclick', (e) => { if (e.button === 1) e.preventDefault(); });
+      canvas.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && (e.code === 'KeyZ' || e.code === 'KeyY')) e.preventDefault();
+      });
+
       function unityShowBanner(msg, type) {
         var warningBanner = document.querySelector("#unity-warning");
         function updateBannerVisibility() {
