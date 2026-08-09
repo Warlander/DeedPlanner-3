@@ -152,6 +152,6 @@ If a proposed approach is architecturally poor, has no clean implementation path
 
 - **VContainer** — DI container
 - **R3** — reactive extensions
-- **Unity InputSystem** 1.18.0
+- **Unity InputSystem** 1.19.0
 - **TextMesh Pro** — UI text
 - **Steamworks.NET** — Steam distribution/achievements
