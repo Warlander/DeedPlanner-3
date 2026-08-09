@@ -123,17 +123,18 @@ namespace Warlander.Deedplanner.Editor
             BuildSummary summary = report.summary;
             if (summary.result == BuildResult.Succeeded)
             {
-                CreateSteamAppId("Build/"+ Constants.SimpleTitleString + " Mac.app/");
+                // no steam_appid.txt on Mac: unsealed files in the bundle root make
+                // codesign refuse to sign, and Finder launches never read it (CWD=/)
                 Debug.Log("SUCCESS BUILD Mac");
                 return true;
-            } 
+            }
             else
             {
                 Debug.Log("FAILED BUILD Mac");
                 return false;
             }
         }
-        
+
         [MenuItem("Build/WebGL", false, 100)]
         public static bool BuildWeb()
         {

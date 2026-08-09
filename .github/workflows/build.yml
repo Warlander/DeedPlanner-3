@@ -225,8 +225,8 @@ jobs:
 
       - name: Ad-hoc sign
         run: |
-          # no Developer ID secrets in the repo - self-sign so arm64 binaries have
-          # the mandatory (ad-hoc) signature after the build added steam_appid.txt
+          # no Developer ID secrets in the repo - self-sign so every arm64 binary
+          # carries the mandatory (ad-hoc) signature
           codesign --deep --force --sign - "Build/DeedPlanner Mac.app"
           codesign --verify --deep --strict "Build/DeedPlanner Mac.app"
 
