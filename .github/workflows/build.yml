@@ -423,10 +423,18 @@ jobs:
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
             commit -m "Deploy ${GITHUB_REF_NAME} (build run ${GITHUB_RUN_ID})"
           git push -f origin deploy-webgl
-          gh pr create --repo Warlander/DeedPlanner-3-web --base master --head deploy-webgl \
+          # only "PR already exists" is an acceptable failure (re-run updates the same
+          # PR via force-push); anything else (e.g. token lacking PR permission) must fail
+          if ! gh pr create --repo Warlander/DeedPlanner-3-web --base master --head deploy-webgl \
             --title "Deploy ${GITHUB_REF_NAME}" \
-            --body "Automated deploy from ${GITHUB_REPOSITORY} run ${GITHUB_RUN_ID}. Merge to publish." \
-            || echo "PR already exists - branch updated instead"
+            --body "Automated deploy from ${GITHUB_REPOSITORY} run ${GITHUB_RUN_ID}. Merge to publish." 2> pr-error.log; then
+            if grep -q "already exists" pr-error.log; then
+              echo "PR already exists - branch updated instead"
+            else
+              cat pr-error.log
+              exit 1
+            fi
+          fi
 
   # Draft release: publishing by hand in the Releases UI is the manual gate.
   # On tag push uses that tag; on manual dispatch uses release_tag input,
