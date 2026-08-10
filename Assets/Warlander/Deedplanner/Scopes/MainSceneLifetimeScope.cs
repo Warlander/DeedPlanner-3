@@ -77,6 +77,7 @@ namespace Warlander.Deedplanner.Scopes
 
             builder.Register<LayoutContext>(Lifetime.Singleton);
             builder.RegisterEntryPoint<TabContext>().AsSelf();
+            builder.RegisterEntryPoint<GroundLevelLock>().AsSelf();
             builder.RegisterInstance(_cameraCoordinator);
             builder.Register<OutlineCoordinator>(Lifetime.Singleton).As<IOutlineCoordinator>();
             builder.RegisterEntryPoint<OutlineFeatureBridge>();

@@ -1,25 +1,33 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Warlander.Deedplanner.Gui.Tooltips;
+using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using VContainer;
 
 namespace Warlander.Deedplanner.Gui.Widgets
 {
     [RequireComponent(typeof(Toggle))]
-    public class LevelToggle : MonoBehaviour
+    public class LevelToggle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        private const string LevelLockedTooltip = "Current editing mode works only on the ground floor";
+
         [Inject] private CameraCoordinator _cameraCoordinator;
-        
+        [Inject] private GroundLevelLock _groundLevelLock;
+        [Inject] private TooltipHandler _tooltipHandler;
+
         [FormerlySerializedAs("floor")] [SerializeField] private int _level = 0;
 
         private Toggle toggle;
+        private bool _hovered;
 
         private void Awake()
         {
             toggle = GetComponent<Toggle>();
-            
+
             toggle.onValueChanged.AddListener(toggled =>
             {
                 if (toggled)
@@ -38,6 +46,26 @@ namespace Warlander.Deedplanner.Gui.Widgets
         {
             _cameraCoordinator.CurrentCameraChanged += CameraCoordinatorOnCurrentCameraChanged;
             _cameraCoordinator.LevelChanged += CameraCoordinatorOnLevelChanged;
+            _groundLevelLock.LockChanged += GroundLevelLockOnLockChanged;
+            UpdateInteractable();
+        }
+
+        private void Update()
+        {
+            if (_hovered && ShowsLockTooltip())
+            {
+                _tooltipHandler.ShowTooltipText(LevelLockedTooltip);
+            }
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            _hovered = true;
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            _hovered = false;
         }
 
         private void CameraCoordinatorOnLevelChanged()
@@ -54,17 +82,33 @@ namespace Warlander.Deedplanner.Gui.Widgets
         {
             _cameraCoordinator.Current.Level = newLevel;
         }
-        
+
         private void CameraCoordinatorOnCurrentCameraChanged()
         {
             int newLevel = _cameraCoordinator.Current.Level;
             toggle.isOn = newLevel == _level;
         }
-        
+
+        private void GroundLevelLockOnLockChanged()
+        {
+            UpdateInteractable();
+        }
+
+        private void UpdateInteractable()
+        {
+            toggle.interactable = _groundLevelLock.IsLevelAllowed(_level);
+        }
+
+        private bool ShowsLockTooltip()
+        {
+            return _level > 0 && !_groundLevelLock.IsLevelAllowed(_level);
+        }
+
         private void OnDestroy()
         {
             _cameraCoordinator.CurrentCameraChanged -= CameraCoordinatorOnCurrentCameraChanged;
             _cameraCoordinator.LevelChanged -= CameraCoordinatorOnLevelChanged;
+            _groundLevelLock.LockChanged -= GroundLevelLockOnLockChanged;
         }
     }
 }
