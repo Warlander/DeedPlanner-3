@@ -247,19 +247,19 @@ jobs:
         run: |
           # no Developer ID secrets in the repo - self-sign so every arm64 binary
           # carries the mandatory (ad-hoc) signature
-          codesign --deep --force --sign - "Build/DeedPlanner Mac.app"
-          codesign --verify --deep --strict "Build/DeedPlanner Mac.app"
+          codesign --deep --force --sign - "Build/DeedPlanner.app"
+          codesign --verify --deep --strict "Build/DeedPlanner.app"
 
       - name: Verify build output
         run: |
-          test -d "Build/DeedPlanner Mac.app"
-          test -x "Build/DeedPlanner Mac.app/Contents/MacOS/DeedPlanner 3"
+          test -d "Build/DeedPlanner.app"
+          test -x "Build/DeedPlanner.app/Contents/MacOS/DeedPlanner 3"
 
       - name: Package
         run: |
           # ditto zip preserves symlinks and the executable bit; upload-artifact
           # on a bare .app loses permissions and breaks the bundle
-          ditto -c -k --keepParent "Build/DeedPlanner Mac.app" "Build/DeedPlanner-Mac.zip"
+          ditto -c -k --keepParent "Build/DeedPlanner.app" "Build/DeedPlanner-Mac.zip"
 
       - name: Upload artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -381,7 +381,7 @@ jobs:
           unzip -q "dl/mac/DeedPlanner-Mac.zip" -d steam/StandaloneMacOSX/
           # steam_appid.txt is for out-of-Steam launches; Valve warns against shipping it in depots
           rm -f steam/StandaloneWindows64/steam_appid.txt steam/StandaloneLinux64/steam_appid.txt \
-            "steam/StandaloneMacOSX/DeedPlanner Mac.app/steam_appid.txt"
+            "steam/StandaloneMacOSX/DeedPlanner.app/steam_appid.txt"
           ls steam/StandaloneWindows64 steam/StandaloneLinux64 steam/StandaloneMacOSX
 
       - name: Deploy to Steam

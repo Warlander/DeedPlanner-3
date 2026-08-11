@@ -116,7 +116,7 @@ namespace Warlander.Deedplanner.Editor
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.Standalone;
             buildOptions.target = BuildTarget.StandaloneOSX;
-            buildOptions.locationPathName = "Build/"+ Constants.SimpleTitleString + " Mac.app";
+            buildOptions.locationPathName = "Build/"+ Constants.SimpleTitleString + ".app";
             buildOptions.options = BuildOptions.None;
 
             BuildReport report = BuildPipeline.BuildPlayer(buildOptions);
