@@ -10,5 +10,6 @@ namespace Warlander.Deedplanner.Settings
         bool RenderTrees { get; }
         bool RenderBushes { get; }
         bool RenderShips { get; }
+        bool RenderBridges { get; }
     }
 }

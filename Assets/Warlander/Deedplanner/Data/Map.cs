@@ -54,6 +54,7 @@ namespace Warlander.Deedplanner.Data
         public bool RenderTrees => _mapRenderSettingsRetriever.RenderTrees;
         public bool RenderBushes => _mapRenderSettingsRetriever.RenderBushes;
         public bool RenderShips => _mapRenderSettingsRetriever.RenderShips;
+        public bool RenderBridges => _mapRenderSettingsRetriever.RenderBridges;
 
         public CommandManager CommandManager { get; set; } = new CommandManager(100);
         public IReadOnlyList<Bridge> Bridges => _bridgesController.Bridges;
@@ -413,6 +414,8 @@ namespace Warlander.Deedplanner.Data
         private void GameManagerOnRenderSettingsChanged()
         {
             RefreshAllTiles();
+            _levelRenderer.RenderBridges = RenderBridges;
+            _levelRenderer.UpdateBridgesRendering();
         }
 
         private void RecalculateHeights()
