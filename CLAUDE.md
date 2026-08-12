@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-DeedPlanner 3 is a 3D deed/house planning tool for Wurm Online and Wurm Unlimited, built with Unity 6000.3.20f1. It runs as a standalone Windows application and WebGL version.
+DeedPlanner 3 is a 3D deed/house planning tool for Wurm Online and Wurm Unlimited, built with Unity 6000.3.20f1. It runs as a standalone application (Windows/Linux/Mac) and WebGL version.
 
 ## Building and Running
 
