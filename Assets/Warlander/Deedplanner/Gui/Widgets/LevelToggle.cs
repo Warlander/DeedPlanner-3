@@ -3,9 +3,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Warlander.Deedplanner.Features;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
+using Warlogic.Features;
 using VContainer;
 
 namespace Warlander.Deedplanner.Gui.Widgets
@@ -18,6 +20,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private GroundLevelLock _groundLevelLock;
         [Inject] private TooltipHandler _tooltipHandler;
+        [Inject] private IFeatureStateRetriever<Feature> _featureStateRetriever;
 
         [FormerlySerializedAs("floor")] [SerializeField] private int _level = 0;
 
@@ -96,7 +99,20 @@ namespace Warlander.Deedplanner.Gui.Widgets
 
         private void UpdateInteractable()
         {
-            toggle.interactable = _groundLevelLock.IsLevelAllowed(_level);
+            toggle.interactable = IsLevelAvailable();
+        }
+
+        private bool IsLevelAvailable()
+        {
+            if (_level < 0)
+            {
+                if (!_featureStateRetriever.IsFeatureEnabled(Feature.Caves))
+                {
+                    return false;
+                }
+                return !_groundLevelLock.Locked || _level == -1;
+            }
+            return _groundLevelLock.IsLevelAllowed(_level);
         }
 
         private bool ShowsLockTooltip()

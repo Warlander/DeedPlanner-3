@@ -373,7 +373,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49e321de111fda147a246c90e52efe48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.TabSelectionView
-  _tabToggleGroup: {fileID: 0}
+  _tabToggleGroup: {fileID: 8371576807831518936}
 --- !u!114 &55814331961881309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -520,6 +520,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: m_Interactable
@@ -793,6 +798,11 @@ PrefabInstance:
       propertyPath: m_IsOn
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -1061,6 +1071,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: m_Interactable
@@ -1353,6 +1368,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -1616,6 +1636,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: m_Interactable
@@ -1908,6 +1933,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -2151,6 +2181,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7621151673009104640}
     m_Modifications:
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -2405,6 +2440,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: m_Interactable
@@ -2697,6 +2737,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: m_Interactable
@@ -3001,6 +3046,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -3286,6 +3336,11 @@ PrefabInstance:
       propertyPath: m_IsOn
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 5482825711390453027, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: m_Sprite
@@ -3530,6 +3585,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
@@ -3793,6 +3853,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -5
       objectReference: {fileID: 0}
+    - target: {fileID: 2963208184587779924, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
+        type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 8371576807831518936}
     - target: {fileID: 5160661832475099975, guid: dae8a6b11a88acd4eb4b607ff0bd4613,
         type: 3}
       propertyPath: Tab
