@@ -119,17 +119,15 @@ namespace Warlander.Deedplanner.Updaters
 
             UpdateBridgeHover(bridge);
 
-            OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
-            
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 OnBridgeClicked(bridge);
-                if (overlayMesh != null)
+                if (bridge == null)
                 {
-                    int floor = _cameraCoordinator.Current.Level;
                     int x = Mathf.FloorToInt(raycast.point.x / 4f);
                     int y = Mathf.FloorToInt(raycast.point.z / 4f);
-                    
+                    int floor = ResolveLevel(raycast.point, x, y);
+
                     OnMapClicked(x, y, floor);
                 }
             }
@@ -144,6 +142,27 @@ namespace Warlander.Deedplanner.Updaters
             {
                 _tooltipHandler.ShowTooltipText($"{bridge.Data.Name} bridge");
             }
+        }
+
+        private int ResolveLevel(Vector3 point, int x, int y)
+        {
+            int cameraLevel = _cameraCoordinator.Current.Level;
+            if (cameraLevel < 0)
+            {
+                return cameraLevel;
+            }
+
+            Map map = _mapHandler.Map;
+            if (map[x, y] == null)
+            {
+                return cameraLevel;
+            }
+
+            // Inverse of Bridge.GetAbsoluteHeight: 3 world units per building level, 0.3 world units floor offset.
+            float surfaceHeight = map.GetInterpolatedHeight(point.x, point.z);
+            int derivedLevel = Mathf.RoundToInt((point.y - surfaceHeight - 0.3f) / 3f);
+
+            return derivedLevel > 0 ? derivedLevel : cameraLevel;
         }
 
         private void UpdateBridgeHover(Bridge bridge)
