@@ -302,7 +302,16 @@ namespace Warlander.Deedplanner.Updaters
 
         private void OnMapClicked(int x, int y, int floor)
         {
-            if (_firstClickedTile != null && _secondClickedTile != null)
+            if (_firstClickedTile != null && _firstClickedTile.X == x && _firstClickedTile.Y == y)
+            {
+                _firstClickedTile = _secondClickedTile;
+                _secondClickedTile = null;
+            }
+            else if (_secondClickedTile != null && _secondClickedTile.X == x && _secondClickedTile.Y == y)
+            {
+                _secondClickedTile = null;
+            }
+            else if (_firstClickedTile != null && _secondClickedTile != null)
             {
                 _firstClickedTile = new TileCoords(x, y, floor);
                 _secondClickedTile = null;
