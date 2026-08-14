@@ -99,6 +99,11 @@ namespace Warlander.Deedplanner.Updaters
                 y = Mathf.FloorToInt(raycast.point.z / 4f);
             }
 
+            if (x < 0 || y < 0)
+            {
+                return;
+            }
+
             FloorData data = _selectedFloor;
             if (data.Opening && (floor == 0 || floor == -1))
             {

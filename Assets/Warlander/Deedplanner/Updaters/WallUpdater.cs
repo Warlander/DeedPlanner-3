@@ -137,6 +137,11 @@ namespace Warlander.Deedplanner.Updaters
                 horizontal = (target == TileSelectionTarget.BottomBorder);
             }
 
+            if (x < 0 || y < 0)
+            {
+                return;
+            }
+
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
                 Floor currentFloor = _mapHandler.Map[x, y].GetTileContent(floor) as Floor;
