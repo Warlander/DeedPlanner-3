@@ -142,6 +142,10 @@ namespace Warlander.Deedplanner.Updaters
             {
                 _tooltipHandler.ShowTooltipText($"{bridge.Data.Name} bridge");
             }
+            else
+            {
+                ShowSelectedEndpointTooltip(raycast);
+            }
         }
 
         private int ResolveLevel(Vector3 point, int x, int y)
@@ -163,6 +167,45 @@ namespace Warlander.Deedplanner.Updaters
             int derivedLevel = Mathf.RoundToInt((point.y - surfaceHeight - 0.3f) / 3f);
 
             return derivedLevel > 0 ? derivedLevel : cameraLevel;
+        }
+
+        private void ShowSelectedEndpointTooltip(RaycastHit raycast)
+        {
+            int x = Mathf.FloorToInt(raycast.point.x / 4f);
+            int y = Mathf.FloorToInt(raycast.point.z / 4f);
+
+            TileCoords endpoint = null;
+            string label = null;
+            if (_firstClickedTile != null && _firstClickedTile.X == x && _firstClickedTile.Y == y)
+            {
+                endpoint = _firstClickedTile;
+                label = "Bridge start";
+            }
+            else if (_secondClickedTile != null && _secondClickedTile.X == x && _secondClickedTile.Y == y)
+            {
+                endpoint = _secondClickedTile;
+                label = "Bridge end";
+            }
+
+            if (endpoint == null)
+            {
+                return;
+            }
+
+            int difference = endpoint.Level - _cameraCoordinator.Current.Level;
+            string floorLine;
+            if (difference == 0)
+            {
+                floorLine = "This floor";
+            }
+            else
+            {
+                int count = Mathf.Abs(difference);
+                string direction = difference > 0 ? "above" : "below";
+                floorLine = $"{count} floor{(count == 1 ? "" : "s")} {direction} active floor";
+            }
+
+            _tooltipHandler.ShowTooltipText($"{label}\n{floorLine}");
         }
 
         private void UpdateBridgeHover(Bridge bridge)
