@@ -19,19 +19,16 @@ namespace Warlander.Deedplanner.Gui.Windows
         [Inject] private SaveCoordinator _saveCoordinator;
         [Inject] private MapHandler _mapHandler;
 
-        [SerializeField] private TMP_Text _headerText;
-        [SerializeField] private Transform _backendListContainer;
-        [SerializeField] private SaveBackendRowView _rowPrototype;
-        [SerializeField] private TMP_Text _sectionHeaderPrototype;
+        [SerializeField] private TMP_Text _infoText;
+        [SerializeField] private Transform _saveContainer;
+        [SerializeField] private Transform _exportContainer;
+        [SerializeField] private Button _actionButtonPrototype;
         [SerializeField] private GameObject _warningBox;
         [SerializeField] private TMP_Text _warningText;
         [SerializeField] private GameObject _feasibilityBox;
         [SerializeField] private TMP_Text _feasibilityText;
-        [SerializeField] private Button _cancelButton;
-        [SerializeField] private Button _saveButton;
 
-        private readonly List<SaveBackendRowView> _rows = new List<SaveBackendRowView>();
-        private string _selectedBackendId;
+        private readonly List<Button> _actionButtons = new List<Button>();
         private string _payload;
         private long _gzipSize = -1;
 
@@ -44,10 +41,9 @@ namespace Warlander.Deedplanner.Gui.Windows
         {
             _payload = _saveCoordinator.SerializeCurrentMap();
             long sizeKb = Encoding.UTF8.GetByteCount(_payload) / 1024;
-            _headerText.text = $"Save map · {_mapHandler.Map.DisplayName} · {sizeKb} KB";
+            _infoText.text = $"Save map · {_mapHandler.Map.DisplayName} · {sizeKb} KB";
 
-            var saveBackends = new List<ISaveBackend>();
-            var exportBackends = new List<ISaveBackend>();
+            ISaveBackend volatileBackend = null;
             foreach (ISaveBackend backend in _saveCoordinator.Backends)
             {
                 if ((backend.Capabilities & SaveCapabilities.Save) == 0)
@@ -55,85 +51,74 @@ namespace Warlander.Deedplanner.Gui.Windows
                     continue;
                 }
 
-                if ((backend.Capabilities & SaveCapabilities.Overwrite) != 0)
-                {
-                    saveBackends.Add(backend);
-                }
-                else
-                {
-                    exportBackends.Add(backend);
-                }
-            }
+                Transform container = (backend.Capabilities & SaveCapabilities.Overwrite) != 0
+                    ? _saveContainer
+                    : _exportContainer;
 
-            BuildSection("Save", saveBackends);
-            BuildSection("Export", exportBackends);
-
-            _cancelButton.onClick.AddListener(() => _window.Close());
-            _saveButton.onClick.AddListener(SaveOnClick);
-
-            if (_rows.Count > 0)
-            {
-                SelectBackend(_rows[0].name.Substring("Backend ".Length));
-            }
-        }
-
-        private void BuildSection(string title, List<ISaveBackend> backends)
-        {
-            if (backends.Count == 0)
-            {
-                return;
-            }
-
-            TMP_Text header = Instantiate(_sectionHeaderPrototype, _backendListContainer);
-            header.name = title + " Header";
-            header.text = title;
-            header.gameObject.SetActive(true);
-
-            foreach (ISaveBackend backend in backends)
-            {
-                SaveBackendRowView row = Instantiate(_rowPrototype, _backendListContainer);
-                row.name = "Backend " + backend.Id;
-                row.SetData(backend.DisplayName, Describe(backend.Id));
+                Button button = Instantiate(_actionButtonPrototype, container);
+                button.name = backend.DisplayName + " Button";
+                button.GetComponentInChildren<TMP_Text>().text = backend.DisplayName;
                 string backendId = backend.Id;
-                row.Clicked += () => SelectBackend(backendId);
-                row.gameObject.SetActive(true);
-                _rows.Add(row);
-            }
-        }
+                button.onClick.AddListener(() => ActBackend(backendId));
+                button.gameObject.SetActive(true);
+                _actionButtons.Add(button);
 
-        private void SelectBackend(string backendId)
-        {
-            _selectedBackendId = backendId;
-            int index = 0;
-            foreach (SaveBackendRowView row in _rows)
+                if (backend.IsVolatile && volatileBackend == null)
+                {
+                    volatileBackend = backend;
+                }
+            }
+
+            _warningBox.SetActive(volatileBackend != null);
+            if (volatileBackend != null)
             {
-                string rowBackendId = row.name.Substring("Backend ".Length);
-                row.SetSelected(rowBackendId == backendId);
-                index++;
+                _warningText.text = VolatileWarning(volatileBackend.Id);
             }
 
-            RefreshNotices();
+            _feasibilityBox.SetActive(false);
         }
 
-        private void RefreshNotices()
+        private async void ActBackend(string backendId)
         {
-            ISaveBackend backend = _saveCoordinator.GetBackend(_selectedBackendId);
+            ISaveBackend backend = _saveCoordinator.GetBackend(backendId);
             if (backend == null)
             {
                 return;
             }
 
-            _warningBox.SetActive(backend.IsVolatile);
-            if (backend.IsVolatile)
-            {
-                _warningText.text = VolatileWarning(backend.Id);
-            }
-
             SaveFeasibility feasibility = backend.CheckSave(PayloadSizeFor(backend));
-            _feasibilityBox.SetActive(!feasibility.Possible);
             if (!feasibility.Possible)
             {
+                _feasibilityBox.SetActive(true);
                 _feasibilityText.text = feasibility.Reason;
+                return;
+            }
+
+            SetActionButtonsInteractable(false);
+            try
+            {
+                MapLocation? location = await _saveCoordinator.SaveAsync(backendId);
+                if (location.HasValue)
+                {
+                    _window.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                _feasibilityBox.SetActive(true);
+                _feasibilityText.text = e.Message;
+            }
+            finally
+            {
+                SetActionButtonsInteractable(true);
+            }
+        }
+
+        private void SetActionButtonsInteractable(bool interactable)
+        {
+            foreach (Button button in _actionButtons)
+            {
+                button.interactable = interactable;
             }
         }
 
@@ -152,54 +137,6 @@ namespace Warlander.Deedplanner.Gui.Windows
 
             // text targets carry the payload as base64
             return backend.Id == "steamcloud" ? _gzipSize : _gzipSize * 4 / 3;
-        }
-
-        private async void SaveOnClick()
-        {
-            ISaveBackend backend = _saveCoordinator.GetBackend(_selectedBackendId);
-            if (backend == null)
-            {
-                return;
-            }
-
-            SaveFeasibility feasibility = backend.CheckSave(PayloadSizeFor(backend));
-            if (!feasibility.Possible)
-            {
-                RefreshNotices();
-                return;
-            }
-
-            _saveButton.interactable = false;
-            try
-            {
-                MapLocation? location = await _saveCoordinator.SaveAsync(_selectedBackendId);
-                if (location.HasValue)
-                {
-                    _window.Close();
-                }
-            }
-            catch (Exception e)
-            {
-                _feasibilityBox.SetActive(true);
-                _feasibilityText.text = e.Message;
-            }
-            finally
-            {
-                _saveButton.interactable = true;
-            }
-        }
-
-        private static string Describe(string backendId)
-        {
-            switch (backendId)
-            {
-                case "file": return "Any folder, full tracking, quick save and auto-save supported.";
-                case "pastebin": return "Creates a new permanent paste you can share. No quick save, no status tracking.";
-                case "webfile": return "Downloads a .MAP file through your browser.";
-                case "steamcloud": return "Synced across your PCs. Name only, no folders.";
-                case "localstorage": return "Stored in this browser. Can be wiped by browser cleanup.";
-                default: return "";
-            }
         }
 
         private static string VolatileWarning(string backendId)
