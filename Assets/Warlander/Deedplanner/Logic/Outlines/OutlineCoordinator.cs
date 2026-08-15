@@ -12,6 +12,7 @@ namespace Warlander.Deedplanner.Logic.Outlines
         private readonly Dictionary<DynamicModelBehaviour, OutlineEntry> _activeOutlines = new Dictionary<DynamicModelBehaviour, OutlineEntry>();
 
         public bool HasOutlinedObjects => _activeOutlines.Count > 0;
+        public bool RenderingSuspended { get; set; }
 
         public void AddObject(DynamicModelBehaviour behaviour, OutlineType type, int priority)
         {

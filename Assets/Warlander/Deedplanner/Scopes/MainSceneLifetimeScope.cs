@@ -5,6 +5,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Graphics.Projectors;
+using Warlander.Deedplanner.Graphics.Screenshots;
 using Warlander.Deedplanner.Graphics.Water;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Updaters;
@@ -107,6 +108,10 @@ namespace Warlander.Deedplanner.Scopes
 
             builder.Register<MapHandler>(Lifetime.Singleton);
             builder.RegisterEntryPoint<UndoRedoInputHandler>();
+            builder.Register<ScreenshotRenderer>(Lifetime.Singleton).As<IScreenshotRenderer>();
+            builder.Register<CurrentViewScreenshotCapture>(Lifetime.Singleton);
+            builder.Register<ScreenshotSaver>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<ScreenshotInputListener>();
             builder.RegisterEntryPoint<UpdaterCoordinator>();
             builder.Register<MapProjectorFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterEntryPoint<StartupMapLoader>();

@@ -61,7 +61,7 @@ namespace Warlander.Deedplanner.Graphics.Outline
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             if (_pass == null || _dilateMat == null) return;
-            if (_coordinator == null || !_coordinator.HasOutlinedObjects) return;
+            if (_coordinator == null || _coordinator.RenderingSuspended || !_coordinator.HasOutlinedObjects) return;
 
             // Keep the dilation width in sync with the inspector value at runtime.
             _dilateMat.SetFloat(OutlineWidthId, outlineWidth);

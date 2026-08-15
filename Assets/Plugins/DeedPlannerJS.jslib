@@ -40,17 +40,37 @@ mergeInto(LibraryManager.library, {
     DownloadNative : function(name, content) {
         var jsName = UTF8ToString(name);
         var jsContent = UTF8ToString(content);
-        
+
         var element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsContent));
         element.setAttribute('download', jsName);
-    
+
         element.style.display = 'none';
         document.body.appendChild(element);
-    
+
         element.click();
-    
+
         document.body.removeChild(element);
+    },
+
+    DownloadBinaryNative : function(name, data, length) {
+        var jsName = UTF8ToString(name);
+        var bytes = HEAPU8.slice(data, data + length);
+
+        var blob = new Blob([bytes], { type: 'application/octet-stream' });
+        var url = URL.createObjectURL(blob);
+
+        var element = document.createElement('a');
+        element.setAttribute('href', url);
+        element.setAttribute('download', jsName);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+        setTimeout(function() { URL.revokeObjectURL(url); }, 0);
     },
     
     UploadNative : function(objectCallbackName, methodCallbackName) {

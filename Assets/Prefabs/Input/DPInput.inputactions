@@ -947,6 +947,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Take Screenshot",
+                    "type": "Button",
+                    "id": "9c7d4c4b-6a90-41a0-b9fc-b85f82bebeb1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1068,6 +1077,17 @@
                     "processors": "",
                     "groups": "Mouse and Keyboard",
                     "action": "Toggle UI",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1cefa353-b964-4cd8-b684-f6092cb687f9",
+                    "path": "<Keyboard>/f9",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Take Screenshot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
