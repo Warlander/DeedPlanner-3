@@ -47,6 +47,7 @@ namespace Warlander.Deedplanner.Gui
 
     public interface IHomeScreenView
     {
+        event Action BackClicked;
         event Action NewDeedClicked;
         event Action LoadClicked;
         event Action WebLinkClicked;

@@ -35,6 +35,7 @@ namespace Warlander.Deedplanner.Gui
 
         public void Initialize()
         {
+            _view.BackClicked += OnBack;
             _view.NewDeedClicked += OnNewDeed;
             _view.LoadClicked += OnLoad;
             _view.WebLinkClicked += OnWebLink;
@@ -52,8 +53,15 @@ namespace Warlander.Deedplanner.Gui
         {
             if (_view.Visible && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             {
-                OnNewDeed();
+                OnBack();
             }
+        }
+
+        /// Hides the screen without touching the current map: at startup the blank default waits
+        /// behind it, in-session this simply returns to the deed being edited.
+        private void OnBack()
+        {
+            _view.Hide();
         }
 
         public void ShowHomeScreen()

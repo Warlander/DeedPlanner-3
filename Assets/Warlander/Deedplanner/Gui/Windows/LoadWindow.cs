@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -60,20 +59,10 @@ namespace Warlander.Deedplanner.Gui.Windows
 
         private async void LoadFromWebOnClick()
         {
-            string rawLink = _pastebinInput.text;
-            string requestLink = WebLinkUtils.ParseToDirectDownloadLink(rawLink);
-
-            try
+            bool loaded = await _saveCoordinator.LoadFromWebAsync(_pastebinInput.text);
+            if (!loaded)
             {
-                await _mapHandler.LoadMapAsync(new Uri(requestLink));
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning("Unable to load map from: " + rawLink);
-                if (Debug.isDebugBuild)
-                {
-                    Debug.LogError(e);
-                }
+                Debug.LogWarning("Unable to load map from: " + _pastebinInput.text);
             }
 
             _window.Close();

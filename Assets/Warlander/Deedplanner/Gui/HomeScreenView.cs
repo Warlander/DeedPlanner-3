@@ -9,6 +9,7 @@ namespace Warlander.Deedplanner.Gui
     public class HomeScreenView : MonoBehaviour, IHomeScreenView
     {
         [SerializeField] private GameObject _panel;
+        [SerializeField] private Button _backButton;
         [SerializeField] private Button _newDeedButton;
         [SerializeField] private Button _loadButton;
         [SerializeField] private Button _webLinkButton;
@@ -22,6 +23,7 @@ namespace Warlander.Deedplanner.Gui
 
         private static readonly Color SelectedCategoryColor = new Color(0.45f, 0.65f, 0.95f);
 
+        public event Action BackClicked;
         public event Action NewDeedClicked;
         public event Action LoadClicked;
         public event Action WebLinkClicked;
@@ -38,6 +40,7 @@ namespace Warlander.Deedplanner.Gui
 
         private void Awake()
         {
+            _backButton.onClick.AddListener(() => BackClicked?.Invoke());
             _newDeedButton.onClick.AddListener(() => NewDeedClicked?.Invoke());
             _loadButton.onClick.AddListener(() => LoadClicked?.Invoke());
             _webLinkButton.onClick.AddListener(() => WebLinkClicked?.Invoke());

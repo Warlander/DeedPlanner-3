@@ -26,12 +26,13 @@ namespace Warlander.Deedplanner.Updaters
         private readonly TabContext _tabContext;
         private readonly SaveCoordinator _saveCoordinator;
         private readonly MapHandler _mapHandler;
+        private readonly HomeScreenPresenter _homeScreenPresenter;
 
         public Tab TargetTab => Tab.Menu;
 
         public MenuUpdater(IMenuUpdaterView view, DPSettings settings, WindowCoordinator windowCoordinator,
             ISteamConnection steamConnection, TabContext tabContext,
-            SaveCoordinator saveCoordinator, MapHandler mapHandler)
+            SaveCoordinator saveCoordinator, MapHandler mapHandler, HomeScreenPresenter homeScreenPresenter)
         {
             _view = view;
             _settings = settings;
@@ -40,6 +41,7 @@ namespace Warlander.Deedplanner.Updaters
             _tabContext = tabContext;
             _saveCoordinator = saveCoordinator;
             _mapHandler = mapHandler;
+            _homeScreenPresenter = homeScreenPresenter;
         }
 
         public void Initialize()
@@ -154,7 +156,7 @@ namespace Warlander.Deedplanner.Updaters
                     _windowCoordinator.CreateWindowExclusive(WindowNames.SaveMapWindow);
                     break;
                 case MenuAction.Load:
-                    _windowCoordinator.CreateWindowExclusive(WindowNames.LoadMapWindow);
+                    _homeScreenPresenter.ShowHomeScreen();
                     break;
                 case MenuAction.GraphicsSettings:
                     _windowCoordinator.CreateWindowExclusive(WindowNames.GraphicsSettingsWindow);

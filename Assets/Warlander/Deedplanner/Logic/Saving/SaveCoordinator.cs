@@ -211,6 +211,41 @@ namespace Warlander.Deedplanner.Logic.Saving
             SaveStateChanged?.Invoke();
         }
 
+        /// Loads a map from a web link (Pastebin/Drive/Dropbox). Pastebin links go through the backend
+        /// (recorded, export semantics); other hosts load without a location identity.
+        public async Task<bool> LoadFromWebAsync(string rawLink)
+        {
+            if (Busy)
+            {
+                return false;
+            }
+
+            string directLink = WebLinkUtils.ParseToDirectDownloadLink(rawLink);
+            if (directLink.Contains("pastebin.com"))
+            {
+                int lastSlash = directLink.LastIndexOf('/');
+                string name = lastSlash >= 0 && lastSlash < directLink.Length - 1
+                    ? directLink.Substring(lastSlash + 1)
+                    : "Shared map";
+                return await LoadAsync(new MapLocation("pastebin", directLink, name));
+            }
+
+            try
+            {
+                await AutoSaveBeforeDestructiveAsync();
+                await _mapHandler.LoadMapAsync(new Uri(directLink));
+                CurrentLocation = null;
+                LastSaveTimeUtc = null;
+                SaveStateChanged?.Invoke();
+                return _mapHandler.Map != null;
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"Unable to load map from {rawLink}: {e.Message}");
+                return false;
+            }
+        }
+
         /// Loads an auto-save slot's content while keeping the main save's identity. Null main = never-saved map.
         public async Task<bool> LoadRecoveryAsync(MapLocation slot, MapLocation? mainLocation)
         {
