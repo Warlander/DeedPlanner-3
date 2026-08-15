@@ -32,6 +32,14 @@ namespace Warlander.Deedplanner.Logic.Saving
             return SaveFeasibility.Ok;
         }
 
+        public string LocationHint(MapLocation location)
+        {
+            int lastSlash = location.Locator.LastIndexOf('/');
+            return lastSlash >= 0 && lastSlash < location.Locator.Length - 1
+                ? location.Locator.Substring(lastSlash + 1)
+                : location.Locator;
+        }
+
         public async Task<MapLocation?> SaveAsync(string payload, string suggestedName)
         {
             byte[] compressed = Compress(Encoding.UTF8.GetBytes(payload));

@@ -13,22 +13,25 @@ namespace Warlander.Deedplanner.Logic.Saving
         private readonly MapHandler _mapHandler;
         private readonly DeedThumbnailCapture _thumbnailCapture;
         private readonly IReadOnlyList<ISaveBackend> _backends;
+        private readonly RecentMapsStore _recentMaps;
 
         public MapLocation? CurrentLocation { get; private set; }
         public DateTime? LastSaveTimeUtc { get; private set; }
         public bool Busy { get; private set; }
 
         public IReadOnlyList<ISaveBackend> Backends => _backends;
+        public RecentMapsStore RecentMaps => _recentMaps;
 
         /// Fired whenever CurrentLocation or LastSaveTimeUtc changes: save, quick save, load, new map.
         public event Action SaveStateChanged;
 
         public SaveCoordinator(MapHandler mapHandler, DeedThumbnailCapture thumbnailCapture,
-            IReadOnlyList<ISaveBackend> backends)
+            IReadOnlyList<ISaveBackend> backends, RecentMapsStore recentMaps)
         {
             _mapHandler = mapHandler;
             _thumbnailCapture = thumbnailCapture;
             _backends = backends;
+            _recentMaps = recentMaps;
         }
 
         public ISaveBackend GetBackend(string id)
@@ -89,6 +92,7 @@ namespace Warlander.Deedplanner.Logic.Saving
                     map.ClearDirty();
                     CurrentLocation = location;
                     LastSaveTimeUtc = DateTime.UtcNow;
+                    _recentMaps.Record(location.Value, map.ThumbnailJpeg);
                     SaveStateChanged?.Invoke();
                 }
 
@@ -119,6 +123,7 @@ namespace Warlander.Deedplanner.Logic.Saving
                 _mapHandler.Map.ClearDirty();
                 CurrentLocation = location;
                 LastSaveTimeUtc = DateTime.UtcNow;
+                _recentMaps.Record(location, _mapHandler.Map.ThumbnailJpeg);
                 SaveStateChanged?.Invoke();
                 return true;
             }
@@ -164,8 +169,16 @@ namespace Warlander.Deedplanner.Logic.Saving
                     _mapHandler.Map.DisplayName = location.DisplayName;
                 }
 
-                CurrentLocation = location;
+                if (_mapHandler.Map.ThumbnailJpeg == null)
+                {
+                    _mapHandler.Map.ThumbnailJpeg = _recentMaps.LoadThumbnail(location);
+                }
+
+                // location display name may come from the XML now
+                var loadedLocation = new MapLocation(location.BackendId, location.Locator, _mapHandler.Map.DisplayName);
+                CurrentLocation = loadedLocation;
                 LastSaveTimeUtc = null;
+                _recentMaps.Record(loadedLocation, _mapHandler.Map.ThumbnailJpeg);
                 SaveStateChanged?.Invoke();
                 return true;
             }

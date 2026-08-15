@@ -18,6 +18,8 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         public SaveFeasibility CheckSave(long payloadBytes) => SaveFeasibility.Ok;
 
+        public string LocationHint(MapLocation location) => Path.GetDirectoryName(location.Locator);
+
         public Task<MapLocation?> SaveAsync(string payload, string suggestedName)
         {
             TaskCompletionSource<MapLocation?> completion = new TaskCompletionSource<MapLocation?>();

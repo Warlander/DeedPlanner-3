@@ -12,6 +12,9 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         SaveFeasibility CheckSave(long payloadBytes);
 
+        /// Short location detail shown on cards to distinguish same-named saves. Null when nothing meaningful.
+        string LocationHint(MapLocation location);
+
         /// Full save flow including any location picker. Returns null when cancelled.
         Task<MapLocation?> SaveAsync(string payload, string suggestedName);
 

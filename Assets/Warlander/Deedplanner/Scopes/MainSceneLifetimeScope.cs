@@ -66,6 +66,8 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterComponentInHierarchy<FloorUpdaterView>().As<IFloorUpdaterView>();
             builder.RegisterComponentInHierarchy<WallUpdaterView>().As<IWallUpdaterView>();
             builder.RegisterComponentInHierarchy<MenuUpdaterView>().As<IMenuUpdaterView>();
+            builder.RegisterComponentInHierarchy<HomeScreenView>().As<IHomeScreenView>();
+            builder.RegisterEntryPoint<HomeScreenPresenter>().AsSelf();
             builder.RegisterComponentInHierarchy<DecorationUpdaterView>().As<IDecorationUpdaterView>();
             builder.RegisterComponentInHierarchy<ToolsUpdaterView>().As<IToolsUpdaterView>();
             builder.RegisterComponentInHierarchy<HeightUpdaterView>().As<IHeightUpdaterView>();
@@ -122,7 +124,8 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterEntryPoint<ScreenshotInputListener>();
             builder.RegisterEntryPoint<UpdaterCoordinator>();
             builder.Register<MapProjectorFacade>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.RegisterEntryPoint<StartupMapLoader>();
+            builder.Register<RecentMapsStore>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<StartupMapSelection>();
 
             builder.Register<OverlayMeshLoader>(Lifetime.Singleton);
             builder.Register<HeightmapHandleMeshLoader>(Lifetime.Singleton);

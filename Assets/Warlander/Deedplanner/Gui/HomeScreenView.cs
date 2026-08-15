@@ -1,0 +1,124 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using Warlander.Deedplanner.Logic.Saving;
+
+namespace Warlander.Deedplanner.Gui
+{
+    public class HomeScreenView : MonoBehaviour, IHomeScreenView
+    {
+        [SerializeField] private GameObject _panel;
+        [SerializeField] private Button _newDeedButton;
+        [SerializeField] private Button _loadButton;
+        [SerializeField] private Button _webLinkButton;
+        [SerializeField] private Button _aboutButton;
+        [SerializeField] private Button _quitButton;
+        [SerializeField] private Button _allSavesButton;
+        [SerializeField] private Transform _categoryContainer;
+        [SerializeField] private Button _categoryButtonPrototype;
+        [SerializeField] private Transform _cardsContainer;
+        [SerializeField] private DeedCardView _cardPrototype;
+
+        private static readonly Color SelectedCategoryColor = new Color(0.45f, 0.65f, 0.95f);
+
+        public event Action NewDeedClicked;
+        public event Action LoadClicked;
+        public event Action WebLinkClicked;
+        public event Action AboutClicked;
+        public event Action QuitClicked;
+        public event Action<string> CategoryClicked;
+        public event Action<MapLocation> CardClicked;
+
+        private readonly List<Button> _categoryButtons = new List<Button>();
+        private readonly Dictionary<MapLocation, DeedCardView> _cards =
+            new Dictionary<MapLocation, DeedCardView>();
+
+        public bool Visible => _panel.activeSelf;
+
+        private void Awake()
+        {
+            _newDeedButton.onClick.AddListener(() => NewDeedClicked?.Invoke());
+            _loadButton.onClick.AddListener(() => LoadClicked?.Invoke());
+            _webLinkButton.onClick.AddListener(() => WebLinkClicked?.Invoke());
+            _aboutButton.onClick.AddListener(() => AboutClicked?.Invoke());
+            _quitButton.onClick.AddListener(() => QuitClicked?.Invoke());
+            _allSavesButton.onClick.AddListener(() => CategoryClicked?.Invoke(null));
+        }
+
+        public void Show()
+        {
+            _panel.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            _panel.SetActive(false);
+        }
+
+        public void SetLoadButtonVisible(bool visible)
+        {
+            _loadButton.gameObject.SetActive(visible);
+        }
+
+        public void SetCategories(IReadOnlyList<HomeScreenCategory> categories, string selectedBackendId)
+        {
+            foreach (Button button in _categoryButtons)
+            {
+                Destroy(button.gameObject);
+            }
+
+            _categoryButtons.Clear();
+
+            TintCategoryButton(_allSavesButton, selectedBackendId == null);
+
+            foreach (HomeScreenCategory category in categories)
+            {
+                Button button = Instantiate(_categoryButtonPrototype, _categoryContainer);
+                button.name = "Category " + category.Label;
+                button.GetComponentInChildren<TMPro.TMP_Text>().text = category.Label;
+                string backendId = category.BackendId;
+                button.onClick.AddListener(() => CategoryClicked?.Invoke(backendId));
+                button.gameObject.SetActive(true);
+                TintCategoryButton(button, selectedBackendId == backendId);
+                _categoryButtons.Add(button);
+            }
+        }
+
+        public void SetCards(IReadOnlyList<HomeScreenCardData> cards)
+        {
+            foreach (DeedCardView card in _cards.Values)
+            {
+                Destroy(card.gameObject);
+            }
+
+            _cards.Clear();
+
+            foreach (HomeScreenCardData data in cards)
+            {
+                DeedCardView card = Instantiate(_cardPrototype, _cardsContainer);
+                card.name = "Card " + data.Name;
+                card.SetData(data);
+                MapLocation location = data.Location;
+                card.Clicked += () => CardClicked?.Invoke(location);
+                card.gameObject.SetActive(true);
+                _cards[location] = card;
+            }
+        }
+
+        public void UpdateCard(MapLocation location, HomeScreenCardData data)
+        {
+            if (_cards.TryGetValue(location, out DeedCardView card))
+            {
+                card.SetData(data);
+            }
+        }
+
+        private static void TintCategoryButton(Button button, bool selected)
+        {
+            ColorBlock colors = button.colors;
+            colors.normalColor = selected ? SelectedCategoryColor : Color.white;
+            button.colors = colors;
+        }
+    }
+}
