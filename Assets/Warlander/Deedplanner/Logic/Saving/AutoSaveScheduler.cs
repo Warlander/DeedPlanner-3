@@ -91,6 +91,21 @@ namespace Warlander.Deedplanner.Logic.Saving
             return await NewestSlotAsync(backendId, SlotLocatorsForNeverSaved(backendId));
         }
 
+        /// Deletes all auto-save slots of a save. Used when the save itself is deleted.
+        public async Task DeleteSlotsAsync(MapLocation mainLocation)
+        {
+            ISaveBackend backend = _saveCoordinator.GetBackend(mainLocation.BackendId);
+            if (backend == null || (backend.Capabilities & SaveCapabilities.Delete) == 0)
+            {
+                return;
+            }
+
+            foreach (string slot in SlotLocatorsFor(mainLocation))
+            {
+                await backend.DeleteAsync(new MapLocation(mainLocation.BackendId, slot, null));
+            }
+        }
+
         private async Task<MapLocation?> NextSlotLocationAsync(Map map)
         {
             MapLocation? current = _saveCoordinator.CurrentLocation;

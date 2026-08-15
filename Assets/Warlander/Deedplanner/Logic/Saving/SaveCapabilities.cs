@@ -8,6 +8,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         Save = 1,
         Load = 2,
         Track = 4,
-        Overwrite = 8
+        Overwrite = 8,
+        Delete = 16
     }
 }

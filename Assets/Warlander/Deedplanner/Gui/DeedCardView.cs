@@ -22,12 +22,15 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField] private GameObject _chipObject;
         [SerializeField] private TMP_Text _chipText;
         [SerializeField] private Image _chipBackground;
+        [SerializeField] private Button _deleteButton;
 
         public event Action Clicked;
+        public event Action DeleteClicked;
 
         private void Awake()
         {
             _button.onClick.AddListener(() => Clicked?.Invoke());
+            _deleteButton.onClick.AddListener(() => DeleteClicked?.Invoke());
         }
 
         public void SetData(HomeScreenCardData data)
@@ -35,6 +38,7 @@ namespace Warlander.Deedplanner.Gui
             _nameText.text = data.Name;
             _timeText.text = data.TimeText;
             _badgeText.text = data.BadgeText;
+            _deleteButton.gameObject.SetActive(data.ShowDelete);
 
             bool hasHint = !string.IsNullOrEmpty(data.LocationHint);
             _hintText.gameObject.SetActive(hasHint);

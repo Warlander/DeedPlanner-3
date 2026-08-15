@@ -211,6 +211,34 @@ namespace Warlander.Deedplanner.Logic.Saving
             SaveStateChanged?.Invoke();
         }
 
+        /// Deletes a save where the backend allows it, its auto-save slots, and its known-saves entry.
+        /// When the deleted save is the current map's location, the map stays in-app as never-saved.
+        public async Task DeleteSaveAsync(MapLocation location)
+        {
+            ISaveBackend backend = GetBackend(location.BackendId);
+            if (backend != null && (backend.Capabilities & SaveCapabilities.Delete) != 0)
+            {
+                await backend.DeleteAsync(location);
+                if (_autoSaveScheduler == null)
+                {
+                    _autoSaveScheduler = _resolver.Resolve<AutoSaveScheduler>();
+                }
+
+                await _autoSaveScheduler.DeleteSlotsAsync(location);
+            }
+
+            _recentMaps.Remove(location);
+
+            if (CurrentLocation.HasValue &&
+                CurrentLocation.Value.BackendId == location.BackendId &&
+                CurrentLocation.Value.Locator == location.Locator)
+            {
+                CurrentLocation = null;
+                LastSaveTimeUtc = null;
+                SaveStateChanged?.Invoke();
+            }
+        }
+
         /// Loads a map from a web link (Pastebin/Drive/Dropbox). Pastebin links go through the backend
         /// (recorded, export semantics); other hosts load without a location identity.
         public async Task<bool> LoadFromWebAsync(string rawLink)

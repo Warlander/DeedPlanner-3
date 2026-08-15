@@ -31,6 +31,7 @@ namespace Warlander.Deedplanner.Gui
         public event Action QuitClicked;
         public event Action<string> CategoryClicked;
         public event Action<MapLocation> CardClicked;
+        public event Action<MapLocation> CardDeleteClicked;
 
         private readonly List<Button> _categoryButtons = new List<Button>();
         private readonly Dictionary<MapLocation, DeedCardView> _cards =
@@ -104,6 +105,7 @@ namespace Warlander.Deedplanner.Gui
                 card.SetData(data);
                 MapLocation location = data.Location;
                 card.Clicked += () => CardClicked?.Invoke(location);
+                card.DeleteClicked += () => CardDeleteClicked?.Invoke(location);
                 card.gameObject.SetActive(true);
                 _cards[location] = card;
             }

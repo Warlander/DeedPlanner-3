@@ -12,7 +12,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         public string Id => "file";
         public string DisplayName => "File on this computer";
         public SaveCapabilities Capabilities =>
-            SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite;
+            SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite | SaveCapabilities.Delete;
         public bool IsVolatile => false;
         public bool CompressesOutput => false;
         public bool IsAvailable => true;
@@ -104,6 +104,16 @@ namespace Warlander.Deedplanner.Logic.Saving
 
             FileInfo info = new FileInfo(target.Locator);
             return Task.FromResult(new TrackResult(true, info.LastWriteTimeUtc, info.Length));
+        }
+
+        public Task DeleteAsync(MapLocation target)
+        {
+            if (File.Exists(target.Locator))
+            {
+                File.Delete(target.Locator);
+            }
+
+            return Task.CompletedTask;
         }
 
         // temp file, then atomic replace: a crash mid-write can never corrupt the last good save

@@ -47,5 +47,10 @@ namespace Warlander.Deedplanner.Logic.Saving
         {
             throw new NotSupportedException("WebFile does not support tracking");
         }
+
+        public Task DeleteAsync(MapLocation target)
+        {
+            throw new NotSupportedException("WebFile downloads cannot be deleted");
+        }
     }
 }

@@ -31,5 +31,8 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         /// Only valid with the Track capability.
         Task<TrackResult> TrackAsync(MapLocation target);
+
+        /// Permanently deletes the location. Only valid with the Delete capability.
+        Task DeleteAsync(MapLocation target);
     }
 }

@@ -43,6 +43,7 @@ namespace Warlander.Deedplanner.Gui
             _view.QuitClicked += OnQuit;
             _view.CategoryClicked += OnCategory;
             _view.CardClicked += OnCard;
+            _view.CardDeleteClicked += OnDeleteCard;
 
             _view.SetLoadButtonVisible(true);
         }
@@ -165,6 +166,36 @@ namespace Warlander.Deedplanner.Gui
             }
         }
 
+        private void OnDeleteCard(MapLocation location)
+        {
+            ISaveBackend backend = _saveCoordinator.GetBackend(location.BackendId);
+            bool realDelete = backend != null && (backend.Capabilities & SaveCapabilities.Delete) != 0;
+
+            string message;
+            if (realDelete)
+            {
+                message = $"Delete '{location.DisplayName}' permanently?\n\n" +
+                          "The save and its auto-saves will be deleted. This cannot be undone.";
+            }
+            else
+            {
+                string kept = location.BackendId == "pastebin"
+                    ? "The paste itself stays online."
+                    : "The file itself will not be deleted.";
+                message = $"Remove '{location.DisplayName}' from the list?\n\n{kept}";
+            }
+
+            Window window = _windowCoordinator.CreateWindowExclusive(WindowNames.DeleteSaveWindow);
+            window.GetComponentInChildren<Windows.DeleteSaveWindowView>(true)
+                .SetMessage(message, () => _ = DeleteConfirmedAsync(location));
+        }
+
+        private async Task DeleteConfirmedAsync(MapLocation location)
+        {
+            await _saveCoordinator.DeleteSaveAsync(location);
+            Populate();
+        }
+
         private void Populate()
         {
             _ = PopulateAsync();
@@ -244,7 +275,8 @@ namespace Warlander.Deedplanner.Gui
                 originHint,
                 "FILE",
                 thumbnail,
-                HomeScreenChip.Recovery);
+                HomeScreenChip.Recovery,
+                showDelete: false);
         }
 
         private HomeScreenCardData BuildCard(RecentMapEntry entry)

@@ -7,6 +7,7 @@
         public const string ClearMapWindow = "Windows/ClearMapWindow";
         public const string SaveMapWindow = "Windows/SaveMapWindow";
         public const string LoadMapWindow = "Windows/LoadMapWindow";
+        public const string DeleteSaveWindow = "Windows/DeleteSaveWindow";
         public const string GraphicsSettingsWindow = "Windows/GraphicsSettingsWindow";
         public const string InputSettingsWindow = "Windows/InputSettingsWindow";
         public const string CreditsWindow = "Windows/CreditsWindow";

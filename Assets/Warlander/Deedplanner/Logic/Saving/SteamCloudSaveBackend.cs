@@ -17,7 +17,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         public string Id => "steamcloud";
         public string DisplayName => "Steam Cloud";
         public SaveCapabilities Capabilities =>
-            SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite;
+            SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite | SaveCapabilities.Delete;
         public bool IsVolatile => false;
         public bool CompressesOutput => true;
         public bool IsAvailable => _connection.Connected;
@@ -98,6 +98,16 @@ namespace Warlander.Deedplanner.Logic.Saving
             long unixTime = SteamRemoteStorage.GetFileTimestamp(target.Locator);
             var writeTime = DateTimeOffset.FromUnixTimeSeconds(unixTime).UtcDateTime;
             return Task.FromResult(new TrackResult(true, writeTime, SteamRemoteStorage.GetFileSize(target.Locator)));
+        }
+
+        public Task DeleteAsync(MapLocation target)
+        {
+            if (SteamRemoteStorage.FileExists(target.Locator))
+            {
+                SteamRemoteStorage.FileDelete(target.Locator);
+            }
+
+            return Task.CompletedTask;
         }
 
         private static void WriteCloudFile(string fileName, string payload)

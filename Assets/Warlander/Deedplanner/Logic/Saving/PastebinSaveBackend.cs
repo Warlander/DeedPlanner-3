@@ -106,6 +106,11 @@ namespace Warlander.Deedplanner.Logic.Saving
             throw new NotSupportedException("Pastebin does not support tracking");
         }
 
+        public Task DeleteAsync(MapLocation target)
+        {
+            throw new NotSupportedException("Anonymous pastes cannot be deleted via the Pastebin API");
+        }
+
         private static byte[] Compress(byte[] raw)
         {
             using (MemoryStream memory = new MemoryStream())

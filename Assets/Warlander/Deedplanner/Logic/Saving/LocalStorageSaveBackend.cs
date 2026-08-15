@@ -15,7 +15,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         public string Id => "localstorage";
         public string DisplayName => "Browser storage";
         public SaveCapabilities Capabilities =>
-            SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite;
+            SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite | SaveCapabilities.Delete;
         public bool IsVolatile => true;
         public bool CompressesOutput => true;
         public bool IsAvailable => true;
@@ -86,6 +86,14 @@ namespace Warlander.Deedplanner.Logic.Saving
 #else
             return Task.FromResult(new TrackResult(false, default, 0));
 #endif
+        }
+
+        public Task DeleteAsync(MapLocation target)
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            Utils.JavaScriptUtils.LocalStorageRemoveItem(target.Locator);
+#endif
+            return Task.CompletedTask;
         }
 
         private static void WriteEnvelope(string key, string payload)
