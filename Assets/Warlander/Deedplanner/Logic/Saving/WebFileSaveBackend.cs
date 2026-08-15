@@ -11,6 +11,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         public SaveCapabilities Capabilities => SaveCapabilities.Save | SaveCapabilities.Load;
         public bool IsVolatile => false;
         public bool CompressesOutput => false;
+        public bool IsAvailable => true;
 
         public SaveFeasibility CheckSave(long payloadBytes) => SaveFeasibility.Ok;
 

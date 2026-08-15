@@ -10,6 +10,9 @@ namespace Warlander.Deedplanner.Logic.Saving
         bool IsVolatile { get; }
         bool CompressesOutput { get; }
 
+        /// False when the backend cannot work right now (e.g. Steam not running). Hidden from pickers.
+        bool IsAvailable { get; }
+
         SaveFeasibility CheckSave(long payloadBytes);
 
         /// Short location detail shown on cards to distinguish same-named saves. Null when nothing meaningful.

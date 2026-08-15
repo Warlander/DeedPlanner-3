@@ -43,7 +43,7 @@ namespace Warlander.Deedplanner.Gui
             _view.CategoryClicked += OnCategory;
             _view.CardClicked += OnCard;
 
-            _view.SetLoadButtonVisible(_saveCoordinator.GetBackend("file") != null);
+            _view.SetLoadButtonVisible(true);
         }
 
         public void Dispose() { }
@@ -71,9 +71,18 @@ namespace Warlander.Deedplanner.Gui
 
         private async void OnLoad()
         {
-            bool loaded = await _saveCoordinator.PickAndLoadAsync("file");
-            if (loaded)
+            if (_saveCoordinator.GetBackend("file") != null)
             {
+                bool loaded = await _saveCoordinator.PickAndLoadAsync("file");
+                if (loaded)
+                {
+                    _view.Hide();
+                }
+            }
+            else
+            {
+                // no file backend (WebGL): the load window provides the browser file picker
+                _windowCoordinator.CreateWindowExclusive(WindowNames.LoadMapWindow);
                 _view.Hide();
             }
         }
@@ -114,6 +123,14 @@ namespace Warlander.Deedplanner.Gui
 
         private async void OnCard(MapLocation location)
         {
+            if (location.BackendId == "webfile")
+            {
+                // browser downloads cannot be re-read; the load window provides the file picker
+                _windowCoordinator.CreateWindowExclusive(WindowNames.LoadMapWindow);
+                _view.Hide();
+                return;
+            }
+
             if (_recoveryMains.TryGetValue(location, out MapLocation? mainLocation))
             {
                 bool recovered = await _saveCoordinator.LoadRecoveryAsync(location, mainLocation);
@@ -150,6 +167,11 @@ namespace Warlander.Deedplanner.Gui
             var categories = new List<HomeScreenCategory>();
             foreach (ISaveBackend backend in _saveCoordinator.Backends)
             {
+                if (!backend.IsAvailable)
+                {
+                    continue;
+                }
+
                 string label = CategoryLabel(backend.Id);
                 if (label != null)
                 {
@@ -169,7 +191,7 @@ namespace Warlander.Deedplanner.Gui
                     continue;
                 }
 
-                MapLocation? slot = _autoSaveScheduler.FindRecoverySlot(entry.Location);
+                MapLocation? slot = await _autoSaveScheduler.FindRecoverySlotAsync(entry.Location);
                 if (slot.HasValue)
                 {
                     cards.Add(await BuildRecoveryCardAsync(slot.Value, entry.Location.Locator));
@@ -179,7 +201,7 @@ namespace Warlander.Deedplanner.Gui
 
             if (_selectedBackendId == null || _selectedBackendId == "file")
             {
-                MapLocation? untitledSlot = _autoSaveScheduler.FindNeverSavedRecovery();
+                MapLocation? untitledSlot = await _autoSaveScheduler.FindNeverSavedRecoveryAsync();
                 if (untitledSlot.HasValue && !_recoveryMains.ContainsKey(untitledSlot.Value))
                 {
                     cards.Add(await BuildRecoveryCardAsync(untitledSlot.Value, "never-saved map"));

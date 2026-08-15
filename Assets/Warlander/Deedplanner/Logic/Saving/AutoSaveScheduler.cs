@@ -45,7 +45,7 @@ namespace Warlander.Deedplanner.Logic.Saving
                 return;
             }
 
-            MapLocation? slot = NextSlotLocation(map);
+            MapLocation? slot = await NextSlotLocationAsync(map);
             if (!slot.HasValue)
             {
                 return;
@@ -55,86 +55,143 @@ namespace Warlander.Deedplanner.Logic.Saving
         }
 
         /// Newest auto-save slot for an entry when it is newer than the main save. Null otherwise.
-        public MapLocation? FindRecoverySlot(MapLocation mainLocation)
+        public async Task<MapLocation?> FindRecoverySlotAsync(MapLocation mainLocation)
         {
-            if (mainLocation.BackendId != "file")
+            ISaveBackend backend = _saveCoordinator.GetBackend(mainLocation.BackendId);
+            if (backend == null || (backend.Capabilities & SaveCapabilities.Track) == 0)
             {
                 return null;
             }
 
-            MapLocation? newest = NewestSlot(SlotPathsFor(mainLocation), out DateTime newestWrite);
-            if (!newest.HasValue || !File.Exists(mainLocation.Locator))
+            MapLocation? newest = await NewestSlotAsync(mainLocation.BackendId, SlotLocatorsFor(mainLocation));
+            if (!newest.HasValue)
+            {
+                return null;
+            }
+
+            TrackResult mainTrack = await backend.TrackAsync(mainLocation);
+            if (!mainTrack.Exists)
             {
                 return newest;
             }
 
-            return newestWrite > File.GetLastWriteTimeUtc(mainLocation.Locator) ? newest : null;
+            TrackResult slotTrack = await backend.TrackAsync(newest.Value);
+            return slotTrack.WriteTimeUtc > mainTrack.WriteTimeUtc ? newest : null;
         }
 
         /// Auto-save slot from a never-saved map, when one exists.
-        public MapLocation? FindNeverSavedRecovery()
+        public async Task<MapLocation?> FindNeverSavedRecoveryAsync()
         {
-            return NewestSlot(SlotPathsForNeverSaved(), out _);
+            string backendId = NeverSavedBackendId();
+            if (backendId == null)
+            {
+                return null;
+            }
+
+            return await NewestSlotAsync(backendId, SlotLocatorsForNeverSaved(backendId));
         }
 
-        private MapLocation? NextSlotLocation(Map map)
+        private async Task<MapLocation?> NextSlotLocationAsync(Map map)
         {
             MapLocation? current = _saveCoordinator.CurrentLocation;
             if (current.HasValue)
             {
-                if (current.Value.BackendId != "file")
+                ISaveBackend backend = _saveCoordinator.GetBackend(current.Value.BackendId);
+                if (backend == null || (backend.Capabilities & SaveCapabilities.Overwrite) == 0)
                 {
                     return null;
                 }
 
-                string[] slots = SlotPathsFor(current.Value);
-                return new MapLocation("file", OldestOrEmptySlot(slots), current.Value.DisplayName);
+                string locator = await OldestOrEmptySlotAsync(current.Value.BackendId, SlotLocatorsFor(current.Value));
+                return new MapLocation(current.Value.BackendId, locator, current.Value.DisplayName);
             }
 
-            return new MapLocation("file", OldestOrEmptySlot(SlotPathsForNeverSaved()), map.DisplayName);
+            string neverSavedBackendId = NeverSavedBackendId();
+            if (neverSavedBackendId == null)
+            {
+                return null;
+            }
+
+            string neverSavedLocator = await OldestOrEmptySlotAsync(neverSavedBackendId, SlotLocatorsForNeverSaved(neverSavedBackendId));
+            return new MapLocation(neverSavedBackendId, neverSavedLocator, map.DisplayName);
         }
 
-        private static string[] SlotPathsFor(MapLocation mainLocation)
+        private string NeverSavedBackendId()
         {
-            string directory = Path.GetDirectoryName(mainLocation.Locator);
-            string baseName = Path.GetFileNameWithoutExtension(mainLocation.Locator);
-            var paths = new string[SlotCount];
+            if (_saveCoordinator.GetBackend("file") != null)
+            {
+                return "file";
+            }
+
+            return _saveCoordinator.GetBackend("localstorage") != null ? "localstorage" : null;
+        }
+
+        private static string[] SlotLocatorsFor(MapLocation mainLocation)
+        {
+            var locators = new string[SlotCount];
+            if (mainLocation.BackendId == "file")
+            {
+                string directory = Path.GetDirectoryName(mainLocation.Locator);
+                string baseName = Path.GetFileNameWithoutExtension(mainLocation.Locator);
+                for (int i = 0; i < SlotCount; i++)
+                {
+                    locators[i] = Path.Combine(directory, $"{baseName}.auto{i + 1}.MAP");
+                }
+            }
+            else
+            {
+                string baseName = mainLocation.Locator;
+                if (baseName.EndsWith(".MAP", StringComparison.OrdinalIgnoreCase))
+                {
+                    baseName = baseName.Substring(0, baseName.Length - 4);
+                }
+
+                for (int i = 0; i < SlotCount; i++)
+                {
+                    locators[i] = $"{baseName}.auto{i + 1}.MAP";
+                }
+            }
+
+            return locators;
+        }
+
+        private static string[] SlotLocatorsForNeverSaved(string backendId)
+        {
+            var locators = new string[SlotCount];
             for (int i = 0; i < SlotCount; i++)
             {
-                paths[i] = Path.Combine(directory, $"{baseName}.auto{i + 1}.MAP");
+                string slotName = $"Untitled.auto{i + 1}.MAP";
+                if (backendId == "file")
+                {
+                    string directory = Path.Combine(Application.persistentDataPath, "Autosaves");
+                    Directory.CreateDirectory(directory);
+                    locators[i] = Path.Combine(directory, slotName);
+                }
+                else
+                {
+                    locators[i] = slotName;
+                }
             }
 
-            return paths;
+            return locators;
         }
 
-        private static string[] SlotPathsForNeverSaved()
-        {
-            string directory = Path.Combine(Application.persistentDataPath, "Autosaves");
-            Directory.CreateDirectory(directory);
-            var paths = new string[SlotCount];
-            for (int i = 0; i < SlotCount; i++)
-            {
-                paths[i] = Path.Combine(directory, $"Untitled.auto{i + 1}.MAP");
-            }
-
-            return paths;
-        }
-
-        private static string OldestOrEmptySlot(string[] slots)
+        private async Task<string> OldestOrEmptySlotAsync(string backendId, string[] slots)
         {
             string oldest = null;
             DateTime oldestWrite = DateTime.MaxValue;
             foreach (string slot in slots)
             {
-                if (!File.Exists(slot))
+                TrackResult track = await _saveCoordinator.GetBackend(backendId).TrackAsync(
+                    new MapLocation(backendId, slot, null));
+                if (!track.Exists)
                 {
                     return slot;
                 }
 
-                DateTime write = File.GetLastWriteTimeUtc(slot);
-                if (write < oldestWrite)
+                if (track.WriteTimeUtc < oldestWrite)
                 {
-                    oldestWrite = write;
+                    oldestWrite = track.WriteTimeUtc;
                     oldest = slot;
                 }
             }
@@ -142,28 +199,28 @@ namespace Warlander.Deedplanner.Logic.Saving
             return oldest;
         }
 
-        private static MapLocation? NewestSlot(string[] slots, out DateTime newestWrite)
+        private async Task<MapLocation?> NewestSlotAsync(string backendId, string[] slots)
         {
             string newest = null;
-            newestWrite = DateTime.MinValue;
+            DateTime newestWrite = DateTime.MinValue;
             foreach (string slot in slots)
             {
-                if (!File.Exists(slot))
+                TrackResult track = await _saveCoordinator.GetBackend(backendId).TrackAsync(
+                    new MapLocation(backendId, slot, null));
+                if (track.Exists && track.WriteTimeUtc > newestWrite)
                 {
-                    continue;
-                }
-
-                DateTime write = File.GetLastWriteTimeUtc(slot);
-                if (write > newestWrite)
-                {
-                    newestWrite = write;
+                    newestWrite = track.WriteTimeUtc;
                     newest = slot;
                 }
             }
 
-            return newest != null
-                ? new MapLocation("file", newest, Path.GetFileNameWithoutExtension(newest))
-                : null;
+            if (newest == null)
+            {
+                return null;
+            }
+
+            string name = Path.GetFileNameWithoutExtension(newest);
+            return new MapLocation(backendId, newest, name);
         }
     }
 }

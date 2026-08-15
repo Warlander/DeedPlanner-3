@@ -46,7 +46,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             ISaveBackend volatileBackend = null;
             foreach (ISaveBackend backend in _saveCoordinator.Backends)
             {
-                if ((backend.Capabilities & SaveCapabilities.Save) == 0)
+                if (!backend.IsAvailable || (backend.Capabilities & SaveCapabilities.Save) == 0)
                 {
                     continue;
                 }

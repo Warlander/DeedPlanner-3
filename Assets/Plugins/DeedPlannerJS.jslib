@@ -119,6 +119,45 @@ mergeInto(LibraryManager.library, {
         var buffer = _malloc(bufferSize);
         stringToUTF8(jsContent, buffer, bufferSize);
         return buffer;
+    },
+
+    LocalStorageSetItemNative : function(key, value) {
+        try {
+            localStorage.setItem(UTF8ToString(key), UTF8ToString(value));
+            return 1;
+        } catch (e) {
+            return 0;
+        }
+    },
+
+    LocalStorageGetItemNative : function(key) {
+        var value = localStorage.getItem(UTF8ToString(key));
+        if (value === null) {
+            value = "";
+        }
+
+        var bufferSize = lengthBytesUTF8(value) + 1;
+        var buffer = _malloc(bufferSize);
+        stringToUTF8(value, buffer, bufferSize);
+        return buffer;
+    },
+
+    LocalStorageHasItemNative : function(key) {
+        return localStorage.getItem(UTF8ToString(key)) !== null ? 1 : 0;
+    },
+
+    LocalStorageRemoveItemNative : function(key) {
+        localStorage.removeItem(UTF8ToString(key));
+    },
+
+    LocalStorageTotalSizeNative : function() {
+        var total = 0;
+        for (var i = 0; i < localStorage.length; i++) {
+            var key = localStorage.key(i);
+            var value = localStorage.getItem(key);
+            total += key.length + (value ? value.length : 0);
+        }
+        return total;
     }
 
 });
