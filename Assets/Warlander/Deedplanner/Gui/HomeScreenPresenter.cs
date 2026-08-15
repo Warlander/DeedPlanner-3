@@ -166,10 +166,29 @@ namespace Warlander.Deedplanner.Gui
             }
         }
 
-        private void OnDeleteCard(MapLocation location)
+        private async void OnDeleteCard(MapLocation location)
         {
             ISaveBackend backend = _saveCoordinator.GetBackend(location.BackendId);
             bool realDelete = backend != null && (backend.Capabilities & SaveCapabilities.Delete) != 0;
+
+            // missing saves lose nothing when removed from the list, no confirmation needed
+            if (realDelete && (backend.Capabilities & SaveCapabilities.Track) != 0)
+            {
+                try
+                {
+                    TrackResult track = await backend.TrackAsync(location);
+                    if (!track.Exists)
+                    {
+                        await _saveCoordinator.DeleteSaveAsync(location);
+                        Populate();
+                        return;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Failed to track {location} before delete: {e.Message}");
+                }
+            }
 
             string message;
             if (realDelete)
