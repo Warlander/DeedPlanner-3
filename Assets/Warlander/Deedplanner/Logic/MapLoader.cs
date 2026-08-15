@@ -26,6 +26,16 @@ namespace Warlander.Deedplanner.Logic
             return _mapFactory.LoadFromXml(doc);
         }
 
+        public Map LoadMap(byte[] mapData)
+        {
+            if (mapData.Length > 2 && mapData[0] == 0x1F && mapData[1] == 0x8B)
+            {
+                return LoadMap(Encoding.UTF8.GetString(DecompressGzip(mapData)));
+            }
+
+            return LoadMap(Encoding.UTF8.GetString(mapData));
+        }
+
         public async Task<Map> LoadMapAsync(Uri mapUri)
         {
             byte[] mapData = await WebUtils.ReadUrlToByteArrayAsync(mapUri);
@@ -52,6 +62,18 @@ namespace Warlander.Deedplanner.Logic
             }
 
             return LoadMap(requestText);
+        }
+
+        private static byte[] DecompressGzip(byte[] gzip)
+        {
+            using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
+            {
+                using (MemoryStream memory = new MemoryStream())
+                {
+                    stream.CopyTo(memory);
+                    return memory.ToArray();
+                }
+            }
         }
 
         private async Task<byte[]> DecompressGzipAsync(byte[] gzip)

@@ -6,9 +6,11 @@
 
 using UnityEditor;
 using UnityEngine;
+using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Saving;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Steam;
 using Warlander.UI.Windows;
@@ -22,17 +24,22 @@ namespace Warlander.Deedplanner.Updaters
         private readonly WindowCoordinator _windowCoordinator;
         private readonly ISteamConnection _steamConnection;
         private readonly TabContext _tabContext;
+        private readonly SaveCoordinator _saveCoordinator;
+        private readonly MapHandler _mapHandler;
 
         public Tab TargetTab => Tab.Menu;
 
         public MenuUpdater(IMenuUpdaterView view, DPSettings settings, WindowCoordinator windowCoordinator,
-            ISteamConnection steamConnection, TabContext tabContext)
+            ISteamConnection steamConnection, TabContext tabContext,
+            SaveCoordinator saveCoordinator, MapHandler mapHandler)
         {
             _view = view;
             _settings = settings;
             _windowCoordinator = windowCoordinator;
             _steamConnection = steamConnection;
             _tabContext = tabContext;
+            _saveCoordinator = saveCoordinator;
+            _mapHandler = mapHandler;
         }
 
         public void Initialize()
@@ -53,6 +60,52 @@ namespace Warlander.Deedplanner.Updaters
             _view.SetVersionText(Constants.TitleString);
 
             _view.ButtonClicked += OnButtonClicked;
+            _mapHandler.MapInitialized += OnMapInitialized;
+            _saveCoordinator.SaveStateChanged += RefreshSaveIndicator;
+            SubscribeMapDirty();
+            RefreshSaveIndicator();
+        }
+
+        private void OnMapInitialized()
+        {
+            SubscribeMapDirty();
+            RefreshSaveIndicator();
+        }
+
+        private void SubscribeMapDirty()
+        {
+            Map map = _mapHandler.Map;
+            if (map != null)
+            {
+                map.DirtyChanged += OnMapDirtyChanged;
+            }
+        }
+
+        private void OnMapDirtyChanged(bool dirty)
+        {
+            RefreshSaveIndicator();
+        }
+
+        private void RefreshSaveIndicator()
+        {
+            Map map = _mapHandler.Map;
+            if (map == null)
+            {
+                return;
+            }
+
+            if (map.IsDirty)
+            {
+                _view.SetSaveIndicator(map.DisplayName + " · unsaved changes", true);
+            }
+            else if (!_saveCoordinator.CurrentLocation.HasValue)
+            {
+                _view.SetSaveIndicator(map.DisplayName + " · never saved", false);
+            }
+            else
+            {
+                _view.SetSaveIndicator(map.DisplayName + " · saved", false);
+            }
         }
 
         public void Enable()
@@ -83,7 +136,21 @@ namespace Warlander.Deedplanner.Updaters
                 case MenuAction.Clear:
                     _windowCoordinator.CreateWindowExclusive(WindowNames.ClearMapWindow);
                     break;
+                case MenuAction.New:
+                    _saveCoordinator.NewMap();
+                    break;
                 case MenuAction.Save:
+                    if (_saveCoordinator.CanQuickSave)
+                    {
+                        _ = _saveCoordinator.QuickSaveAsync();
+                    }
+                    else
+                    {
+                        _windowCoordinator.CreateWindowExclusive(WindowNames.SaveMapWindow);
+                    }
+
+                    break;
+                case MenuAction.SaveAs:
                     _windowCoordinator.CreateWindowExclusive(WindowNames.SaveMapWindow);
                     break;
                 case MenuAction.Load:

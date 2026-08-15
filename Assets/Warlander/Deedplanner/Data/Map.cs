@@ -44,6 +44,33 @@ namespace Warlander.Deedplanner.Data
         public int AllTilesCount => _tileGrid.AllTilesCount;
         public string OriginalExporter { get; private set; } = Constants.TitleString;
         public Version OriginalExporterVersion { get; private set; }
+        public string DisplayName { get; set; } = "Untitled";
+        public byte[] ThumbnailJpeg { get; set; }
+
+        public bool IsDirty { get; private set; }
+        public event Action<bool> DirtyChanged;
+
+        public void MarkDirty()
+        {
+            if (IsDirty)
+            {
+                return;
+            }
+
+            IsDirty = true;
+            DirtyChanged?.Invoke(true);
+        }
+
+        public void ClearDirty()
+        {
+            if (!IsDirty)
+            {
+                return;
+            }
+
+            IsDirty = false;
+            DirtyChanged?.Invoke(false);
+        }
 
         public int LowestSurfaceHeight => _heightTracker.LowestSurfaceHeight;
         public int HighestSurfaceHeight => _heightTracker.HighestSurfaceHeight;
@@ -142,6 +169,9 @@ namespace Warlander.Deedplanner.Data
             RecalculateHeights();
             RecalculateRoofs();
             CommandManager.ForgetAction();
+            // subscribe only after initialization: tile population routes through commands (see ForgetAction)
+            CommandManager.Mutated -= MarkDirty;
+            CommandManager.Mutated += MarkDirty;
         }
 
         public void Initialize(int width, int height)
@@ -151,6 +181,9 @@ namespace Warlander.Deedplanner.Data
             RecalculateHeights();
             RecalculateRoofs();
             CommandManager.ForgetAction();
+            // subscribe only after initialization: tile population routes through commands (see ForgetAction)
+            CommandManager.Mutated -= MarkDirty;
+            CommandManager.Mutated += MarkDirty;
         }
 
         public void Initialize(XmlDocument document)
@@ -159,6 +192,8 @@ namespace Warlander.Deedplanner.Data
             if (mapRoot == null || mapRoot.LocalName != "map")
             {
                 PreInitialize(25, 25);
+                CommandManager.Mutated -= MarkDirty;
+                CommandManager.Mutated += MarkDirty;
                 return;
             }
 
@@ -172,6 +207,8 @@ namespace Warlander.Deedplanner.Data
 
             int width = Convert.ToInt32(mapRoot.GetAttribute("width"));
             int height = Convert.ToInt32(mapRoot.GetAttribute("height"));
+            string name = mapRoot.GetAttribute("name");
+            DisplayName = string.IsNullOrEmpty(name) ? "Untitled" : name;
             PreInitialize(width, height);
 
             XmlNodeList tilesList = mapRoot.GetElementsByTagName("tile");
@@ -206,6 +243,19 @@ namespace Warlander.Deedplanner.Data
 
             _bridgesController.InitializeBridges(mapRoot);
 
+            XmlElement screenshotElement = mapRoot["screenshot"];
+            if (screenshotElement != null && screenshotElement.GetAttribute("format") == "jpeg")
+            {
+                try
+                {
+                    ThumbnailJpeg = Convert.FromBase64String(screenshotElement.InnerText);
+                }
+                catch (FormatException)
+                {
+                    ThumbnailJpeg = null;
+                }
+            }
+
             Ground.UpdateNow();
 
             RefreshAllTiles();
@@ -213,6 +263,9 @@ namespace Warlander.Deedplanner.Data
             RecalculateHeights();
             RecalculateRoofs();
             CommandManager.ForgetAction();
+            // subscribe only after initialization: tile population routes through commands (see ForgetAction)
+            CommandManager.Mutated -= MarkDirty;
+            CommandManager.Mutated += MarkDirty;
         }
 
         private void PreInitialize(int width, int height)
@@ -389,6 +442,7 @@ namespace Warlander.Deedplanner.Data
             localRoot.SetAttribute("width", Width.ToString());
             localRoot.SetAttribute("height", Height.ToString());
             localRoot.SetAttribute("exporter", Constants.TitleString);
+            localRoot.SetAttribute("name", DisplayName);
             document.AppendChild(localRoot);
 
             for (int i = 0; i <= Width; i++)
@@ -406,6 +460,15 @@ namespace Warlander.Deedplanner.Data
                 XmlElement bridgeElement = document.CreateElement("bridge");
                 bridge.Serialize(document, bridgeElement);
                 localRoot.AppendChild(bridgeElement);
+            }
+
+            if (ThumbnailJpeg != null && ThumbnailJpeg.Length > 0)
+            {
+                XmlElement screenshotElement = document.CreateElement("screenshot");
+                screenshotElement.SetAttribute("format", "jpeg");
+                screenshotElement.SetAttribute("encoding", "base64");
+                screenshotElement.InnerText = Convert.ToBase64String(ThumbnailJpeg);
+                localRoot.AppendChild(screenshotElement);
             }
         }
 

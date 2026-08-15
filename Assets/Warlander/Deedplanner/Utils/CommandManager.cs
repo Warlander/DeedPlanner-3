@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Warlander.Deedplanner.Utils
@@ -10,12 +11,15 @@ namespace Warlander.Deedplanner.Utils
         private readonly Stack<IReversibleCommand> currentActionStack = new Stack<IReversibleCommand>();
 
         public int MaxUndoCount { get; }
-        
+
+        /// Fired whenever the managed stacks mutate the map: execute, undo, redo.
+        public event Action Mutated;
+
         public CommandManager(int maxUndoCount)
         {
             MaxUndoCount = maxUndoCount;
         }
-        
+
         public void Undo()
         {
             if (undoList.Count == 0)
@@ -27,6 +31,7 @@ namespace Warlander.Deedplanner.Utils
             undoList.RemoveFirst();
             reversibleCommand.Undo();
             redoList.AddFirst(reversibleCommand);
+            Mutated?.Invoke();
         }
 
         public void Redo()
@@ -35,13 +40,14 @@ namespace Warlander.Deedplanner.Utils
             {
                 return;
             }
-            
+
             IReversibleCommand reversibleCommand = redoList.First.Value;
             redoList.RemoveFirst();
             reversibleCommand.Execute();
             undoList.AddFirst(reversibleCommand);
+            Mutated?.Invoke();
         }
-        
+
         public void AddToStack(IReversibleCommand reversibleCommand)
         {
             undoList.AddFirst(reversibleCommand);
@@ -57,12 +63,15 @@ namespace Warlander.Deedplanner.Utils
                 undoList.RemoveLast();
                 removedCommand.DisposeUndo();
             }
+
+            Mutated?.Invoke();
         }
-        
+
         public void AddToActionAndExecute(IReversibleCommand reversibleCommand)
         {
             currentActionStack.Push(reversibleCommand);
             reversibleCommand.Execute();
+            Mutated?.Invoke();
         }
 
         public void FinishAction()

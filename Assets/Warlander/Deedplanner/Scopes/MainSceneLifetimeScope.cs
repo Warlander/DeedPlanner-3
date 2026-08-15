@@ -14,6 +14,7 @@ using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logic.Outlines;
+using Warlander.Deedplanner.Logic.Saving;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Updaters;
 
@@ -108,8 +109,15 @@ namespace Warlander.Deedplanner.Scopes
 
             builder.Register<MapHandler>(Lifetime.Singleton);
             builder.RegisterEntryPoint<UndoRedoInputHandler>();
+            builder.RegisterEntryPoint<QuickSaveInputHandler>();
             builder.Register<ScreenshotRenderer>(Lifetime.Singleton).As<IScreenshotRenderer>();
             builder.Register<CurrentViewScreenshotCapture>(Lifetime.Singleton);
+            builder.Register<DeedThumbnailCapture>(Lifetime.Singleton);
+            builder.Register<PastebinSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
+#if !UNITY_WEBGL || UNITY_EDITOR
+            builder.Register<FileSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
+#endif
+            builder.Register<SaveCoordinator>(Lifetime.Singleton);
             builder.Register<ScreenshotSaver>(Lifetime.Singleton);
             builder.RegisterEntryPoint<ScreenshotInputListener>();
             builder.RegisterEntryPoint<UpdaterCoordinator>();
