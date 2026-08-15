@@ -73,7 +73,7 @@ namespace Warlander.Deedplanner.Logic
                 // no test map set: fall through to the release flow (home screen)
             }
 
-            _saveCoordinator.NewMap();
+            await _saveCoordinator.NewMapAsync();
             _homeScreenPresenter.ShowHomeScreen();
         }
     }

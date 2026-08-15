@@ -7,7 +7,7 @@ namespace Warlander.Deedplanner.Gui
 {
     public enum HomeScreenChip
     {
-        None, Missing, Unknown, Volatile
+        None, Missing, Unknown, Volatile, Recovery
     }
 
     public readonly struct HomeScreenCategory

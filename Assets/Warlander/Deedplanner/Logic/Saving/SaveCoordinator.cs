@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
+using VContainer;
 using Warlander.Deedplanner.Data;
 
 namespace Warlander.Deedplanner.Logic.Saving
@@ -14,6 +15,9 @@ namespace Warlander.Deedplanner.Logic.Saving
         private readonly DeedThumbnailCapture _thumbnailCapture;
         private readonly IReadOnlyList<ISaveBackend> _backends;
         private readonly RecentMapsStore _recentMaps;
+        private readonly IObjectResolver _resolver;
+
+        private AutoSaveScheduler _autoSaveScheduler;
 
         public MapLocation? CurrentLocation { get; private set; }
         public DateTime? LastSaveTimeUtc { get; private set; }
@@ -26,12 +30,13 @@ namespace Warlander.Deedplanner.Logic.Saving
         public event Action SaveStateChanged;
 
         public SaveCoordinator(MapHandler mapHandler, DeedThumbnailCapture thumbnailCapture,
-            IReadOnlyList<ISaveBackend> backends, RecentMapsStore recentMaps)
+            IReadOnlyList<ISaveBackend> backends, RecentMapsStore recentMaps, IObjectResolver resolver)
         {
             _mapHandler = mapHandler;
             _thumbnailCapture = thumbnailCapture;
             _backends = backends;
             _recentMaps = recentMaps;
+            _resolver = resolver;
         }
 
         public ISaveBackend GetBackend(string id)
@@ -159,6 +164,8 @@ namespace Warlander.Deedplanner.Logic.Saving
                 return false;
             }
 
+            await AutoSaveBeforeDestructiveAsync();
+
             Busy = true;
             try
             {
@@ -176,7 +183,9 @@ namespace Warlander.Deedplanner.Logic.Saving
 
                 // location display name may come from the XML now
                 var loadedLocation = new MapLocation(location.BackendId, location.Locator, _mapHandler.Map.DisplayName);
-                CurrentLocation = loadedLocation;
+                // backends without Overwrite are export-style (Pastebin, browser downloads):
+                // loading them creates an unsaved map, the identity is only kept for real saves
+                CurrentLocation = (backend.Capabilities & SaveCapabilities.Overwrite) != 0 ? loadedLocation : (MapLocation?)null;
                 LastSaveTimeUtc = null;
                 _recentMaps.Record(loadedLocation, _mapHandler.Map.ThumbnailJpeg);
                 SaveStateChanged?.Invoke();
@@ -193,12 +202,128 @@ namespace Warlander.Deedplanner.Logic.Saving
             }
         }
 
-        public void NewMap(int width = 25, int height = 25)
+        public async Task NewMapAsync(int width = 25, int height = 25)
         {
+            await AutoSaveBeforeDestructiveAsync();
             CurrentLocation = null;
             LastSaveTimeUtc = null;
             _mapHandler.CreateNewMap(width, height);
             SaveStateChanged?.Invoke();
+        }
+
+        /// Loads an auto-save slot's content while keeping the main save's identity. Null main = never-saved map.
+        public async Task<bool> LoadRecoveryAsync(MapLocation slot, MapLocation? mainLocation)
+        {
+            ISaveBackend backend = GetBackend(slot.BackendId);
+            if (backend == null || Busy)
+            {
+                return false;
+            }
+
+            await AutoSaveBeforeDestructiveAsync();
+
+            Busy = true;
+            try
+            {
+                string payload = await backend.LoadAsync(slot);
+                _mapHandler.LoadMap(payload);
+                // recovered content differs from the main save, the user should re-save
+                _mapHandler.Map.MarkDirty();
+                CurrentLocation = mainLocation;
+                LastSaveTimeUtc = null;
+                SaveStateChanged?.Invoke();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to recover auto-save from {slot}: {e.Message}");
+                return false;
+            }
+            finally
+            {
+                Busy = false;
+            }
+        }
+
+        /// Writes an auto-save slot without touching CurrentLocation, dirty state, or the recent list.
+        public async Task AutoSaveToAsync(MapLocation slot)
+        {
+            ISaveBackend backend = GetBackend(slot.BackendId);
+            if (backend == null || Busy)
+            {
+                return;
+            }
+
+            Busy = true;
+            try
+            {
+                string payload = SerializeCurrentMap();
+                await backend.OverwriteAsync(slot, payload);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"Auto-save failed: {e.Message}");
+            }
+            finally
+            {
+                Busy = false;
+            }
+        }
+
+        /// Thumbnail bytes from any save location, without loading the map. Null when absent.
+        public async Task<byte[]> ReadThumbnailAsync(MapLocation location)
+        {
+            ISaveBackend backend = GetBackend(location.BackendId);
+            if (backend == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                string payload = await backend.LoadAsync(location);
+                var document = new XmlDocument();
+                document.LoadXml(payload);
+                XmlElement screenshot = document.DocumentElement?["screenshot"];
+                if (screenshot == null || screenshot.GetAttribute("format") != "jpeg")
+                {
+                    return null;
+                }
+
+                return Convert.FromBase64String(screenshot.InnerText);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"Failed to read thumbnail from {location}: {e.Message}");
+                return null;
+            }
+        }
+
+        public async Task ResizeMapAsync(int left, int right, int bottom, int top)
+        {
+            await AutoSaveBeforeDestructiveAsync();
+            _mapHandler.ResizeMap(left, right, bottom, top);
+        }
+
+        public async Task ClearMapAsync()
+        {
+            await AutoSaveBeforeDestructiveAsync();
+            _mapHandler.ClearMap();
+        }
+
+        public async Task PrepareForQuitAsync()
+        {
+            await AutoSaveBeforeDestructiveAsync();
+        }
+
+        private async Task AutoSaveBeforeDestructiveAsync()
+        {
+            if (_autoSaveScheduler == null)
+            {
+                _autoSaveScheduler = _resolver.Resolve<AutoSaveScheduler>();
+            }
+
+            await _autoSaveScheduler.AutoSaveNowAsync();
         }
     }
 }

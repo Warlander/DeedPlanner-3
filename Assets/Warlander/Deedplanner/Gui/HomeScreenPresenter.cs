@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -14,16 +15,20 @@ namespace Warlander.Deedplanner.Gui
     {
         private readonly IHomeScreenView _view;
         private readonly SaveCoordinator _saveCoordinator;
+        private readonly AutoSaveScheduler _autoSaveScheduler;
         private readonly WindowCoordinator _windowCoordinator;
         private readonly DPSettings _settings;
 
         private string _selectedBackendId;
+        private readonly Dictionary<MapLocation, MapLocation?> _recoveryMains =
+            new Dictionary<MapLocation, MapLocation?>();
 
         public HomeScreenPresenter(IHomeScreenView view, SaveCoordinator saveCoordinator,
-            WindowCoordinator windowCoordinator, DPSettings settings)
+            AutoSaveScheduler autoSaveScheduler, WindowCoordinator windowCoordinator, DPSettings settings)
         {
             _view = view;
             _saveCoordinator = saveCoordinator;
+            _autoSaveScheduler = autoSaveScheduler;
             _windowCoordinator = windowCoordinator;
             _settings = settings;
         }
@@ -60,7 +65,7 @@ namespace Warlander.Deedplanner.Gui
 
         private void OnNewDeed()
         {
-            _saveCoordinator.NewMap();
+            _ = _saveCoordinator.NewMapAsync();
             _view.Hide();
         }
 
@@ -86,6 +91,12 @@ namespace Warlander.Deedplanner.Gui
 
         private void OnQuit()
         {
+            _ = QuitAsync();
+        }
+
+        private async System.Threading.Tasks.Task QuitAsync()
+        {
+            await _saveCoordinator.PrepareForQuitAsync();
             _settings.Save();
 
 #if UNITY_EDITOR
@@ -103,6 +114,21 @@ namespace Warlander.Deedplanner.Gui
 
         private async void OnCard(MapLocation location)
         {
+            if (_recoveryMains.TryGetValue(location, out MapLocation? mainLocation))
+            {
+                bool recovered = await _saveCoordinator.LoadRecoveryAsync(location, mainLocation);
+                if (recovered)
+                {
+                    _view.Hide();
+                }
+                else
+                {
+                    Populate();
+                }
+
+                return;
+            }
+
             bool loaded = await _saveCoordinator.LoadAsync(location);
             if (loaded)
             {
@@ -115,6 +141,11 @@ namespace Warlander.Deedplanner.Gui
         }
 
         private void Populate()
+        {
+            _ = PopulateAsync();
+        }
+
+        private async Task PopulateAsync()
         {
             var categories = new List<HomeScreenCategory>();
             foreach (ISaveBackend backend in _saveCoordinator.Backends)
@@ -129,6 +160,33 @@ namespace Warlander.Deedplanner.Gui
             _view.SetCategories(categories, _selectedBackendId);
 
             var cards = new List<HomeScreenCardData>();
+            _recoveryMains.Clear();
+
+            foreach (RecentMapEntry entry in _saveCoordinator.RecentMaps.Entries)
+            {
+                if (_selectedBackendId != null && entry.Location.BackendId != _selectedBackendId)
+                {
+                    continue;
+                }
+
+                MapLocation? slot = _autoSaveScheduler.FindRecoverySlot(entry.Location);
+                if (slot.HasValue)
+                {
+                    cards.Add(await BuildRecoveryCardAsync(slot.Value, entry.Location.Locator));
+                    _recoveryMains[slot.Value] = entry.Location;
+                }
+            }
+
+            if (_selectedBackendId == null || _selectedBackendId == "file")
+            {
+                MapLocation? untitledSlot = _autoSaveScheduler.FindNeverSavedRecovery();
+                if (untitledSlot.HasValue && !_recoveryMains.ContainsKey(untitledSlot.Value))
+                {
+                    cards.Add(await BuildRecoveryCardAsync(untitledSlot.Value, "never-saved map"));
+                    _recoveryMains[untitledSlot.Value] = null;
+                }
+            }
+
             foreach (RecentMapEntry entry in _saveCoordinator.RecentMaps.Entries)
             {
                 if (_selectedBackendId != null && entry.Location.BackendId != _selectedBackendId)
@@ -141,6 +199,22 @@ namespace Warlander.Deedplanner.Gui
 
             _view.SetCards(cards);
             _ = RefreshCardStatusesAsync();
+        }
+
+        private async Task<HomeScreenCardData> BuildRecoveryCardAsync(MapLocation slot, string originHint)
+        {
+            byte[] jpeg = await _saveCoordinator.ReadThumbnailAsync(slot);
+            Texture2D thumbnail = jpeg != null ? ToTexture(jpeg) : null;
+            DateTime slotWrite = File.GetLastWriteTimeUtc(slot.Locator);
+
+            return new HomeScreenCardData(
+                slot,
+                "Recovered auto-save",
+                FormatTime(slotWrite),
+                originHint,
+                "FILE",
+                thumbnail,
+                HomeScreenChip.Recovery);
         }
 
         private HomeScreenCardData BuildCard(RecentMapEntry entry)
@@ -219,11 +293,11 @@ namespace Warlander.Deedplanner.Gui
             }
 
             byte[] jpeg = _saveCoordinator.RecentMaps.LoadThumbnail(entry.Location);
-            if (jpeg == null)
-            {
-                return null;
-            }
+            return jpeg != null ? ToTexture(jpeg) : null;
+        }
 
+        private static Texture2D ToTexture(byte[] jpeg)
+        {
             Texture2D texture = new Texture2D(2, 2);
             if (!ImageConversion.LoadImage(texture, jpeg))
             {

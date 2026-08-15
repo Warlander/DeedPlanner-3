@@ -40,7 +40,7 @@ namespace Warlander.Deedplanner.Logic.Saving
                         path += ".MAP";
                     }
 
-                    File.WriteAllText(path, payload, new UTF8Encoding(false));
+                    WriteAllTextSafe(path, payload);
                     completion.SetResult(new MapLocation(Id, path, Path.GetFileNameWithoutExtension(path)));
                 },
                 () => completion.SetResult(null),
@@ -54,7 +54,7 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         public Task OverwriteAsync(MapLocation target, string payload)
         {
-            File.WriteAllText(target.Locator, payload, new UTF8Encoding(false));
+            WriteAllTextSafe(target.Locator, payload);
             return Task.CompletedTask;
         }
 
@@ -103,6 +103,29 @@ namespace Warlander.Deedplanner.Logic.Saving
 
             FileInfo info = new FileInfo(target.Locator);
             return Task.FromResult(new TrackResult(true, info.LastWriteTimeUtc, info.Length));
+        }
+
+        // temp file, then atomic replace: a crash mid-write can never corrupt the last good save
+        private static void WriteAllTextSafe(string path, string payload)
+        {
+            string tempPath = path + ".tmp";
+            File.WriteAllText(tempPath, payload, new UTF8Encoding(false));
+
+            if (!File.Exists(path))
+            {
+                File.Move(tempPath, path);
+                return;
+            }
+
+            try
+            {
+                File.Replace(tempPath, path, null);
+            }
+            catch (PlatformNotSupportedException)
+            {
+                File.Delete(path);
+                File.Move(tempPath, path);
+            }
         }
 
         private static byte[] DecompressGzip(byte[] gzip)

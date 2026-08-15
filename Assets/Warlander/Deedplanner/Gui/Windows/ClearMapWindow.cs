@@ -10,6 +10,7 @@ namespace Warlander.Deedplanner.Gui.Windows
     {
         private Window _window;
         [Inject] private MapHandler _mapHandler;
+        [Inject] private Logic.Saving.SaveCoordinator _saveCoordinator;
 
         [SerializeField] private Button _clearMapButton;
         [SerializeField] private Button _cancelButton;
@@ -25,9 +26,9 @@ namespace Warlander.Deedplanner.Gui.Windows
             _cancelButton.onClick.AddListener(CancelOnClick);
         }
 
-        private void ClearMapOnClick()
+        private async void ClearMapOnClick()
         {
-            _mapHandler.ClearMap();
+            await _saveCoordinator.ClearMapAsync();
             _window.Close();
         }
 

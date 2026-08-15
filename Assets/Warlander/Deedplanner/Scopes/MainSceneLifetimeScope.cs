@@ -116,10 +116,13 @@ namespace Warlander.Deedplanner.Scopes
             builder.Register<CurrentViewScreenshotCapture>(Lifetime.Singleton);
             builder.Register<DeedThumbnailCapture>(Lifetime.Singleton);
             builder.Register<PastebinSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
-#if !UNITY_WEBGL || UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
+            builder.Register<WebFileSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
+#else
             builder.Register<FileSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
 #endif
             builder.Register<SaveCoordinator>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<AutoSaveScheduler>().AsSelf();
             builder.Register<ScreenshotSaver>(Lifetime.Singleton);
             builder.RegisterEntryPoint<ScreenshotInputListener>();
             builder.RegisterEntryPoint<UpdaterCoordinator>();

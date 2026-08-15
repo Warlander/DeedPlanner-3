@@ -137,7 +137,7 @@ namespace Warlander.Deedplanner.Updaters
                     _windowCoordinator.CreateWindowExclusive(WindowNames.ClearMapWindow);
                     break;
                 case MenuAction.New:
-                    _saveCoordinator.NewMap();
+                    _ = _saveCoordinator.NewMapAsync();
                     break;
                 case MenuAction.Save:
                     if (_saveCoordinator.CanQuickSave)
@@ -169,7 +169,7 @@ namespace Warlander.Deedplanner.Updaters
                     ToggleFullscreen();
                     break;
                 case MenuAction.Quit:
-                    Quit();
+                    _ = QuitAsync();
                     break;
                 case MenuAction.Patreon:
                     Application.OpenURL("https://www.patreon.com/warlander");
@@ -193,9 +193,9 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void Quit()
+        private async System.Threading.Tasks.Task QuitAsync()
         {
-            // TODO: add auto-saving before quit logic
+            await _saveCoordinator.PrepareForQuitAsync();
             _settings.Save();
 
 #if UNITY_EDITOR
