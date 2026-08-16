@@ -91,16 +91,136 @@ namespace Warlander.Deedplanner.Gui.Home
                 }
             }
 
-            foreach (RecentMapEntry entry in _saveCoordinator.RecentMaps.Entries)
+            List<CardItem> items = await CollectSaveItemsAsync();
+            await ResolveWriteTimesAsync(items);
+            items.Sort((a, b) => b.SortTimeUtc.CompareTo(a.SortTimeUtc));
+
+            foreach (CardItem item in items)
             {
-                if (VisibleInCategory(entry))
-                {
-                    cards.Add(BuildCard(entry));
-                }
+                cards.Add(item.Entry != null ? BuildCard(item) : BuildDiscoveredCard(item));
             }
 
             _view.SetCards(cards);
-            _ = RefreshCardStatusesAsync();
+            _ = LoadMissingThumbnailsAsync(items);
+        }
+
+        private async Task<List<CardItem>> CollectSaveItemsAsync()
+        {
+            var items = new List<CardItem>();
+            var knownLocators = new HashSet<string>();
+
+            foreach (RecentMapEntry entry in _saveCoordinator.RecentMaps.Entries)
+            {
+                if (!VisibleInCategory(entry))
+                {
+                    continue;
+                }
+
+                knownLocators.Add(LocationKey(entry.Location));
+                items.Add(new CardItem
+                {
+                    Entry = entry,
+                    Location = entry.Location,
+                    SortTimeUtc = entry.LastOpenedUtc
+                });
+            }
+
+            foreach (ISaveBackend backend in _saveCoordinator.Backends)
+            {
+                if (!backend.IsAvailable || (backend.Capabilities & SaveCapabilities.List) == 0)
+                {
+                    continue;
+                }
+
+                if (_selectedBackendId != null && backend.Id != _selectedBackendId)
+                {
+                    continue;
+                }
+
+                foreach (SavedMapInfo info in await backend.ListSavesAsync())
+                {
+                    if (!knownLocators.Add(LocationKey(info.Location)))
+                    {
+                        continue;
+                    }
+
+                    items.Add(new CardItem
+                    {
+                        Location = info.Location,
+                        SortTimeUtc = info.WriteTimeUtc
+                    });
+                }
+            }
+
+            return items;
+        }
+
+        private async Task ResolveWriteTimesAsync(List<CardItem> items)
+        {
+            var tasks = new List<Task>();
+            foreach (CardItem item in items)
+            {
+                if (item.Entry == null)
+                {
+                    continue;
+                }
+
+                ISaveBackend backend = _saveCoordinator.GetBackend(item.Location.BackendId);
+                if (backend == null || (backend.Capabilities & SaveCapabilities.Track) == 0)
+                {
+                    continue;
+                }
+
+                tasks.Add(TrackItemAsync(item, backend));
+            }
+
+            await Task.WhenAll(tasks);
+        }
+
+        private async Task TrackItemAsync(CardItem item, ISaveBackend backend)
+        {
+            try
+            {
+                SaveLocationStatus status = await backend.TrackAsync(item.Location);
+                item.Exists = status.Exists;
+                if (status.Exists)
+                {
+                    item.SortTimeUtc = status.WriteTimeUtc;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"Failed to track {item.Location}: {e.Message}");
+            }
+        }
+
+        private static string LocationKey(MapLocation location)
+        {
+            return location.BackendId + "|" + location.Locator;
+        }
+
+        private async Task LoadMissingThumbnailsAsync(List<CardItem> items)
+        {
+            foreach (CardItem item in items)
+            {
+                if (!item.NeedsThumbnail)
+                {
+                    continue;
+                }
+
+                byte[] jpeg = await _saveCoordinator.ReadThumbnailAsync(item.Location);
+                if (jpeg == null)
+                {
+                    continue;
+                }
+
+                _saveCoordinator.RecentMaps.StoreThumbnail(item.Location, jpeg);
+
+                HomeScreenCardData card = BuildDiscoveredCard(item);
+                _view.UpdateCard(item.Location, new HomeScreenCardData(
+                    card.Location, card.Name, card.TimeText, card.LocationHint,
+                    card.BadgeText, ToTexture(jpeg), card.Chip, card.ShowDelete));
+            }
         }
 
         private bool VisibleInCategory(RecentMapEntry entry)
@@ -125,14 +245,14 @@ namespace Warlander.Deedplanner.Gui.Home
                 showDelete: false);
         }
 
-        private HomeScreenCardData BuildCard(RecentMapEntry entry)
+        private HomeScreenCardData BuildCard(CardItem item)
         {
+            RecentMapEntry entry = item.Entry;
             ISaveBackend backend = _saveCoordinator.GetBackend(entry.Location.BackendId);
             bool trackable = backend != null && (backend.Capabilities & SaveCapabilities.Track) != 0;
-            bool volatileBackend = backend != null && backend.IsVolatile;
 
             HomeScreenChip chip = HomeScreenChip.None;
-            if (volatileBackend)
+            if (backend != null && backend.IsVolatile)
             {
                 chip = HomeScreenChip.Volatile;
             }
@@ -140,57 +260,44 @@ namespace Warlander.Deedplanner.Gui.Home
             {
                 chip = HomeScreenChip.Unknown;
             }
+            else if (!item.Exists)
+            {
+                chip = HomeScreenChip.Missing;
+            }
 
             return new HomeScreenCardData(
                 entry.Location,
                 entry.Location.DisplayName,
-                FormatTime(entry.LastOpenedUtc),
+                FormatTime(item.SortTimeUtc),
                 backend?.LocationHint(entry.Location),
                 BadgeLabel(entry.Location.BackendId),
                 LoadThumbnailTexture(entry),
                 chip);
         }
 
-        private async Task RefreshCardStatusesAsync()
+        private HomeScreenCardData BuildDiscoveredCard(CardItem item)
         {
-            foreach (RecentMapEntry entry in _saveCoordinator.RecentMaps.Entries)
+            ISaveBackend backend = _saveCoordinator.GetBackend(item.Location.BackendId);
+
+            Texture2D thumbnail = null;
+            byte[] jpeg = _saveCoordinator.RecentMaps.LoadThumbnail(item.Location);
+            if (jpeg != null)
             {
-                if (!VisibleInCategory(entry))
-                {
-                    continue;
-                }
-
-                ISaveBackend backend = _saveCoordinator.GetBackend(entry.Location.BackendId);
-                if (backend == null || (backend.Capabilities & SaveCapabilities.Track) == 0)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    SaveLocationStatus status = await backend.TrackAsync(entry.Location);
-                    if (!status.Exists)
-                    {
-                        _view.UpdateCard(entry.Location, WithChip(entry, HomeScreenChip.Missing));
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.LogWarning($"Failed to track {entry.Location}: {e.Message}");
-                }
+                thumbnail = ToTexture(jpeg);
             }
-        }
+            else
+            {
+                item.NeedsThumbnail = true;
+            }
 
-        private HomeScreenCardData WithChip(RecentMapEntry entry, HomeScreenChip chip)
-        {
             return new HomeScreenCardData(
-                entry.Location,
-                entry.Location.DisplayName,
-                FormatTime(entry.LastOpenedUtc),
-                _saveCoordinator.GetBackend(entry.Location.BackendId)?.LocationHint(entry.Location),
-                BadgeLabel(entry.Location.BackendId),
-                LoadThumbnailTexture(entry),
-                chip);
+                item.Location,
+                item.Location.DisplayName,
+                FormatTime(item.SortTimeUtc),
+                backend?.LocationHint(item.Location),
+                BadgeLabel(item.Location.BackendId),
+                thumbnail,
+                backend != null && backend.IsVolatile ? HomeScreenChip.Volatile : HomeScreenChip.None);
         }
 
         private Texture2D LoadThumbnailTexture(RecentMapEntry entry)
@@ -257,6 +364,15 @@ namespace Warlander.Deedplanner.Gui.Home
                 case SaveBackendId.WebFile: return "FILE";
                 default: return backendId.ToString().ToUpperInvariant();
             }
+        }
+
+        private class CardItem
+        {
+            public RecentMapEntry Entry;
+            public MapLocation Location;
+            public DateTime SortTimeUtc;
+            public bool Exists = true;
+            public bool NeedsThumbnail;
         }
     }
 }

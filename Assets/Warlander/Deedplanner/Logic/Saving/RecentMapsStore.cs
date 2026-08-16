@@ -62,6 +62,15 @@ namespace Warlander.Deedplanner.Logic.Saving
 #endif
         }
 
+        /// Cache-only write for enumeration-discovered saves: no recents entry, no MRU change.
+        public void StoreThumbnail(MapLocation location, byte[] jpeg)
+        {
+            if (jpeg != null && jpeg.Length > 0)
+            {
+                WriteThumbnailCache(location, jpeg);
+            }
+        }
+
         private static bool SameLocation(MapLocation a, MapLocation b)
         {
             return a.BackendId == b.BackendId && a.Locator == b.Locator;

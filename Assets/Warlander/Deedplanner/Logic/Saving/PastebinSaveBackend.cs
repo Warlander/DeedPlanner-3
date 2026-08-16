@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -112,6 +113,9 @@ namespace Warlander.Deedplanner.Logic.Saving
         {
             throw new NotSupportedException("Anonymous pastes cannot be deleted via the Pastebin API");
         }
+
+        public Task<IReadOnlyList<SavedMapInfo>> ListSavesAsync() =>
+            Task.FromResult<IReadOnlyList<SavedMapInfo>>(Array.Empty<SavedMapInfo>());
 
         private static byte[] Compress(byte[] raw)
         {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -116,6 +117,10 @@ namespace Warlander.Deedplanner.Logic.Saving
 
             return Task.CompletedTask;
         }
+
+        // file paths are unbounded — recents + the file dialog are the picker, nothing to enumerate
+        public Task<IReadOnlyList<SavedMapInfo>> ListSavesAsync() =>
+            Task.FromResult<IReadOnlyList<SavedMapInfo>>(Array.Empty<SavedMapInfo>());
 
         // temp file, then atomic replace: a crash mid-write can never corrupt the last good save
         private static void WriteAllTextSafe(string path, string payload)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Warlander.Deedplanner.Logic.Saving
@@ -38,5 +39,8 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         /// Permanently deletes the location. Only valid with the Delete capability.
         Task DeleteAsync(MapLocation target);
+
+        /// Every save the backend holds, with write times. Only valid with the List capability.
+        Task<IReadOnlyList<SavedMapInfo>> ListSavesAsync();
     }
 }

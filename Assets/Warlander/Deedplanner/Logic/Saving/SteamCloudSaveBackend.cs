@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -17,7 +18,8 @@ namespace Warlander.Deedplanner.Logic.Saving
         public SaveBackendId Id => SaveBackendId.SteamCloud;
         public string DisplayName => "Steam Cloud";
         public SaveCapabilities Capabilities =>
-            SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite | SaveCapabilities.Delete;
+            SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite |
+            SaveCapabilities.Delete | SaveCapabilities.List;
         public bool IsVolatile => false;
         public string VolatileWarning => null;
         public bool CompressesOutput => true;
@@ -109,6 +111,27 @@ namespace Warlander.Deedplanner.Logic.Saving
             }
 
             return Task.CompletedTask;
+        }
+
+        public Task<IReadOnlyList<SavedMapInfo>> ListSavesAsync()
+        {
+            var saves = new List<SavedMapInfo>();
+            int fileCount = SteamRemoteStorage.GetFileCount();
+            for (int i = 0; i < fileCount; i++)
+            {
+                string name = SteamRemoteStorage.GetFileNameAndSize(i, out _);
+                if (!name.EndsWith(".MAP", StringComparison.OrdinalIgnoreCase) || name.Contains(".auto"))
+                {
+                    continue;
+                }
+
+                long unixTime = SteamRemoteStorage.GetFileTimestamp(name);
+                DateTime writeTime = DateTimeOffset.FromUnixTimeSeconds(unixTime).UtcDateTime;
+                string displayName = name.Substring(0, name.Length - ".MAP".Length);
+                saves.Add(new SavedMapInfo(new MapLocation(Id, name, displayName), writeTime));
+            }
+
+            return Task.FromResult<IReadOnlyList<SavedMapInfo>>(saves);
         }
 
         private static void WriteCloudFile(string fileName, string payload)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -15,7 +16,8 @@ namespace Warlander.Deedplanner.Logic.Saving
         public SaveBackendId Id => SaveBackendId.LocalStorage;
         public string DisplayName => "Browser storage";
         public SaveCapabilities Capabilities =>
-            SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite | SaveCapabilities.Delete;
+            SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite |
+            SaveCapabilities.Delete | SaveCapabilities.List;
         public bool IsVolatile => true;
         public string VolatileWarning =>
             "Browser storage can be wiped. Clearing site data, private browsing, or browser cleanup tools will delete maps saved here. Export important maps as files.";
@@ -96,6 +98,27 @@ namespace Warlander.Deedplanner.Logic.Saving
             Utils.JavaScriptUtils.LocalStorageRemoveItem(target.Locator);
 #endif
             return Task.CompletedTask;
+        }
+
+        public Task<IReadOnlyList<SavedMapInfo>> ListSavesAsync()
+        {
+            var saves = new List<SavedMapInfo>();
+#if UNITY_WEBGL && !UNITY_EDITOR
+            foreach (string key in Utils.JavaScriptUtils.LocalStorageGetKeys())
+            {
+                if (!key.EndsWith(".MAP", StringComparison.OrdinalIgnoreCase) || key.Contains(".auto"))
+                {
+                    continue;
+                }
+
+                string envelopeJson = Utils.JavaScriptUtils.LocalStorageGetItem(key);
+                Envelope envelope = JsonUtility.FromJson<Envelope>(envelopeJson);
+                var writeTime = new DateTime(envelope.t, DateTimeKind.Utc);
+                string displayName = key.Substring(0, key.Length - ".MAP".Length);
+                saves.Add(new SavedMapInfo(new MapLocation(Id, key, displayName), writeTime));
+            }
+#endif
+            return Task.FromResult<IReadOnlyList<SavedMapInfo>>(saves);
         }
 
         private static void WriteEnvelope(string key, string payload)

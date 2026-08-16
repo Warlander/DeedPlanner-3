@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Warlander.Deedplanner.Logic.Saving
@@ -53,5 +54,8 @@ namespace Warlander.Deedplanner.Logic.Saving
         {
             throw new NotSupportedException("WebFile downloads cannot be deleted");
         }
+
+        public Task<IReadOnlyList<SavedMapInfo>> ListSavesAsync() =>
+            Task.FromResult<IReadOnlyList<SavedMapInfo>>(Array.Empty<SavedMapInfo>());
     }
 }

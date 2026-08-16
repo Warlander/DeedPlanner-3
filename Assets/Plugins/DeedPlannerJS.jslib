@@ -158,6 +158,19 @@ mergeInto(LibraryManager.library, {
             total += key.length + (value ? value.length : 0);
         }
         return total;
+    },
+
+    LocalStorageGetKeysNative : function() {
+        var keys = [];
+        for (var i = 0; i < localStorage.length; i++) {
+            keys.push(localStorage.key(i));
+        }
+
+        var json = JSON.stringify({ keys: keys });
+        var bufferSize = lengthBytesUTF8(json) + 1;
+        var buffer = _malloc(bufferSize);
+        stringToUTF8(json, buffer, bufferSize);
+        return buffer;
     }
 
 });
