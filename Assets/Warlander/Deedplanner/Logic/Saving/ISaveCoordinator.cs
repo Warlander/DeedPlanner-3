@@ -14,15 +14,15 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         event Action SaveStateChanged;
 
-        ISaveBackend GetBackend(string id);
+        ISaveBackend GetBackend(SaveBackendId id);
         bool CanQuickSave { get; }
 
         string SerializeCurrentMap();
         string SerializeCurrentMap(out byte[] thumbnailJpeg);
 
-        Task<MapLocation?> SaveAsync(string backendId);
+        Task<MapLocation?> SaveAsync(SaveBackendId backendId);
         Task<bool> QuickSaveAsync();
-        Task<bool> PickAndLoadAsync(string backendId);
+        Task<bool> PickAndLoadAsync(SaveBackendId backendId);
         Task<bool> LoadAsync(MapLocation location);
         Task<bool> LoadFromWebAsync(string rawLink);
         Task<bool> LoadRecoveryAsync(MapLocation slot, MapLocation? mainLocation);

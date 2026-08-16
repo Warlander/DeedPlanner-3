@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Logic.Saving;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Home
 {
     /// Owns the home screen's content: categories, card grid population, statuses, recovery cards, thumbnails.
     public class HomeScreenCardCatalog
@@ -14,7 +14,7 @@ namespace Warlander.Deedplanner.Gui
         private readonly ISaveCoordinator _saveCoordinator;
         private readonly IAutoSaveScheduler _autoSaveScheduler;
 
-        private string _selectedBackendId;
+        private SaveBackendId? _selectedBackendId;
         private readonly Dictionary<MapLocation, MapLocation?> _recoveryMains =
             new Dictionary<MapLocation, MapLocation?>();
 
@@ -33,7 +33,7 @@ namespace Warlander.Deedplanner.Gui
             _selectedBackendId = null;
         }
 
-        public void SelectCategory(string backendId)
+        public void SelectCategory(SaveBackendId? backendId)
         {
             _selectedBackendId = backendId;
             Populate();
@@ -81,7 +81,7 @@ namespace Warlander.Deedplanner.Gui
                 }
             }
 
-            if (_selectedBackendId == null || _selectedBackendId == "file")
+            if (_selectedBackendId == null || _selectedBackendId == SaveBackendId.File)
             {
                 MapLocation? untitledSlot = await _autoSaveScheduler.FindNeverSavedRecoveryAsync();
                 if (untitledSlot.HasValue && !_recoveryMains.ContainsKey(untitledSlot.Value))
@@ -234,28 +234,28 @@ namespace Warlander.Deedplanner.Gui
             return days < 30 ? days + " days ago" : local.ToString("yyyy-MM-dd");
         }
 
-        private static string CategoryLabel(string backendId)
+        private static string CategoryLabel(SaveBackendId backendId)
         {
             switch (backendId)
             {
-                case "file": return "Local files";
-                case "steamcloud": return "Steam Cloud";
-                case "localstorage": return "Browser storage";
-                case "pastebin": return "Pastebin";
+                case SaveBackendId.File: return "Local files";
+                case SaveBackendId.SteamCloud: return "Steam Cloud";
+                case SaveBackendId.LocalStorage: return "Browser storage";
+                case SaveBackendId.Pastebin: return "Pastebin";
                 default: return null;
             }
         }
 
-        private static string BadgeLabel(string backendId)
+        private static string BadgeLabel(SaveBackendId backendId)
         {
             switch (backendId)
             {
-                case "file": return "FILE";
-                case "steamcloud": return "STEAM";
-                case "localstorage": return "BROWSER";
-                case "pastebin": return "PASTE";
-                case "webfile": return "FILE";
-                default: return backendId.ToUpperInvariant();
+                case SaveBackendId.File: return "FILE";
+                case SaveBackendId.SteamCloud: return "STEAM";
+                case SaveBackendId.LocalStorage: return "BROWSER";
+                case SaveBackendId.Pastebin: return "PASTE";
+                case SaveBackendId.WebFile: return "FILE";
+                default: return backendId.ToString().ToUpperInvariant();
             }
         }
     }

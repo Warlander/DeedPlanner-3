@@ -4,10 +4,14 @@ namespace Warlander.Deedplanner.Logic.Saving
 {
     public interface ISaveBackend
     {
-        string Id { get; }
+        SaveBackendId Id { get; }
         string DisplayName { get; }
         SaveCapabilities Capabilities { get; }
         bool IsVolatile { get; }
+
+        /// User-facing warning for volatile backends. Null for non-volatile ones.
+        string VolatileWarning { get; }
+
         bool CompressesOutput { get; }
 
         /// False when the backend cannot work right now (e.g. Steam not running). Hidden from pickers.

@@ -50,7 +50,7 @@ namespace Warlander.Deedplanner.Gui.Windows
 
         private async void LoadFileStandalone()
         {
-            bool loaded = await _saveCoordinator.PickAndLoadAsync("file");
+            bool loaded = await _saveCoordinator.PickAndLoadAsync(SaveBackendId.File);
             if (loaded)
             {
                 _window.Close();

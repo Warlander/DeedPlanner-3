@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Home
 {
     public class DeedCardView : MonoBehaviour
     {

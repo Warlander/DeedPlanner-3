@@ -6,6 +6,7 @@ using VContainer;
 using VContainer.Unity;
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Home;
 using Warlander.Deedplanner.Logic.Saving;
 
 namespace Warlander.Deedplanner.Logic
@@ -49,7 +50,7 @@ namespace Warlander.Deedplanner.Logic
             {
                 if (mapLocationString.Contains("pastebin.com"))
                 {
-                    await _saveCoordinator.LoadAsync(new MapLocation("pastebin", mapLocationString, "Shared map"));
+                    await _saveCoordinator.LoadAsync(new MapLocation(SaveBackendId.Pastebin, mapLocationString, "Shared map"));
                 }
                 else
                 {

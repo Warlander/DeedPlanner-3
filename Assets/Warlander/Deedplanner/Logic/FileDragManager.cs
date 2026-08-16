@@ -28,7 +28,7 @@ namespace Warlander.Deedplanner.Logic
             }
 
             string path = files[0];
-            await _saveCoordinator.LoadAsync(new MapLocation("file", path, Path.GetFileNameWithoutExtension(path)));
+            await _saveCoordinator.LoadAsync(new MapLocation(SaveBackendId.File, path, Path.GetFileNameWithoutExtension(path)));
         }
         
         void IDisposable.Dispose()

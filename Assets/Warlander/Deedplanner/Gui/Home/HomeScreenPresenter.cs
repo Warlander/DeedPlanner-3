@@ -7,7 +7,7 @@ using Warlander.Deedplanner.Settings;
 using VContainer.Unity;
 using Warlander.UI.Windows;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Home
 {
     public class HomeScreenPresenter : IHomeScreenPresenter, IInitializable, IDisposable, ITickable
     {
@@ -74,9 +74,9 @@ namespace Warlander.Deedplanner.Gui
 
         private async void OnLoad()
         {
-            if (_saveCoordinator.GetBackend("file") != null)
+            if (_saveCoordinator.GetBackend(SaveBackendId.File) != null)
             {
-                bool loaded = await _saveCoordinator.PickAndLoadAsync("file");
+                bool loaded = await _saveCoordinator.PickAndLoadAsync(SaveBackendId.File);
                 if (loaded)
                 {
                     _view.Hide();
@@ -118,14 +118,14 @@ namespace Warlander.Deedplanner.Gui
 #endif
         }
 
-        private void OnCategory(string backendId)
+        private void OnCategory(SaveBackendId? backendId)
         {
             _cardCatalog.SelectCategory(backendId);
         }
 
         private async void OnCard(MapLocation location)
         {
-            if (location.BackendId == "webfile")
+            if (location.BackendId == SaveBackendId.WebFile)
             {
                 // browser downloads cannot be re-read; the load window provides the file picker
                 _windowCoordinator.CreateWindowExclusive(WindowNames.LoadMapWindow);
@@ -191,7 +191,7 @@ namespace Warlander.Deedplanner.Gui
             }
             else
             {
-                string kept = location.BackendId == "pastebin"
+                string kept = location.BackendId == SaveBackendId.Pastebin
                     ? "The paste itself stays online."
                     : "The file itself will not be deleted.";
                 message = $"Remove '{location.DisplayName}' from the list?\n\n{kept}";

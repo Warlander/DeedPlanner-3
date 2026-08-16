@@ -2,11 +2,11 @@ namespace Warlander.Deedplanner.Logic.Saving
 {
     public readonly struct MapLocation
     {
-        public readonly string BackendId;
+        public readonly SaveBackendId BackendId;
         public readonly string Locator;
         public readonly string DisplayName;
 
-        public MapLocation(string backendId, string locator, string displayName)
+        public MapLocation(SaveBackendId backendId, string locator, string displayName)
         {
             BackendId = backendId;
             Locator = locator;

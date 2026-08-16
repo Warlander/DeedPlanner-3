@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Warlander.Deedplanner.Logic.Saving;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Home
 {
     public interface IHomeScreenView
     {
@@ -12,7 +12,7 @@ namespace Warlander.Deedplanner.Gui
         event Action WebLinkClicked;
         event Action AboutClicked;
         event Action QuitClicked;
-        event Action<string> CategoryClicked;
+        event Action<SaveBackendId?> CategoryClicked;
         event Action<MapLocation> CardClicked;
         event Action<MapLocation> CardDeleteClicked;
 
@@ -20,7 +20,7 @@ namespace Warlander.Deedplanner.Gui
         void Show();
         void Hide();
         void SetLoadButtonVisible(bool visible);
-        void SetCategories(IReadOnlyList<HomeScreenCategory> categories, string selectedBackendId);
+        void SetCategories(IReadOnlyList<HomeScreenCategory> categories, SaveBackendId? selectedBackendId);
         void SetCards(IReadOnlyList<HomeScreenCardData> cards);
         void UpdateCard(MapLocation location, HomeScreenCardData data);
     }

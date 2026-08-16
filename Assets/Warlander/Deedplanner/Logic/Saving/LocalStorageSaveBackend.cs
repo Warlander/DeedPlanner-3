@@ -12,11 +12,13 @@ namespace Warlander.Deedplanner.Logic.Saving
     {
         private const long StorageLimitChars = 4L * 1024 * 1024 + 512 * 1024; // 4.5 MB of a ~5 MB origin budget
 
-        public string Id => "localstorage";
+        public SaveBackendId Id => SaveBackendId.LocalStorage;
         public string DisplayName => "Browser storage";
         public SaveCapabilities Capabilities =>
             SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite | SaveCapabilities.Delete;
         public bool IsVolatile => true;
+        public string VolatileWarning =>
+            "Browser storage can be wiped. Clearing site data, private browsing, or browser cleanup tools will delete maps saved here. Export important maps as files.";
         public bool CompressesOutput => true;
         public bool IsAvailable => true;
 

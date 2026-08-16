@@ -14,11 +14,12 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         private readonly ISteamConnection _connection;
 
-        public string Id => "steamcloud";
+        public SaveBackendId Id => SaveBackendId.SteamCloud;
         public string DisplayName => "Steam Cloud";
         public SaveCapabilities Capabilities =>
             SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite | SaveCapabilities.Delete;
         public bool IsVolatile => false;
+        public string VolatileWarning => null;
         public bool CompressesOutput => true;
         public bool IsAvailable => _connection.Connected;
 

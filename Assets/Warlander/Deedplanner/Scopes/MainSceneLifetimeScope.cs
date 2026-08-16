@@ -8,6 +8,7 @@ using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Graphics.Screenshots;
 using Warlander.Deedplanner.Graphics.Water;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Home;
 using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Gui.Widgets.Bridges;
 using Warlander.Deedplanner.Inputs;

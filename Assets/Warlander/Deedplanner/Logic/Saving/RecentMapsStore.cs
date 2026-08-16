@@ -106,7 +106,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             {
                 dto.entries.Add(new EntryDto
                 {
-                    backendId = entry.Location.BackendId,
+                    backendId = entry.Location.BackendId.ToString(),
                     locator = entry.Location.Locator,
                     displayName = entry.Location.DisplayName,
                     lastOpenedUtc = entry.LastOpenedUtc.ToString("o"),
@@ -156,7 +156,12 @@ namespace Warlander.Deedplanner.Logic.Saving
                     lastOpened = DateTime.MinValue;
                 }
 
-                var location = new MapLocation(entry.backendId, entry.locator, entry.displayName);
+                if (!System.Enum.TryParse(entry.backendId, true, out SaveBackendId backendId))
+                {
+                    continue;
+                }
+
+                var location = new MapLocation(backendId, entry.locator, entry.displayName);
                 _entries.Add(new RecentMapEntry(location, lastOpened, entry.hasThumbnail));
             }
         }

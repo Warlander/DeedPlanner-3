@@ -9,11 +9,12 @@ namespace Warlander.Deedplanner.Logic.Saving
 {
     public class FileSaveBackend : ISaveBackend
     {
-        public string Id => "file";
+        public SaveBackendId Id => SaveBackendId.File;
         public string DisplayName => "File on this computer";
         public SaveCapabilities Capabilities =>
             SaveCapabilities.Save | SaveCapabilities.Load | SaveCapabilities.Track | SaveCapabilities.Overwrite | SaveCapabilities.Delete;
         public bool IsVolatile => false;
+        public string VolatileWarning => null;
         public bool CompressesOutput => false;
         public bool IsAvailable => true;
 

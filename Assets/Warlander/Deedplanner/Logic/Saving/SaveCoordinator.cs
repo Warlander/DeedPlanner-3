@@ -39,7 +39,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             _resolver = resolver;
         }
 
-        public ISaveBackend GetBackend(string id)
+        public ISaveBackend GetBackend(SaveBackendId id)
         {
             foreach (ISaveBackend backend in _backends)
             {
@@ -91,7 +91,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         }
 
         /// Runs the backend's full save flow (picker included). Returns the saved location, null when cancelled.
-        public async Task<MapLocation?> SaveAsync(string backendId)
+        public async Task<MapLocation?> SaveAsync(SaveBackendId backendId)
         {
             ISaveBackend backend = GetBackend(backendId);
             Map map = _mapHandler.Map;
@@ -153,7 +153,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         }
 
         /// Picks a file with the backend and loads it. Returns false when cancelled or failed.
-        public async Task<bool> PickAndLoadAsync(string backendId)
+        public async Task<bool> PickAndLoadAsync(SaveBackendId backendId)
         {
             ISaveBackend backend = GetBackend(backendId);
             if (backend == null || Busy)
@@ -266,7 +266,7 @@ namespace Warlander.Deedplanner.Logic.Saving
                 string name = lastSlash >= 0 && lastSlash < directLink.Length - 1
                     ? directLink.Substring(lastSlash + 1)
                     : "Shared map";
-                return await LoadAsync(new MapLocation("pastebin", directLink, name));
+                return await LoadAsync(new MapLocation(SaveBackendId.Pastebin, directLink, name));
             }
 
             try

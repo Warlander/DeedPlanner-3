@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Logic.Saving;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Home
 {
     public class HomeScreenView : MonoBehaviour, IHomeScreenView
     {
@@ -29,7 +29,7 @@ namespace Warlander.Deedplanner.Gui
         public event Action WebLinkClicked = delegate { };
         public event Action AboutClicked = delegate { };
         public event Action QuitClicked = delegate { };
-        public event Action<string> CategoryClicked = delegate { };
+        public event Action<SaveBackendId?> CategoryClicked = delegate { };
         public event Action<MapLocation> CardClicked = delegate { };
         public event Action<MapLocation> CardDeleteClicked = delegate { };
 
@@ -65,7 +65,7 @@ namespace Warlander.Deedplanner.Gui
             _loadButton.gameObject.SetActive(visible);
         }
 
-        public void SetCategories(IReadOnlyList<HomeScreenCategory> categories, string selectedBackendId)
+        public void SetCategories(IReadOnlyList<HomeScreenCategory> categories, SaveBackendId? selectedBackendId)
         {
             foreach (Button button in _categoryButtons)
             {
@@ -81,7 +81,7 @@ namespace Warlander.Deedplanner.Gui
                 Button button = Instantiate(_categoryButtonPrototype, _categoryContainer);
                 button.name = "Category " + category.Label;
                 button.GetComponentInChildren<TMPro.TMP_Text>().text = category.Label;
-                string backendId = category.BackendId;
+                SaveBackendId backendId = category.BackendId;
                 button.onClick.AddListener(() => CategoryClicked(backendId));
                 button.gameObject.SetActive(true);
                 TintCategoryButton(button, selectedBackendId == backendId);

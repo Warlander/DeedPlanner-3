@@ -1,4 +1,4 @@
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Home
 {
     public enum HomeScreenChip
     {

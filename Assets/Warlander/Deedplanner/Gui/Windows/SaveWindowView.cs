@@ -58,7 +58,7 @@ namespace Warlander.Deedplanner.Gui.Windows
                 Button button = Instantiate(_actionButtonPrototype, container);
                 button.name = backend.DisplayName + " Button";
                 button.GetComponentInChildren<TMP_Text>().text = backend.DisplayName;
-                string backendId = backend.Id;
+                SaveBackendId backendId = backend.Id;
                 button.onClick.AddListener(() => ActBackend(backendId));
                 button.gameObject.SetActive(true);
                 _actionButtons.Add(button);
@@ -72,13 +72,13 @@ namespace Warlander.Deedplanner.Gui.Windows
             _warningBox.SetActive(volatileBackend != null);
             if (volatileBackend != null)
             {
-                _warningText.text = VolatileWarning(volatileBackend.Id);
+                _warningText.text = volatileBackend.VolatileWarning;
             }
 
             _feasibilityBox.SetActive(false);
         }
 
-        private async void ActBackend(string backendId)
+        private async void ActBackend(SaveBackendId backendId)
         {
             ISaveBackend backend = _saveCoordinator.GetBackend(backendId);
             if (backend == null)
@@ -136,20 +136,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             }
 
             // text targets carry the payload as base64
-            return backend.Id == "steamcloud" ? _gzipSize : _gzipSize * 4 / 3;
-        }
-
-        private static string VolatileWarning(string backendId)
-        {
-            switch (backendId)
-            {
-                case "pastebin":
-                    return "Pastebin is not permanent storage. Pastes can be removed by Pastebin at any time. Keep a local file copy of any map you care about.";
-                case "localstorage":
-                    return "Browser storage can be wiped. Clearing site data, private browsing, or browser cleanup tools will delete maps saved here. Export important maps as files.";
-                default:
-                    return "This save location is not permanent storage.";
-            }
+            return backend.Id == SaveBackendId.SteamCloud ? _gzipSize : _gzipSize * 4 / 3;
         }
 
         private static byte[] Compress(byte[] raw)

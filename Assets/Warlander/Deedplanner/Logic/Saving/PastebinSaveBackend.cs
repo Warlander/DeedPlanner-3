@@ -15,10 +15,12 @@ namespace Warlander.Deedplanner.Logic.Saving
         private const string ApiDevKey = "24844c99ae9971a2da79a2f7d0da7642";
         private const long PasteLimitBytes = 512 * 1024;
 
-        public string Id => "pastebin";
+        public SaveBackendId Id => SaveBackendId.Pastebin;
         public string DisplayName => "Pastebin";
         public SaveCapabilities Capabilities => SaveCapabilities.Save | SaveCapabilities.Load;
         public bool IsVolatile => true;
+        public string VolatileWarning =>
+            "Pastebin is not permanent storage. Pastes can be removed by Pastebin at any time. Keep a local file copy of any map you care about.";
         public bool CompressesOutput => true;
         public bool IsAvailable => true;
 

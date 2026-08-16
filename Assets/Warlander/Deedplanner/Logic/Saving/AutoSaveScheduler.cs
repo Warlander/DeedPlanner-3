@@ -82,13 +82,13 @@ namespace Warlander.Deedplanner.Logic.Saving
         /// Auto-save slot from a never-saved map, when one exists.
         public async Task<MapLocation?> FindNeverSavedRecoveryAsync()
         {
-            string backendId = NeverSavedBackendId();
-            if (backendId == null)
+            SaveBackendId? nullableBackendId = NeverSavedBackendId();
+            if (!nullableBackendId.HasValue)
             {
                 return null;
             }
 
-            return await NewestSlotAsync(backendId, SlotLocatorsForNeverSaved(backendId));
+            return await NewestSlotAsync(nullableBackendId.Value, SlotLocatorsForNeverSaved(nullableBackendId.Value));
         }
 
         /// Deletes all auto-save slots of a save. Used when the save itself is deleted.
@@ -121,30 +121,30 @@ namespace Warlander.Deedplanner.Logic.Saving
                 return new MapLocation(current.Value.BackendId, locator, current.Value.DisplayName);
             }
 
-            string neverSavedBackendId = NeverSavedBackendId();
-            if (neverSavedBackendId == null)
+            SaveBackendId? neverSavedBackendId = NeverSavedBackendId();
+            if (!neverSavedBackendId.HasValue)
             {
                 return null;
             }
 
-            string neverSavedLocator = await OldestOrEmptySlotAsync(neverSavedBackendId, SlotLocatorsForNeverSaved(neverSavedBackendId));
-            return new MapLocation(neverSavedBackendId, neverSavedLocator, map.DisplayName);
+            string neverSavedLocator = await OldestOrEmptySlotAsync(neverSavedBackendId.Value, SlotLocatorsForNeverSaved(neverSavedBackendId.Value));
+            return new MapLocation(neverSavedBackendId.Value, neverSavedLocator, map.DisplayName);
         }
 
-        private string NeverSavedBackendId()
+        private SaveBackendId? NeverSavedBackendId()
         {
-            if (_saveCoordinator.GetBackend("file") != null)
+            if (_saveCoordinator.GetBackend(SaveBackendId.File) != null)
             {
-                return "file";
+                return SaveBackendId.File;
             }
 
-            return _saveCoordinator.GetBackend("localstorage") != null ? "localstorage" : null;
+            return _saveCoordinator.GetBackend(SaveBackendId.LocalStorage) != null ? SaveBackendId.LocalStorage : (SaveBackendId?)null;
         }
 
         private static string[] SlotLocatorsFor(MapLocation mainLocation)
         {
             var locators = new string[SlotCount];
-            if (mainLocation.BackendId == "file")
+            if (mainLocation.BackendId == SaveBackendId.File)
             {
                 string directory = Path.GetDirectoryName(mainLocation.Locator);
                 string baseName = Path.GetFileNameWithoutExtension(mainLocation.Locator);
@@ -170,13 +170,13 @@ namespace Warlander.Deedplanner.Logic.Saving
             return locators;
         }
 
-        private static string[] SlotLocatorsForNeverSaved(string backendId)
+        private static string[] SlotLocatorsForNeverSaved(SaveBackendId backendId)
         {
             var locators = new string[SlotCount];
             for (int i = 0; i < SlotCount; i++)
             {
                 string slotName = $"Untitled.auto{i + 1}.MAP";
-                if (backendId == "file")
+                if (backendId == SaveBackendId.File)
                 {
                     string directory = Path.Combine(Application.persistentDataPath, "Autosaves");
                     Directory.CreateDirectory(directory);
@@ -191,7 +191,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             return locators;
         }
 
-        private async Task<string> OldestOrEmptySlotAsync(string backendId, string[] slots)
+        private async Task<string> OldestOrEmptySlotAsync(SaveBackendId backendId, string[] slots)
         {
             string oldest = null;
             DateTime oldestWrite = DateTime.MaxValue;
@@ -214,7 +214,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             return oldest;
         }
 
-        private async Task<MapLocation?> NewestSlotAsync(string backendId, string[] slots)
+        private async Task<MapLocation?> NewestSlotAsync(SaveBackendId backendId, string[] slots)
         {
             string newest = null;
             DateTime newestWrite = DateTime.MinValue;

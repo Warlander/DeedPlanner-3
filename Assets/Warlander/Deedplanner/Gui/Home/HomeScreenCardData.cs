@@ -1,7 +1,7 @@
 using UnityEngine;
 using Warlander.Deedplanner.Logic.Saving;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Gui.Home
 {
     public readonly struct HomeScreenCardData
     {

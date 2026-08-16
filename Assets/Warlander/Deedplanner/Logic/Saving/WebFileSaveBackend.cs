@@ -6,10 +6,11 @@ namespace Warlander.Deedplanner.Logic.Saving
     /// WebGL file downloads through the browser. Save-only; the browser owns the files.
     public class WebFileSaveBackend : ISaveBackend
     {
-        public string Id => "webfile";
+        public SaveBackendId Id => SaveBackendId.WebFile;
         public string DisplayName => "File download";
         public SaveCapabilities Capabilities => SaveCapabilities.Save | SaveCapabilities.Load;
         public bool IsVolatile => false;
+        public string VolatileWarning => null;
         public bool CompressesOutput => false;
         public bool IsAvailable => true;
 
