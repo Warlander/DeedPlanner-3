@@ -10,5 +10,6 @@ namespace Warlander.Deedplanner.Gui.Updaters
         void SetFullscreenButtonVisible(bool visible);
         void SetVersionText(string text);
         void SetSteamStatus(bool visible, string text);
+        void SetSaveIndicator(string text, bool hasUnsavedChanges);
     }
 }

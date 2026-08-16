@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository. Mirrored to `AGENTS.md` (OpenAI Codex) — when updating one, update the other.
 
 ## Project Overview
 

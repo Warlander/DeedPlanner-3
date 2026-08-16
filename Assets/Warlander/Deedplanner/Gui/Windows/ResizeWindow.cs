@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Saving;
 using VContainer;
 using Warlander.UI.Windows;
 
@@ -12,6 +13,7 @@ namespace Warlander.Deedplanner.Gui.Windows
     {
         private Window _window;
         [Inject] private MapHandler _mapHandler;
+        [Inject] private ISaveCoordinator _saveCoordinator;
 
         [SerializeField] private Button _acceptButton;
         
@@ -51,7 +53,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             topInput.onValueChanged.AddListener(InputOnValueChanged);
         }
 
-        private void AcceptButtonOnClick()
+        private async void AcceptButtonOnClick()
         {
             int left = 0;
             int.TryParse(leftInput.text, out left);
@@ -61,8 +63,8 @@ namespace Warlander.Deedplanner.Gui.Windows
             int.TryParse(bottomInput.text, out bottom);
             int top = 0;
             int.TryParse(topInput.text, out top);
-            
-            _mapHandler.ResizeMap(left, right, bottom, top);
+
+            await _saveCoordinator.ResizeMapAsync(left, right, bottom, top);
             _window.Close();
         }
 

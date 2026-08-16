@@ -44,6 +44,32 @@ namespace Warlander.Deedplanner.Data
         public int AllTilesCount => _tileGrid.AllTilesCount;
         public string OriginalExporter { get; private set; } = Constants.TitleString;
         public Version OriginalExporterVersion { get; private set; }
+        public string DisplayName { get; set; } = "Untitled";
+
+        public bool IsDirty { get; private set; }
+        public event Action<bool> DirtyChanged = delegate { };
+
+        public void MarkDirty()
+        {
+            if (IsDirty)
+            {
+                return;
+            }
+
+            IsDirty = true;
+            DirtyChanged(true);
+        }
+
+        public void ClearDirty()
+        {
+            if (!IsDirty)
+            {
+                return;
+            }
+
+            IsDirty = false;
+            DirtyChanged(false);
+        }
 
         public int LowestSurfaceHeight => _heightTracker.LowestSurfaceHeight;
         public int HighestSurfaceHeight => _heightTracker.HighestSurfaceHeight;
@@ -142,6 +168,9 @@ namespace Warlander.Deedplanner.Data
             RecalculateHeights();
             RecalculateRoofs();
             CommandManager.ForgetAction();
+            // subscribe only after initialization: tile population routes through commands (see ForgetAction)
+            CommandManager.Mutated -= MarkDirty;
+            CommandManager.Mutated += MarkDirty;
         }
 
         public void Initialize(int width, int height)
@@ -151,6 +180,9 @@ namespace Warlander.Deedplanner.Data
             RecalculateHeights();
             RecalculateRoofs();
             CommandManager.ForgetAction();
+            // subscribe only after initialization: tile population routes through commands (see ForgetAction)
+            CommandManager.Mutated -= MarkDirty;
+            CommandManager.Mutated += MarkDirty;
         }
 
         public void Initialize(XmlDocument document)
@@ -159,6 +191,8 @@ namespace Warlander.Deedplanner.Data
             if (mapRoot == null || mapRoot.LocalName != "map")
             {
                 PreInitialize(25, 25);
+                CommandManager.Mutated -= MarkDirty;
+                CommandManager.Mutated += MarkDirty;
                 return;
             }
 
@@ -172,6 +206,8 @@ namespace Warlander.Deedplanner.Data
 
             int width = Convert.ToInt32(mapRoot.GetAttribute("width"));
             int height = Convert.ToInt32(mapRoot.GetAttribute("height"));
+            string name = mapRoot.GetAttribute("name");
+            DisplayName = string.IsNullOrEmpty(name) ? "Untitled" : name;
             PreInitialize(width, height);
 
             XmlNodeList tilesList = mapRoot.GetElementsByTagName("tile");
@@ -213,6 +249,9 @@ namespace Warlander.Deedplanner.Data
             RecalculateHeights();
             RecalculateRoofs();
             CommandManager.ForgetAction();
+            // subscribe only after initialization: tile population routes through commands (see ForgetAction)
+            CommandManager.Mutated -= MarkDirty;
+            CommandManager.Mutated += MarkDirty;
         }
 
         private void PreInitialize(int width, int height)
@@ -389,6 +428,7 @@ namespace Warlander.Deedplanner.Data
             localRoot.SetAttribute("width", Width.ToString());
             localRoot.SetAttribute("height", Height.ToString());
             localRoot.SetAttribute("exporter", Constants.TitleString);
+            localRoot.SetAttribute("name", DisplayName);
             document.AppendChild(localRoot);
 
             for (int i = 0; i <= Width; i++)

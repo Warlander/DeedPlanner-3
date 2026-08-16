@@ -1045,6 +1045,15 @@ namespace Warlander.Deedplanner.Inputs
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Quick Save"",
+                    ""type"": ""Button"",
+                    ""id"": ""adb98109-d7a8-44f7-8a86-d0a1d3eaf15d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1179,6 +1188,39 @@ namespace Warlander.Deedplanner.Inputs
                     ""action"": ""Take Screenshot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""74d5956c-b217-4e4d-8872-e218c545e8f1"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quick Save"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""39820cbb-98c3-4fbc-822c-a35ebb059e64"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Quick Save"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""222a894f-8b6b-44c8-9859-f4ca2e0fb4e7"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Quick Save"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -1474,6 +1516,7 @@ namespace Warlander.Deedplanner.Inputs
             m_EditingControls_Redo = m_EditingControls.FindAction("Redo", throwIfNotFound: true);
             m_EditingControls_ToggleUI = m_EditingControls.FindAction("Toggle UI", throwIfNotFound: true);
             m_EditingControls_TakeScreenshot = m_EditingControls.FindAction("Take Screenshot", throwIfNotFound: true);
+            m_EditingControls_QuickSave = m_EditingControls.FindAction("Quick Save", throwIfNotFound: true);
             // Updaters Shared
             m_UpdatersShared = asset.FindActionMap("Updaters Shared", throwIfNotFound: true);
             m_UpdatersShared_Placement = m_UpdatersShared.FindAction("Placement", throwIfNotFound: true);
@@ -2141,6 +2184,7 @@ namespace Warlander.Deedplanner.Inputs
         private readonly InputAction m_EditingControls_Redo;
         private readonly InputAction m_EditingControls_ToggleUI;
         private readonly InputAction m_EditingControls_TakeScreenshot;
+        private readonly InputAction m_EditingControls_QuickSave;
         /// <summary>
         /// Provides access to input actions defined in input action map "Editing Controls".
         /// </summary>
@@ -2168,6 +2212,10 @@ namespace Warlander.Deedplanner.Inputs
             /// Provides access to the underlying input action "EditingControls/TakeScreenshot".
             /// </summary>
             public InputAction @TakeScreenshot => m_Wrapper.m_EditingControls_TakeScreenshot;
+            /// <summary>
+            /// Provides access to the underlying input action "EditingControls/QuickSave".
+            /// </summary>
+            public InputAction @QuickSave => m_Wrapper.m_EditingControls_QuickSave;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -2206,6 +2254,9 @@ namespace Warlander.Deedplanner.Inputs
                 @TakeScreenshot.started += instance.OnTakeScreenshot;
                 @TakeScreenshot.performed += instance.OnTakeScreenshot;
                 @TakeScreenshot.canceled += instance.OnTakeScreenshot;
+                @QuickSave.started += instance.OnQuickSave;
+                @QuickSave.performed += instance.OnQuickSave;
+                @QuickSave.canceled += instance.OnQuickSave;
             }
 
             /// <summary>
@@ -2229,6 +2280,9 @@ namespace Warlander.Deedplanner.Inputs
                 @TakeScreenshot.started -= instance.OnTakeScreenshot;
                 @TakeScreenshot.performed -= instance.OnTakeScreenshot;
                 @TakeScreenshot.canceled -= instance.OnTakeScreenshot;
+                @QuickSave.started -= instance.OnQuickSave;
+                @QuickSave.performed -= instance.OnQuickSave;
+                @QuickSave.canceled -= instance.OnQuickSave;
             }
 
             /// <summary>
@@ -2899,6 +2953,13 @@ namespace Warlander.Deedplanner.Inputs
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnTakeScreenshot(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Quick Save" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnQuickSave(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Updaters Shared" which allows adding and removing callbacks.

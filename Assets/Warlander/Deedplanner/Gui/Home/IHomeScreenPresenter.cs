@@ -1,0 +1,7 @@
+namespace Warlander.Deedplanner.Gui.Home
+{
+    public interface IHomeScreenPresenter
+    {
+        void ShowHomeScreen();
+    }
+}
