@@ -95,15 +95,15 @@ namespace Warlander.Deedplanner.Logic.Saving
             return Task.FromResult(Encoding.UTF8.GetString(data));
         }
 
-        public Task<TrackResult> TrackAsync(MapLocation target)
+        public Task<SaveLocationStatus> TrackAsync(MapLocation target)
         {
             if (!File.Exists(target.Locator))
             {
-                return Task.FromResult(new TrackResult(false, default, 0));
+                return Task.FromResult(new SaveLocationStatus(false, default, 0));
             }
 
             FileInfo info = new FileInfo(target.Locator);
-            return Task.FromResult(new TrackResult(true, info.LastWriteTimeUtc, info.Length));
+            return Task.FromResult(new SaveLocationStatus(true, info.LastWriteTimeUtc, info.Length));
         }
 
         public Task DeleteAsync(MapLocation target)

@@ -67,7 +67,9 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterComponentInHierarchy<WallUpdaterView>().As<IWallUpdaterView>();
             builder.RegisterComponentInHierarchy<MenuUpdaterView>().As<IMenuUpdaterView>();
             builder.RegisterComponentInHierarchy<HomeScreenView>().As<IHomeScreenView>();
+            builder.Register<HomeScreenCardCatalog>(Lifetime.Singleton);
             builder.RegisterEntryPoint<HomeScreenPresenter>().AsSelf();
+            builder.Register<IHomeScreenPresenter>(container => container.Resolve<HomeScreenPresenter>(), Lifetime.Singleton);
             builder.RegisterComponentInHierarchy<DecorationUpdaterView>().As<IDecorationUpdaterView>();
             builder.RegisterComponentInHierarchy<ToolsUpdaterView>().As<IToolsUpdaterView>();
             builder.RegisterComponentInHierarchy<HeightUpdaterView>().As<IHeightUpdaterView>();
@@ -124,7 +126,9 @@ namespace Warlander.Deedplanner.Scopes
             builder.Register<FileSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
 #endif
             builder.Register<SaveCoordinator>(Lifetime.Singleton);
+            builder.Register<ISaveCoordinator>(container => container.Resolve<SaveCoordinator>(), Lifetime.Singleton);
             builder.RegisterEntryPoint<AutoSaveScheduler>().AsSelf();
+            builder.Register<IAutoSaveScheduler>(container => container.Resolve<AutoSaveScheduler>(), Lifetime.Singleton);
             builder.Register<ScreenshotSaver>(Lifetime.Singleton);
             builder.RegisterEntryPoint<ScreenshotInputListener>();
             builder.RegisterEntryPoint<UpdaterCoordinator>();

@@ -9,7 +9,7 @@ namespace Warlander.Deedplanner.Logic.Saving
 {
     public class RecentMapsStore
     {
-        public const int MaxEntries = 30;
+        private const int MaxEntries = 30;
 
         private const string StoreFileName = "recent-maps.json";
         private const string ThumbnailFolderName = "Thumbnails";
@@ -19,7 +19,7 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         public IReadOnlyList<RecentMapEntry> Entries => _entries;
 
-        public event Action Changed;
+        public event Action Changed = delegate { };
 
         public RecentMapsStore()
         {
@@ -42,14 +42,14 @@ namespace Warlander.Deedplanner.Logic.Saving
             }
 
             Save();
-            Changed?.Invoke();
+            Changed();
         }
 
         public void Remove(MapLocation location)
         {
             _entries.RemoveAll(e => SameLocation(e.Location, location));
             Save();
-            Changed?.Invoke();
+            Changed();
         }
 
         public byte[] LoadThumbnail(MapLocation location)

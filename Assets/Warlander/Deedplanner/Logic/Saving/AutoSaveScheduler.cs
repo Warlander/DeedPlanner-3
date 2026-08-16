@@ -7,10 +7,10 @@ using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Logic.Saving
 {
-    public class AutoSaveScheduler : IInitializable, ITickable, IDisposable
+    public class AutoSaveScheduler : IAutoSaveScheduler, IInitializable, ITickable, IDisposable
     {
-        public const float IntervalSeconds = 300f;
-        public const int SlotCount = 2;
+        private const float IntervalSeconds = 300f;
+        private const int SlotCount = 2;
 
         private readonly SaveCoordinator _saveCoordinator;
         private readonly MapHandler _mapHandler;
@@ -69,13 +69,13 @@ namespace Warlander.Deedplanner.Logic.Saving
                 return null;
             }
 
-            TrackResult mainTrack = await backend.TrackAsync(mainLocation);
+            SaveLocationStatus mainTrack = await backend.TrackAsync(mainLocation);
             if (!mainTrack.Exists)
             {
                 return newest;
             }
 
-            TrackResult slotTrack = await backend.TrackAsync(newest.Value);
+            SaveLocationStatus slotTrack = await backend.TrackAsync(newest.Value);
             return slotTrack.WriteTimeUtc > mainTrack.WriteTimeUtc ? newest : null;
         }
 
@@ -197,7 +197,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             DateTime oldestWrite = DateTime.MaxValue;
             foreach (string slot in slots)
             {
-                TrackResult track = await _saveCoordinator.GetBackend(backendId).TrackAsync(
+                SaveLocationStatus track = await _saveCoordinator.GetBackend(backendId).TrackAsync(
                     new MapLocation(backendId, slot, null));
                 if (!track.Exists)
                 {
@@ -220,7 +220,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             DateTime newestWrite = DateTime.MinValue;
             foreach (string slot in slots)
             {
-                TrackResult track = await _saveCoordinator.GetBackend(backendId).TrackAsync(
+                SaveLocationStatus track = await _saveCoordinator.GetBackend(backendId).TrackAsync(
                     new MapLocation(backendId, slot, null));
                 if (track.Exists && track.WriteTimeUtc > newestWrite)
                 {

@@ -9,7 +9,7 @@ using Warlander.Deedplanner.Data;
 
 namespace Warlander.Deedplanner.Logic.Saving
 {
-    public class SaveCoordinator
+    public class SaveCoordinator : ISaveCoordinator
     {
         private readonly MapHandler _mapHandler;
         private readonly DeedThumbnailCapture _thumbnailCapture;
@@ -17,7 +17,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         private readonly RecentMapsStore _recentMaps;
         private readonly IObjectResolver _resolver;
 
-        private AutoSaveScheduler _autoSaveScheduler;
+        private IAutoSaveScheduler _autoSaveScheduler;
 
         public MapLocation? CurrentLocation { get; private set; }
         public DateTime? LastSaveTimeUtc { get; private set; }
@@ -27,7 +27,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         public RecentMapsStore RecentMaps => _recentMaps;
 
         /// Fired whenever CurrentLocation or LastSaveTimeUtc changes: save, quick save, load, new map.
-        public event Action SaveStateChanged;
+        public event Action SaveStateChanged = delegate { };
 
         public SaveCoordinator(MapHandler mapHandler, DeedThumbnailCapture thumbnailCapture,
             IReadOnlyList<ISaveBackend> backends, RecentMapsStore recentMaps, IObjectResolver resolver)
@@ -58,8 +58,13 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         public string SerializeCurrentMap()
         {
+            return SerializeCurrentMap(out _);
+        }
+
+        public string SerializeCurrentMap(out byte[] thumbnailJpeg)
+        {
             Map map = _mapHandler.Map;
-            map.ThumbnailJpeg = _thumbnailCapture.CaptureJpeg(map);
+            thumbnailJpeg = _thumbnailCapture.CaptureJpeg(map);
 
             StringBuilder build = new StringBuilder();
             XmlWriterSettings settings = new XmlWriterSettings();
@@ -70,6 +75,15 @@ namespace Warlander.Deedplanner.Logic.Saving
             {
                 XmlDocument document = new XmlDocument();
                 map.Serialize(document, null);
+                if (thumbnailJpeg != null && thumbnailJpeg.Length > 0)
+                {
+                    XmlElement screenshotElement = document.CreateElement("screenshot");
+                    screenshotElement.SetAttribute("format", "jpeg");
+                    screenshotElement.SetAttribute("encoding", "base64");
+                    screenshotElement.InnerText = Convert.ToBase64String(thumbnailJpeg);
+                    document.DocumentElement.AppendChild(screenshotElement);
+                }
+
                 document.Save(xmlWriter);
             }
 
@@ -89,7 +103,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             Busy = true;
             try
             {
-                string payload = SerializeCurrentMap();
+                string payload = SerializeCurrentMap(out byte[] thumbnailJpeg);
                 MapLocation? location = await backend.SaveAsync(payload, map.DisplayName);
                 if (location.HasValue)
                 {
@@ -97,8 +111,8 @@ namespace Warlander.Deedplanner.Logic.Saving
                     map.ClearDirty();
                     CurrentLocation = location;
                     LastSaveTimeUtc = DateTime.UtcNow;
-                    _recentMaps.Record(location.Value, map.ThumbnailJpeg);
-                    SaveStateChanged?.Invoke();
+                    _recentMaps.Record(location.Value, thumbnailJpeg);
+                    SaveStateChanged();
                 }
 
                 return location;
@@ -120,7 +134,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             Busy = true;
             try
             {
-                string payload = SerializeCurrentMap();
+                string payload = SerializeCurrentMap(out byte[] thumbnailJpeg);
                 MapLocation location = CurrentLocation.Value;
                 // display name may have changed since the original save
                 location = new MapLocation(location.BackendId, location.Locator, _mapHandler.Map.DisplayName);
@@ -128,8 +142,8 @@ namespace Warlander.Deedplanner.Logic.Saving
                 _mapHandler.Map.ClearDirty();
                 CurrentLocation = location;
                 LastSaveTimeUtc = DateTime.UtcNow;
-                _recentMaps.Record(location, _mapHandler.Map.ThumbnailJpeg);
-                SaveStateChanged?.Invoke();
+                _recentMaps.Record(location, thumbnailJpeg);
+                SaveStateChanged();
                 return true;
             }
             finally
@@ -176,10 +190,7 @@ namespace Warlander.Deedplanner.Logic.Saving
                     _mapHandler.Map.DisplayName = location.DisplayName;
                 }
 
-                if (_mapHandler.Map.ThumbnailJpeg == null)
-                {
-                    _mapHandler.Map.ThumbnailJpeg = _recentMaps.LoadThumbnail(location);
-                }
+                byte[] thumbnailJpeg = ExtractThumbnail(payload) ?? _recentMaps.LoadThumbnail(location);
 
                 // location display name may come from the XML now
                 var loadedLocation = new MapLocation(location.BackendId, location.Locator, _mapHandler.Map.DisplayName);
@@ -187,8 +198,8 @@ namespace Warlander.Deedplanner.Logic.Saving
                 // loading them creates an unsaved map, the identity is only kept for real saves
                 CurrentLocation = (backend.Capabilities & SaveCapabilities.Overwrite) != 0 ? loadedLocation : (MapLocation?)null;
                 LastSaveTimeUtc = null;
-                _recentMaps.Record(loadedLocation, _mapHandler.Map.ThumbnailJpeg);
-                SaveStateChanged?.Invoke();
+                _recentMaps.Record(loadedLocation, thumbnailJpeg);
+                SaveStateChanged();
                 return true;
             }
             catch (Exception e)
@@ -208,7 +219,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             CurrentLocation = null;
             LastSaveTimeUtc = null;
             _mapHandler.CreateNewMap(width, height);
-            SaveStateChanged?.Invoke();
+            SaveStateChanged();
         }
 
         /// Deletes a save where the backend allows it, its auto-save slots, and its known-saves entry.
@@ -221,7 +232,7 @@ namespace Warlander.Deedplanner.Logic.Saving
                 await backend.DeleteAsync(location);
                 if (_autoSaveScheduler == null)
                 {
-                    _autoSaveScheduler = _resolver.Resolve<AutoSaveScheduler>();
+                    _autoSaveScheduler = _resolver.Resolve<IAutoSaveScheduler>();
                 }
 
                 await _autoSaveScheduler.DeleteSlotsAsync(location);
@@ -235,7 +246,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             {
                 CurrentLocation = null;
                 LastSaveTimeUtc = null;
-                SaveStateChanged?.Invoke();
+                SaveStateChanged();
             }
         }
 
@@ -264,7 +275,7 @@ namespace Warlander.Deedplanner.Logic.Saving
                 await _mapHandler.LoadMapAsync(new Uri(directLink));
                 CurrentLocation = null;
                 LastSaveTimeUtc = null;
-                SaveStateChanged?.Invoke();
+                SaveStateChanged();
                 return _mapHandler.Map != null;
             }
             catch (Exception e)
@@ -294,7 +305,7 @@ namespace Warlander.Deedplanner.Logic.Saving
                 _mapHandler.Map.MarkDirty();
                 CurrentLocation = mainLocation;
                 LastSaveTimeUtc = null;
-                SaveStateChanged?.Invoke();
+                SaveStateChanged();
                 return true;
             }
             catch (Exception e)
@@ -345,6 +356,19 @@ namespace Warlander.Deedplanner.Logic.Saving
             try
             {
                 string payload = await backend.LoadAsync(location);
+                return ExtractThumbnail(payload);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"Failed to read thumbnail from {location}: {e.Message}");
+                return null;
+            }
+        }
+
+        private static byte[] ExtractThumbnail(string payload)
+        {
+            try
+            {
                 var document = new XmlDocument();
                 document.LoadXml(payload);
                 XmlElement screenshot = document.DocumentElement?["screenshot"];
@@ -355,9 +379,8 @@ namespace Warlander.Deedplanner.Logic.Saving
 
                 return Convert.FromBase64String(screenshot.InnerText);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Debug.LogWarning($"Failed to read thumbnail from {location}: {e.Message}");
                 return null;
             }
         }
@@ -383,7 +406,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         {
             if (_autoSaveScheduler == null)
             {
-                _autoSaveScheduler = _resolver.Resolve<AutoSaveScheduler>();
+                _autoSaveScheduler = _resolver.Resolve<IAutoSaveScheduler>();
             }
 
             await _autoSaveScheduler.AutoSaveNowAsync();

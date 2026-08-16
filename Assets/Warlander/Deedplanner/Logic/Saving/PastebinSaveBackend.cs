@@ -101,7 +101,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             }
         }
 
-        public Task<TrackResult> TrackAsync(MapLocation target)
+        public Task<SaveLocationStatus> TrackAsync(MapLocation target)
         {
             throw new NotSupportedException("Pastebin does not support tracking");
         }

@@ -13,7 +13,7 @@ namespace Warlander.Deedplanner.Utils
         public int MaxUndoCount { get; }
 
         /// Fired whenever the managed stacks mutate the map: execute, undo, redo.
-        public event Action Mutated;
+        public event Action Mutated = delegate { };
 
         public CommandManager(int maxUndoCount)
         {
@@ -31,7 +31,7 @@ namespace Warlander.Deedplanner.Utils
             undoList.RemoveFirst();
             reversibleCommand.Undo();
             redoList.AddFirst(reversibleCommand);
-            Mutated?.Invoke();
+            Mutated();
         }
 
         public void Redo()
@@ -45,7 +45,7 @@ namespace Warlander.Deedplanner.Utils
             redoList.RemoveFirst();
             reversibleCommand.Execute();
             undoList.AddFirst(reversibleCommand);
-            Mutated?.Invoke();
+            Mutated();
         }
 
         public void AddToStack(IReversibleCommand reversibleCommand)
@@ -64,14 +64,14 @@ namespace Warlander.Deedplanner.Utils
                 removedCommand.DisposeUndo();
             }
 
-            Mutated?.Invoke();
+            Mutated();
         }
 
         public void AddToActionAndExecute(IReversibleCommand reversibleCommand)
         {
             currentActionStack.Push(reversibleCommand);
             reversibleCommand.Execute();
-            Mutated?.Invoke();
+            Mutated();
         }
 
         public void FinishAction()

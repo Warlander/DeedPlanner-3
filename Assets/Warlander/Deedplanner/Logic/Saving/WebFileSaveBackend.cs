@@ -43,7 +43,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             throw new NotSupportedException("WebFile loads happen through the browser file picker");
         }
 
-        public Task<TrackResult> TrackAsync(MapLocation target)
+        public Task<SaveLocationStatus> TrackAsync(MapLocation target)
         {
             throw new NotSupportedException("WebFile does not support tracking");
         }

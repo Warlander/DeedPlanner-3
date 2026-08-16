@@ -71,20 +71,20 @@ namespace Warlander.Deedplanner.Logic.Saving
 #endif
         }
 
-        public Task<TrackResult> TrackAsync(MapLocation target)
+        public Task<SaveLocationStatus> TrackAsync(MapLocation target)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
             if (!Utils.JavaScriptUtils.LocalStorageHasItem(target.Locator))
             {
-                return Task.FromResult(new TrackResult(false, default, 0));
+                return Task.FromResult(new SaveLocationStatus(false, default, 0));
             }
 
             string envelopeJson = Utils.JavaScriptUtils.LocalStorageGetItem(target.Locator);
             Envelope envelope = JsonUtility.FromJson<Envelope>(envelopeJson);
             var writeTime = new DateTime(envelope.t, DateTimeKind.Utc);
-            return Task.FromResult(new TrackResult(true, writeTime, envelope.d.Length));
+            return Task.FromResult(new SaveLocationStatus(true, writeTime, envelope.d.Length));
 #else
-            return Task.FromResult(new TrackResult(false, default, 0));
+            return Task.FromResult(new SaveLocationStatus(false, default, 0));
 #endif
         }
 

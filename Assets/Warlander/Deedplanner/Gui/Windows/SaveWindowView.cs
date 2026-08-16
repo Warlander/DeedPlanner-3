@@ -16,7 +16,7 @@ namespace Warlander.Deedplanner.Gui.Windows
     public class SaveWindowView : MonoBehaviour
     {
         private Window _window;
-        [Inject] private SaveCoordinator _saveCoordinator;
+        [Inject] private ISaveCoordinator _saveCoordinator;
         [Inject] private MapHandler _mapHandler;
 
         [SerializeField] private TMP_Text _infoText;

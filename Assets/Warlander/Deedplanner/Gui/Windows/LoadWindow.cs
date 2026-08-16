@@ -13,7 +13,7 @@ namespace Warlander.Deedplanner.Gui.Windows
     {
         private Window _window;
         [Inject] private MapHandler _mapHandler;
-        [Inject] private SaveCoordinator _saveCoordinator;
+        [Inject] private ISaveCoordinator _saveCoordinator;
 
         [SerializeField] private Button _loadFromFileButton;
         [SerializeField] private Button _loadFromWebButton;

@@ -23,15 +23,15 @@ namespace Warlander.Deedplanner.Gui
 
         private static readonly Color SelectedCategoryColor = new Color(0.45f, 0.65f, 0.95f);
 
-        public event Action BackClicked;
-        public event Action NewDeedClicked;
-        public event Action LoadClicked;
-        public event Action WebLinkClicked;
-        public event Action AboutClicked;
-        public event Action QuitClicked;
-        public event Action<string> CategoryClicked;
-        public event Action<MapLocation> CardClicked;
-        public event Action<MapLocation> CardDeleteClicked;
+        public event Action BackClicked = delegate { };
+        public event Action NewDeedClicked = delegate { };
+        public event Action LoadClicked = delegate { };
+        public event Action WebLinkClicked = delegate { };
+        public event Action AboutClicked = delegate { };
+        public event Action QuitClicked = delegate { };
+        public event Action<string> CategoryClicked = delegate { };
+        public event Action<MapLocation> CardClicked = delegate { };
+        public event Action<MapLocation> CardDeleteClicked = delegate { };
 
         private readonly List<Button> _categoryButtons = new List<Button>();
         private readonly Dictionary<MapLocation, DeedCardView> _cards =
@@ -41,13 +41,13 @@ namespace Warlander.Deedplanner.Gui
 
         private void Awake()
         {
-            _backButton.onClick.AddListener(() => BackClicked?.Invoke());
-            _newDeedButton.onClick.AddListener(() => NewDeedClicked?.Invoke());
-            _loadButton.onClick.AddListener(() => LoadClicked?.Invoke());
-            _webLinkButton.onClick.AddListener(() => WebLinkClicked?.Invoke());
-            _aboutButton.onClick.AddListener(() => AboutClicked?.Invoke());
-            _quitButton.onClick.AddListener(() => QuitClicked?.Invoke());
-            _allSavesButton.onClick.AddListener(() => CategoryClicked?.Invoke(null));
+            _backButton.onClick.AddListener(() => BackClicked());
+            _newDeedButton.onClick.AddListener(() => NewDeedClicked());
+            _loadButton.onClick.AddListener(() => LoadClicked());
+            _webLinkButton.onClick.AddListener(() => WebLinkClicked());
+            _aboutButton.onClick.AddListener(() => AboutClicked());
+            _quitButton.onClick.AddListener(() => QuitClicked());
+            _allSavesButton.onClick.AddListener(() => CategoryClicked(null));
         }
 
         public void Show()
@@ -82,7 +82,7 @@ namespace Warlander.Deedplanner.Gui
                 button.name = "Category " + category.Label;
                 button.GetComponentInChildren<TMPro.TMP_Text>().text = category.Label;
                 string backendId = category.BackendId;
-                button.onClick.AddListener(() => CategoryClicked?.Invoke(backendId));
+                button.onClick.AddListener(() => CategoryClicked(backendId));
                 button.gameObject.SetActive(true);
                 TintCategoryButton(button, selectedBackendId == backendId);
                 _categoryButtons.Add(button);
@@ -104,8 +104,8 @@ namespace Warlander.Deedplanner.Gui
                 card.name = "Card " + data.Name;
                 card.SetData(data);
                 MapLocation location = data.Location;
-                card.Clicked += () => CardClicked?.Invoke(location);
-                card.DeleteClicked += () => CardDeleteClicked?.Invoke(location);
+                card.Clicked += () => CardClicked(location);
+                card.DeleteClicked += () => CardDeleteClicked(location);
                 card.gameObject.SetActive(true);
                 _cards[location] = card;
             }

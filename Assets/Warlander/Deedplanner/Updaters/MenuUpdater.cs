@@ -24,15 +24,15 @@ namespace Warlander.Deedplanner.Updaters
         private readonly WindowCoordinator _windowCoordinator;
         private readonly ISteamConnection _steamConnection;
         private readonly TabContext _tabContext;
-        private readonly SaveCoordinator _saveCoordinator;
+        private readonly ISaveCoordinator _saveCoordinator;
         private readonly MapHandler _mapHandler;
-        private readonly HomeScreenPresenter _homeScreenPresenter;
+        private readonly IHomeScreenPresenter _homeScreenPresenter;
 
         public Tab TargetTab => Tab.Menu;
 
         public MenuUpdater(IMenuUpdaterView view, DPSettings settings, WindowCoordinator windowCoordinator,
             ISteamConnection steamConnection, TabContext tabContext,
-            SaveCoordinator saveCoordinator, MapHandler mapHandler, HomeScreenPresenter homeScreenPresenter)
+            ISaveCoordinator saveCoordinator, MapHandler mapHandler, IHomeScreenPresenter homeScreenPresenter)
         {
             _view = view;
             _settings = settings;

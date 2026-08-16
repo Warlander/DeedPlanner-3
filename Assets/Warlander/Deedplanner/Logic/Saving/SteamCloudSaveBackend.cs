@@ -88,16 +88,16 @@ namespace Warlander.Deedplanner.Logic.Saving
             return Task.FromResult(Encoding.UTF8.GetString(DecompressGzip(compressed)));
         }
 
-        public Task<TrackResult> TrackAsync(MapLocation target)
+        public Task<SaveLocationStatus> TrackAsync(MapLocation target)
         {
             if (!SteamRemoteStorage.FileExists(target.Locator))
             {
-                return Task.FromResult(new TrackResult(false, default, 0));
+                return Task.FromResult(new SaveLocationStatus(false, default, 0));
             }
 
             long unixTime = SteamRemoteStorage.GetFileTimestamp(target.Locator);
             var writeTime = DateTimeOffset.FromUnixTimeSeconds(unixTime).UtcDateTime;
-            return Task.FromResult(new TrackResult(true, writeTime, SteamRemoteStorage.GetFileSize(target.Locator)));
+            return Task.FromResult(new SaveLocationStatus(true, writeTime, SteamRemoteStorage.GetFileSize(target.Locator)));
         }
 
         public Task DeleteAsync(MapLocation target)

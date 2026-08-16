@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using VContainer;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Saving;
 using Warlander.UI.Windows;
 
 namespace Warlander.Deedplanner.Gui.Windows
@@ -10,7 +11,7 @@ namespace Warlander.Deedplanner.Gui.Windows
     {
         private Window _window;
         [Inject] private MapHandler _mapHandler;
-        [Inject] private Logic.Saving.SaveCoordinator _saveCoordinator;
+        [Inject] private ISaveCoordinator _saveCoordinator;
 
         [SerializeField] private Button _clearMapButton;
         [SerializeField] private Button _cancelButton;

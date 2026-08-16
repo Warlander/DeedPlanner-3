@@ -12,7 +12,7 @@ namespace Warlander.Deedplanner.Logic
 {
     public class FileDragManager : IInitializable, IDisposable
     {
-        [Inject] private SaveCoordinator _saveCoordinator;
+        [Inject] private ISaveCoordinator _saveCoordinator;
 
         void IInitializable.Initialize()
         {

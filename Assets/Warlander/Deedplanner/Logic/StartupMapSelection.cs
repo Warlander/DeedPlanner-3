@@ -15,11 +15,11 @@ namespace Warlander.Deedplanner.Logic
     {
         private readonly MapHandler _mapHandler;
         private readonly IObjectResolver _resolver;
-        private readonly SaveCoordinator _saveCoordinator;
-        private readonly HomeScreenPresenter _homeScreenPresenter;
+        private readonly ISaveCoordinator _saveCoordinator;
+        private readonly IHomeScreenPresenter _homeScreenPresenter;
 
         public StartupMapSelection(MapHandler mapHandler, IObjectResolver resolver,
-            SaveCoordinator saveCoordinator, HomeScreenPresenter homeScreenPresenter)
+            ISaveCoordinator saveCoordinator, IHomeScreenPresenter homeScreenPresenter)
         {
             _mapHandler = mapHandler;
             _resolver = resolver;

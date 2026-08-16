@@ -45,10 +45,9 @@ namespace Warlander.Deedplanner.Data
         public string OriginalExporter { get; private set; } = Constants.TitleString;
         public Version OriginalExporterVersion { get; private set; }
         public string DisplayName { get; set; } = "Untitled";
-        public byte[] ThumbnailJpeg { get; set; }
 
         public bool IsDirty { get; private set; }
-        public event Action<bool> DirtyChanged;
+        public event Action<bool> DirtyChanged = delegate { };
 
         public void MarkDirty()
         {
@@ -58,7 +57,7 @@ namespace Warlander.Deedplanner.Data
             }
 
             IsDirty = true;
-            DirtyChanged?.Invoke(true);
+            DirtyChanged(true);
         }
 
         public void ClearDirty()
@@ -69,7 +68,7 @@ namespace Warlander.Deedplanner.Data
             }
 
             IsDirty = false;
-            DirtyChanged?.Invoke(false);
+            DirtyChanged(false);
         }
 
         public int LowestSurfaceHeight => _heightTracker.LowestSurfaceHeight;
@@ -242,19 +241,6 @@ namespace Warlander.Deedplanner.Data
             }
 
             _bridgesController.InitializeBridges(mapRoot);
-
-            XmlElement screenshotElement = mapRoot["screenshot"];
-            if (screenshotElement != null && screenshotElement.GetAttribute("format") == "jpeg")
-            {
-                try
-                {
-                    ThumbnailJpeg = Convert.FromBase64String(screenshotElement.InnerText);
-                }
-                catch (FormatException)
-                {
-                    ThumbnailJpeg = null;
-                }
-            }
 
             Ground.UpdateNow();
 
@@ -460,15 +446,6 @@ namespace Warlander.Deedplanner.Data
                 XmlElement bridgeElement = document.CreateElement("bridge");
                 bridge.Serialize(document, bridgeElement);
                 localRoot.AppendChild(bridgeElement);
-            }
-
-            if (ThumbnailJpeg != null && ThumbnailJpeg.Length > 0)
-            {
-                XmlElement screenshotElement = document.CreateElement("screenshot");
-                screenshotElement.SetAttribute("format", "jpeg");
-                screenshotElement.SetAttribute("encoding", "base64");
-                screenshotElement.InnerText = Convert.ToBase64String(ThumbnailJpeg);
-                localRoot.AppendChild(screenshotElement);
             }
         }
 

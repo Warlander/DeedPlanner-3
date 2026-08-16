@@ -10,10 +10,10 @@ namespace Warlander.Deedplanner.Logic
     public class QuickSaveInputHandler : IInitializable
     {
         private readonly DPInput _input;
-        private readonly SaveCoordinator _saveCoordinator;
+        private readonly ISaveCoordinator _saveCoordinator;
         private readonly WindowCoordinator _windowCoordinator;
 
-        public QuickSaveInputHandler(DPInput input, SaveCoordinator saveCoordinator, WindowCoordinator windowCoordinator)
+        public QuickSaveInputHandler(DPInput input, ISaveCoordinator saveCoordinator, WindowCoordinator windowCoordinator)
         {
             _input = input;
             _saveCoordinator = saveCoordinator;

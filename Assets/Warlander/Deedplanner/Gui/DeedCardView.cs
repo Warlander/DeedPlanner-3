@@ -24,13 +24,13 @@ namespace Warlander.Deedplanner.Gui
         [SerializeField] private Image _chipBackground;
         [SerializeField] private Button _deleteButton;
 
-        public event Action Clicked;
-        public event Action DeleteClicked;
+        public event Action Clicked = delegate { };
+        public event Action DeleteClicked = delegate { };
 
         private void Awake()
         {
-            _button.onClick.AddListener(() => Clicked?.Invoke());
-            _deleteButton.onClick.AddListener(() => DeleteClicked?.Invoke());
+            _button.onClick.AddListener(() => Clicked());
+            _deleteButton.onClick.AddListener(() => DeleteClicked());
         }
 
         public void SetData(HomeScreenCardData data)
@@ -78,7 +78,7 @@ namespace Warlander.Deedplanner.Gui
                         _chipBackground.color = UnknownColor;
                         break;
                     case HomeScreenChip.Volatile:
-                        _chipText.text = "volatile";
+                        _chipText.text = "Volatile";
                         _chipBackground.color = VolatileColor;
                         break;
                     case HomeScreenChip.Recovery:
