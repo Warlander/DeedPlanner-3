@@ -2418,22 +2418,22 @@ PrefabInstance:
     - target: {fileID: 7230025111042509220, guid: 718e44fb2550f5f42bac217364367066,
         type: 3}
       propertyPath: m_fontColor.b
-      value: 0.8
+      value: 0.19607843
       objectReference: {fileID: 0}
     - target: {fileID: 7230025111042509220, guid: 718e44fb2550f5f42bac217364367066,
         type: 3}
       propertyPath: m_fontColor.g
-      value: 0.9019608
+      value: 0.19607843
       objectReference: {fileID: 0}
     - target: {fileID: 7230025111042509220, guid: 718e44fb2550f5f42bac217364367066,
         type: 3}
       propertyPath: m_fontColor.r
-      value: 0.9490196
+      value: 0.19607843
       objectReference: {fileID: 0}
     - target: {fileID: 7230025111042509220, guid: 718e44fb2550f5f42bac217364367066,
         type: 3}
       propertyPath: m_fontColor32.rgba
-      value: 4291618546
+      value: 4281479730
       objectReference: {fileID: 0}
     - target: {fileID: 9059434882248163405, guid: 718e44fb2550f5f42bac217364367066,
         type: 3}
