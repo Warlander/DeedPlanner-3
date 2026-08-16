@@ -15,6 +15,8 @@ namespace Warlander.Deedplanner.Gui.Home
         [SerializeField] private Button _webLinkButton;
         [SerializeField] private Button _aboutButton;
         [SerializeField] private Button _quitButton;
+        [SerializeField] private Button _patreonButton;
+        [SerializeField] private Button _paypalButton;
         [SerializeField] private Button _allSavesButton;
         [SerializeField] private Transform _categoryContainer;
         [SerializeField] private Button _categoryButtonPrototype;
@@ -29,6 +31,8 @@ namespace Warlander.Deedplanner.Gui.Home
         public event Action WebLinkClicked = delegate { };
         public event Action AboutClicked = delegate { };
         public event Action QuitClicked = delegate { };
+        public event Action PatreonClicked = delegate { };
+        public event Action PaypalClicked = delegate { };
         public event Action<SaveBackendId?> CategoryClicked = delegate { };
         public event Action<MapLocation> CardClicked = delegate { };
         public event Action<MapLocation> CardDeleteClicked = delegate { };
@@ -47,6 +51,8 @@ namespace Warlander.Deedplanner.Gui.Home
             _webLinkButton.onClick.AddListener(() => WebLinkClicked());
             _aboutButton.onClick.AddListener(() => AboutClicked());
             _quitButton.onClick.AddListener(() => QuitClicked());
+            _patreonButton.onClick.AddListener(() => PatreonClicked());
+            _paypalButton.onClick.AddListener(() => PaypalClicked());
             _allSavesButton.onClick.AddListener(() => CategoryClicked(null));
         }
 

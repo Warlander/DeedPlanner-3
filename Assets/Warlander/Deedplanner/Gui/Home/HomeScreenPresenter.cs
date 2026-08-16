@@ -35,6 +35,8 @@ namespace Warlander.Deedplanner.Gui.Home
             _view.WebLinkClicked += OnWebLink;
             _view.AboutClicked += OnAbout;
             _view.QuitClicked += OnQuit;
+            _view.PatreonClicked += OnPatreon;
+            _view.PaypalClicked += OnPaypal;
             _view.CategoryClicked += OnCategory;
             _view.CardClicked += OnCard;
             _view.CardDeleteClicked += OnDeleteCard;
@@ -99,6 +101,16 @@ namespace Warlander.Deedplanner.Gui.Home
         private void OnAbout()
         {
             _windowCoordinator.CreateWindow(WindowNames.CreditsWindow);
+        }
+
+        private void OnPatreon()
+        {
+            Application.OpenURL("https://www.patreon.com/warlander");
+        }
+
+        private void OnPaypal()
+        {
+            Application.OpenURL("https://www.paypal.me/MCyranowicz/10eur");
         }
 
         private void OnQuit()

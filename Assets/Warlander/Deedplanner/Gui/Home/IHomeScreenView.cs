@@ -12,6 +12,8 @@ namespace Warlander.Deedplanner.Gui.Home
         event Action WebLinkClicked;
         event Action AboutClicked;
         event Action QuitClicked;
+        event Action PatreonClicked;
+        event Action PaypalClicked;
         event Action<SaveBackendId?> CategoryClicked;
         event Action<MapLocation> CardClicked;
         event Action<MapLocation> CardDeleteClicked;

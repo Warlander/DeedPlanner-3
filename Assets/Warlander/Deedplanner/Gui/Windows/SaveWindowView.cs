@@ -25,8 +25,10 @@ namespace Warlander.Deedplanner.Gui.Windows
         [SerializeField] private Button _actionButtonPrototype;
         [SerializeField] private GameObject _warningBox;
         [SerializeField] private TMP_Text _warningText;
+        [SerializeField] private LayoutElement _warningBoxLayout;
         [SerializeField] private GameObject _feasibilityBox;
         [SerializeField] private TMP_Text _feasibilityText;
+        [SerializeField] private LayoutElement _feasibilityBoxLayout;
 
         private readonly List<Button> _actionButtons = new List<Button>();
         private string _payload;
@@ -41,7 +43,7 @@ namespace Warlander.Deedplanner.Gui.Windows
         {
             _payload = _saveCoordinator.SerializeCurrentMap();
             long sizeKb = Encoding.UTF8.GetByteCount(_payload) / 1024;
-            _infoText.text = $"Save map · {_mapHandler.Map.DisplayName} · {sizeKb} KB";
+            _infoText.text = $"{_mapHandler.Map.DisplayName} · {sizeKb} KB";
 
             ISaveBackend volatileBackend = null;
             foreach (ISaveBackend backend in _saveCoordinator.Backends)
@@ -69,10 +71,9 @@ namespace Warlander.Deedplanner.Gui.Windows
                 }
             }
 
-            _warningBox.SetActive(volatileBackend != null);
             if (volatileBackend != null)
             {
-                _warningText.text = volatileBackend.VolatileWarning;
+                ShowBox(_warningBox, _warningText, _warningBoxLayout, volatileBackend.VolatileWarning);
             }
 
             _feasibilityBox.SetActive(false);
@@ -89,8 +90,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             SaveFeasibility feasibility = backend.CheckSave(PayloadSizeFor(backend));
             if (!feasibility.Possible)
             {
-                _feasibilityBox.SetActive(true);
-                _feasibilityText.text = feasibility.Reason;
+                ShowBox(_feasibilityBox, _feasibilityText, _feasibilityBoxLayout, feasibility.Reason);
                 return;
             }
 
@@ -105,13 +105,55 @@ namespace Warlander.Deedplanner.Gui.Windows
             }
             catch (Exception e)
             {
-                _feasibilityBox.SetActive(true);
-                _feasibilityText.text = e.Message;
+                ShowBox(_feasibilityBox, _feasibilityText, _feasibilityBoxLayout, e.Message);
             }
             finally
             {
                 SetActionButtonsInteractable(true);
             }
+        }
+
+        private bool _boxHeightsDirty;
+
+        private void OnEnable()
+        {
+            Canvas.willRenderCanvases += OnWillRenderCanvases;
+        }
+
+        private void OnDisable()
+        {
+            Canvas.willRenderCanvases -= OnWillRenderCanvases;
+        }
+
+        // runs after the layout pass, when box widths are real
+        private void OnWillRenderCanvases()
+        {
+            if (!_boxHeightsDirty)
+            {
+                return;
+            }
+
+            _boxHeightsDirty = false;
+            ApplyBoxHeight(_warningBox, _warningText, _warningBoxLayout);
+            ApplyBoxHeight(_feasibilityBox, _feasibilityText, _feasibilityBoxLayout);
+        }
+
+        private static void ApplyBoxHeight(GameObject box, TMP_Text text, LayoutElement layout)
+        {
+            if (!box.activeSelf)
+            {
+                return;
+            }
+
+            text.ForceMeshUpdate();
+            layout.minHeight = text.preferredHeight + 8f;
+        }
+
+        private void ShowBox(GameObject box, TMP_Text text, LayoutElement layout, string message)
+        {
+            text.text = message;
+            box.SetActive(true);
+            _boxHeightsDirty = true;
         }
 
         private void SetActionButtonsInteractable(bool interactable)
