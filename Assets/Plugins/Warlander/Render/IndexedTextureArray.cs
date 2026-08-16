@@ -116,7 +116,9 @@ namespace Warlander.Render
             {
                 var pixels =  texture.GetPixels();
                 TextureArray.SetPixels(pixels, index);
-                TextureArray.Apply(true);
+                // updateMipmaps=true required - incomplete mip chain makes WebGL treat the
+                // texture as incomplete and disables sampling entirely (blank terrain)
+                TextureArray.Apply(true, false);
             }
         }
         

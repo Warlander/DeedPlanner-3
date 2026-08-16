@@ -4,24 +4,59 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-DeedPlanner 3 is a 3D deed/house planning tool for Wurm Online and Wurm Unlimited, built with Unity 6000.3.8f1. It runs as a standalone Windows application and WebGL version.
+DeedPlanner 3 is a 3D deed/house planning tool for Wurm Online and Wurm Unlimited, built with Unity 6000.3.20f1. It runs as a standalone application (Windows/Linux/Mac) and WebGL version.
 
 ## Building and Running
 
-This is a Unity project — there are no CLI build/test commands. Development workflow:
-- Open the project in **Unity 6000.3.8f1**
+Development workflow:
+- Open the project in **Unity 6000.3.20f1** (see `ProjectSettings/ProjectVersion.txt` for the exact version)
 - Main scenes: `Assets/Scenes/LoadingScene.unity` (startup) → `Assets/Scenes/MainScene.unity`
 - Use Unity Editor Play mode to run
 - Automated build logic is in `Assets/Warlander/Deedplanner/Editor/BuildSystem.cs`
 - Solution file `DeedPlanner-3.sln` for IDE (VSCode/Rider/Visual Studio)
 
-**Do not run builds directly** — building must be done by the developer through the Unity Editor.
+**Never run builds** (`unity build` or any other build path) unless the user explicitly asks for a build in their prompt — releases are handled by the developer.
 
-## Unity MCP Server
+## Unity CLI (preferred automation path)
 
-A **Unity MCP server** may be available when the Unity Editor is open. It provides tools to interact with the running Unity Editor directly from Claude Code (e.g. querying scene state, executing editor commands, inspecting GameObjects). Use these MCP tools when available instead of relying solely on static file analysis — they give live, accurate state of the project.
+The **Unity CLI** (`unity`, v1.0.0-beta.3+) is the primary way to interact with Unity from the terminal. Use the `unity-cli` skill for guidance. Always prefer CLI over MCP.
 
-There is no automated test suite despite the Test Framework package being present.
+**Availability:** the CLI is expected on every dev machine but is a separate install. Check it exists (`unity --version`) before relying on it. If missing, ask the developer to install it and fall back to manual/Editor-side verification — NEVER install it automatically or silently.
+
+Useful commands:
+
+- `unity status` — is an Editor connected? Which project/PID/state?
+- `unity list` — commands the connected Editor exposes (Pipeline package)
+- `unity command <cmd> [args]` — execute a command on the connected Editor (domain reload, play mode, scene queries, etc.)
+- `unity test --mode EditMode` — run tests, NUnit XML to test-results.xml
+- `unity open` — open the project with the correct Editor version
+- `unity build` — full batch-mode build (see the build restriction above)
+
+Add `--json` for machine-readable output in agentic loops.
+
+A **Unity MCP server** may also be available. The ONLY acceptable option is the official one: the project includes `com.unity.pipeline`, which powers both the CLI commands and the official MCP server (`unity mcp configure`). Do NOT add, configure, or use any other MCP server (e.g. the community "MCP for Unity") — alternatives require installing extra packages into the project itself.
+
+**Opening the project:** if `unity status` shows no connected Editor, use `unity open` to launch the project — after startup, both CLI commands and MCP become usable. For automation workflows, launch with the `-automated` flag:
+
+```
+unity open "E:/Unity/DeedPlanner-3" --args "-automated"
+```
+
+Without it, play mode ENTRY stalls indefinitely while the Editor window is unfocused (in-play behavior is unaffected).
+
+**Code evaluation:** the Pipeline package ships a CodeEval command (edit-mode AND runtime — `unity command` / `unity list` can also attach to a running Player via `--runtime`). This lets the CLI execute arbitrary C# in the live Editor or in the running app — usable both for manipulating the Editor (scenes, assets, play mode) and for testing the app's behavior from the outside. Discover exact command names with `unity list`.
+
+## Agentic Verification
+
+No automated test suite exists (despite the Test Framework package being present), but the project iterates fast — domain reload and play-mode enter/exit each take only a few seconds. After triggering a recompile or play-mode change, allow a ~5 second buffer, then poll `unity status` for the Editor state before issuing the next command.
+
+Suggested verification ladder, cheapest first:
+1. Compile check (connected Editor via `unity command`, or `unity test --mode EditMode` batch) — catches syntax/type errors.
+2. EditMode smoke run if tests are ever added (`unity test --mode EditMode`).
+3. Play mode enter/exit on the connected Editor to catch startup/initialization exceptions (VContainer wiring, scene load). While in play mode, use the Pipeline CodeEval command to execute C# against the running app — assert state, drive interactions, and read back results, giving real behavioral testing without a test assembly.
+4. Manual/QA pass by the developer for visual or gameplay behavior — agents cannot judge rendering correctness.
+
+When adding testable plain-C# logic (presenters, data model, commands), prefer code that *could* be covered by EditMode tests later — keep it free of UnityEngine.Object dependencies where practical.
 
 ## Architecture
 
@@ -48,7 +83,7 @@ Injection style:
 - **Database** (`Data/Database.cs`) — static dictionaries for all game asset metadata (ground/floor/wall/roof/decoration types)
 
 ### Tab-Based Updater Pattern
-Each editing mode maps to a UI tab and a corresponding `*Updater` MonoBehaviour in `Assets/Warlander/Deedplanner/Updaters/`. All updaters extend `AbstractUpdater` and activate/deactivate based on `TabContext.TabChanged` events.
+Each editing mode maps to a UI tab and a corresponding `*Updater` class in `Assets/Warlander/Deedplanner/Updaters/`. Updaters are plain C# classes implementing `IUpdater` (`TargetTab`, `Initialize`, `Enable`, `Disable`, `Tick`), constructor-injected, and registered in the VContainer scope. `UpdaterCoordinator` (`Logic/UpdaterCoordinator.cs`) receives them as `IReadOnlyList<IUpdater>`, initializes all, and on `TabContext.TabChanged` disables the active updater, enables the one whose `TargetTab` matches, and ticks only the active one. Views follow MVP: each updater holds an `I*UpdaterView` interface (implementations in `Gui/Updaters/`).
 
 ### Camera System
 `CameraCoordinator` in `Logic/Cameras/` manages four modes: Perspective (FPP), Wurmian, Isometric (ISO), and Top. Each camera renders a specific level via independent camera controllers implementing `ICameraController`.
@@ -99,10 +134,16 @@ Warlander.Deedplanner.Features     # Feature flag system
 - **Class naming**: avoid generic, undescriptive suffixes — `Manager`, `Handler`, `Controller`, `Helper`, `Util`, `Service`, `Provider`, `Processor`, and similar vague nouns. These say *where* something lives but not *what it does*. Prefer names that describe the specific responsibility (e.g. `WaterFacade`, `WaterObjectContainer`, `MapHeightTracker`). Existing legacy names (`CommandManager`) are grandfathered in; new classes must follow this rule. The `View` suffix is the one intentional exception — MonoBehaviour view classes in the MVP pattern must end with `View` (e.g. `GroundPainterView`, `TileSelectionView`) to distinguish them from their presenter counterparts.
 - **Property formatting**: auto-properties and single-expression `get`-only properties stay on one line. Anything more complex splits `get`/`set` onto their own lines. If `get` or `set` contains more than one statement, use expanded block syntax (`{ ... }`) rather than expression-body (`=>`) shorthand.
 - **No tuples**: do not use tuples — neither implicit (`(int x, string y)`) nor explicit (`Tuple<int, string>`). Define a named `struct` or value class instead. Named types are self-documenting, refactorable, and avoid accidental structural coupling.
+- **UI arrangement**: before building UI, check whether a prefab already exists for similar UI and reuse it. When the things being wired live inside a parent prefab, wire them up inside that prefab rather than from the scene or whatever context you are currently in.
 
 ## After Code Changes
 
-After all code edits are complete, use the MCP `refresh_unity` + `read_console` tools to check for compilation errors and warnings. Do not consider a task finished until compilation is clean.
+Verify compilation after every code edit before considering the task done:
+
+1. If an Editor is connected (`unity status`): trigger a refresh/compile via `unity command` (discover exact command names with `unity list`) and read the console/compile status back the same way.
+2. If no Editor is connected: `unity test --mode EditMode` forces a full compile and surfaces errors, or check `Editor.log` after a domain reload.
+3. If the Unity CLI itself is missing: ask the developer to install it (never install it yourself) and ask them to confirm compilation in the Editor.
+4. Do not consider a task finished until compilation is clean (errors AND new warnings).
 
 ## Honesty About Feasibility
 
@@ -112,6 +153,6 @@ If a proposed approach is architecturally poor, has no clean implementation path
 
 - **VContainer** — DI container
 - **R3** — reactive extensions
-- **Unity InputSystem** 1.18.0
+- **Unity InputSystem** 1.19.0
 - **TextMesh Pro** — UI text
 - **Steamworks.NET** — Steam distribution/achievements

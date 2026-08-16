@@ -5,6 +5,8 @@
 /[Bb]uilds/
 /[Ll]ogs/
 
+/docs/
+
 /Assets/AssetStoreTools*
 
 # Visual Studio 2015 cache directory
@@ -51,6 +53,9 @@ UserSettings/
 
 # Windows reserved device name (not a real file)
 nul
+
+# macOS
+.DS_Store
 
 # Embedded packages are temporary local git repos used for development — do not commit.
 Packages/Embeds/

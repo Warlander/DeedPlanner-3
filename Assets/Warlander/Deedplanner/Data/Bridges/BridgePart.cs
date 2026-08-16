@@ -11,18 +11,38 @@ namespace Warlander.Deedplanner.Data.Bridges
     {
         public Bridge ParentBridge { get; private set; }
 
-        public override Materials Materials => ParentBridge.Data.GetMaterialsForPart(partType, partSide);
+        public override Materials Materials
+        {
+            get
+            {
+                Materials materials = ParentBridge.Data.GetMaterialsForPart(partType, partSide);
+
+                int extensionCount = GetExtensionCount();
+                if (extensionCount > 0)
+                {
+                    Materials extensionMaterials = ParentBridge.Data.GetMaterialsForPart(BridgePartType.Extension, partSide);
+                    for (int i = 0; i < extensionCount; i++)
+                    {
+                        materials.Add(extensionMaterials);
+                    }
+                }
+
+                return materials;
+            }
+        }
         public BridgePartType PartType => partType;
         public bool Mirrored => orientation == EntityOrientation.Right || orientation == EntityOrientation.Up;
 
         private BridgePartType partType;
         private BridgePartSide partSide;
+        private BridgePartSide modelSide;
         private EntityOrientation orientation;
 
         private GameObject model;
         private MeshCollider _selectionMeshCollider;
         private Mesh _selectionMesh;
         private int _skew;
+        private float _height;
 
         public void Initialise(Bridge parentBridge, BridgePartType partType, BridgePartSide partSide,
             EntityOrientation orientation, int x, int y, float height, int skew)
@@ -32,29 +52,48 @@ namespace Warlander.Deedplanner.Data.Bridges
             this.partType = partType;
             this.partSide = partSide;
             this.orientation = orientation;
+            _height = height;
+
+            // Abutment and bracing have dedicated left/right models selected by lane and row
+            // facing; every other part type shares one side model and one lane is rotated 180.
+            // Mesh mirroring is never correct here - mirror and rotation differ by a length flip.
+            bool directional = partType == BridgePartType.Abutment || partType == BridgePartType.Bracing;
+            modelSide = partSide;
+            if (directional && (partSide == BridgePartSide.LEFT || partSide == BridgePartSide.RIGHT))
+            {
+                bool useLeftModel = (partSide == BridgePartSide.LEFT)
+                    == (orientation == EntityOrientation.Down || orientation == EntityOrientation.Right);
+                modelSide = useLeftModel ? BridgePartSide.LEFT : BridgePartSide.RIGHT;
+            }
+
+            bool flipLane = !directional && (partSide == BridgePartSide.LEFT || partSide == BridgePartSide.RIGHT)
+                && ((partSide == BridgePartSide.LEFT)
+                    == (orientation == EntityOrientation.Down || orientation == EntityOrientation.Right));
+            EntityOrientation renderOrientation = flipLane ? Opposite(orientation) : orientation;
 
             // We need to use custom mesh collider here due to shape complexity of different kinds of bridges and their varying dimensions.
             if (!GetComponent<MeshCollider>())
             {
                 _selectionMeshCollider = gameObject.AddComponent<MeshCollider>();
             }
-            
-            _skew = Mirrored ? -skew : skew;
-            
+
+            _skew = (renderOrientation == EntityOrientation.Right || renderOrientation == EntityOrientation.Up)
+                ? -skew : skew;
+
             _selectionMesh = CreateSelectionMesh(_skew);
             _selectionMeshCollider.sharedMesh = _selectionMesh;
-            
-            if (orientation == EntityOrientation.Left)
+
+            if (renderOrientation == EntityOrientation.Left)
             {
                 transform.position = new Vector3((x + 1) * 4, height * 0.1f, (y + 1) * 4);
                 transform.localRotation = Quaternion.Euler(0, 90, 0);
             }
-            else if (orientation == EntityOrientation.Up)
+            else if (renderOrientation == EntityOrientation.Up)
             {
                 transform.position = new Vector3((x + 1) * 4, height * 0.1f + skew * 0.1f, y * 4);
                 transform.localRotation = Quaternion.Euler(0, 180, 0);
             }
-            else if (orientation == EntityOrientation.Right)
+            else if (renderOrientation == EntityOrientation.Right)
             {
                 transform.position = new Vector3(x * 4, height * 0.1f + skew * 0.1f, y * 4);
                 transform.localRotation = Quaternion.Euler(0, 270, 0);
@@ -64,8 +103,23 @@ namespace Warlander.Deedplanner.Data.Bridges
                 transform.position = new Vector3(x * 4, height * 0.1f, (y + 1) * 4);
             }
 
-            Model rootModel = parentBridge.Data.GetModelForPart(partType, partSide);
+            Model rootModel = parentBridge.Data.GetModelForPart(partType, modelSide);
             rootModel.CreateOrGetModel(new Vector2(0, _skew), OnModelCreated);
+        }
+
+        private static EntityOrientation Opposite(EntityOrientation orientation)
+        {
+            switch (orientation)
+            {
+                case EntityOrientation.Up:
+                    return EntityOrientation.Down;
+                case EntityOrientation.Down:
+                    return EntityOrientation.Up;
+                case EntityOrientation.Left:
+                    return EntityOrientation.Right;
+                default:
+                    return EntityOrientation.Left;
+            }
         }
 
         private Mesh CreateSelectionMesh(int slopeDifference)
@@ -154,11 +208,15 @@ namespace Warlander.Deedplanner.Data.Bridges
             {
                 Destroy(model);
             }
-            
+
             model = newModel;
             model.transform.SetParent(transform, false);
 
-            Bounds bounds = GetTotalModelBounds(ParentBridge.Data.GetModelForPart(partType, partSide).OriginalModel);
+            Model sourceModel = ParentBridge.Data.GetModelForPart(partType, modelSide);
+
+            CreateSupportExtensions();
+
+            Bounds bounds = GetTotalModelBounds(sourceModel.OriginalModel);
             const float wallDepthComfortableMargin = 0.75f;
             float comfortableWallDepth = Mathf.Max(bounds.size.z, wallDepthComfortableMargin);
             bounds.size = new Vector3(-bounds.size.x, bounds.size.y, comfortableWallDepth);
@@ -174,6 +232,50 @@ namespace Warlander.Deedplanner.Data.Bridges
             OnModelLoadedCallback(model);
         }
         
+        private int GetExtensionCount()
+        {
+            if (partType != BridgePartType.Support || Tile == null)
+            {
+                return 0;
+            }
+
+            float relativeHeight = _height - Tile.SurfaceHeight - ParentBridge.Data.SupportHeight;
+            return Mathf.Max(0, Mathf.CeilToInt(relativeHeight / 20f));
+        }
+
+        // Extensions are purely visual (never serialized): a chain of extension models under each
+        // support, from deck-supportHeight down in steps of 20 until terrain level (DP2 behavior).
+        private void CreateSupportExtensions()
+        {
+            if (partType != BridgePartType.Support)
+            {
+                return;
+            }
+
+            Model extensionModel = ParentBridge.Data.GetModelForPart(BridgePartType.Extension, partSide);
+            int supportHeight = ParentBridge.Data.SupportHeight;
+            int extensionCount = GetExtensionCount();
+
+            for (int i = 0; i < extensionCount; i++)
+            {
+                float yOffset = -(supportHeight + 20f * i) * 0.1f;
+                extensionModel.CreateOrGetModel(new Vector2(0, _skew), instance =>
+                {
+                    // Parented under the main model so outline renderer snapshots include extensions.
+                    instance.transform.SetParent(model.transform, false);
+                    instance.transform.localPosition = new Vector3(0, yOffset, 0);
+
+                    foreach (MeshFilter filter in instance.GetComponentsInChildren<MeshFilter>())
+                    {
+                        MeshCollider extensionCollider = filter.gameObject.AddComponent<MeshCollider>();
+                        extensionCollider.sharedMesh = filter.sharedMesh;
+                    }
+
+                    OnModelLoadedCallback(model);
+                });
+            }
+        }
+
         private Bounds GetTotalModelBounds(GameObject model)
         {
             Bounds bounds = new Bounds();

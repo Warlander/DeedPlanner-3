@@ -10,6 +10,7 @@ namespace Warlander.Deedplanner.Settings
         private bool renderTrees = true;
         private bool renderBushes = true;
         private bool renderShips = true;
+        private bool renderBridges = true;
 
         public bool RenderDecorations
         {
@@ -47,6 +48,16 @@ namespace Warlander.Deedplanner.Settings
             set
             {
                 renderShips = value;
+                Changed.Invoke();
+            }
+        }
+
+        public bool RenderBridges
+        {
+            get => renderBridges;
+            set
+            {
+                renderBridges = value;
                 Changed.Invoke();
             }
         }

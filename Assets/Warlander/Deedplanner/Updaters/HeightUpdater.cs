@@ -1,54 +1,36 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Gui.Tooltips;
+using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Settings;
-using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class HeightUpdater : AbstractUpdater
+    public class HeightUpdater : IUpdater
     {
-        [Inject] private TooltipHandler _tooltipHandler;
-        [Inject] private DPSettings _settings;
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private DPInput _input;
-        [Inject] private MapHandler _mapHandler;
-        [Inject] private IMapProjectorFacade _mapProjectorFacade;
-        [Inject] private TabContext _tabContext;
+        private static readonly Color NeutralColor = Color.white;
+        private static readonly Color HoveredColor = new Color(0.7f, 0.7f, 0, 1);
+        private static readonly Color SelectedColor = new Color(0, 1, 0, 1);
+        private static readonly Color SelectedHoveredColor = new Color(0.7f, 0.39f, 0f);
+        private static readonly Color ActiveColor = new Color(1, 0, 0, 1);
+        private static readonly Color AnchorColor = new Color(0, 1, 1, 1);
 
-        [SerializeField] private Toggle selectAndDragToggle = null;
-        [SerializeField] private Toggle createRampsToggle = null;
-        [SerializeField] private Toggle levelAreaToggle = null;
-        [SerializeField] private Toggle paintTerrainToggle = null;
+        private readonly IHeightUpdaterView _view;
+        private readonly TooltipHandler _tooltipHandler;
+        private readonly DPSettings _settings;
+        private readonly CameraCoordinator _cameraCoordinator;
+        private readonly DPInput _input;
+        private readonly MapHandler _mapHandler;
+        private readonly IMapProjectorFacade _mapProjectorFacade;
+        private readonly TabContext _tabContext;
 
-        [SerializeField] private RectTransform handlesSettingsTransform = null;
-        [SerializeField] private RectTransform paintingSettingsTransform = null;
-
-        [SerializeField] private RectTransform selectAndDragInstructionsTransform = null;
-        [SerializeField] private RectTransform createRampsInstructionsTransform = null;
-        [SerializeField] private RectTransform levelAreaInstructionsTransform = null;
-        [SerializeField] private RectTransform paintTerrainInstructionsTransform = null;
-        
-        [SerializeField] private TMP_InputField dragSensitivityInput = null;
-        [SerializeField] private Toggle respectOriginalSlopesToggle = null;
-
-        [SerializeField] private TMP_InputField targetHeightInput = null;
-
-        [SerializeField] private Color neutralColor = Color.white;
-        [SerializeField] private Color hoveredColor = new Color(0.7f, 0.7f, 0, 1);
-        [SerializeField] private Color selectedColor = new Color(0, 1, 0, 1);
-        [SerializeField] private Color selectedHoveredColor = new Color(0.7f, 0.39f, 0f);
-        [SerializeField] private Color activeColor = new Color(1, 0, 0, 1);
-        [SerializeField] private Color anchorColor = new Color(0, 1, 1, 1);
+        public Tab TargetTab => Tab.Height;
 
         private List<HeightmapHandle> currentFrameHoveredHandles = new List<HeightmapHandle>();
         private List<HeightmapHandle> lastFrameHoveredHandles = new List<HeightmapHandle>();
@@ -59,77 +41,81 @@ namespace Warlander.Deedplanner.Updaters
         private IMapProjector _anchorProjector;
         private PlaneAlignment anchorAlignment;
 
-        private HeightUpdaterMode mode = HeightUpdaterMode.SelectAndDrag;
+        private HeightMode mode = HeightMode.SelectAndDrag;
         private HeightUpdaterState state = HeightUpdaterState.Idle;
         private Vector2 dragStartPos;
         private Vector2 dragEndPos;
 
-        private bool ComplexSelectionEnabled => mode != HeightUpdaterMode.PaintTerrain;
-        
-        public override void Initialize()
-        {
-            dragSensitivityInput.text = _settings.HeightDragSensitivity.ToString(CultureInfo.InvariantCulture);
-            respectOriginalSlopesToggle.isOn = _settings.HeightRespectOriginalSlopes;
+        private string _dragSensitivity;
+        private bool _respectOriginalSlopes;
+        private string _targetHeight = "0";
 
-            dragSensitivityInput.onValueChanged.AddListener(DragSensitivityOnValueChanged);
-            respectOriginalSlopesToggle.onValueChanged.AddListener(RespectOriginalSlopesOnValueChanged);
+        private bool ComplexSelectionEnabled => mode != HeightMode.PaintTerrain;
+
+        public HeightUpdater(IHeightUpdaterView view, TooltipHandler tooltipHandler, DPSettings settings,
+            CameraCoordinator cameraCoordinator, DPInput input, MapHandler mapHandler,
+            IMapProjectorFacade mapProjectorFacade, TabContext tabContext)
+        {
+            _view = view;
+            _tooltipHandler = tooltipHandler;
+            _settings = settings;
+            _cameraCoordinator = cameraCoordinator;
+            _input = input;
+            _mapHandler = mapHandler;
+            _mapProjectorFacade = mapProjectorFacade;
+            _tabContext = tabContext;
         }
 
-        public override void Enable()
+        public void Initialize()
+        {
+            _view.ModeChanged += OnModeChanged;
+            _view.DragSensitivityChanged += OnDragSensitivityChanged;
+            _view.RespectOriginalSlopesChanged += OnRespectOriginalSlopesChanged;
+            _view.TargetHeightChanged += OnTargetHeightChanged;
+
+            _dragSensitivity = _settings.HeightDragSensitivity.ToString(CultureInfo.InvariantCulture);
+            _respectOriginalSlopes = _settings.HeightRespectOriginalSlopes;
+
+            _view.SetDragSensitivity(_dragSensitivity);
+            _view.SetRespectOriginalSlopes(_respectOriginalSlopes);
+        }
+
+        public void Enable()
         {
             RefreshTileSelectionMode();
         }
 
-        private void DragSensitivityOnValueChanged(string value)
+        private void OnModeChanged(HeightMode newMode)
         {
-            float.TryParse(dragSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture,
-                out float dragSensitivity);
-            
+            mode = newMode;
+            _view.ShowModePanels(mode);
+            RefreshTileSelectionMode();
+            ResetState();
+        }
+
+        private void OnDragSensitivityChanged(string value)
+        {
+            _dragSensitivity = value;
+            float.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out float dragSensitivity);
+
             _settings.Modify(settings =>
             {
                 settings.HeightDragSensitivity = dragSensitivity;
             });
         }
 
-        private void RespectOriginalSlopesOnValueChanged(bool value)
+        private void OnRespectOriginalSlopesChanged(bool value)
         {
+            _respectOriginalSlopes = value;
             _settings.Modify(settings =>
             {
-                settings.HeightRespectOriginalSlopes = respectOriginalSlopesToggle.isOn;
+                settings.HeightRespectOriginalSlopes = value;
             });
         }
 
-        public void OnModeChange(bool toggledOn)
+        private void OnTargetHeightChanged(string value)
         {
-            if (!toggledOn)
-            {
-                return;
-            }
-
-            RefreshMode();
-            RefreshGui();
-            RefreshTileSelectionMode();
-            ResetState();
-        }
-
-        private void RefreshMode()
-        {
-            if (selectAndDragToggle.isOn)
-            {
-                mode = HeightUpdaterMode.SelectAndDrag;
-            }
-            else if (createRampsToggle.isOn)
-            {
-                mode = HeightUpdaterMode.CreateRamps;
-            }
-            else if (levelAreaToggle.isOn)
-            {
-                mode = HeightUpdaterMode.LevelArea;
-            }
-            else if (paintTerrainToggle.isOn)
-            {
-                mode = HeightUpdaterMode.PaintTerrain;
-            }
+            _targetHeight = value;
         }
 
         private void RefreshTileSelectionMode()
@@ -142,17 +128,6 @@ namespace Warlander.Deedplanner.Updaters
             {
                 _tabContext.TileSelectionMode = TileSelectionMode.Everything;
             }
-        }
-
-        private void RefreshGui()
-        {
-            handlesSettingsTransform.gameObject.SetActive(mode == HeightUpdaterMode.SelectAndDrag || mode == HeightUpdaterMode.CreateRamps);
-            paintingSettingsTransform.gameObject.SetActive(mode == HeightUpdaterMode.LevelArea || mode == HeightUpdaterMode.PaintTerrain);
-            
-            selectAndDragInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.SelectAndDrag);
-            createRampsInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.CreateRamps);
-            levelAreaInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.LevelArea);
-            paintTerrainInstructionsTransform.gameObject.SetActive(mode == HeightUpdaterMode.PaintTerrain);
         }
 
         private void ResetState()
@@ -175,7 +150,7 @@ namespace Warlander.Deedplanner.Updaters
             _cameraCoordinator.Current.RenderSelectionBox = false;
         }
 
-        public override void Tick()
+        public void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             bool cameraOnScreen = _cameraCoordinator.Current.MouseOver;
@@ -189,16 +164,16 @@ namespace Warlander.Deedplanner.Updaters
 
             switch (mode)
             {
-                case HeightUpdaterMode.SelectAndDrag:
+                case HeightMode.SelectAndDrag:
                     UpdateSelectAndDrag();
                     break;
-                case HeightUpdaterMode.CreateRamps:
+                case HeightMode.CreateRamps:
                     UpdateCreateRamps();
                     break;
-                case HeightUpdaterMode.LevelArea:
+                case HeightMode.LevelArea:
                     UpdateLevelArea();
                     break;
-                case HeightUpdaterMode.PaintTerrain:
+                case HeightMode.PaintTerrain:
                     UpdatePaintTerrain();
                     break;
             }
@@ -246,7 +221,7 @@ namespace Warlander.Deedplanner.Updaters
                     foreach (HeightmapHandle heightmapHandle in selectedHandles)
                     {
                         Vector2Int tileCoords = heightmapHandle.TileCoords;
-                        if (_settings.HeightRespectOriginalSlopes)
+                        if (_respectOriginalSlopes)
                         {
                             map[tileCoords].SurfaceHeight += heightDelta;
                         }
@@ -257,7 +232,7 @@ namespace Warlander.Deedplanner.Updaters
                     }
                 }
             }
-            
+
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
             {
                 if (state == HeightUpdaterState.Dragging && _input.HeightUpdater.DragSelection.IsPressed())
@@ -294,7 +269,7 @@ namespace Warlander.Deedplanner.Updaters
                 {
                     state = HeightUpdaterState.Recovering;
                 }
-                
+
                 _cameraCoordinator.Current.RenderSelectionBox = false;
             }
         }
@@ -303,14 +278,14 @@ namespace Warlander.Deedplanner.Updaters
         {
             Map map = _mapHandler.Map;
             float dragSensitivity = 0;
-            float.TryParse(dragSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out dragSensitivity);
-            bool respectSlopes = respectOriginalSlopesToggle.isOn;
+            float.TryParse(_dragSensitivity, NumberStyles.Any, CultureInfo.InvariantCulture, out dragSensitivity);
+            bool respectSlopes = _respectOriginalSlopes;
 
             if (state == HeightUpdaterState.Recovering)
             {
                 state = HeightUpdaterState.Idle;
             }
-            
+
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 if (currentFrameHoveredHandles.Count == 1 && selectedHandles.Contains(currentFrameHoveredHandles[0]))
@@ -353,18 +328,18 @@ namespace Warlander.Deedplanner.Updaters
                         bool locked = _anchorProjector != null;
                         int originalHeight = map[anchorHandle.TileCoords].SurfaceHeight;
                         int heightDelta = (int) ((dragEndPos.y - dragStartPos.y) * dragSensitivity);
-                        
+
                         // instantly make smooth ramp from anchor handle to active handle if original slopes are not respected
                         // turned off if original slopes are respected, because instantly making ramp is impractical in such case
                         if (!respectSlopes)
                         {
                             heightDelta += map[activeHandle.TileCoords].SurfaceHeight - originalHeight;
                         }
-                        
+
                         Vector2Int manipulatedTileCoords = activeHandle.TileCoords;
                         Vector2Int manipulatedAnchorCoords = GetAxisCorrectedAnchor(manipulatedTileCoords, anchorHandle.TileCoords, locked, anchorAlignment);
                         Vector2Int manipulatedDifference = manipulatedTileCoords - manipulatedAnchorCoords;
-                        
+
                         foreach (HeightmapHandle heightmapHandle in selectedHandles)
                         {
                             Vector2Int tileCoords = heightmapHandle.TileCoords;
@@ -423,7 +398,7 @@ namespace Warlander.Deedplanner.Updaters
                     }
                 }
             }
-            
+
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
             {
                 if (state == HeightUpdaterState.Dragging && _input.HeightUpdater.DragSelection.IsPressed())
@@ -470,7 +445,7 @@ namespace Warlander.Deedplanner.Updaters
                 {
                     state = HeightUpdaterState.Recovering;
                 }
-                
+
                 _cameraCoordinator.Current.RenderSelectionBox = false;
             }
         }
@@ -495,7 +470,7 @@ namespace Warlander.Deedplanner.Updaters
         {
             Map map = _mapHandler.Map;
             int targetHeight;
-            if (int.TryParse(targetHeightInput.text, out targetHeight) == false)
+            if (int.TryParse(_targetHeight, out targetHeight) == false)
             {
                 targetHeight = 0;
             }
@@ -527,13 +502,13 @@ namespace Warlander.Deedplanner.Updaters
         private void UpdatePaintTerrain()
         {
             Map map = _mapHandler.Map;
-            int targetHeight = int.Parse(targetHeightInput.text);
+            int targetHeight = int.Parse(_targetHeight);
 
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 state = HeightUpdaterState.Manipulating;
             }
-            
+
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0 && state == HeightUpdaterState.Manipulating)
             {
                 foreach (HeightmapHandle handle in currentFrameHoveredHandles)
@@ -553,9 +528,9 @@ namespace Warlander.Deedplanner.Updaters
                 map.CommandManager.UndoAction();
                 state = HeightUpdaterState.Idle;
             }
-            
+
         }
-        
+
         private List<HeightmapHandle> UpdateHoveredHandles(RaycastHit raycast)
         {
             if (ComplexSelectionEnabled)
@@ -582,16 +557,16 @@ namespace Warlander.Deedplanner.Updaters
             {
                 dragStartPos = _cameraCoordinator.Current.MousePosition;
             }
-            
+
             dragEndPos = _cameraCoordinator.Current.MousePosition;
-            
+
             if (state == HeightUpdaterState.Dragging)
             {
                 if (Vector2.Distance(dragStartPos, dragEndPos) > 5)
                 {
                     _cameraCoordinator.Current.RenderSelectionBox = true;
                 }
-                
+
                 Vector2 difference = dragEndPos - dragStartPos;
                 float clampedDifferenceX = Mathf.Clamp(-difference.x, 0, float.MaxValue);
                 float clampedDifferenceY = Mathf.Clamp(-difference.y, 0, float.MaxValue);
@@ -622,12 +597,12 @@ namespace Warlander.Deedplanner.Updaters
                     }
                 }
             }
-            
+
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
             {
                 _cameraCoordinator.Current.RenderSelectionBox = false;
             }
-            
+
             if (hoveredHandles.Count == 0)
             {
                 HeightmapHandle heightmapHandle = raycast.transform ? _mapHandler.Map.SurfaceGridMesh.RaycastHandles() : null;
@@ -636,14 +611,14 @@ namespace Warlander.Deedplanner.Updaters
                     hoveredHandles.Add(heightmapHandle);
                 }
             }
-            
+
             return hoveredHandles;
         }
 
         private List<HeightmapHandle> UpdateHoveredHandlesSimpleSelection(RaycastHit raycast)
         {
             GridMesh gridMesh = _mapHandler.Map.SurfaceGridMesh;
-            
+
             List<HeightmapHandle> hoveredHandles = new List<HeightmapHandle>();
 
             TileSelectionHit hit = TileSelection.PositionToTileSelectionHit(raycast.point, TileSelectionMode.Everything);
@@ -670,52 +645,52 @@ namespace Warlander.Deedplanner.Updaters
 
             return hoveredHandles;
         }
-        
+
         private void UpdateHandlesColors()
         {
             foreach (HeightmapHandle handle in currentFrameHoveredHandles)
             {
                 if (!selectedHandles.Contains(handle))
                 {
-                    handle.Color = hoveredColor;
+                    handle.Color = HoveredColor;
                 }
             }
-            
+
             foreach (HeightmapHandle handle in lastFrameHoveredHandles)
             {
                 if (!currentFrameHoveredHandles.Contains(handle) && !selectedHandles.Contains(handle))
                 {
-                    handle.Color = neutralColor;
+                    handle.Color = NeutralColor;
                 }
             }
-            
+
             foreach (HeightmapHandle handle in selectedHandles)
             {
                 if (handle == anchorHandle)
                 {
-                    handle.Color = anchorColor;
+                    handle.Color = AnchorColor;
                 }
                 else if (state == HeightUpdaterState.Manipulating)
                 {
-                    handle.Color = activeColor;
+                    handle.Color = ActiveColor;
                 }
                 else if (currentFrameHoveredHandles.Count == 1 && currentFrameHoveredHandles.Contains(handle) && state != HeightUpdaterState.Dragging)
                 {
-                    handle.Color = selectedHoveredColor;
+                    handle.Color = SelectedHoveredColor;
                 }
                 else
                 {
-                    handle.Color = selectedColor;
+                    handle.Color = SelectedColor;
                 }
             }
-            
+
             foreach (HeightmapHandle handle in deselectedHandles)
             {
-                handle.Color = neutralColor;
+                handle.Color = NeutralColor;
             }
         }
 
-        public override void Disable()
+        public void Disable()
         {
             if (_anchorProjector != null)
             {
@@ -728,11 +703,6 @@ namespace Warlander.Deedplanner.Updaters
         private enum HeightUpdaterState
         {
             Idle, Dragging, Manipulating, Recovering
-        }
-
-        private enum HeightUpdaterMode
-        {
-            SelectAndDrag, CreateRamps, LevelArea, PaintTerrain
         }
     }
 }

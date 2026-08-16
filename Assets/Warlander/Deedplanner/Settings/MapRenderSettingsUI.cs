@@ -12,6 +12,7 @@ namespace Warlander.Deedplanner.Settings
         [SerializeField] private Toggle _treesToggle;
         [SerializeField] private Toggle _bushesToggle;
         [SerializeField] private Toggle _shipsToggle;
+        [SerializeField] private Toggle _bridgesToggle;
 
         private void Awake()
         {
@@ -19,6 +20,7 @@ namespace Warlander.Deedplanner.Settings
             _treesToggle.onValueChanged.AddListener(newValue => _mapRenderSettingsSetter.RenderTrees = newValue);
             _bushesToggle.onValueChanged.AddListener(newValue => _mapRenderSettingsSetter.RenderBushes = newValue);
             _shipsToggle.onValueChanged.AddListener(newValue => _mapRenderSettingsSetter.RenderShips = newValue);
+            _bridgesToggle.onValueChanged.AddListener(newValue => _mapRenderSettingsSetter.RenderBridges = newValue);
         }
     }
 }

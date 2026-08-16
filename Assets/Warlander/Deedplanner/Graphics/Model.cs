@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using R3;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -216,17 +215,19 @@ namespace Warlander.Deedplanner.Graphics
             {
                 loadingOriginalModel = true;
                 string fullLocation = Application.streamingAssetsPath + "/" + location;
-                _wurmModelLoader.LoadModelAsync(fullLocation, Scale).ToObservable()
-                    .Subscribe(model =>
-                    {
-                        OnMasterModelLoaded(model);
-                        onDone();
-                    });
+                LoadMasterModelAsync(fullLocation, onDone);
             }
             else
             {
                 onDone();
             }
+        }
+
+        private async void LoadMasterModelAsync(string fullLocation, Action onDone)
+        {
+            GameObject model = await _wurmModelLoader.LoadModelAsync(fullLocation, Scale);
+            OnMasterModelLoaded(model);
+            onDone();
         }
 
         private void OnMasterModelLoaded(GameObject masterModel)
@@ -240,6 +241,7 @@ namespace Warlander.Deedplanner.Graphics
 
             originalModel = masterModel;
             originalModel.layer = Layer;
+
             foreach (Transform child in originalModel.transform)
             {
                 child.gameObject.layer = Layer;
@@ -256,7 +258,7 @@ namespace Warlander.Deedplanner.Graphics
                     Material newMaterial = new Material(renderer.sharedMaterial);
                     renderer.sharedMaterial = newMaterial;
 
-                    texture.LoadOrGetTextureAsync().ToObservable().Subscribe(loadedTexture => newMaterial.mainTexture = loadedTexture);
+                    ApplyTextureOverrideAsync(texture, newMaterial);
                 }
             }
             originalModel.transform.SetParent(modelRoot.transform);
@@ -270,9 +272,14 @@ namespace Warlander.Deedplanner.Graphics
             modelRequests.Clear();
         }
 
-        private void InitializeModifiedModel(ModelProperties modelProperties)
+        private static async void ApplyTextureOverrideAsync(TextureReference texture, Material material)
         {
-            if (!originalModel || modifiedModels.ContainsKey(modelProperties))
+            Texture2D loadedTexture = await texture.LoadOrGetTextureAsync();
+            material.SetTexture(ShaderPropertyIds.BaseMap, loadedTexture);
+        }
+
+        private void InitializeModifiedModel(ModelProperties modelProperties)
+        {            if (!originalModel || modifiedModels.ContainsKey(modelProperties))
             {
                 return;
             }
@@ -299,9 +306,9 @@ namespace Warlander.Deedplanner.Graphics
                 {
                     Material oldMaterial = renderer.sharedMaterial;
                     Material customMaterial = new Material(modelProperties.CustomMaterial);
-                    if (!customMaterial.mainTexture)
+                    if (!customMaterial.GetTexture(ShaderPropertyIds.BaseMap))
                     {
-                        customMaterial.mainTexture = oldMaterial.mainTexture;
+                        customMaterial.SetTexture(ShaderPropertyIds.BaseMap, oldMaterial.GetTexture(ShaderPropertyIds.BaseMap));
                     }
                     renderer.sharedMaterial = customMaterial;
                 }

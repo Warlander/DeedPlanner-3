@@ -1,93 +1,71 @@
 using System.Collections.Generic;
-using R3;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
-using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class GroundUpdater : AbstractUpdater
+    public class GroundUpdater : IUpdater
     {
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private DPInput _input;
-        [Inject] private MapHandler _mapHandler;
-        [Inject] private TabContext _tabContext;
+        private readonly IGroundUpdaterView _view;
+        private readonly CameraCoordinator _cameraCoordinator;
+        private readonly DPInput _input;
+        private readonly MapHandler _mapHandler;
+        private readonly TabContext _tabContext;
 
-        [SerializeField] private UnityTree _groundsTree;
-        
-        [SerializeField] private Image leftClickImage = null;
-        [SerializeField] private TextMeshProUGUI leftClickText = null;
-        [SerializeField] private Image rightClickImage = null;
-        [SerializeField] private TextMeshProUGUI rightClickText = null;
+        public Tab TargetTab => Tab.Ground;
 
-        [SerializeField] private Toggle leftClickToggle = null;
-        [SerializeField] private Toggle pencilToggle = null;
-        [SerializeField] private Toggle fillToggle = null;
-        
-        private GroundData leftClickData;
-        private GroundData rightClickData;
+        private GroundData _leftClickData;
+        private GroundData _rightClickData;
+        private bool _leftClickTargeted = true;
+        private GroundTool _tool = GroundTool.Pencil;
+        private bool _editCorners = true;
 
-        private bool editCorners = true;
-
-        private GroundData LeftClickData {
-            get => leftClickData;
-            set {
-                leftClickData = value;
-                leftClickText.text = leftClickData.Name;
-                leftClickData.Tex2d.LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite => leftClickImage.sprite = sprite);
-            }
-        }
-
-        private GroundData RightClickData {
-            get => rightClickData;
-            set {
-                rightClickData = value;
-                rightClickText.text = rightClickData.Name;
-                rightClickData.Tex2d.LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite => rightClickImage.sprite = sprite);
-            }
-        }
-
-        public bool EditCorners {
-            get => editCorners;
-            set {
-                editCorners = value;
-                UpdateSelectionMode();
-            }
-        }
-
-        public override void Initialize()
+        public GroundUpdater(IGroundUpdaterView view, CameraCoordinator cameraCoordinator, DPInput input,
+            MapHandler mapHandler, TabContext tabContext)
         {
-            _groundsTree.ValueChanged += OnGroundsTreeValueChanged;
-            LeftClickData = Database.DefaultGroundData;
-            RightClickData = Database.DefaultSecondaryGroundData;
+            _view = view;
+            _cameraCoordinator = cameraCoordinator;
+            _input = input;
+            _mapHandler = mapHandler;
+            _tabContext = tabContext;
+        }
+
+        public void Initialize()
+        {
+            _view.GroundSelected += OnGroundSelected;
+            _view.ToolChanged += OnToolChanged;
+            _view.LeftClickTargetChanged += OnLeftClickTargetChanged;
+            _view.EditCornersChanged += OnEditCornersChanged;
+
+            _leftClickData = Database.DefaultGroundData;
+            _view.SetLeftClickData(_leftClickData);
+            _rightClickData = Database.DefaultSecondaryGroundData;
+            _view.SetRightClickData(_rightClickData);
 
             foreach (GroundData data in Database.Grounds.Values)
             {
                 foreach (string[] category in data.Categories)
                 {
-                    IconUnityListElement iconListElement = (IconUnityListElement) _groundsTree.Add(data, category);
-                    iconListElement.TextureReference = data.Tex2d;
+                    _view.AddGroundEntry(data, category);
                 }
             }
         }
 
-        public override void Enable()
+        public void Enable()
         {
             UpdateSelectionMode();
         }
 
-        public override void Disable() { }
+        public void Disable() { }
 
         private void UpdateSelectionMode()
         {
-            if (editCorners)
+            if (_editCorners)
             {
                 _tabContext.TileSelectionMode = TileSelectionMode.Everything;
             }
@@ -97,27 +75,43 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void OnGroundsTreeValueChanged(object value)
+        private void OnGroundSelected(GroundData groundData)
         {
-            bool leftClick = leftClickToggle.isOn;
-            GroundData groundData = value as GroundData;
-            if (leftClick)
+            if (_leftClickTargeted)
             {
-                LeftClickData = groundData;
+                _leftClickData = groundData;
+                _view.SetLeftClickData(groundData);
             }
             else
             {
-                RightClickData = groundData;
+                _rightClickData = groundData;
+                _view.SetRightClickData(groundData);
             }
         }
 
-        public override void Tick()
+        private void OnToolChanged(GroundTool tool)
+        {
+            _tool = tool;
+        }
+
+        private void OnLeftClickTargetChanged(bool targeted)
+        {
+            _leftClickTargeted = targeted;
+        }
+
+        private void OnEditCornersChanged(bool editCorners)
+        {
+            _editCorners = editCorners;
+            UpdateSelectionMode();
+        }
+
+        public void Tick()
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
                 _mapHandler.Map.CommandManager.FinishAction();
             }
-            
+
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
@@ -134,23 +128,25 @@ namespace Warlander.Deedplanner.Updaters
             {
                 if (_input.UpdatersShared.Placement.WasPressedThisFrame())
                 {
-                    LeftClickData = ground.Data;
+                    _leftClickData = ground.Data;
+                    _view.SetLeftClickData(_leftClickData);
                 }
                 else if (_input.UpdatersShared.Deletion.WasPressedThisFrame())
                 {
-                    RightClickData = ground.Data;
+                    _rightClickData = ground.Data;
+                    _view.SetRightClickData(_rightClickData);
                 }
             }
-            
+
             GroundData currentClickData = GetCurrentClickData();
             if (currentClickData == null)
             {
                 return;
             }
 
-            if (pencilToggle.isOn)
+            if (_tool == GroundTool.Pencil)
             {
-                if (editCorners && leftClickData.Diagonal)
+                if (_editCorners && _leftClickData.Diagonal)
                 {
                     TileSelectionHit hit = TileSelection.PositionToTileSelectionHit(raycast.point, TileSelectionMode.TilesAndCorners);
                     if (hit.Target == TileSelectionTarget.InnerTile || hit.Target == TileSelectionTarget.Nothing)
@@ -180,7 +176,7 @@ namespace Warlander.Deedplanner.Updaters
                 }
                 ground.Data = currentClickData;
             }
-            else if (fillToggle.isOn)
+            else if (_tool == GroundTool.Fill)
             {
                 GroundData toReplace = tile.Ground.Data;
                 FloodFill(tile, currentClickData, toReplace);
@@ -229,11 +225,11 @@ namespace Warlander.Deedplanner.Updaters
         {
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
-                return leftClickData;
+                return _leftClickData;
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
             {
-                return rightClickData;
+                return _rightClickData;
             }
 
             return null;

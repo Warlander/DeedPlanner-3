@@ -10,6 +10,7 @@ namespace Warlander.Deedplanner.Logic.Outlines
         void RemoveObject(DynamicModelBehaviour behaviour, int priority);
 
         bool HasOutlinedObjects { get; }
+        bool RenderingSuspended { get; set; }
         List<OutlineEntry> GetOutlinedObjectsSnapshot();
     }
 }

@@ -12,28 +12,35 @@ namespace Warlander.Deedplanner.Data.Bridges
 {
     public class Bridge : IXmlSerializable
     {
-        public BridgeData Data { get; }
+        public BridgeData Data { get; private set; }
 
+        public BridgeType Type => bridgeType;
+        public int AdditionalData => additionalData;
         public int LowerLevel => Mathf.Min(firstLevel, secondLevel);
         public int HigherLevel => Mathf.Max(firstLevel, secondLevel);
         public Vector2Int FirstTile => new Vector2Int(firstX, firstY);
         public Vector2Int SecondTile => new Vector2Int(secondX, secondY);
 
+        public event Action Rebuilt;
+
         private readonly IOutlineCoordinator _outlineCoordinator;
-        
-        private readonly BridgePartType[] segments;
+
+        private BridgePartType[] segments;
         private readonly int firstLevel;
         private readonly int firstX;
         private readonly int firstY;
         private readonly int secondLevel;
         private readonly int secondX;
         private readonly int secondY;
-        private readonly int additionalData;
+        private int additionalData;
         private readonly bool verticalOrientation;
         private readonly bool surfaced;
         private readonly BridgeType bridgeType;
 
         private List<BridgePart> bridgeParts = new List<BridgePart>();
+        private readonly List<BridgePart> segmentParts = new List<BridgePart>();
+        private readonly MaterialPropertyBlock _opacityMergeBlock = new MaterialPropertyBlock();
+        private bool _attached;
         
         public Bridge(Map map, XmlElement element, IOutlineCoordinator outlineCoordinator)
         {
@@ -85,7 +92,7 @@ namespace Warlander.Deedplanner.Data.Bridges
 
             Data = originalBridge.Data;
 
-            segments = originalBridge.segments;
+            segments = (BridgePartType[])originalBridge.segments.Clone();
             firstLevel = originalBridge.firstLevel;
             firstX = originalBridge.firstX + tileShift.x;
             firstY = originalBridge.firstY + tileShift.y;
@@ -193,12 +200,18 @@ namespace Warlander.Deedplanner.Data.Bridges
 
                     GameObject bridgePartObject = new GameObject("Bridge Part " + Data.Name, typeof(BridgePart));
                     BridgePart bridgePart = bridgePartObject.GetComponent<BridgePart>();
-                    bridgePart.Initialise(this, segment, side, orientation, x, y, totalHeight, delta);
-                    
-                    bridgeParts.Add(bridgePart);
                     map[x, y].RegisterBridgePart(bridgePart);
+                    bridgePart.Initialise(this, segment, side, orientation, x, y, totalHeight, delta);
+
+                    bridgeParts.Add(bridgePart);
+                    if (segmentParts.Count == currentSegment)
+                    {
+                        segmentParts.Add(bridgePart);
+                    }
                 }
             }
+
+            _attached = true;
         }
 
         private float CalculateHeightAtPoint(int segment, IBridgeType bridgeTypeCalc, int bridgeLength,
@@ -285,7 +298,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
         }
 
-        private IBridgeType GetTypeForBridge(BridgeType type)
+        internal static IBridgeType GetTypeForBridge(BridgeType type)
         {
             switch (type)
             {
@@ -308,6 +321,43 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
         }
 
+        public void AttachToMap()
+        {
+            if (_attached)
+            {
+                return;
+            }
+
+            foreach (BridgePart part in bridgeParts)
+            {
+                part.Tile.RegisterBridgePart(part);
+            }
+
+            SetVisible(true);
+            _attached = true;
+        }
+
+        public void DetachFromMap()
+        {
+            if (!_attached)
+            {
+                return;
+            }
+
+            DisableHighlighting();
+
+            foreach (BridgePart part in bridgeParts)
+            {
+                if (part.Tile != null)
+                {
+                    part.Tile.UnregisterBridgePart();
+                }
+            }
+
+            SetVisible(false);
+            _attached = false;
+        }
+
         public void Destroy()
         {
             DisableHighlighting();
@@ -323,6 +373,8 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
 
             bridgeParts.Clear();
+            segmentParts.Clear();
+            _attached = false;
         }
 
         public void EnableHighlighting(OutlineType type)
@@ -343,12 +395,17 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         public void SetPropertyBlock(MaterialPropertyBlock propertyBlock)
         {
+            Color opacityColor = propertyBlock.GetColor(ShaderPropertyIds.BaseColor);
             foreach (BridgePart part in bridgeParts)
             {
                 Renderer[] renderers = part.GetComponentsInChildren<Renderer>();
                 foreach (Renderer renderer in renderers)
                 {
-                    renderer.SetPropertyBlock(propertyBlock);
+                    // Merge instead of replacing - the block also carries the slope shear
+                    // (_ShearY), and wholesale replacement wipes it (sloped deck renders as staircase).
+                    renderer.GetPropertyBlock(_opacityMergeBlock);
+                    _opacityMergeBlock.SetColor(ShaderPropertyIds.BaseColor, opacityColor);
+                    renderer.SetPropertyBlock(_opacityMergeBlock);
                 }
             }
         }
@@ -371,9 +428,69 @@ namespace Warlander.Deedplanner.Data.Bridges
             return bridgeParts[index];
         }
 
+        public int SegmentCount => segments.Length;
+
+        public BridgePart GetSegmentPart(int index)
+        {
+            return segmentParts[index];
+        }
+
+        public string GetSegmentsString()
+        {
+            return BridgePartTypeUtils.EncodeSegments(segments);
+        }
+
+        public bool[] GetSupportPositions()
+        {
+            bool[] supports = new bool[segments.Length];
+            for (int i = 0; i < segments.Length; i++)
+            {
+                supports[i] = segments[i] == BridgePartType.Support;
+            }
+
+            return supports;
+        }
+
+        public void Rebuild(Map map, BridgeData newData, string newSegments, int newAdditionalData)
+        {
+            DisableHighlighting();
+
+            foreach (BridgePart part in bridgeParts)
+            {
+                if (part.Tile != null)
+                {
+                    part.Tile.UnregisterBridgePart();
+                }
+
+                UnityEngine.Object.Destroy(part.gameObject);
+            }
+
+            bridgeParts.Clear();
+            segmentParts.Clear();
+            _attached = false;
+
+            Data = newData;
+            segments = BridgePartTypeUtils.DecodeSegments(newSegments);
+            additionalData = newAdditionalData;
+
+            ConstructBridge(map);
+            Rebuilt?.Invoke();
+        }
+
         public void Serialize(XmlDocument document, XmlElement localRoot)
         {
-            
+            localRoot.SetAttribute("data", Data.Name);
+            localRoot.SetAttribute("type", bridgeType.ToString().ToUpperInvariant());
+            localRoot.SetAttribute("firstFloor", firstLevel.ToString());
+            localRoot.SetAttribute("firstX", firstX.ToString());
+            localRoot.SetAttribute("firstY", firstY.ToString());
+            localRoot.SetAttribute("secondFloor", secondLevel.ToString());
+            localRoot.SetAttribute("secondX", secondX.ToString());
+            localRoot.SetAttribute("secondY", secondY.ToString());
+            localRoot.SetAttribute("sag", additionalData.ToString());
+            localRoot.SetAttribute("orientation", verticalOrientation ? "true" : "false");
+            localRoot.SetAttribute("surfaced", surfaced ? "true" : "false");
+            localRoot.InnerText = BridgePartTypeUtils.EncodeSegments(segments);
         }
     }
 }

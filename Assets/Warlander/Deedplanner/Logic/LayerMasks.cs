@@ -23,9 +23,9 @@ namespace Warlander.Deedplanner.Logic
         // Combined masks to toggle what is raytraced for given feature
         public const int GroundEditMask = GroundMask;
         public const int HeightEditMask = GroundMask;
-        public const int FloorEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
+        public const int FloorEditMask = TileMask | GroundMask | FloorRoofMask | WallMask;
         public const int RoofEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
-        public const int WallEditMask = TileMask | GroundMask | WallMask | BridgeMask;
+        public const int WallEditMask = TileMask | GroundMask | WallMask;
         public const int DecorationEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | DecorationMask | BridgeMask;
         public const int LabelEditMask = GroundMask;
         public const int BorderEditMask = GroundMask;

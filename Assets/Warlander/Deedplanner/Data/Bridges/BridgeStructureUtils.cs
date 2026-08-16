@@ -24,7 +24,7 @@ namespace Warlander.Deedplanner.Data.Bridges
 
                 int selfDistanceToSupport = distances[i];
 
-                int rightIndex = 1 + 1;
+                int rightIndex = i + 1;
                 int rightDistanceToSupport = rightIndex < supports.Length ? distances[rightIndex] : 0;
 
                 BridgePartType? segment = GetPartTypeForDistanceFromSupport(
@@ -33,6 +33,31 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
 
             return IsConstructedBridgeValid(finalSegments);
+        }
+
+        /// <summary>
+        /// Wood bridges have no bracing parts - all bracing and double parts become crowns.
+        /// Null segments (impossible sections) are preserved.
+        /// </summary>
+        public static BridgePartType?[] SubstituteWoodParts(BridgePartType?[] segments)
+        {
+            BridgePartType?[] substituted = new BridgePartType?[segments.Length];
+
+            for (int i = 0; i < segments.Length; i++)
+            {
+                BridgePartType? segment = segments[i];
+                if (segment == BridgePartType.Bracing || segment == BridgePartType.DoubleBracing
+                    || segment == BridgePartType.DoubleAbutment)
+                {
+                    substituted[i] = BridgePartType.Crown;
+                }
+                else
+                {
+                    substituted[i] = segment;
+                }
+            }
+
+            return substituted;
         }
 
         /// <summary>
@@ -124,32 +149,22 @@ namespace Warlander.Deedplanner.Data.Bridges
                 return BridgePartType.Support;
             }
 
+            if (selfDistance > 3)
+            {
+                return null;
+            }
+
             bool isPeak = leftDistance == rightDistance;
-            if (isPeak)
+            switch (selfDistance)
             {
-                switch (selfDistance)
-                {
-                    case 1:
-                        return BridgePartType.DoubleAbutment;
-                    case 2:
-                        return BridgePartType.DoubleBracing;
-                    case 3:
-                        return BridgePartType.Crown;
-                }
+                case 1:
+                    return isPeak ? BridgePartType.DoubleAbutment : BridgePartType.Abutment;
+                case 2:
+                    return isPeak ? BridgePartType.DoubleBracing : BridgePartType.Bracing;
+                case 3:
+                    return BridgePartType.Crown;
             }
-            
-            bool isSameLevelAsNeighbor = leftDistance - selfDistance == 0 || rightDistance - selfDistance == 0;
-            if (isSameLevelAsNeighbor)
-            {
-                switch (selfDistance)
-                {
-                    case 1:
-                        return BridgePartType.Abutment;
-                    case 2:
-                        return BridgePartType.Bracing;
-                }
-            }
-            
+
             return null;
         }
     }

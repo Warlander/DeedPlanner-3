@@ -87,8 +87,9 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
 
             int archIndexToUse = distanceFromMiddle - 1;
-            
-            return archHeights[archIndexToUse];
+
+            // DP2 parity: extraArgument is steepness (5/10/15/20), scaling the full arch height.
+            return Mathf.RoundToInt(archHeights[archIndexToUse] * (extraArgument / 20f));
         }
     }
 }

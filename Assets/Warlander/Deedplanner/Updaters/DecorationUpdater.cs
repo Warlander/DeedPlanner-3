@@ -1,131 +1,151 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Graphics.Outline;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Settings;
-using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class DecorationUpdater : AbstractUpdater
+    public class DecorationUpdater : IUpdater
     {
-        [Inject] private DPSettings _settings;
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private DPInput _input;
-        [Inject] private MapHandler _mapHandler;
-        [Inject] private IOutlineCoordinator _outlineCoordinator;
-        [Inject] private ISharedMaterials _sharedMaterials;
-        [Inject] private TabContext _tabContext;
+        private static readonly Color AllowedGhostColor = new Color(0f, 1f, 0f, 0.5882353f);
+        private static readonly Color DisabledGhostColor = new Color(1f, 0f, 0f, 0.5882353f);
+        private const float MinimumPlacementGap = 0.25f;
+        private const float CornerSnapDistance = 0.25f;
 
-        [SerializeField] private UnityTree _decorationsTree;
+        private readonly IDecorationUpdaterView _view;
+        private readonly DPSettings _settings;
+        private readonly CameraCoordinator _cameraCoordinator;
+        private readonly DPInput _input;
+        private readonly MapHandler _mapHandler;
+        private readonly IOutlineCoordinator _outlineCoordinator;
+        private readonly ISharedMaterials _sharedMaterials;
+        private readonly TabContext _tabContext;
 
-        [SerializeField] private Toggle snapToGridToggle;
-        [SerializeField] private Toggle rotationSnappingToggle;
-        [SerializeField] private TMP_InputField rotationSensitivityInput;
+        public Tab TargetTab => Tab.Objects;
 
-        [SerializeField] private Color allowedGhostColor = new Color(0f, 1f, 0f, 0.3f);
-        [SerializeField] private Color disabledGhostColor = new Color(1f, 0f, 0f, 0.3f);
-        [SerializeField] private float minimumPlacementGap = 0.25f;
-        [SerializeField] private float cornerSnapDistance = 0.25f;
+        private DecorationData _selectedDecoration;
+        private DecorationData _lastGhostData;
+        private string _rotationSensitivity;
+        private bool _rotationSnapping;
+        private GameObject _ghostObject;
 
-        private DecorationData lastFrameData;
-        private GameObject ghostObject;
+        private MaterialPropertyBlock _allowedGhostPropertyBlock;
+        private MaterialPropertyBlock _disabledGhostPropertyBlock;
 
-        private MaterialPropertyBlock allowedGhostPropertyBlock;
-        private MaterialPropertyBlock disabledGhostPropertyBlock;
+        private Vector3 _position;
+        private float _rotation;
+        private bool _placingDecoration = false;
+        private Tile _targetedTile;
+        private Vector2 _dragStartPos;
 
-        private Vector3 position;
-        private float rotation;
-        private bool placingDecoration = false;
-        private Tile targetedTile;
-        private Vector2 dragStartPos;
+        private bool _isScrollRotate = false;
 
-        private bool isScrollRotate = false;
-
-        public override void Initialize()
+        public DecorationUpdater(IDecorationUpdaterView view, DPSettings settings, CameraCoordinator cameraCoordinator,
+            DPInput input, MapHandler mapHandler, IOutlineCoordinator outlineCoordinator,
+            ISharedMaterials sharedMaterials, TabContext tabContext)
         {
-            allowedGhostPropertyBlock = new MaterialPropertyBlock();
-            allowedGhostPropertyBlock.SetColor(ShaderPropertyIds.BaseColor, allowedGhostColor);
-            disabledGhostPropertyBlock = new MaterialPropertyBlock();
-            disabledGhostPropertyBlock.SetColor(ShaderPropertyIds.BaseColor, disabledGhostColor);
+            _view = view;
+            _settings = settings;
+            _cameraCoordinator = cameraCoordinator;
+            _input = input;
+            _mapHandler = mapHandler;
+            _outlineCoordinator = outlineCoordinator;
+            _sharedMaterials = sharedMaterials;
+            _tabContext = tabContext;
+        }
+
+        public void Initialize()
+        {
+            _allowedGhostPropertyBlock = new MaterialPropertyBlock();
+            _allowedGhostPropertyBlock.SetColor(ShaderPropertyIds.BaseColor, AllowedGhostColor);
+            _disabledGhostPropertyBlock = new MaterialPropertyBlock();
+            _disabledGhostPropertyBlock.SetColor(ShaderPropertyIds.BaseColor, DisabledGhostColor);
+
+            _view.DecorationSelected += OnDecorationSelected;
+            _view.SnapToGridChanged += OnSnapToGridChanged;
+            _view.RotationSnappingChanged += OnRotationSnappingChanged;
+            _view.RotationSensitivityChanged += OnRotationSensitivityChanged;
 
             foreach (DecorationData data in Database.Decorations.Values)
             {
                 foreach (string[] category in data.Categories)
                 {
-                    _decorationsTree.Add(data, category);
+                    _view.AddDecorationEntry(data, category);
                 }
             }
 
-            rotationSensitivityInput.text = _settings.DecorationRotationSensitivity.ToString(CultureInfo.InvariantCulture);
-            snapToGridToggle.isOn = _settings.DecorationSnapToGrid;
-            rotationSnappingToggle.isOn = _settings.DecorationRotationSnapping;
+            _rotationSensitivity = _settings.DecorationRotationSensitivity;
+            _rotationSnapping = _settings.DecorationRotationSnapping;
 
-            rotationSensitivityInput.onValueChanged.AddListener(RotationSensitivityInputOnValueChanged);
-            snapToGridToggle.onValueChanged.AddListener(SnapToGridToggleOnValueChanged);
-            rotationSnappingToggle.onValueChanged.AddListener(RotationSnappingToggleOnValueChanged);
+            _view.SetRotationSensitivity(_rotationSensitivity);
+            _view.SetSnapToGrid(_settings.DecorationSnapToGrid);
+            _view.SetRotationSnapping(_rotationSnapping);
+            _view.PushSelection();
         }
 
-        public override void Enable()
+        public void Enable()
         {
             _tabContext.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
-        private void RotationSensitivityInputOnValueChanged(string value)
+        private void OnDecorationSelected(DecorationData data)
+        {
+            _selectedDecoration = data;
+        }
+
+        private void OnSnapToGridChanged(bool value)
         {
             _settings.Modify(settings =>
             {
-                settings.DecorationRotationSensitivity = rotationSensitivityInput.text;
+                settings.DecorationSnapToGrid = value;
             });
         }
 
-        private void SnapToGridToggleOnValueChanged(bool value)
+        private void OnRotationSnappingChanged(bool value)
         {
+            _rotationSnapping = value;
             _settings.Modify(settings =>
             {
-                settings.DecorationSnapToGrid = snapToGridToggle.isOn;
+                settings.DecorationRotationSnapping = value;
             });
         }
 
-        private void RotationSnappingToggleOnValueChanged(bool value)
+        private void OnRotationSensitivityChanged(string value)
         {
+            _rotationSensitivity = value;
             _settings.Modify(settings =>
             {
-                settings.DecorationRotationSnapping = rotationSnappingToggle.isOn;
+                settings.DecorationRotationSensitivity = value;
             });
         }
 
-        public override void Tick()
+        public void Tick()
         {
             float rotationEditSensitivity = 1;
-            float.TryParse(rotationSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out rotationEditSensitivity);
+            float.TryParse(_rotationSensitivity, NumberStyles.Any, CultureInfo.InvariantCulture, out rotationEditSensitivity);
 
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
-                if (ghostObject)
+                if (_ghostObject)
                 {
-                    ghostObject.SetActive(false);
+                    _ghostObject.SetActive(false);
                 }
                 return;
             }
 
-            DecorationData data = (DecorationData)_decorationsTree.SelectedValue;
-            bool dataChanged = data != lastFrameData;
-            lastFrameData = data;
+            DecorationData data = _selectedDecoration;
             if (data == null)
             {
                 return;
@@ -136,14 +156,10 @@ namespace Warlander.Deedplanner.Updaters
             LevelEntity levelEntity = raycast.transform.GetComponent<LevelEntity>();
 
             Material ghostMaterial = _sharedMaterials.GhostMaterial;
-            if (dataChanged)
+            if (data != _lastGhostData || !_ghostObject)
             {
+                _lastGhostData = data;
                 data.Model.CreateOrGetModel(ghostMaterial, OnGhostCreated);
-                return;
-            }
-
-            if (!ghostObject)
-            {
                 return;
             }
 
@@ -160,155 +176,155 @@ namespace Warlander.Deedplanner.Updaters
 
             Map map = _mapHandler.Map;
 
-            if (targetedTile != null)
+            if (_targetedTile != null)
             {
-                foreach (Decoration decoration in targetedTile.GetDecorations())
+                foreach (Decoration decoration in _targetedTile.GetDecorations())
                 {
                     _outlineCoordinator.RemoveObject(decoration, 1);
                 }
             }
-            
-            if (!placingDecoration)
+
+            if (!_placingDecoration)
             {
-                position = CalculateCorrectedPosition(raycast.point, data, _settings.DecorationSnapToGrid);
-                targetedTile = null;
+                _position = CalculateCorrectedPosition(raycast.point, data, _settings.DecorationSnapToGrid);
+                _targetedTile = null;
                 if (overlayMesh)
                 {
-                    int tileX = Mathf.FloorToInt(position.x / 4f);
-                    int tileY = Mathf.FloorToInt(position.z / 4f);
-                    targetedTile = map[tileX, tileY];
-                    position.y = map.GetInterpolatedHeight(position.x, position.z);
+                    int tileX = Mathf.FloorToInt(_position.x / 4f);
+                    int tileY = Mathf.FloorToInt(_position.z / 4f);
+                    _targetedTile = map[tileX, tileY];
+                    _position.y = map.GetInterpolatedHeight(_position.x, _position.z);
                     if (data.Floating)
                     {
-                        position.y = Mathf.Max(position.y, 0);
+                        _position.y = Mathf.Max(_position.y, 0);
                     }
                     else
                     {
                         float floorHeight = 3f;
-                        position.y += targetFloor * floorHeight;
+                        _position.y += targetFloor * floorHeight;
                     }
                 }
                 else if (levelEntity && levelEntity.Valid)
                 {
-                    targetedTile = levelEntity.Tile;
+                    _targetedTile = levelEntity.Tile;
                 }
             }
-            
-            if (targetedTile != null)
+
+            if (_targetedTile != null)
             {
-                foreach (Decoration decoration in targetedTile.GetDecorations())
+                foreach (Decoration decoration in _targetedTile.GetDecorations())
                 {
                     _outlineCoordinator.AddObject(decoration, OutlineType.Neutral, 1);
                 }
             }
 
             bool canPlaceNewObject = overlayMesh || groundMesh || (levelEntity && levelEntity.Valid && levelEntity.GetType() == typeof(Floor));
-            if (canPlaceNewObject || placingDecoration)
+            if (canPlaceNewObject || _placingDecoration)
             {
-                ghostObject.gameObject.SetActive(true);
-                ghostObject.transform.position = position;
+                _ghostObject.gameObject.SetActive(true);
+                _ghostObject.transform.position = _position;
             }
             else
             {
-                ghostObject.gameObject.SetActive(false);
+                _ghostObject.gameObject.SetActive(false);
             }
 
             bool placementOverlap = true;
-            Vector2 position2d = new Vector2(position.x, position.z);
-            IEnumerable<Decoration> nearbyDecorations = GetAllNearbyDecorations(targetedTile);
+            Vector2 position2d = new Vector2(_position.x, _position.z);
+            IEnumerable<Decoration> nearbyDecorations = GetAllNearbyDecorations(_targetedTile);
 
             foreach (Decoration decoration in nearbyDecorations)
             {
                 Vector3 decorationPosition3d = decoration.transform.position;
                 Vector2 decorationPosition2d = new Vector2(decorationPosition3d.x, decorationPosition3d.z);
                 float distance = Vector2.Distance(position2d, decorationPosition2d);
-                if (distance < minimumPlacementGap)
+                if (distance < MinimumPlacementGap)
                 {
                     placementOverlap = false;
                     break;
                 }
             }
 
-            ToggleGhostPropertyBlock(placementOverlap ? allowedGhostPropertyBlock : disabledGhostPropertyBlock);
+            ToggleGhostPropertyBlock(placementOverlap ? _allowedGhostPropertyBlock : _disabledGhostPropertyBlock);
 
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
-                placingDecoration = true;
-                dragStartPos = _cameraCoordinator.Current.MousePosition;
+                _placingDecoration = true;
+                _dragStartPos = _cameraCoordinator.Current.MousePosition;
             }
-            
+
             if (_input.DecorationUpdater.SmoothObjectRotate.IsPressed())
             {
-                isScrollRotate = true;
-                rotation += _input.DecorationUpdater.SmoothObjectRotate.ReadValue<float>();
-                ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
+                _isScrollRotate = true;
+                _rotation += _input.DecorationUpdater.SmoothObjectRotate.ReadValue<float>();
+                _ghostObject.transform.localRotation = Quaternion.Euler(0, _rotation, 0);
             }
             else if (_input.DecorationUpdater.SnappyObjectRotate.IsPressed())
             {
-                isScrollRotate = true;
+                _isScrollRotate = true;
                 if (_input.DecorationUpdater.SmoothObjectRotate.ReadValue<float>() > 0)
                 {
-                    rotation += 11.25f;
+                    _rotation += 11.25f;
                 }
                 else
                 {
-                    rotation -= 11.25f;
+                    _rotation -= 11.25f;
                 }
-                rotation = Mathf.Round(rotation / 11.25f) * 11.25f;
-                ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
+                _rotation = Mathf.Round(_rotation / 11.25f) * 11.25f;
+                _ghostObject.transform.localRotation = Quaternion.Euler(0, _rotation, 0);
             }
 
-            if (!isScrollRotate && _input.UpdatersShared.Placement.ReadValue<float>() > 0 && placingDecoration)
+            if (!_isScrollRotate && _input.UpdatersShared.Placement.ReadValue<float>() > 0 && _placingDecoration)
             {
                 Vector2 dragEndPos = _cameraCoordinator.Current.MousePosition;
-                Vector2 difference = dragEndPos - dragStartPos;
-                rotation = -difference.x * rotationEditSensitivity;
-                if (rotationSnappingToggle.isOn)
+                Vector2 difference = dragEndPos - _dragStartPos;
+                _rotation = -difference.x * rotationEditSensitivity;
+                if (_rotationSnapping)
                 {
-                    rotation = Mathf.Round(rotation / 45f) * 45f;
+                    _rotation = Mathf.Round(_rotation / 45f) * 45f;
                 }
-                ghostObject.transform.localRotation = Quaternion.Euler(0, rotation, 0);
+                _ghostObject.transform.localRotation = Quaternion.Euler(0, _rotation, 0);
             }
 
-            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() && placingDecoration)
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() && _placingDecoration)
             {
-                float decorationPositionX = position.x - targetedTile.X * 4f;
-                float decorationPositionY = position.z - targetedTile.Y * 4f;
+                float decorationPositionX = _position.x - _targetedTile.X * 4f;
+                float decorationPositionY = _position.z - _targetedTile.Y * 4f;
                 Vector2 decorationPosition = new Vector2(decorationPositionX, decorationPositionY);
-                targetedTile.SetDecoration(data, decorationPosition, rotation * Mathf.Deg2Rad, targetFloor, data.Floating);
+                _targetedTile.SetDecoration(data, decorationPosition, _rotation * Mathf.Deg2Rad, targetFloor, data.Floating);
                 map.CommandManager.FinishAction();
 
-                placingDecoration = false;
-                ghostObject.transform.localRotation = Quaternion.identity;
-                isScrollRotate = false;
-                rotation = 0f;
+                _placingDecoration = false;
+                _ghostObject.transform.localRotation = Quaternion.identity;
+                _isScrollRotate = false;
+                _rotation = 0f;
             }
 
             if (_input.UpdatersShared.Deletion.WasPerformedThisFrame())
             {
-                placingDecoration = false;
-                isScrollRotate = false;
-                ghostObject.transform.localRotation = Quaternion.identity;
+                _placingDecoration = false;
+                _isScrollRotate = false;
+                _ghostObject.transform.localRotation = Quaternion.identity;
             }
 
-            if (_input.UpdatersShared.Deletion.WasPerformedThisFrame() && !placingDecoration)
+            if (_input.UpdatersShared.Deletion.WasPerformedThisFrame() && !_placingDecoration)
             {
-                IEnumerable<Decoration> decorationsOnTile = targetedTile.GetDecorations();
+                IEnumerable<Decoration> decorationsOnTile = _targetedTile.GetDecorations();
                 foreach (Decoration decoration in decorationsOnTile)
                 {
-                    targetedTile.SetDecoration(null, decoration.Position, decoration.Rotation, targetFloor);
+                    _targetedTile.SetDecoration(null, decoration.Position, decoration.Rotation, targetFloor);
                 }
                 map.CommandManager.FinishAction();
             }
 
-            if (_input.DecorationUpdater.DeleteSingleObject.WasPressedThisFrame() && !placingDecoration)
+            if (_input.DecorationUpdater.DeleteSingleObject.WasPressedThisFrame() && !_placingDecoration)
             {
                 foreach (Decoration decoration in nearbyDecorations)
                 {
                     Vector3 decorationPosition3d = decoration.transform.position;
                     Vector2 decorationPosition2d = new Vector2(decorationPosition3d.x, decorationPosition3d.z);
                     float distance = Vector2.Distance(position2d, decorationPosition2d);
-                    if (distance < minimumPlacementGap)
+                    if (distance < MinimumPlacementGap)
                     {
                         decoration.Tile.SetDecoration(null, decoration.Position, decoration.Rotation, targetFloor);
                         break;
@@ -320,13 +336,12 @@ namespace Warlander.Deedplanner.Updaters
 
         private void OnGhostCreated(GameObject ghost)
         {
-            if (ghostObject)
+            if (_ghostObject)
             {
-                Destroy(ghostObject);
+                Object.Destroy(_ghostObject);
             }
 
-            ghostObject = ghost;
-            ghostObject.transform.SetParent(transform);
+            _ghostObject = ghost;
         }
 
         private Vector3 CalculateCorrectedPosition(Vector3 originalPosition, DecorationData data, bool snapToGrid)
@@ -348,7 +363,7 @@ namespace Warlander.Deedplanner.Updaters
                 float distToCornerZ = 2f - Mathf.Abs(originalPosition.z % 4f - 2f);
                 Vector2 distVector = new Vector2(distToCornerX, distToCornerZ);
                 float magnitude = distVector.magnitude;
-                if (magnitude < cornerSnapDistance)
+                if (magnitude < CornerSnapDistance)
                 {
                     pos.x = Mathf.Round(originalPosition.x / 4f) * 4f;
                     pos.z = Mathf.Round(originalPosition.z / 4f) * 4f;
@@ -394,26 +409,30 @@ namespace Warlander.Deedplanner.Updaters
 
         private void ToggleGhostPropertyBlock(MaterialPropertyBlock propertyBlock)
         {
-            if (!ghostObject)
+            if (!_ghostObject)
             {
                 return;
             }
 
-            foreach (Renderer render in ghostObject.GetComponentsInChildren<Renderer>())
+            foreach (Renderer render in _ghostObject.GetComponentsInChildren<Renderer>())
             {
                 render.SetPropertyBlock(propertyBlock);
             }
         }
 
-        public override void Disable()
+        public void Disable()
         {
+            if (_ghostObject)
+            {
+                _ghostObject.SetActive(false);
+            }
             ResetState();
         }
 
         private void ResetState()
         {
-            placingDecoration = false;
-            dragStartPos = new Vector2();
+            _placingDecoration = false;
+            _dragStartPos = new Vector2();
 
             _mapHandler.Map.CommandManager.UndoAction();
         }

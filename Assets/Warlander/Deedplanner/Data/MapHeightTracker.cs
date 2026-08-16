@@ -18,9 +18,14 @@ namespace Warlander.Deedplanner.Data
             HighestCaveHeight = 0;
         }
 
-        public void ClearCurrentMap()
+        // destroyed maps call this from OnDestroy, which runs end-of-frame - potentially AFTER
+        // the replacement map already registered itself; only clear if it is still the owner
+        public void ClearCurrentMap(Map map)
         {
-            _currentMap = null;
+            if (_currentMap == map)
+            {
+                _currentMap = null;
+            }
         }
 
         public void RecalculateHeights()

@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Settings;
 using VContainer;
 
@@ -8,10 +10,13 @@ namespace KSunyo
     public class CompassManager : MonoBehaviour
     {
         [Inject] private DPSettings _settings;
-        
+        [Inject] private DPInput _input;
+
         [SerializeField] private Transform cameraTransform;
         [SerializeField] private RectTransform compassFront;
         [SerializeField] private GameObject compass;
+
+        private bool _uiVisible = true;
 
         void Start()
         {
@@ -19,6 +24,17 @@ namespace KSunyo
             {
                 cameraTransform = Camera.main.transform;
             }
+            _input.EditingControls.ToggleUI.started += OnToggleUI;
+        }
+
+        private void OnDestroy()
+        {
+            _input.EditingControls.ToggleUI.started -= OnToggleUI;
+        }
+
+        private void OnToggleUI(InputAction.CallbackContext context)
+        {
+            _uiVisible = !_uiVisible;
         }
 
         void Update()
@@ -36,7 +52,7 @@ namespace KSunyo
                 compass.SetActive(false);
             }
 
-            if (_settings.CompassVisibility && isCameraActive)
+            if (_settings.CompassVisibility && isCameraActive && _uiVisible)
             {
                 compass.SetActive(true);
             }

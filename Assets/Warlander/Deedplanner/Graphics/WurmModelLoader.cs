@@ -64,16 +64,25 @@ namespace Warlander.Deedplanner.Graphics
                                || meshNameLowercase.Contains("pickingbox")
                                || (meshNameLowercase.Contains("lod") && !meshNameLowercase.Contains("lod0"));
             
-            int materialsCount = source.ReadInt32(); // there is always only one material per mesh, but we need to load this int anyway
-            if (materialsCount != 1)
+            int materialsCount = source.ReadInt32();
+            if (materialsCount < 1)
             {
-                throw new NotImplementedException("Only one material per mesh is supported");
+                throw new InvalidDataException("Mesh has no materials: " + meshName);
             }
-            
+
             if (!discardMesh)
             {
                 Debug.Log("Loading mesh " + meshName);
                 var mat = await _materialLoader.LoadMaterialAsync(source, fileFolder);
+
+                // WOM stores no triangle-to-material grouping, so multi-material meshes cannot be
+                // split into submeshes. Extra materials are parsed only to keep the stream aligned;
+                // the first material is used for the whole mesh (same as DeedPlanner 2).
+                for (int i = 1; i < materialsCount; i++)
+                {
+                    _materialLoader.LoadMaterialMetadata(source, fileFolder);
+                }
+
                 GameObject meshObject = new GameObject(meshName);
 
                 MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
@@ -87,7 +96,10 @@ namespace Warlander.Deedplanner.Graphics
             {
                 Debug.Log("Discarding mesh " + meshName);
                 // We need to load material metadata to advance file read to the next valid position.
-                _materialLoader.LoadMaterialMetadata(source, fileFolder);
+                for (int i = 0; i < materialsCount; i++)
+                {
+                    _materialLoader.LoadMaterialMetadata(source, fileFolder);
+                }
                 Object.Destroy(loadedMesh);
                 return null;
             }

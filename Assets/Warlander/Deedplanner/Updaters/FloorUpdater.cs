@@ -1,57 +1,79 @@
-﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Gui.Tooltips;
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
-using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class FloorUpdater : AbstractUpdater
+    public class FloorUpdater : IUpdater
     {
-        [Inject] private TooltipHandler _tooltipHandler;
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private DPInput _input;
-        [Inject] private MapHandler _mapHandler;
-        [Inject] private TabContext _tabContext;
+        private readonly IFloorUpdaterView _view;
+        private readonly TooltipHandler _tooltipHandler;
+        private readonly CameraCoordinator _cameraCoordinator;
+        private readonly DPInput _input;
+        private readonly MapHandler _mapHandler;
+        private readonly TabContext _tabContext;
 
-        [SerializeField] private UnityTree _floorsTree;
+        public Tab TargetTab => Tab.Floors;
 
-        [SerializeField] private Toggle southToggle;
-        [SerializeField] private Toggle westToggle;
-        [SerializeField] private Toggle northToggle;
-        [SerializeField] private Toggle eastToggle;
+        private FloorData _selectedFloor;
+        private EntityOrientation _orientation = EntityOrientation.Down;
 
-        public override void Initialize()
+        public FloorUpdater(IFloorUpdaterView view, TooltipHandler tooltipHandler, CameraCoordinator cameraCoordinator,
+            DPInput input, MapHandler mapHandler, TabContext tabContext)
         {
+            _view = view;
+            _tooltipHandler = tooltipHandler;
+            _cameraCoordinator = cameraCoordinator;
+            _input = input;
+            _mapHandler = mapHandler;
+            _tabContext = tabContext;
+        }
+
+        public void Initialize()
+        {
+            _view.FloorSelected += OnFloorSelected;
+            _view.OrientationChanged += OnOrientationChanged;
+
             foreach (FloorData data in Database.Floors.Values)
             {
                 foreach (string[] category in data.Categories)
                 {
-                    _floorsTree.Add(data, category);
+                    _view.AddFloorEntry(data, category);
                 }
             }
+
+            _view.PushSelection();
         }
 
-        public override void Enable()
+        public void Enable()
         {
             _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
-        public override void Disable() { }
+        public void Disable() { }
 
-        public override void Tick()
+        private void OnFloorSelected(FloorData data)
+        {
+            _selectedFloor = data;
+        }
+
+        private void OnOrientationChanged(EntityOrientation orientation)
+        {
+            _orientation = orientation;
+        }
+
+        public void Tick()
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
                 _mapHandler.Map.CommandManager.FinishAction();
             }
-            
+
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
@@ -77,38 +99,25 @@ namespace Warlander.Deedplanner.Updaters
                 y = Mathf.FloorToInt(raycast.point.z / 4f);
             }
 
-            FloorData data = _floorsTree.SelectedValue as FloorData;
+            if (x < 0 || y < 0)
+            {
+                return;
+            }
+
+            FloorData data = _selectedFloor;
             if (data.Opening && (floor == 0 || floor == -1))
             {
                 _tooltipHandler.ShowTooltipText("<color=red><b>It's not possible to place openings/stairs on ground floor</b></color>");
                 return;
             }
 
-            EntityOrientation orientation = EntityOrientation.Down;
-            if (southToggle.isOn)
-            {
-                orientation = EntityOrientation.Down;
-            }
-            else if (westToggle.isOn)
-            {
-                orientation = EntityOrientation.Right;
-            }
-            else if (northToggle.isOn)
-            {
-                orientation = EntityOrientation.Up;
-            }
-            else if (eastToggle.isOn)
-            {
-                orientation = EntityOrientation.Left;
-            }
-
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
-                _mapHandler.Map[x, y].SetFloor(data, orientation, floor);
+                _mapHandler.Map[x, y].SetFloor(data, _orientation, floor);
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
             {
-                _mapHandler.Map[x, y].SetFloor(null, orientation, floor);
+                _mapHandler.Map[x, y].SetFloor(null, _orientation, floor);
             }
         }
     }

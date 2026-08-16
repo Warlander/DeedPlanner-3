@@ -1,0 +1,531 @@
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_steam:
+        description: 'Upload builds to Steam (beta branch)'
+        type: boolean
+        default: false
+      steam_branch:
+        description: 'Steam branch to set live (never "default")'
+        type: string
+        default: 'beta'
+      deploy_web:
+        description: 'Open deploy PR in DeedPlanner-3-web'
+        type: boolean
+        default: false
+      draft_release:
+        description: 'Create draft GitHub release with Windows+Linux+Mac builds'
+        type: boolean
+        default: false
+      release_tag:
+        description: 'Tag for draft release on manual dispatch (e.g. v3.2.3), created if missing. Ignored on tag push.'
+        type: string
+        default: ''
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-windows:
+    # windows-2022 pinned deliberately: game-ci Windows images are ltsc2022-based,
+    # and Windows containers require host/image version match (game-ci#766).
+    runs-on: windows-2022
+    timeout-minutes: 240
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Cache Library
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: Library
+          # run_id suffix: caches are immutable per key, so a failed run's partial
+          # Library would otherwise be restored forever. Always save fresh, restore latest.
+          key: library-windows-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-${{ github.run_id }}
+          restore-keys: library-windows-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-
+
+      - name: Ensure Docker daemon is running
+        shell: pwsh
+        run: |
+          # Runner image occasionally boots with the docker service stopped (seen 2026-08-08,
+          # image win22/20260802.262 - "failed to connect to the docker API at npipe").
+          $svc = Get-Service docker -ErrorAction SilentlyContinue
+          if (-not $svc) { Get-Service | Where-Object Name -match 'docker|containerd'; exit 1 }
+          if ($svc.Status -ne 'Running') { Start-Service docker }
+          docker version | Out-Host
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build (IL2CPP)
+        shell: pwsh
+        run: |
+          $unityConfig = "$env:RUNNER_TEMP\unity-config"
+          New-Item -ItemType Directory -Force $unityConfig | Out-Null
+
+          # progress watcher: tails the tee'd build log into the step summary
+          $logFile = "$env:RUNNER_TEMP\unity-build.log"
+          function To-BashPath($p) { '/' + $p.Substring(0,1).ToLower() + ($p.Substring(2) -replace '\\','/') }
+          $watcher = Start-Process -PassThru -WindowStyle Hidden -FilePath "C:\Program Files\Git\bin\bash.exe" `
+            -ArgumentList "`"$(To-BashPath "$env:GITHUB_WORKSPACE\.github\workflows\build-progress.sh")`"", "`"$(To-BashPath $logFile)`"", "Windows"
+
+          try {
+            # IL2CPP needs MSVC + Windows SDK, which the container borrows from the
+            # runner's preinstalled Visual Studio (same approach as game-ci/unity-builder).
+            New-Item -ItemType Directory -Force C:\regkeys | Out-Null
+            reg export "HKLM\SOFTWARE\WOW6432Node\Microsoft\Microsoft SDKs\Windows\v10.0" C:\regkeys\winsdk.reg /y
+
+            $licenseDir = "C:\Users\ContainerAdministrator\AppData\Local\Unity"
+            docker run --rm `
+              --memory 14g `
+              --workdir c:/workspace `
+              --env GITHUB_WORKSPACE=c:/workspace `
+              --env BEE_CACHE_DIRECTORY=c:/workspace/Library/bee_cache `
+              --env UNITY_EMAIL --env UNITY_PASSWORD `
+              --volume "${env:GITHUB_WORKSPACE}:c:\workspace" `
+              --volume "${unityConfig}:${licenseDir}" `
+              --volume "C:/regkeys:C:/regkeys" `
+              --volume "C:/Program Files/Microsoft Visual Studio:C:/Program Files/Microsoft Visual Studio" `
+              --volume "C:/Program Files (x86)/Microsoft Visual Studio:C:/Program Files (x86)/Microsoft Visual Studio" `
+              --volume "C:/Program Files (x86)/Windows Kits:C:/Program Files (x86)/Windows Kits" `
+              --volume "C:/ProgramData/Microsoft/VisualStudio:C:/ProgramData/Microsoft/VisualStudio" `
+              unityci/editor:windows-6000.3.20f1-windows-il2cpp-3.2.2 `
+              powershell -NoProfile -Command "& 'c:/workspace/.github/workflows/install-llvmpipe.ps1' -EditorPath 'C:/UnityEditor/6000.3.20f1/Editor'; if (-not `$?) { exit 1 }; & 'C:/UnityEditor/6000.3.20f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe' --activate-all --include-personal --username `$env:UNITY_EMAIL --password `$env:UNITY_PASSWORD; if (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }; & 'C:/UnityEditor/6000.3.20f1/Editor/Unity.exe' -force-opengl -quit -batchmode -nographics -silent-crashes -logfile - -projectPath c:/workspace -executeMethod Warlander.Deedplanner.Editor.BuildSystem.BuildWindows64 | Out-Host; exit `$LASTEXITCODE" `
+              | Tee-Object -FilePath $logFile
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          } finally {
+            Stop-Process -Id $watcher.Id -Force -ErrorAction SilentlyContinue
+          }
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Verify build output
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "Build/DeedPlanner Windows/DeedPlanner.exe")) { exit 1 }
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: DeedPlanner Windows
+          path: |
+            Build/
+            !Build/**/*BurstDebugInformation*
+            !Build/**/*BackUpThisFolder*
+          if-no-files-found: error
+
+  build-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Cache Library
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: Library
+          key: library-linux-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-${{ github.run_id }}
+          restore-keys: library-linux-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-
+
+      - name: Build (IL2CPP)
+        run: |
+          mkdir -p "$RUNNER_TEMP/unity-config"
+          bash .github/workflows/build-progress.sh "$RUNNER_TEMP/unity-build.log" "Linux" &
+          WATCHER_PID=$!
+          trap 'kill $WATCHER_PID 2>/dev/null || true' EXIT
+          docker run --rm \
+            -e UNITY_EMAIL -e UNITY_PASSWORD \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -v "$RUNNER_TEMP/unity-config:/root/.config/unity3d" \
+            unityci/editor:ubuntu-6000.3.20f1-linux-il2cpp-3.2.2 \
+            bash -lc '
+              set -e
+              /opt/unity/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client \
+                --activate-all --include-personal \
+                --username "$UNITY_EMAIL" --password "$UNITY_PASSWORD"
+              # xvfb + swrast (both in image) give the editor a real GL device; without it
+              # headless builds bake a degraded shader variant set (missing shadows/lighting).
+              xvfb-run -a unity-editor -quit -batchmode -logFile /dev/stdout -projectPath /workspace \
+                -executeMethod "Warlander.Deedplanner.Editor.BuildSystem.BuildLinux"
+            ' | tee "$RUNNER_TEMP/unity-build.log"
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Restore workspace ownership
+        run: sudo chown -R "$(id -u):$(id -g)" .
+
+      - name: Verify build output
+        run: test -f "Build/DeedPlanner Linux/DeedPlanner.x86_64"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: DeedPlanner Linux
+          path: |
+            Build/
+            !Build/**/*BurstDebugInformation*
+            !Build/**/*BackUpThisFolder*
+          if-no-files-found: error
+
+  # macOS IL2CPP needs the Xcode toolchain, so this runs on a real Mac runner
+  # (no Docker on GH macOS images). The editor is installed from Unity's CDN
+  # instead of caching it: the ~9.5GB install would blow the 10GB repo cache
+  # budget and evict the far more valuable Library caches.
+  build-macos:
+    runs-on: macos-14
+    timeout-minutes: 300
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Cache Library
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: Library
+          key: library-macos-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-${{ github.run_id }}
+          restore-keys: library-macos-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-
+
+      - name: Install Unity editor + Mac IL2CPP module
+        run: |
+          set -e
+          VERSION=$(sed -n 's/m_EditorVersion: //p' ProjectSettings/ProjectVersion.txt | tr -d '\r')
+          CHANGESET=$(sed -n 's/.*(\([0-9a-f]*\)).*/\1/p' ProjectSettings/ProjectVersion.txt | tr -d '\r')
+          BASE="https://download.unity3d.com/download_unity/$CHANGESET"
+          curl -fL -o "$RUNNER_TEMP/Unity.pkg" "$BASE/MacEditorInstallerArm64/Unity-$VERSION.pkg"
+          curl -fL -o "$RUNNER_TEMP/IL2CPP.pkg" "$BASE/MacEditorTargetInstaller/UnitySetup-Mac-IL2CPP-Support-for-Editor-$VERSION.pkg"
+          sudo installer -pkg "$RUNNER_TEMP/Unity.pkg" -target /
+          sudo installer -pkg "$RUNNER_TEMP/IL2CPP.pkg" -target /
+          # standard runners are disk-constrained; the pkgs are ~6GB combined
+          rm "$RUNNER_TEMP/Unity.pkg" "$RUNNER_TEMP/IL2CPP.pkg"
+          df -h /
+          # pkg layout without Unity Hub is /Applications/Unity/Unity.app;
+          # with Hub it would be Hub/Editor/<version>/Unity.app - resolve dynamically
+          UNITY_APP=$(find /Applications -maxdepth 4 -name "Unity.app" -type d | head -1)
+          test -n "$UNITY_APP"
+          echo "UNITY_APP=$UNITY_APP" >> "$GITHUB_ENV"
+          # confirm the IL2CPP module landed inside the editor
+          ls "$UNITY_APP/Contents/PlaybackEngines/"
+
+      - name: Activate Unity license
+        run: |
+          LICENSING_CLIENT=$(find "$UNITY_APP" -name "Unity.Licensing.Client" -type f | head -1)
+          test -n "$LICENSING_CLIENT"
+          "$LICENSING_CLIENT" --activate-all --include-personal \
+            --username "$UNITY_EMAIL" --password "$UNITY_PASSWORD"
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Build (IL2CPP, universal)
+        run: |
+          bash .github/workflows/build-progress.sh "$RUNNER_TEMP/unity-build.log" "Mac" &
+          WATCHER_PID=$!
+          trap 'kill $WATCHER_PID 2>/dev/null || true' EXIT
+          # no -nographics: batchmode still gets the real Metal device, so shader
+          # variants (shadows/lighting) bake correctly (same concern as xvfb on Linux)
+          "$UNITY_APP/Contents/MacOS/Unity" \
+            -quit -batchmode -logFile - -projectPath "$GITHUB_WORKSPACE" \
+            -executeMethod "Warlander.Deedplanner.Editor.BuildSystem.BuildMac" \
+            | tee "$RUNNER_TEMP/unity-build.log"
+
+      - name: Ad-hoc sign
+        run: |
+          # no Developer ID secrets in the repo - self-sign so every arm64 binary
+          # carries the mandatory (ad-hoc) signature
+          codesign --deep --force --sign - "Build/DeedPlanner.app"
+          codesign --verify --deep --strict "Build/DeedPlanner.app"
+
+      - name: Verify build output
+        run: |
+          test -d "Build/DeedPlanner.app"
+          test -x "Build/DeedPlanner.app/Contents/MacOS/DeedPlanner 3"
+
+      - name: Package
+        run: |
+          # ditto zip preserves symlinks and the executable bit; upload-artifact
+          # on a bare .app loses permissions and breaks the bundle
+          ditto -c -k --keepParent "Build/DeedPlanner.app" "Build/DeedPlanner-Mac.zip"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: DeedPlanner Mac
+          path: Build/DeedPlanner-Mac.zip
+          if-no-files-found: error
+
+  build-webgl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Cache Library
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: Library
+          key: library-webgl-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-${{ github.run_id }}
+          restore-keys: library-webgl-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectVersion.txt') }}-
+
+      - name: Build (WebGL)
+        run: |
+          mkdir -p "$RUNNER_TEMP/unity-config"
+          bash .github/workflows/build-progress.sh "$RUNNER_TEMP/unity-build.log" "WebGL" &
+          WATCHER_PID=$!
+          trap 'kill $WATCHER_PID 2>/dev/null || true' EXIT
+          docker run --rm \
+            -e UNITY_EMAIL -e UNITY_PASSWORD \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -v "$RUNNER_TEMP/unity-config:/root/.config/unity3d" \
+            unityci/editor:ubuntu-6000.3.20f1-webgl-3.2.2 \
+            bash -lc '
+              set -e
+              /opt/unity/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client \
+                --activate-all --include-personal \
+                --username "$UNITY_EMAIL" --password "$UNITY_PASSWORD"
+              # xvfb + swrast (both in image) give the editor a real GL device; without it
+              # headless builds bake a degraded shader variant set (missing shadows/lighting).
+              xvfb-run -a unity-editor -quit -batchmode -logFile /dev/stdout -projectPath /workspace \
+                -executeMethod "Warlander.Deedplanner.Editor.BuildSystem.BuildWeb"
+            ' | tee "$RUNNER_TEMP/unity-build.log"
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Restore workspace ownership
+        run: sudo chown -R "$(id -u):$(id -g)" .
+
+      - name: Verify build output
+        run: |
+          test -f "Build/DeedPlanner 3 WebGL/index.html"
+          compgen -G "Build/DeedPlanner 3 WebGL/Build/*.wasm" > /dev/null
+          compgen -G "Build/DeedPlanner 3 WebGL/Build/*.data" > /dev/null
+          if compgen -G "Build/DeedPlanner 3 WebGL/Build/*.gz" > /dev/null; then
+            echo "Compressed build files present - will not boot on GitHub Pages"
+            exit 1
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: DeedPlanner WebGL
+          path: Build/DeedPlanner 3 WebGL/
+          if-no-files-found: error
+
+  # Steam upload runs on every v* tag push, or on manual dispatch with deploy_steam=true.
+  # Depot ID assumption: 1179761 = Windows, 1179762 = Linux, 1179763 = Mac (Steam default:
+  # appId+1, appId+2, appId+3). If the partner site shows different IDs, add
+  # firstDepotIdOverride accordingly. Depot 1179763 must be marked as a macOS depot and
+  # given a launch option in the App Admin panel - steam-deploy cannot set depot OS.
+  # releaseBranch is a beta branch by design: players on default see nothing until the
+  # build is set live manually in the App Admin panel (default cannot be set live via API).
+  deploy-steam:
+    if: startsWith(github.ref, 'refs/tags/v') || inputs.deploy_steam
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: steam-deploy
+    steps:
+      - name: Check Steam secrets
+        env:
+          STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+          STEAM_CONFIG_VDF: ${{ secrets.STEAM_CONFIG_VDF }}
+        run: |
+          if [ -z "$STEAM_USERNAME" ] || [ -z "$STEAM_CONFIG_VDF" ]; then
+            echo "Missing STEAM_USERNAME or STEAM_CONFIG_VDF secrets - skipping Steam deploy setup"
+            exit 1
+          fi
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeedPlanner Windows
+          path: dl/windows
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeedPlanner Linux
+          path: dl/linux
+
+      - name: Download Mac artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeedPlanner Mac
+          path: dl/mac
+
+      - name: Stage depot payload
+        run: |
+          # Artifacts contain Build/ contents directly (upload-artifact strips the common ancestor)
+          mkdir -p steam/StandaloneWindows64 steam/StandaloneLinux64 steam/StandaloneMacOSX
+          cp -r "dl/windows/DeedPlanner Windows/." steam/StandaloneWindows64/
+          cp -r "dl/linux/DeedPlanner Linux/." steam/StandaloneLinux64/
+          # ditto-created zip carries unix permissions, so the .app keeps its executable bit
+          unzip -q "dl/mac/DeedPlanner-Mac.zip" -d steam/StandaloneMacOSX/
+          # steam_appid.txt is for out-of-Steam launches; Valve warns against shipping it in depots
+          rm -f steam/StandaloneWindows64/steam_appid.txt steam/StandaloneLinux64/steam_appid.txt \
+            "steam/StandaloneMacOSX/DeedPlanner.app/steam_appid.txt"
+          ls steam/StandaloneWindows64 steam/StandaloneLinux64 steam/StandaloneMacOSX
+
+      - name: Deploy to Steam
+        uses: game-ci/steam-deploy@8bd9baca6407f9abd210bd1eef3c45f56e12d8d9 # v3
+        with:
+          username: ${{ secrets.STEAM_USERNAME }}
+          configVdf: ${{ secrets.STEAM_CONFIG_VDF }}
+          appId: 1179760
+          buildDescription: ${{ github.ref_name }}
+          rootPath: steam
+          depot1Path: StandaloneWindows64
+          depot2Path: StandaloneLinux64
+          depot3Path: StandaloneMacOSX
+          releaseBranch: ${{ inputs.steam_branch || 'beta' }}
+
+  # Web deploy opens a PR in DeedPlanner-3-web instead of pushing to its default
+  # branch directly: merging the PR is the manual gate (Pages publishes on merge).
+  # Uses a fixed branch name, so re-runs force-push and update the same open PR.
+  deploy-webgl:
+    if: startsWith(github.ref, 'refs/tags/v') || inputs.deploy_web
+    needs: [build-webgl]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: web-deploy
+    steps:
+      - name: Download WebGL artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeedPlanner WebGL
+          path: web
+
+      - name: Preflight validation
+        run: |
+          test -f web/index.html
+          compgen -G "web/Build/*.wasm" > /dev/null
+          compgen -G "web/Build/*.data" > /dev/null
+          compgen -G "web/Build/*.loader.js" > /dev/null
+          if compgen -G "web/Build/*.gz" > /dev/null || compgen -G "web/Build/*.br" > /dev/null; then
+            echo "Compressed build files present - will not boot on GitHub Pages"
+            exit 1
+          fi
+
+      - name: Push deploy branch and open PR
+        env:
+          WEB_TOKEN: ${{ secrets.WEB_DEPLOY_TOKEN }}
+          GH_TOKEN: ${{ secrets.WEB_DEPLOY_TOKEN }}
+        run: |
+          if [ -z "$WEB_TOKEN" ]; then
+            echo "Missing WEB_DEPLOY_TOKEN secret - cannot open deploy PR"
+            exit 1
+          fi
+          git clone "https://x-access-token:${WEB_TOKEN}@github.com/Warlander/DeedPlanner-3-web.git" site
+          cd site
+          git checkout -B deploy-webgl
+          rm -rf Build TemplateData StreamingAssets index.html
+          cp -r ../web/. .
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to deploy"
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Deploy ${GITHUB_REF_NAME} (build run ${GITHUB_RUN_ID})"
+          git push -f origin deploy-webgl
+          PR_TITLE="Deploy ${GITHUB_REF_NAME}"
+          PR_BODY="Deploys DeedPlanner ${GITHUB_REF_NAME} (WebGL).
+          Triggered by run https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          Merge to publish."
+          # only "PR already exists" is an acceptable failure (re-run updates the same
+          # PR via force-push); anything else (e.g. token lacking PR permission) must fail
+          if ! gh pr create --repo Warlander/DeedPlanner-3-web --base master --head deploy-webgl \
+            --title "$PR_TITLE" \
+            --body "$PR_BODY" 2> pr-error.log; then
+            if grep -q "already exists" pr-error.log; then
+              echo "PR already exists - branch updated instead"
+              gh pr edit deploy-webgl --repo Warlander/DeedPlanner-3-web \
+                --title "$PR_TITLE" --body "$PR_BODY"
+            else
+              cat pr-error.log
+              exit 1
+            fi
+          fi
+
+  # Draft release: publishing by hand in the Releases UI is the manual gate.
+  # On tag push uses that tag; on manual dispatch uses release_tag input,
+  # created at the dispatched commit if it does not exist yet.
+  deploy-github:
+    if: startsWith(github.ref, 'refs/tags/v') || inputs.draft_release
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - name: Resolve release tag
+        id: tag
+        run: |
+          TAG="${{ github.ref_name }}"
+          if [[ "${{ github.ref }}" != refs/tags/* ]]; then
+            TAG="${{ inputs.release_tag }}"
+          fi
+          if [ -z "$TAG" ]; then
+            echo "No release tag - set release_tag input for manual dispatch"
+            exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeedPlanner Windows
+          path: dl/windows
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeedPlanner Linux
+          path: dl/linux
+
+      - name: Download Mac artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: DeedPlanner Mac
+          path: dl/mac
+
+      - name: Zip builds
+        run: |
+          (cd "dl/windows/DeedPlanner Windows" && zip -qr "$GITHUB_WORKSPACE/DeedPlanner-Windows.zip" .)
+          (cd "dl/linux/DeedPlanner Linux" && zip -qr "$GITHUB_WORKSPACE/DeedPlanner-Linux.zip" .)
+          # Mac is already a ditto zip (preserves .app permissions) - ship as-is
+          cp "dl/mac/DeedPlanner-Mac.zip" .
+
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          VERSION="${{ steps.tag.outputs.tag }}"
+          VERSION="${VERSION#v}"
+          gh release create "${{ steps.tag.outputs.tag }}" \
+            --draft --target "$GITHUB_SHA" \
+            --title "DeedPlanner $VERSION ALPHA" \
+            --notes "Web version: https://deedplanner.warlander.app/
+
+          Changelog:
+          * (TODO: write changelog by hand)" \
+            DeedPlanner-Windows.zip DeedPlanner-Linux.zip DeedPlanner-Mac.zip

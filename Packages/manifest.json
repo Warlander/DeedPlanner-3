@@ -6,7 +6,6 @@
     "com.unity.2d.common": "12.0.3",
     "com.unity.2d.psdimporter": "12.0.2",
     "com.unity.2d.sprite": "1.0.0",
-    "com.unity.ai.assistant": "2.17.0-pre.1",
     "com.unity.analytics": "3.8.2",
     "com.unity.device-simulator.devices": "1.0.1",
     "com.unity.editorcoroutines": "1.1.0",
@@ -23,6 +22,7 @@
     "com.unity.test-framework": "1.6.0",
     "com.unity.timeline": "1.8.12",
     "com.unity.ugui": "2.0.0",
+    "com.unity.uiextensions": "https://github.com/Unity-UI-Extensions/com.unity.uiextensions.git#d47f838ba918bbb9b26f242bd944940a711f525f",
     "com.warlogic.featurestates": "2.0.5",
     "com.warlogic.launchredirect": "1.2.0",
     "com.warlogic.registrybrowser": "1.8.0",
@@ -62,7 +62,8 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
+    "com.unity.modules.xr": "1.0.0",
+    "com.unity.pipeline": "0.4.0-exp.1"
   },
   "enablePreviewPackages": true,
   "scopedRegistries": [

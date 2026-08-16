@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
@@ -10,18 +11,32 @@ using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Graphics.Outline;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
-using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class BridgesUpdater : AbstractUpdater
+    public class BridgesUpdater : IUpdater
     {
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private DPInput _input;
-        [Inject] private TooltipHandler _tooltipHandler;
-        [Inject] private BridgeTabSwapper _bridgeTabSwapper;
-        [Inject] private TabContext _tabContext;
-        [Inject] private IMapProjectorFacade _mapProjectorFacade;
+        private readonly CameraCoordinator _cameraCoordinator;
+        private readonly DPInput _input;
+        private readonly TooltipHandler _tooltipHandler;
+        private readonly BridgeTabSwapper _bridgeTabSwapper;
+        private readonly TabContext _tabContext;
+        private readonly IMapProjectorFacade _mapProjectorFacade;
+        private readonly MapHandler _mapHandler;
+
+        public Tab TargetTab => Tab.Bridges;
+
+        public BridgesUpdater(CameraCoordinator cameraCoordinator, DPInput input, TooltipHandler tooltipHandler,
+            BridgeTabSwapper bridgeTabSwapper, TabContext tabContext, IMapProjectorFacade mapProjectorFacade, MapHandler mapHandler)
+        {
+            _cameraCoordinator = cameraCoordinator;
+            _input = input;
+            _tooltipHandler = tooltipHandler;
+            _bridgeTabSwapper = bridgeTabSwapper;
+            _tabContext = tabContext;
+            _mapProjectorFacade = mapProjectorFacade;
+            _mapHandler = mapHandler;
+        }
 
         public event Action SelectedBridgeChanged;
         public event Action<TileCoords, TileCoords> TileSelectionChanged;
@@ -37,15 +52,61 @@ namespace Warlander.Deedplanner.Updaters
         private IMapProjector _firstTileProjector;
         private IMapProjector _secondTileProjector;
         private readonly List<IMapProjector> _spanProjectors = new List<IMapProjector>();
+        private Map _subscribedMap;
 
-        public override void Initialize() { }
+        public void Initialize()
+        {
+            _mapHandler.MapInitialized += OnMapInitialized;
+            SubscribeToMap(_mapHandler.Map);
+        }
 
-        public override void Enable()
+        private void OnMapInitialized()
+        {
+            SubscribeToMap(_mapHandler.Map);
+        }
+
+        private void SubscribeToMap(Map map)
+        {
+            if (_subscribedMap == map)
+            {
+                return;
+            }
+
+            if (_subscribedMap != null)
+            {
+                _subscribedMap.BridgesChanged -= OnBridgesChanged;
+            }
+
+            _subscribedMap = map;
+
+            if (_subscribedMap != null)
+            {
+                _subscribedMap.BridgesChanged += OnBridgesChanged;
+            }
+        }
+
+        private void OnBridgesChanged()
+        {
+            IReadOnlyList<Bridge> bridges = _mapHandler.Map.Bridges;
+
+            if (SelectedBridge != null && !bridges.Contains(SelectedBridge))
+            {
+                ClearBridgeSelection();
+            }
+
+            if (_lastFrameHoveredBridge != null && !bridges.Contains(_lastFrameHoveredBridge))
+            {
+                _lastFrameHoveredBridge.DisableHighlighting();
+                _lastFrameHoveredBridge = null;
+            }
+        }
+
+        public void Enable()
         {
             _tabContext.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
-        public override void Tick()
+        public void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
@@ -53,22 +114,20 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
             
-            BridgePart bridgePart = raycast.transform.GetComponent<BridgePart>();
+            BridgePart bridgePart = raycast.transform.GetComponentInParent<BridgePart>();
             Bridge bridge = bridgePart != null ? bridgePart.ParentBridge : null;
 
             UpdateBridgeHover(bridge);
 
-            OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
-            
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 OnBridgeClicked(bridge);
-                if (overlayMesh != null)
+                if (bridge == null)
                 {
-                    int floor = _cameraCoordinator.Current.Level;
                     int x = Mathf.FloorToInt(raycast.point.x / 4f);
                     int y = Mathf.FloorToInt(raycast.point.z / 4f);
-                    
+                    int floor = ResolveLevel(raycast.point, x, y);
+
                     OnMapClicked(x, y, floor);
                 }
             }
@@ -83,6 +142,70 @@ namespace Warlander.Deedplanner.Updaters
             {
                 _tooltipHandler.ShowTooltipText($"{bridge.Data.Name} bridge");
             }
+            else
+            {
+                ShowSelectedEndpointTooltip(raycast);
+            }
+        }
+
+        private int ResolveLevel(Vector3 point, int x, int y)
+        {
+            int cameraLevel = _cameraCoordinator.Current.Level;
+            if (cameraLevel < 0)
+            {
+                return cameraLevel;
+            }
+
+            Map map = _mapHandler.Map;
+            if (map[x, y] == null)
+            {
+                return cameraLevel;
+            }
+
+            // Inverse of Bridge.GetAbsoluteHeight: 3 world units per building level, 0.3 world units floor offset.
+            float surfaceHeight = map.GetInterpolatedHeight(point.x, point.z);
+            int derivedLevel = Mathf.RoundToInt((point.y - surfaceHeight - 0.3f) / 3f);
+
+            return derivedLevel > 0 ? derivedLevel : cameraLevel;
+        }
+
+        private void ShowSelectedEndpointTooltip(RaycastHit raycast)
+        {
+            int x = Mathf.FloorToInt(raycast.point.x / 4f);
+            int y = Mathf.FloorToInt(raycast.point.z / 4f);
+
+            TileCoords endpoint = null;
+            string label = null;
+            if (_firstClickedTile != null && _firstClickedTile.X == x && _firstClickedTile.Y == y)
+            {
+                endpoint = _firstClickedTile;
+                label = "Bridge start";
+            }
+            else if (_secondClickedTile != null && _secondClickedTile.X == x && _secondClickedTile.Y == y)
+            {
+                endpoint = _secondClickedTile;
+                label = "Bridge end";
+            }
+
+            if (endpoint == null)
+            {
+                return;
+            }
+
+            int difference = endpoint.Level - _cameraCoordinator.Current.Level;
+            string floorLine;
+            if (difference == 0)
+            {
+                floorLine = "This floor";
+            }
+            else
+            {
+                int count = Mathf.Abs(difference);
+                string direction = difference > 0 ? "above" : "below";
+                floorLine = $"{count} floor{(count == 1 ? "" : "s")} {direction} active floor";
+            }
+
+            _tooltipHandler.ShowTooltipText($"{label}\n{floorLine}");
         }
 
         private void UpdateBridgeHover(Bridge bridge)
@@ -126,6 +249,7 @@ namespace Warlander.Deedplanner.Updaters
             bool bridgeChanged = SelectedBridge != bridge;
             SelectedBridge = bridge;
             SelectedBridge.EnableHighlighting(OutlineType.Positive);
+            SelectedBridge.Rebuilt += OnSelectedBridgeRebuilt;
 
             _firstClickedTile = null;
             _secondClickedTile = null;
@@ -139,10 +263,22 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
+        private void OnSelectedBridgeRebuilt()
+        {
+            if (SelectedBridge != null)
+            {
+                SelectedBridge.EnableHighlighting(OutlineType.Positive);
+            }
+
+            SelectedBridgeChanged?.Invoke();
+        }
+
         private void OnBridgeDeselected()
         {
             if (SelectedBridge != null)
             {
+                SelectedBridge.Rebuilt -= OnSelectedBridgeRebuilt;
+
                 if (SelectedBridge == _lastFrameHoveredBridge)
                 {
                     SelectedBridge.EnableHighlighting(OutlineType.Neutral);
@@ -166,7 +302,16 @@ namespace Warlander.Deedplanner.Updaters
 
         private void OnMapClicked(int x, int y, int floor)
         {
-            if (_firstClickedTile != null && _secondClickedTile != null)
+            if (_firstClickedTile != null && _firstClickedTile.X == x && _firstClickedTile.Y == y)
+            {
+                _firstClickedTile = _secondClickedTile;
+                _secondClickedTile = null;
+            }
+            else if (_secondClickedTile != null && _secondClickedTile.X == x && _secondClickedTile.Y == y)
+            {
+                _secondClickedTile = null;
+            }
+            else if (_firstClickedTile != null && _secondClickedTile != null)
             {
                 _firstClickedTile = new TileCoords(x, y, floor);
                 _secondClickedTile = null;
@@ -387,7 +532,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
         
-        public override void Disable()
+        public void Disable()
         {
             if (_lastFrameHoveredBridge != null)
             {
@@ -397,6 +542,7 @@ namespace Warlander.Deedplanner.Updaters
 
             if (SelectedBridge != null)
             {
+                SelectedBridge.Rebuilt -= OnSelectedBridgeRebuilt;
                 SelectedBridge.DisableHighlighting();
             }
             SelectedBridge = null;

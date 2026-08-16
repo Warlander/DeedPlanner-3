@@ -1,28 +1,33 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
-using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class LabelUpdater : AbstractUpdater
+    public class LabelUpdater : IUpdater
     {
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private DPInput _input;
-        [Inject] private TabContext _tabContext;
+        private readonly CameraCoordinator _cameraCoordinator;
+        private readonly TabContext _tabContext;
 
-        public override void Initialize() { }
+        public Tab TargetTab => Tab.Labels;
 
-        public override void Enable()
+        public LabelUpdater(CameraCoordinator cameraCoordinator, TabContext tabContext)
+        {
+            _cameraCoordinator = cameraCoordinator;
+            _tabContext = tabContext;
+        }
+
+        public void Initialize() { }
+
+        public void Enable()
         {
             _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
-        public override void Disable() { }
+        public void Disable() { }
 
-        public override void Tick()
+        public void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)

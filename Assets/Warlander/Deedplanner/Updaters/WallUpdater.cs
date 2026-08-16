@@ -1,79 +1,93 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Walls;
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Settings;
-using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class WallUpdater : AbstractUpdater
+    public class WallUpdater : IUpdater
     {
-        [Inject] private DPSettings _settings;
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private DPInput _input;
-        [Inject] private MapHandler _mapHandler;
-        [Inject] private TabContext _tabContext;
+        private readonly IWallUpdaterView _view;
+        private readonly DPSettings _settings;
+        private readonly CameraCoordinator _cameraCoordinator;
+        private readonly DPInput _input;
+        private readonly MapHandler _mapHandler;
+        private readonly TabContext _tabContext;
 
-        [SerializeField] private UnityTree _wallsTree;
+        public Tab TargetTab => Tab.Walls;
 
-        [SerializeField] private Toggle reverseToggle;
-        [SerializeField] private Toggle automaticReverseToggle;
+        private WallData _selectedWall;
 
-        public override void Initialize()
+        public WallUpdater(IWallUpdaterView view, DPSettings settings, CameraCoordinator cameraCoordinator,
+            DPInput input, MapHandler mapHandler, TabContext tabContext)
         {
+            _view = view;
+            _settings = settings;
+            _cameraCoordinator = cameraCoordinator;
+            _input = input;
+            _mapHandler = mapHandler;
+            _tabContext = tabContext;
+        }
+
+        public void Initialize()
+        {
+            _view.WallSelected += OnWallSelected;
+            _view.ReverseChanged += OnReverseChanged;
+            _view.AutomaticReverseChanged += OnAutomaticReverseChanged;
+
             foreach (WallData data in Database.Walls.Values)
             {
                 foreach (string[] category in data.Categories)
                 {
-                    IconUnityListElement iconListElement = (IconUnityListElement) _wallsTree.Add(data, category);
-                    iconListElement.TextureReference = data.Icon;
+                    _view.AddWallEntry(data, category);
                 }
             }
 
-            automaticReverseToggle.isOn = _settings.WallAutomaticReverse;
-            reverseToggle.isOn = _settings.WallReverse;
-
-            automaticReverseToggle.onValueChanged.AddListener(AutomaticReverseToggleOnValueChanged);
-            reverseToggle.onValueChanged.AddListener(ReverseToggleOnValueChanged);
+            _view.SetReverseToggles(_settings.WallReverse, _settings.WallAutomaticReverse);
+            _view.PushSelection();
         }
 
-        public override void Enable()
+        public void Enable()
         {
             _tabContext.TileSelectionMode = TileSelectionMode.Borders;
         }
 
-        public override void Disable() { }
+        public void Disable() { }
 
-        private void AutomaticReverseToggleOnValueChanged(bool value)
+        private void OnWallSelected(WallData data)
+        {
+            _selectedWall = data;
+        }
+
+        private void OnReverseChanged(bool value)
         {
             _settings.Modify(settings =>
             {
-                settings.WallAutomaticReverse = automaticReverseToggle.isOn;
+                settings.WallReverse = value;
             });
         }
 
-        private void ReverseToggleOnValueChanged(bool value)
+        private void OnAutomaticReverseChanged(bool value)
         {
             _settings.Modify(settings =>
             {
-                settings.WallReverse = reverseToggle.isOn;
+                settings.WallAutomaticReverse = value;
             });
         }
 
-        public override void Tick()
+        public void Tick()
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
                 _mapHandler.Map.CommandManager.FinishAction();
             }
-            
+
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
@@ -84,7 +98,7 @@ namespace Warlander.Deedplanner.Updaters
             GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             LevelEntity levelEntity = raycast.transform.GetComponent<LevelEntity>();
             Wall wallEntity = levelEntity as Wall;
-            
+
             int floor = 0;
             int x = -1;
             int y = -1;
@@ -123,6 +137,11 @@ namespace Warlander.Deedplanner.Updaters
                 horizontal = (target == TileSelectionTarget.BottomBorder);
             }
 
+            if (x < 0 || y < 0)
+            {
+                return;
+            }
+
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
                 Floor currentFloor = _mapHandler.Map[x, y].GetTileContent(floor) as Floor;
@@ -143,14 +162,13 @@ namespace Warlander.Deedplanner.Updaters
                     shouldReverse = !shouldReverse;
                 }
 
-                WallData data = _wallsTree.SelectedValue as WallData;
                 if (horizontal)
                 {
-                    _mapHandler.Map[x, y].SetHorizontalWall(data, shouldReverse, floor);
+                    _mapHandler.Map[x, y].SetHorizontalWall(_selectedWall, shouldReverse, floor);
                 }
                 else
                 {
-                    _mapHandler.Map[x, y].SetVerticalWall(data, shouldReverse, floor);
+                    _mapHandler.Map[x, y].SetVerticalWall(_selectedWall, shouldReverse, floor);
                 }
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)

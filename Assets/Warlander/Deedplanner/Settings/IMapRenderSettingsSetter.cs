@@ -6,5 +6,6 @@
         bool RenderTrees { get; set; }
         bool RenderBushes { get; set; }
         bool RenderShips { get; set; }
+        bool RenderBridges { get; set; }
     }
 }

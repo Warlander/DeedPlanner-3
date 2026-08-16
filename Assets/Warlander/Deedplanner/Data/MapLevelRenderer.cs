@@ -18,6 +18,8 @@ namespace Warlander.Deedplanner.Data
         private bool _renderEntireMap = true;
         private bool _renderGrid = true;
 
+        public bool RenderBridges { get; set; } = true;
+
         public void Initialize(
             Transform[] surfaceLevelRoots,
             Transform[] caveLevelRoots,
@@ -133,9 +135,25 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
+        public void UpdateBridgesRendering()
+        {
+            if (_surfaceLevelRoots == null) return;
+
+            bool underground = _renderedLevel < 0;
+            int absoluteLevel = underground ? -_renderedLevel + 1 : _renderedLevel;
+            RefreshBridgesRendering(absoluteLevel);
+        }
+
         private void RefreshBridgesRendering(int absoluteLevel)
         {
             if (_getBridges == null) return;
+
+            if (!RenderBridges)
+            {
+                foreach (Bridge bridge in _getBridges())
+                    bridge.SetVisible(false);
+                return;
+            }
 
             if (_renderEntireMap)
             {

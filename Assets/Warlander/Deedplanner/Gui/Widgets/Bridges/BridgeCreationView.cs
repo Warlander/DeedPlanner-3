@@ -12,6 +12,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
     {
         [SerializeField] private Transform _toggleRoot;
         [SerializeField] private Transform _typeToggleRoot;
+        [SerializeField] private Transform _extraArgumentToggleRoot;
         [SerializeField] private LabeledToggle _togglePrefab;
         [SerializeField] private Button _placeButton;
         [SerializeField] private Button _cancelButton;
@@ -19,6 +20,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 
         public event Action<BridgeData> SelectedMaterialChanged;
         public event Action<BridgeType?> SelectedTypeChanged;
+        public event Action<int> SelectedExtraArgumentChanged;
         public event Action PlaceClicked;
         public event Action CancelClicked;
         public event Action BecameActive;
@@ -50,14 +52,30 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             }
         }
 
+        public int SelectedExtraArgument
+        {
+            get
+            {
+                if (_selectedExtraArgumentIndex >= 0 && _selectedExtraArgumentIndex < _extraArguments.Count)
+                {
+                    return _extraArguments[_selectedExtraArgumentIndex];
+                }
+
+                return 0;
+            }
+        }
+
         public bool IsActive => gameObject.activeInHierarchy;
 
         private readonly List<BridgeData> _materials = new List<BridgeData>();
         private readonly List<BridgeType> _types = new List<BridgeType>();
+        private readonly List<int> _extraArguments = new List<int>();
         private readonly List<LabeledToggle> _materialToggles = new List<LabeledToggle>();
         private readonly List<LabeledToggle> _typeToggles = new List<LabeledToggle>();
+        private readonly List<LabeledToggle> _extraArgumentToggles = new List<LabeledToggle>();
         private int _selectedMaterialIndex = -1;
         private int _selectedTypeIndex = -1;
+        private int _selectedExtraArgumentIndex = -1;
 
         private void Awake()
         {
@@ -72,6 +90,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 
             ClearToggles(_materialToggles);
             ClearToggles(_typeToggles);
+            ClearToggles(_extraArgumentToggles);
         }
 
         private void OnEnable()
@@ -171,6 +190,52 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             }
         }
 
+        public void SetExtraArguments(IReadOnlyList<int> values, bool visible, int selectedIndex = 0)
+        {
+            ClearToggles(_extraArgumentToggles);
+            _extraArguments.Clear();
+            _selectedExtraArgumentIndex = -1;
+            _extraArgumentToggleRoot.gameObject.SetActive(visible);
+
+            if (values == null || values.Count == 0)
+            {
+                return;
+            }
+
+            _extraArguments.AddRange(values);
+
+            if (_extraArguments.Count == 1)
+            {
+                _selectedExtraArgumentIndex = 0;
+                SelectedExtraArgumentChanged?.Invoke(SelectedExtraArgument);
+                return;
+            }
+
+            ToggleGroup group = GetOrCreateToggleGroup(_extraArgumentToggleRoot);
+
+            for (int i = 0; i < _extraArguments.Count; i++)
+            {
+                int value = _extraArguments[i];
+                LabeledToggle toggle = Instantiate(_togglePrefab, _extraArgumentToggleRoot);
+                toggle.LabelText = value.ToString();
+                toggle.Group = group;
+                toggle.gameObject.SetActive(true);
+
+                int capturedIndex = i;
+                toggle.Toggled += isOn => OnExtraArgumentToggleChanged(capturedIndex, isOn);
+                _extraArgumentToggles.Add(toggle);
+            }
+
+            int index = Mathf.Clamp(selectedIndex, 0, _extraArguments.Count - 1);
+            _selectedExtraArgumentIndex = index;
+            _extraArgumentToggles[index].IsOn = true;
+
+            if (!_extraArgumentToggles[index].gameObject.activeInHierarchy)
+            {
+                SelectedExtraArgumentChanged?.Invoke(SelectedExtraArgument);
+            }
+        }
+
         public void SetPlaceButtonVisible(bool visible)
         {
             _placeButton.gameObject.SetActive(visible);
@@ -209,6 +274,17 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 
             _selectedTypeIndex = index;
             SelectedTypeChanged?.Invoke(SelectedType);
+        }
+
+        private void OnExtraArgumentToggleChanged(int index, bool isOn)
+        {
+            if (!isOn)
+            {
+                return;
+            }
+
+            _selectedExtraArgumentIndex = index;
+            SelectedExtraArgumentChanged?.Invoke(SelectedExtraArgument);
         }
 
         private void OnPlaceClicked()

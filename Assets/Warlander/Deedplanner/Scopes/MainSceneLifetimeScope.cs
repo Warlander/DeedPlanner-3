@@ -5,8 +5,10 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Graphics.Projectors;
+using Warlander.Deedplanner.Graphics.Screenshots;
 using Warlander.Deedplanner.Graphics.Water;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Gui.Widgets.Bridges;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
@@ -21,7 +23,6 @@ namespace Warlander.Deedplanner.Scopes
     {
         [SerializeField] private DebugProperties _debugProperties;
         [SerializeField] private CameraCoordinator _cameraCoordinator;
-        [SerializeField] private AbstractUpdater[] _updaters;
         [SerializeField] private BridgeTabSwapper _bridgeTabSwapper;
 
         protected override void Configure(IContainerBuilder builder)
@@ -55,6 +56,19 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterComponentInHierarchy<BridgeEditingView>().As<IBridgeEditingView>();
             builder.RegisterEntryPoint<BridgeEditingPresenter>();
 
+            builder.RegisterComponentInHierarchy<BridgeSegmentContainer>().As<IBridgeSegmentBarView>();
+            builder.RegisterEntryPoint<BridgeSegmentBarPresenter>();
+
+            builder.RegisterComponentInHierarchy<GroundUpdaterView>().As<IGroundUpdaterView>();
+            builder.RegisterComponentInHierarchy<CaveUpdaterView>().As<ICaveUpdaterView>();
+            builder.RegisterComponentInHierarchy<RoofUpdaterView>().As<IRoofUpdaterView>();
+            builder.RegisterComponentInHierarchy<FloorUpdaterView>().As<IFloorUpdaterView>();
+            builder.RegisterComponentInHierarchy<WallUpdaterView>().As<IWallUpdaterView>();
+            builder.RegisterComponentInHierarchy<MenuUpdaterView>().As<IMenuUpdaterView>();
+            builder.RegisterComponentInHierarchy<DecorationUpdaterView>().As<IDecorationUpdaterView>();
+            builder.RegisterComponentInHierarchy<ToolsUpdaterView>().As<IToolsUpdaterView>();
+            builder.RegisterComponentInHierarchy<HeightUpdaterView>().As<IHeightUpdaterView>();
+
             foreach (GameObject root in gameObject.scene.GetRootGameObjects())
             {
                 foreach (WindowOpenerButtonView view in root.GetComponentsInChildren<WindowOpenerButtonView>(true))
@@ -64,6 +78,7 @@ namespace Warlander.Deedplanner.Scopes
 
             builder.Register<LayoutContext>(Lifetime.Singleton);
             builder.RegisterEntryPoint<TabContext>().AsSelf();
+            builder.RegisterEntryPoint<GroundLevelLock>().AsSelf();
             builder.RegisterInstance(_cameraCoordinator);
             builder.Register<OutlineCoordinator>(Lifetime.Singleton).As<IOutlineCoordinator>();
             builder.RegisterEntryPoint<OutlineFeatureBridge>();
@@ -93,6 +108,10 @@ namespace Warlander.Deedplanner.Scopes
 
             builder.Register<MapHandler>(Lifetime.Singleton);
             builder.RegisterEntryPoint<UndoRedoInputHandler>();
+            builder.Register<ScreenshotRenderer>(Lifetime.Singleton).As<IScreenshotRenderer>();
+            builder.Register<CurrentViewScreenshotCapture>(Lifetime.Singleton);
+            builder.Register<ScreenshotSaver>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<ScreenshotInputListener>();
             builder.RegisterEntryPoint<UpdaterCoordinator>();
             builder.Register<MapProjectorFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterEntryPoint<StartupMapLoader>();
@@ -105,11 +124,20 @@ namespace Warlander.Deedplanner.Scopes
 
             builder.Register<MapHeightTracker>(Lifetime.Singleton);
             builder.RegisterEntryPoint<MapRoofCalculator>().AsSelf();
-            
-            foreach (AbstractUpdater updater in _updaters)
-            {
-                builder.RegisterInstance(updater).AsImplementedInterfaces().AsSelf();
-            }
+
+            builder.Register<BorderUpdater>(Lifetime.Singleton).As<IUpdater>();
+            builder.Register<LabelUpdater>(Lifetime.Singleton).As<IUpdater>();
+            builder.Register<MirrorUpdater>(Lifetime.Singleton).As<IUpdater>();
+            builder.Register<BridgesUpdater>(Lifetime.Singleton).As<IUpdater>().AsSelf();
+            builder.Register<GroundUpdater>(Lifetime.Singleton).As<IUpdater>();
+            builder.Register<CaveUpdater>(Lifetime.Singleton).As<IUpdater>();
+            builder.Register<RoofUpdater>(Lifetime.Singleton).As<IUpdater>();
+            builder.Register<FloorUpdater>(Lifetime.Singleton).As<IUpdater>();
+            builder.Register<WallUpdater>(Lifetime.Singleton).As<IUpdater>();
+            builder.Register<MenuUpdater>(Lifetime.Singleton).As<IUpdater>();
+            builder.Register<DecorationUpdater>(Lifetime.Singleton).As<IUpdater>();
+            builder.Register<ToolsUpdater>(Lifetime.Singleton).As<IUpdater>();
+            builder.Register<HeightUpdater>(Lifetime.Singleton).As<IUpdater>();
 
             builder.RegisterInstance(_bridgeTabSwapper);
         }

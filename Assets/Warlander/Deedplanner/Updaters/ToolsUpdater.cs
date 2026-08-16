@@ -1,71 +1,87 @@
 using System;
 using System.Text;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Gui.Windows;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.UI.Windows;
-using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
-    public class ToolsUpdater : AbstractUpdater
+    public class ToolsUpdater : IUpdater
     {
-        [Inject] private WindowCoordinator _windowCoordinator;
-        [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private MapHandler _mapHandler;
-        [Inject] private DPInput _input;
-        [Inject] private TabContext _tabContext;
+        private readonly IToolsUpdaterView _view;
+        private readonly WindowCoordinator _windowCoordinator;
+        private readonly CameraCoordinator _cameraCoordinator;
+        private readonly MapHandler _mapHandler;
+        private readonly DPInput _input;
+        private readonly TabContext _tabContext;
 
-        [SerializeField] private Toggle calculateMaterialsToggle = null;
-        [SerializeField] private Toggle mapWarningsToggle = null;
-        
-        [SerializeField] private RectTransform calculateMaterialsPanelTransform = null;
-        [SerializeField] private RectTransform mapWarningsPanelTransform = null;
+        public Tab TargetTab => Tab.Tools;
 
-        [SerializeField] private UnityList warningsList = null;
+        private ToolsMode _currentTool = ToolsMode.MaterialsCalculator;
+        private ToolsMaterialsScope _materialsScope = ToolsMaterialsScope.BuildingAllLevels;
+        private int _warningsAdded;
 
-        [SerializeField] private Toggle buildingAllLevelsMaterialsToggle = null;
-        [SerializeField] private Toggle buildingCurrentLevelMaterialsToggle = null;
-        [SerializeField] private Toggle roomCurrentLevelMaterialsToggle = null;
-        
-        private ToolType currentTool = ToolType.MaterialsCalculator;
+        public ToolsUpdater(IToolsUpdaterView view, WindowCoordinator windowCoordinator, CameraCoordinator cameraCoordinator,
+            MapHandler mapHandler, DPInput input, TabContext tabContext)
+        {
+            _view = view;
+            _windowCoordinator = windowCoordinator;
+            _cameraCoordinator = cameraCoordinator;
+            _mapHandler = mapHandler;
+            _input = input;
+            _tabContext = tabContext;
+        }
 
-        public override void Initialize() { }
+        public void Initialize()
+        {
+            _view.ModeChanged += OnModeChanged;
+            _view.MaterialsScopeChanged += OnMaterialsScopeChanged;
+            _view.MaterialsCalculationRequested += CalculateMapMaterials;
+        }
 
-        public override void Enable()
+        public void Enable()
         {
             _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
 
-            RefreshMode();
             RefreshGui();
         }
 
-        public override void Disable() { }
+        public void Disable() { }
 
-        public override void Tick()
+        private void OnModeChanged(ToolsMode mode)
         {
-            if (currentTool != ToolType.MaterialsCalculator)
+            _currentTool = mode;
+            RefreshGui();
+        }
+
+        private void OnMaterialsScopeChanged(ToolsMaterialsScope scope)
+        {
+            _materialsScope = scope;
+        }
+
+        public void Tick()
+        {
+            if (_currentTool != ToolsMode.MaterialsCalculator)
             {
                 // we need to react to actions on map only when calculating materials
                 return;
             }
-            
+
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
                 return;
             }
-            
+
             OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
             if (!overlayMesh)
             {
@@ -80,7 +96,7 @@ namespace Warlander.Deedplanner.Updaters
                 Map map = _mapHandler.Map;
                 Tile clickedTile = map[x, y];
 
-                if (buildingAllLevelsMaterialsToggle.isOn)
+                if (_materialsScope == ToolsMaterialsScope.BuildingAllLevels)
                 {
                     BuildingsSummary surfaceGroundSummary = new BuildingsSummary(map, 0);
                     Materials materials = new Materials();
@@ -90,26 +106,26 @@ namespace Warlander.Deedplanner.Updaters
                         ShowMaterialsWindow("No valid building on clicked tile");
                         return;
                     }
-                    
+
                     foreach (TileSummary tileSummary in building.AllTiles)
                     {
                         Tile tile = map[tileSummary.X, tileSummary.Y];
                         materials.Add(tile.CalculateTileMaterials(tileSummary.TilePart));
                     }
-                    
+
                     StringBuilder summary = new StringBuilder();
                     summary.Append("Carpentry needed: ").Append(building.GetCarpentryRequired()).AppendLine();
                     summary.Append("Total tiles: ").Append(building.TilesCount).AppendLine();
                     summary.AppendLine();
                     summary.Append(materials);
-                    
+
                     ShowMaterialsWindow(summary.ToString());
                     if (Debug.isDebugBuild)
                     {
                         Debug.Log(building.CreateSummary());
                     }
                 }
-                else if (buildingCurrentLevelMaterialsToggle.isOn)
+                else if (_materialsScope == ToolsMaterialsScope.BuildingCurrentLevel)
                 {
                     BuildingsSummary surfaceGroundSummary = new BuildingsSummary(map, floor);
                     Materials materials = new Materials();
@@ -119,13 +135,13 @@ namespace Warlander.Deedplanner.Updaters
                         ShowMaterialsWindow("No valid building on clicked tile");
                         return;
                     }
-                    
+
                     foreach (TileSummary tileSummary in building.AllTiles)
                     {
                         Tile tile = map[tileSummary.X, tileSummary.Y];
                         materials.Add(tile.CalculateLevelMaterials(floor, tileSummary.TilePart));
                     }
-                    
+
                     StringBuilder summary = new StringBuilder();
                     if (floor == 0 || floor == -1)
                     {
@@ -139,14 +155,14 @@ namespace Warlander.Deedplanner.Updaters
                     summary.Append("Tiles on this level: ").Append(building.TilesCount).AppendLine();
                     summary.AppendLine();
                     summary.Append(materials);
-                    
+
                     ShowMaterialsWindow(summary.ToString());
                     if (Debug.isDebugBuild)
                     {
                         Debug.Log(building.CreateSummary());
                     }
                 }
-                else if (roomCurrentLevelMaterialsToggle.isOn)
+                else if (_materialsScope == ToolsMaterialsScope.RoomCurrentLevel)
                 {
                     BuildingsSummary surfaceGroundSummary = new BuildingsSummary(map, floor);
                     Materials materials = new Materials();
@@ -162,12 +178,12 @@ namespace Warlander.Deedplanner.Updaters
                         Tile tile = map[tileSummary.X, tileSummary.Y];
                         materials.Add(tile.CalculateLevelMaterials(floor, tileSummary.TilePart));
                     }
-                    
+
                     StringBuilder summary = new StringBuilder();
                     summary.Append("Tiles in this room: ").Append(room.Tiles.Count).AppendLine();
                     summary.AppendLine();
                     summary.Append(materials);
-                    
+
                     ShowMaterialsWindow(summary.ToString());
                     if (Debug.isDebugBuild)
                     {
@@ -177,24 +193,11 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void RefreshMode()
-        {
-            if (calculateMaterialsToggle.isOn)
-            {
-                currentTool = ToolType.MaterialsCalculator;
-            }
-            else if (mapWarningsToggle.isOn)
-            {
-                currentTool = ToolType.MapWarnings;
-            }
-        }
-
         private void RefreshGui()
         {
-            calculateMaterialsPanelTransform.gameObject.SetActive(currentTool == ToolType.MaterialsCalculator);
-            mapWarningsPanelTransform.gameObject.SetActive(currentTool == ToolType.MapWarnings);
-            
-            if (mapWarningsPanelTransform.gameObject.activeSelf)
+            _view.ShowPanel(_currentTool);
+
+            if (_currentTool == ToolsMode.MapWarnings)
             {
                 RefreshMapWarnings();
             }
@@ -202,21 +205,22 @@ namespace Warlander.Deedplanner.Updaters
 
         private void RefreshMapWarnings()
         {
-            warningsList.Clear();
+            _view.ClearWarnings();
+            _warningsAdded = 0;
 
             try
             {
                 RefreshTileWarnings();
-                if (warningsList.Values.Length == 0)
+                if (_warningsAdded == 0)
                 {
-                    warningsList.Add("No warnings for this map.");
+                    _view.AddWarning("No warnings for this map.");
                 }
             }
             catch (Exception ex)
             {
                 Debug.LogException(ex);
-                warningsList.Clear();
-                warningsList.Add("Some of warning checks failed. Please check program logs for errors.");
+                _view.ClearWarnings();
+                _view.AddWarning("Some of warning checks failed. Please check program logs for errors.");
             }
         }
 
@@ -237,20 +241,20 @@ namespace Warlander.Deedplanner.Updaters
         private void RefreshSlopedWallsWarningsTile(Tile tile)
         {
             const string warningText = "\nBuilding wall on sloped terrain.";
-            
+
             for (int i = Constants.NegativeLevelLimit; i < Constants.LevelLimit; i++)
             {
                 Wall vWall = tile.GetVerticalWall(i);
                 if (vWall && vWall.Data.HouseWall && vWall.SlopeDifference != 0)
                 {
-                    warningsList.Add(CreateWarningString(tile, warningText));
+                    AddWarning(CreateWarningString(tile, warningText));
                     break;
                 }
-                
+
                 Wall hWall = tile.GetHorizontalWall(i);
                 if (hWall && hWall.Data.HouseWall && hWall.SlopeDifference != 0)
                 {
-                    warningsList.Add(CreateWarningString(tile, warningText));
+                    AddWarning(CreateWarningString(tile, warningText));
                     break;
                 }
             }
@@ -269,26 +273,26 @@ namespace Warlander.Deedplanner.Updaters
             {
                 return;
             }
-            
+
             for (int i = Constants.NegativeLevelLimit; i < Constants.LevelLimit; i++)
             {
                 LevelEntity floorRoof = tile.GetTileContent(i);
                 if (!containsFloor && floorRoof)
                 {
-                    warningsList.Add(CreateWarningString(tile, tileWarningText));
+                    AddWarning(CreateWarningString(tile, tileWarningText));
                 }
-                
+
                 Wall vWall = tile.GetVerticalWall(i);
                 if (!containsVerticalWall && vWall && vWall.Data.HouseWall)
                 {
-                    warningsList.Add(CreateWarningString(tile, wallWarningText));
+                    AddWarning(CreateWarningString(tile, wallWarningText));
                     break;
                 }
-                
+
                 Wall hWall = tile.GetHorizontalWall(i);
                 if (!containsHorizontalWall && hWall && hWall.Data.HouseWall)
                 {
-                    warningsList.Add(CreateWarningString(tile, wallWarningText));
+                    AddWarning(CreateWarningString(tile, wallWarningText));
                     break;
                 }
             }
@@ -307,13 +311,13 @@ namespace Warlander.Deedplanner.Updaters
             Building leftTop = buildingsSummary.GetBuildingAtCoords(tile.X - 1, tile.Y + 1);
             if (leftTop != null && building != leftTop)
             {
-                warningsList.Add(CreateWarningString(tile, buildingsTouchingWarningText));
+                AddWarning(CreateWarningString(tile, buildingsTouchingWarningText));
             }
-            
+
             Building rightTop = buildingsSummary.GetBuildingAtCoords(tile.X + 1, tile.Y + 1);
             if (rightTop != null && building != rightTop)
             {
-                warningsList.Add(CreateWarningString(tile, buildingsTouchingWarningText));
+                AddWarning(CreateWarningString(tile, buildingsTouchingWarningText));
             }
         }
 
@@ -322,12 +326,18 @@ namespace Warlander.Deedplanner.Updaters
             const string tokenInsideBuildingWarningText = "Deed token inside building.\nTokens must be placed outside.";
 
             Decoration centralDecoration = tile.GetCentralDecoration();
-            
+
             // TODO: update the objects.xml schema to not require ShortName lookup here
             if (centralDecoration && centralDecoration.Data.ShortName == "token" && buildingsSummary.GetBuildingAtTile(tile) != null)
             {
-                warningsList.Add(CreateWarningString(tile, tokenInsideBuildingWarningText));
+                AddWarning(CreateWarningString(tile, tokenInsideBuildingWarningText));
             }
+        }
+
+        private void AddWarning(string text)
+        {
+            _warningsAdded++;
+            _view.AddWarning(text);
         }
 
         private string CreateWarningString(Tile tile, string text)
@@ -337,40 +347,24 @@ namespace Warlander.Deedplanner.Updaters
             return build.ToString();
         }
 
-        public void OnModeChange(bool toggledOn)
-        {
-            if (!toggledOn)
-            {
-                return;
-            }
-
-            RefreshMode();
-            RefreshGui();
-        }
-        
         public void CalculateMapMaterials()
         {
             Materials mapMaterials = _mapHandler.Map.CalculateMapMaterials();
-            
+
             BuildingsSummary surfaceGroundSummary = new BuildingsSummary(_mapHandler.Map, 0);
-            
+
             StringBuilder build = new StringBuilder();
             build.Append("Total buildings: ").Append(surfaceGroundSummary.BuildingsCount).AppendLine();
             build.Append("Total rooms: ").Append(surfaceGroundSummary.RoomsCount).AppendLine();
             build.AppendLine();
             build.Append(mapMaterials);
-            
+
             ShowMaterialsWindow(build.ToString());
         }
 
         private void ShowMaterialsWindow(string text)
         {
             _windowCoordinator.CreateWindow<TextWindow>(WindowNames.TextWindow).ShowText("Materials", text);
-        }
-        
-        private enum ToolType
-        {
-            MaterialsCalculator, MapWarnings
         }
     }
 }

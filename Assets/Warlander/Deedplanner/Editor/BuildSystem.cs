@@ -106,31 +106,44 @@ namespace Warlander.Deedplanner.Editor
             {
                 PlayerSettings.SetScriptingBackend(NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
             }
-            
+
+#if UNITY_EDITOR_OSX
+            // OSXStandalone only exists in editors with the Mac build support module;
+            // Linux/Windows CI editor images lack it, so this must be compile-guarded
+            UnityEditor.OSXStandalone.UserBuildSettings.architecture = UnityEditor.Build.OSArchitecture.x64ARM64;
+#endif
+
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.Standalone;
             buildOptions.target = BuildTarget.StandaloneOSX;
-            buildOptions.locationPathName = "Build/"+ Constants.SimpleTitleString + " Mac.app";
+            buildOptions.locationPathName = "Build/"+ Constants.SimpleTitleString + ".app";
             buildOptions.options = BuildOptions.None;
 
             BuildReport report = BuildPipeline.BuildPlayer(buildOptions);
             BuildSummary summary = report.summary;
             if (summary.result == BuildResult.Succeeded)
             {
-                CreateSteamAppId("Build/"+ Constants.SimpleTitleString + " Mac.app/");
+                // no steam_appid.txt on Mac: unsealed files in the bundle root make
+                // codesign refuse to sign, and Finder launches never read it (CWD=/)
                 Debug.Log("SUCCESS BUILD Mac");
                 return true;
-            } 
+            }
             else
             {
                 Debug.Log("FAILED BUILD Mac");
                 return false;
             }
         }
-        
+
         [MenuItem("Build/WebGL", false, 100)]
         public static bool BuildWeb()
         {
+            // GitHub Pages serves compressed builds without Content-Encoding headers,
+            // so the loader cannot boot them. Ship uncompressed instead.
+            PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
+            PlayerSettings.WebGL.decompressionFallback = false;
+            PlayerSettings.WebGL.template = "PROJECT:DeedPlanner";
+
             BuildPlayerOptions buildOptions = CreateUniversalBuildOptions();
             buildOptions.targetGroup = BuildTargetGroup.WebGL;
             buildOptions.target = BuildTarget.WebGL;

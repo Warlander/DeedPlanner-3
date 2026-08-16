@@ -45,6 +45,8 @@ namespace Warlander.Deedplanner.Graphics
             Material mat = new Material(shader);
             mat.renderQueue = 2450;
             mat.SetOverrideTag("RenderType", "TransparentCutout");
+            // without the keyword the shadergraph compiles the discard path out - foliage renders opaque
+            mat.EnableKeyword("_ALPHATEST_ON");
             mat.enableInstancing = true;
             return mat;
         }
