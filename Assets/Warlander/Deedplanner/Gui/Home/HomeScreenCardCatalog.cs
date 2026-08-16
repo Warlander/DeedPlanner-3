@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Logic.Saving;
@@ -63,8 +62,8 @@ namespace Warlander.Deedplanner.Gui.Home
 
             _view.SetCategories(categories, _selectedBackendId);
 
-            var cards = new List<HomeScreenCardData>();
             _recoveryMains.Clear();
+            List<CardItem> items = await CollectSaveItemsAsync();
 
             foreach (RecentMapEntry entry in _saveCoordinator.RecentMaps.Entries)
             {
@@ -73,31 +72,48 @@ namespace Warlander.Deedplanner.Gui.Home
                     continue;
                 }
 
-                MapLocation? slot = await _autoSaveScheduler.FindRecoverySlotAsync(entry.Location);
+                SavedMapInfo? slot = await _autoSaveScheduler.FindRecoverySlotAsync(entry.Location);
                 if (slot.HasValue)
                 {
-                    cards.Add(await BuildRecoveryCardAsync(slot.Value, entry.Location.Locator));
-                    _recoveryMains[slot.Value] = entry.Location;
+                    items.Add(new CardItem
+                    {
+                        Location = slot.Value.Location,
+                        SortTimeUtc = slot.Value.WriteTimeUtc,
+                        RecoveryOrigin = entry.Location.Locator
+                    });
+                    _recoveryMains[slot.Value.Location] = entry.Location;
                 }
             }
 
             if (_selectedBackendId == null || _selectedBackendId == SaveBackendId.File)
             {
-                MapLocation? untitledSlot = await _autoSaveScheduler.FindNeverSavedRecoveryAsync();
-                if (untitledSlot.HasValue && !_recoveryMains.ContainsKey(untitledSlot.Value))
+                SavedMapInfo? untitledSlot = await _autoSaveScheduler.FindNeverSavedRecoveryAsync();
+                if (untitledSlot.HasValue && !_recoveryMains.ContainsKey(untitledSlot.Value.Location))
                 {
-                    cards.Add(await BuildRecoveryCardAsync(untitledSlot.Value, "never-saved map"));
-                    _recoveryMains[untitledSlot.Value] = null;
+                    items.Add(new CardItem
+                    {
+                        Location = untitledSlot.Value.Location,
+                        SortTimeUtc = untitledSlot.Value.WriteTimeUtc,
+                        RecoveryOrigin = "never-saved map"
+                    });
+                    _recoveryMains[untitledSlot.Value.Location] = null;
                 }
             }
 
-            List<CardItem> items = await CollectSaveItemsAsync();
             await ResolveWriteTimesAsync(items);
             items.Sort((a, b) => b.SortTimeUtc.CompareTo(a.SortTimeUtc));
 
+            var cards = new List<HomeScreenCardData>();
             foreach (CardItem item in items)
             {
-                cards.Add(item.Entry != null ? BuildCard(item) : BuildDiscoveredCard(item));
+                if (item.RecoveryOrigin != null)
+                {
+                    cards.Add(await BuildRecoveryCardAsync(item));
+                }
+                else
+                {
+                    cards.Add(item.Entry != null ? BuildCard(item) : BuildDiscoveredCard(item));
+                }
             }
 
             _view.SetCards(cards);
@@ -228,20 +244,19 @@ namespace Warlander.Deedplanner.Gui.Home
             return _selectedBackendId == null || entry.Location.BackendId == _selectedBackendId;
         }
 
-        private async Task<HomeScreenCardData> BuildRecoveryCardAsync(MapLocation slot, string originHint)
+        private async Task<HomeScreenCardData> BuildRecoveryCardAsync(CardItem item)
         {
-            byte[] jpeg = await _saveCoordinator.ReadThumbnailAsync(slot);
+            byte[] jpeg = await _saveCoordinator.ReadThumbnailAsync(item.Location);
             Texture2D thumbnail = jpeg != null ? ToTexture(jpeg) : null;
-            DateTime slotWrite = File.GetLastWriteTimeUtc(slot.Locator);
 
             return new HomeScreenCardData(
-                slot,
+                item.Location,
                 "Recovered auto-save",
-                FormatTime(slotWrite),
-                originHint,
-                "FILE",
+                FormatTime(item.SortTimeUtc),
+                item.RecoveryOrigin,
+                BadgeLabel(item.Location.BackendId),
                 thumbnail,
-                HomeScreenChip.Recovery,
+                HomeScreenChip.None,
                 showDelete: false);
         }
 
@@ -371,6 +386,7 @@ namespace Warlander.Deedplanner.Gui.Home
             public RecentMapEntry Entry;
             public MapLocation Location;
             public DateTime SortTimeUtc;
+            public string RecoveryOrigin;
             public bool Exists = true;
             public bool NeedsThumbnail;
         }

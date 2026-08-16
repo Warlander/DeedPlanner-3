@@ -7,7 +7,8 @@ namespace Warlander.Deedplanner.Logic
 {
     public class DeedThumbnailCapture
     {
-        public const int ThumbnailSize = 512;
+        public const int ThumbnailWidth = 560;
+        public const int ThumbnailHeight = 400;
         public const int JpegQuality = 60;
         public const int MaxJpegBytes = 100 * 1024;
 
@@ -72,7 +73,7 @@ namespace Warlander.Deedplanner.Logic
             try
             {
                 camera.fieldOfView = VerticalFov;
-                camera.aspect = 1f;
+                camera.aspect = (float) ThumbnailWidth / ThumbnailHeight;
                 camera.nearClipPlane = 0.3f;
                 camera.farClipPlane = cameraHeight + cornerDistance + 200f;
                 camera.transform.SetPositionAndRotation(
@@ -82,7 +83,7 @@ namespace Warlander.Deedplanner.Logic
                     camera.worldToCameraMatrix, camera.projectionMatrix,
                     CameraClearFlags.Skybox, Color.black,
                     0, true, _cameraCoordinator.Current.CameraController,
-                    ThumbnailSize, ThumbnailSize, camera.nearClipPlane, camera.farClipPlane);
+                    ThumbnailWidth, ThumbnailHeight, camera.nearClipPlane, camera.farClipPlane);
 
                 return _screenshotRenderer.TakeScreenshot(request);
             }

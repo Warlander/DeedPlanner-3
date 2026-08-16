@@ -10,7 +10,6 @@ namespace Warlander.Deedplanner.Gui.Home
         private static readonly Color MissingColor = new Color(0.75f, 0.2f, 0.2f);
         private static readonly Color UnknownColor = new Color(0.4f, 0.45f, 0.5f);
         private static readonly Color VolatileColor = new Color(0.85f, 0.55f, 0.15f);
-        private static readonly Color RecoveryColor = new Color(0.2f, 0.55f, 0.5f);
 
         [SerializeField] private Button _button;
         [SerializeField] private RawImage _thumbnail;
@@ -80,10 +79,6 @@ namespace Warlander.Deedplanner.Gui.Home
                     case HomeScreenChip.Volatile:
                         _chipText.text = "Volatile";
                         _chipBackground.color = VolatileColor;
-                        break;
-                    case HomeScreenChip.Recovery:
-                        _chipText.text = "Recover";
-                        _chipBackground.color = RecoveryColor;
                         break;
                 }
             }

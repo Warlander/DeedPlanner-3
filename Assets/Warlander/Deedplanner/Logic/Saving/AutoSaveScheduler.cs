@@ -55,7 +55,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         }
 
         /// Newest auto-save slot for an entry when it is newer than the main save. Null otherwise.
-        public async Task<MapLocation?> FindRecoverySlotAsync(MapLocation mainLocation)
+        public async Task<SavedMapInfo?> FindRecoverySlotAsync(MapLocation mainLocation)
         {
             ISaveBackend backend = _saveCoordinator.GetBackend(mainLocation.BackendId);
             if (backend == null || (backend.Capabilities & SaveCapabilities.Track) == 0)
@@ -63,7 +63,7 @@ namespace Warlander.Deedplanner.Logic.Saving
                 return null;
             }
 
-            MapLocation? newest = await NewestSlotAsync(mainLocation.BackendId, SlotLocatorsFor(mainLocation));
+            SavedMapInfo? newest = await NewestSlotAsync(mainLocation.BackendId, SlotLocatorsFor(mainLocation));
             if (!newest.HasValue)
             {
                 return null;
@@ -75,12 +75,11 @@ namespace Warlander.Deedplanner.Logic.Saving
                 return newest;
             }
 
-            SaveLocationStatus slotTrack = await backend.TrackAsync(newest.Value);
-            return slotTrack.WriteTimeUtc > mainTrack.WriteTimeUtc ? newest : null;
+            return newest.Value.WriteTimeUtc > mainTrack.WriteTimeUtc ? newest : null;
         }
 
         /// Auto-save slot from a never-saved map, when one exists.
-        public async Task<MapLocation?> FindNeverSavedRecoveryAsync()
+        public async Task<SavedMapInfo?> FindNeverSavedRecoveryAsync()
         {
             SaveBackendId? nullableBackendId = NeverSavedBackendId();
             if (!nullableBackendId.HasValue)
@@ -214,7 +213,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             return oldest;
         }
 
-        private async Task<MapLocation?> NewestSlotAsync(SaveBackendId backendId, string[] slots)
+        private async Task<SavedMapInfo?> NewestSlotAsync(SaveBackendId backendId, string[] slots)
         {
             string newest = null;
             DateTime newestWrite = DateTime.MinValue;
@@ -235,7 +234,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             }
 
             string name = Path.GetFileNameWithoutExtension(newest);
-            return new MapLocation(backendId, newest, name);
+            return new SavedMapInfo(new MapLocation(backendId, newest, name), newestWrite);
         }
     }
 }

@@ -52,7 +52,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             return SaveFeasibility.Ok;
         }
 
-        public string LocationHint(MapLocation location) => null;
+        public string LocationHint(MapLocation location) => _connection.GetName();
 
         public Task<MapLocation?> SaveAsync(string payload, string suggestedName)
         {
