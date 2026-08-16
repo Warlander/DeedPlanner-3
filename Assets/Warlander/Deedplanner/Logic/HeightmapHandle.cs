@@ -44,7 +44,7 @@ namespace Warlander.Deedplanner.Logic
                     return;
                 }
                 MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                propertyBlock.SetColor(ShaderPropertyIds.Color, value);
+                propertyBlock.SetColor(ShaderPropertyIds.BaseColor, value);
                 color = value;
             }
         }

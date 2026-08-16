@@ -4,13 +4,12 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Walls;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Settings;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
@@ -19,14 +18,15 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPSettings _settings;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
+        [Inject] private TabContext _tabContext;
 
         [SerializeField] private UnityTree _wallsTree;
 
         [SerializeField] private Toggle reverseToggle;
         [SerializeField] private Toggle automaticReverseToggle;
 
-        private void Start()
+        public override void Initialize()
         {
             foreach (WallData data in Database.Walls.Values)
             {
@@ -36,18 +36,20 @@ namespace Warlander.Deedplanner.Updaters
                     iconListElement.TextureReference = data.Icon;
                 }
             }
-            
+
             automaticReverseToggle.isOn = _settings.WallAutomaticReverse;
             reverseToggle.isOn = _settings.WallReverse;
-            
+
             automaticReverseToggle.onValueChanged.AddListener(AutomaticReverseToggleOnValueChanged);
             reverseToggle.onValueChanged.AddListener(ReverseToggleOnValueChanged);
         }
-        
-        private void OnEnable()
+
+        public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Borders;
+            _tabContext.TileSelectionMode = TileSelectionMode.Borders;
         }
+
+        public override void Disable() { }
 
         private void AutomaticReverseToggleOnValueChanged(bool value)
         {
@@ -65,11 +67,11 @@ namespace Warlander.Deedplanner.Updaters
             });
         }
 
-        private void Update()
+        public override void Tick()
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
-                _gameManager.Map.CommandManager.FinishAction();
+                _mapHandler.Map.CommandManager.FinishAction();
             }
             
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
@@ -123,16 +125,16 @@ namespace Warlander.Deedplanner.Updaters
 
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
-                Floor currentFloor = _gameManager.Map[x, y].GetTileContent(floor) as Floor;
+                Floor currentFloor = _mapHandler.Map[x, y].GetTileContent(floor) as Floor;
                 bool shouldReverse = false;
                 if (_settings.WallAutomaticReverse && horizontal)
                 {
-                    Floor nearFloor = _gameManager.Map[x, y - 1].GetTileContent(floor) as Floor;
+                    Floor nearFloor = _mapHandler.Map[x, y - 1].GetTileContent(floor) as Floor;
                     shouldReverse = currentFloor && !nearFloor;
                 }
                 else if (_settings.WallAutomaticReverse && !horizontal)
                 {
-                    Floor nearFloor = _gameManager.Map[x - 1, y].GetTileContent(floor) as Floor;
+                    Floor nearFloor = _mapHandler.Map[x - 1, y].GetTileContent(floor) as Floor;
                     shouldReverse = !currentFloor && nearFloor;
                 }
 
@@ -144,11 +146,11 @@ namespace Warlander.Deedplanner.Updaters
                 WallData data = _wallsTree.SelectedValue as WallData;
                 if (horizontal)
                 {
-                    _gameManager.Map[x, y].SetHorizontalWall(data, shouldReverse, floor);
+                    _mapHandler.Map[x, y].SetHorizontalWall(data, shouldReverse, floor);
                 }
                 else
                 {
-                    _gameManager.Map[x, y].SetVerticalWall(data, shouldReverse, floor);
+                    _mapHandler.Map[x, y].SetVerticalWall(data, shouldReverse, floor);
                 }
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
@@ -159,11 +161,11 @@ namespace Warlander.Deedplanner.Updaters
                 }
                 if (horizontal)
                 {
-                    _gameManager.Map[x, y].SetHorizontalWall(null, false, floor);
+                    _mapHandler.Map[x, y].SetHorizontalWall(null, false, floor);
                 }
                 else
                 {
-                    _gameManager.Map[x, y].SetVerticalWall(null, false, floor);
+                    _mapHandler.Map[x, y].SetVerticalWall(null, false, floor);
                 }
             }
         }

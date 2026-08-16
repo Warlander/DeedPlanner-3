@@ -1,0 +1,11 @@
+{
+    "showPackageManagerWarning": true,
+    "gitIgnorePromptShown": true,
+    "initGitForNewPackages": true,
+    "registries": [
+        {
+            "_scope": "com.warlogic",
+            "_registryUrl": "https://upm.maciejcyranowicz.com"
+        }
+    ]
+}

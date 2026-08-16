@@ -3,11 +3,11 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using UnityEngine;
-using Zenject;
+using Warlander.Deedplanner.Gui;
 
 namespace Warlander.Deedplanner.Settings
 {
-    public class SettingsFactory : IFactory<DPSettings>
+    public class SettingsFactory
     {
         public DPSettings Create()
         {
@@ -23,7 +23,8 @@ namespace Warlander.Deedplanner.Settings
                 {
                     using (XmlReader xmlReader = new XmlTextReader(reader))
                     {
-                        return (DPSettings) xmlSerializer.Deserialize(xmlReader);
+                        DPSettings settings = (DPSettings) xmlSerializer.Deserialize(xmlReader);
+                        return settings;
                     }
                 }
             }

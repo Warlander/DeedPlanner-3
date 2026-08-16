@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.IO;
 using B83.Win32;
 using UnityEngine;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Logic
 {
     public class FileDragManager : IInitializable, IDisposable
     {
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
         
         void IInitializable.Initialize()
         {
@@ -25,7 +26,7 @@ namespace Warlander.Deedplanner.Logic
                 return;
             }
             
-            _gameManager.LoadMap(File.ReadAllText(files[0]));
+            _mapHandler.LoadMap(File.ReadAllText(files[0]));
         }
         
         void IDisposable.Dispose()

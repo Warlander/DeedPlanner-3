@@ -1,35 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Plugins.Warlander.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityFx.Outline;
-using UnityStandardAssets.Water;
+using UnityEngine.Rendering;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Graphics.Outline;
+using Warlander.Deedplanner.Graphics.Water;
 using Warlander.Deedplanner.Graphics.Projectors;
+using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
-using Warlander.Deedplanner.Settings;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {
     [RequireComponent(typeof(Camera))]
     public class MultiCamera : MonoBehaviour
     {
-        [Inject] private DPSettings _settings;
-        [Inject] private ICameraController[] _cameraControllers;
+        [Inject] private IReadOnlyList<ICameraController> _cameraControllers;
         [Inject] private TooltipHandler _tooltipHandler;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        [Inject] private GameManager _gameManager;
-        [Inject] private MapProjectorManager _mapProjectorManager;
+        [Inject] private MapHandler _mapHandler;
+        [Inject] private IMapProjectorFacade _mapProjectorFacade;
         [Inject] private IOutlineCoordinator _outlineCoordinator;
+        [Inject] private ISharedMaterials _sharedMaterials;
+        [Inject] private IWaterFacade _waterFacade;
+        [Inject] private TabContext _tabContext;
 
         public event Action LevelChanged;
         public event Action ModeChanged;
@@ -41,13 +45,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
         [SerializeField] private int screenId = 0;
         [SerializeField] private GameObject screen = null;
 
-        [SerializeField] private Water ultraQualityWater = null;
-        [SerializeField] private GameObject highQualityWater = null;
-        [SerializeField] private GameObject simpleQualityWater = null;
-
         [SerializeField] private RectTransform selectionBox = null;
-
-        [SerializeField] private OutlineEffect _outlineEffect;
 
         [SerializeField] private Color pickerColor = new Color(1f, 1f, 0, 0.3f);
 
@@ -93,7 +91,6 @@ namespace Warlander.Deedplanner.Logic.Cameras
         public bool RenderEntireMap => CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian;
 
         public GameObject Screen => screen;
-        public OutlineEffect OutlineEffect => _outlineEffect;
 
         public bool RenderSelectionBox
         {
@@ -117,18 +114,16 @@ namespace Warlander.Deedplanner.Logic.Cameras
             set => selectionBox.sizeDelta = value;
         }
         
-        private MapProjector attachedProjector = null;
+        private IMapProjector _attachedProjector;
         private DynamicModelBehaviour _outlinedModel;
-        
+
         private CameraMode cameraMode = CameraMode.Top;
         private int _level = 0;
 
         private void Awake()
         {
             AttachedCamera = GetComponent<Camera>();
-            attachedProjector = _mapProjectorManager.RequestProjector(ProjectorColor.Yellow);
-            attachedProjector.SetRenderCameraId(screenId);
-            attachedProjector.gameObject.SetActive(false);
+            RenderPipelineManager.beginCameraRendering += RenderPipelineManagerOnbeginCameraRendering;
         }
         
         private void Start()
@@ -166,28 +161,21 @@ namespace Warlander.Deedplanner.Logic.Cameras
             eventCatcher.OnPointerDownEvent.AddListener(data => PointerDown?.Invoke(this));
 
             CameraMode = cameraMode;
-
-            _settings.Modified += ValidateState;
-            ValidateState();
         }
 
-        private void ValidateState()
+        private void OnDestroy()
         {
-            Gui.WaterQuality waterQuality = _settings.WaterQuality;
-            if (waterQuality != Gui.WaterQuality.Ultra)
-            {
-                ultraQualityWater.gameObject.SetActive(false);
-            }
+            RenderPipelineManager.beginCameraRendering -= RenderPipelineManagerOnbeginCameraRendering;
         }
 
         private void Update()
         {
-            if (_gameManager.Map == null)
+            if (_mapHandler.Map == null)
             {
                 return;
             }
             
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
 
             GameObject focusedObject = EventSystem.current.currentSelectedGameObject;
             bool shouldUpdateCameras = !focusedObject;
@@ -202,17 +190,43 @@ namespace Warlander.Deedplanner.Logic.Cameras
             UpdateState();
         }
 
-        private void OnPreCull()
+        private void RenderPipelineManagerOnbeginCameraRendering(ScriptableRenderContext context, Camera camera)
         {
-            if (_gameManager.Map == null)
+            if (camera != AttachedCamera)
             {
                 return;
             }
             
-            PrepareWater();
+            if (_mapHandler.Map == null)
+            {
+                return;
+            }
+
+            Tab tab = _tabContext.CurrentTab;
+            bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
+            int currentlyEditedLevel = forceSurfaceEditing ? 0 : _level;
+            bool renderWater = RenderEntireMap || currentlyEditedLevel == 0 || currentlyEditedLevel == -1;
+            _waterFacade.PrepareForCamera(AttachedCamera, CameraController, renderWater);
             PrepareMapState();
             UpdateRaycast();
+            UpdateHoverOutline();
             PrepareProjector();
+        }
+
+        private void UpdateHoverOutline()
+        {
+            DynamicModelBehaviour newTarget = CurrentRaycast.collider != null
+                ? CurrentRaycast.collider.GetComponent<DynamicModelBehaviour>()
+                : null;
+
+            if (newTarget == _outlinedModel) return;
+
+            if (_outlinedModel != null)
+                _outlineCoordinator.RemoveObject(_outlinedModel, 0);
+            if (newTarget != null)
+                _outlineCoordinator.AddObject(newTarget, OutlineType.Neutral, 0);
+
+            _outlinedModel = newTarget;
         }
 
         private void UpdateRaycast()
@@ -223,7 +237,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
             {
                 Ray ray = CreateMouseRay();
                 RaycastHit raycastHit;
-                int mask = LayerMasks.GetMaskForTab(LayoutManager.Instance.CurrentTab);
+                int mask = LayerMasks.GetMaskForTab(_tabContext.CurrentTab);
                 bool hit = Physics.Raycast(ray, out raycastHit, 20000, mask);
                 StringBuilder tooltipBuild = new StringBuilder();
 
@@ -231,13 +245,13 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 {
                     CurrentRaycast = raycastHit;
 
-                    bool isHeightEditing = LayoutManager.Instance.CurrentTab == Tab.Height;
+                    bool isHeightEditing = _tabContext.CurrentTab == Tab.Height;
 
                     GameObject hitObject = raycastHit.transform.gameObject;
                     TileEntity tileEntity = hitObject.GetComponent<TileEntity>();
                     GroundMesh groundMesh = hitObject.GetComponent<GroundMesh>();
                     OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
-                    HeightmapHandle heightmapHandle = _gameManager.Map.SurfaceGridMesh.RaycastHandles();
+                    HeightmapHandle heightmapHandle = _mapHandler.Map.SurfaceGridMesh.RaycastHandles();
 
                     if (tileEntity)
                     {
@@ -250,13 +264,13 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
                         if (heightmapHandle != null)
                         {
-                            tooltipBuild.Append(heightmapHandle.ToRichString(_gameManager.Map, Level));
+                            tooltipBuild.Append(heightmapHandle.ToRichString(_mapHandler.Map, Level));
                         }
                         else if (isHeightEditing)
                         {
                             tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
 
-                            Map map = _gameManager.Map;
+                            Map map = _mapHandler.Map;
                             Vector3 raycastPoint = raycastHit.point;
                             Vector2Int tileCoords = new Vector2Int(Mathf.FloorToInt(raycastPoint.x / 4), Mathf.FloorToInt(raycastPoint.z / 4));
                             int clampedX = Mathf.Clamp(tileCoords.x, 0, map.Width);
@@ -281,7 +295,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                         else
                         {
                             tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
-                            tooltipBuild.Append(_gameManager.Map[x, y].Ground.Data.Name);
+                            tooltipBuild.Append(_mapHandler.Map[x, y].Ground.Data.Name);
                         }
                     }
                     else if (overlayMesh)
@@ -292,7 +306,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     }
                     else if (heightmapHandle != null)
                     {
-                        tooltipBuild.Append(heightmapHandle.ToRichString(_gameManager.Map, Level));
+                        tooltipBuild.Append(heightmapHandle.ToRichString(_mapHandler.Map, Level));
                     }
                 }
 
@@ -317,40 +331,13 @@ namespace Warlander.Deedplanner.Logic.Cameras
             return ray;
         }
 
-        private void PrepareWater()
-        {
-            Tab tab = LayoutManager.Instance.CurrentTab;
-            bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
-            int currentlyEditedLevel = forceSurfaceEditing ? 0 : Level;
-            bool renderWater = RenderEntireMap || currentlyEditedLevel == 0 || currentlyEditedLevel == -1;
-            Vector2 waterPosition = CameraController.CalculateWaterTablePosition(AttachedCamera.transform.position);
-
-            if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
-            {
-                ultraQualityWater.gameObject.SetActive(renderWater);
-                Vector3 ultraQualityWaterPosition;
-                ultraQualityWaterPosition = new Vector3(waterPosition.x, ultraQualityWater.transform.position.y, waterPosition.y);
-                ultraQualityWater.transform.position = ultraQualityWaterPosition;
-                ultraQualityWater.Update();
-            }
-            else if (_settings.WaterQuality == Gui.WaterQuality.High)
-            {
-                highQualityWater.gameObject.SetActive(renderWater);
-                highQualityWater.transform.position = new Vector3(waterPosition.x, highQualityWater.transform.position.y, waterPosition.y);
-            }
-            else if (_settings.WaterQuality == Gui.WaterQuality.Simple)
-            {
-                simpleQualityWater.gameObject.SetActive(renderWater);
-            }
-        }
-
         private void PrepareMapState()
         {
-            Tab tab = LayoutManager.Instance.CurrentTab;
+            Tab tab = _tabContext.CurrentTab;
             bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
             int currentlyEditedLevel = forceSurfaceEditing ? 0 : Level;
 
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
             if (map.RenderedLevel != currentlyEditedLevel)
             {
                 map.RenderedLevel = currentlyEditedLevel;
@@ -375,42 +362,42 @@ namespace Warlander.Deedplanner.Logic.Cameras
             switch (gridMaterialType)
             {
                 case GridMaterialType.Uniform:
-                    return GraphicsManager.Instance.SimpleDrawingMaterial;
+                    return _sharedMaterials.SimpleDrawingMaterial;
                 case GridMaterialType.ProximityBased:
-                    return GraphicsManager.Instance.SimpleSubtleDrawingMaterial;
+                    return _sharedMaterials.SimpleSubtleDrawingMaterial;
                 default:
-                    return GraphicsManager.Instance.SimpleDrawingMaterial;
+                    return _sharedMaterials.SimpleDrawingMaterial;
             }
         }
         
         private void PrepareProjector()
         {
-            if (!CurrentRaycast.collider)
+            if (_attachedProjector != null)
             {
-                return;
+                _mapProjectorFacade.FreeProjector(_attachedProjector);
+                _attachedProjector = null;
             }
+
+            if (!CurrentRaycast.collider)
+                return;
 
             GameObject hitObject = CurrentRaycast.collider.gameObject;
             bool gridOrGroundHit = hitObject.GetComponent<GroundMesh>() || hitObject.GetComponent<OverlayMesh>();
             if (!gridOrGroundHit)
-            {
                 return;
-            }
 
-            TileSelectionMode tileSelectionMode = LayoutManager.Instance.TileSelectionMode;
+            TileSelectionMode tileSelectionMode = _tabContext.TileSelectionMode;
             Vector3 raycastPosition = CurrentRaycast.point;
             TileSelectionHit tileSelectionHit = TileSelection.PositionToTileSelectionHit(raycastPosition, tileSelectionMode);
             TileSelectionTarget target = tileSelectionHit.Target;
 
             if (target == TileSelectionTarget.Nothing)
-            {
-                attachedProjector.gameObject.SetActive(false);
                 return;
-            }
 
-            attachedProjector.gameObject.SetActive(true);
+            _attachedProjector = _mapProjectorFacade.RequestProjector(ProjectorColor.Yellow);
+            _attachedProjector.SetRenderCameraId(screenId);
             Vector2Int tileCoords = new Vector2Int(tileSelectionHit.X, tileSelectionHit.Y);
-            attachedProjector.ProjectTile(tileCoords, target);
+            _attachedProjector.ProjectTile(tileCoords, target);
         }
 
         private void UpdateState()
@@ -420,10 +407,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private void OnRenderObject()
         {
-            Camera[] waterCameras = ultraQualityWater.GetComponentsInChildren<Camera>();
-            bool currentWaterCamera = waterCameras.Contains(Camera.current);
-            bool currentAttachedCamera = Camera.current == AttachedCamera;
-            if (!currentWaterCamera && !currentAttachedCamera || !CurrentRaycast.collider)
+            if (Camera.current != AttachedCamera || !CurrentRaycast.collider)
             {
                 return;
             }
@@ -431,14 +415,14 @@ namespace Warlander.Deedplanner.Logic.Cameras
             GameObject hitObject = CurrentRaycast.collider.gameObject;
             GroundMesh groundMesh = hitObject.GetComponent<GroundMesh>();
             OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
-            HeightmapHandle heightmapHandle = _gameManager.Map.SurfaceGridMesh.RaycastHandles();
+            HeightmapHandle heightmapHandle = _mapHandler.Map.SurfaceGridMesh.RaycastHandles();
 
             bool gridOrGroundHit = groundMesh || overlayMesh || heightmapHandle != null;
 
             if (!gridOrGroundHit)
             {
                 GL.PushMatrix();
-                GraphicsManager.Instance.SimpleDrawingMaterial.SetPass(0);
+                _sharedMaterials.SimpleDrawingMaterial.SetPass(0);
                 Matrix4x4 rotationMatrix = Matrix4x4.TRS(hitObject.transform.position, hitObject.transform.rotation, hitObject.transform.lossyScale);
                 GL.MultMatrix(rotationMatrix);
                 RenderRaytrace();
@@ -454,13 +438,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 return;
             }
 
-            _outlinedModel = hitCollider.GetComponent<DynamicModelBehaviour>();
-
-            if (_outlinedModel != null)
-            {
-                _outlineCoordinator.AddObject(_outlinedModel, OutlineType.Neutral, 0);
-            }
-            else if (hitCollider.GetType() == typeof(MeshCollider))
+            if (hitCollider.GetComponent<DynamicModelBehaviour>() == null
+                && hitCollider.GetType() == typeof(MeshCollider))
             {
                 MeshCollider meshCollider = (MeshCollider)hitCollider;
                 Mesh mesh = meshCollider.sharedMesh;
@@ -532,19 +511,5 @@ namespace Warlander.Deedplanner.Logic.Cameras
             }
         }
 
-        private void OnPostRender()
-        {
-            attachedProjector.gameObject.SetActive(false);
-            if (_settings.WaterQuality == Gui.WaterQuality.Ultra)
-            {
-                ultraQualityWater.gameObject.SetActive(false);
-            }
-
-            if (_outlinedModel != null)
-            {
-                _outlineCoordinator.RemoveObject(_outlinedModel, 0);
-                _outlinedModel = null;
-            }
-        }
     }
 }

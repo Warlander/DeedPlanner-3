@@ -7,14 +7,15 @@ using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.ExtensionUtils;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Data
 {
     public class GridMesh : MonoBehaviour
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
-        [Inject] private GameManager _gameManager;
+        [Inject] private HeightmapHandleMeshLoader _heightmapHandleMeshLoader;
+        [Inject] private ISharedMaterials _sharedMaterials;
         
         private Map map;
         private bool cave;
@@ -99,7 +100,7 @@ namespace Warlander.Deedplanner.Data
             mesh.SetIndices(indices, MeshTopology.Lines, 0, true);
 
             meshFilter.sharedMesh = mesh;
-            meshRenderer.sharedMaterial = GraphicsManager.Instance.SimpleSubtleDrawingMaterial;
+            meshRenderer.sharedMaterial = _sharedMaterials.SimpleSubtleDrawingMaterial;
 
             verticesChanged = false;
             dirty = false;
@@ -132,7 +133,7 @@ namespace Warlander.Deedplanner.Data
                 heightmapRenderCache[color].Add(heightmapHandle.TransformMatrix);
             }
 
-            Material drawMaterial = GraphicsManager.Instance.SimpleDrawingMaterial;
+            Material drawMaterial = _sharedMaterials.SimpleDrawingMaterial;
             
             foreach (KeyValuePair<Color, List<Matrix4x4>> pair in heightmapRenderCache)
             {
@@ -141,7 +142,7 @@ namespace Warlander.Deedplanner.Data
 
                 List<Matrix4x4> matrices = pair.Value;
 
-                Mesh heightmapMesh = _gameManager.HeightmapHandleMesh;
+                Mesh heightmapMesh = _heightmapHandleMeshLoader.GetMesh();
 
                 const int batchSize = 1023; // max allowed batch size for DrawMeshInstanced
                 for (int i = 0; i < matrices.Count; i += batchSize)

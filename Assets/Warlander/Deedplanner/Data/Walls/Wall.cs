@@ -68,7 +68,7 @@ namespace Warlander.Deedplanner.Data.Walls
             }
             else
             {
-                _model.transform.localPosition = new Vector3(-4f, 0, 0);
+                _model.transform.localPosition = new Vector3(-4f, _model.transform.localPosition.y, 0);
             }
             
             Bounds bounds = GetTotalModelBounds(originalModel.OriginalModel);

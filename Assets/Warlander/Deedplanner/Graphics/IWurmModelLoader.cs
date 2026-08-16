@@ -1,11 +1,12 @@
-﻿using System;
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Graphics
 {
     public interface IWurmModelLoader
     {
-        void LoadModel(string path, Action<GameObject> onLoaded);
-        void LoadModel(string path, Vector3 scale, Action<GameObject> onLoaded);
+        Task<GameObject> LoadModelAsync(string path);
+        Task<GameObject> LoadModelAsync(string path, Vector3 scale);
     }
 }

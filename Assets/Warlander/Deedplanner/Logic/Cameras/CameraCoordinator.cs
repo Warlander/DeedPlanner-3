@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {
     public class CameraCoordinator : MonoBehaviour
     {
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
         
         [SerializeField] private MultiCamera[] _cameras;
 
@@ -24,7 +24,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
         private void Awake()
         {
-            if (_gameManager.Map != null)
+            if (_mapHandler.Map != null)
             {
                 ChangeCurrentCamera(0);
             }
@@ -36,10 +36,10 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 cam.PointerDown += CameraOnPointerDown;
             }
             
-            _gameManager.MapInitialized += GameManagerOnMapInitialized;
+            _mapHandler.MapInitialized += MapHandlerOnMapInitialized;
         }
 
-        private void GameManagerOnMapInitialized()
+        private void MapHandlerOnMapInitialized()
         {
             if (_activeCamera == -1)
             {
@@ -101,7 +101,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                 cam.PointerDown -= CameraOnPointerDown;
             }
             
-            _gameManager.MapInitialized -= GameManagerOnMapInitialized;
+            _mapHandler.MapInitialized -= MapHandlerOnMapInitialized;
         }
     }
 }

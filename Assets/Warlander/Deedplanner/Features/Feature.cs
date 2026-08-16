@@ -1,9 +1,9 @@
-﻿namespace Warlander.Deedplanner.Features
+namespace Warlander.Deedplanner.Features
 {
     public enum Feature
     {
-        Bridges = 0,
-        Caves = 1,
-        Docks = 2,
+        Bridges = 1,
+        Caves = 2,
+        Docks = 3
     }
 }

@@ -1,12 +1,7 @@
-﻿using System;
-using Zenject;
-
 namespace Warlander.Deedplanner.Steam
 {
-    public class SteamConnectionFactory : IFactory<ISteamConnection>
+    public class SteamConnectionFactory
     {
-        [Inject] private DiContainer _container;
-        
         public ISteamConnection Create()
         {
 #if DISABLESTEAMWORKS

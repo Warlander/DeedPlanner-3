@@ -2,12 +2,11 @@
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Caves;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
@@ -15,10 +14,11 @@ namespace Warlander.Deedplanner.Updaters
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        
+        [Inject] private TabContext _tabContext;
+
         [SerializeField] private UnityTree _cavesTree;
 
-        private void OnStart()
+        public override void Initialize()
         {
             foreach (CaveData data in Database.Caves.Values)
             {
@@ -28,13 +28,15 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
         }
-        
-        private void OnEnable()
+
+        public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+            _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
-        private void Update()
+        public override void Disable() { }
+
+        public override void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)

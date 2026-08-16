@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Steamworks;
 using UnityEngine;
-using Zenject;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Steam
 {

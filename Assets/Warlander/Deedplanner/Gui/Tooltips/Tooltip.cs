@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Inputs;
 using Warlander.ExtensionUtils;
 using Warlander.UI.Windows;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Gui.Tooltips
 {

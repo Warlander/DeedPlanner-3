@@ -5,7 +5,7 @@ using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Settings;
 using Warlander.ExtensionUtils;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Logic.Cameras
 {
@@ -13,8 +13,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
     {
         private readonly DPSettings _settings;
         private readonly DPInput _input;
-
-        [Inject]
+        
         public FppCameraController(DPSettings settings, DPInput input)
         {
             _settings = settings;

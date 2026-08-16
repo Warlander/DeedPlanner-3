@@ -11,7 +11,7 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
-using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Utils;
 using Object = UnityEngine.Object;
 
@@ -667,6 +667,11 @@ namespace Warlander.Deedplanner.Data
             bridgePart.transform.SetParent(Map.transform);
         }
 
+        public void UnregisterBridgePart()
+        {
+            surfaceBridgePart = null;
+        }
+
         public void Serialize(XmlDocument document, XmlElement localRoot)
         {
             localRoot.SetAttribute("x", X.ToString());
@@ -1071,10 +1076,12 @@ namespace Warlander.Deedplanner.Data
                 if (renderLevel)
                 {
                     MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                    propertyBlock.SetColor(ShaderPropertyIds.Color, new Color(opacity, opacity, opacity));
+                    Color opacityColor = new Color(opacity, opacity, opacity);
                     Renderer[] renderers = entity.GetComponentsInChildren<Renderer>();
                     foreach (Renderer renderer in renderers)
                     {
+                        renderer.GetPropertyBlock(propertyBlock);
+                        propertyBlock.SetColor(ShaderPropertyIds.BaseColor, opacityColor);
                         renderer.SetPropertyBlock(propertyBlock);
                     }
                 }

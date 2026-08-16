@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Threading.Tasks;
+using R3;
 using SimpleFileBrowser;
 using TMPro;
 using UnityEngine;
@@ -10,20 +12,25 @@ using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Utils;
+using VContainer;
 using Warlander.UI.Windows;
-using Zenject;
 
 namespace Warlander.Deedplanner.Gui.Windows
 {
     public class LoadWindow : MonoBehaviour
     {
-        [Inject] private Window _window;
-        [Inject] private GameManager _gameManager;
+        private Window _window;
+        [Inject] private MapHandler _mapHandler;
 
         [SerializeField] private Button _loadFromFileButton;
         [SerializeField] private Button _loadFromWebButton;
         [SerializeField] private TMP_InputField _pastebinInput = null;
         [SerializeField] private GameObject _webSaveGroup;
+
+        private void Awake()
+        {
+            _window = GetComponentInParent<Window>(true);
+        }
 
         private void Start()
         {
@@ -51,40 +58,43 @@ namespace Warlander.Deedplanner.Gui.Windows
         private void LoadFromWebOnClick()
         {
             string rawLink = _pastebinInput.text;
+            
+            string requestLink = WebLinkUtils.ParseToDirectDownloadLink(rawLink);
 
-            try
-            {
-                string requestLink = WebLinkUtils.ParseToDirectDownloadLink(rawLink);
+            WebUtils.ReadUrlToByteArrayAsync(requestLink)
+                .ToObservable()
+                .Subscribe(downloadedBytes =>
+                {
+                    string downloadedString = Encoding.Default.GetString(downloadedBytes);
+            
+                    // try to decompress the map, or load directly if it's not compressed
+                    try
+                    {
+                        byte[] compressedBytes = Convert.FromBase64String(downloadedString);
+                        byte[] pasteBytes = Decompress(compressedBytes);
+                        string pasteString = Encoding.Default.GetString(pasteBytes);
 
-                byte[] downloadedBytes = WebUtils.ReadUrlToByteArray(requestLink);
-                string downloadedString = Encoding.Default.GetString(downloadedBytes);
-                
-                // try to decompress the map, or load directly if it's not compressed
-                try
+                        _mapHandler.LoadMap(pasteString);
+                    }
+                    catch
+                    {
+                        _mapHandler.LoadMap(downloadedString);
+                    }
+                },
+                completion =>
                 {
-                    byte[] compressedBytes = Convert.FromBase64String(downloadedString);
-                    byte[] pasteBytes = Decompress(compressedBytes);
-                    string pasteString = Encoding.Default.GetString(pasteBytes);
-
-                    _gameManager.LoadMap(pasteString);
-                }
-                catch
-                {
-                    _gameManager.LoadMap(downloadedString);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning("Unable to load map from: " + rawLink);
-                if (Debug.isDebugBuild)
-                {
-                    Debug.LogError(ex);
-                }
-            }
-            finally
-            {
-                _window.Close();
-            }
+                    if (completion.IsFailure)
+                    {
+                        Debug.LogWarning("Unable to load map from: " + rawLink);
+                        if (Debug.isDebugBuild)
+                        {
+                            Debug.LogError(completion.Exception);
+                        }
+                    }
+                    
+                    _window.Close();
+                })
+                .AddTo(this);
         }
 
         private void LoadFileBrowser()
@@ -101,7 +111,7 @@ namespace Warlander.Deedplanner.Gui.Windows
                 return;
             }
             
-            _gameManager.LoadMap(result);
+            _mapHandler.LoadMap(result);
             _window.Close();
         }
 
@@ -127,7 +137,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             byte[] mapBytes = File.ReadAllBytes(path);
             string mapString = Encoding.Default.GetString(mapBytes);
 
-            _gameManager.LoadMap(mapString);
+            _mapHandler.LoadMap(mapString);
             _window.Close();
         }
 

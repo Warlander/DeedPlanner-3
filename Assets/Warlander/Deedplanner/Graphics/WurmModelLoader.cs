@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Utils;
 using Object = UnityEngine.Object;
@@ -17,50 +18,43 @@ namespace Warlander.Deedplanner.Graphics
             _materialLoader = materialLoader;
         }
 
-        public void LoadModel(string path, Action<GameObject> onLoaded)
+        public async Task<GameObject> LoadModelAsync(string path)
         {
-            LoadModel(path, Vector3.one, onLoaded);
+            return await LoadModelAsync(path, Vector3.one);
         }
 
-        public void LoadModel(string path, Vector3 scale, Action<GameObject> onLoaded)
+        public async Task<GameObject> LoadModelAsync(string path, Vector3 scale)
         {
             Debug.Log("Loading model at " + path);
 
-            WebUtils.ReadUrlToByteArray(path, data =>
+            var data = await WebUtils.ReadUrlToByteArrayAsync(path);
+            using BinaryReader source = new BinaryReader(new MemoryStream(data));
+            string fileFolder = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
+
+            GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(path));
+
+            int meshCount = source.ReadInt32();
+            int loadedMeshes = 0;
+            for (int i = 0; i < meshCount; i++)
             {
-                using BinaryReader source = new BinaryReader(new MemoryStream(data));
-                string fileFolder = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
-
-                GameObject modelGameObject = new GameObject(Path.GetFileNameWithoutExtension(path));
-
-                int meshCount = source.ReadInt32();
-                int loadedMeshes = 0;
-                for (int i = 0; i < meshCount; i++)
+                var loadedMesh = await LoadMeshObjectAsync(source, fileFolder, scale);
+                if (loadedMesh)
                 {
-                    LoadMeshObject(source, fileFolder, scale, loadedMesh =>
-                    {
-                        if (loadedMesh)
-                        {
-                            loadedMesh.transform.SetParent(modelGameObject.transform);
-                        }
-
-                        loadedMeshes++;
-
-                        if (loadedMeshes == meshCount)
-                        {
-                            onLoaded?.Invoke(modelGameObject);
-                        }
-                    });
+                    loadedMesh.transform.SetParent(modelGameObject.transform);
                 }
 
-                if (meshCount == 0)
+                loadedMeshes++;
+
+                if (loadedMeshes == meshCount)
                 {
-                    onLoaded?.Invoke(modelGameObject);
+                    return modelGameObject;
                 }
-            });
+            }
+            
+            return modelGameObject;
         }
 
-        private void LoadMeshObject(BinaryReader source, string fileFolder, Vector3 scale, Action<GameObject> onLoaded)
+        private async Task<GameObject> LoadMeshObjectAsync(BinaryReader source, string fileFolder, Vector3 scale)
         {
             Mesh loadedMesh = _meshLoader.LoadMesh(source, scale);
             string meshName = loadedMesh.name;
@@ -79,17 +73,15 @@ namespace Warlander.Deedplanner.Graphics
             if (!discardMesh)
             {
                 Debug.Log("Loading mesh " + meshName);
-                _materialLoader.LoadMaterial(source, fileFolder, mat =>
-                {
-                    GameObject meshObject = new GameObject(meshName);
+                var mat = await _materialLoader.LoadMaterialAsync(source, fileFolder);
+                GameObject meshObject = new GameObject(meshName);
 
-                    MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
-                    MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
-                    meshFilter.sharedMesh = loadedMesh;
-                    meshRenderer.sharedMaterial = mat;
+                MeshRenderer meshRenderer = meshObject.AddComponent<MeshRenderer>();
+                MeshFilter meshFilter = meshObject.AddComponent<MeshFilter>();
+                meshFilter.sharedMesh = loadedMesh;
+                meshRenderer.sharedMaterial = mat;
 
-                    onLoaded.Invoke(meshObject);
-                });
+                return meshObject;
             }
             else
             {
@@ -97,7 +89,7 @@ namespace Warlander.Deedplanner.Graphics
                 // We need to load material metadata to advance file read to the next valid position.
                 _materialLoader.LoadMaterialMetadata(source, fileFolder);
                 Object.Destroy(loadedMesh);
-                onLoaded.Invoke(null);
+                return null;
             }
         }
     }

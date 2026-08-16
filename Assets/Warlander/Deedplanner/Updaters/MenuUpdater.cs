@@ -17,7 +17,7 @@ using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Steam;
 using Warlander.UI.Windows;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
@@ -26,6 +26,7 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPSettings _settings;
         [Inject] private WindowCoordinator _windowCoordinator;
         [Inject] private ISteamConnection _steamConnection;
+        [Inject] private TabContext _tabContext;
 
         [SerializeField] private Button _resizeButton;
         [SerializeField] private Button _clearButton;
@@ -42,7 +43,7 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private TMP_Text _steamConnectionText;
         [SerializeField] private TMP_Text _versionText;
         
-        private void Start()
+        public override void Initialize()
         {
             bool mobile = Application.isMobilePlatform;
             bool web = Application.platform == RuntimePlatform.WebGLPlayer;
@@ -58,7 +59,7 @@ namespace Warlander.Deedplanner.Updaters
             }
 
             _versionText.text = Constants.TitleString;
-            
+
             _resizeButton.onClick.AddListener(ResizeButtonOnClick);
             _clearButton.onClick.AddListener(ClearOnClick);
             _saveButton.onClick.AddListener(SaveOnClick);
@@ -71,17 +72,21 @@ namespace Warlander.Deedplanner.Updaters
             _patreonButton.onClick.AddListener(PatreonOnClick);
             _paypalButton.onClick.AddListener(PaypalOnClick);
         }
-        
-        private void OnEnable()
+
+        public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
-            
+            _tabContext.TileSelectionMode = TileSelectionMode.Nothing;
+
             _steamConnectionText.gameObject.SetActive(_steamConnection.Connected);
             if (_steamConnection.Connected)
             {
                 _steamConnectionText.text = "Connected to Steam as " + _steamConnection.GetName();
             }
         }
+
+        public override void Disable() { }
+
+        public override void Tick() { }
 
         private void ResizeButtonOnClick()
         {

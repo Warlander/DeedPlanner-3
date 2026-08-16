@@ -1,11 +1,12 @@
-﻿using System;
+using System;
+using R3;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.UI.Utils;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 {
@@ -43,7 +44,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         {
             _shownPart = bridgePart;
             
-            bridgePart.GetUISprite().LoadOrGetSprite(sprite =>
+            bridgePart.GetUISprite().LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite =>
             {
                 if (this == null)
                 {

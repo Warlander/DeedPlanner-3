@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Grounds;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
@@ -17,7 +17,8 @@ namespace Warlander.Deedplanner.Updaters
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
+        [Inject] private TabContext _tabContext;
 
         [SerializeField] private UnityTree _groundsTree;
         
@@ -40,7 +41,7 @@ namespace Warlander.Deedplanner.Updaters
             set {
                 leftClickData = value;
                 leftClickText.text = leftClickData.Name;
-                leftClickData.Tex2d.LoadOrGetSprite(sprite => leftClickImage.sprite = sprite);
+                leftClickData.Tex2d.LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite => leftClickImage.sprite = sprite);
             }
         }
 
@@ -49,7 +50,7 @@ namespace Warlander.Deedplanner.Updaters
             set {
                 rightClickData = value;
                 rightClickText.text = rightClickData.Name;
-                rightClickData.Tex2d.LoadOrGetSprite(sprite => rightClickImage.sprite = sprite);
+                rightClickData.Tex2d.LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite => rightClickImage.sprite = sprite);
             }
         }
 
@@ -61,7 +62,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void Start()
+        public override void Initialize()
         {
             _groundsTree.ValueChanged += OnGroundsTreeValueChanged;
             LeftClickData = Database.DefaultGroundData;
@@ -77,20 +78,22 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void OnEnable()
+        public override void Enable()
         {
             UpdateSelectionMode();
         }
+
+        public override void Disable() { }
 
         private void UpdateSelectionMode()
         {
             if (editCorners)
             {
-                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Everything;
+                _tabContext.TileSelectionMode = TileSelectionMode.Everything;
             }
             else
             {
-                LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+                _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
             }
         }
 
@@ -108,11 +111,11 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void Update()
+        public override void Tick()
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
-                _gameManager.Map.CommandManager.FinishAction();
+                _mapHandler.Map.CommandManager.FinishAction();
             }
             
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
@@ -121,7 +124,7 @@ namespace Warlander.Deedplanner.Updaters
                 return;
             }
 
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
             int tileX = Mathf.FloorToInt(raycast.point.x / 4f);
             int tileZ = Mathf.FloorToInt(raycast.point.z / 4f);
             Tile tile = map[tileX, tileZ];
@@ -190,7 +193,7 @@ namespace Warlander.Deedplanner.Updaters
             {
                 return;
             }
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
             Stack<Tile> checkStack = new Stack<Tile>();
             checkStack.Push(tile);
             HashSet<Tile> tilesToChange = new HashSet<Tile>();

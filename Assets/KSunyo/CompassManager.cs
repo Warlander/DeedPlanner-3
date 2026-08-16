@@ -1,6 +1,6 @@
 using UnityEngine;
 using Warlander.Deedplanner.Settings;
-using Zenject;
+using VContainer;
 
 
 namespace KSunyo

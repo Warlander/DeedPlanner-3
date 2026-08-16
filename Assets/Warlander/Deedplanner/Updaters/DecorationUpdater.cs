@@ -9,13 +9,14 @@ using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
+using Warlander.Deedplanner.Graphics.Outline;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Settings;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
@@ -24,8 +25,10 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private DPSettings _settings;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
         [Inject] private IOutlineCoordinator _outlineCoordinator;
+        [Inject] private ISharedMaterials _sharedMaterials;
+        [Inject] private TabContext _tabContext;
 
         [SerializeField] private UnityTree _decorationsTree;
 
@@ -33,8 +36,8 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private Toggle rotationSnappingToggle;
         [SerializeField] private TMP_InputField rotationSensitivityInput;
 
-        [SerializeField] private Color allowedGhostColor = Color.green;
-        [SerializeField] private Color disabledGhostColor = Color.red;
+        [SerializeField] private Color allowedGhostColor = new Color(0f, 1f, 0f, 0.3f);
+        [SerializeField] private Color disabledGhostColor = new Color(1f, 0f, 0f, 0.3f);
         [SerializeField] private float minimumPlacementGap = 0.25f;
         [SerializeField] private float cornerSnapDistance = 0.25f;
 
@@ -52,16 +55,13 @@ namespace Warlander.Deedplanner.Updaters
 
         private bool isScrollRotate = false;
 
-        private void Awake()
+        public override void Initialize()
         {
             allowedGhostPropertyBlock = new MaterialPropertyBlock();
-            allowedGhostPropertyBlock.SetColor(ShaderPropertyIds.Color, allowedGhostColor);
+            allowedGhostPropertyBlock.SetColor(ShaderPropertyIds.BaseColor, allowedGhostColor);
             disabledGhostPropertyBlock = new MaterialPropertyBlock();
-            disabledGhostPropertyBlock.SetColor(ShaderPropertyIds.Color, disabledGhostColor);
-        }
+            disabledGhostPropertyBlock.SetColor(ShaderPropertyIds.BaseColor, disabledGhostColor);
 
-        private void Start()
-        {
             foreach (DecorationData data in Database.Decorations.Values)
             {
                 foreach (string[] category in data.Categories)
@@ -69,7 +69,7 @@ namespace Warlander.Deedplanner.Updaters
                     _decorationsTree.Add(data, category);
                 }
             }
-            
+
             rotationSensitivityInput.text = _settings.DecorationRotationSensitivity.ToString(CultureInfo.InvariantCulture);
             snapToGridToggle.isOn = _settings.DecorationSnapToGrid;
             rotationSnappingToggle.isOn = _settings.DecorationRotationSnapping;
@@ -79,9 +79,9 @@ namespace Warlander.Deedplanner.Updaters
             rotationSnappingToggle.onValueChanged.AddListener(RotationSnappingToggleOnValueChanged);
         }
 
-        private void OnEnable()
+        public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
+            _tabContext.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
         private void RotationSensitivityInputOnValueChanged(string value)
@@ -108,7 +108,7 @@ namespace Warlander.Deedplanner.Updaters
             });
         }
 
-        private void Update()
+        public override void Tick()
         {
             float rotationEditSensitivity = 1;
             float.TryParse(rotationSensitivityInput.text, NumberStyles.Any, CultureInfo.InvariantCulture, out rotationEditSensitivity);
@@ -135,7 +135,7 @@ namespace Warlander.Deedplanner.Updaters
             GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             LevelEntity levelEntity = raycast.transform.GetComponent<LevelEntity>();
 
-            Material ghostMaterial = GraphicsManager.Instance.GhostMaterial;
+            Material ghostMaterial = _sharedMaterials.GhostMaterial;
             if (dataChanged)
             {
                 data.Model.CreateOrGetModel(ghostMaterial, OnGhostCreated);
@@ -158,7 +158,7 @@ namespace Warlander.Deedplanner.Updaters
                 targetFloor = 0;
             }
 
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
 
             if (targetedTile != null)
             {
@@ -405,7 +405,7 @@ namespace Warlander.Deedplanner.Updaters
             }
         }
 
-        private void OnDisable()
+        public override void Disable()
         {
             ResetState();
         }
@@ -415,7 +415,7 @@ namespace Warlander.Deedplanner.Updaters
             placingDecoration = false;
             dragStartPos = new Vector2();
 
-            _gameManager.Map.CommandManager.UndoAction();
+            _mapHandler.Map.CommandManager.UndoAction();
         }
     }
 }

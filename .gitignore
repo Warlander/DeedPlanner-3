@@ -20,6 +20,7 @@ ExportedObj/
 *.csproj.meta
 *.unityproj
 *.sln
+*.slnx
 *.suo
 *.tmp
 *.user
@@ -41,3 +42,15 @@ sysinfo.txt
 *.unitypackage
 UserSettings/
 .output.txt
+
+# AI
+.ai/
+.claude/settings.local.json
+.claude/worktrees/
+.mcp.json
+
+# Windows reserved device name (not a real file)
+nul
+
+# Embedded packages are temporary local git repos used for development — do not commit.
+Packages/Embeds/

@@ -2,7 +2,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Warlander.Deedplanner.Inputs;
-using Zenject;
+using VContainer;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Settings
 {

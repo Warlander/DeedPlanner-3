@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Warlander.Core;
-using Zenject;
+using VContainer;
 
 namespace Warlander.UI.Utils
 {

@@ -3,13 +3,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Floors;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
@@ -18,7 +17,8 @@ namespace Warlander.Deedplanner.Updaters
         [Inject] private TooltipHandler _tooltipHandler;
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        [Inject] private GameManager _gameManager;
+        [Inject] private MapHandler _mapHandler;
+        [Inject] private TabContext _tabContext;
 
         [SerializeField] private UnityTree _floorsTree;
 
@@ -27,7 +27,7 @@ namespace Warlander.Deedplanner.Updaters
         [SerializeField] private Toggle northToggle;
         [SerializeField] private Toggle eastToggle;
 
-        private void Start()
+        public override void Initialize()
         {
             foreach (FloorData data in Database.Floors.Values)
             {
@@ -37,17 +37,19 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
         }
-        
-        private void OnEnable()
+
+        public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Tiles;
+            _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
         }
 
-        private void Update()
+        public override void Disable() { }
+
+        public override void Tick()
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
-                _gameManager.Map.CommandManager.FinishAction();
+                _mapHandler.Map.CommandManager.FinishAction();
             }
             
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
@@ -102,11 +104,11 @@ namespace Warlander.Deedplanner.Updaters
 
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
-                _gameManager.Map[x, y].SetFloor(data, orientation, floor);
+                _mapHandler.Map[x, y].SetFloor(data, orientation, floor);
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
             {
-                _gameManager.Map[x, y].SetFloor(null, orientation, floor);
+                _mapHandler.Map[x, y].SetFloor(null, orientation, floor);
             }
         }
     }

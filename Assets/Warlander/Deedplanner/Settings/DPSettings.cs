@@ -43,20 +43,7 @@ namespace Warlander.Deedplanner.Settings
         
         public bool CompassVisibility = true;
 
-        private static WaterQuality WaterDefaultQuality
-        {
-            get
-            {
-                if (SystemInfo.deviceType == DeviceType.Desktop && Application.platform != RuntimePlatform.WebGLPlayer)
-                {
-                    return WaterQuality.High;
-                }
-                else
-                {
-                    return WaterQuality.Simple;
-                }
-            }
-        }
+        private static WaterQuality WaterDefaultQuality => WaterQuality.Ultra;
 
         public void Modify(Action<DPSettings> modifyCallback, bool autoSave = true)
         {

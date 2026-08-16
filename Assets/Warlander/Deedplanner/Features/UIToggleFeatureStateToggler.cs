@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
+using VContainer;
+using Warlogic.Features;
 
 namespace Warlander.Deedplanner.Features
 {
@@ -10,10 +11,10 @@ namespace Warlander.Deedplanner.Features
         [SerializeField] private Feature _feature;
         [SerializeField] private Toggle _toggle;
 
-        private IFeatureStateRetriever _featureStateRetriever;
+        private IFeatureStateRetriever<Feature> _featureStateRetriever;
 
         [Inject]
-        private void Construct(IFeatureStateRetriever featureStateRetriever)
+        private void Construct(IFeatureStateRetriever<Feature> featureStateRetriever)
         {
             _featureStateRetriever = featureStateRetriever;
         }

@@ -10,15 +10,15 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logic;
+using VContainer;
 using Warlander.UI.Windows;
-using Zenject;
 
 namespace Warlander.Deedplanner.Gui.Windows
 {
     public class SaveWindow : MonoBehaviour
     {
-        [Inject] private Window _window;
-        [Inject] private GameManager _gameManager;
+        private Window _window;
+        [Inject] private MapHandler _mapHandler;
 
         [SerializeField] private Button _saveToFileButton;
         [SerializeField] private Button _pastebinButton;
@@ -28,6 +28,11 @@ namespace Warlander.Deedplanner.Gui.Windows
         [SerializeField] private GameObject _webSaveGroup;
 
         private UnityWebRequest _currentPastebinRequest;
+
+        private void Awake()
+        {
+            _window = GetComponentInParent<Window>(true);
+        }
 
         private void Start()
         {
@@ -74,7 +79,7 @@ namespace Warlander.Deedplanner.Gui.Windows
 
         private string ParseCurrentMapToString()
         {
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
             
             StringBuilder build = new StringBuilder();
             XmlWriterSettings settings = new XmlWriterSettings();
@@ -111,7 +116,7 @@ namespace Warlander.Deedplanner.Gui.Windows
             _pastebinButton.interactable = false;
             _webVersionButton.interactable = false;
             
-            Map map = _gameManager.Map;
+            Map map = _mapHandler.Map;
 
             if (!map)
             {

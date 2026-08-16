@@ -1,12 +1,13 @@
-﻿using System;
+using System;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Graphics
 {
     public interface IWurmMaterialLoader
     {
-        void LoadMaterial(BinaryReader source, string modelFolder, Action<Material> onLoaded);
+        Task<Material> LoadMaterialAsync(BinaryReader source, string modelFolder);
         MaterialMetadata LoadMaterialMetadata(BinaryReader source, string modelFolder);
     }
 }

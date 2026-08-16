@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Updaters
 {
@@ -12,13 +11,18 @@ namespace Warlander.Deedplanner.Updaters
     {
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private DPInput _input;
-        
-        private void OnEnable()
+        [Inject] private TabContext _tabContext;
+
+        public override void Initialize() { }
+
+        public override void Enable()
         {
-            LayoutManager.Instance.TileSelectionMode = TileSelectionMode.Nothing;
+            _tabContext.TileSelectionMode = TileSelectionMode.Nothing;
         }
 
-        private void Update()
+        public override void Disable() { }
+
+        public override void Tick()
         {
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)

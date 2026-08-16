@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 using Warlander.Deedplanner.Graphics;
-using Zenject;
+using VContainer;
 
 namespace Warlander.Deedplanner.Data.Bridges
 {

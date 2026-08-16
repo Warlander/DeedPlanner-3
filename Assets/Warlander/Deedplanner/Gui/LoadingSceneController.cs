@@ -5,14 +5,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Warlander.Core;
+using VContainer;
 using Warlander.Deedplanner.Data;
-using Zenject;
 
 namespace Warlander.Deedplanner.Gui
 {
     public class LoadingSceneController : WarlanderBehaviour
     {
-        [Inject] private ZenjectSceneLoader _sceneLoader;
         [Inject] private DataLoader _dataLoader;
 
         private const float ProgressAfterLoadingData = 0.5f;
@@ -54,7 +53,7 @@ namespace Warlander.Deedplanner.Gui
             _loadingBar.value = ProgressAfterLoadingData;
             _loadingText.text = "Launching";
 
-            _sceneLoadingOperation = _sceneLoader.LoadSceneAsync(SceneNames.MainScene, LoadSceneMode.Additive);
+            _sceneLoadingOperation = SceneManager.LoadSceneAsync(SceneNames.MainScene, LoadSceneMode.Additive);
             _sceneLoadingOperation.completed += SceneLoadingOperationOnCompleted;
         }
 

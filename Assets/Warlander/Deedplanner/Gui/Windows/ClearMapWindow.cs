@@ -1,18 +1,23 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 using Warlander.Deedplanner.Logic;
 using Warlander.UI.Windows;
-using Zenject;
 
 namespace Warlander.Deedplanner.Gui.Windows
 {
     public class ClearMapWindow : MonoBehaviour
     {
-        [Inject] private Window _window;
-        [Inject] private GameManager _gameManager;
-        
+        private Window _window;
+        [Inject] private MapHandler _mapHandler;
+
         [SerializeField] private Button _clearMapButton;
         [SerializeField] private Button _cancelButton;
+
+        private void Awake()
+        {
+            _window = GetComponentInParent<Window>(true);
+        }
 
         private void Start()
         {
@@ -22,7 +27,7 @@ namespace Warlander.Deedplanner.Gui.Windows
 
         private void ClearMapOnClick()
         {
-            _gameManager.ClearMap();
+            _mapHandler.ClearMap();
             _window.Close();
         }
 

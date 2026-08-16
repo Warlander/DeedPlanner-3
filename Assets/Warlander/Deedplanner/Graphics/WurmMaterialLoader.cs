@@ -1,23 +1,24 @@
-﻿using System;
+using System;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Graphics
 {
     public class WurmMaterialLoader : IWurmMaterialLoader
     {
-        private readonly IMaterialCache materialCache;
+        private readonly IMaterialCache _materialCache;
 
         public WurmMaterialLoader(IMaterialCache materialCache)
         {
-            this.materialCache = materialCache;
+            _materialCache = materialCache;
         }
 
-        public void LoadMaterial(BinaryReader source, string modelFolder, Action<Material> onLoaded)
+        public async Task<Material> LoadMaterialAsync(BinaryReader source, string modelFolder)
         {
             var materialMetadata = LoadMaterialMetadata(source, modelFolder);
-            Material material = materialCache.GetOrCreateMaterial(materialMetadata);
-            onLoaded.Invoke(material);
+            Material material = await _materialCache.GetOrCreateMaterialAsync(materialMetadata);
+            return material;
         }
 
         public MaterialMetadata LoadMaterialMetadata(BinaryReader source, string modelFolder)
