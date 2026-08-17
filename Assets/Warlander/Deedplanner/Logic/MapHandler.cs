@@ -49,6 +49,7 @@ namespace Warlander.Deedplanner.Logic
             Map newMap = _factory.ResizeMap(oldMap, left, right, bottom, top);
             UnityEngine.Object.Destroy(oldMap.gameObject);
             _registry.SetMap(newMap);
+            newMap.MarkDirty();
         }
 
         public void ClearMap()
@@ -58,6 +59,7 @@ namespace Warlander.Deedplanner.Logic
             Map newMap = _factory.ClearMap(oldMap);
             UnityEngine.Object.Destroy(oldMap.gameObject);
             _registry.SetMap(newMap);
+            newMap.MarkDirty();
         }
 
         public void LoadMap(string mapString)

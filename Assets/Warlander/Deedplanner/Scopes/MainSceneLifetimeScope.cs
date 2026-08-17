@@ -8,12 +8,14 @@ using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Graphics.Screenshots;
 using Warlander.Deedplanner.Graphics.Water;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Gui.Home;
 using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Gui.Widgets.Bridges;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logic.Outlines;
+using Warlander.Deedplanner.Logic.Saving;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Updaters;
 
@@ -65,6 +67,10 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterComponentInHierarchy<FloorUpdaterView>().As<IFloorUpdaterView>();
             builder.RegisterComponentInHierarchy<WallUpdaterView>().As<IWallUpdaterView>();
             builder.RegisterComponentInHierarchy<MenuUpdaterView>().As<IMenuUpdaterView>();
+            builder.RegisterComponentInHierarchy<HomeScreenView>().As<IHomeScreenView>();
+            builder.Register<HomeScreenCardCatalog>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<HomeScreenPresenter>().AsSelf();
+            builder.Register<IHomeScreenPresenter>(container => container.Resolve<HomeScreenPresenter>(), Lifetime.Singleton);
             builder.RegisterComponentInHierarchy<DecorationUpdaterView>().As<IDecorationUpdaterView>();
             builder.RegisterComponentInHierarchy<ToolsUpdaterView>().As<IToolsUpdaterView>();
             builder.RegisterComponentInHierarchy<HeightUpdaterView>().As<IHeightUpdaterView>();
@@ -108,13 +114,28 @@ namespace Warlander.Deedplanner.Scopes
 
             builder.Register<MapHandler>(Lifetime.Singleton);
             builder.RegisterEntryPoint<UndoRedoInputHandler>();
+            builder.RegisterEntryPoint<QuickSaveInputHandler>();
             builder.Register<ScreenshotRenderer>(Lifetime.Singleton).As<IScreenshotRenderer>();
             builder.Register<CurrentViewScreenshotCapture>(Lifetime.Singleton);
+            builder.Register<DeedThumbnailCapture>(Lifetime.Singleton);
+            builder.Register<PastebinSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
+            builder.Register<SteamCloudSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
+#if UNITY_WEBGL && !UNITY_EDITOR
+            builder.Register<WebFileSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
+            builder.Register<LocalStorageSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
+#else
+            builder.Register<FileSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
+#endif
+            builder.Register<SaveCoordinator>(Lifetime.Singleton);
+            builder.Register<ISaveCoordinator>(container => container.Resolve<SaveCoordinator>(), Lifetime.Singleton);
+            builder.RegisterEntryPoint<AutoSaveScheduler>().AsSelf();
+            builder.Register<IAutoSaveScheduler>(container => container.Resolve<AutoSaveScheduler>(), Lifetime.Singleton);
             builder.Register<ScreenshotSaver>(Lifetime.Singleton);
             builder.RegisterEntryPoint<ScreenshotInputListener>();
             builder.RegisterEntryPoint<UpdaterCoordinator>();
             builder.Register<MapProjectorFacade>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.RegisterEntryPoint<StartupMapLoader>();
+            builder.Register<RecentMapsStore>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<StartupMapSelection>();
 
             builder.Register<OverlayMeshLoader>(Lifetime.Singleton);
             builder.Register<HeightmapHandleMeshLoader>(Lifetime.Singleton);
