@@ -18,7 +18,12 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         public SaveBackendId Id => SaveBackendId.Pastebin;
         public string DisplayName => "Pastebin";
+#if UNITY_WEBGL && !UNITY_EDITOR
+        // CORS blocks POST to Pastebin from the browser; pastes remain readable via GET.
+        public SaveCapabilities Capabilities => SaveCapabilities.Load;
+#else
         public SaveCapabilities Capabilities => SaveCapabilities.Save | SaveCapabilities.Load;
+#endif
         public bool IsVolatile => true;
         public string VolatileWarning =>
             "Pastebin is not permanent storage. Pastes can be removed by Pastebin at any time. Keep a local file copy of any map you care about.";
