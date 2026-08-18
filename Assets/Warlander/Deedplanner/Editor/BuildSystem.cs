@@ -58,6 +58,7 @@ namespace Warlander.Deedplanner.Editor
             else
             {
                 Debug.Log("FAILED BUILD Windows");
+                ExitBatchWithError();
                 return false;
             }
         }
@@ -91,6 +92,7 @@ namespace Warlander.Deedplanner.Editor
             else
             {
                 Debug.Log("FAILED BUILD Linux");
+                ExitBatchWithError();
                 return false;
             }
         }
@@ -131,6 +133,7 @@ namespace Warlander.Deedplanner.Editor
             else
             {
                 Debug.Log("FAILED BUILD Mac");
+                ExitBatchWithError();
                 return false;
             }
         }
@@ -160,6 +163,7 @@ namespace Warlander.Deedplanner.Editor
             else
             {
                 Debug.Log("FAILED BUILD WebGL");
+                ExitBatchWithError();
                 return false;
             }
         }
@@ -170,6 +174,16 @@ namespace Warlander.Deedplanner.Editor
             options.scenes = new[] { "Assets/Scenes/LoadingScene.unity", "Assets/Scenes/MainScene.unity" };
 
             return options;
+        }
+
+        // -executeMethod ignores return values, so a failed build must exit the
+        // batch process explicitly or CI sees exit code 0
+        private static void ExitBatchWithError()
+        {
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(1);
+            }
         }
 
         private static void CreateSteamAppId(string path)
