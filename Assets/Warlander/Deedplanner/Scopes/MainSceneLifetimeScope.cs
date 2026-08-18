@@ -119,7 +119,9 @@ namespace Warlander.Deedplanner.Scopes
             builder.Register<CurrentViewScreenshotCapture>(Lifetime.Singleton);
             builder.Register<DeedThumbnailCapture>(Lifetime.Singleton);
             builder.Register<PastebinSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
+#if !DISABLESTEAMWORKS
             builder.Register<SteamCloudSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
+#endif
 #if UNITY_WEBGL && !UNITY_EDITOR
             builder.Register<WebFileSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
             builder.Register<LocalStorageSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
