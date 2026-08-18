@@ -232,7 +232,7 @@ namespace Warlander.Deedplanner.Gui.Home
 
                 _saveCoordinator.RecentMaps.StoreThumbnail(item.Location, jpeg);
 
-                HomeScreenCardData card = BuildDiscoveredCard(item);
+                HomeScreenCardData card = item.Entry != null ? BuildCard(item) : BuildDiscoveredCard(item);
                 _view.UpdateCard(item.Location, new HomeScreenCardData(
                     card.Location, card.Name, card.TimeText, card.LocationHint,
                     card.BadgeText, ToTexture(jpeg), card.Chip, card.ShowDelete));
@@ -280,13 +280,20 @@ namespace Warlander.Deedplanner.Gui.Home
                 chip = HomeScreenChip.Missing;
             }
 
+            Texture2D thumbnail = LoadThumbnailTexture(entry);
+            if (thumbnail == null)
+            {
+                // WebGL has no thumbnail file cache — fall back to the save payload's embedded screenshot
+                item.NeedsThumbnail = true;
+            }
+
             return new HomeScreenCardData(
                 entry.Location,
                 entry.Location.DisplayName,
                 FormatTime(item.SortTimeUtc),
                 backend?.LocationHint(entry.Location),
                 BadgeLabel(entry.Location.BackendId),
-                LoadThumbnailTexture(entry),
+                thumbnail,
                 chip);
         }
 

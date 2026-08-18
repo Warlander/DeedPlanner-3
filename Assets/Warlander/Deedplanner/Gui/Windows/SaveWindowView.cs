@@ -20,6 +20,7 @@ namespace Warlander.Deedplanner.Gui.Windows
         [Inject] private MapHandler _mapHandler;
 
         [SerializeField] private TMP_Text _infoText;
+        [SerializeField] private TMP_InputField _nameField;
         [SerializeField] private Transform _saveContainer;
         [SerializeField] private Transform _exportContainer;
         [SerializeField] private Button _actionButtonPrototype;
@@ -43,7 +44,8 @@ namespace Warlander.Deedplanner.Gui.Windows
         {
             _payload = _saveCoordinator.SerializeCurrentMap();
             long sizeKb = Encoding.UTF8.GetByteCount(_payload) / 1024;
-            _infoText.text = $"{_mapHandler.Map.DisplayName} · {sizeKb} KB";
+            _infoText.text = $"{sizeKb} KB";
+            _nameField.text = _mapHandler.Map.DisplayName;
 
             ISaveBackend volatileBackend = null;
             foreach (ISaveBackend backend in _saveCoordinator.Backends)
@@ -95,6 +97,8 @@ namespace Warlander.Deedplanner.Gui.Windows
             }
 
             SetActionButtonsInteractable(false);
+            string mapName = _nameField.text.Trim();
+            _mapHandler.Map.DisplayName = mapName.Length > 0 ? mapName : "Untitled";
             try
             {
                 MapLocation? location = await _saveCoordinator.SaveAsync(backendId);
