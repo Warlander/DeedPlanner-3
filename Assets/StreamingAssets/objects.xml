@@ -209,6 +209,10 @@
 			<tex location="GroundTextures/planks.dds"/>
 			<category>Roads</category>
 		</ground>
+		<ground name="Tarred Planks" shortname="tpl">
+			<tex location="GroundTextures/floorBoardTarred.dds"/>
+			<category>Roads</category>
+		</ground>
 		<ground name="Enchanted forest" shortname="ef">
 			<tex location="GroundTextures/enchantedforest.dds"/>
 			<category>Enchanted terrain</category>
