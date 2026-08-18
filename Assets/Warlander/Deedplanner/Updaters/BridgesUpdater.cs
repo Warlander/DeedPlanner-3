@@ -46,6 +46,7 @@ namespace Warlander.Deedplanner.Updaters
         public TileCoords SecondClickedTile => _secondClickedTile;
 
         private Bridge _lastFrameHoveredBridge;
+        private int _hoveredSegment = -1;
         private TileCoords _firstClickedTile;
         private TileCoords _secondClickedTile;
 
@@ -233,6 +234,33 @@ namespace Warlander.Deedplanner.Updaters
             return bridge != null && bridge == SelectedBridge;
         }
 
+        // -1 clears the segment highlight. Hovered segment goes Neutral on top of the
+        // selection's Positive, same priority so deselection still clears everything.
+        public void SetHoveredSegment(int segmentIndex)
+        {
+            if (SelectedBridge == null || segmentIndex == _hoveredSegment)
+            {
+                return;
+            }
+
+            _hoveredSegment = segmentIndex;
+            ApplyHighlighting();
+        }
+
+        private void ApplyHighlighting()
+        {
+            if (SelectedBridge == null)
+            {
+                return;
+            }
+
+            SelectedBridge.EnableHighlighting(OutlineType.Positive);
+            if (_hoveredSegment >= 0)
+            {
+                SelectedBridge.HighlightSegment(_hoveredSegment, OutlineType.Neutral);
+            }
+        }
+
         private void OnBridgeClicked(Bridge bridge)
         {
             if (bridge == null)
@@ -248,6 +276,7 @@ namespace Warlander.Deedplanner.Updaters
 
             bool bridgeChanged = SelectedBridge != bridge;
             SelectedBridge = bridge;
+            _hoveredSegment = -1;
             SelectedBridge.EnableHighlighting(OutlineType.Positive);
             SelectedBridge.Rebuilt += OnSelectedBridgeRebuilt;
 
@@ -267,7 +296,7 @@ namespace Warlander.Deedplanner.Updaters
         {
             if (SelectedBridge != null)
             {
-                SelectedBridge.EnableHighlighting(OutlineType.Positive);
+                ApplyHighlighting();
             }
 
             SelectedBridgeChanged?.Invoke();
@@ -290,6 +319,7 @@ namespace Warlander.Deedplanner.Updaters
 
                 bool bridgeChanged = SelectedBridge != null;
                 SelectedBridge = null;
+                _hoveredSegment = -1;
 
                 RefreshUIState();
                 

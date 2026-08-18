@@ -435,6 +435,30 @@ namespace Warlander.Deedplanner.Data.Bridges
             return segmentParts[index];
         }
 
+        public List<BridgePart> GetSegmentParts(int segmentIndex)
+        {
+            int startCoord = verticalOrientation ? Mathf.Min(firstY, secondY) : Mathf.Min(firstX, secondX);
+            List<BridgePart> result = new List<BridgePart>();
+            foreach (BridgePart part in bridgeParts)
+            {
+                int partCoord = verticalOrientation ? part.Tile.Y : part.Tile.X;
+                if (partCoord - startCoord == segmentIndex)
+                {
+                    result.Add(part);
+                }
+            }
+
+            return result;
+        }
+
+        public void HighlightSegment(int segmentIndex, OutlineType type)
+        {
+            foreach (BridgePart part in GetSegmentParts(segmentIndex))
+            {
+                _outlineCoordinator.AddObject(part, type, 1);
+            }
+        }
+
         public string GetSegmentsString()
         {
             return BridgePartTypeUtils.EncodeSegments(segments);

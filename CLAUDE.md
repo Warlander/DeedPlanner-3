@@ -44,6 +44,8 @@ unity open "E:/Unity/DeedPlanner-3" --args "-automated"
 
 Without it, play mode ENTRY stalls indefinitely while the Editor window is unfocused (in-play behavior is unaffected).
 
+**CLI call latency / polling pitfall:** `unity open` stays attached for the Editor's lifetime — always run it as a background task and never wait on its completion. Every CLI invocation on this machine also pays a multi-second telemetry fetch timeout (no external network), so tight `until unity status | grep -q ready` polling loops effectively hang: each iteration is slow and the Editor typically becomes ready long before the loop notices. Instead, launch, do other work, then check `unity status` once when needed — treat "hangs on status polling" as "Editor is probably already up, just check it".
+
 **Code evaluation:** the Pipeline package ships a CodeEval command (edit-mode AND runtime — `unity command` / `unity list` can also attach to a running Player via `--runtime`). This lets the CLI execute arbitrary C# in the live Editor or in the running app — usable both for manipulating the Editor (scenes, assets, play mode) and for testing the app's behavior from the outside. Discover exact command names with `unity list`.
 
 ## Agentic Verification

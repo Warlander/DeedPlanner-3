@@ -20,6 +20,8 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 
         public event Action Clicked;
 
+        public bool IsPointerOver => _pointerOverDetector.IsPointerOver;
+
         private string _tooltipText;
 
         private void Awake()

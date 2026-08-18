@@ -29,12 +29,35 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         [SerializeField] private Sprite _eastSprite;
 
         public event Action<int> SegmentClicked;
+        public event Action<int> SegmentHovered;
 
         private readonly List<BridgeSegmentItem> _bridgeSegments = new List<BridgeSegmentItem>();
+        private int _hoveredSegment = -1;
 
         private void Awake()
         {
             _bridgeSegmentPrefab.gameObject.SetActive(false);
+        }
+
+        // Resolved centrally each frame: per-item enter/exit events can arrive in any
+        // order within one frame on fast moves, letting a stale exit clear a fresh hover.
+        private void Update()
+        {
+            int hovered = -1;
+            for (int i = 0; i < _bridgeSegments.Count; i++)
+            {
+                if (_bridgeSegments[i].IsPointerOver)
+                {
+                    hovered = i;
+                    break;
+                }
+            }
+
+            if (hovered != _hoveredSegment)
+            {
+                _hoveredSegment = hovered;
+                SegmentHovered?.Invoke(hovered);
+            }
         }
 
         public void ShowBridge(Bridge bridge, bool editable, string tooltipSuffix)

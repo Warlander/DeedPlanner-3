@@ -35,6 +35,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         public void Initialize()
         {
             _view.SegmentClicked += OnSegmentClicked;
+            _view.SegmentHovered += OnSegmentHovered;
             _bridgesUpdater.SelectedBridgeChanged += OnSelectedBridgeChanged;
 
             OnSelectedBridgeChanged();
@@ -43,7 +44,13 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         public void Dispose()
         {
             _view.SegmentClicked -= OnSegmentClicked;
+            _view.SegmentHovered -= OnSegmentHovered;
             _bridgesUpdater.SelectedBridgeChanged -= OnSelectedBridgeChanged;
+        }
+
+        private void OnSegmentHovered(int index)
+        {
+            _bridgesUpdater.SetHoveredSegment(index);
         }
 
         private void OnSelectedBridgeChanged()
