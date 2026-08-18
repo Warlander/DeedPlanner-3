@@ -23,6 +23,9 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         public bool IsPointerOver => _pointerOverDetector.IsPointerOver;
 
         private string _tooltipText;
+        private Sprite _partSprite;
+        private Sprite _pavingSprite;
+        private bool _mirrored;
 
         private void Awake()
         {
@@ -45,7 +48,8 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         public void Set(BridgePart bridgePart, string tooltipSuffix = null)
         {
             _tooltipText = bridgePart.PartType.ToHumanFriendlyName() + tooltipSuffix;
-            transform.localScale = Vector3.one;
+            _pavingSprite = null;
+            _mirrored = bridgePart.Mirrored;
 
             bridgePart.GetUISprite().LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite =>
             {
@@ -55,16 +59,39 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
                     return;
                 }
 
-                _bridgePartImage.sprite = sprite;
-                int mirroredImageScale = bridgePart.Mirrored ? -1 : 1;
-                transform.localScale = new Vector3(mirroredImageScale, 1, 1);
+                _partSprite = sprite;
+                ApplySprite();
             });
+        }
+
+        // Paving sprite replaces the part sprite; null restores it.
+        public void SetPaving(Sprite pavingSprite, string tooltipText)
+        {
+            _pavingSprite = pavingSprite;
+            _tooltipText = tooltipText;
+            ApplySprite();
+        }
+
+        private void ApplySprite()
+        {
+            if (_pavingSprite)
+            {
+                _bridgePartImage.sprite = _pavingSprite;
+                transform.localScale = Vector3.one;
+            }
+            else if (_partSprite)
+            {
+                _bridgePartImage.sprite = _partSprite;
+                int mirroredImageScale = _mirrored ? -1 : 1;
+                transform.localScale = new Vector3(mirroredImageScale, 1, 1);
+            }
         }
 
         public void SetPreview(TextureReference sprite, BridgePartType partType)
         {
             _tooltipText = partType.ToHumanFriendlyName();
-            transform.localScale = Vector3.one;
+            _pavingSprite = null;
+            _mirrored = false;
 
             sprite.LoadOrGetSpriteAsync().ToObservable().Subscribe(loadedSprite =>
             {
@@ -74,15 +101,17 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
                     return;
                 }
 
-                _bridgePartImage.sprite = loadedSprite;
+                _partSprite = loadedSprite;
+                ApplySprite();
             });
         }
 
         public void SetIncorrect(Sprite incorrectSprite, string tooltipText)
         {
             _tooltipText = tooltipText;
-            transform.localScale = Vector3.one;
-            _bridgePartImage.sprite = incorrectSprite;
+            _pavingSprite = null;
+            _partSprite = incorrectSprite;
+            ApplySprite();
         }
 
         public void SetClickable(bool clickable)

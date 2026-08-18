@@ -116,6 +116,7 @@ namespace Warlander.Deedplanner.Data
             IncrementStep(documents, "Loading roofs", LoadRoofs);
             IncrementStep(documents, "Loading objects", LoadObjects);
             IncrementStep(documents, "Loading bridges", LoadBridges);
+            IncrementStep(documents, "Loading bridge pavements", LoadBridgePavements);
             
             Completed = true;
             
@@ -201,6 +202,42 @@ namespace Warlander.Deedplanner.Data
                 GroundData data = new GroundData(name, shortName, categories.ToArray(), tex2d, tex3d, diagonal);
                 Database.Grounds[shortName] = data;
                 Debug.Log("Ground data " + name + " loaded and ready to use!");
+            }
+        }
+
+        private void LoadBridgePavements(XmlDocument document)
+        {
+            XmlNodeList entities = document.GetElementsByTagName("bridgepavement");
+
+            foreach (XmlElement element in entities)
+            {
+                string name = element.GetAttribute("name");
+                string shortName = element.GetAttribute("shortname");
+                TextureReference tex = null;
+
+                foreach (XmlElement child in element)
+                {
+                    if (child.LocalName == "tex")
+                    {
+                        tex = _textureReferenceFactory.GetTextureReference(child);
+                    }
+                }
+
+                if (tex == null)
+                {
+                    Debug.LogWarning("Bridge pavement " + name + " has no texture, skipping");
+                    continue;
+                }
+
+                bool unique = VerifyShortName(shortName);
+                if (!unique)
+                {
+                    Debug.LogWarning("Bridge pavement shortname " + shortName + " conflicts with an existing one, skipping");
+                    continue;
+                }
+
+                Database.BridgePavements[shortName] = new BridgePavementData(name, shortName, tex);
+                Debug.Log("Bridge pavement " + name + " loaded and ready to use!");
             }
         }
 
@@ -472,6 +509,7 @@ namespace Warlander.Deedplanner.Data
                 string name = element.GetAttribute("name");
                 int supportHeight = int.Parse(element.GetAttribute("supportheight"));
                 int maxWidth = int.Parse(element.GetAttribute("maxwidth"));
+                bool canBePaved = element.GetAttribute("paveable") == "true";
 
                 Debug.Log("Loading object " + name);
 
@@ -537,7 +575,7 @@ namespace Warlander.Deedplanner.Data
                 }
 
                 BridgeData data = new BridgeData(name, maxWidth, supportHeight, partsData.ToArray(),
-                    allowedTypes.ToArray(), sidesCost);
+                    allowedTypes.ToArray(), sidesCost, canBePaved);
                 Database.Bridges[name] = data;
             }
         }

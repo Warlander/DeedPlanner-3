@@ -18,6 +18,7 @@ namespace Warlander.Deedplanner.Data
         public static readonly Dictionary<string, RoofData> Roofs = new Dictionary<string, RoofData>();
         public static readonly Dictionary<string, DecorationData> Decorations = new Dictionary<string, DecorationData>();
         public static readonly Dictionary<string, BridgeData> Bridges = new Dictionary<string, BridgeData>();
+        public static readonly Dictionary<string, BridgePavementData> BridgePavements = new Dictionary<string, BridgePavementData>();
 
         public static GroundData DefaultGroundData => Grounds["gr"];
         public static GroundData DefaultSecondaryGroundData => Grounds["di"];

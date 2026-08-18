@@ -22,10 +22,12 @@ namespace Warlander.Deedplanner.Data.Bridges
         public Vector2Int SecondTile => new Vector2Int(secondX, secondY);
 
         public event Action Rebuilt;
+        public event Action PavementsChanged;
 
         private readonly IOutlineCoordinator _outlineCoordinator;
 
         private BridgePartType[] segments;
+        private BridgePavementData[] pavements;
         private readonly int firstLevel;
         private readonly int firstX;
         private readonly int firstY;
@@ -50,6 +52,14 @@ namespace Warlander.Deedplanner.Data.Bridges
             Data = Database.Bridges[dataString];
 
             segments = BridgePartTypeUtils.DecodeSegments(element.InnerText);
+            if (element.HasAttribute("paving"))
+            {
+                pavements = BridgePavementSerializer.Decode(element.GetAttribute("paving"), segments.Length);
+            }
+            else
+            {
+                pavements = new BridgePavementData[segments.Length];
+            }
             firstLevel = int.Parse(element.GetAttribute("firstFloor"));
             firstX = int.Parse(element.GetAttribute("firstX"));
             firstY = int.Parse(element.GetAttribute("firstY"));
@@ -93,6 +103,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             Data = originalBridge.Data;
 
             segments = (BridgePartType[])originalBridge.segments.Clone();
+            pavements = (BridgePavementData[])originalBridge.pavements.Clone();
             firstLevel = originalBridge.firstLevel;
             firstX = originalBridge.firstX + tileShift.x;
             firstY = originalBridge.firstY + tileShift.y;
@@ -118,6 +129,7 @@ namespace Warlander.Deedplanner.Data.Bridges
 
             Data = data;
             this.segments = BridgePartTypeUtils.DecodeSegments(segments);
+            pavements = new BridgePavementData[this.segments.Length];
             this.additionalData = additionalData;
             bridgeType = type;
             surfaced = start.Level >= 0;
@@ -201,7 +213,7 @@ namespace Warlander.Deedplanner.Data.Bridges
                     GameObject bridgePartObject = new GameObject("Bridge Part " + Data.Name, typeof(BridgePart));
                     BridgePart bridgePart = bridgePartObject.GetComponent<BridgePart>();
                     map[x, y].RegisterBridgePart(bridgePart);
-                    bridgePart.Initialise(this, segment, side, orientation, x, y, totalHeight, delta);
+                    bridgePart.Initialise(this, segment, side, orientation, x, y, totalHeight, delta, currentSegment);
 
                     bridgeParts.Add(bridgePart);
                     if (segmentParts.Count == currentSegment)
@@ -464,6 +476,27 @@ namespace Warlander.Deedplanner.Data.Bridges
             return BridgePartTypeUtils.EncodeSegments(segments);
         }
 
+        public BridgePavementData GetPavement(int segmentIndex)
+        {
+            return pavements[segmentIndex];
+        }
+
+        public BridgePavementData[] GetPavements()
+        {
+            return (BridgePavementData[])pavements.Clone();
+        }
+
+        public void SetPavements(BridgePavementData[] newPavements)
+        {
+            pavements = newPavements;
+            foreach (BridgePart part in bridgeParts)
+            {
+                part.RefreshPaving();
+            }
+
+            PavementsChanged?.Invoke();
+        }
+
         public bool[] GetSupportPositions()
         {
             bool[] supports = new bool[segments.Length];
@@ -497,6 +530,11 @@ namespace Warlander.Deedplanner.Data.Bridges
             segments = BridgePartTypeUtils.DecodeSegments(newSegments);
             additionalData = newAdditionalData;
 
+            if (pavements == null || pavements.Length != segments.Length)
+            {
+                pavements = new BridgePavementData[segments.Length];
+            }
+
             ConstructBridge(map);
             Rebuilt?.Invoke();
         }
@@ -514,6 +552,11 @@ namespace Warlander.Deedplanner.Data.Bridges
             localRoot.SetAttribute("sag", additionalData.ToString());
             localRoot.SetAttribute("orientation", verticalOrientation ? "true" : "false");
             localRoot.SetAttribute("surfaced", surfaced ? "true" : "false");
+            string paving = BridgePavementSerializer.Encode(pavements);
+            if (paving != null)
+            {
+                localRoot.SetAttribute("paving", paving);
+            }
             localRoot.InnerText = BridgePartTypeUtils.EncodeSegments(segments);
         }
     }

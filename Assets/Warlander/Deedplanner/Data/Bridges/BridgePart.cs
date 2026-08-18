@@ -31,6 +31,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
         }
         public BridgePartType PartType => partType;
+        public int SegmentIndex { get; private set; }
         public bool Mirrored => orientation == EntityOrientation.Right || orientation == EntityOrientation.Up;
 
         private BridgePartType partType;
@@ -39,19 +40,22 @@ namespace Warlander.Deedplanner.Data.Bridges
         private EntityOrientation orientation;
 
         private GameObject model;
+        private GameObject _pavingOverlay;
+        private Mesh _pavingMesh;
         private MeshCollider _selectionMeshCollider;
         private Mesh _selectionMesh;
         private int _skew;
         private float _height;
 
         public void Initialise(Bridge parentBridge, BridgePartType partType, BridgePartSide partSide,
-            EntityOrientation orientation, int x, int y, float height, int skew)
+            EntityOrientation orientation, int x, int y, float height, int skew, int segmentIndex)
         {
             gameObject.layer = LayerMasks.BridgeLayer;
             ParentBridge = parentBridge;
             this.partType = partType;
             this.partSide = partSide;
             this.orientation = orientation;
+            SegmentIndex = segmentIndex;
             _height = height;
 
             // Abutment and bracing have dedicated left/right models selected by lane and row
@@ -105,6 +109,78 @@ namespace Warlander.Deedplanner.Data.Bridges
 
             Model rootModel = parentBridge.Data.GetModelForPart(partType, modelSide);
             rootModel.CreateOrGetModel(new Vector2(0, _skew), OnModelCreated);
+
+            RefreshPaving();
+        }
+
+        private const float PavingEpsilon = 0.02f;
+
+        public void RefreshPaving()
+        {
+            BridgePavementData pavement = ParentBridge.GetPavement(SegmentIndex);
+
+            if (pavement == null)
+            {
+                if (_pavingOverlay)
+                {
+                    Destroy(_pavingOverlay);
+                    _pavingOverlay = null;
+                    DestroyPavingMesh();
+                }
+
+                return;
+            }
+
+            if (!_pavingOverlay)
+            {
+                _pavingOverlay = CreatePavingOverlay();
+            }
+
+            _pavingOverlay.GetComponent<MeshRenderer>().sharedMaterial = pavement.GetOrCreateOverlayMaterial();
+        }
+
+        // Flat quad over the deck in part-local space (x in [0,4], z in [-4,0], deck at y=0),
+        // skew baked into the z=0 edge (local slope direction) so no shear shader property is needed.
+        private GameObject CreatePavingOverlay()
+        {
+            GameObject overlay = new GameObject("Paving Overlay");
+            overlay.layer = LayerMasks.BridgeLayer;
+            overlay.transform.SetParent(transform, false);
+
+            float lowY = PavingEpsilon;
+            float highY = PavingEpsilon + _skew * 0.1f;
+            _pavingMesh = new Mesh
+            {
+                vertices = new[]
+                {
+                    new Vector3(0, lowY, -4),
+                    new Vector3(4, lowY, -4),
+                    new Vector3(0, highY, 0),
+                    new Vector3(4, highY, 0)
+                },
+                uv = new[]
+                {
+                    new Vector2(0, 0),
+                    new Vector2(1, 0),
+                    new Vector2(0, 1),
+                    new Vector2(1, 1)
+                },
+                triangles = new[] { 0, 2, 1, 2, 3, 1 }
+            };
+            _pavingMesh.RecalculateNormals();
+
+            overlay.AddComponent<MeshFilter>().sharedMesh = _pavingMesh;
+            overlay.AddComponent<MeshRenderer>();
+            return overlay;
+        }
+
+        private void DestroyPavingMesh()
+        {
+            if (_pavingMesh)
+            {
+                Destroy(_pavingMesh);
+                _pavingMesh = null;
+            }
         }
 
         private static EntityOrientation Opposite(EntityOrientation orientation)
@@ -312,6 +388,8 @@ namespace Warlander.Deedplanner.Data.Bridges
             {
                 Destroy(_selectionMesh);
             }
+
+            DestroyPavingMesh();
         }
     }
 }

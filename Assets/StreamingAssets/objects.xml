@@ -9201,6 +9201,51 @@
 
 
 
+	<bridgepavements>
+		<bridgepavement name="Cobblestone" shortname="pcs">
+			<tex location="GroundTextures/cobble.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Rough cobblestone" shortname="prcs">
+			<tex location="GroundTextures/cobble2.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Round cobblestone" shortname="pcsr">
+			<tex location="GroundTextures/cobble3.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Stone slabs" shortname="psl">
+			<tex location="GroundTextures/slab.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Marble bricks" shortname="pmb">
+			<tex location="GroundTextures/marbleBricks.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Marble slabs" shortname="pmsl">
+			<tex location="GroundTextures/marbleslab.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Slate bricks" shortname="pssl">
+			<tex location="GroundTextures/slatebricks.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Slate slabs" shortname="pssl2">
+			<tex location="GroundTextures/slateTiles.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Sandstone bricks" shortname="psab">
+			<tex location="GroundTextures/sandstonebrick.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Sandstone slabs" shortname="psas">
+			<tex location="GroundTextures/sandstoneslab.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Pottery bricks" shortname="ppb">
+			<tex location="GroundTextures/potterybrickpaving.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Planks" shortname="ppl">
+			<tex location="GroundTextures/planks.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Tarred Planks" shortname="ptpl">
+			<tex location="GroundTextures/floorBoardTarred.dds"/>
+		</bridgepavement>
+		<bridgepavement name="Gravel" shortname="pgv">
+			<tex location="GroundTextures/gravel.dds"/>
+		</bridgepavement>
+	</bridgepavements>
+
 	<bridges>
 		<bridge name="rope" supportheight="0" maxwidth="1">
 			<type name="rope"/>
@@ -9300,7 +9345,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="stone" supportheight="80" maxwidth="3">
+		<bridge name="stone" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -9481,7 +9526,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="slate" supportheight="80" maxwidth="3">
+		<bridge name="slate" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -9662,7 +9707,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="sandstone" supportheight="80" maxwidth="3">
+		<bridge name="sandstone" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -9843,7 +9888,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="rounded stone" supportheight="80" maxwidth="3">
+		<bridge name="rounded stone" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -10024,7 +10069,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="rendered" supportheight="80" maxwidth="3">
+		<bridge name="rendered" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -10215,7 +10260,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="pottery" supportheight="80" maxwidth="3">
+		<bridge name="pottery" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -10396,7 +10441,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="marble" supportheight="80" maxwidth="3">
+		<bridge name="marble" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
