@@ -75,7 +75,7 @@ namespace Warlander.Deedplanner.Logic
             }
 
             await _saveCoordinator.NewMapAsync();
-            _homeScreenPresenter.ShowHomeScreen();
+            _homeScreenPresenter.ShowHomeScreen(false);
         }
     }
 }
