@@ -27,6 +27,12 @@ namespace Warlander.Deedplanner.Data.Bridges
                     }
                 }
 
+                BridgePavementData pavement = ParentBridge.GetPavement(SegmentIndex);
+                if (pavement != null)
+                {
+                    materials.Add(pavement.Materials);
+                }
+
                 return materials;
             }
         }

@@ -214,12 +214,17 @@ namespace Warlander.Deedplanner.Data
                 string name = element.GetAttribute("name");
                 string shortName = element.GetAttribute("shortname");
                 TextureReference tex = null;
+                Materials materials = null;
 
                 foreach (XmlElement child in element)
                 {
                     if (child.LocalName == "tex")
                     {
                         tex = _textureReferenceFactory.GetTextureReference(child);
+                    }
+                    else if (child.LocalName == "materials")
+                    {
+                        materials = new Materials(child);
                     }
                 }
 
@@ -236,7 +241,7 @@ namespace Warlander.Deedplanner.Data
                     continue;
                 }
 
-                Database.BridgePavements[shortName] = new BridgePavementData(name, shortName, tex);
+                Database.BridgePavements[shortName] = new BridgePavementData(name, shortName, tex, materials);
                 Debug.Log("Bridge pavement " + name + " loaded and ready to use!");
             }
         }
