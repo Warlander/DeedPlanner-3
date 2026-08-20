@@ -4,26 +4,34 @@ namespace Warlander.Deedplanner.Data.Bridges
 {
     public class BridgePavingChangeCommand : IReversibleCommand
     {
-        private readonly Bridge _bridge;
+        private readonly BridgePart[] _parts;
         private readonly BridgePavementData[] _oldPavements;
         private readonly BridgePavementData[] _newPavements;
 
-        public BridgePavingChangeCommand(Bridge bridge, BridgePavementData[] oldPavements,
+        public BridgePavingChangeCommand(BridgePart[] parts, BridgePavementData[] oldPavements,
             BridgePavementData[] newPavements)
         {
-            _bridge = bridge;
+            _parts = parts;
             _oldPavements = oldPavements;
             _newPavements = newPavements;
         }
 
         public void Execute()
         {
-            _bridge.SetPavements((BridgePavementData[])_newPavements.Clone());
+            Apply(_newPavements);
         }
 
         public void Undo()
         {
-            _bridge.SetPavements((BridgePavementData[])_oldPavements.Clone());
+            Apply(_oldPavements);
+        }
+
+        private void Apply(BridgePavementData[] pavements)
+        {
+            for (int i = 0; i < _parts.Length; i++)
+            {
+                _parts[i].SetPavement(pavements[i]);
+            }
         }
 
         public void DisposeUndo()

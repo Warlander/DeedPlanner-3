@@ -50,6 +50,12 @@ namespace Warlander.Deedplanner.Updaters
         private TileCoords _firstClickedTile;
         private TileCoords _secondClickedTile;
 
+        private bool _pavingBrushActive;
+        private BridgePavementData _pavingBrush;
+        private BridgePart _hoveredPaintPart;
+        private List<BridgePart> _strokeParts;
+        private List<BridgePavementData> _strokeOldPavements;
+
         private IMapProjector _firstTileProjector;
         private IMapProjector _secondTileProjector;
         private readonly List<IMapProjector> _spanProjectors = new List<IMapProjector>();
@@ -112,24 +118,41 @@ namespace Warlander.Deedplanner.Updaters
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
+                if (_pavingBrushActive)
+                {
+                    UpdatePaintHover(null);
+                    EndStrokeIfNeeded();
+                }
                 return;
             }
-            
+
             BridgePart bridgePart = raycast.transform.GetComponentInParent<BridgePart>();
             Bridge bridge = bridgePart != null ? bridgePart.ParentBridge : null;
 
-            UpdateBridgeHover(bridge);
+            if (_pavingBrushActive)
+            {
+                TickPaving(bridgePart);
+            }
+            else
+            {
+                UpdateBridgeHover(bridge);
+            }
 
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
-                OnBridgeClicked(bridge);
-                if (bridge == null)
+                // Paving brush intercepts clicks on paveable parts; anything else behaves as usual.
+                bool painted = _pavingBrushActive && BeginStroke(bridgePart);
+                if (!painted)
                 {
-                    int x = Mathf.FloorToInt(raycast.point.x / 4f);
-                    int y = Mathf.FloorToInt(raycast.point.z / 4f);
-                    int floor = ResolveLevel(raycast.point, x, y);
+                    OnBridgeClicked(bridge);
+                    if (bridge == null)
+                    {
+                        int x = Mathf.FloorToInt(raycast.point.x / 4f);
+                        int y = Mathf.FloorToInt(raycast.point.z / 4f);
+                        int floor = ResolveLevel(raycast.point, x, y);
 
-                    OnMapClicked(x, y, floor);
+                        OnMapClicked(x, y, floor);
+                    }
                 }
             }
 
@@ -207,6 +230,133 @@ namespace Warlander.Deedplanner.Updaters
             }
 
             _tooltipHandler.ShowTooltipText($"{label}\n{floorLine}");
+        }
+
+        // Null pavement with active brush = eraser.
+        public void SetPavingBrush(bool active, BridgePavementData pavement)
+        {
+            _pavingBrushActive = active;
+            _pavingBrush = pavement;
+            if (!active)
+            {
+                UpdatePaintHover(null);
+                _strokeParts = null;
+                _strokeOldPavements = null;
+            }
+        }
+
+        private void TickPaving(BridgePart bridgePart)
+        {
+            // Whole-bridge hover is suspended while painting - only the targeted part highlights.
+            UpdateBridgeHover(null);
+
+            BridgePart target = bridgePart != null && bridgePart.ParentBridge.Data.CanBePaved
+                ? bridgePart : null;
+            UpdatePaintHover(target);
+
+            if (_strokeParts != null)
+            {
+                if (_input.UpdatersShared.Placement.IsPressed())
+                {
+                    AddToStroke(target);
+                }
+                else
+                {
+                    FinishStroke();
+                }
+            }
+        }
+
+        private bool BeginStroke(BridgePart bridgePart)
+        {
+            BridgePart target = bridgePart != null && bridgePart.ParentBridge.Data.CanBePaved
+                ? bridgePart : null;
+            if (target == null || target.Pavement == _pavingBrush)
+            {
+                return false;
+            }
+
+            _strokeParts = new List<BridgePart>();
+            _strokeOldPavements = new List<BridgePavementData>();
+            AddToStroke(target);
+            return true;
+        }
+
+        private void AddToStroke(BridgePart part)
+        {
+            // Skipping same-pavement parts keeps the refresh per newly painted part only.
+            if (part == null || _strokeParts.Contains(part) || part.Pavement == _pavingBrush)
+            {
+                return;
+            }
+
+            _strokeParts.Add(part);
+            _strokeOldPavements.Add(part.Pavement);
+            part.SetPavement(_pavingBrush);
+        }
+
+        private void EndStrokeIfNeeded()
+        {
+            if (_strokeParts != null && !_input.UpdatersShared.Placement.IsPressed())
+            {
+                FinishStroke();
+            }
+        }
+
+        private void FinishStroke()
+        {
+            if (_strokeParts.Count > 0)
+            {
+                BridgePavementData[] newPavements = new BridgePavementData[_strokeParts.Count];
+                for (int i = 0; i < newPavements.Length; i++)
+                {
+                    newPavements[i] = _pavingBrush;
+                }
+
+                // Pavements were already applied live during the stroke - record for undo only.
+                Map map = _mapHandler.Map;
+                map.CommandManager.AddToStack(new BridgePavingChangeCommand(
+                    _strokeParts.ToArray(), _strokeOldPavements.ToArray(), newPavements));
+            }
+
+            _strokeParts = null;
+            _strokeOldPavements = null;
+        }
+
+        private void UpdatePaintHover(BridgePart part)
+        {
+            if (_hoveredPaintPart == part)
+            {
+                return;
+            }
+
+            ClearPaintHover();
+            _hoveredPaintPart = part;
+
+            if (part != null)
+            {
+                part.ParentBridge.HighlightPart(part, OutlineType.Neutral);
+            }
+        }
+
+        private void ClearPaintHover()
+        {
+            if (_hoveredPaintPart == null)
+            {
+                return;
+            }
+
+            // Selected bridge keeps its Positive highlight on all parts; restore it instead of clearing.
+            if (_hoveredPaintPart.ParentBridge == SelectedBridge)
+            {
+                _hoveredPaintPart.ParentBridge.HighlightPart(_hoveredPaintPart, OutlineType.Positive);
+            }
+            else
+            {
+                _hoveredPaintPart.ParentBridge.UnhighlightPart(_hoveredPaintPart);
+            }
+
+            _hoveredPaintPart = null;
         }
 
         private void UpdateBridgeHover(Bridge bridge)
@@ -564,6 +714,12 @@ namespace Warlander.Deedplanner.Updaters
         
         public void Disable()
         {
+            UpdatePaintHover(null);
+            if (_strokeParts != null)
+            {
+                FinishStroke();
+            }
+
             if (_lastFrameHoveredBridge != null)
             {
                 _lastFrameHoveredBridge.DisableHighlighting();

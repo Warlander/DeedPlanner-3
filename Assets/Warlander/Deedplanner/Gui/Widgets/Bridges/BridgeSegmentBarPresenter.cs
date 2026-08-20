@@ -25,7 +25,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         private string _tooltipSuffix;
         private bool _pavingMode;
         private BridgePavementData[] _pavingChoices;
-        private BridgePavementData _selectedPaving;
+        private int _selectedPavingIndex;
 
         public BridgeSegmentBarPresenter(IBridgeSegmentBarView view, BridgesUpdater bridgesUpdater,
             MapHandler mapHandler)
@@ -41,12 +41,10 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             _view.SegmentHovered += OnSegmentHovered;
             _view.PavingModeChanged += OnPavingModeChanged;
             _view.PavingSelected += OnPavingSelected;
-            _view.ApplyToAllClicked += OnApplyToAllClicked;
             _bridgesUpdater.SelectedBridgeChanged += OnSelectedBridgeChanged;
 
-            // index 0 is null, meaning no paving
+            // index 0 is null, the eraser ("no paving")
             _pavingChoices = new BridgePavementData[] { null }.Concat(Database.BridgePavements.Values).ToArray();
-            _view.SetPavingChoices(_pavingChoices, 0);
             _view.SetPavingMode(false);
 
             OnSelectedBridgeChanged();
@@ -58,63 +56,47 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             _view.SegmentHovered -= OnSegmentHovered;
             _view.PavingModeChanged -= OnPavingModeChanged;
             _view.PavingSelected -= OnPavingSelected;
-            _view.ApplyToAllClicked -= OnApplyToAllClicked;
             _bridgesUpdater.SelectedBridgeChanged -= OnSelectedBridgeChanged;
-
-            if (_bridge != null)
-            {
-                _bridge.PavementsChanged -= OnPavementsChanged;
-            }
         }
 
         private void OnSegmentHovered(int index)
         {
+            if (_pavingMode)
+            {
+                return;
+            }
+
             _bridgesUpdater.SetHoveredSegment(index);
         }
 
         private void OnSelectedBridgeChanged()
         {
-            if (_bridge != null)
-            {
-                _bridge.PavementsChanged -= OnPavementsChanged;
-            }
-
             _bridge = _bridgesUpdater.SelectedBridge;
 
             if (_bridge == null)
             {
                 _pendingSupports = null;
-                _view.ShowBridge(null, false, null);
-                return;
             }
-
-            _bridge.PavementsChanged += OnPavementsChanged;
-            _pendingSupports = _bridge.GetSupportPositions();
-            _editable = _bridge.Type == BridgeType.Flat;
-            _tooltipSuffix = GetTooltipSuffix(_bridge.Type);
-
-            if (!_bridge.Data.CanBePaved && _pavingMode)
+            else
             {
-                _pavingMode = false;
-                _view.SetPavingMode(false);
+                _pendingSupports = _bridge.GetSupportPositions();
+                _editable = _bridge.Type == BridgeType.Flat;
+                _tooltipSuffix = GetTooltipSuffix(_bridge.Type);
             }
-            _view.SetModeSwitchAvailable(_bridge.Data.CanBePaved);
 
-            RefreshSegmentDisplay();
+            _view.SetSupportsModeAvailable(_bridge != null && _bridge.Data.CanBePaved);
+            RefreshDisplay();
         }
 
-        private void RefreshSegmentDisplay()
+        private void RefreshDisplay()
         {
-            if (_bridge == null)
-            {
-                _view.ShowBridge(null, false, null);
-                return;
-            }
-
             if (_pavingMode)
             {
-                _view.ShowBridge(_bridge, true, null);
-                _view.ShowPavements(_bridge, _bridge.GetPavements());
+                _view.ShowPavingPalette(_pavingChoices, _selectedPavingIndex);
+            }
+            else if (_bridge == null)
+            {
+                _view.ShowBridge(null, false, null);
             }
             else
             {
@@ -126,48 +108,25 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         {
             _pavingMode = pavingMode;
             _view.SetPavingMode(pavingMode);
-            RefreshSegmentDisplay();
+            PushBrush();
+            RefreshDisplay();
         }
 
         private void OnPavingSelected(int choiceIndex)
         {
-            _selectedPaving = _pavingChoices[choiceIndex];
+            _selectedPavingIndex = choiceIndex;
+            _view.SetPavingSelection(choiceIndex);
+            PushBrush();
         }
 
-        private void OnPavementsChanged()
+        private void PushBrush()
         {
-            if (_pavingMode && _bridge != null)
-            {
-                _view.ShowPavements(_bridge, _bridge.GetPavements());
-            }
-        }
-
-        private void OnApplyToAllClicked()
-        {
-            if (_bridge == null || !_bridge.Data.CanBePaved)
-            {
-                return;
-            }
-
-            BridgePavementData[] oldPavements = _bridge.GetPavements();
-            BridgePavementData[] newPavements = oldPavements.Select(_ => _selectedPaving).ToArray();
-            if (newPavements.SequenceEqual(oldPavements))
-            {
-                return;
-            }
-
-            ExecutePavingCommand(oldPavements, newPavements);
+            _bridgesUpdater.SetPavingBrush(_pavingMode, _pavingChoices[_selectedPavingIndex]);
         }
 
         private void OnSegmentClicked(int index)
         {
-            if (_pavingMode)
-            {
-                OnPavingSegmentClicked(index);
-                return;
-            }
-
-            if (!_editable || _bridge == null || _pendingSupports == null
+            if (_pavingMode || !_editable || _bridge == null || _pendingSupports == null
                 || index < 0 || index >= _pendingSupports.Length)
             {
                 return;
@@ -207,32 +166,6 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             Map map = _mapHandler.Map;
             map.CommandManager.AddToActionAndExecute(
                 new BridgeSegmentsChangeCommand(map, _bridge, oldSegments, newSegments));
-            map.CommandManager.FinishAction();
-        }
-
-        private void OnPavingSegmentClicked(int index)
-        {
-            if (_bridge == null || !_bridge.Data.CanBePaved || index < 0 || index >= _bridge.SegmentCount)
-            {
-                return;
-            }
-
-            BridgePavementData[] oldPavements = _bridge.GetPavements();
-            if (oldPavements[index] == _selectedPaving)
-            {
-                return;
-            }
-
-            BridgePavementData[] newPavements = (BridgePavementData[])oldPavements.Clone();
-            newPavements[index] = _selectedPaving;
-            ExecutePavingCommand(oldPavements, newPavements);
-        }
-
-        private void ExecutePavingCommand(BridgePavementData[] oldPavements, BridgePavementData[] newPavements)
-        {
-            Map map = _mapHandler.Map;
-            map.CommandManager.AddToActionAndExecute(
-                new BridgePavingChangeCommand(_bridge, oldPavements, newPavements));
             map.CommandManager.FinishAction();
         }
 

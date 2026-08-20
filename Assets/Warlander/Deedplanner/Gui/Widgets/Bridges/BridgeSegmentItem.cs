@@ -12,6 +12,11 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 {
     public class BridgeSegmentItem : MonoBehaviour
     {
+        private static readonly Color SelectedColor = Color.white;
+        private static readonly Color UnselectedColor = new Color(0.8f, 0.8f, 0.8f);
+        private const float NormalSize = 32f;
+        private const float SelectedSize = 40f;
+
         [Inject] private TooltipHandler _tooltipHandler;
 
         [SerializeField] private Button _button;
@@ -24,8 +29,8 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 
         private string _tooltipText;
         private Sprite _partSprite;
-        private Sprite _pavingSprite;
         private bool _mirrored;
+        private bool _paletteEntry;
 
         private void Awake()
         {
@@ -48,8 +53,8 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         public void Set(BridgePart bridgePart, string tooltipSuffix = null)
         {
             _tooltipText = bridgePart.PartType.ToHumanFriendlyName() + tooltipSuffix;
-            _pavingSprite = null;
             _mirrored = bridgePart.Mirrored;
+            _paletteEntry = false;
 
             bridgePart.GetUISprite().LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite =>
             {
@@ -64,34 +69,45 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             });
         }
 
-        // Paving sprite replaces the part sprite; null restores it.
-        public void SetPaving(Sprite pavingSprite, string tooltipText)
+        // Palette entries show the pavement texture itself; the eraser passes the invalid-section X sprite.
+        public void SetPaletteEntry(Sprite sprite, string tooltipText)
         {
-            _pavingSprite = pavingSprite;
             _tooltipText = tooltipText;
+            _partSprite = sprite;
+            _paletteEntry = true;
+            _mirrored = false;
             ApplySprite();
+        }
+
+        public void SetSelected(bool selected)
+        {
+            _bridgePartImage.color = selected ? SelectedColor : UnselectedColor;
+            if (_paletteEntry)
+            {
+                float size = selected ? SelectedSize : NormalSize;
+                ((RectTransform)transform).sizeDelta = new Vector2(size, size);
+            }
         }
 
         private void ApplySprite()
         {
-            if (_pavingSprite)
+            _bridgePartImage.sprite = _partSprite;
+            if (!_paletteEntry)
             {
-                _bridgePartImage.sprite = _pavingSprite;
-                transform.localScale = Vector3.one;
-            }
-            else if (_partSprite)
-            {
-                _bridgePartImage.sprite = _partSprite;
                 int mirroredImageScale = _mirrored ? -1 : 1;
                 transform.localScale = new Vector3(mirroredImageScale, 1, 1);
+            }
+            else
+            {
+                transform.localScale = Vector3.one;
             }
         }
 
         public void SetPreview(TextureReference sprite, BridgePartType partType)
         {
             _tooltipText = partType.ToHumanFriendlyName();
-            _pavingSprite = null;
             _mirrored = false;
+            _paletteEntry = false;
 
             sprite.LoadOrGetSpriteAsync().ToObservable().Subscribe(loadedSprite =>
             {
@@ -109,8 +125,8 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         public void SetIncorrect(Sprite incorrectSprite, string tooltipText)
         {
             _tooltipText = tooltipText;
-            _pavingSprite = null;
             _partSprite = incorrectSprite;
+            _paletteEntry = false;
             ApplySprite();
         }
 

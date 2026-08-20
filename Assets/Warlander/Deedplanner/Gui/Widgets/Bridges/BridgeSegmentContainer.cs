@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data.Bridges;
@@ -28,8 +27,6 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         [SerializeField] private Image _bridgeEndImage;
         [SerializeField] private Toggle _supportsModeToggle;
         [SerializeField] private Toggle _pavingModeToggle;
-        [SerializeField] private TMP_Dropdown _pavingDropdown;
-        [SerializeField] private Button _applyToAllButton;
 
         [SerializeField] private Sprite _incorrectSectionSprite;
         [SerializeField] private Sprite _northSprite;
@@ -41,7 +38,6 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         public event Action<int> SegmentHovered;
         public event Action<bool> PavingModeChanged;
         public event Action<int> PavingSelected;
-        public event Action ApplyToAllClicked;
 
         private readonly List<BridgeSegmentItem> _bridgeSegments = new List<BridgeSegmentItem>();
         private readonly Dictionary<BridgePavementData, Sprite> _pavingSprites =
@@ -56,14 +52,16 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         private bool _lastShowWasPreview;
         private float _lastViewportWidth;
 
+        private BridgePavementData[] _paletteChoices;
+        private int _paletteSelectedIndex;
+        private bool _lastShowWasPalette;
+
         private void Awake()
         {
             _bridgeSegmentPrefab.gameObject.SetActive(false);
 
             _supportsModeToggle.onValueChanged.AddListener(OnModeToggleChanged);
             _pavingModeToggle.onValueChanged.AddListener(OnModeToggleChanged);
-            _pavingDropdown.onValueChanged.AddListener(index => PavingSelected?.Invoke(index));
-            _applyToAllButton.onClick.AddListener(() => ApplyToAllClicked?.Invoke());
         }
 
         // Resolved centrally each frame: per-item enter/exit events can arrive in any
@@ -88,7 +86,8 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 
             // Segment count adapts to the space actually left by the controls, so a
             // viewport resize (window resize) rebuilds the strip to use it all.
-            if (_lastBridge != null && !Mathf.Approximately(_viewport.rect.width, _lastViewportWidth))
+            if ((_lastBridge != null || _lastShowWasPalette)
+                && !Mathf.Approximately(_viewport.rect.width, _lastViewportWidth))
             {
                 _lastViewportWidth = _viewport.rect.width;
                 ReshowLast();
@@ -105,7 +104,11 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 
         private void ReshowLast()
         {
-            if (_lastShowWasPreview)
+            if (_lastShowWasPalette)
+            {
+                ShowPavingPalette(_paletteChoices, _paletteSelectedIndex);
+            }
+            else if (_lastShowWasPreview)
             {
                 ShowPreview(_lastBridge, _lastPreviewSegments, _lastIncorrectTooltip);
             }
@@ -121,6 +124,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             _lastEditable = editable;
             _lastTooltipSuffix = tooltipSuffix;
             _lastShowWasPreview = false;
+            _lastShowWasPalette = false;
 
             _pivotAnimator.SetShown(bridge != null);
 
@@ -129,6 +133,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
                 return;
             }
 
+            SetArrowsVisible(true);
             SetInvalidState(false);
             SetupOrientationArrows(bridge);
             CleanUpSegments();
@@ -136,7 +141,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             int count = Mathf.Min(bridge.SegmentCount, GetMaxVisibleSegments());
             for (int i = 0; i < count; i++)
             {
-                BridgeSegmentItem item = CreateItem(i);
+                BridgeSegmentItem item = CreateItem(i, true);
                 item.Set(bridge.GetSegmentPart(i), tooltipSuffix);
                 item.SetClickable(editable);
             }
@@ -150,19 +155,21 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             _lastPreviewSegments = previewSegments;
             _lastIncorrectTooltip = incorrectTooltip;
             _lastShowWasPreview = true;
+            _lastShowWasPalette = false;
 
             if (bridge == null)
             {
                 return;
             }
 
+            SetArrowsVisible(true);
             SetupOrientationArrows(bridge);
             CleanUpSegments();
 
             int count = Mathf.Min(previewSegments.Length, GetMaxVisibleSegments());
             for (int i = 0; i < count; i++)
             {
-                BridgeSegmentItem item = CreateItem(i);
+                BridgeSegmentItem item = CreateItem(i, true);
                 if (previewSegments[i].HasValue)
                 {
                     item.SetPreview(bridge.Data.GetUISpriteForPart(previewSegments[i].Value), previewSegments[i].Value);
@@ -177,6 +184,51 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             _bridgeEndImage.transform.SetAsLastSibling();
         }
 
+        public void ShowPavingPalette(BridgePavementData[] choices, int selectedIndex)
+        {
+            _paletteChoices = choices;
+            _paletteSelectedIndex = selectedIndex;
+            _lastShowWasPalette = true;
+            _lastShowWasPreview = false;
+            _lastBridge = null;
+
+            _pivotAnimator.SetShown(true);
+            SetArrowsVisible(false);
+            SetInvalidState(false);
+            CleanUpSegments();
+
+            for (int i = 0; i < choices.Length; i++)
+            {
+                BridgeSegmentItem item = CreateItem(i, false);
+                BridgePavementData choice = choices[i];
+                if (choice == null)
+                {
+                    item.SetPaletteEntry(_incorrectSectionSprite, "no paving");
+                }
+                else if (_pavingSprites.TryGetValue(choice, out Sprite sprite) && sprite)
+                {
+                    item.SetPaletteEntry(sprite, choice.Name);
+                }
+                else
+                {
+                    item.SetPaletteEntry(null, choice.Name);
+                    LoadPaletteSpriteAsync(i, item, choice);
+                }
+                item.SetClickable(true);
+            }
+
+            SetPavingSelection(selectedIndex);
+        }
+
+        public void SetPavingSelection(int index)
+        {
+            _paletteSelectedIndex = index;
+            for (int i = 0; i < _bridgeSegments.Count; i++)
+            {
+                _bridgeSegments[i].SetSelected(i == index);
+            }
+        }
+
         public void SetInvalidState(bool invalid)
         {
             Color color = invalid ? InvalidArrowColor : ValidArrowColor;
@@ -184,92 +236,34 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             _bridgeEndImage.color = color;
         }
 
-        public void SetPavingChoices(BridgePavementData[] choices, int selectedIndex)
-        {
-            _pavingDropdown.ClearOptions();
-
-            List<TMP_Dropdown.OptionData> options = new List<TMP_Dropdown.OptionData>();
-            foreach (BridgePavementData choice in choices)
-            {
-                options.Add(new TMP_Dropdown.OptionData(choice == null ? "no paving" : choice.Name));
-            }
-
-            _pavingDropdown.AddOptions(options);
-            _pavingDropdown.SetValueWithoutNotify(selectedIndex);
-            _pavingDropdown.RefreshShownValue();
-
-            for (int i = 0; i < choices.Length; i++)
-            {
-                if (choices[i] != null)
-                {
-                    LoadPavingIconAsync(i, choices[i]);
-                }
-            }
-        }
-
         public void SetPavingMode(bool pavingMode)
         {
             _supportsModeToggle.SetIsOnWithoutNotify(!pavingMode);
             _pavingModeToggle.SetIsOnWithoutNotify(pavingMode);
-            _pavingDropdown.gameObject.SetActive(pavingMode);
-            _applyToAllButton.gameObject.SetActive(pavingMode);
         }
 
-        public void SetModeSwitchAvailable(bool available)
+        public void SetSupportsModeAvailable(bool available)
         {
             _supportsModeToggle.gameObject.SetActive(available);
-            _pavingModeToggle.gameObject.SetActive(available);
         }
 
-        public void ShowPavements(Bridge bridge, BridgePavementData[] pavements)
+        private void SetArrowsVisible(bool visible)
         {
-            int count = Mathf.Min(pavements.Length, _bridgeSegments.Count);
-            for (int i = 0; i < count; i++)
-            {
-                BridgePavementData pavement = pavements[i];
-                if (pavement == null)
-                {
-                    _bridgeSegments[i].SetPaving(null, "no paving");
-                }
-                else if (_pavingSprites.TryGetValue(pavement, out Sprite sprite) && sprite)
-                {
-                    _bridgeSegments[i].SetPaving(sprite, pavement.Name);
-                }
-                else
-                {
-                    LoadPavingSpriteAsync(i, pavement);
-                }
-            }
+            _bridgeStartImage.gameObject.SetActive(visible);
+            _bridgeEndImage.gameObject.SetActive(visible);
         }
 
-        private async void LoadPavingSpriteAsync(int index, BridgePavementData pavement)
+        private async void LoadPaletteSpriteAsync(int index, BridgeSegmentItem item, BridgePavementData pavement)
         {
             Sprite sprite = await pavement.Tex.LoadOrGetSpriteAsync();
-            if (!sprite)
+            if (!sprite || !item)
             {
                 return;
             }
 
             _pavingSprites[pavement] = sprite;
-            if (index < _bridgeSegments.Count)
-            {
-                _bridgeSegments[index].SetPaving(sprite, pavement.Name);
-            }
-        }
-
-        private async void LoadPavingIconAsync(int index, BridgePavementData pavement)
-        {
-            Sprite sprite = await pavement.Tex.LoadOrGetSpriteAsync();
-            if (!sprite || index >= _pavingDropdown.options.Count)
-            {
-                return;
-            }
-
-            _pavingDropdown.options[index].image = sprite;
-            if (_pavingDropdown.value == index)
-            {
-                _pavingDropdown.RefreshShownValue();
-            }
+            item.SetPaletteEntry(sprite, pavement.Name);
+            item.SetSelected(index == _paletteSelectedIndex);
         }
 
         private int GetMaxVisibleSegments()
@@ -278,13 +272,20 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             return Mathf.Max(1, Mathf.FloorToInt((width - SegmentArrowsWidth) / SegmentTilePitch));
         }
 
-        private BridgeSegmentItem CreateItem(int index)
+        private BridgeSegmentItem CreateItem(int index, bool segmentEvents)
         {
             BridgeSegmentItem item = _resolver.Instantiate<BridgeSegmentItem>(_bridgeSegmentPrefab, _bridgeSegmentRoot);
             item.gameObject.SetActive(true);
 
             int capturedIndex = index;
-            item.Clicked += () => SegmentClicked?.Invoke(capturedIndex);
+            if (segmentEvents)
+            {
+                item.Clicked += () => SegmentClicked?.Invoke(capturedIndex);
+            }
+            else
+            {
+                item.Clicked += () => PavingSelected?.Invoke(capturedIndex);
+            }
             _bridgeSegments.Add(item);
             return item;
         }

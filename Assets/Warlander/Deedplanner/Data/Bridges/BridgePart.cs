@@ -27,10 +27,9 @@ namespace Warlander.Deedplanner.Data.Bridges
                     }
                 }
 
-                BridgePavementData pavement = ParentBridge.GetPavement(SegmentIndex);
-                if (pavement != null)
+                if (Pavement != null)
                 {
-                    materials.Add(pavement.Materials);
+                    materials.Add(Pavement.Materials);
                 }
 
                 return materials;
@@ -38,6 +37,8 @@ namespace Warlander.Deedplanner.Data.Bridges
         }
         public BridgePartType PartType => partType;
         public int SegmentIndex { get; private set; }
+        public int LaneIndex { get; private set; }
+        public BridgePavementData Pavement { get; private set; }
         public bool Mirrored => orientation == EntityOrientation.Right || orientation == EntityOrientation.Up;
 
         private BridgePartType partType;
@@ -54,7 +55,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         private float _height;
 
         public void Initialise(Bridge parentBridge, BridgePartType partType, BridgePartSide partSide,
-            EntityOrientation orientation, int x, int y, float height, int skew, int segmentIndex)
+            EntityOrientation orientation, int x, int y, float height, int skew, int segmentIndex, int laneIndex)
         {
             gameObject.layer = LayerMasks.BridgeLayer;
             ParentBridge = parentBridge;
@@ -62,6 +63,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             this.partSide = partSide;
             this.orientation = orientation;
             SegmentIndex = segmentIndex;
+            LaneIndex = laneIndex;
             _height = height;
 
             // Abutment and bracing have dedicated left/right models selected by lane and row
@@ -121,9 +123,15 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         private const float PavingEpsilon = 0.02f;
 
+        public void SetPavement(BridgePavementData pavement)
+        {
+            Pavement = pavement;
+            RefreshPaving();
+        }
+
         public void RefreshPaving()
         {
-            BridgePavementData pavement = ParentBridge.GetPavement(SegmentIndex);
+            BridgePavementData pavement = Pavement;
 
             if (pavement == null)
             {

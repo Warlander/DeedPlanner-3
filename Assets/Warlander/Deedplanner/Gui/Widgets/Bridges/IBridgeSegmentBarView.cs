@@ -9,14 +9,13 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         event Action<int> SegmentHovered;
         event Action<bool> PavingModeChanged;
         event Action<int> PavingSelected;
-        event Action ApplyToAllClicked;
 
         void ShowBridge(Bridge bridge, bool editable, string tooltipSuffix);
         void ShowPreview(Bridge bridge, BridgePartType?[] previewSegments, string incorrectTooltip);
         void SetInvalidState(bool invalid);
-        void SetPavingChoices(BridgePavementData[] choices, int selectedIndex);
+        void ShowPavingPalette(BridgePavementData[] choices, int selectedIndex);
+        void SetPavingSelection(int index);
         void SetPavingMode(bool pavingMode);
-        void SetModeSwitchAvailable(bool available);
-        void ShowPavements(Bridge bridge, BridgePavementData[] pavements);
+        void SetSupportsModeAvailable(bool available);
     }
 }

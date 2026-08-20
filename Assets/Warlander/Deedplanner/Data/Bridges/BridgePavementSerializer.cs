@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -7,36 +8,48 @@ namespace Warlander.Deedplanner.Data.Bridges
     {
         public const string NoneToken = "none";
 
+        // Segments are comma-separated, lanes within a segment slash-separated.
+        // Single-lane bridges produce the same flat "pcs,none,..." shape as a result.
         // Returns null when nothing is paved, so the attribute is only written when needed.
-        public static string Encode(BridgePavementData[] pavements)
+        public static string Encode(IEnumerable<BridgePart> parts)
         {
-            if (pavements.All(pavement => pavement == null))
+            IGrouping<int, BridgePart>[] segments = parts
+                .OrderBy(part => part.SegmentIndex)
+                .ThenBy(part => part.LaneIndex)
+                .GroupBy(part => part.SegmentIndex)
+                .ToArray();
+
+            if (segments.All(segment => segment.All(part => part.Pavement == null)))
             {
                 return null;
             }
 
-            return string.Join(",", pavements.Select(pavement => pavement?.Token ?? NoneToken));
+            return string.Join(",", segments.Select(segment =>
+                string.Join("/", segment.Select(part => part.Pavement?.Token ?? NoneToken))));
         }
 
-        public static BridgePavementData[] Decode(string serialized, int segmentCount)
+        public static BridgePavementData[,] Decode(string serialized, int segmentCount, int laneCount)
         {
-            BridgePavementData[] pavements = new BridgePavementData[segmentCount];
-            string[] tokens = serialized.Split(',');
-            for (int i = 0; i < segmentCount && i < tokens.Length; i++)
+            BridgePavementData[,] pavements = new BridgePavementData[segmentCount, laneCount];
+            string[] segmentTokens = serialized.Split(',');
+            for (int segment = 0; segment < segmentCount && segment < segmentTokens.Length; segment++)
             {
-                string token = tokens[i].Trim();
-                if (token == NoneToken)
+                string[] laneTokens = segmentTokens[segment].Split('/');
+                for (int lane = 0; lane < laneCount && lane < laneTokens.Length; lane++)
                 {
-                    continue;
-                }
+                    string token = laneTokens[lane].Trim();
+                    if (token == NoneToken)
+                    {
+                        continue;
+                    }
 
-                BridgePavementData pavement = null;
-                if (!Database.BridgePavements.TryGetValue(token, out pavement))
-                {
-                    Debug.LogWarning("Unknown bridge pavement token: " + token);
-                }
+                    if (!Database.BridgePavements.TryGetValue(token, out BridgePavementData pavement))
+                    {
+                        Debug.LogWarning("Unknown bridge pavement token: " + token);
+                    }
 
-                pavements[i] = pavement;
+                    pavements[segment, lane] = pavement;
+                }
             }
 
             return pavements;
