@@ -61,6 +61,11 @@ namespace Warlander.Deedplanner.Gui.Home
             _cardCatalog.Populate();
         }
 
+        public void HideHomeScreen()
+        {
+            _view.Hide(false);
+        }
+
         /// Hides the screen without touching the current map: at startup the blank default waits
         /// behind it, in-session this simply returns to the deed being edited.
         private void OnBack()
