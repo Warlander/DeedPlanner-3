@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Xml;
+using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data.Grounds
@@ -41,7 +42,14 @@ namespace Warlander.Deedplanner.Data.Grounds
             string id = element.GetAttribute("id");
             string dir = element.GetAttribute("dir");
 
-            Data = Database.Grounds[id];
+            GroundData groundData;
+            Database.Grounds.TryGetValue(id, out groundData);
+            if (groundData == null)
+            {
+                Debug.LogWarning("Unable to load ground " + id + ", using default instead");
+                groundData = Database.DefaultGroundData;
+            }
+            Data = groundData;
             switch (dir)
             {
                 case "NW":

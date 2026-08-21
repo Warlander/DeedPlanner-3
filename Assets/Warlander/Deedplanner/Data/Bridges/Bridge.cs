@@ -79,6 +79,12 @@ namespace Warlander.Deedplanner.Data.Bridges
                 Debug.LogError($"Bridge type enum parsing fail, type: {typeString}");
             }
 
+            int requiredSegments = Mathf.Max(Mathf.Abs(secondX - firstX), Mathf.Abs(secondY - firstY)) + 1;
+            if (segments.Length < requiredSegments)
+            {
+                throw new FormatException($"Bridge segments data too short: {segments.Length}, expected at least {requiredSegments}");
+            }
+
             BridgePavementData[,] pavements = null;
             if (element.HasAttribute("paving"))
             {

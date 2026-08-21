@@ -35,7 +35,10 @@ namespace Warlander.Deedplanner.Data
             foreach (XmlElement bridgeElement in bridgesList)
             {
                 Bridge bridge = _bridgeFactory.CreateBridge(_map, bridgeElement);
-                _bridges.Add(bridge);
+                if (bridge != null)
+                {
+                    _bridges.Add(bridge);
+                }
             }
         }
 
