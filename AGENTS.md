@@ -48,6 +48,8 @@ Without it, play mode ENTRY stalls indefinitely while the Editor window is unfoc
 
 **Code evaluation:** the Pipeline package ships a CodeEval command (edit-mode AND runtime — `unity command` / `unity list` can also attach to a running Player via `--runtime`). This lets the CLI execute arbitrary C# in the live Editor or in the running app — usable both for manipulating the Editor (scenes, assets, play mode) and for testing the app's behavior from the outside. Discover exact command names with `unity list`.
 
+**eval_file quirks (verified):** `eval` rejects bare expressions; use `eval_file` with an explicit `return`. `eval_file` wraps the file in an `Execute()` method body: statements only (no `using` directives, no class/method definitions), fully-qualified names (`UnityEngine.Object`, `System.IO.Path` — `Object` collides with `object`). Write eval scripts to system temp, never under `Assets/` (stray .cs files break compilation).
+
 ## Agentic Verification
 
 No automated test suite exists (despite the Test Framework package being present), but the project iterates fast — domain reload and play-mode enter/exit each take only a few seconds. After triggering a recompile or play-mode change, allow a ~5 second buffer, then poll `unity status` for the Editor state before issuing the next command.
