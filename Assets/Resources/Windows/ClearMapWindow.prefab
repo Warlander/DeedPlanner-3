@@ -245,20 +245,23 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -521,20 +524,23 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -658,20 +664,23 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -777,6 +786,11 @@ PrefabInstance:
       propertyPath: m_text
       value: Clear Map
       objectReference: {fileID: 0}
+    - target: {fileID: 6426926222301033885, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
+        type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     - target: {fileID: 6426926222669548959, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -850,12 +864,12 @@ PrefabInstance:
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 11001
+      value: 12583
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 6643.5
+      value: 7483.5
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
@@ -895,12 +909,12 @@ PrefabInstance:
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 5500.5
+      value: 6291.5
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 3321.75
+      value: 3741.75
       objectReference: {fileID: 0}
     - target: {fileID: 6426926222874444247, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
@@ -951,6 +965,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6426926223204803392, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
+        type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 6426926223337290911, guid: 46046bc2bf6f2aa45bc4ceb69acc04b8,
         type: 3}
