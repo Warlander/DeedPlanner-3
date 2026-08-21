@@ -64,6 +64,13 @@ namespace Warlander.Deedplanner.Logic
             }
             else if (Application.isEditor || Debug.isDebugBuild)
             {
+                if (debugProperties != null && debugProperties.SelectedTestMap == DebugProperties.TestMap.AssetZoo)
+                {
+                    new AssetZooMapGenerator(_mapHandler).Generate();
+                    // generated test maps skip the home screen for fast iteration
+                    return;
+                }
+
                 if (debugProperties != null && !string.IsNullOrEmpty(debugProperties.TestMapPath))
                 {
                     await _mapHandler.LoadMapAsync(new Uri(debugProperties.TestMapPath));

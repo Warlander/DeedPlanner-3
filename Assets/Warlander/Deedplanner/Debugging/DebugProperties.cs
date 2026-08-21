@@ -14,6 +14,7 @@ namespace Warlander.Deedplanner.Debugging
         [SerializeField] private TileSelectionMode _tileSelectionMode = TileSelectionMode.Nothing;
         [SerializeField] private bool _drawDebugPlaneLines = false;
 
+        public TestMap SelectedTestMap => _testMap;
         public string TestMapPath => GetTestMapPath(_testMap);
         public bool PreloadAllDecorations => _preloadAllDecorations;
         public bool OverrideStartingTileSelectionMode => _overrideStartingTileSelectionMode;
@@ -41,7 +42,7 @@ namespace Warlander.Deedplanner.Debugging
         [Serializable]
         public enum TestMap
         {
-            None, Warland, Roofs, Bridges
+            None, Warland, Roofs, Bridges, AssetZoo
         }
     }
 }
