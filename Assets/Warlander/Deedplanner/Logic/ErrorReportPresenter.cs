@@ -4,9 +4,11 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer.Unity;
+using Warlander.Deedplanner.Features;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Windows;
 using Warlander.UI.Windows;
+using Warlogic.Features;
 
 namespace Warlander.Deedplanner.Logic
 {
@@ -21,15 +23,22 @@ namespace Warlander.Deedplanner.Logic
         private static bool _windowOpened;
 
         private readonly WindowCoordinator _windowCoordinator;
+        private readonly IFeatureStateRetriever<Feature> _featureStateRetriever;
         private SynchronizationContext _mainThreadContext;
 
-        public ErrorReportPresenter(WindowCoordinator windowCoordinator)
+        public ErrorReportPresenter(WindowCoordinator windowCoordinator, IFeatureStateRetriever<Feature> featureStateRetriever)
         {
             _windowCoordinator = windowCoordinator;
+            _featureStateRetriever = featureStateRetriever;
         }
 
         public void Initialize()
         {
+            if (!_featureStateRetriever.IsFeatureEnabled(Feature.ErrorWindow))
+            {
+                return;
+            }
+
             _mainThreadContext = SynchronizationContext.Current;
             Application.logMessageReceivedThreaded += OnLogMessageReceived;
         }
