@@ -387,6 +387,16 @@ namespace Warlander.Deedplanner.Data
             _heightTracker.RecalculateCaveHeight(x, y);
         }
 
+        public void RefreshBridgesForSurfaceHeight(int x, int y)
+        {
+            _bridgesController.RefreshBridgesForSurfaceHeight(x, y);
+        }
+
+        public void RefreshBridgesForCaveHeight(int x, int y)
+        {
+            _bridgesController.RefreshBridgesForCaveHeight(x, y);
+        }
+
         public void RecalculateRoofs()
         {
             _roofCalculator.ScheduleRecalculation();

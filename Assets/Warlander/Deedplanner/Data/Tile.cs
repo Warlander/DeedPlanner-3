@@ -57,6 +57,7 @@ namespace Warlander.Deedplanner.Data
                 Map.GetRelativeTile(this, -1, -1)?.RefreshCaveEntities();
 
                 Map.RecalculateCaveHeight(X, Y);
+                Map.RefreshBridgesForCaveHeight(X, Y);
             }
         }
 
@@ -1102,6 +1103,7 @@ namespace Warlander.Deedplanner.Data
                 tile.Map.GetRelativeTile(tile, -1, -1)?.RefreshSurfaceEntities();
 
                 tile.Map.RecalculateSurfaceHeight(tile.X, tile.Y);
+                tile.Map.RefreshBridgesForSurfaceHeight(tile.X, tile.Y);
             }
 
             public void DisposeUndo()

@@ -41,6 +41,8 @@ namespace Warlander.Deedplanner.Data.Bridges
         private readonly List<BridgePart> segmentParts = new List<BridgePart>();
         private readonly MaterialPropertyBlock _opacityMergeBlock = new MaterialPropertyBlock();
         private bool _attached;
+
+        public IReadOnlyList<BridgePart> Parts => bridgeParts;
         
         public Bridge(Map map, XmlElement element, IOutlineCoordinator outlineCoordinator)
         {
@@ -199,7 +201,7 @@ namespace Warlander.Deedplanner.Data.Bridges
                 Debug.LogError("Bridge already exists, aborting construction");
                 return;
             }
-            
+
             int startX = Mathf.Min(firstX, secondX);
             int endX = Mathf.Max(firstX, secondX);
             int startY = Mathf.Min(firstY, secondY);
@@ -531,6 +533,57 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
 
             return supports;
+        }
+
+        public bool HasSurfaceAnchor(int x, int y)
+        {
+            return HasAnchor(x, y, false);
+        }
+
+        public bool HasCaveAnchor(int x, int y)
+        {
+            return HasAnchor(x, y, true);
+        }
+
+        private bool HasAnchor(int x, int y, bool cave)
+        {
+            int startX = Mathf.Min(firstX, secondX);
+            int endX = Mathf.Max(firstX, secondX);
+            int startY = Mathf.Min(firstY, secondY);
+            int endY = Mathf.Max(firstY, secondY);
+
+            bool LevelMatches(int level) => cave ? level < 0 : level >= 0;
+            return (LevelMatches(firstLevel) && x == startX && y == startY)
+                || (LevelMatches(secondLevel) && x == endX + 1 && y == endY + 1);
+        }
+
+        public void RefreshHeights(Map map)
+        {
+            if (!_attached)
+            {
+                return;
+            }
+
+            int startX = Mathf.Min(firstX, secondX);
+            int endX = Mathf.Max(firstX, secondX);
+            int startY = Mathf.Min(firstY, secondY);
+            int endY = Mathf.Max(firstY, secondY);
+            int bridgeLength = Mathf.Max(endX - startX, endY - startY) + 2;
+
+            IBridgeType bridgeTypeCalc = GetTypeForBridge(bridgeType);
+            int startHeight = GetAbsoluteHeight(map[startX, startY], firstLevel);
+            int endHeight = GetAbsoluteHeight(map[endX + 1, endY + 1], secondLevel);
+            float heightStep = (float)(endHeight - startHeight) / (bridgeLength - 1);
+
+            foreach (BridgePart part in bridgeParts)
+            {
+                float totalHeight = CalculateHeightAtPoint(part.SegmentIndex, bridgeTypeCalc, bridgeLength,
+                    startHeight, endHeight, heightStep);
+                float totalHeightAfter = CalculateHeightAtPoint(part.SegmentIndex + 1, bridgeTypeCalc, bridgeLength,
+                    startHeight, endHeight, heightStep);
+                int delta = Mathf.RoundToInt(totalHeightAfter - totalHeight);
+                part.UpdateHeight(totalHeight, delta);
+            }
         }
 
         public void Rebuild(Map map, BridgeData newData, string newSegments, int newAdditionalData)

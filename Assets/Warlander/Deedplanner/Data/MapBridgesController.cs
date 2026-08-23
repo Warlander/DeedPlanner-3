@@ -74,6 +74,44 @@ namespace Warlander.Deedplanner.Data
             BridgesChanged?.Invoke();
         }
 
+        public void RefreshBridgesForSurfaceHeight(int x, int y)
+        {
+            foreach (Bridge bridge in _bridges)
+            {
+                if (bridge.HasSurfaceAnchor(x, y))
+                {
+                    bridge.RefreshHeights(_map);
+                    continue;
+                }
+
+                foreach (BridgePart part in bridge.Parts)
+                {
+                    if (part.PartType != BridgePartType.Support || part.Tile == null)
+                    {
+                        continue;
+                    }
+
+                    int dx = x - part.Tile.X;
+                    int dy = y - part.Tile.Y;
+                    if (dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1)
+                    {
+                        part.RefreshExtensions();
+                    }
+                }
+            }
+        }
+
+        public void RefreshBridgesForCaveHeight(int x, int y)
+        {
+            foreach (Bridge bridge in _bridges)
+            {
+                if (bridge.HasCaveAnchor(x, y))
+                {
+                    bridge.RefreshHeights(_map);
+                }
+            }
+        }
+
         private bool IsWithinBounds(Vector2Int tile)
         {
             return tile.x >= 0 && tile.x < _map.Width && tile.y >= 0 && tile.y < _map.Height;

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using System.Xml;
 using Plugins.Warlander.Utils;
 using UnityEngine;
@@ -47,6 +48,9 @@ namespace Warlander.Deedplanner.Data.Bridges
         private EntityOrientation orientation;
 
         private GameObject model;
+        private readonly List<GameObject> _extensions = new List<GameObject>();
+        private int _extensionGeneration;
+        private EntityOrientation _renderOrientation;
         private GameObject _pavingOverlay;
         private Mesh _pavingMesh;
         private MeshCollider _selectionMeshCollider;
@@ -82,6 +86,7 @@ namespace Warlander.Deedplanner.Data.Bridges
                 && ((partSide == BridgePartSide.LEFT)
                     == (orientation == EntityOrientation.Down || orientation == EntityOrientation.Right));
             EntityOrientation renderOrientation = flipLane ? Opposite(orientation) : orientation;
+            _renderOrientation = renderOrientation;
 
             // We need to use custom mesh collider here due to shape complexity of different kinds of bridges and their varying dimensions.
             if (!GetComponent<MeshCollider>())
@@ -97,22 +102,22 @@ namespace Warlander.Deedplanner.Data.Bridges
 
             if (renderOrientation == EntityOrientation.Left)
             {
-                transform.position = new Vector3((x + 1) * 4, height * 0.1f, (y + 1) * 4);
+                transform.position = GetPositionForHeight(height, skew);
                 transform.localRotation = Quaternion.Euler(0, 90, 0);
             }
             else if (renderOrientation == EntityOrientation.Up)
             {
-                transform.position = new Vector3((x + 1) * 4, height * 0.1f + skew * 0.1f, y * 4);
+                transform.position = GetPositionForHeight(height, skew);
                 transform.localRotation = Quaternion.Euler(0, 180, 0);
             }
             else if (renderOrientation == EntityOrientation.Right)
             {
-                transform.position = new Vector3(x * 4, height * 0.1f + skew * 0.1f, y * 4);
+                transform.position = GetPositionForHeight(height, skew);
                 transform.localRotation = Quaternion.Euler(0, 270, 0);
             }
             else
             {
-                transform.position = new Vector3(x * 4, height * 0.1f, (y + 1) * 4);
+                transform.position = GetPositionForHeight(height, skew);
             }
 
             Model rootModel = parentBridge.Data.GetModelForPart(partType, modelSide);
@@ -292,6 +297,64 @@ namespace Warlander.Deedplanner.Data.Bridges
             return vectors;
         }
 
+        private Vector3 GetPositionForHeight(float height, int skew)
+        {
+            if (_renderOrientation == EntityOrientation.Left)
+            {
+                return new Vector3((Tile.X + 1) * 4, height * 0.1f, (Tile.Y + 1) * 4);
+            }
+            if (_renderOrientation == EntityOrientation.Up)
+            {
+                return new Vector3((Tile.X + 1) * 4, height * 0.1f + skew * 0.1f, Tile.Y * 4);
+            }
+            if (_renderOrientation == EntityOrientation.Right)
+            {
+                return new Vector3(Tile.X * 4, height * 0.1f + skew * 0.1f, Tile.Y * 4);
+            }
+            return new Vector3(Tile.X * 4, height * 0.1f, (Tile.Y + 1) * 4);
+        }
+
+        public void UpdateHeight(float height, int delta)
+        {
+            _height = height;
+            transform.position = GetPositionForHeight(height, delta);
+
+            int signedSkew = (_renderOrientation == EntityOrientation.Right || _renderOrientation == EntityOrientation.Up)
+                ? -delta : delta;
+            if (signedSkew != _skew)
+            {
+                _skew = signedSkew;
+                // Skew selects a different model variant; OnModelCreated rebuilds selection mesh and extensions.
+                ParentBridge.Data.GetModelForPart(partType, modelSide).CreateOrGetModel(new Vector2(0, _skew), OnModelCreated);
+                return;
+            }
+
+            RefreshExtensions();
+        }
+
+        public void RefreshExtensions()
+        {
+            if (partType != BridgePartType.Support || model == null)
+            {
+                return;
+            }
+            if (GetExtensionCount() == _extensions.Count)
+            {
+                return;
+            }
+
+            _extensionGeneration++;
+            foreach (GameObject extension in _extensions)
+            {
+                if (extension != null)
+                {
+                    Destroy(extension);
+                }
+            }
+            _extensions.Clear();
+            CreateSupportExtensions();
+        }
+
         private void OnModelCreated(GameObject newModel)
         {
             if (model)
@@ -304,6 +367,8 @@ namespace Warlander.Deedplanner.Data.Bridges
 
             Model sourceModel = ParentBridge.Data.GetModelForPart(partType, modelSide);
 
+            _extensionGeneration++;
+            _extensions.Clear();
             CreateSupportExtensions();
 
             Bounds bounds = GetTotalModelBounds(sourceModel.OriginalModel);
@@ -329,7 +394,22 @@ namespace Warlander.Deedplanner.Data.Bridges
                 return 0;
             }
 
-            float relativeHeight = _height - Tile.SurfaceHeight - ParentBridge.Data.SupportHeight;
+            // The column lands in the tile interior where ground blends all four corners;
+            // min guarantees the chain reaches ground on slopes.
+            int groundHeight = Tile.SurfaceHeight;
+            for (int dx = 0; dx <= 1; dx++)
+            {
+                for (int dy = 0; dy <= 1; dy++)
+                {
+                    Tile corner = Tile.Map[Tile.X + dx, Tile.Y + dy];
+                    if (corner != null)
+                    {
+                        groundHeight = Mathf.Min(groundHeight, corner.SurfaceHeight);
+                    }
+                }
+            }
+
+            float relativeHeight = _height - groundHeight - ParentBridge.Data.SupportHeight;
             return Mathf.Max(0, Mathf.CeilToInt(relativeHeight / 20f));
         }
 
@@ -345,15 +425,23 @@ namespace Warlander.Deedplanner.Data.Bridges
             Model extensionModel = ParentBridge.Data.GetModelForPart(BridgePartType.Extension, partSide);
             int supportHeight = ParentBridge.Data.SupportHeight;
             int extensionCount = GetExtensionCount();
+            int generation = _extensionGeneration;
 
             for (int i = 0; i < extensionCount; i++)
             {
                 float yOffset = -(supportHeight + 20f * i) * 0.1f;
                 extensionModel.CreateOrGetModel(new Vector2(0, _skew), instance =>
                 {
+                    if (generation != _extensionGeneration)
+                    {
+                        Destroy(instance);
+                        return;
+                    }
+
                     // Parented under the main model so outline renderer snapshots include extensions.
                     instance.transform.SetParent(model.transform, false);
                     instance.transform.localPosition = new Vector3(0, yOffset, 0);
+                    _extensions.Add(instance);
 
                     foreach (MeshFilter filter in instance.GetComponentsInChildren<MeshFilter>())
                     {
