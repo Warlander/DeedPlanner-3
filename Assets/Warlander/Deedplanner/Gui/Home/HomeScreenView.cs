@@ -78,6 +78,7 @@ namespace Warlander.Deedplanner.Gui.Home
         public void Show(bool animated)
         {
             _fadeTween?.Kill();
+            gameObject.SetActive(true);
             _panel.SetActive(true);
             FadeGroup.blocksRaycasts = true;
 
@@ -100,12 +101,17 @@ namespace Warlander.Deedplanner.Gui.Home
             {
                 FadeGroup.blocksRaycasts = false;
                 _fadeTween = FadeGroup.DOFade(0, 0.15f)
-                    .OnComplete(() => _panel.SetActive(false));
+                    .OnComplete(() =>
+                    {
+                        _panel.SetActive(false);
+                        gameObject.SetActive(false);
+                    });
             }
             else
             {
                 FadeGroup.alpha = 0;
                 _panel.SetActive(false);
+                gameObject.SetActive(false);
             }
         }
 
