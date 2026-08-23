@@ -420,6 +420,11 @@ namespace Warlander.Deedplanner.Data
             _bridgesController.RefreshBridgesForSurfaceHeight(x, y);
         }
 
+        public void RefreshDocksForSurfaceHeight(int x, int y)
+        {
+            _dockCollection.RefreshDocksForSurfaceHeight(x, y);
+        }
+
         public void RefreshBridgesForCaveHeight(int x, int y)
         {
             _bridgesController.RefreshBridgesForCaveHeight(x, y);

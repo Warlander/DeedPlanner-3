@@ -66,6 +66,19 @@ namespace Warlander.Deedplanner.Data.Docks
             return dock;
         }
 
+        public void RefreshDocksForSurfaceHeight(int x, int y)
+        {
+            foreach (Dock dock in _docks)
+            {
+                int dx = x - dock.Tile.X;
+                int dy = y - dock.Tile.Y;
+                if (dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1)
+                {
+                    dock.RefreshSupportExtensions();
+                }
+            }
+        }
+
         public void AddDock(Dock dock)
         {
             Register(dock);

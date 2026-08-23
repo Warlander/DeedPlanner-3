@@ -1124,6 +1124,7 @@ namespace Warlander.Deedplanner.Data
 
                 tile.Map.RecalculateSurfaceHeight(tile.X, tile.Y);
                 tile.Map.RefreshBridgesForSurfaceHeight(tile.X, tile.Y);
+                tile.Map.RefreshDocksForSurfaceHeight(tile.X, tile.Y);
             }
 
             public void DisposeUndo()
