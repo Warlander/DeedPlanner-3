@@ -88,6 +88,7 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterInstance(_cameraCoordinator);
             builder.Register<OutlineCoordinator>(Lifetime.Singleton).As<IOutlineCoordinator>();
             builder.RegisterEntryPoint<OutlineFeatureBridge>();
+            builder.RegisterEntryPoint<PostProcessingQualityApplier>();
 
             builder.Register<FppCameraController>(Lifetime.Transient).As<ICameraController>();
             builder.Register<IsoCameraController>(Lifetime.Transient).As<ICameraController>();
