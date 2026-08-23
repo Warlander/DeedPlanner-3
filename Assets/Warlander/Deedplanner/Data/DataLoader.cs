@@ -256,6 +256,7 @@ namespace Warlander.Deedplanner.Data
             {
                 string name = element.GetAttribute("name");
                 string shortName = element.GetAttribute("shortname");
+                DockSupportType supportType = ParseDockSupportType(element.GetAttribute("type"));
                 Model baseModel = null;
                 Model extensionModel = null;
 
@@ -289,8 +290,24 @@ namespace Warlander.Deedplanner.Data
                     continue;
                 }
 
-                Database.DockSupports[shortName] = new DockSupportData(name, shortName, baseModel, extensionModel);
+                Database.DockSupports[shortName] = new DockSupportData(name, shortName, supportType, baseModel, extensionModel);
                 Debug.Log("Dock support " + name + " loaded and ready to use!");
+            }
+        }
+
+        private static DockSupportType ParseDockSupportType(string type)
+        {
+            switch (type)
+            {
+                case "wood":
+                    return DockSupportType.WoodPillar;
+                case "stone":
+                    return DockSupportType.StonePillar;
+                case "brace":
+                    return DockSupportType.Brace;
+                default:
+                    Debug.LogWarning("Unknown dock support type: " + type);
+                    return DockSupportType.None;
             }
         }
 

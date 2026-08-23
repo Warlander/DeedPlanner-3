@@ -6,6 +6,7 @@ using System.Xml;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Summary;
@@ -26,6 +27,7 @@ namespace Warlander.Deedplanner.Data
         [Inject] private OverlayMeshLoader _overlayMeshLoader;
         [Inject] private TileFactory _tileFactory;
         [Inject] private BridgeFactory _bridgeFactory;
+        [Inject] private DockFactory _dockFactory;
         [Inject] private IMapRenderSettingsRetriever _mapRenderSettingsRetriever;
         [Inject] private IFeatureStateRetriever<Feature> _featureStateRetriever;
         [Inject] private MapHeightTracker _heightTracker;
@@ -84,12 +86,14 @@ namespace Warlander.Deedplanner.Data
 
         public CommandManager CommandManager { get; set; } = new CommandManager(100);
         public IReadOnlyList<Bridge> Bridges => _bridgesController.Bridges;
+        public IReadOnlyList<Dock> Docks => _dockCollection.Docks;
 
         public Transform PlaneLineRoot { get; private set; }
 
         private MapTileGrid _tileGrid;
         private MapLevelRenderer _levelRenderer;
         private MapBridgesController _bridgesController;
+        private MapDockCollection _dockCollection;
 
         private Transform[] _surfaceLevelRoots;
         private Transform[] _caveLevelRoots;
@@ -151,6 +155,7 @@ namespace Warlander.Deedplanner.Data
             }
 
             _bridgesController.InitializeBridgesAfterResize(originalMap, addLeft, addBottom);
+            _dockCollection.InitializeDocksAfterResize(originalMap, addLeft, addBottom);
 
             for (int i = 0; i <= Width; i++)
             {
@@ -241,6 +246,7 @@ namespace Warlander.Deedplanner.Data
             }
 
             _bridgesController.InitializeBridges(mapRoot);
+            _dockCollection.InitializeDocks(mapRoot);
 
             Ground.UpdateNow();
 
@@ -258,6 +264,7 @@ namespace Warlander.Deedplanner.Data
         {
             _tileGrid = new MapTileGrid(width, height);
             _bridgesController = new MapBridgesController(this, _bridgeFactory, _featureStateRetriever);
+            _dockCollection = new MapDockCollection(this, _dockFactory, _featureStateRetriever);
 
             _surfaceLevelRoots = new Transform[16];
             for (int i = 0; i < _surfaceLevelRoots.Length; i++)
@@ -366,6 +373,27 @@ namespace Warlander.Deedplanner.Data
             bridge.DetachFromMap();
         }
 
+        public void AddDock(Dock dock)
+        {
+            _dockCollection.AddDock(dock);
+        }
+
+        public void RemoveDock(Dock dock)
+        {
+            _dockCollection.RemoveDock(dock);
+        }
+
+        public Dock GetDock(Tile tile)
+        {
+            return _dockCollection.GetDock(tile);
+        }
+
+        public event Action DocksChanged
+        {
+            add => _dockCollection.DocksChanged += value;
+            remove => _dockCollection.DocksChanged -= value;
+        }
+
         public event Action BridgesChanged
         {
             add => _bridgesController.BridgesChanged += value;
@@ -456,6 +484,13 @@ namespace Warlander.Deedplanner.Data
                 XmlElement bridgeElement = document.CreateElement("bridge");
                 bridge.Serialize(document, bridgeElement);
                 localRoot.AppendChild(bridgeElement);
+            }
+
+            foreach (Dock dock in _dockCollection.Docks)
+            {
+                XmlElement dockElement = document.CreateElement("dock");
+                dock.Serialize(document, dockElement);
+                localRoot.AppendChild(dockElement);
             }
         }
 

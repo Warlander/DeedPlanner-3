@@ -3,6 +3,7 @@ using VContainer;
 using VContainer.Unity;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Graphics.Screenshots;
@@ -144,6 +145,7 @@ namespace Warlander.Deedplanner.Scopes
 
             builder.Register<TileFactory>(Lifetime.Singleton);
             builder.Register<BridgeFactory>(Lifetime.Singleton);
+            builder.Register<DockFactory>(Lifetime.Singleton);
 
             builder.Register<MapHeightTracker>(Lifetime.Singleton);
             builder.RegisterEntryPoint<MapRoofCalculator>().AsSelf();

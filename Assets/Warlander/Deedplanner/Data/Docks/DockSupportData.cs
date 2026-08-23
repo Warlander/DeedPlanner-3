@@ -6,15 +6,17 @@ namespace Warlander.Deedplanner.Data.Docks
     {
         public string Name { get; }
         public string ShortName { get; }
+        public DockSupportType Type { get; }
         public Model BaseModel { get; }
         public Model ExtensionModel { get; }
 
         public bool HasExtension => ExtensionModel != null;
 
-        public DockSupportData(string name, string shortName, Model baseModel, Model extensionModel)
+        public DockSupportData(string name, string shortName, DockSupportType type, Model baseModel, Model extensionModel)
         {
             Name = name;
             ShortName = shortName;
+            Type = type;
             BaseModel = baseModel;
             ExtensionModel = extensionModel;
         }

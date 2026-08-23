@@ -9304,11 +9304,11 @@
 	</bridgepavements>
 
 	<docksupports>
-		<docksupport name="Wooden pillar" shortname="dwp">
+		<docksupport name="Wooden pillar" shortname="dwp" type="wood">
 			<model location="Docks/WoodenSupport.wom" tag="base"/>
 			<model location="Docks/WoodenSupportExtension.wom" tag="extension"/>
 		</docksupport>
-		<docksupport name="Stone pillar" shortname="dsp">
+		<docksupport name="Stone pillar" shortname="dsp" type="stone">
 			<model location="Docks/StoneSupport.wom" tag="base">
 				<override mesh="StoneSupportMesh" texture="Docks/StoneWall.dds"/>
 			</model>
@@ -9316,11 +9316,11 @@
 				<override mesh="StoneSupportMesh" texture="Docks/StoneWall.dds"/>
 			</model>
 		</docksupport>
-		<docksupport name="Rounded stone pillar" shortname="drsp">
+		<docksupport name="Rounded stone pillar" shortname="drsp" type="stone">
 			<model location="Docks/StoneSupport.wom" tag="base"/>
 			<model location="Docks/StoneSupport.wom" tag="extension"/>
 		</docksupport>
-		<docksupport name="Slate pillar" shortname="dslp">
+		<docksupport name="Slate pillar" shortname="dslp" type="stone">
 			<model location="Docks/StoneSupport.wom" tag="base">
 				<override mesh="StoneSupportMesh" texture="Docks/slate.dds"/>
 			</model>
@@ -9328,7 +9328,7 @@
 				<override mesh="StoneSupportMesh" texture="Docks/slate.dds"/>
 			</model>
 		</docksupport>
-		<docksupport name="Marble pillar" shortname="dmp">
+		<docksupport name="Marble pillar" shortname="dmp" type="stone">
 			<model location="Docks/StoneSupport.wom" tag="base">
 				<override mesh="StoneSupportMesh" texture="Docks/marble.dds"/>
 			</model>
@@ -9336,7 +9336,7 @@
 				<override mesh="StoneSupportMesh" texture="Docks/marble.dds"/>
 			</model>
 		</docksupport>
-		<docksupport name="Sandstone pillar" shortname="dssp">
+		<docksupport name="Sandstone pillar" shortname="dssp" type="stone">
 			<model location="Docks/StoneSupport.wom" tag="base">
 				<override mesh="StoneSupportMesh" texture="Docks/sandstone.dds"/>
 			</model>
@@ -9344,7 +9344,7 @@
 				<override mesh="StoneSupportMesh" texture="Docks/sandstone.dds"/>
 			</model>
 		</docksupport>
-		<docksupport name="Pottery brick pillar" shortname="dpbp">
+		<docksupport name="Pottery brick pillar" shortname="dpbp" type="stone">
 			<model location="Docks/StoneSupport.wom" tag="base">
 				<override mesh="StoneSupportMesh" texture="Docks/brick.dds"/>
 			</model>
@@ -9352,7 +9352,7 @@
 				<override mesh="StoneSupportMesh" texture="Docks/brick.dds"/>
 			</model>
 		</docksupport>
-		<docksupport name="Wooden brace" shortname="dwb">
+		<docksupport name="Wooden brace" shortname="dwb" type="brace">
 			<model location="Docks/SupportDiag.wom" tag="base"/>
 		</docksupport>
 	</docksupports>

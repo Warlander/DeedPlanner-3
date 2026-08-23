@@ -6,6 +6,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Decorations;
+using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
@@ -26,6 +27,7 @@ namespace Warlander.Deedplanner.Data
         private int caveSize = 0;
 
         private BridgePart surfaceBridgePart;
+        private Dock dock;
         
         public Map Map { get; }
         public int X { get; }
@@ -35,6 +37,7 @@ namespace Warlander.Deedplanner.Data
         public Ground Ground { get; private set; }
         public Cave Cave { get; private set; }
         public BridgePart BridgePart => surfaceBridgePart;
+        public Dock Dock => dock;
 
         public int SurfaceHeight {
             get => surfaceHeight;
@@ -143,6 +146,11 @@ namespace Warlander.Deedplanner.Data
             if (entity == BridgePart)
             {
                 return EntityType.BridgePart;
+            }
+
+            if (entity == Dock)
+            {
+                return EntityType.Dock;
             }
 
             foreach (KeyValuePair<EntityData, LevelEntity> pair in Entities)
@@ -633,6 +641,18 @@ namespace Warlander.Deedplanner.Data
         public void UnregisterBridgePart()
         {
             surfaceBridgePart = null;
+        }
+
+        public void RegisterDock(Dock newDock)
+        {
+            dock = newDock;
+            newDock.Tile = this;
+            newDock.transform.SetParent(Map.transform);
+        }
+
+        public void UnregisterDock()
+        {
+            dock = null;
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
