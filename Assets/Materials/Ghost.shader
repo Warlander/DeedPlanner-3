@@ -14,7 +14,9 @@ Shader "DeedPlanner/Ghost"
         {
             "RenderPipeline" = "UniversalPipeline"
             "RenderType"     = "Transparent"
-            "Queue"          = "Transparent"
+            // One step above water (also Transparent) so ghost previews and invalid
+            // tints never lose the back-to-front sort against the water plane.
+            "Queue"          = "Transparent+1"
         }
 
         Pass
