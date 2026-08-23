@@ -58,33 +58,52 @@ namespace Warlander.Deedplanner.Data.Docks
 
         private void OnAnyModelLoaded(DynamicModelBehaviour behaviour, GameObject model)
         {
-            ApplyValidityTint();
+            ApplyVisualState();
         }
 
         public void Revalidate()
         {
             ValidationErrors = DockSupportResolver.ValidateDock(Tile.Map, this);
-            ApplyValidityTint();
+            ApplyVisualState();
         }
 
-        // Invalid docks swap to the ghost material (texture-preserving red tint); valid ones restore originals.
-        private void ApplyValidityTint()
+        // Level visibility: effective level derives from absolute height relative to the tile's terrain.
+        public int GetEffectiveLevel()
         {
-            if (_ghostMaterial == null)
-            {
-                return;
-            }
+            return Mathf.RoundToInt((Height - Tile.SurfaceHeight) / 30f);
+        }
 
+        public void ApplyLevelRendering(float opacity)
+        {
+            _levelOpacity = opacity;
+            gameObject.SetActive(opacity > 0);
+            if (opacity > 0)
+            {
+                ApplyVisualState();
+            }
+        }
+
+        private float _levelOpacity = 1f;
+
+        private void ApplyVisualState()
+        {
             bool invalid = ValidationErrors.Count > 0;
-            if (invalid && _invalidPropertyBlock == null)
+            if (invalid)
             {
-                _invalidPropertyBlock = new MaterialPropertyBlock();
-                _invalidPropertyBlock.SetColor(ShaderPropertyIds.BaseColor, new Color(1f, 0.2f, 0.2f, 0.6f));
-            }
+                if (_ghostMaterial == null)
+                {
+                    return;
+                }
 
-            foreach (Renderer childRenderer in GetComponentsInChildren<Renderer>())
-            {
-                if (invalid)
+                if (_invalidPropertyBlock == null)
+                {
+                    _invalidPropertyBlock = new MaterialPropertyBlock();
+                }
+
+                _invalidPropertyBlock.SetColor(ShaderPropertyIds.BaseColor,
+                    new Color(_levelOpacity, 0.2f * _levelOpacity, 0.2f * _levelOpacity, 0.6f));
+
+                foreach (Renderer childRenderer in GetComponentsInChildren<Renderer>())
                 {
                     if (!_originalMaterials.ContainsKey(childRenderer))
                     {
@@ -94,10 +113,20 @@ namespace Warlander.Deedplanner.Data.Docks
                     childRenderer.sharedMaterial = _ghostMaterial;
                     childRenderer.SetPropertyBlock(_invalidPropertyBlock);
                 }
-                else if (_originalMaterials.TryGetValue(childRenderer, out Material original))
+            }
+            else
+            {
+                MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+                Color opacityColor = new Color(_levelOpacity, _levelOpacity, _levelOpacity);
+                foreach (Renderer childRenderer in GetComponentsInChildren<Renderer>())
                 {
-                    childRenderer.sharedMaterial = original;
-                    childRenderer.SetPropertyBlock(null);
+                    if (_originalMaterials.TryGetValue(childRenderer, out Material original))
+                    {
+                        childRenderer.sharedMaterial = original;
+                    }
+
+                    propertyBlock.SetColor(ShaderPropertyIds.BaseColor, opacityColor);
+                    childRenderer.SetPropertyBlock(propertyBlock);
                 }
             }
         }
@@ -147,7 +176,7 @@ namespace Warlander.Deedplanner.Data.Docks
             _supportModel.transform.localPosition = new Vector3(0, 0, 4);
 
             RefreshSupportExtensions();
-            ApplyValidityTint();
+            ApplyVisualState();
         }
 
         private void OnBraceModelCreated(GameObject braceModel)
@@ -161,7 +190,7 @@ namespace Warlander.Deedplanner.Data.Docks
             _supportModel.transform.SetParent(_supportRoot.transform, false);
             _supportModel.transform.localPosition = new Vector3(0, 0, 4);
             _supportModel.transform.localRotation = Quaternion.Euler(0, BraceYaw(), 0);
-            ApplyValidityTint();
+            ApplyVisualState();
         }
 
         private float BraceYaw()
@@ -212,7 +241,7 @@ namespace Warlander.Deedplanner.Data.Docks
                     instance.transform.SetParent(_supportRoot.transform, false);
                     instance.transform.localPosition = new Vector3(0, yOffset, 4);
                     _extensions.Add(instance);
-                    ApplyValidityTint();
+                    ApplyVisualState();
                 });
             }
         }

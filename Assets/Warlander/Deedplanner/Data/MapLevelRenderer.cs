@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner;
 
 namespace Warlander.Deedplanner.Data
@@ -13,6 +14,7 @@ namespace Warlander.Deedplanner.Data
         private Transform _surfaceGridRoot;
         private Transform _caveGridRoot;
         private Func<IEnumerable<Bridge>> _getBridges;
+        private Func<IEnumerable<Dock>> _getDocks;
 
         private int _renderedLevel;
         private bool _renderEntireMap = true;
@@ -25,13 +27,15 @@ namespace Warlander.Deedplanner.Data
             Transform[] caveLevelRoots,
             Transform surfaceGridRoot,
             Transform caveGridRoot,
-            Func<IEnumerable<Bridge>> getBridges)
+            Func<IEnumerable<Bridge>> getBridges,
+            Func<IEnumerable<Dock>> getDocks)
         {
             _surfaceLevelRoots = surfaceLevelRoots;
             _caveLevelRoots = caveLevelRoots;
             _surfaceGridRoot = surfaceGridRoot;
             _caveGridRoot = caveGridRoot;
             _getBridges = getBridges;
+            _getDocks = getDocks;
         }
 
         public int RenderedLevel
@@ -115,6 +119,7 @@ namespace Warlander.Deedplanner.Data
             }
 
             RefreshBridgesRendering(absoluteLevel);
+            RefreshDocksRendering(absoluteLevel, underground);
         }
 
         private void RefreshLevelRendering(Transform root, int relativeLevel)
@@ -183,6 +188,38 @@ namespace Warlander.Deedplanner.Data
                     propertyBlock.SetColor(ShaderPropertyIds.BaseColor, new Color(opacity, opacity, opacity));
                     bridge.SetPropertyBlock(propertyBlock);
                 }
+            }
+        }
+        public void UpdateDocksRendering()
+        {
+            if (_surfaceLevelRoots == null) return;
+
+            bool underground = _renderedLevel < 0;
+            int absoluteLevel = underground ? -_renderedLevel + 1 : _renderedLevel;
+            RefreshDocksRendering(absoluteLevel, underground);
+        }
+
+        private void RefreshDocksRendering(int absoluteLevel, bool underground)
+        {
+            if (_getDocks == null) return;
+
+            foreach (Dock dock in _getDocks())
+            {
+                float opacity;
+                if (underground || dock.GetEffectiveLevel() < 0)
+                {
+                    opacity = 0f;
+                }
+                else if (_renderEntireMap)
+                {
+                    opacity = 1f;
+                }
+                else
+                {
+                    opacity = GetRelativeLevelOpacity(dock.GetEffectiveLevel() - absoluteLevel);
+                }
+
+                dock.ApplyLevelRendering(opacity);
             }
         }
     }

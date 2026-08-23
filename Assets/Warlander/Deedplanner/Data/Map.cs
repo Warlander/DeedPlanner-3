@@ -156,6 +156,7 @@ namespace Warlander.Deedplanner.Data
 
             _bridgesController.InitializeBridgesAfterResize(originalMap, addLeft, addBottom);
             _dockCollection.InitializeDocksAfterResize(originalMap, addLeft, addBottom);
+            _levelRenderer.UpdateDocksRendering();
 
             for (int i = 0; i <= Width; i++)
             {
@@ -247,6 +248,7 @@ namespace Warlander.Deedplanner.Data
 
             _bridgesController.InitializeBridges(mapRoot);
             _dockCollection.InitializeDocks(mapRoot);
+            _levelRenderer.UpdateDocksRendering();
 
             Ground.UpdateNow();
 
@@ -292,7 +294,8 @@ namespace Warlander.Deedplanner.Data
             PlaneLineRoot = new GameObject("Plane Lines").transform;
 
             _levelRenderer = new MapLevelRenderer();
-            _levelRenderer.Initialize(_surfaceLevelRoots, _caveLevelRoots, _surfaceGridRoot, _caveGridRoot, () => _bridgesController.Bridges);
+            _levelRenderer.Initialize(_surfaceLevelRoots, _caveLevelRoots, _surfaceGridRoot, _caveGridRoot,
+                () => _bridgesController.Bridges, () => _dockCollection.Docks);
 
             GameObject groundObject = new GameObject("Ground Mesh", typeof(GroundMesh));
             Ground = groundObject.GetComponent<GroundMesh>();
@@ -376,11 +379,13 @@ namespace Warlander.Deedplanner.Data
         public void AddDock(Dock dock)
         {
             _dockCollection.AddDock(dock);
+            _levelRenderer.UpdateDocksRendering();
         }
 
         public void RemoveDock(Dock dock)
         {
             _dockCollection.RemoveDock(dock);
+            _levelRenderer.UpdateDocksRendering();
         }
 
         public Dock GetDock(Tile tile)
@@ -423,6 +428,7 @@ namespace Warlander.Deedplanner.Data
         public void RefreshDocksForSurfaceHeight(int x, int y)
         {
             _dockCollection.RefreshDocksForSurfaceHeight(x, y);
+            _levelRenderer.UpdateDocksRendering();
         }
 
         public void RefreshDocksForWallChange(int x, int y, bool vertical)
