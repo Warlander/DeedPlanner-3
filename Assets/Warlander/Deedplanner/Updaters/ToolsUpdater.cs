@@ -3,6 +3,7 @@ using System.Text;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
+using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
@@ -235,6 +236,21 @@ namespace Warlander.Deedplanner.Updaters
                 RefreshEntityOutsideBuildingWarningsTile(surfaceGroundSummary, tile);
                 RefreshBuildingsTouchingWarningsTile(surfaceGroundSummary, tile);
                 RefreshTokenInsideBuildingWarningsTile(surfaceGroundSummary, tile);
+                RefreshDockWarningsTile(tile);
+            }
+        }
+
+        private void RefreshDockWarningsTile(Tile tile)
+        {
+            Dock dock = tile.Dock;
+            if (dock == null)
+            {
+                return;
+            }
+
+            foreach (string error in dock.ValidationErrors)
+            {
+                AddWarning(CreateWarningString(tile, error));
             }
         }
 

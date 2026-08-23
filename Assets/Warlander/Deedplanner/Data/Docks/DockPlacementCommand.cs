@@ -20,8 +20,8 @@ namespace Warlander.Deedplanner.Data.Docks
         {
             if (_replacedDock)
             {
-                _map.RemoveDock(_replacedDock);
                 _replacedDock.Tile.UnregisterDock();
+                _map.RemoveDock(_replacedDock);
                 _replacedDock.gameObject.SetActive(false);
             }
 
@@ -32,8 +32,8 @@ namespace Warlander.Deedplanner.Data.Docks
 
         public void Undo()
         {
-            _map.RemoveDock(_dock);
             _dock.Tile.UnregisterDock();
+            _map.RemoveDock(_dock);
             _dock.gameObject.SetActive(false);
 
             if (_replacedDock)

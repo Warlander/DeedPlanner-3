@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Walls;
@@ -219,6 +220,57 @@ namespace Warlander.Deedplanner.Data.Docks
             }
 
             return false;
+        }
+
+        public static List<string> ValidateDock(Map map, Dock dock)
+        {
+            var errors = new List<string>();
+            Tile tile = dock.Tile;
+            int height = dock.Height;
+
+            if (MaxCornerHeight(map, tile.X, tile.Y) > height)
+            {
+                errors.Add("terrain above deck");
+            }
+
+            DockSupportData support = dock.Support;
+            if (support == null)
+            {
+                if (!IsFlatAtDeckLevel(map, tile.X, tile.Y, height))
+                {
+                    errors.Add("without-support dock requires flat ground at deck level");
+                }
+            }
+            else if (support.Type == DockSupportType.Brace)
+            {
+                if (!TryPickBraceSide(map, tile.X, tile.Y, height, null, out _))
+                {
+                    errors.Add("brace has no support");
+                }
+            }
+            else
+            {
+                int drop = height - MinCornerHeight(map, tile.X, tile.Y);
+                if (drop <= 0)
+                {
+                    errors.Add("pillar has no corner below deck");
+                }
+                else
+                {
+                    int maxDrop = support.Type == DockSupportType.WoodPillar ? WoodPillarMaxDrop : StonePillarMaxDrop;
+                    if (drop > maxDrop)
+                    {
+                        errors.Add("pillar drop " + drop + " > " + maxDrop);
+                    }
+                }
+            }
+
+            if (!dock.Floor.SupportsDock)
+            {
+                errors.Add("floor material not dock-capable in Wurm");
+            }
+
+            return errors;
         }
 
         private static int MinCornerHeight(Map map, int x, int y)

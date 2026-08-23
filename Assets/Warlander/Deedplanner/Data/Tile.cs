@@ -394,18 +394,21 @@ namespace Warlander.Deedplanner.Data
                 {
                     Wall wall = CreateNewVerticalWall(wallEntityData, data, reversed);
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, wall));
+                    Map.RefreshDocksForWallChange(X, Y, true);
                     return wall;
                 }
                 if (fenceNeedsChange)
                 {
                     Wall fence = CreateNewVerticalWall(fenceEntityData, data, reversed);
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, fence));
+                    Map.RefreshDocksForWallChange(X, Y, true);
                     return fence;
                 }
 
                 if (wallNeedsRemoval)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
+                    Map.RefreshDocksForWallChange(X, Y, true);
                     return null;
                 }
 
@@ -415,11 +418,13 @@ namespace Warlander.Deedplanner.Data
                 if (currentWall)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
+                    Map.RefreshDocksForWallChange(X, Y, true);
                     return null;
                 }
                 if (currentFence)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, null));
+                    Map.RefreshDocksForWallChange(X, Y, true);
                     return null;
                 }
             }
@@ -511,18 +516,21 @@ namespace Warlander.Deedplanner.Data
                 {
                     Wall wall = CreateNewHorizontalWall(wallEntityData, data, reversed);
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, wall));
+                    Map.RefreshDocksForWallChange(X, Y, false);
                     return wall;
                 }
                 if (fenceNeedsChange)
                 {
                     Wall fence = CreateNewHorizontalWall(fenceEntityData, data, reversed);
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, fence));
+                    Map.RefreshDocksForWallChange(X, Y, false);
                     return fence;
                 }
 
                 if (wallNeedsRemoval)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
+                    Map.RefreshDocksForWallChange(X, Y, false);
                     return null;
                 }
             }
@@ -531,11 +539,13 @@ namespace Warlander.Deedplanner.Data
                 if (currentWall)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
+                    Map.RefreshDocksForWallChange(X, Y, false);
                     return null;
                 }
                 if (currentFence)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, null));
+                    Map.RefreshDocksForWallChange(X, Y, false);
                     return null;
                 }
             }

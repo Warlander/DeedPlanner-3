@@ -14,20 +14,26 @@ namespace Warlander.Deedplanner.Data.Docks
         private GameObject _supportModel;
         private readonly List<GameObject> _extensions = new List<GameObject>();
         private int _supportGeneration;
+        private Material _ghostMaterial;
+        private readonly Dictionary<Renderer, Material> _originalMaterials = new Dictionary<Renderer, Material>();
+        private MaterialPropertyBlock _invalidPropertyBlock;
 
         public int Height { get; private set; }
         public FloorData Floor { get; private set; }
         public DockSupportData Support { get; private set; }
         public EntityOrientation BraceRotation { get; private set; }
+        public IReadOnlyList<string> ValidationErrors { get; private set; } = new List<string>();
         public override Materials Materials => Floor.Materials;
 
-        public void Initialize(Tile tile, int height, FloorData floor, DockSupportData support, EntityOrientation braceRotation)
+        public void Initialize(Tile tile, int height, FloorData floor, DockSupportData support,
+            EntityOrientation braceRotation, Material ghostMaterial = null)
         {
             Tile = tile;
             Height = height;
             Floor = floor;
             Support = support;
             BraceRotation = braceRotation;
+            _ghostMaterial = ghostMaterial;
 
             gameObject.layer = LayerMasks.FloorRoofLayer;
             transform.position = new Vector3(tile.X * 4, height * 0.1f, tile.Y * 4);
@@ -45,6 +51,54 @@ namespace Warlander.Deedplanner.Data.Docks
                 BoxCollider collider = gameObject.AddComponent<BoxCollider>();
                 collider.center = new Vector3(-2f, 0.125f, -2f);
                 collider.size = new Vector3(4f, 0.25f, 4f);
+            }
+
+            ModelLoaded += OnAnyModelLoaded;
+        }
+
+        private void OnAnyModelLoaded(DynamicModelBehaviour behaviour, GameObject model)
+        {
+            ApplyValidityTint();
+        }
+
+        public void Revalidate()
+        {
+            ValidationErrors = DockSupportResolver.ValidateDock(Tile.Map, this);
+            ApplyValidityTint();
+        }
+
+        // Invalid docks swap to the ghost material (texture-preserving red tint); valid ones restore originals.
+        private void ApplyValidityTint()
+        {
+            if (_ghostMaterial == null)
+            {
+                return;
+            }
+
+            bool invalid = ValidationErrors.Count > 0;
+            if (invalid && _invalidPropertyBlock == null)
+            {
+                _invalidPropertyBlock = new MaterialPropertyBlock();
+                _invalidPropertyBlock.SetColor(ShaderPropertyIds.BaseColor, new Color(1f, 0.2f, 0.2f, 0.6f));
+            }
+
+            foreach (Renderer childRenderer in GetComponentsInChildren<Renderer>())
+            {
+                if (invalid)
+                {
+                    if (!_originalMaterials.ContainsKey(childRenderer))
+                    {
+                        _originalMaterials[childRenderer] = childRenderer.sharedMaterial;
+                    }
+
+                    childRenderer.sharedMaterial = _ghostMaterial;
+                    childRenderer.SetPropertyBlock(_invalidPropertyBlock);
+                }
+                else if (_originalMaterials.TryGetValue(childRenderer, out Material original))
+                {
+                    childRenderer.sharedMaterial = original;
+                    childRenderer.SetPropertyBlock(null);
+                }
             }
         }
 
@@ -93,6 +147,7 @@ namespace Warlander.Deedplanner.Data.Docks
             _supportModel.transform.localPosition = new Vector3(0, 0, 4);
 
             RefreshSupportExtensions();
+            ApplyValidityTint();
         }
 
         private void OnBraceModelCreated(GameObject braceModel)
@@ -106,6 +161,7 @@ namespace Warlander.Deedplanner.Data.Docks
             _supportModel.transform.SetParent(_supportRoot.transform, false);
             _supportModel.transform.localPosition = new Vector3(0, 0, 4);
             _supportModel.transform.localRotation = Quaternion.Euler(0, BraceYaw(), 0);
+            ApplyValidityTint();
         }
 
         private float BraceYaw()
@@ -156,6 +212,7 @@ namespace Warlander.Deedplanner.Data.Docks
                     instance.transform.SetParent(_supportRoot.transform, false);
                     instance.transform.localPosition = new Vector3(0, yOffset, 4);
                     _extensions.Add(instance);
+                    ApplyValidityTint();
                 });
             }
         }
@@ -200,6 +257,12 @@ namespace Warlander.Deedplanner.Data.Docks
             if (Support != null)
             {
                 build.Append(" · ").Append(Support.Name);
+            }
+
+            if (ValidationErrors.Count > 0)
+            {
+                build.AppendLine();
+                build.Append("<color=red>").Append(string.Join(", ", ValidationErrors)).Append("</color>");
             }
 
             return build.ToString();

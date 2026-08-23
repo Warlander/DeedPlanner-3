@@ -5,6 +5,7 @@ using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Updaters;
+using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
@@ -25,6 +26,7 @@ namespace Warlander.Deedplanner.Updaters
         private readonly MapHandler _mapHandler;
         private readonly TabContext _tabContext;
         private readonly DockFactory _dockFactory;
+        private readonly ISharedMaterials _sharedMaterials;
 
         public Tab TargetTab => Tab.Floors;
 
@@ -50,7 +52,8 @@ namespace Warlander.Deedplanner.Updaters
         public DockSupportData SelectedDockSupport => _selectedDockSupport;
 
         public FloorUpdater(IFloorUpdaterView view, TooltipHandler tooltipHandler, CameraCoordinator cameraCoordinator,
-            DPInput input, MapHandler mapHandler, TabContext tabContext, DockFactory dockFactory)
+            DPInput input, MapHandler mapHandler, TabContext tabContext, DockFactory dockFactory,
+            ISharedMaterials sharedMaterials)
         {
             _view = view;
             _tooltipHandler = tooltipHandler;
@@ -59,6 +62,7 @@ namespace Warlander.Deedplanner.Updaters
             _mapHandler = mapHandler;
             _tabContext = tabContext;
             _dockFactory = dockFactory;
+            _sharedMaterials = sharedMaterials;
         }
 
         public void Initialize()
@@ -344,7 +348,8 @@ namespace Warlander.Deedplanner.Updaters
         {
             GameObject markerObject = new GameObject("Invalid Dock Marker", typeof(Dock));
             Dock marker = markerObject.GetComponent<Dock>();
-            marker.Initialize(tile, _strokeHeight, _selectedFloor, null, EntityOrientation.Up);
+            marker.Initialize(tile, _strokeHeight, _selectedFloor, null, EntityOrientation.Up,
+                _sharedMaterials.GhostMaterial);
 
             BoxCollider markerCollider = markerObject.GetComponent<BoxCollider>();
             if (markerCollider)
@@ -366,14 +371,13 @@ namespace Warlander.Deedplanner.Updaters
             TintMarker(model);
         }
 
-        private static void TintMarker(GameObject model)
+        private void TintMarker(GameObject model)
         {
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-            Color tint = new Color(1f, 0.15f, 0.15f, 0.5f);
+            propertyBlock.SetColor(ShaderPropertyIds.BaseColor, new Color(1f, 0.15f, 0.15f, 0.6f));
             foreach (Renderer childRenderer in model.GetComponentsInChildren<Renderer>())
             {
-                childRenderer.GetPropertyBlock(propertyBlock);
-                propertyBlock.SetColor(ShaderPropertyIds.BaseColor, tint);
+                childRenderer.sharedMaterial = _sharedMaterials.GhostMaterial;
                 childRenderer.SetPropertyBlock(propertyBlock);
             }
         }

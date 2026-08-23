@@ -2,11 +2,21 @@ using System;
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Floors;
+using Warlander.Deedplanner.Graphics;
+using VContainer;
 
 namespace Warlander.Deedplanner.Data.Docks
 {
     public class DockFactory
     {
+        private readonly ISharedMaterials _sharedMaterials;
+
+        [Inject]
+        public DockFactory(ISharedMaterials sharedMaterials)
+        {
+            _sharedMaterials = sharedMaterials;
+        }
+
         public Dock CreateDock(Map map, XmlElement element)
         {
             try
@@ -51,7 +61,7 @@ namespace Warlander.Deedplanner.Data.Docks
             GameObject dockObject = new GameObject("Dock " + floor.Name, typeof(Dock));
             Dock dock = dockObject.GetComponent<Dock>();
             map[x, y].RegisterDock(dock);
-            dock.Initialize(map[x, y], height, floor, support, braceRotation);
+            dock.Initialize(map[x, y], height, floor, support, braceRotation, _sharedMaterials.GhostMaterial);
             return dock;
         }
     }

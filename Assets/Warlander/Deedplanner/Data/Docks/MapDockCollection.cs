@@ -39,6 +39,8 @@ namespace Warlander.Deedplanner.Data.Docks
                     Register(dock);
                 }
             }
+
+            RevalidateAll();
         }
 
         public void InitializeDocksAfterResize(Map originalMap, int addLeft, int addBottom)
@@ -58,6 +60,8 @@ namespace Warlander.Deedplanner.Data.Docks
                     Register(dock);
                 }
             }
+
+            RevalidateAll();
         }
 
         public Dock GetDock(Tile tile)
@@ -75,6 +79,7 @@ namespace Warlander.Deedplanner.Data.Docks
                 if (dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1)
                 {
                     dock.RefreshSupportExtensions();
+                    dock.Revalidate();
                 }
             }
         }
@@ -82,14 +87,68 @@ namespace Warlander.Deedplanner.Data.Docks
         public void AddDock(Dock dock)
         {
             Register(dock);
+            RevalidateArea(dock.Tile);
             DocksChanged?.Invoke();
         }
 
         public void RemoveDock(Dock dock)
         {
+            Tile tile = dock.Tile;
             _docks.Remove(dock);
             _docksByTile.Remove(dock.Tile);
+            RevalidateArea(tile);
             DocksChanged?.Invoke();
+        }
+
+        public void RevalidateAll()
+        {
+            foreach (Dock dock in _docks)
+            {
+                dock.Revalidate();
+            }
+        }
+
+        public void RevalidateForWallChange(int x, int y, bool vertical)
+        {
+            RevalidateDockAt(x, y);
+            if (vertical)
+            {
+                RevalidateDockAt(x, y + 1);
+            }
+            else
+            {
+                RevalidateDockAt(x + 1, y);
+            }
+        }
+
+        private void RevalidateArea(Tile tile)
+        {
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    if (dx != 0 && dy != 0)
+                    {
+                        continue;
+                    }
+
+                    RevalidateDockAt(tile.X + dx, tile.Y + dy);
+                }
+            }
+        }
+
+        private void RevalidateDockAt(int x, int y)
+        {
+            if (x < 0 || y < 0 || x >= _map.Width || y >= _map.Height)
+            {
+                return;
+            }
+
+            Dock dock = GetDock(_map[x, y]);
+            if (dock != null)
+            {
+                dock.Revalidate();
+            }
         }
 
         private void Register(Dock dock)
