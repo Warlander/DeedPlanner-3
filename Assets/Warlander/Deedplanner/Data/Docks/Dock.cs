@@ -67,10 +67,12 @@ namespace Warlander.Deedplanner.Data.Docks
             ApplyVisualState();
         }
 
-        // Level visibility: effective level derives from absolute height relative to the tile's terrain.
+        // Level visibility: effective level derives from absolute height relative to the local surface —
+        // terrain, or water level (0) where the terrain dips below it, so docks over water behave
+        // as waterline structures rather than multi-story ones over the seabed.
         public int GetEffectiveLevel()
         {
-            return Mathf.RoundToInt((Height - Tile.SurfaceHeight) / 30f);
+            return Mathf.RoundToInt((Height - Mathf.Max(Tile.SurfaceHeight, 0)) / 30f);
         }
 
         public void ApplyLevelRendering(float opacity)
