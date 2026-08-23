@@ -3910,7 +3910,6 @@ MonoBehaviour:
     TypeName: Warlander.Deedplanner.Scopes.ProjectLifetimeScope
   autoRun: 1
   autoInjectGameObjects: []
-  _debugProperties: {fileID: 11400000, guid: 814971153ac067e47b61f466e9322aa6, type: 2}
   _cameraCoordinator: {fileID: 1890273981}
   _bridgeTabSwapper: {fileID: 1731037936}
 --- !u!1 &1418748994

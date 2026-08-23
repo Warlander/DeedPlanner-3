@@ -23,7 +23,6 @@ namespace Warlander.Deedplanner.Scopes
 {
     public class MainSceneLifetimeScope : DPSceneLifetimeScope
     {
-        [SerializeField] private DebugProperties _debugProperties;
         [SerializeField] private CameraCoordinator _cameraCoordinator;
         [SerializeField] private BridgeTabSwapper _bridgeTabSwapper;
 
@@ -103,7 +102,7 @@ namespace Warlander.Deedplanner.Scopes
             if (Debug.isDebugBuild)
             {
                 builder.RegisterEntryPoint<DebugApplier>();
-                builder.RegisterInstance(_debugProperties);
+                builder.RegisterInstance(DebugProperties.Current);
             }
 
             DPInput input = new DPInput();
