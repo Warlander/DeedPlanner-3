@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Gui.Widgets;
 
@@ -9,6 +10,9 @@ namespace Warlander.Deedplanner.Gui.Updaters
 {
     public class FloorUpdaterView : MonoBehaviour, IFloorUpdaterView
     {
+        // Toggles in _stoneVariantToggles must be in the same order as these catalog shortnames.
+        private static readonly string[] StoneVariantShortNames = { "dsp", "drsp", "dslp", "dmp", "dssp", "dpbp" };
+
         [SerializeField] private UnityTree _floorsTree;
 
         [SerializeField] private Toggle _southToggle;
@@ -16,8 +20,24 @@ namespace Warlander.Deedplanner.Gui.Updaters
         [SerializeField] private Toggle _northToggle;
         [SerializeField] private Toggle _eastToggle;
 
+        [SerializeField] private Toggle _floorsModeToggle;
+        [SerializeField] private Toggle _docksModeToggle;
+        [SerializeField] private Image _floorsModeIcon;
+        [SerializeField] private Image _docksModeIcon;
+
+        [SerializeField] private GameObject _dockSupportSection;
+        [SerializeField] private Toggle _autoSupportToggle;
+        [SerializeField] private Toggle _noneSupportToggle;
+        [SerializeField] private Toggle _woodSupportToggle;
+        [SerializeField] private Toggle _stoneSupportToggle;
+        [SerializeField] private Toggle _braceSupportToggle;
+        [SerializeField] private GameObject _stoneVariantRow;
+        [SerializeField] private Toggle[] _stoneVariantToggles;
+
         public event Action<FloorData> FloorSelected;
         public event Action<EntityOrientation> OrientationChanged;
+        public event Action<FloorPaintMode> PaintModeChanged;
+        public event Action<bool, DockSupportData> DockSupportChanged;
 
         private void Awake()
         {
@@ -26,11 +46,38 @@ namespace Warlander.Deedplanner.Gui.Updaters
             _westToggle.onValueChanged.AddListener(toggled => OnOrientationToggled(toggled, EntityOrientation.Right));
             _northToggle.onValueChanged.AddListener(toggled => OnOrientationToggled(toggled, EntityOrientation.Up));
             _eastToggle.onValueChanged.AddListener(toggled => OnOrientationToggled(toggled, EntityOrientation.Left));
+
+            _floorsModeToggle.onValueChanged.AddListener(toggled => OnPaintModeToggled(toggled, FloorPaintMode.Floors));
+            _docksModeToggle.onValueChanged.AddListener(toggled => OnPaintModeToggled(toggled, FloorPaintMode.Docks));
+            _floorsModeToggle.onValueChanged.AddListener(toggled => UpdateModeIcons());
+            _docksModeToggle.onValueChanged.AddListener(toggled => UpdateModeIcons());
+            UpdateModeIcons();
+
+            _autoSupportToggle.onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, true, null));
+            _noneSupportToggle.onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, false, null));
+            _woodSupportToggle.onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, false, Database.DockSupports["dwp"]));
+            _stoneSupportToggle.onValueChanged.AddListener(toggled => OnStoneSupportToggled(toggled));
+            _braceSupportToggle.onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, false, Database.DockSupports["dwb"]));
+
+            for (int i = 0; i < _stoneVariantToggles.Length; i++)
+            {
+                DockSupportData variant = Database.DockSupports[StoneVariantShortNames[i]];
+                _stoneVariantToggles[i].onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, false, variant));
+            }
+
+            // Visibility always derives from toggle state, never from serialized active flags.
+            _dockSupportSection.SetActive(_docksModeToggle.isOn);
+            _stoneVariantRow.SetActive(_stoneSupportToggle.isOn);
         }
 
         public void AddFloorEntry(FloorData data, string[] category)
         {
             _floorsTree.Add(data, category);
+        }
+
+        public void SetDockSupportSectionVisible(bool visible)
+        {
+            _dockSupportSection.SetActive(visible);
         }
 
         public void PushSelection()
@@ -48,6 +95,49 @@ namespace Warlander.Deedplanner.Gui.Updaters
             if (toggledOn)
             {
                 OrientationChanged?.Invoke(orientation);
+            }
+        }
+
+        private void OnPaintModeToggled(bool toggledOn, FloorPaintMode mode)
+        {
+            if (toggledOn)
+            {
+                PaintModeChanged?.Invoke(mode);
+            }
+        }
+
+        // Icons sit directly on the panel background: dark = active, faded = inactive.
+        private void UpdateModeIcons()
+        {
+            _floorsModeIcon.color = _floorsModeToggle.isOn
+                ? new Color(0.16f, 0.13f, 0.11f)
+                : new Color(0.16f, 0.13f, 0.11f, 0.35f);
+            _docksModeIcon.color = _docksModeToggle.isOn
+                ? new Color(0.16f, 0.13f, 0.11f)
+                : new Color(0.16f, 0.13f, 0.11f, 0.35f);
+        }
+
+        private void OnDockSupportToggled(bool toggledOn, bool auto, DockSupportData support)
+        {
+            if (toggledOn)
+            {
+                DockSupportChanged?.Invoke(auto, support);
+            }
+        }
+
+        private void OnStoneSupportToggled(bool toggledOn)
+        {
+            _stoneVariantRow.SetActive(toggledOn);
+            if (toggledOn)
+            {
+                Toggle activeVariant = Array.Find(_stoneVariantToggles, toggle => toggle.isOn);
+                int index = Array.IndexOf(_stoneVariantToggles, activeVariant);
+                if (index < 0)
+                {
+                    index = 0;
+                }
+
+                DockSupportChanged?.Invoke(false, Database.DockSupports[StoneVariantShortNames[index]]);
             }
         }
     }

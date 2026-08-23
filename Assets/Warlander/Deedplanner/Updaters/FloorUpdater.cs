@@ -1,5 +1,6 @@
 using UnityEngine;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Updaters;
@@ -22,6 +23,13 @@ namespace Warlander.Deedplanner.Updaters
 
         private FloorData _selectedFloor;
         private EntityOrientation _orientation = EntityOrientation.Down;
+        private FloorPaintMode _paintMode = FloorPaintMode.Floors;
+        private bool _dockSupportAuto = true;
+        private DockSupportData _selectedDockSupport;
+
+        public FloorPaintMode PaintMode => _paintMode;
+        public bool DockSupportAuto => _dockSupportAuto;
+        public DockSupportData SelectedDockSupport => _selectedDockSupport;
 
         public FloorUpdater(IFloorUpdaterView view, TooltipHandler tooltipHandler, CameraCoordinator cameraCoordinator,
             DPInput input, MapHandler mapHandler, TabContext tabContext)
@@ -38,6 +46,8 @@ namespace Warlander.Deedplanner.Updaters
         {
             _view.FloorSelected += OnFloorSelected;
             _view.OrientationChanged += OnOrientationChanged;
+            _view.PaintModeChanged += OnPaintModeChanged;
+            _view.DockSupportChanged += OnDockSupportChanged;
 
             foreach (FloorData data in Database.Floors.Values)
             {
@@ -67,11 +77,29 @@ namespace Warlander.Deedplanner.Updaters
             _orientation = orientation;
         }
 
+        private void OnPaintModeChanged(FloorPaintMode mode)
+        {
+            _paintMode = mode;
+            _view.SetDockSupportSectionVisible(mode == FloorPaintMode.Docks);
+        }
+
+        private void OnDockSupportChanged(bool auto, DockSupportData support)
+        {
+            _dockSupportAuto = auto;
+            _selectedDockSupport = support;
+        }
+
         public void Tick()
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
                 _mapHandler.Map.CommandManager.FinishAction();
+            }
+
+            // Dock painting lands with the drag-paint interaction; floor painting stays out of dock mode.
+            if (_paintMode == FloorPaintMode.Docks)
+            {
+                return;
             }
 
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
