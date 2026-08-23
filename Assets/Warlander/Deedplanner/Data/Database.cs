@@ -2,6 +2,7 @@
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Decorations;
+using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
@@ -19,6 +20,7 @@ namespace Warlander.Deedplanner.Data
         public static readonly Dictionary<string, DecorationData> Decorations = new Dictionary<string, DecorationData>();
         public static readonly Dictionary<string, BridgeData> Bridges = new Dictionary<string, BridgeData>();
         public static readonly Dictionary<string, BridgePavementData> BridgePavements = new Dictionary<string, BridgePavementData>();
+        public static readonly Dictionary<string, DockSupportData> DockSupports = new Dictionary<string, DockSupportData>();
 
         public static GroundData DefaultGroundData => Grounds["gr"];
         public static GroundData DefaultSecondaryGroundData => Grounds["di"];
