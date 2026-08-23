@@ -46,7 +46,13 @@ namespace Warlander.Deedplanner.Data.Docks
                     Enum.TryParse(element.GetAttribute("braceDir"), true, out braceRotation);
                 }
 
-                return CreateDock(map, x, y, height, floor, support, braceRotation);
+                int? anchorLevel = null;
+                if (element.HasAttribute("anchorLevel"))
+                {
+                    anchorLevel = int.Parse(element.GetAttribute("anchorLevel"));
+                }
+
+                return CreateDock(map, x, y, height, floor, support, braceRotation, anchorLevel);
             }
             catch (Exception e)
             {
@@ -56,12 +62,12 @@ namespace Warlander.Deedplanner.Data.Docks
         }
 
         public Dock CreateDock(Map map, int x, int y, int height, FloorData floor, DockSupportData support,
-            EntityOrientation braceRotation)
+            EntityOrientation braceRotation, int? anchorLevel = null)
         {
             GameObject dockObject = new GameObject("Dock " + floor.Name, typeof(Dock));
             Dock dock = dockObject.GetComponent<Dock>();
             map[x, y].RegisterDock(dock);
-            dock.Initialize(map[x, y], height, floor, support, braceRotation, _sharedMaterials.GhostMaterial);
+            dock.Initialize(map[x, y], height, floor, support, braceRotation, _sharedMaterials.GhostMaterial, anchorLevel);
             return dock;
         }
     }

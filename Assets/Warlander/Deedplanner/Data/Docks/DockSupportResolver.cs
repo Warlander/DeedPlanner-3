@@ -159,7 +159,7 @@ namespace Warlander.Deedplanner.Data.Docks
 
             for (int level = 0; level < MaxLevels; level++)
             {
-                if (neighbor.GetTileContent(level) is Floor && neighbor.SurfaceHeight + level * 30 == height)
+                if (neighbor.GetTileContent(level) is Floor && neighbor.GetHeightForLevel(level) + level * 30 == height)
                 {
                     return true;
                 }
@@ -200,7 +200,7 @@ namespace Warlander.Deedplanner.Data.Docks
             for (int level = 0; level < MaxLevels; level++)
             {
                 Wall wall = vertical ? wallTile.GetVerticalHouseWall(level) : wallTile.GetHorizontalHouseWall(level);
-                if (wall != null && wallTile.SurfaceHeight + (level + 1) * 30 == height)
+                if (wall != null && wallTile.GetHeightForLevel(level) + (level + 1) * 30 == height)
                 {
                     return true;
                 }

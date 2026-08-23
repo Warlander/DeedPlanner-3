@@ -19,6 +19,7 @@ namespace Warlander.Deedplanner.Data.Docks
         private MaterialPropertyBlock _invalidPropertyBlock;
 
         public int Height { get; private set; }
+        public int AnchorLevel { get; private set; }
         public FloorData Floor { get; private set; }
         public DockSupportData Support { get; private set; }
         public EntityOrientation BraceRotation { get; private set; }
@@ -26,10 +27,11 @@ namespace Warlander.Deedplanner.Data.Docks
         public override Materials Materials => Floor.Materials;
 
         public void Initialize(Tile tile, int height, FloorData floor, DockSupportData support,
-            EntityOrientation braceRotation, Material ghostMaterial = null)
+            EntityOrientation braceRotation, Material ghostMaterial = null, int? anchorLevel = null)
         {
             Tile = tile;
             Height = height;
+            AnchorLevel = anchorLevel ?? ComputeTerrainLevel();
             Floor = floor;
             Support = support;
             BraceRotation = braceRotation;
@@ -67,10 +69,14 @@ namespace Warlander.Deedplanner.Data.Docks
             ApplyVisualState();
         }
 
-        // Level visibility: effective level derives from absolute height relative to the local surface —
-        // terrain, or water level (0) where the terrain dips below it, so docks over water behave
-        // as waterline structures rather than multi-story ones over the seabed.
+        // Level visibility anchors to the floor level the dock was painted from, not the terrain
+        // below — a pier over deep water keeps the level of the structure it extends.
         public int GetEffectiveLevel()
+        {
+            return AnchorLevel;
+        }
+
+        private int ComputeTerrainLevel()
         {
             return Mathf.RoundToInt((Height - Mathf.Max(Tile.SurfaceHeight, 0)) / 30f);
         }
@@ -190,9 +196,26 @@ namespace Warlander.Deedplanner.Data.Docks
 
             _supportModel = braceModel;
             _supportModel.transform.SetParent(_supportRoot.transform, false);
-            _supportModel.transform.localPosition = new Vector3(0, 0, 4);
+            _supportModel.transform.localPosition = BracePosition();
             _supportModel.transform.localRotation = Quaternion.Euler(0, BraceYaw(), 0);
             ApplyVisualState();
+        }
+
+        // The brace model footprint is x 0..4, z -4..0 relative to its origin, so yaw rotation
+        // swings it off-tile — each orientation needs a compensating offset to stay on the tile.
+        private Vector3 BracePosition()
+        {
+            switch (BraceRotation)
+            {
+                case EntityOrientation.Up:
+                    return new Vector3(0, 0, 4);
+                case EntityOrientation.Left:
+                    return new Vector3(4, 0, 4);
+                case EntityOrientation.Down:
+                    return new Vector3(4, 0, 0);
+                default:
+                    return Vector3.zero;
+            }
         }
 
         private float BraceYaw()
@@ -271,6 +294,7 @@ namespace Warlander.Deedplanner.Data.Docks
             localRoot.SetAttribute("x", Tile.X.ToString());
             localRoot.SetAttribute("y", Tile.Y.ToString());
             localRoot.SetAttribute("height", Height.ToString());
+            localRoot.SetAttribute("anchorLevel", AnchorLevel.ToString());
             localRoot.SetAttribute("floor", Floor.ShortName);
             localRoot.SetAttribute("support", Support != null ? Support.ShortName : "none");
             if (Support != null && Support.Type == DockSupportType.Brace)

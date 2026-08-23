@@ -41,6 +41,7 @@ namespace Warlander.Deedplanner.Updaters
         private Tile _anchorTile;
         private Floor _anchorFloor;
         private int _strokeHeight;
+        private int _strokeAnchorLevel;
         private bool _strokeConfirmed;
         private Tile _lastStrokeTile;
         private Tile _previousPaintedTile;
@@ -257,11 +258,13 @@ namespace Warlander.Deedplanner.Updaters
             if (hitDock != null && hitDock.Tile != null)
             {
                 _strokeHeight = hitDock.Height;
+                _strokeAnchorLevel = hitDock.AnchorLevel;
                 _anchorFloor = null;
             }
             else if (hitFloor != null && hitFloor.Valid && hitFloor.Level >= 0)
             {
-                _strokeHeight = tile.SurfaceHeight + hitFloor.Level * 30;
+                _strokeHeight = tile.GetHeightForLevel(hitFloor.Level) + hitFloor.Level * 30;
+                _strokeAnchorLevel = hitFloor.Level;
                 _anchorFloor = hitFloor;
             }
             else
@@ -305,7 +308,8 @@ namespace Warlander.Deedplanner.Updaters
 
             DockSupportData support = ResolveSupport(map, tile, out EntityOrientation braceDir);
             Dock replacedDock = tile.Dock;
-            Dock newDock = _dockFactory.CreateDock(map, tile.X, tile.Y, _strokeHeight, _selectedFloor, support, braceDir);
+            Dock newDock = _dockFactory.CreateDock(map, tile.X, tile.Y, _strokeHeight, _selectedFloor, support, braceDir,
+                _strokeAnchorLevel);
             map.CommandManager.AddToActionAndExecute(new DockPlacementCommand(map, newDock, replacedDock));
             _paintedTiles.Add(tile);
             _previousPaintedTile = tile;

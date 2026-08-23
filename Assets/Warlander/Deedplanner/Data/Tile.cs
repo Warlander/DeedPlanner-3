@@ -187,10 +187,15 @@ namespace Warlander.Deedplanner.Data
             {
                 return caveHeight;
             }
-            else
+
+            // Dock tiles use the dock as their reference surface: entities above a dock stack
+            // from the deck's anchor level, independent of how deep the terrain below is.
+            if (dock != null)
             {
-                return SurfaceHeight;
+                return dock.Height - dock.AnchorLevel * 30;
             }
+
+            return SurfaceHeight;
         }
 
         public Materials CalculateLevelMaterials(int level, TilePart tilePart)
