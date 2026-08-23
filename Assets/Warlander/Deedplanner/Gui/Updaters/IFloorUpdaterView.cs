@@ -12,6 +12,7 @@ namespace Warlander.Deedplanner.Gui.Updaters
         event Action<FloorPaintMode> PaintModeChanged;
         event Action<bool, DockSupportData> DockSupportChanged;
         void AddFloorEntry(FloorData data, string[] category);
+        void AddDockFloorEntry(FloorData data);
         void SetDockSupportSectionVisible(bool visible);
         void PushSelection();
     }

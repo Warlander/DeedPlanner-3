@@ -14,6 +14,7 @@ namespace Warlander.Deedplanner.Gui.Updaters
         private static readonly string[] StoneVariantShortNames = { "dsp", "drsp", "dslp", "dmp", "dssp", "dpbp" };
 
         [SerializeField] private UnityTree _floorsTree;
+        [SerializeField] private UnityList _dockFloorsList;
 
         [SerializeField] private Toggle _southToggle;
         [SerializeField] private Toggle _westToggle;
@@ -42,6 +43,7 @@ namespace Warlander.Deedplanner.Gui.Updaters
         private void Awake()
         {
             _floorsTree.ValueChanged += OnFloorsTreeValueChanged;
+            _dockFloorsList.ValueChanged += OnDockFloorsListValueChanged;
             _southToggle.onValueChanged.AddListener(toggled => OnOrientationToggled(toggled, EntityOrientation.Down));
             _westToggle.onValueChanged.AddListener(toggled => OnOrientationToggled(toggled, EntityOrientation.Right));
             _northToggle.onValueChanged.AddListener(toggled => OnOrientationToggled(toggled, EntityOrientation.Up));
@@ -68,11 +70,17 @@ namespace Warlander.Deedplanner.Gui.Updaters
             // Visibility always derives from toggle state, never from serialized active flags.
             _dockSupportSection.SetActive(_docksModeToggle.isOn);
             _stoneVariantRow.SetActive(_stoneSupportToggle.isOn);
+            UpdateFloorPickerVisibility(_docksModeToggle.isOn);
         }
 
         public void AddFloorEntry(FloorData data, string[] category)
         {
             _floorsTree.Add(data, category);
+        }
+
+        public void AddDockFloorEntry(FloorData data)
+        {
+            _dockFloorsList.Add(data);
         }
 
         public void SetDockSupportSectionVisible(bool visible)
@@ -82,10 +90,22 @@ namespace Warlander.Deedplanner.Gui.Updaters
 
         public void PushSelection()
         {
-            OnFloorsTreeValueChanged(_floorsTree.SelectedValue);
+            if (_docksModeToggle.isOn)
+            {
+                OnDockFloorsListValueChanged(_dockFloorsList.SelectedValue);
+            }
+            else
+            {
+                OnFloorsTreeValueChanged(_floorsTree.SelectedValue);
+            }
         }
 
         private void OnFloorsTreeValueChanged(object value)
+        {
+            FloorSelected?.Invoke(value as FloorData);
+        }
+
+        private void OnDockFloorsListValueChanged(object value)
         {
             FloorSelected?.Invoke(value as FloorData);
         }
@@ -102,8 +122,16 @@ namespace Warlander.Deedplanner.Gui.Updaters
         {
             if (toggledOn)
             {
+                UpdateFloorPickerVisibility(mode == FloorPaintMode.Docks);
                 PaintModeChanged?.Invoke(mode);
             }
+        }
+
+        // Docks mode swaps the categorized tree for a flat list of dockable floors (roofs-style).
+        private void UpdateFloorPickerVisibility(bool docksMode)
+        {
+            _floorsTree.gameObject.SetActive(!docksMode);
+            _dockFloorsList.gameObject.SetActive(docksMode);
         }
 
         // Icons sit directly on the panel background: dark = active, faded = inactive.

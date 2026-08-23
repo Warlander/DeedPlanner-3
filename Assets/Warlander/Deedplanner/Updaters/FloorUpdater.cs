@@ -39,10 +39,8 @@ namespace Warlander.Deedplanner.Updaters
 
         private DockStroke _dockStroke = DockStroke.None;
         private Tile _anchorTile;
-        private Floor _anchorFloor;
         private int _strokeHeight;
         private int _strokeAnchorLevel;
-        private bool _strokeConfirmed;
         private Tile _lastStrokeTile;
         private Tile _previousPaintedTile;
         private readonly HashSet<Tile> _paintedTiles = new HashSet<Tile>();
@@ -78,6 +76,11 @@ namespace Warlander.Deedplanner.Updaters
                 foreach (string[] category in data.Categories)
                 {
                     _view.AddFloorEntry(data, category);
+                }
+
+                if (data.SupportsDock)
+                {
+                    _view.AddDockFloorEntry(data);
                 }
             }
 
@@ -232,7 +235,7 @@ namespace Warlander.Deedplanner.Updaters
                     _lastStrokeTile = tile;
                     if (!_paintedTiles.Contains(tile))
                     {
-                        TryPaintTile(tile, false);
+                        TryPaintTile(tile);
                     }
                 }
             }
@@ -259,51 +262,58 @@ namespace Warlander.Deedplanner.Updaters
             {
                 _strokeHeight = hitDock.Height;
                 _strokeAnchorLevel = hitDock.AnchorLevel;
-                _anchorFloor = null;
             }
             else if (hitFloor != null && hitFloor.Valid && hitFloor.Level >= 0)
             {
                 _strokeHeight = tile.GetHeightForLevel(hitFloor.Level) + hitFloor.Level * 30;
                 _strokeAnchorLevel = hitFloor.Level;
-                _anchorFloor = hitFloor;
+            }
+            else if (TryPlaceStarterFloor(tile))
+            {
+                _strokeHeight = tile.GetHeightForLevel(0);
+                _strokeAnchorLevel = 0;
             }
             else
             {
-                _tooltipHandler.ShowTooltipText("<color=red><b>Docks must start from an existing floor or dock</b></color>");
                 return;
             }
 
             _dockStroke = DockStroke.Paint;
             _anchorTile = tile;
-            _strokeConfirmed = false;
             _lastStrokeTile = tile;
-            _previousPaintedTile = null;
+            _previousPaintedTile = tile;
             _paintedTiles.Clear();
+            _paintedTiles.Add(tile);
         }
 
-        private void TryPaintTile(Tile tile, bool isAnchor)
+        // The clicked tile only anchors the stroke: an empty tile gets a ground floor, and the
+        // anchor itself is never converted - docks appear from the second tile onward.
+        private bool TryPlaceStarterFloor(Tile tile)
+        {
+            if (_selectedFloor.Opening)
+            {
+                _tooltipHandler.ShowTooltipText("<color=red><b>It's not possible to place openings/stairs on ground floor</b></color>");
+                return false;
+            }
+
+            if (tile.GetTileContent(0) == null)
+            {
+                tile.SetFloor(_selectedFloor, _orientation, 0);
+            }
+
+            return true;
+        }
+
+        private void TryPaintTile(Tile tile)
         {
             Map map = _mapHandler.Map;
 
-            if (!isAnchor)
+            DockHardBlock block = DockSupportResolver.GetHardBlock(map, tile.X, tile.Y, _strokeHeight);
+            if (block != DockHardBlock.None)
             {
-                if (tile == _anchorTile && !_strokeConfirmed)
-                {
-                    return;
-                }
-
-                DockHardBlock block = DockSupportResolver.GetHardBlock(map, tile.X, tile.Y, _strokeHeight);
-                if (block != DockHardBlock.None)
-                {
-                    CreateInvalidMarker(tile);
-                    _paintedTiles.Add(tile);
-                    return;
-                }
-
-                if (!_strokeConfirmed)
-                {
-                    ConvertAnchor();
-                }
+                CreateInvalidMarker(tile);
+                _paintedTiles.Add(tile);
+                return;
             }
 
             DockSupportData support = ResolveSupport(map, tile, out EntityOrientation braceDir);
@@ -313,17 +323,6 @@ namespace Warlander.Deedplanner.Updaters
             map.CommandManager.AddToActionAndExecute(new DockPlacementCommand(map, newDock, replacedDock));
             _paintedTiles.Add(tile);
             _previousPaintedTile = tile;
-        }
-
-        private void ConvertAnchor()
-        {
-            if (_anchorFloor != null)
-            {
-                _anchorFloor.Tile.SetFloor(null, _orientation, _anchorFloor.Level);
-            }
-
-            _strokeConfirmed = true;
-            TryPaintTile(_anchorTile, true);
         }
 
         private DockSupportData ResolveSupport(Map map, Tile tile, out EntityOrientation braceDir)
@@ -399,8 +398,6 @@ namespace Warlander.Deedplanner.Updaters
 
             _dockStroke = DockStroke.None;
             _anchorTile = null;
-            _anchorFloor = null;
-            _strokeConfirmed = false;
             _lastStrokeTile = null;
             _previousPaintedTile = null;
             _paintedTiles.Clear();
