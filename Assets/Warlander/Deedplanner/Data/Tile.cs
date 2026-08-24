@@ -399,21 +399,18 @@ namespace Warlander.Deedplanner.Data
                 {
                     Wall wall = CreateNewVerticalWall(wallEntityData, data, reversed);
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, wall));
-                    Map.RefreshDocksForWallChange(X, Y, true);
                     return wall;
                 }
                 if (fenceNeedsChange)
                 {
                     Wall fence = CreateNewVerticalWall(fenceEntityData, data, reversed);
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, fence));
-                    Map.RefreshDocksForWallChange(X, Y, true);
                     return fence;
                 }
 
                 if (wallNeedsRemoval)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
-                    Map.RefreshDocksForWallChange(X, Y, true);
                     return null;
                 }
 
@@ -423,13 +420,11 @@ namespace Warlander.Deedplanner.Data
                 if (currentWall)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
-                    Map.RefreshDocksForWallChange(X, Y, true);
                     return null;
                 }
                 if (currentFence)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, null));
-                    Map.RefreshDocksForWallChange(X, Y, true);
                     return null;
                 }
             }
@@ -521,21 +516,18 @@ namespace Warlander.Deedplanner.Data
                 {
                     Wall wall = CreateNewHorizontalWall(wallEntityData, data, reversed);
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, wall));
-                    Map.RefreshDocksForWallChange(X, Y, false);
                     return wall;
                 }
                 if (fenceNeedsChange)
                 {
                     Wall fence = CreateNewHorizontalWall(fenceEntityData, data, reversed);
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, fence));
-                    Map.RefreshDocksForWallChange(X, Y, false);
                     return fence;
                 }
 
                 if (wallNeedsRemoval)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
-                    Map.RefreshDocksForWallChange(X, Y, false);
                     return null;
                 }
             }
@@ -544,13 +536,11 @@ namespace Warlander.Deedplanner.Data
                 if (currentWall)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
-                    Map.RefreshDocksForWallChange(X, Y, false);
                     return null;
                 }
                 if (currentFence)
                 {
                     Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, null));
-                    Map.RefreshDocksForWallChange(X, Y, false);
                     return null;
                 }
             }
@@ -1015,6 +1005,7 @@ namespace Warlander.Deedplanner.Data
                     tile.Map.RecalculateRoofs();
                 }
 
+                RefreshDocksForEntityChange();
                 UpdateEntityRendering(newEntity);
             }
 
@@ -1052,7 +1043,28 @@ namespace Warlander.Deedplanner.Data
                     tile.Map.RecalculateRoofs();
                 }
 
+                RefreshDocksForEntityChange();
                 UpdateEntityRendering(oldEntity);
+            }
+
+            // Dock brace validity can depend on wall tops and neighbor floors, so any wall/floor
+            // change revalidates bordering docks and any floor change revalidates the neighborhood.
+            private void RefreshDocksForEntityChange()
+            {
+                switch (data.Type)
+                {
+                    case EntityType.Vwall:
+                    case EntityType.Vfence:
+                        tile.Map.RefreshDocksForWallChange(tile.X, tile.Y, true);
+                        break;
+                    case EntityType.Hwall:
+                    case EntityType.Hfence:
+                        tile.Map.RefreshDocksForWallChange(tile.X, tile.Y, false);
+                        break;
+                    case EntityType.Floorroof:
+                        tile.Map.RefreshDocksForFloorChange(tile.X, tile.Y);
+                        break;
+                }
             }
 
             private void UpdateEntityRendering(LevelEntity entity)

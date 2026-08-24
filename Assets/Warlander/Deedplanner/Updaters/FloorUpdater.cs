@@ -38,7 +38,6 @@ namespace Warlander.Deedplanner.Updaters
         private DockSupportData _lastPillarSupport;
 
         private DockStroke _dockStroke = DockStroke.None;
-        private Tile _anchorTile;
         private int _strokeHeight;
         private int _strokeAnchorLevel;
         private Tile _lastStrokeTile;
@@ -177,6 +176,13 @@ namespace Warlander.Deedplanner.Updaters
 
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
+                Dock dockAtTile = _mapHandler.Map[x, y].Dock;
+                if (dockAtTile != null && floor == dockAtTile.AnchorLevel)
+                {
+                    _tooltipHandler.ShowTooltipText("<color=red><b>There's already a dock at this level</b></color>");
+                    return;
+                }
+
                 _mapHandler.Map[x, y].SetFloor(data, _orientation, floor);
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
@@ -279,7 +285,6 @@ namespace Warlander.Deedplanner.Updaters
             }
 
             _dockStroke = DockStroke.Paint;
-            _anchorTile = tile;
             _lastStrokeTile = tile;
             _previousPaintedTile = tile;
             _paintedTiles.Clear();
@@ -397,7 +402,6 @@ namespace Warlander.Deedplanner.Updaters
             _invalidMarkers.Clear();
 
             _dockStroke = DockStroke.None;
-            _anchorTile = null;
             _lastStrokeTile = null;
             _previousPaintedTile = null;
             _paintedTiles.Clear();

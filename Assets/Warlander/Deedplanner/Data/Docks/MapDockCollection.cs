@@ -56,7 +56,7 @@ namespace Warlander.Deedplanner.Data.Docks
                 if (shiftedX >= 0 && shiftedX < _map.Width && shiftedY >= 0 && shiftedY < _map.Height)
                 {
                     Dock dock = _dockFactory.CreateDock(_map, shiftedX, shiftedY, originalDock.Height,
-                        originalDock.Floor, originalDock.Support, originalDock.BraceRotation);
+                        originalDock.Floor, originalDock.Support, originalDock.BraceRotation, originalDock.AnchorLevel);
                     Register(dock);
                 }
             }
@@ -119,6 +119,11 @@ namespace Warlander.Deedplanner.Data.Docks
             {
                 RevalidateDockAt(x + 1, y);
             }
+        }
+
+        public void RevalidateForFloorChange(int x, int y)
+        {
+            RevalidateArea(_map[x, y]);
         }
 
         private void RevalidateArea(Tile tile)

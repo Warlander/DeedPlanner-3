@@ -436,6 +436,11 @@ namespace Warlander.Deedplanner.Data
             _dockCollection.RevalidateForWallChange(x, y, vertical);
         }
 
+        public void RefreshDocksForFloorChange(int x, int y)
+        {
+            _dockCollection.RevalidateForFloorChange(x, y);
+        }
+
         public void RefreshBridgesForCaveHeight(int x, int y)
         {
             _bridgesController.RefreshBridgesForCaveHeight(x, y);

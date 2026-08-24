@@ -128,6 +128,19 @@ namespace Warlander.Deedplanner.Data.Docks
             return false;
         }
 
+        private static int FindBraceSide(EntityOrientation braceRotation)
+        {
+            for (int side = 0; side < 4; side++)
+            {
+                if (SideOrientation[side] == braceRotation)
+                {
+                    return side;
+                }
+            }
+
+            return -1;
+        }
+
         private static int FindSideTowards(int x, int y, Tile neighbor)
         {
             for (int side = 0; side < 4; side++)
@@ -216,7 +229,7 @@ namespace Warlander.Deedplanner.Data.Docks
                 if (tile.GetTileContent(level) is Floor)
                 {
                     return true;
-            }
+                }
             }
 
             return false;
@@ -243,7 +256,8 @@ namespace Warlander.Deedplanner.Data.Docks
             }
             else if (support.Type == DockSupportType.Brace)
             {
-                if (!TryPickBraceSide(map, tile.X, tile.Y, height, null, out _))
+                int braceSide = FindBraceSide(dock.BraceRotation);
+                if (braceSide < 0 || !IsSideLoadBearing(map, tile.X, tile.Y, height, braceSide))
                 {
                     errors.Add("brace has no support");
                 }
