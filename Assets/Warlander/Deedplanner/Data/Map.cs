@@ -266,7 +266,7 @@ namespace Warlander.Deedplanner.Data
         {
             _tileGrid = new MapTileGrid(width, height);
             _bridgesController = new MapBridgesController(this, _bridgeFactory, _featureStateRetriever);
-            _dockCollection = new MapDockCollection(this, _dockFactory, _featureStateRetriever);
+            _dockCollection = new MapDockCollection(this, _dockFactory);
 
             _surfaceLevelRoots = new Transform[16];
             for (int i = 0; i < _surfaceLevelRoots.Length; i++)
@@ -380,12 +380,25 @@ namespace Warlander.Deedplanner.Data
         {
             _dockCollection.AddDock(dock);
             _levelRenderer.UpdateDocksRendering();
+            RefreshEntitiesAroundDock(dock.Tile);
         }
 
         public void RemoveDock(Dock dock)
         {
             _dockCollection.RemoveDock(dock);
             _levelRenderer.UpdateDocksRendering();
+            RefreshEntitiesAroundDock(dock.Tile);
+        }
+
+        // A dock switches its tile (and wall-slope-wise its neighbors) between terrain and the
+        // deck's virtual surface — re-apply entity positions so nothing floats or buries.
+        private void RefreshEntitiesAroundDock(Tile tile)
+        {
+            tile.Refresh();
+            this[tile.X + 1, tile.Y]?.Refresh();
+            this[tile.X - 1, tile.Y]?.Refresh();
+            this[tile.X, tile.Y + 1]?.Refresh();
+            this[tile.X, tile.Y - 1]?.Refresh();
         }
 
         public Dock GetDock(Tile tile)

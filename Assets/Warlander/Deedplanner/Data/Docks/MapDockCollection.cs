@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using Warlander.Deedplanner.Features;
-using Warlogic.Features;
 
 namespace Warlander.Deedplanner.Data.Docks
 {
@@ -10,7 +8,6 @@ namespace Warlander.Deedplanner.Data.Docks
     {
         private readonly Map _map;
         private readonly DockFactory _dockFactory;
-        private readonly IFeatureStateRetriever<Feature> _featureStateRetriever;
         private readonly List<Dock> _docks = new List<Dock>();
         private readonly Dictionary<Tile, Dock> _docksByTile = new Dictionary<Tile, Dock>();
 
@@ -18,18 +15,14 @@ namespace Warlander.Deedplanner.Data.Docks
 
         public event Action DocksChanged;
 
-        public MapDockCollection(Map map, DockFactory dockFactory, IFeatureStateRetriever<Feature> featureStateRetriever)
+        public MapDockCollection(Map map, DockFactory dockFactory)
         {
             _map = map;
             _dockFactory = dockFactory;
-            _featureStateRetriever = featureStateRetriever;
         }
 
         public void InitializeDocks(XmlElement mapRoot)
         {
-            if (!_featureStateRetriever.IsFeatureEnabled(Feature.Docks))
-                return;
-
             XmlNodeList docksList = mapRoot.GetElementsByTagName("dock");
             foreach (XmlElement dockElement in docksList)
             {
@@ -45,9 +38,6 @@ namespace Warlander.Deedplanner.Data.Docks
 
         public void InitializeDocksAfterResize(Map originalMap, int addLeft, int addBottom)
         {
-            if (!_featureStateRetriever.IsFeatureEnabled(Feature.Docks))
-                return;
-
             foreach (Dock originalDock in originalMap.Docks)
             {
                 int shiftedX = originalDock.Tile.X + addLeft;
@@ -79,8 +69,12 @@ namespace Warlander.Deedplanner.Data.Docks
                 if (dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1)
                 {
                     dock.RefreshSupportExtensions();
-                    // Braces on neighboring docks may lean on this tile's floors, whose absolute
-                    // height moves with the terrain - revalidate the area, not just this dock.
+                }
+
+                // Brace validity also depends on neighbor floor heights and wall tops, whose
+                // surface heights derive from corners one step further out than the dock's own.
+                if (dx >= -1 && dx <= 1 && dy >= -1 && dy <= 1)
+                {
                     RevalidateArea(dock.Tile);
                 }
             }

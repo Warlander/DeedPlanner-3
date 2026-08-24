@@ -140,6 +140,12 @@ namespace Warlander.Deedplanner.Data.Docks
 
         private void OnDeckModelCreated(GameObject newModel)
         {
+            if (!this)
+            {
+                Destroy(newModel);
+                return;
+            }
+
             if (_deckModel)
             {
                 Destroy(_deckModel);
@@ -173,6 +179,12 @@ namespace Warlander.Deedplanner.Data.Docks
 
         private void OnPillarBaseCreated(GameObject baseModel)
         {
+            if (!this)
+            {
+                Destroy(baseModel);
+                return;
+            }
+
             if (_supportModel)
             {
                 Destroy(_supportModel);
@@ -188,6 +200,12 @@ namespace Warlander.Deedplanner.Data.Docks
 
         private void OnBraceModelCreated(GameObject braceModel)
         {
+            if (!this)
+            {
+                Destroy(braceModel);
+                return;
+            }
+
             if (_supportModel)
             {
                 Destroy(_supportModel);
@@ -256,7 +274,7 @@ namespace Warlander.Deedplanner.Data.Docks
                 float yOffset = -30f * (i + 1) * 0.1f;
                 Support.ExtensionModel.CreateOrGetModel(instance =>
                 {
-                    if (generation != _supportGeneration)
+                    if (!this || generation != _supportGeneration)
                     {
                         Destroy(instance);
                         return;
