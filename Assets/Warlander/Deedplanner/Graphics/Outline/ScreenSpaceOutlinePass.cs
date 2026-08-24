@@ -109,8 +109,9 @@ namespace Warlander.Deedplanner.Graphics.Outline
                                 continue;
 
                             // Feed the shear from this renderer's material so the mask aligns
-                            // with the geometry as rendered by ModelShader.
-                            Vector4 shear = r.sharedMaterial != null
+                            // with the geometry as rendered by ModelShader. Other materials
+                            // (e.g. Ghost on invalid docks) have no shear property at all.
+                            Vector4 shear = r.sharedMaterial != null && r.sharedMaterial.HasProperty(d.ShearYPropertyId)
                                 ? r.sharedMaterial.GetVector(d.ShearYPropertyId)
                                 : Vector4.zero;
                             cmd.SetGlobalVector(d.ShearYPropertyId, shear);

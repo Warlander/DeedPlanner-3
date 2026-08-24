@@ -11,6 +11,7 @@ using UnityEngine.Networking;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Decorations;
+using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
@@ -42,7 +43,7 @@ namespace Warlander.Deedplanner.Data
         public event LoadingStepStartedDelegate LoadingStepStarted;
         public event Action LoadingComplete;
         
-        public const int TotalSteps = 7;
+        public const int TotalSteps = 9;
         
         public bool Completed { get; private set; }
         
@@ -117,6 +118,7 @@ namespace Warlander.Deedplanner.Data
             IncrementStep(documents, "Loading objects", LoadObjects);
             IncrementStep(documents, "Loading bridges", LoadBridges);
             IncrementStep(documents, "Loading bridge pavements", LoadBridgePavements);
+            IncrementStep(documents, "Loading dock supports", LoadDockSupports);
             
             Completed = true;
             
@@ -246,6 +248,76 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
+        private void LoadDockSupports(XmlDocument document)
+        {
+            XmlNodeList entities = document.GetElementsByTagName("docksupport");
+
+            foreach (XmlElement element in entities)
+            {
+                string name = element.GetAttribute("name");
+                string shortName = element.GetAttribute("shortname");
+                DockSupportType supportType = ParseDockSupportType(element.GetAttribute("type"));
+                Model baseModel = null;
+                Model extensionModel = null;
+                Materials materials = null;
+
+                foreach (XmlElement child in element)
+                {
+                    if (child.LocalName == "materials")
+                    {
+                        materials = new Materials(child);
+                        continue;
+                    }
+
+                    if (child.LocalName != "model")
+                    {
+                        continue;
+                    }
+
+                    if (child.GetAttribute("tag") == "extension")
+                    {
+                        extensionModel = _modelFactory.CreateModel(child, LayerMasks.FloorRoofLayer);
+                    }
+                    else
+                    {
+                        baseModel = _modelFactory.CreateModel(child, LayerMasks.FloorRoofLayer);
+                    }
+                }
+
+                if (baseModel == null)
+                {
+                    Debug.LogWarning("Dock support " + name + " has no base model, skipping");
+                    continue;
+                }
+
+                bool unique = VerifyShortName(shortName);
+                if (!unique)
+                {
+                    Debug.LogWarning("Dock support shortname " + shortName + " conflicts with an existing one, skipping");
+                    continue;
+                }
+
+                Database.DockSupports[shortName] = new DockSupportData(name, shortName, supportType, baseModel, extensionModel, materials);
+                Debug.Log("Dock support " + name + " loaded and ready to use!");
+            }
+        }
+
+        private static DockSupportType ParseDockSupportType(string type)
+        {
+            switch (type)
+            {
+                case "wood":
+                    return DockSupportType.WoodPillar;
+                case "stone":
+                    return DockSupportType.StonePillar;
+                case "brace":
+                    return DockSupportType.Brace;
+                default:
+                    Debug.LogWarning("Unknown dock support type: " + type);
+                    return DockSupportType.None;
+            }
+        }
+
         private void LoadCaves(XmlDocument document)
         {
             XmlNodeList entities = document.GetElementsByTagName("rock");
@@ -311,6 +383,7 @@ namespace Warlander.Deedplanner.Data
                 Model model = null;
                 List<string[]> categories = new List<string[]>();
                 bool opening = false;
+                bool supportsDock = element.GetAttribute("dockable") == "true";
                 Materials materials = null;
 
                 foreach (XmlElement child in element)
@@ -337,7 +410,7 @@ namespace Warlander.Deedplanner.Data
                     Debug.LogWarning("No model loaded, aborting");
                 }
 
-                FloorData data = new FloorData(model, name, shortName, categories.ToArray(), opening, materials);
+                FloorData data = new FloorData(model, name, shortName, categories.ToArray(), opening, supportsDock, materials);
                 Database.Floors[shortName] = data;
             }
         }

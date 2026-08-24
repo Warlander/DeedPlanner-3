@@ -230,6 +230,7 @@ SpriteAtlas:
     - 3862c3bc9dbabee46be18bd376bebdc2: 21300000
     - ce0b4abca2a3d634d8053a2b6ce56525: 21300000
     - 1cb2cddcf0bbd425ab43043bfa1600d3: 21300000
+    - 328b581d36e340bab0e6226bbf8f337a: 21300000
     - 49888a1de0335324b8919252173f2cf2: 21300000
     - 29f0602d906624e70a5313106cf4aecc: 21300000
     - 40f2225ded13546ae89fd2e8211b9d11: 21300000
@@ -430,6 +431,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3862c3bc9dbabee46be18bd376bebdc2, type: 3}
   - {fileID: 21300000, guid: ce0b4abca2a3d634d8053a2b6ce56525, type: 3}
   - {fileID: 21300000, guid: 1cb2cddcf0bbd425ab43043bfa1600d3, type: 3}
+  - {fileID: 21300000, guid: 328b581d36e340bab0e6226bbf8f337a, type: 3}
   - {fileID: 21300000, guid: 49888a1de0335324b8919252173f2cf2, type: 3}
   - {fileID: 21300000, guid: 29f0602d906624e70a5313106cf4aecc, type: 3}
   - {fileID: 21300000, guid: 40f2225ded13546ae89fd2e8211b9d11, type: 3}
@@ -629,6 +631,7 @@ SpriteAtlas:
   - 023-compass
   - 005-mountain
   - DoubleVerticalTile2
+  - 033-dock
   - W
   - input-area
   - DoubleCornerTopRight

@@ -6,6 +6,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Decorations;
+using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
@@ -26,6 +27,7 @@ namespace Warlander.Deedplanner.Data
         private int caveSize = 0;
 
         private BridgePart surfaceBridgePart;
+        private Dock dock;
         
         public Map Map { get; }
         public int X { get; }
@@ -35,6 +37,7 @@ namespace Warlander.Deedplanner.Data
         public Ground Ground { get; private set; }
         public Cave Cave { get; private set; }
         public BridgePart BridgePart => surfaceBridgePart;
+        public Dock Dock => dock;
 
         public int SurfaceHeight {
             get => surfaceHeight;
@@ -145,6 +148,11 @@ namespace Warlander.Deedplanner.Data
                 return EntityType.BridgePart;
             }
 
+            if (entity == Dock)
+            {
+                return EntityType.Dock;
+            }
+
             foreach (KeyValuePair<EntityData, LevelEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
@@ -179,10 +187,15 @@ namespace Warlander.Deedplanner.Data
             {
                 return caveHeight;
             }
-            else
+
+            // Dock tiles use the dock as their reference surface: entities above a dock stack
+            // from the deck's anchor level, independent of how deep the terrain below is.
+            if (dock != null)
             {
-                return SurfaceHeight;
+                return dock.Height - dock.AnchorLevel * 30;
             }
+
+            return SurfaceHeight;
         }
 
         public Materials CalculateLevelMaterials(int level, TilePart tilePart)
@@ -231,6 +244,11 @@ namespace Warlander.Deedplanner.Data
             if (BridgePart != null)
             {
                 tileMaterials.Add(BridgePart.Materials);
+            }
+
+            if (dock != null)
+            {
+                tileMaterials.Add(dock.Materials);
             }
 
             return tileMaterials;
@@ -635,6 +653,18 @@ namespace Warlander.Deedplanner.Data
             surfaceBridgePart = null;
         }
 
+        public void RegisterDock(Dock newDock)
+        {
+            dock = newDock;
+            newDock.Tile = this;
+            newDock.transform.SetParent(Map.transform);
+        }
+
+        public void UnregisterDock()
+        {
+            dock = null;
+        }
+
         public void Serialize(XmlDocument document, XmlElement localRoot)
         {
             localRoot.SetAttribute("x", X.ToString());
@@ -980,6 +1010,7 @@ namespace Warlander.Deedplanner.Data
                     tile.Map.RecalculateRoofs();
                 }
 
+                RefreshDocksForEntityChange();
                 UpdateEntityRendering(newEntity);
             }
 
@@ -1017,7 +1048,28 @@ namespace Warlander.Deedplanner.Data
                     tile.Map.RecalculateRoofs();
                 }
 
+                RefreshDocksForEntityChange();
                 UpdateEntityRendering(oldEntity);
+            }
+
+            // Dock brace validity can depend on wall tops and neighbor floors, so any wall/floor
+            // change revalidates bordering docks and any floor change revalidates the neighborhood.
+            private void RefreshDocksForEntityChange()
+            {
+                switch (data.Type)
+                {
+                    case EntityType.Vwall:
+                    case EntityType.Vfence:
+                        tile.Map.RefreshDocksForWallChange(tile.X, tile.Y, true);
+                        break;
+                    case EntityType.Hwall:
+                    case EntityType.Hfence:
+                        tile.Map.RefreshDocksForWallChange(tile.X, tile.Y, false);
+                        break;
+                    case EntityType.Floorroof:
+                        tile.Map.RefreshDocksForFloorChange(tile.X, tile.Y);
+                        break;
+                }
             }
 
             private void UpdateEntityRendering(LevelEntity entity)
@@ -1104,6 +1156,7 @@ namespace Warlander.Deedplanner.Data
 
                 tile.Map.RecalculateSurfaceHeight(tile.X, tile.Y);
                 tile.Map.RefreshBridgesForSurfaceHeight(tile.X, tile.Y);
+                tile.Map.RefreshDocksForSurfaceHeight(tile.X, tile.Y);
             }
 
             public void DisposeUndo()

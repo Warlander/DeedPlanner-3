@@ -54,6 +54,8 @@ Without it, play mode ENTRY stalls indefinitely while the Editor window is unfoc
 
 No automated test suite exists (despite the Test Framework package being present), but the project iterates fast — domain reload and play-mode enter/exit each take only a few seconds. After triggering a recompile or play-mode change, allow a ~5 second buffer, then poll `unity status` for the Editor state before issuing the next command.
 
+**Never recompile while in play mode.** A domain reload mid-play silently breaks the session: the running app loses its state (map references go null, evals fail with NullReferenceException) while the Editor reports itself ready. Always `editor_stop` → recompile → `editor_play` → re-run the scenario.
+
 Suggested verification ladder, cheapest first:
 1. Compile check (connected Editor via `unity command`, or `unity test --mode EditMode` batch) — catches syntax/type errors.
 2. EditMode smoke run if tests are ever added (`unity test --mode EditMode`).
