@@ -111,6 +111,7 @@ namespace Warlander.Deedplanner.Updaters
         {
             _paintMode = mode;
             _view.SetDockSupportSectionVisible(mode == FloorPaintMode.Docks);
+            _view.PushSelection();
             ResetDockStroke();
         }
 

@@ -41,6 +41,7 @@ namespace Warlander.Deedplanner.Data.Docks
             transform.position = new Vector3(tile.X * 4, height * 0.1f, tile.Y * 4);
             transform.rotation = Quaternion.Euler(0, 180, 0);
 
+            ModelLoaded += OnAnyModelLoaded;
             Floor.Model.CreateOrGetModel(OnDeckModelCreated);
 
             if (Support != null)
@@ -54,8 +55,6 @@ namespace Warlander.Deedplanner.Data.Docks
                 collider.center = new Vector3(-2f, 0.125f, -2f);
                 collider.size = new Vector3(4f, 0.25f, 4f);
             }
-
-            ModelLoaded += OnAnyModelLoaded;
         }
 
         private void OnAnyModelLoaded(DynamicModelBehaviour behaviour, GameObject model)

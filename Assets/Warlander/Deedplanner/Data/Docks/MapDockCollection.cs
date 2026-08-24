@@ -79,7 +79,9 @@ namespace Warlander.Deedplanner.Data.Docks
                 if (dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1)
                 {
                     dock.RefreshSupportExtensions();
-                    dock.Revalidate();
+                    // Braces on neighboring docks may lean on this tile's floors, whose absolute
+                    // height moves with the terrain - revalidate the area, not just this dock.
+                    RevalidateArea(dock.Tile);
                 }
             }
         }
