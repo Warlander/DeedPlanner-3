@@ -246,6 +246,11 @@ namespace Warlander.Deedplanner.Data
                 tileMaterials.Add(BridgePart.Materials);
             }
 
+            if (dock != null)
+            {
+                tileMaterials.Add(dock.Materials);
+            }
+
             return tileMaterials;
         }
 

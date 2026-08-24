@@ -24,7 +24,25 @@ namespace Warlander.Deedplanner.Data.Docks
         public DockSupportData Support { get; private set; }
         public EntityOrientation BraceRotation { get; private set; }
         public IReadOnlyList<string> ValidationErrors { get; private set; } = new List<string>();
-        public override Materials Materials => Floor.Materials;
+        public override Materials Materials
+        {
+            get
+            {
+                Materials materials = new Materials();
+                materials.Add(Floor.Materials);
+
+                if (Support != null && Support.Materials != null)
+                {
+                    int count = Support.Type == DockSupportType.Brace ? 1 : ChargedSegmentCount();
+                    for (int i = 0; i < count; i++)
+                    {
+                        materials.Add(Support.Materials);
+                    }
+                }
+
+                return materials;
+            }
+        }
 
         public void Initialize(Tile tile, int height, FloorData floor, DockSupportData support,
             EntityOrientation braceRotation, Material ghostMaterial = null, int? anchorLevel = null)
@@ -294,6 +312,13 @@ namespace Warlander.Deedplanner.Data.Docks
             int minCorner = MinCornerHeight();
             int drop = Height - minCorner - 30;
             return Mathf.Max(0, Mathf.CeilToInt(drop / 30f));
+        }
+
+        // Charged pillar segments use floor division with a minimum of 1, so the materials
+        // total matches the build cost even where the rendered extension count rounds up.
+        private int ChargedSegmentCount()
+        {
+            return Mathf.Max(1, (Height - MinCornerHeight()) / 30);
         }
 
         private int MinCornerHeight()

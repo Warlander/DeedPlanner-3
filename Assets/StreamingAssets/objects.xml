@@ -9307,6 +9307,10 @@
 		<docksupport name="Wooden pillar" shortname="dwp" type="wood">
 			<model location="Docks/WoodenSupport.wom" tag="base"/>
 			<model location="Docks/WoodenSupportExtension.wom" tag="extension"/>
+			<materials>
+				Wooden beams = 2,
+				Planks = 5
+			</materials>
 		</docksupport>
 		<docksupport name="Stone pillar" shortname="dsp" type="stone">
 			<model location="Docks/StoneSupport.wom" tag="base">
@@ -9315,10 +9319,18 @@
 			<model location="Docks/StoneSupport.wom" tag="extension">
 				<override mesh="StoneSupportMesh" texture="Docks/StoneWall.dds"/>
 			</model>
+			<materials>
+				Stone bricks = 10,
+				Mortar = 5
+			</materials>
 		</docksupport>
 		<docksupport name="Rounded stone pillar" shortname="drsp" type="stone">
 			<model location="Docks/StoneSupport.wom" tag="base"/>
 			<model location="Docks/StoneSupport.wom" tag="extension"/>
+			<materials>
+				Rounded stones = 10,
+				Mortar = 5
+			</materials>
 		</docksupport>
 		<docksupport name="Slate pillar" shortname="dslp" type="stone">
 			<model location="Docks/StoneSupport.wom" tag="base">
@@ -9327,6 +9339,10 @@
 			<model location="Docks/StoneSupport.wom" tag="extension">
 				<override mesh="StoneSupportMesh" texture="Docks/slate.dds"/>
 			</model>
+			<materials>
+				Slate bricks = 10,
+				Mortar = 5
+			</materials>
 		</docksupport>
 		<docksupport name="Marble pillar" shortname="dmp" type="stone">
 			<model location="Docks/StoneSupport.wom" tag="base">
@@ -9335,6 +9351,10 @@
 			<model location="Docks/StoneSupport.wom" tag="extension">
 				<override mesh="StoneSupportMesh" texture="Docks/marble.dds"/>
 			</model>
+			<materials>
+				Marble bricks = 10,
+				Mortar = 5
+			</materials>
 		</docksupport>
 		<docksupport name="Sandstone pillar" shortname="dssp" type="stone">
 			<model location="Docks/StoneSupport.wom" tag="base">
@@ -9343,6 +9363,10 @@
 			<model location="Docks/StoneSupport.wom" tag="extension">
 				<override mesh="StoneSupportMesh" texture="Docks/sandstone.dds"/>
 			</model>
+			<materials>
+				Sandstone bricks = 10,
+				Mortar = 5
+			</materials>
 		</docksupport>
 		<docksupport name="Pottery brick pillar" shortname="dpbp" type="stone">
 			<model location="Docks/StoneSupport.wom" tag="base">
@@ -9351,9 +9375,17 @@
 			<model location="Docks/StoneSupport.wom" tag="extension">
 				<override mesh="StoneSupportMesh" texture="Docks/brick.dds"/>
 			</model>
+			<materials>
+				Pottery bricks = 10,
+				Mortar = 5
+			</materials>
 		</docksupport>
 		<docksupport name="Wooden brace" shortname="dwb" type="brace">
 			<model location="Docks/SupportDiag.wom" tag="base"/>
+			<materials>
+				Wooden beams = 2,
+				Planks = 2
+			</materials>
 		</docksupport>
 	</docksupports>
 

@@ -259,9 +259,16 @@ namespace Warlander.Deedplanner.Data
                 DockSupportType supportType = ParseDockSupportType(element.GetAttribute("type"));
                 Model baseModel = null;
                 Model extensionModel = null;
+                Materials materials = null;
 
                 foreach (XmlElement child in element)
                 {
+                    if (child.LocalName == "materials")
+                    {
+                        materials = new Materials(child);
+                        continue;
+                    }
+
                     if (child.LocalName != "model")
                     {
                         continue;
@@ -290,7 +297,7 @@ namespace Warlander.Deedplanner.Data
                     continue;
                 }
 
-                Database.DockSupports[shortName] = new DockSupportData(name, shortName, supportType, baseModel, extensionModel);
+                Database.DockSupports[shortName] = new DockSupportData(name, shortName, supportType, baseModel, extensionModel, materials);
                 Debug.Log("Dock support " + name + " loaded and ready to use!");
             }
         }
