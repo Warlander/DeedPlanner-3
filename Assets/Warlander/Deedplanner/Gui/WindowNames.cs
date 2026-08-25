@@ -12,6 +12,7 @@
         public const string InputSettingsWindow = "Windows/InputSettingsWindow";
         public const string CreditsWindow = "Windows/CreditsWindow";
         public const string TextWindow = "Windows/TextWindow";
+        public const string ErrorReportWindow = "Windows/ErrorReportWindow";
         public const string TooltipWindow = "Windows/TooltipWindow";
     }
 }

@@ -35,7 +35,10 @@ namespace Warlander.Deedplanner.Data
             foreach (XmlElement bridgeElement in bridgesList)
             {
                 Bridge bridge = _bridgeFactory.CreateBridge(_map, bridgeElement);
-                _bridges.Add(bridge);
+                if (bridge != null)
+                {
+                    _bridges.Add(bridge);
+                }
             }
         }
 
@@ -69,6 +72,44 @@ namespace Warlander.Deedplanner.Data
         {
             _bridges.Remove(bridge);
             BridgesChanged?.Invoke();
+        }
+
+        public void RefreshBridgesForSurfaceHeight(int x, int y)
+        {
+            foreach (Bridge bridge in _bridges)
+            {
+                if (bridge.HasSurfaceAnchor(x, y))
+                {
+                    bridge.RefreshHeights(_map);
+                    continue;
+                }
+
+                foreach (BridgePart part in bridge.Parts)
+                {
+                    if (part.PartType != BridgePartType.Support || part.Tile == null)
+                    {
+                        continue;
+                    }
+
+                    int dx = x - part.Tile.X;
+                    int dy = y - part.Tile.Y;
+                    if (dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1)
+                    {
+                        part.RefreshExtensions();
+                    }
+                }
+            }
+        }
+
+        public void RefreshBridgesForCaveHeight(int x, int y)
+        {
+            foreach (Bridge bridge in _bridges)
+            {
+                if (bridge.HasCaveAnchor(x, y))
+                {
+                    bridge.RefreshHeights(_map);
+                }
+            }
         }
 
         private bool IsWithinBounds(Vector2Int tile)

@@ -23,6 +23,9 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         private bool[] _pendingSupports;
         private bool _editable;
         private string _tooltipSuffix;
+        private bool _pavingMode;
+        private BridgePavementData[] _pavingChoices;
+        private int _selectedPavingIndex;
 
         public BridgeSegmentBarPresenter(IBridgeSegmentBarView view, BridgesUpdater bridgesUpdater,
             MapHandler mapHandler)
@@ -35,7 +38,14 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         public void Initialize()
         {
             _view.SegmentClicked += OnSegmentClicked;
+            _view.SegmentHovered += OnSegmentHovered;
+            _view.PavingModeChanged += OnPavingModeChanged;
+            _view.PavingSelected += OnPavingSelected;
             _bridgesUpdater.SelectedBridgeChanged += OnSelectedBridgeChanged;
+
+            // index 0 is null, the eraser ("no paving")
+            _pavingChoices = new BridgePavementData[] { null }.Concat(Database.BridgePavements.Values).ToArray();
+            _view.SetPavingMode(false);
 
             OnSelectedBridgeChanged();
         }
@@ -43,7 +53,20 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         public void Dispose()
         {
             _view.SegmentClicked -= OnSegmentClicked;
+            _view.SegmentHovered -= OnSegmentHovered;
+            _view.PavingModeChanged -= OnPavingModeChanged;
+            _view.PavingSelected -= OnPavingSelected;
             _bridgesUpdater.SelectedBridgeChanged -= OnSelectedBridgeChanged;
+        }
+
+        private void OnSegmentHovered(int index)
+        {
+            if (_pavingMode)
+            {
+                return;
+            }
+
+            _bridgesUpdater.SetHoveredSegment(index);
         }
 
         private void OnSelectedBridgeChanged()
@@ -53,19 +76,57 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             if (_bridge == null)
             {
                 _pendingSupports = null;
-                _view.ShowBridge(null, false, null);
-                return;
+            }
+            else
+            {
+                _pendingSupports = _bridge.GetSupportPositions();
+                _editable = _bridge.Type == BridgeType.Flat;
+                _tooltipSuffix = GetTooltipSuffix(_bridge.Type);
             }
 
-            _pendingSupports = _bridge.GetSupportPositions();
-            _editable = _bridge.Type == BridgeType.Flat;
-            _tooltipSuffix = GetTooltipSuffix(_bridge.Type);
-            _view.ShowBridge(_bridge, _editable, _tooltipSuffix);
+            _view.SetSupportsModeAvailable(_bridge != null && _bridge.Data.CanBePaved);
+            RefreshDisplay();
+        }
+
+        private void RefreshDisplay()
+        {
+            if (_pavingMode)
+            {
+                _view.ShowPavingPalette(_pavingChoices, _selectedPavingIndex);
+            }
+            else if (_bridge == null)
+            {
+                _view.ShowBridge(null, false, null);
+            }
+            else
+            {
+                _view.ShowBridge(_bridge, _editable, _tooltipSuffix);
+            }
+        }
+
+        private void OnPavingModeChanged(bool pavingMode)
+        {
+            _pavingMode = pavingMode;
+            _view.SetPavingMode(pavingMode);
+            PushBrush();
+            RefreshDisplay();
+        }
+
+        private void OnPavingSelected(int choiceIndex)
+        {
+            _selectedPavingIndex = choiceIndex;
+            _view.SetPavingSelection(choiceIndex);
+            PushBrush();
+        }
+
+        private void PushBrush()
+        {
+            _bridgesUpdater.SetPavingBrush(_pavingMode, _pavingChoices[_selectedPavingIndex]);
         }
 
         private void OnSegmentClicked(int index)
         {
-            if (!_editable || _bridge == null || _pendingSupports == null
+            if (_pavingMode || !_editable || _bridge == null || _pendingSupports == null
                 || index < 0 || index >= _pendingSupports.Length)
             {
                 return;

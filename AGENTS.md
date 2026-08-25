@@ -44,11 +44,17 @@ unity open "E:/Unity/DeedPlanner-3" --args "-automated"
 
 Without it, play mode ENTRY stalls indefinitely while the Editor window is unfocused (in-play behavior is unaffected).
 
+**CLI call latency / polling pitfall:** `unity open` stays attached for the Editor's lifetime — always run it as a background task and never wait on its completion. Every CLI invocation on this machine also pays a multi-second telemetry fetch timeout (no external network), so tight `until unity status | grep -q ready` polling loops effectively hang: each iteration is slow and the Editor typically becomes ready long before the loop notices. Instead, launch, do other work, then check `unity status` once when needed — treat "hangs on status polling" as "Editor is probably already up, just check it".
+
 **Code evaluation:** the Pipeline package ships a CodeEval command (edit-mode AND runtime — `unity command` / `unity list` can also attach to a running Player via `--runtime`). This lets the CLI execute arbitrary C# in the live Editor or in the running app — usable both for manipulating the Editor (scenes, assets, play mode) and for testing the app's behavior from the outside. Discover exact command names with `unity list`.
+
+**eval_file quirks (verified):** `eval` rejects bare expressions; use `eval_file` with an explicit `return`. `eval_file` wraps the file in an `Execute()` method body: statements only (no `using` directives, no class/method definitions), fully-qualified names (`UnityEngine.Object`, `System.IO.Path` — `Object` collides with `object`). Write eval scripts to system temp, never under `Assets/` (stray .cs files break compilation).
 
 ## Agentic Verification
 
 No automated test suite exists (despite the Test Framework package being present), but the project iterates fast — domain reload and play-mode enter/exit each take only a few seconds. After triggering a recompile or play-mode change, allow a ~5 second buffer, then poll `unity status` for the Editor state before issuing the next command.
+
+**Never recompile while in play mode.** A domain reload mid-play silently breaks the session: the running app loses its state (map references go null, evals fail with NullReferenceException) while the Editor reports itself ready. Always `editor_stop` → recompile → `editor_play` → re-run the scenario.
 
 Suggested verification ladder, cheapest first:
 1. Compile check (connected Editor via `unity command`, or `unity test --mode EditMode` batch) — catches syntax/type errors.
@@ -81,6 +87,7 @@ Injection style:
   - `MapHeightTracker` — heightmap tracking
 - **Tile** (`Data/Tile.cs`) — individual grid cell containing ground, walls, floors, roof, decorations, cave data
 - **Database** (`Data/Database.cs`) — static dictionaries for all game asset metadata (ground/floor/wall/roof/decoration types)
+- **Materials** (`Data/Materials.cs`) — material costs are unit counts, not weights; weight-based goods use template-weight units (Mortar unit = 2 kg, Tar unit = 1 kg), matching the game's build-list convention
 
 ### Tab-Based Updater Pattern
 Each editing mode maps to a UI tab and a corresponding `*Updater` class in `Assets/Warlander/Deedplanner/Updaters/`. Updaters are plain C# classes implementing `IUpdater` (`TargetTab`, `Initialize`, `Enable`, `Disable`, `Tick`), constructor-injected, and registered in the VContainer scope. `UpdaterCoordinator` (`Logic/UpdaterCoordinator.cs`) receives them as `IReadOnlyList<IUpdater>`, initializes all, and on `TabContext.TabChanged` disables the active updater, enables the one whose `TargetTab` matches, and ticks only the active one. Views follow MVP: each updater holds an `I*UpdaterView` interface (implementations in `Gui/Updaters/`).
@@ -134,7 +141,7 @@ Warlander.Deedplanner.Features     # Feature flag system
 - **Class naming**: avoid generic, undescriptive suffixes — `Manager`, `Handler`, `Controller`, `Helper`, `Util`, `Service`, `Provider`, `Processor`, and similar vague nouns. These say *where* something lives but not *what it does*. Prefer names that describe the specific responsibility (e.g. `WaterFacade`, `WaterObjectContainer`, `MapHeightTracker`). Existing legacy names (`CommandManager`) are grandfathered in; new classes must follow this rule. The `View` suffix is the one intentional exception — MonoBehaviour view classes in the MVP pattern must end with `View` (e.g. `GroundPainterView`, `TileSelectionView`) to distinguish them from their presenter counterparts.
 - **Property formatting**: auto-properties and single-expression `get`-only properties stay on one line. Anything more complex splits `get`/`set` onto their own lines. If `get` or `set` contains more than one statement, use expanded block syntax (`{ ... }`) rather than expression-body (`=>`) shorthand.
 - **No tuples**: do not use tuples — neither implicit (`(int x, string y)`) nor explicit (`Tuple<int, string>`). Define a named `struct` or value class instead. Named types are self-documenting, refactorable, and avoid accidental structural coupling.
-- **UI arrangement**: before building UI, check whether a prefab already exists for similar UI and reuse it. When the things being wired live inside a parent prefab, wire them up inside that prefab rather than from the scene or whatever context you are currently in.
+- **UI arrangement**: owned by project skills — `unity-ui-screenshot` (capture real UI before mockup/design work), `unity-ui-build` (prefab reuse, wiring, layout, mockup-to-implementation). Always load `unity-ui-build` before building UI.
 
 ## After Code Changes
 

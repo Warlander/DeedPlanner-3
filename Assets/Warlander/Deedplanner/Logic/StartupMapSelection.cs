@@ -64,18 +64,30 @@ namespace Warlander.Deedplanner.Logic
             }
             else if (Application.isEditor || Debug.isDebugBuild)
             {
+                if (debugProperties != null && debugProperties.SelectedTestMap == DebugProperties.TestMap.AssetZoo)
+                {
+                    new AssetZooMapGenerator(_mapHandler).Generate();
+                    // test maps skip the home screen for fast iteration
+                    _homeScreenPresenter.HideHomeScreen();
+                    return;
+                }
+
                 if (debugProperties != null && !string.IsNullOrEmpty(debugProperties.TestMapPath))
                 {
                     await _mapHandler.LoadMapAsync(new Uri(debugProperties.TestMapPath));
-                    // editor with a test map skips the home screen for fast iteration
-                    return;
+                    if (_mapHandler.Map != null)
+                    {
+                        // test maps skip the home screen for fast iteration
+                        _homeScreenPresenter.HideHomeScreen();
+                        return;
+                    }
                 }
 
                 // no test map set: fall through to the release flow (home screen)
             }
 
             await _saveCoordinator.NewMapAsync();
-            _homeScreenPresenter.ShowHomeScreen();
+            _homeScreenPresenter.ShowHomeScreen(false);
         }
     }
 }

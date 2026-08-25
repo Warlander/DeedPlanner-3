@@ -1,25 +1,75 @@
-﻿using System;
+using System;
 using System.IO;
 using UnityEngine;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Debugging
 {
-    [CreateAssetMenu(menuName = "DeedPlanner/Debug Properties", fileName = "DebugProperties")]
     public class DebugProperties : ScriptableObject
     {
+        private static string SettingsPath => Path.Combine(Application.dataPath, "../UserSettings/DebugProperties.json");
+
+        private static DebugProperties _current;
+
+        public static DebugProperties Current
+        {
+            get
+            {
+                if (_current == null)
+                {
+                    _current = CreateInstance<DebugProperties>();
+                    _current.hideFlags = HideFlags.HideAndDontSave;
+#if UNITY_EDITOR
+                    if (File.Exists(SettingsPath))
+                    {
+                        JsonUtility.FromJsonOverwrite(File.ReadAllText(SettingsPath), _current);
+                    }
+#endif
+                }
+                return _current;
+            }
+        }
+
+#if UNITY_EDITOR
+        public void Save()
+        {
+            File.WriteAllText(SettingsPath, JsonUtility.ToJson(this, true));
+        }
+#endif
+
         [SerializeField] private TestMap _testMap = TestMap.Warland;
         [SerializeField] private bool _preloadAllDecorations = false;
         [SerializeField] private bool _overrideStartingTileSelectionMode = false;
         [SerializeField] private TileSelectionMode _tileSelectionMode = TileSelectionMode.Nothing;
         [SerializeField] private bool _drawDebugPlaneLines = false;
 
+        public TestMap SelectedTestMap
+        {
+            get => _testMap;
+            set => _testMap = value;
+        }
         public string TestMapPath => GetTestMapPath(_testMap);
-        public bool PreloadAllDecorations => _preloadAllDecorations;
-        public bool OverrideStartingTileSelectionMode => _overrideStartingTileSelectionMode;
-        public TileSelectionMode TileSelectionMode => _tileSelectionMode;
-        public bool DrawDebugPlaneLines => _drawDebugPlaneLines;
-        
+        public bool PreloadAllDecorations
+        {
+            get => _preloadAllDecorations;
+            set => _preloadAllDecorations = value;
+        }
+        public bool OverrideStartingTileSelectionMode
+        {
+            get => _overrideStartingTileSelectionMode;
+            set => _overrideStartingTileSelectionMode = value;
+        }
+        public TileSelectionMode TileSelectionMode
+        {
+            get => _tileSelectionMode;
+            set => _tileSelectionMode = value;
+        }
+        public bool DrawDebugPlaneLines
+        {
+            get => _drawDebugPlaneLines;
+            set => _drawDebugPlaneLines = value;
+        }
+
         private string GetTestMapPath(TestMap map)
         {
             switch (map)
@@ -37,11 +87,11 @@ namespace Warlander.Deedplanner.Debugging
                     return null;
             }
         }
-        
+
         [Serializable]
         public enum TestMap
         {
-            None, Warland, Roofs, Bridges
+            None, Warland, Roofs, Bridges, AssetZoo
         }
     }
 }

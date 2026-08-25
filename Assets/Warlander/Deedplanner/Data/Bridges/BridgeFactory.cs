@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Logic.Outlines;
 using VContainer;
@@ -17,7 +18,15 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         public Bridge CreateBridge(Map map, XmlElement element)
         {
-            return new Bridge(map, element, _outlineCoordinator);
+            try
+            {
+                return new Bridge(map, element, _outlineCoordinator);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("Unable to load bridge: " + e.Message);
+                return null;
+            }
         }
 
         /// <summary>

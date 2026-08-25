@@ -209,6 +209,10 @@
 			<tex location="GroundTextures/planks.dds"/>
 			<category>Roads</category>
 		</ground>
+		<ground name="Tarred Planks" shortname="tpl">
+			<tex location="GroundTextures/floorBoardTarred.dds"/>
+			<category>Roads</category>
+		</ground>
 		<ground name="Enchanted forest" shortname="ef">
 			<tex location="GroundTextures/enchantedforest.dds"/>
 			<category>Enchanted terrain</category>
@@ -281,7 +285,7 @@
 
 
 	<floors>
-		<floor name="Wooden plank floor" shortname="wFloor">
+		<floor name="Wooden plank floor" shortname="wFloor" dockable="true">
 			<model location="Floors/Floor.wom">
 				<override mesh="FloorMesh" texture="Floors/floor.png"/>
 			</model>
@@ -292,7 +296,7 @@
 			<category>Floors</category>
 			<category>Materials/Wooden plank</category>
 		</floor>
-		<floor name="Stone brick floor" shortname="sbFloor">
+		<floor name="Stone brick floor" shortname="sbFloor" dockable="true">
 			<model location="Floors/Floor.wom">
 				<override mesh="FloorMesh" texture="Floors/brick_floor.png"/>
 			</model>
@@ -303,7 +307,7 @@
 			<category>Floors</category>
 			<category>Materials/Stone brick</category>
 		</floor>
-		<floor name="Stone slab floor" shortname="sFloor3">
+		<floor name="Stone slab floor" shortname="sFloor3" dockable="true">
 			<model location="Floors/Floor.wom">
 				<override mesh="FloorMesh" texture="Floors/stoneslab_floor.dds"/>
 			</model>
@@ -314,7 +318,7 @@
 			<category>Floors</category>
 			<category>Materials/Stone slab</category>
 		</floor>
-		<floor name="Pottery brick floor" shortname="pbFloor">
+		<floor name="Pottery brick floor" shortname="pbFloor" dockable="true">
 			<model location="Floors/Floor.wom">
 				<override mesh="FloorMesh" texture="Floors/clay_brick.dds"/>
 			</model>
@@ -325,7 +329,7 @@
 			<category>Floors</category>
 			<category>Materials/Pottery brick</category>
 		</floor>
-		<floor name="Marble slab floor" shortname="mFloor">
+		<floor name="Marble slab floor" shortname="mFloor" dockable="true">
 			<model location="Floors/Floor.wom">
 				<override mesh="FloorMesh" texture="Floors/marble_floor.png"/>
 			</model>
@@ -336,7 +340,7 @@
 			<category>Floors</category>
 			<category>Materials/Marble slab</category>
 		</floor>
-		<floor name="Slate slab floor" shortname="sFloor">
+		<floor name="Slate slab floor" shortname="sFloor" dockable="true">
 			<model location="Floors/Floor.wom">
 				<override mesh="FloorMesh" texture="Floors/slateslab_floor.dds"/>
 			</model>
@@ -347,7 +351,7 @@
 			<category>Floors</category>
 			<category>Materials/Slate slab</category>
 		</floor>
-		<floor name="Sandstone slab floor" shortname="sFloor2">
+		<floor name="Sandstone slab floor" shortname="sFloor2" dockable="true">
 			<model location="Floors/Floor.wom">
 				<override mesh="FloorMesh" texture="Floors/slab_floor.png"/>
 			</model>
@@ -9197,6 +9201,194 @@
 
 
 
+	<bridgepavements>
+		<bridgepavement name="Cobblestone" shortname="pcs">
+			<tex location="GroundTextures/cobble.dds"/>
+			<materials>
+				Mortar = 1,
+				Stone bricks = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Rough cobblestone" shortname="prcs">
+			<tex location="GroundTextures/cobble2.dds"/>
+			<materials>
+				Mortar = 1,
+				Colossus bricks = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Round cobblestone" shortname="pcsr">
+			<tex location="GroundTextures/cobble3.dds"/>
+			<materials>
+				Mortar = 1,
+				Rounded stones = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Stone slabs" shortname="psl">
+			<tex location="GroundTextures/slab.dds"/>
+			<materials>
+				Mortar = 1,
+				Stone slabs = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Marble bricks" shortname="pmb">
+			<tex location="GroundTextures/marbleBricks.dds"/>
+			<materials>
+				Mortar = 1,
+				Marble bricks = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Marble slabs" shortname="pmsl">
+			<tex location="GroundTextures/marbleslab.dds"/>
+			<materials>
+				Mortar = 1,
+				Marble slabs = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Slate bricks" shortname="pssl">
+			<tex location="GroundTextures/slatebricks.dds"/>
+			<materials>
+				Mortar = 1,
+				Slate bricks = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Slate slabs" shortname="pssl2">
+			<tex location="GroundTextures/slateTiles.dds"/>
+			<materials>
+				Mortar = 1,
+				Slate slabs = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Sandstone bricks" shortname="psab">
+			<tex location="GroundTextures/sandstonebrick.dds"/>
+			<materials>
+				Mortar = 1,
+				Sandstone bricks = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Sandstone slabs" shortname="psas">
+			<tex location="GroundTextures/sandstoneslab.dds"/>
+			<materials>
+				Mortar = 1,
+				Sandstone slabs = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Pottery bricks" shortname="ppb">
+			<tex location="GroundTextures/potterybrickpaving.dds"/>
+			<materials>
+				Mortar = 1,
+				Pottery bricks = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Planks" shortname="ppl">
+			<tex location="GroundTextures/planks.dds"/>
+			<materials>
+				Mortar = 1,
+				Floor boards = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Tarred Planks" shortname="ptpl">
+			<tex location="GroundTextures/floorBoardTarred.dds"/>
+			<materials>
+				Mortar = 1,
+				Floor boards = 1,
+				Tar = 1
+			</materials>
+		</bridgepavement>
+		<bridgepavement name="Gravel" shortname="pgv">
+			<tex location="GroundTextures/gravel.dds"/>
+			<materials>
+				Mortar = 1,
+				Rock shards = 1
+			</materials>
+		</bridgepavement>
+	</bridgepavements>
+
+	<docksupports>
+		<docksupport name="Wooden pillar" shortname="dwp" type="wood">
+			<model location="Docks/WoodenSupport.wom" tag="base"/>
+			<model location="Docks/WoodenSupportExtension.wom" tag="extension"/>
+			<materials>
+				Wooden beams = 2,
+				Planks = 5
+			</materials>
+		</docksupport>
+		<docksupport name="Stone pillar" shortname="dsp" type="stone">
+			<model location="Docks/StoneSupport.wom" tag="base">
+				<override mesh="StoneSupportMesh" texture="Docks/StoneWall.dds"/>
+			</model>
+			<model location="Docks/StoneSupport.wom" tag="extension">
+				<override mesh="StoneSupportMesh" texture="Docks/StoneWall.dds"/>
+			</model>
+			<materials>
+				Stone bricks = 10,
+				Mortar = 5
+			</materials>
+		</docksupport>
+		<docksupport name="Rounded stone pillar" shortname="drsp" type="stone">
+			<model location="Docks/StoneSupport.wom" tag="base"/>
+			<model location="Docks/StoneSupport.wom" tag="extension"/>
+			<materials>
+				Rounded stones = 10,
+				Mortar = 5
+			</materials>
+		</docksupport>
+		<docksupport name="Slate pillar" shortname="dslp" type="stone">
+			<model location="Docks/StoneSupport.wom" tag="base">
+				<override mesh="StoneSupportMesh" texture="Docks/slate.dds"/>
+			</model>
+			<model location="Docks/StoneSupport.wom" tag="extension">
+				<override mesh="StoneSupportMesh" texture="Docks/slate.dds"/>
+			</model>
+			<materials>
+				Slate bricks = 10,
+				Mortar = 5
+			</materials>
+		</docksupport>
+		<docksupport name="Marble pillar" shortname="dmp" type="stone">
+			<model location="Docks/StoneSupport.wom" tag="base">
+				<override mesh="StoneSupportMesh" texture="Docks/marble.dds"/>
+			</model>
+			<model location="Docks/StoneSupport.wom" tag="extension">
+				<override mesh="StoneSupportMesh" texture="Docks/marble.dds"/>
+			</model>
+			<materials>
+				Marble bricks = 10,
+				Mortar = 5
+			</materials>
+		</docksupport>
+		<docksupport name="Sandstone pillar" shortname="dssp" type="stone">
+			<model location="Docks/StoneSupport.wom" tag="base">
+				<override mesh="StoneSupportMesh" texture="Docks/sandstone.dds"/>
+			</model>
+			<model location="Docks/StoneSupport.wom" tag="extension">
+				<override mesh="StoneSupportMesh" texture="Docks/sandstone.dds"/>
+			</model>
+			<materials>
+				Sandstone bricks = 10,
+				Mortar = 5
+			</materials>
+		</docksupport>
+		<docksupport name="Pottery brick pillar" shortname="dpbp" type="stone">
+			<model location="Docks/StoneSupport.wom" tag="base">
+				<override mesh="StoneSupportMesh" texture="Docks/brick.dds"/>
+			</model>
+			<model location="Docks/StoneSupport.wom" tag="extension">
+				<override mesh="StoneSupportMesh" texture="Docks/brick.dds"/>
+			</model>
+			<materials>
+				Pottery bricks = 10,
+				Mortar = 5
+			</materials>
+		</docksupport>
+		<docksupport name="Wooden brace" shortname="dwb" type="brace">
+			<model location="Docks/SupportDiag.wom" tag="base"/>
+			<materials>
+				Wooden beams = 2,
+				Planks = 2
+			</materials>
+		</docksupport>
+	</docksupports>
+
 	<bridges>
 		<bridge name="rope" supportheight="0" maxwidth="1">
 			<type name="rope"/>
@@ -9296,7 +9488,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="stone" supportheight="80" maxwidth="3">
+		<bridge name="stone" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -9477,7 +9669,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="slate" supportheight="80" maxwidth="3">
+		<bridge name="slate" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -9658,7 +9850,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="sandstone" supportheight="80" maxwidth="3">
+		<bridge name="sandstone" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -9839,7 +10031,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="rounded stone" supportheight="80" maxwidth="3">
+		<bridge name="rounded stone" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -10020,7 +10212,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="rendered" supportheight="80" maxwidth="3">
+		<bridge name="rendered" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -10211,7 +10403,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="pottery" supportheight="80" maxwidth="3">
+		<bridge name="pottery" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">
@@ -10392,7 +10584,7 @@
 			</part>
 		</bridge>
 
-		<bridge name="marble" supportheight="80" maxwidth="3">
+		<bridge name="marble" supportheight="80" maxwidth="3" paveable="true">
 			<type name="flat"/>
 			<type name="arched"/>
 			<lane type="narrow">

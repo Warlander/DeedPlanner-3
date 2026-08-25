@@ -1,6 +1,7 @@
 using VContainer;
 using VContainer.Unity;
 using Warlander.Deedplanner.Gui.Tooltips;
+using Warlander.Deedplanner.Logic;
 using Warlander.Scopes;
 
 namespace Warlander.Deedplanner.Scopes
@@ -11,6 +12,7 @@ namespace Warlander.Deedplanner.Scopes
         {
             base.Configure(builder);
             builder.RegisterEntryPoint<TooltipHandler>().AsSelf();
+            builder.RegisterEntryPoint<ErrorReportPresenter>();
         }
     }
 }

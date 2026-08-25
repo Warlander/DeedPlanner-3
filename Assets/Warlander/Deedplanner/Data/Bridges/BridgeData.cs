@@ -10,17 +10,20 @@ namespace Warlander.Deedplanner.Data.Bridges
         public string Name { get; }
         public int MaxWidth { get; }
         public int SupportHeight { get; }
+        public bool CanBePaved { get; }
 
         private readonly BridgePartData[] partsData;
         private readonly BridgeType[] allowedTypes;
         private Dictionary<BridgePartSide, Materials> sidesCost;
-        
-        public BridgeData(string name, int maxWidth, int supportHeight, 
-            BridgePartData[] partsData, BridgeType[] allowedTypes, Dictionary<BridgePartSide, Materials> sidesCost)
+
+        public BridgeData(string name, int maxWidth, int supportHeight,
+            BridgePartData[] partsData, BridgeType[] allowedTypes, Dictionary<BridgePartSide, Materials> sidesCost,
+            bool canBePaved)
         {
             Name = name;
             MaxWidth = maxWidth;
             SupportHeight = supportHeight;
+            CanBePaved = canBePaved;
 
             this.partsData = partsData;
             this.allowedTypes = allowedTypes;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Logic.Saving;
@@ -41,6 +42,24 @@ namespace Warlander.Deedplanner.Gui.Home
         private readonly Dictionary<MapLocation, DeedCardView> _cards =
             new Dictionary<MapLocation, DeedCardView>();
 
+        private CanvasGroup _fadeGroup;
+        private Tween _fadeTween;
+
+        private CanvasGroup FadeGroup
+        {
+            get
+            {
+                if (_fadeGroup == null)
+                {
+                    _fadeGroup = _panel.GetComponent<CanvasGroup>();
+                    if (_fadeGroup == null)
+                        _fadeGroup = _panel.AddComponent<CanvasGroup>();
+                }
+
+                return _fadeGroup;
+            }
+        }
+
         public bool Visible => _panel.activeSelf;
 
         private void Awake()
@@ -56,14 +75,49 @@ namespace Warlander.Deedplanner.Gui.Home
             _allSavesButton.onClick.AddListener(() => CategoryClicked(null));
         }
 
-        public void Show()
+        public void Show(bool animated)
         {
+            _fadeTween?.Kill();
+            gameObject.SetActive(true);
             _panel.SetActive(true);
+            FadeGroup.blocksRaycasts = true;
+
+            if (animated)
+            {
+                FadeGroup.alpha = 0;
+                _fadeTween = FadeGroup.DOFade(1, 0.2f);
+            }
+            else
+            {
+                FadeGroup.alpha = 1;
+            }
         }
 
-        public void Hide()
+        public void Hide(bool animated)
         {
-            _panel.SetActive(false);
+            _fadeTween?.Kill();
+
+            if (animated)
+            {
+                FadeGroup.blocksRaycasts = false;
+                _fadeTween = FadeGroup.DOFade(0, 0.15f)
+                    .OnComplete(() =>
+                    {
+                        _panel.SetActive(false);
+                        gameObject.SetActive(false);
+                    });
+            }
+            else
+            {
+                FadeGroup.alpha = 0;
+                _panel.SetActive(false);
+                gameObject.SetActive(false);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            _fadeTween?.Kill();
         }
 
         public void SetLoadButtonVisible(bool visible)

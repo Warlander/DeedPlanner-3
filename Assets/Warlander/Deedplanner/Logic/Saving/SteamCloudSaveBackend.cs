@@ -1,3 +1,4 @@
+#if !DISABLESTEAMWORKS
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -191,3 +192,4 @@ namespace Warlander.Deedplanner.Logic.Saving
         }
     }
 }
+#endif

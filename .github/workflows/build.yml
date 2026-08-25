@@ -3,6 +3,11 @@ name: Build
 on:
   workflow_dispatch:
     inputs:
+      build_target:
+        description: 'Which platforms to build'
+        type: choice
+        options: [all, webgl]
+        default: all
       deploy_steam:
         description: 'Upload builds to Steam (beta branch)'
         type: boolean
@@ -37,6 +42,7 @@ jobs:
   build-windows:
     # windows-2022 pinned deliberately: game-ci Windows images are ltsc2022-based,
     # and Windows containers require host/image version match (game-ci#766).
+    if: inputs.build_target != 'webgl'
     runs-on: windows-2022
     timeout-minutes: 240
     steps:
@@ -124,6 +130,7 @@ jobs:
           if-no-files-found: error
 
   build-linux:
+    if: inputs.build_target != 'webgl'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -141,6 +148,7 @@ jobs:
 
       - name: Build (IL2CPP)
         run: |
+          set -o pipefail
           mkdir -p "$RUNNER_TEMP/unity-config"
           bash .github/workflows/build-progress.sh "$RUNNER_TEMP/unity-build.log" "Linux" &
           WATCHER_PID=$!
@@ -185,6 +193,7 @@ jobs:
   # instead of caching it: the ~9.5GB install would blow the 10GB repo cache
   # budget and evict the far more valuable Library caches.
   build-macos:
+    if: inputs.build_target != 'webgl'
     runs-on: macos-14
     timeout-minutes: 300
     steps:
@@ -233,6 +242,7 @@ jobs:
 
       - name: Build (IL2CPP, universal)
         run: |
+          set -o pipefail
           bash .github/workflows/build-progress.sh "$RUNNER_TEMP/unity-build.log" "Mac" &
           WATCHER_PID=$!
           trap 'kill $WATCHER_PID 2>/dev/null || true' EXIT
@@ -286,6 +296,7 @@ jobs:
 
       - name: Build (WebGL)
         run: |
+          set -o pipefail
           mkdir -p "$RUNNER_TEMP/unity-config"
           bash .github/workflows/build-progress.sh "$RUNNER_TEMP/unity-build.log" "WebGL" &
           WATCHER_PID=$!
@@ -314,9 +325,9 @@ jobs:
 
       - name: Verify build output
         run: |
-          test -f "Build/DeedPlanner 3 WebGL/index.html"
-          compgen -G "Build/DeedPlanner 3 WebGL/Build/*.wasm" > /dev/null
-          compgen -G "Build/DeedPlanner 3 WebGL/Build/*.data" > /dev/null
+          test -f "Build/DeedPlanner 3 WebGL/index.html" || { echo "Missing build output: index.html (build failed?)"; exit 1; }
+          compgen -G "Build/DeedPlanner 3 WebGL/Build/*.wasm" > /dev/null || { echo "Missing build output: Build/*.wasm (build failed?)"; exit 1; }
+          compgen -G "Build/DeedPlanner 3 WebGL/Build/*.data" > /dev/null || { echo "Missing build output: Build/*.data (build failed?)"; exit 1; }
           if compgen -G "Build/DeedPlanner 3 WebGL/Build/*.gz" > /dev/null; then
             echo "Compressed build files present - will not boot on GitHub Pages"
             exit 1

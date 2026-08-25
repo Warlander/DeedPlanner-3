@@ -2,7 +2,7 @@
 {
     public enum EntityType
     {
-        Ground, Floorroof, Hwall, Hfence, Hborder, Vwall, Vfence, Vborder, Object, Cave, Label, BridgePart
+        Ground, Floorroof, Hwall, Hfence, Hborder, Vwall, Vfence, Vborder, Object, Cave, Label, BridgePart, Dock
     }
 
     public static class EntityTypeUtils

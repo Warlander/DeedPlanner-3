@@ -41,6 +41,8 @@ namespace Warlander.Deedplanner.Data.Bridges
         private readonly List<BridgePart> segmentParts = new List<BridgePart>();
         private readonly MaterialPropertyBlock _opacityMergeBlock = new MaterialPropertyBlock();
         private bool _attached;
+
+        public IReadOnlyList<BridgePart> Parts => bridgeParts;
         
         public Bridge(Map map, XmlElement element, IOutlineCoordinator outlineCoordinator)
         {
@@ -66,10 +68,10 @@ namespace Warlander.Deedplanner.Data.Bridges
             {
                 surfaced = true;
             }
-            
+
             string typeString = element.GetAttribute("type");
             bool typeParseSuccess = Enum.TryParse(typeString, true, out BridgeType type);
-                            
+
             if (typeParseSuccess)
             {
                 bridgeType = type;
@@ -79,7 +81,20 @@ namespace Warlander.Deedplanner.Data.Bridges
                 Debug.LogError($"Bridge type enum parsing fail, type: {typeString}");
             }
 
-            ConstructBridge(map);
+            int requiredSegments = Mathf.Max(Mathf.Abs(secondX - firstX), Mathf.Abs(secondY - firstY)) + 1;
+            if (segments.Length < requiredSegments)
+            {
+                throw new FormatException($"Bridge segments data too short: {segments.Length}, expected at least {requiredSegments}");
+            }
+
+            BridgePavementData[,] pavements = null;
+            if (element.HasAttribute("paving"))
+            {
+                pavements = BridgePavementSerializer.Decode(element.GetAttribute("paving"),
+                    segments.Length, GetBridgeWidth());
+            }
+
+            ConstructBridge(map, pavements);
         }
 
         /// <summary>
@@ -93,6 +108,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             Data = originalBridge.Data;
 
             segments = (BridgePartType[])originalBridge.segments.Clone();
+            BridgePavementData[,] pavements = CapturePavements(originalBridge.bridgeParts, segments.Length);
             firstLevel = originalBridge.firstLevel;
             firstX = originalBridge.firstX + tileShift.x;
             firstY = originalBridge.firstY + tileShift.y;
@@ -103,8 +119,8 @@ namespace Warlander.Deedplanner.Data.Bridges
             verticalOrientation = originalBridge.verticalOrientation;
             surfaced = originalBridge.surfaced;
             bridgeType = originalBridge.bridgeType;
-            
-            ConstructBridge(map);
+
+            ConstructBridge(map, pavements);
         }
 
         /// <summary>
@@ -147,17 +163,45 @@ namespace Warlander.Deedplanner.Data.Bridges
             secondX = maxX;
             secondY = maxY;
 
-            ConstructBridge(map);
+            ConstructBridge(map, null);
         }
 
-        private void ConstructBridge(Map map)
+        private static BridgePavementData[,] CapturePavements(List<BridgePart> parts, int segmentCount)
+        {
+            int laneCount = 0;
+            foreach (BridgePart part in parts)
+            {
+                laneCount = Mathf.Max(laneCount, part.LaneIndex + 1);
+            }
+
+            BridgePavementData[,] pavements = new BridgePavementData[segmentCount, laneCount];
+            foreach (BridgePart part in parts)
+            {
+                if (part.SegmentIndex < segmentCount)
+                {
+                    pavements[part.SegmentIndex, part.LaneIndex] = part.Pavement;
+                }
+            }
+
+            return pavements;
+        }
+
+        private int GetBridgeWidth()
+        {
+            int width = Mathf.Min(
+                Mathf.Abs(secondX - firstX),
+                Mathf.Abs(secondY - firstY)) + 1;
+            return Mathf.Min(width, Data.MaxWidth);
+        }
+
+        private void ConstructBridge(Map map, BridgePavementData[,] pavements)
         {
             if (bridgeParts.Count != 0)
             {
                 Debug.LogError("Bridge already exists, aborting construction");
                 return;
             }
-            
+
             int startX = Mathf.Min(firstX, secondX);
             int endX = Mathf.Max(firstX, secondX);
             int startY = Mathf.Min(firstY, secondY);
@@ -189,6 +233,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             for (int x = startX; x <= endX; x++) {
                 for (int y = startY; y <= endY; y++) {
                     int currentSegment = verticalOrientation ? y - startY : x - startX;
+                    int currentLane = verticalOrientation ? x - startX : y - startY;
                     float totalHeight = CalculateHeightAtPoint(currentSegment, bridgeTypeCalc, bridgeLength,
                         startHeight, endHeight, heightStep);
                     float totalHeightAfter = CalculateHeightAtPoint(currentSegment + 1, bridgeTypeCalc, bridgeLength,
@@ -201,7 +246,12 @@ namespace Warlander.Deedplanner.Data.Bridges
                     GameObject bridgePartObject = new GameObject("Bridge Part " + Data.Name, typeof(BridgePart));
                     BridgePart bridgePart = bridgePartObject.GetComponent<BridgePart>();
                     map[x, y].RegisterBridgePart(bridgePart);
-                    bridgePart.Initialise(this, segment, side, orientation, x, y, totalHeight, delta);
+                    bridgePart.Initialise(this, segment, side, orientation, x, y, totalHeight, delta,
+                        currentSegment, currentLane);
+                    if (pavements != null)
+                    {
+                        bridgePart.SetPavement(pavements[currentSegment, currentLane]);
+                    }
 
                     bridgeParts.Add(bridgePart);
                     if (segmentParts.Count == currentSegment)
@@ -435,6 +485,40 @@ namespace Warlander.Deedplanner.Data.Bridges
             return segmentParts[index];
         }
 
+        public List<BridgePart> GetSegmentParts(int segmentIndex)
+        {
+            int startCoord = verticalOrientation ? Mathf.Min(firstY, secondY) : Mathf.Min(firstX, secondX);
+            List<BridgePart> result = new List<BridgePart>();
+            foreach (BridgePart part in bridgeParts)
+            {
+                int partCoord = verticalOrientation ? part.Tile.Y : part.Tile.X;
+                if (partCoord - startCoord == segmentIndex)
+                {
+                    result.Add(part);
+                }
+            }
+
+            return result;
+        }
+
+        public void HighlightSegment(int segmentIndex, OutlineType type)
+        {
+            foreach (BridgePart part in GetSegmentParts(segmentIndex))
+            {
+                _outlineCoordinator.AddObject(part, type, 1);
+            }
+        }
+
+        public void HighlightPart(BridgePart part, OutlineType type)
+        {
+            _outlineCoordinator.AddObject(part, type, 1);
+        }
+
+        public void UnhighlightPart(BridgePart part)
+        {
+            _outlineCoordinator.RemoveObject(part, 1);
+        }
+
         public string GetSegmentsString()
         {
             return BridgePartTypeUtils.EncodeSegments(segments);
@@ -451,9 +535,63 @@ namespace Warlander.Deedplanner.Data.Bridges
             return supports;
         }
 
+        public bool HasSurfaceAnchor(int x, int y)
+        {
+            return HasAnchor(x, y, false);
+        }
+
+        public bool HasCaveAnchor(int x, int y)
+        {
+            return HasAnchor(x, y, true);
+        }
+
+        private bool HasAnchor(int x, int y, bool cave)
+        {
+            int startX = Mathf.Min(firstX, secondX);
+            int endX = Mathf.Max(firstX, secondX);
+            int startY = Mathf.Min(firstY, secondY);
+            int endY = Mathf.Max(firstY, secondY);
+
+            bool LevelMatches(int level) => cave ? level < 0 : level >= 0;
+            return (LevelMatches(firstLevel) && x == startX && y == startY)
+                || (LevelMatches(secondLevel) && x == endX + 1 && y == endY + 1);
+        }
+
+        public void RefreshHeights(Map map)
+        {
+            if (!_attached)
+            {
+                return;
+            }
+
+            int startX = Mathf.Min(firstX, secondX);
+            int endX = Mathf.Max(firstX, secondX);
+            int startY = Mathf.Min(firstY, secondY);
+            int endY = Mathf.Max(firstY, secondY);
+            int bridgeLength = Mathf.Max(endX - startX, endY - startY) + 2;
+
+            IBridgeType bridgeTypeCalc = GetTypeForBridge(bridgeType);
+            int startHeight = GetAbsoluteHeight(map[startX, startY], firstLevel);
+            int endHeight = GetAbsoluteHeight(map[endX + 1, endY + 1], secondLevel);
+            float heightStep = (float)(endHeight - startHeight) / (bridgeLength - 1);
+
+            foreach (BridgePart part in bridgeParts)
+            {
+                float totalHeight = CalculateHeightAtPoint(part.SegmentIndex, bridgeTypeCalc, bridgeLength,
+                    startHeight, endHeight, heightStep);
+                float totalHeightAfter = CalculateHeightAtPoint(part.SegmentIndex + 1, bridgeTypeCalc, bridgeLength,
+                    startHeight, endHeight, heightStep);
+                int delta = Mathf.RoundToInt(totalHeightAfter - totalHeight);
+                part.UpdateHeight(totalHeight, delta);
+            }
+        }
+
         public void Rebuild(Map map, BridgeData newData, string newSegments, int newAdditionalData)
         {
             DisableHighlighting();
+
+            BridgePartType[] oldSegments = segments;
+            BridgePavementData[,] pavements = CapturePavements(bridgeParts, oldSegments.Length);
 
             foreach (BridgePart part in bridgeParts)
             {
@@ -473,7 +611,12 @@ namespace Warlander.Deedplanner.Data.Bridges
             segments = BridgePartTypeUtils.DecodeSegments(newSegments);
             additionalData = newAdditionalData;
 
-            ConstructBridge(map);
+            if (segments.Length != oldSegments.Length)
+            {
+                pavements = null;
+            }
+
+            ConstructBridge(map, pavements);
             Rebuilt?.Invoke();
         }
 
@@ -490,6 +633,11 @@ namespace Warlander.Deedplanner.Data.Bridges
             localRoot.SetAttribute("sag", additionalData.ToString());
             localRoot.SetAttribute("orientation", verticalOrientation ? "true" : "false");
             localRoot.SetAttribute("surfaced", surfaced ? "true" : "false");
+            string paving = BridgePavementSerializer.Encode(bridgeParts);
+            if (paving != null)
+            {
+                localRoot.SetAttribute("paving", paving);
+            }
             localRoot.InnerText = BridgePartTypeUtils.EncodeSegments(segments);
         }
     }

@@ -21,7 +21,7 @@ MonoBehaviour:
     _enabledInProduction: 0
     _enabledInDebug: 0
     _enabledInEditor: 0
-  - _feature: 3
-    _enabledInProduction: 0
-    _enabledInDebug: 0
-    _enabledInEditor: 1
+  - _feature: 4
+    _enabledInProduction: 1
+    _enabledInDebug: 1
+    _enabledInEditor: 0

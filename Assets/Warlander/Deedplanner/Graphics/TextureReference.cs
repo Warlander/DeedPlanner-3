@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -39,11 +40,23 @@ namespace Warlander.Deedplanner.Graphics
                 ? Location
                 : Application.streamingAssetsPath + "/" + Location;
 
-            texture = await _textureLoader.LoadTextureAsync(location, false);
+            try
+            {
+                texture = await _textureLoader.LoadTextureAsync(location, false);
+            }
+            catch (Exception)
+            {
+                textureLoadTask = null;
+                throw;
+            }
 
             if (texture)
             {
                 texture.name = Location;
+            }
+            else
+            {
+                textureLoadTask = null;
             }
 
             return texture;

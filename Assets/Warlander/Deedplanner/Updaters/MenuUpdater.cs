@@ -157,7 +157,7 @@ namespace Warlander.Deedplanner.Updaters
                     _windowCoordinator.CreateWindowExclusive(WindowNames.SaveMapWindow);
                     break;
                 case MenuAction.Load:
-                    _homeScreenPresenter.ShowHomeScreen();
+                    _homeScreenPresenter.ShowHomeScreen(true);
                     break;
                 case MenuAction.GraphicsSettings:
                     _windowCoordinator.CreateWindowExclusive(WindowNames.GraphicsSettingsWindow);

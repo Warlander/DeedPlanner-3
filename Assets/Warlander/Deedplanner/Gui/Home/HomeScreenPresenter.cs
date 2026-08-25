@@ -54,24 +54,29 @@ namespace Warlander.Deedplanner.Gui.Home
             }
         }
 
-        public void ShowHomeScreen()
+        public void ShowHomeScreen(bool animated)
         {
             _cardCatalog.ResetCategory();
-            _view.Show();
+            _view.Show(animated);
             _cardCatalog.Populate();
+        }
+
+        public void HideHomeScreen()
+        {
+            _view.Hide(false);
         }
 
         /// Hides the screen without touching the current map: at startup the blank default waits
         /// behind it, in-session this simply returns to the deed being edited.
         private void OnBack()
         {
-            _view.Hide();
+            _view.Hide(true);
         }
 
         private void OnNewDeed()
         {
             _ = _saveCoordinator.NewMapAsync();
-            _view.Hide();
+            _view.Hide(true);
         }
 
         private async void OnLoad()
@@ -81,21 +86,21 @@ namespace Warlander.Deedplanner.Gui.Home
                 bool loaded = await _saveCoordinator.PickAndLoadAsync(SaveBackendId.File);
                 if (loaded)
                 {
-                    _view.Hide();
+                    _view.Hide(true);
                 }
             }
             else
             {
                 // no file backend (WebGL): the load window provides the browser file picker
                 _windowCoordinator.CreateWindowExclusive(WindowNames.LoadMapWindow);
-                _view.Hide();
+                _view.Hide(true);
             }
         }
 
         private void OnWebLink()
         {
             _windowCoordinator.CreateWindowExclusive(WindowNames.LoadMapWindow);
-            _view.Hide();
+            _view.Hide(true);
         }
 
         private void OnAbout()
@@ -141,7 +146,7 @@ namespace Warlander.Deedplanner.Gui.Home
             {
                 // browser downloads cannot be re-read; the load window provides the file picker
                 _windowCoordinator.CreateWindowExclusive(WindowNames.LoadMapWindow);
-                _view.Hide();
+                _view.Hide(true);
                 return;
             }
 
@@ -150,7 +155,7 @@ namespace Warlander.Deedplanner.Gui.Home
                 bool recovered = await _saveCoordinator.LoadRecoveryAsync(location, mainLocation);
                 if (recovered)
                 {
-                    _view.Hide();
+                    _view.Hide(true);
                 }
                 else
                 {
@@ -163,7 +168,7 @@ namespace Warlander.Deedplanner.Gui.Home
             bool loaded = await _saveCoordinator.LoadAsync(location);
             if (loaded)
             {
-                _view.Hide();
+                _view.Hide(true);
             }
             else
             {

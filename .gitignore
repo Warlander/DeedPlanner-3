@@ -54,6 +54,9 @@ UserSettings/
 # Windows reserved device name (not a real file)
 nul
 
+# Test results
+test-results.xml
+
 # macOS
 .DS_Store
 

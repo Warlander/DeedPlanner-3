@@ -3,6 +3,7 @@ using VContainer;
 using VContainer.Unity;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Graphics.Screenshots;
@@ -23,7 +24,6 @@ namespace Warlander.Deedplanner.Scopes
 {
     public class MainSceneLifetimeScope : DPSceneLifetimeScope
     {
-        [SerializeField] private DebugProperties _debugProperties;
         [SerializeField] private CameraCoordinator _cameraCoordinator;
         [SerializeField] private BridgeTabSwapper _bridgeTabSwapper;
 
@@ -88,6 +88,7 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterInstance(_cameraCoordinator);
             builder.Register<OutlineCoordinator>(Lifetime.Singleton).As<IOutlineCoordinator>();
             builder.RegisterEntryPoint<OutlineFeatureBridge>();
+            builder.RegisterEntryPoint<PostProcessingQualityApplier>();
 
             builder.Register<FppCameraController>(Lifetime.Transient).As<ICameraController>();
             builder.Register<IsoCameraController>(Lifetime.Transient).As<ICameraController>();
@@ -102,7 +103,7 @@ namespace Warlander.Deedplanner.Scopes
             if (Debug.isDebugBuild)
             {
                 builder.RegisterEntryPoint<DebugApplier>();
-                builder.RegisterInstance(_debugProperties);
+                builder.RegisterInstance(DebugProperties.Current);
             }
 
             DPInput input = new DPInput();
@@ -119,7 +120,9 @@ namespace Warlander.Deedplanner.Scopes
             builder.Register<CurrentViewScreenshotCapture>(Lifetime.Singleton);
             builder.Register<DeedThumbnailCapture>(Lifetime.Singleton);
             builder.Register<PastebinSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
+#if !DISABLESTEAMWORKS
             builder.Register<SteamCloudSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
+#endif
 #if UNITY_WEBGL && !UNITY_EDITOR
             builder.Register<WebFileSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
             builder.Register<LocalStorageSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
@@ -142,6 +145,7 @@ namespace Warlander.Deedplanner.Scopes
 
             builder.Register<TileFactory>(Lifetime.Singleton);
             builder.Register<BridgeFactory>(Lifetime.Singleton);
+            builder.Register<DockFactory>(Lifetime.Singleton);
 
             builder.Register<MapHeightTracker>(Lifetime.Singleton);
             builder.RegisterEntryPoint<MapRoofCalculator>().AsSelf();
