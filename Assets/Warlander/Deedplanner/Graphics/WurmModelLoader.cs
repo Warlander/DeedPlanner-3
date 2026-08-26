@@ -100,7 +100,14 @@ namespace Warlander.Deedplanner.Graphics
                 {
                     _materialLoader.LoadMaterialMetadata(source, fileFolder);
                 }
-                Object.Destroy(loadedMesh);
+                if (Application.isPlaying)
+                {
+                    Object.Destroy(loadedMesh);
+                }
+                else
+                {
+                    Object.DestroyImmediate(loadedMesh);
+                }
                 return null;
             }
         }
