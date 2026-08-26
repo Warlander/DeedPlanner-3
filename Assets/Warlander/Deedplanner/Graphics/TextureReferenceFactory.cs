@@ -2,6 +2,7 @@
 using System.IO;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Graphics
 {
@@ -9,10 +10,12 @@ namespace Warlander.Deedplanner.Graphics
     {
         private readonly ITextureLoader _textureLoader;
         private readonly Dictionary<string, TextureReference> _references = new Dictionary<string, TextureReference>();
+        private readonly ICategoryLogger _logger;
 
-        public TextureReferenceFactory(ITextureLoader textureLoader)
+        public TextureReferenceFactory(ITextureLoader textureLoader, ICategoryLogger logger)
         {
             _textureLoader = textureLoader;
+            _logger = logger;
         }
 
         public TextureReference GetTextureReference(string location)
@@ -21,7 +24,7 @@ namespace Warlander.Deedplanner.Graphics
 
             if (string.IsNullOrEmpty(Path.GetExtension(location)))
             {
-                Debug.Log("Attempting to load invalid texture from " + location);
+                _logger.Message("Attempting to load invalid texture from " + location);
                 return null;
             }
             

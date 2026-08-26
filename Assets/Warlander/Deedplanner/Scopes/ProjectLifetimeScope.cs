@@ -6,6 +6,7 @@ using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Features;
 using Warlogic.Features;
 using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Steam;
 using Warlander.Deedplanner.Utils;
@@ -25,6 +26,11 @@ namespace Warlander.Deedplanner.Scopes
         {
             base.Configure(builder);
 
+            var loggerSource = new LoggerSource(new LogLevelFilter());
+            builder.RegisterInstance(loggerSource);
+            builder.RegisterInstance<ILoggerSource>(loggerSource);
+            builder.RegisterEntryPoint<LoggingConfigurator>();
+
             // Disable exception reporting as soon as possible if in editor,
             // before any other code could throw an exception.
             // We do this to prevent crash reporting bad data.
@@ -33,7 +39,7 @@ namespace Warlander.Deedplanner.Scopes
                 CrashReportHandler.enableCaptureExceptions = false;
             }
 
-            builder.RegisterInstance(new SettingsFactory().Create());
+            builder.RegisterInstance(new SettingsFactory(loggerSource).Create());
 
 #if DISABLESTEAMWORKS
             builder.RegisterEntryPoint<DummySteamConnection>();
@@ -46,15 +52,7 @@ namespace Warlander.Deedplanner.Scopes
             var sharedMaterials = Resources.Load<SharedMaterials>("SharedMaterials");
             builder.RegisterInstance(sharedMaterials).As<ISharedMaterials>();
 
-            builder.Register<TextureReferenceFactory>(Lifetime.Singleton).As<ITextureReferenceFactory>();
-            builder.Register<WurmMeshLoader>(Lifetime.Singleton).As<IWurmMeshLoader>();
-            builder.Register<AggregateTextureLoader>(Lifetime.Singleton).As<ITextureLoader>();
-            builder.Register<MaterialLoader>(Lifetime.Singleton).As<IMaterialLoader>();
-            builder.Register<MaterialCache>(Lifetime.Singleton).As<IMaterialCache>();
-            builder.Register<WurmMaterialLoader>(Lifetime.Singleton).As<IWurmMaterialLoader>();
-            builder.Register<WurmModelFactory>(Lifetime.Singleton).As<IWurmModelFactory>();
-            builder.Register<BridgePartDataFactory>(Lifetime.Singleton);
-            builder.Register<WurmModelLoader>(Lifetime.Singleton).As<IWurmModelLoader>();
+            builder.Register<WurmAssetFacade>(Lifetime.Singleton).As<IWurmAssetFacade>();
 
             builder.RegisterInstance(new ResourceFeatureStateRepositoryRetriever<Feature>("FeatureStates").Get());
             builder.Register<FeatureStateRetriever<Feature>>(Lifetime.Singleton).As<IFeatureStateRetriever<Feature>>();

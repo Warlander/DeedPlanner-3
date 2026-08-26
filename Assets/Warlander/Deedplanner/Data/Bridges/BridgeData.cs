@@ -30,7 +30,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             this.sidesCost = sidesCost;
         }
 
-        public Model GetModelForPart(BridgePartType type, BridgePartSide side)
+        public ModelHandle GetModelForPart(BridgePartType type, BridgePartSide side)
         {
             return GetDataForType(type).GetModel(side);
         }

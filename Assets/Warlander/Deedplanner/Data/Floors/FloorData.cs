@@ -8,12 +8,12 @@ namespace Warlander.Deedplanner.Data.Floors
         public string Name { get; }
         public string ShortName { get; }
         public string[][] Categories { get; }
-        public Model Model { get; }
+        public ModelHandle Model { get; }
         public bool Opening { get; }
         public bool SupportsDock { get; }
         public Materials Materials { get; }
 
-        public FloorData(Model model, string name, string shortName, string[][] categories, bool opening, bool supportsDock, Materials materials)
+        public FloorData(ModelHandle model, string name, string shortName, string[][] categories, bool opening, bool supportsDock, Materials materials)
         {
             Model = model;
             Name = name;
