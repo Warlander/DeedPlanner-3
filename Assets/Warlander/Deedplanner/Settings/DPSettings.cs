@@ -5,6 +5,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using UnityEngine;
 using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Settings
 {
@@ -13,6 +14,13 @@ namespace Warlander.Deedplanner.Settings
     /// </summary>
     public class DPSettings
     {
+        private ICategoryLogger _logger;
+
+        internal ICategoryLogger Logger
+        {
+            set => _logger = value;
+        }
+
         public const string SettingsKey = "properties";
 
         public event Action Modified;
@@ -72,7 +80,7 @@ namespace Warlander.Deedplanner.Settings
             PlayerPrefs.SetString(SettingsKey, builder.ToString());
             PlayerPrefs.Save();
 
-            Debug.Log("Properties saved");
+            _logger.Message("Properties saved");
         }
     }
 }

@@ -1,13 +1,22 @@
+using Warlander.Deedplanner.Logging;
+
 namespace Warlander.Deedplanner.Steam
 {
     public class SteamConnectionFactory
     {
+        private readonly ILoggerSource _loggerSource;
+
+        public SteamConnectionFactory(ILoggerSource loggerSource)
+        {
+            _loggerSource = loggerSource;
+        }
+
         public ISteamConnection Create()
         {
 #if DISABLESTEAMWORKS
             return new DummySteamConnection();
 #else
-            return new SteamConnection();
+            return new SteamConnection(_loggerSource);
 #endif
         }
     }

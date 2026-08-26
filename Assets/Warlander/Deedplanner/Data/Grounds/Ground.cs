@@ -1,12 +1,16 @@
 ﻿using System.Text;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data.Grounds
 {
     public class Ground : IXmlSerializable
     {
+        private readonly ICategoryLogger _logger;
+
         private GroundData data;
         private RoadDirection roadDirection = RoadDirection.Center;
 
@@ -22,11 +26,12 @@ namespace Warlander.Deedplanner.Data.Grounds
             set => Tile.Map.CommandManager.AddToActionAndExecute(new RoadDirectionChangeCommand(this, roadDirection, value));
         }
 
-        public Ground(Tile tile, GroundData data)
+        public Ground(Tile tile, GroundData data, ICategoryLogger logger)
         {
             Tile = tile;
             Data = data;
             RoadDirection = RoadDirection.Center;
+            _logger = logger;
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
@@ -46,7 +51,7 @@ namespace Warlander.Deedplanner.Data.Grounds
             Database.Grounds.TryGetValue(id, out groundData);
             if (groundData == null)
             {
-                Debug.LogWarning("Unable to load ground " + id + ", using default instead");
+                _logger.Warning("Unable to load ground " + id + ", using default instead");
                 groundData = Database.DefaultGroundData;
             }
             Data = groundData;

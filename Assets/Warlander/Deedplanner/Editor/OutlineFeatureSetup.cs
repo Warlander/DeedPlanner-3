@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using Warlander.Deedplanner.Graphics.Outline;
+using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Editor
 {
@@ -17,6 +18,8 @@ namespace Warlander.Deedplanner.Editor
     [InitializeOnLoad]
     static class OutlineFeatureSetup
     {
+        private static readonly ICategoryLogger Logger = new LoggerSource(new LogLevelFilter()).Create(ScreenSpaceOutlineFeature.Category);
+
         static OutlineFeatureSetup()
         {
             // Run on the next editor update tick. EditorApplication.update fires
@@ -63,7 +66,7 @@ namespace Warlander.Deedplanner.Editor
                 EditorUtility.SetDirty(rendererData);
                 dirty = true;
 
-                Debug.Log($"[OutlineFeatureSetup] Added ScreenSpaceOutlineFeature to '{path}'.");
+                Logger.Message($"Added ScreenSpaceOutlineFeature to '{path}'.");
             }
 
             if (dirty)

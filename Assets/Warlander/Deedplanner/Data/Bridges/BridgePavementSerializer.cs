@@ -1,17 +1,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Data.Bridges
 {
-    public static class BridgePavementSerializer
+    public class BridgePavementSerializer
     {
+        private readonly ICategoryLogger _logger;
+
         public const string NoneToken = "none";
+
+        public BridgePavementSerializer(ICategoryLogger logger)
+        {
+            _logger = logger;
+        }
 
         // Segments are comma-separated, lanes within a segment slash-separated.
         // Single-lane bridges produce the same flat "pcs,none,..." shape as a result.
         // Returns null when nothing is paved, so the attribute is only written when needed.
-        public static string Encode(IEnumerable<BridgePart> parts)
+        public string Encode(IEnumerable<BridgePart> parts)
         {
             IGrouping<int, BridgePart>[] segments = parts
                 .OrderBy(part => part.SegmentIndex)
@@ -28,7 +36,7 @@ namespace Warlander.Deedplanner.Data.Bridges
                 string.Join("/", segment.Select(part => part.Pavement?.Token ?? NoneToken))));
         }
 
-        public static BridgePavementData[,] Decode(string serialized, int segmentCount, int laneCount)
+        public BridgePavementData[,] Decode(string serialized, int segmentCount, int laneCount)
         {
             BridgePavementData[,] pavements = new BridgePavementData[segmentCount, laneCount];
             string[] segmentTokens = serialized.Split(',');
@@ -45,7 +53,7 @@ namespace Warlander.Deedplanner.Data.Bridges
 
                     if (!Database.BridgePavements.TryGetValue(token, out BridgePavementData pavement))
                     {
-                        Debug.LogWarning("Unknown bridge pavement token: " + token);
+                        _logger.Warning("Unknown bridge pavement token: " + token);
                     }
 
                     pavements[segment, lane] = pavement;

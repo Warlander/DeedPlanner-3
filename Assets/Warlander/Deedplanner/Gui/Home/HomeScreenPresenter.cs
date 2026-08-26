@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Warlander.Deedplanner.Logic.Saving;
+using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Settings;
 using VContainer.Unity;
 using Warlander.UI.Windows;
@@ -16,15 +17,18 @@ namespace Warlander.Deedplanner.Gui.Home
         private readonly HomeScreenCardCatalog _cardCatalog;
         private readonly WindowCoordinator _windowCoordinator;
         private readonly DPSettings _settings;
+        private readonly ICategoryLogger _logger;
 
         public HomeScreenPresenter(IHomeScreenView view, ISaveCoordinator saveCoordinator,
-            HomeScreenCardCatalog cardCatalog, WindowCoordinator windowCoordinator, DPSettings settings)
+            HomeScreenCardCatalog cardCatalog, WindowCoordinator windowCoordinator, DPSettings settings,
+            UiLog uiLog)
         {
             _view = view;
             _saveCoordinator = saveCoordinator;
             _cardCatalog = cardCatalog;
             _windowCoordinator = windowCoordinator;
             _settings = settings;
+            _logger = uiLog.Logger;
         }
 
         public void Initialize()
@@ -196,7 +200,7 @@ namespace Warlander.Deedplanner.Gui.Home
                 }
                 catch (Exception e)
                 {
-                    Debug.LogWarning($"Failed to track {location} before delete: {e.Message}");
+                    _logger.Warning($"Failed to track {location} before delete: {e.Message}");
                 }
             }
 
