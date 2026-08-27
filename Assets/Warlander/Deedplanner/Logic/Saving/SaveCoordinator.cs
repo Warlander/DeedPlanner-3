@@ -6,6 +6,7 @@ using System.Xml;
 using UnityEngine;
 using VContainer;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Logic.Saving
 {
@@ -16,6 +17,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         private readonly IReadOnlyList<ISaveBackend> _backends;
         private readonly RecentMapsStore _recentMaps;
         private readonly IObjectResolver _resolver;
+        private readonly ICategoryLogger _logger;
 
         private IAutoSaveScheduler _autoSaveScheduler;
 
@@ -37,6 +39,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             _backends = backends;
             _recentMaps = recentMaps;
             _resolver = resolver;
+            _logger = mapHandler.Logger;
         }
 
         public ISaveBackend GetBackend(SaveBackendId id)
@@ -204,7 +207,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             }
             catch (Exception e)
             {
-                Debug.LogError($"Failed to load map from {location}: {e.Message}");
+                _logger.Error($"Failed to load map from {location}: {e.Message}");
                 return false;
             }
             finally
@@ -280,7 +283,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"Unable to load map from {rawLink}: {e.Message}");
+                _logger.Warning($"Unable to load map from {rawLink}: {e.Message}");
                 return false;
             }
         }
@@ -310,7 +313,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             }
             catch (Exception e)
             {
-                Debug.LogError($"Failed to recover auto-save from {slot}: {e.Message}");
+                _logger.Error($"Failed to recover auto-save from {slot}: {e.Message}");
                 return false;
             }
             finally
@@ -336,7 +339,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"Auto-save failed: {e.Message}");
+                _logger.Warning($"Auto-save failed: {e.Message}");
             }
             finally
             {
@@ -360,7 +363,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"Failed to read thumbnail from {location}: {e.Message}");
+                _logger.Warning($"Failed to read thumbnail from {location}: {e.Message}");
                 return null;
             }
         }

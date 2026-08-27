@@ -6,17 +6,24 @@ using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Logic
 {
     public class MapLoader
     {
-        private readonly MapFactory _mapFactory;
+        public static readonly LogCategory Category = new LogCategory("Maps");
 
-        public MapLoader(MapFactory mapFactory)
+        private readonly MapFactory _mapFactory;
+        private readonly ICategoryLogger _logger;
+
+        public ICategoryLogger Logger => _logger;
+
+        public MapLoader(MapFactory mapFactory, ILoggerSource loggerSource)
         {
             _mapFactory = mapFactory;
+            _logger = loggerSource.Create(Category);
         }
 
         public Map LoadMap(string mapString)
@@ -42,11 +49,11 @@ namespace Warlander.Deedplanner.Logic
 
             if (mapData == null)
             {
-                Debug.LogError("Failed to download map from: " + mapUri);
+                _logger.Error("Failed to download map from: " + mapUri);
                 return null;
             }
 
-            Debug.Log("Map downloaded, checking if compressed");
+            _logger.Message("Map downloaded, checking if compressed");
             string requestText = Encoding.UTF8.GetString(mapData);
 
             try
@@ -54,11 +61,11 @@ namespace Warlander.Deedplanner.Logic
                 byte[] requestBytes = Convert.FromBase64String(requestText);
                 byte[] decompressedBytes = await DecompressGzipAsync(requestBytes);
                 requestText = Encoding.UTF8.GetString(decompressedBytes, 0, decompressedBytes.Length);
-                Debug.Log("Compressed map, decompressed");
+                _logger.Message("Compressed map, decompressed");
             }
             catch
             {
-                Debug.Log("Not compressed map");
+                _logger.Message("Not compressed map");
             }
 
             return LoadMap(requestText);

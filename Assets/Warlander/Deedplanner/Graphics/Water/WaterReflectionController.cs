@@ -12,7 +12,7 @@ namespace Warlander.Deedplanner.Graphics.Water
     public class WaterReflectionController : IDisposable
     {
         private static readonly int ReflectionTexId = Shader.PropertyToID("_ReflectionTex");
-        private const int TextureSize = 512;
+        private const int TextureSize = 1024;
         private const float ClipPlaneOffset = 0.07f;
 
         private Camera _reflectionCamera;

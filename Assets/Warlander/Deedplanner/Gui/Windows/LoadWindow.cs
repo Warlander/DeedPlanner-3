@@ -59,11 +59,7 @@ namespace Warlander.Deedplanner.Gui.Windows
 
         private async void LoadFromWebOnClick()
         {
-            bool loaded = await _saveCoordinator.LoadFromWebAsync(_pastebinInput.text);
-            if (!loaded)
-            {
-                Debug.LogWarning("Unable to load map from: " + _pastebinInput.text);
-            }
+            await _saveCoordinator.LoadFromWebAsync(_pastebinInput.text);
 
             _window.Close();
         }

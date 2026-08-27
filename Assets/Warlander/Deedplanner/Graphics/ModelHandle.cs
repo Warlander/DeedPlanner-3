@@ -6,46 +6,44 @@ using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Graphics
 {
-    public class Model
+    /// <summary>
+    /// Descriptor of a single Wurm model (location, scale, layer, texture overrides)
+    /// plus its loaded runtime state. Created exclusively by <see cref="WurmAssetFacade"/>;
+    /// instancing requests go through CreateOrGetModel.
+    /// </summary>
+    public class ModelHandle
     {
-        private readonly IWurmModelLoader _wurmModelLoader;
-        private readonly ITextureReferenceFactory _textureReferenceFactory;
+        private readonly WurmAssetFacade _facade;
+        private readonly string _location;
+        private readonly Dictionary<string, string> _textureOverrides = new Dictionary<string, string>();
 
-        private static GameObject modelsRoot;
-
-        private readonly string location;
-        private readonly bool loadTextures;
-        private readonly string oneIncludedMesh;
-        private Dictionary<string, string> textureOverrides;
-
-        private GameObject modelRoot;
-        private GameObject originalModel;
-        private readonly Dictionary<ModelProperties, GameObject> modifiedModels;
-        private readonly List<ModelRequest> modelRequests = new List<ModelRequest>();
-        private bool loadingOriginalModel = false;
+        private GameObject _modelRoot;
+        private GameObject _originalModel;
+        private readonly Dictionary<ModelProperties, GameObject> _modifiedModels = new Dictionary<ModelProperties, GameObject>();
+        private readonly List<ModelRequest> _modelRequests = new List<ModelRequest>();
+        private bool _loadingOriginalModel = false;
 
         public string Tag { get; private set; }
         public Vector3 Scale { get; private set; }
-        public int Layer { get; private set; }
+        public int Layer { get; }
         /// <summary>
         /// Can be null if model isn't loaded yet. After any variation of the model is loaded, it will be always non-null.
         /// </summary>
-        public GameObject OriginalModel => originalModel;
+        public GameObject OriginalModel => _originalModel;
 
-        public Model(IWurmModelLoader wurmModelLoader, ITextureReferenceFactory textureReferenceFactory, XmlElement element, Vector3 scale, int layer = int.MaxValue)
-            : this(wurmModelLoader, textureReferenceFactory, element, layer)
+        internal ModelHandle(WurmAssetFacade facade, XmlElement element, Vector3 scale, int layer)
+            : this(facade, element, layer)
         {
             Scale = scale;
         }
-        
-        public Model(IWurmModelLoader wurmModelLoader, ITextureReferenceFactory textureReferenceFactory, XmlElement element, int layer = int.MaxValue)
+
+        internal ModelHandle(WurmAssetFacade facade, XmlElement element, int layer)
         {
-            _wurmModelLoader = wurmModelLoader;
-            _textureReferenceFactory = textureReferenceFactory;
-            modifiedModels = new Dictionary<ModelProperties, GameObject>();
+            _facade = facade;
+            Layer = layer;
 
             Tag = element.GetAttribute("tag");
-            location = element.GetAttribute("location");
+            _location = element.GetAttribute("location");
             string scaleStr = element.GetAttribute("scale");
             float scaleFloat;
             if (!float.TryParse(scaleStr, out scaleFloat))
@@ -53,72 +51,55 @@ namespace Warlander.Deedplanner.Graphics
                 scaleFloat = 1;
             }
             Scale = new Vector3(-scaleFloat, scaleFloat, scaleFloat);
-            loadTextures = element.GetAttribute("loadTextures") != "false";
 
-            textureOverrides = new Dictionary<string, string>();
             foreach (XmlElement over in element.GetElementsByTagName("override"))
             {
                 string mesh = over.GetAttribute("mesh");
                 string texture = over.GetAttribute("texture");
-                textureOverrides[mesh] = texture;
+                _textureOverrides[mesh] = texture;
             }
 
-            XmlNodeList includesList = element.GetElementsByTagName("include");
-            if (includesList.Count == 1)
-            {
-                XmlElement include = (XmlElement) includesList[0];
-                oneIncludedMesh = include.GetAttribute("mesh");
-            }
-            else if (includesList.Count > 1)
+            if (element.GetElementsByTagName("include").Count > 1)
             {
                 throw new ArgumentException("Only one include per model allowed for now");
             }
-            else
-            {
-                oneIncludedMesh = null;
-            }
-
-            Layer = layer;
         }
 
-        public Model(IWurmModelLoader wurmModelLoader, ITextureReferenceFactory textureReferenceFactory, string location, Vector3 scale, int layer = int.MaxValue)
-            : this(wurmModelLoader, textureReferenceFactory, location, layer)
+        internal ModelHandle(WurmAssetFacade facade, string location, Vector3 scale, int layer)
+            : this(facade, location, layer)
         {
             Scale = scale;
         }
 
-        public Model(IWurmModelLoader wurmModelLoader, ITextureReferenceFactory textureReferenceFactory, string newLocation, int layer = int.MaxValue)
+        internal ModelHandle(WurmAssetFacade facade, string location, int layer)
         {
-            _wurmModelLoader = wurmModelLoader;
-            _textureReferenceFactory = textureReferenceFactory;
-            location = newLocation;
+            _facade = facade;
+            _location = location;
             Layer = layer;
 
             Tag = "";
             Scale = new Vector3(-1, 1, 1);
-            textureOverrides = new Dictionary<string, string>();
-            modifiedModels = new Dictionary<ModelProperties, GameObject>();
         }
 
         public void AddTextureOverride(string mesh, string texture)
         {
-            if (modifiedModels.Count != 0)
+            if (_modifiedModels.Count != 0)
             {
                 throw new InvalidOperationException("Model is already initialized, cannot add texture override");
             }
 
-            textureOverrides[mesh] = texture;
+            _textureOverrides[mesh] = texture;
         }
 
         private void CreateOrGetModel(ModelProperties properties, Action<GameObject> callback)
         {
             InitializeModel(() =>
             {
-                if (loadingOriginalModel)
+                if (_loadingOriginalModel)
                 {
-                    modelRequests.Add(new ModelRequest(callback, properties));
+                    _modelRequests.Add(new ModelRequest(callback, properties));
                 }
-                else if (originalModel)
+                else if (_originalModel)
                 {
                     CreateModelInstance(properties, callback);
                 }
@@ -130,11 +111,11 @@ namespace Warlander.Deedplanner.Graphics
             if (properties.CustomMaterial)
             {
                 InitializeModifiedModel(properties);
-                callback.Invoke(Object.Instantiate(modifiedModels[properties]));
+                callback.Invoke(Object.Instantiate(_modifiedModels[properties]));
             }
             else
             {
-                GameObject instance = Object.Instantiate(originalModel);
+                GameObject instance = Object.Instantiate(_originalModel);
                 ApplySkewToInstance(instance, properties.Skew);
                 callback.Invoke(instance);
             }
@@ -186,7 +167,7 @@ namespace Warlander.Deedplanner.Graphics
             ModelProperties properties = new ModelProperties(skew, null);
             CreateOrGetModel(properties, callback);
         }
-        
+
         public void CreateOrGetModel(int skew, Action<GameObject> callback)
         {
             ModelProperties properties = new ModelProperties(new Vector2(skew, 0), null);
@@ -201,20 +182,15 @@ namespace Warlander.Deedplanner.Graphics
 
         private void InitializeModel(Action onDone)
         {
-            if (!modelsRoot)
+            if (!_modelRoot)
             {
-                modelsRoot = new GameObject("Models");
-                modelsRoot.SetActive(false);
+                _modelRoot = new GameObject(_location);
+                _modelRoot.transform.SetParent(_facade.ModelsRoot.transform);
             }
-            if (!modelRoot)
+            if (!_loadingOriginalModel && !_originalModel)
             {
-                modelRoot = new GameObject(location);
-                modelRoot.transform.SetParent(modelsRoot.transform);
-            }
-            if (!loadingOriginalModel && !originalModel)
-            {
-                loadingOriginalModel = true;
-                string fullLocation = Application.streamingAssetsPath + "/" + location;
+                _loadingOriginalModel = true;
+                string fullLocation = Application.streamingAssetsPath + "/" + _location;
                 LoadMasterModelAsync(fullLocation, onDone);
             }
             else
@@ -225,51 +201,51 @@ namespace Warlander.Deedplanner.Graphics
 
         private async void LoadMasterModelAsync(string fullLocation, Action onDone)
         {
-            GameObject model = await _wurmModelLoader.LoadModelAsync(fullLocation, Scale);
+            GameObject model = await _facade.ModelLoader.LoadModelAsync(fullLocation, Scale);
             OnMasterModelLoaded(model);
             onDone();
         }
 
         private void OnMasterModelLoaded(GameObject masterModel)
         {
-            loadingOriginalModel = false;
+            _loadingOriginalModel = false;
             if (!masterModel)
             {
-                Debug.LogError("Model failed to load!");
+                _facade.Logger.Error("Model failed to load: " + _location);
                 return;
             }
 
-            originalModel = masterModel;
-            originalModel.layer = Layer;
+            _originalModel = masterModel;
+            _originalModel.layer = Layer;
 
-            foreach (Transform child in originalModel.transform)
+            foreach (Transform child in _originalModel.transform)
             {
                 child.gameObject.layer = Layer;
                 string textureOverride;
-                textureOverrides.TryGetValue(child.name, out textureOverride);
+                _textureOverrides.TryGetValue(child.name, out textureOverride);
                 if (textureOverride == null)
                 {
-                    textureOverrides.TryGetValue("*", out textureOverride);
+                    _textureOverrides.TryGetValue("*", out textureOverride);
                 }
                 if (textureOverride != null)
                 {
                     MeshRenderer renderer = child.GetComponent<MeshRenderer>();
-                    TextureReference texture = _textureReferenceFactory.GetTextureReference(textureOverride);
+                    TextureReference texture = _facade.TextureReferenceFactory.GetTextureReference(textureOverride);
                     Material newMaterial = new Material(renderer.sharedMaterial);
                     renderer.sharedMaterial = newMaterial;
 
                     ApplyTextureOverrideAsync(texture, newMaterial);
                 }
             }
-            originalModel.transform.SetParent(modelRoot.transform);
+            _originalModel.transform.SetParent(_modelRoot.transform);
             ModelProperties originalProperties = new ModelProperties(Vector2.zero, null);
-            modifiedModels[originalProperties] = originalModel;
+            _modifiedModels[originalProperties] = _originalModel;
 
-            foreach (ModelRequest modelRequest in modelRequests)
+            foreach (ModelRequest modelRequest in _modelRequests)
             {
                 CreateModelInstance(modelRequest.ModelProperties, modelRequest.Callback);
             }
-            modelRequests.Clear();
+            _modelRequests.Clear();
         }
 
         private static async void ApplyTextureOverrideAsync(TextureReference texture, Material material)
@@ -279,25 +255,26 @@ namespace Warlander.Deedplanner.Graphics
         }
 
         private void InitializeModifiedModel(ModelProperties modelProperties)
-        {            if (!originalModel || modifiedModels.ContainsKey(modelProperties))
+        {
+            if (!_originalModel || _modifiedModels.ContainsKey(modelProperties))
             {
                 return;
             }
 
             GameObject skewedModel = CreateModel(modelProperties);
-            skewedModel.name = originalModel.name;
+            skewedModel.name = _originalModel.name;
             if (modelProperties.Skew != Vector2.zero)
             {
                 skewedModel.name += " " + modelProperties.Skew;
             }
 
-            skewedModel.transform.SetParent(modelRoot.transform);
-            modifiedModels[modelProperties] = skewedModel;
+            skewedModel.transform.SetParent(_modelRoot.transform);
+            _modifiedModels[modelProperties] = skewedModel;
         }
 
         private GameObject CreateModel(ModelProperties modelProperties)
         {
-            GameObject clone = Object.Instantiate(originalModel);
+            GameObject clone = Object.Instantiate(_originalModel);
 
             if (modelProperties.CustomMaterial)
             {

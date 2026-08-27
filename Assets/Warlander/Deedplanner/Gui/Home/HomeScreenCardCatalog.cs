@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Logic.Saving;
+using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Gui.Home
 {
@@ -12,6 +13,7 @@ namespace Warlander.Deedplanner.Gui.Home
         private readonly IHomeScreenView _view;
         private readonly ISaveCoordinator _saveCoordinator;
         private readonly IAutoSaveScheduler _autoSaveScheduler;
+        private readonly ICategoryLogger _logger;
 
         private SaveBackendId? _selectedBackendId;
         private readonly Dictionary<MapLocation, MapLocation?> _recoveryMains =
@@ -20,11 +22,12 @@ namespace Warlander.Deedplanner.Gui.Home
         public IReadOnlyDictionary<MapLocation, MapLocation?> RecoveryMains => _recoveryMains;
 
         public HomeScreenCardCatalog(IHomeScreenView view, ISaveCoordinator saveCoordinator,
-            IAutoSaveScheduler autoSaveScheduler)
+            IAutoSaveScheduler autoSaveScheduler, UiLog uiLog)
         {
             _view = view;
             _saveCoordinator = saveCoordinator;
             _autoSaveScheduler = autoSaveScheduler;
+            _logger = uiLog.Logger;
         }
 
         public void ResetCategory()
@@ -206,7 +209,7 @@ namespace Warlander.Deedplanner.Gui.Home
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"Failed to track {item.Location}: {e.Message}");
+                _logger.Warning($"Failed to track {item.Location}: {e.Message}");
             }
         }
 

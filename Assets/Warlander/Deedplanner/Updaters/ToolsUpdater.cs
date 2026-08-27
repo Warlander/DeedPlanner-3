@@ -12,18 +12,22 @@ using Warlander.Deedplanner.Gui.Windows;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Logging;
 using Warlander.UI.Windows;
 
 namespace Warlander.Deedplanner.Updaters
 {
     public class ToolsUpdater : IUpdater
     {
+        public static readonly LogCategory Category = new LogCategory("Tools");
+
         private readonly IToolsUpdaterView _view;
         private readonly WindowCoordinator _windowCoordinator;
         private readonly CameraCoordinator _cameraCoordinator;
         private readonly MapHandler _mapHandler;
         private readonly DPInput _input;
         private readonly TabContext _tabContext;
+        private readonly ICategoryLogger _logger;
 
         public Tab TargetTab => Tab.Tools;
 
@@ -32,7 +36,7 @@ namespace Warlander.Deedplanner.Updaters
         private int _warningsAdded;
 
         public ToolsUpdater(IToolsUpdaterView view, WindowCoordinator windowCoordinator, CameraCoordinator cameraCoordinator,
-            MapHandler mapHandler, DPInput input, TabContext tabContext)
+            MapHandler mapHandler, DPInput input, TabContext tabContext, ILoggerSource loggerSource)
         {
             _view = view;
             _windowCoordinator = windowCoordinator;
@@ -40,6 +44,7 @@ namespace Warlander.Deedplanner.Updaters
             _mapHandler = mapHandler;
             _input = input;
             _tabContext = tabContext;
+            _logger = loggerSource.Create(Category);
         }
 
         public void Initialize()
@@ -123,7 +128,7 @@ namespace Warlander.Deedplanner.Updaters
                     ShowMaterialsWindow(summary.ToString());
                     if (Debug.isDebugBuild)
                     {
-                        Debug.Log(building.CreateSummary());
+                        _logger.Message(building.CreateSummary());
                     }
                 }
                 else if (_materialsScope == ToolsMaterialsScope.BuildingCurrentLevel)
@@ -160,7 +165,7 @@ namespace Warlander.Deedplanner.Updaters
                     ShowMaterialsWindow(summary.ToString());
                     if (Debug.isDebugBuild)
                     {
-                        Debug.Log(building.CreateSummary());
+                        _logger.Message(building.CreateSummary());
                     }
                 }
                 else if (_materialsScope == ToolsMaterialsScope.RoomCurrentLevel)
@@ -188,7 +193,7 @@ namespace Warlander.Deedplanner.Updaters
                     ShowMaterialsWindow(summary.ToString());
                     if (Debug.isDebugBuild)
                     {
-                        Debug.Log(room.CreateSummary());
+                        _logger.Message(room.CreateSummary());
                     }
                 }
             }
@@ -219,7 +224,7 @@ namespace Warlander.Deedplanner.Updaters
             }
             catch (Exception ex)
             {
-                Debug.LogException(ex);
+                _logger.Exception(ex);
                 _view.ClearWarnings();
                 _view.AddWarning("Some of warning checks failed. Please check program logs for errors.");
             }

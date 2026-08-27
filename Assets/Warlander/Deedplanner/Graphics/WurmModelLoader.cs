@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
+using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;
 using Object = UnityEngine.Object;
 
@@ -11,11 +12,13 @@ namespace Warlander.Deedplanner.Graphics
     {
         private readonly IWurmMeshLoader _meshLoader;
         private readonly IWurmMaterialLoader _materialLoader;
+        private readonly ICategoryLogger _logger;
 
-        public WurmModelLoader(IWurmMeshLoader meshLoader, IWurmMaterialLoader materialLoader)
+        public WurmModelLoader(IWurmMeshLoader meshLoader, IWurmMaterialLoader materialLoader, ICategoryLogger logger)
         {
             _meshLoader = meshLoader;
             _materialLoader = materialLoader;
+            _logger = logger;
         }
 
         public async Task<GameObject> LoadModelAsync(string path)
@@ -25,9 +28,15 @@ namespace Warlander.Deedplanner.Graphics
 
         public async Task<GameObject> LoadModelAsync(string path, Vector3 scale)
         {
-            Debug.Log("Loading model at " + path);
+            _logger.Message("Loading model at " + path);
 
             var data = await WebUtils.ReadUrlToByteArrayAsync(path);
+            if (data == null)
+            {
+                _logger.Error("Unable to download model: " + path);
+                return null;
+            }
+
             using BinaryReader source = new BinaryReader(new MemoryStream(data));
             string fileFolder = path.Substring(0, path.LastIndexOf("/", StringComparison.Ordinal));
 
@@ -72,7 +81,7 @@ namespace Warlander.Deedplanner.Graphics
 
             if (!discardMesh)
             {
-                Debug.Log("Loading mesh " + meshName);
+                _logger.Message("Loading mesh " + meshName);
                 var mat = await _materialLoader.LoadMaterialAsync(source, fileFolder);
 
                 // WOM stores no triangle-to-material grouping, so multi-material meshes cannot be
@@ -94,13 +103,20 @@ namespace Warlander.Deedplanner.Graphics
             }
             else
             {
-                Debug.Log("Discarding mesh " + meshName);
+                _logger.Message("Discarding mesh " + meshName);
                 // We need to load material metadata to advance file read to the next valid position.
                 for (int i = 0; i < materialsCount; i++)
                 {
                     _materialLoader.LoadMaterialMetadata(source, fileFolder);
                 }
-                Object.Destroy(loadedMesh);
+                if (Application.isPlaying)
+                {
+                    Object.Destroy(loadedMesh);
+                }
+                else
+                {
+                    Object.DestroyImmediate(loadedMesh);
+                }
                 return null;
             }
         }

@@ -12,7 +12,9 @@ using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
+using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Outlines;
+using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;
 using Object = UnityEngine.Object;
 
@@ -21,6 +23,7 @@ namespace Warlander.Deedplanner.Data
     public class Tile : IXmlSerializable
     {
         private readonly IOutlineCoordinator _outlineCoordinator;
+        private readonly ICategoryLogger _logger;
         
         private int surfaceHeight = 0;
         private int caveHeight = 0;
@@ -78,17 +81,18 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        public Tile(Map map, int x, int y, IOutlineCoordinator outlineCoordinator)
+        public Tile(Map map, int x, int y, IOutlineCoordinator outlineCoordinator, ICategoryLogger logger)
         {
             Map = map;
             X = x;
             Y = y;
 
             _outlineCoordinator = outlineCoordinator;
+            _logger = logger;
 
             Entities = new Dictionary<EntityData, LevelEntity>();
 
-            Ground = new Ground(this, Database.DefaultGroundData);
+            Ground = new Ground(this, Database.DefaultGroundData, logger);
 
             // GameObject caveObject = new GameObject("Cave", typeof(Cave));
             // caveObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
@@ -602,7 +606,6 @@ namespace Warlander.Deedplanner.Data
         {
             if (position.x < 0 || position.x >= 4 || position.y < 0 || position.y >= 4)
             {
-                Debug.LogWarning("Attempted placing decoration at X: " + position.x + ", Y: " + position.y);
                 return null;
             }
 
@@ -789,7 +792,7 @@ namespace Warlander.Deedplanner.Data
             Database.Floors.TryGetValue(id, out data);
             if (data == null)
             {
-                Debug.LogWarning("Unable to load floor " + id);
+                _logger.Warning("Unable to load floor " + id);
                 return;
             }
 
@@ -821,7 +824,7 @@ namespace Warlander.Deedplanner.Data
             Database.Walls.TryGetValue(id, out data);
             if (data == null)
             {
-                Debug.LogWarning("Unable to load wall " + id);
+                _logger.Warning("Unable to load wall " + id);
                 return;
             }
 
@@ -849,7 +852,7 @@ namespace Warlander.Deedplanner.Data
             Database.Roofs.TryGetValue(id, out data);
             if (data == null)
             {
-                Debug.LogWarning("Unable to load roof " + id);
+                _logger.Warning("Unable to load roof " + id);
                 return;
             }
 
@@ -868,7 +871,7 @@ namespace Warlander.Deedplanner.Data
             Database.Decorations.TryGetValue(id, out data);
             if (data == null)
             {
-                Debug.LogWarning("Unable to load decoration " + id);
+                _logger.Warning("Unable to load decoration " + id);
                 return;
             }
 
@@ -890,7 +893,11 @@ namespace Warlander.Deedplanner.Data
                 rotation = -rotation + 180 * Mathf.Deg2Rad;
             }
 
-            SetDecoration(data, position, rotation, level, data.Floating);
+            Decoration decoration = SetDecoration(data, position, rotation, level, data.Floating);
+            if (decoration == null)
+            {
+                _logger.Warning("Decoration position out of bounds at X: " + position.x + ", Y: " + position.y);
+            }
         }
 
         public void Refresh()

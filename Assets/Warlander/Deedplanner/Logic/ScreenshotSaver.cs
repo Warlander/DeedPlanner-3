@@ -2,13 +2,22 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using UnityEngine;
+using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Logic
 {
     public class ScreenshotSaver
     {
+        public static readonly LogCategory Category = new LogCategory("Screenshots");
+
+        private readonly ICategoryLogger _logger;
         private bool _folderOpened;
+
+        public ScreenshotSaver(ILoggerSource loggerSource)
+        {
+            _logger = loggerSource.Create(Category);
+        }
 
         public void Save(Texture2D texture)
         {
@@ -24,7 +33,7 @@ namespace Warlander.Deedplanner.Logic
             Directory.CreateDirectory(directory);
             string path = Path.Combine(directory, filename);
             File.WriteAllBytes(path, pngBytes);
-            UnityEngine.Debug.Log($"Screenshot saved to {path}");
+            _logger.Message($"Screenshot saved to {path}");
 
             if (!_folderOpened)
             {

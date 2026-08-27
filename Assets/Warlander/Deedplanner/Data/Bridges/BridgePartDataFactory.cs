@@ -1,24 +1,20 @@
-﻿using System.Xml;
+using System.Xml;
 using Warlander.Deedplanner.Graphics;
-using VContainer;
 
 namespace Warlander.Deedplanner.Data.Bridges
 {
     public class BridgePartDataFactory
     {
-        private readonly IWurmModelFactory _modelFactory;
-        private readonly ITextureReferenceFactory _textureReferenceFactory;
+        private readonly IWurmAssetFacade _assetFacade;
 
-        [Inject]
-        public BridgePartDataFactory(IWurmModelFactory modelFactory, ITextureReferenceFactory textureReferenceFactory)
+        public BridgePartDataFactory(IWurmAssetFacade assetFacade)
         {
-            _modelFactory = modelFactory;
-            _textureReferenceFactory = textureReferenceFactory;
+            _assetFacade = assetFacade;
         }
 
         public BridgePartData Create(XmlElement element)
         {
-            return new BridgePartData(_modelFactory, _textureReferenceFactory, element);
+            return new BridgePartData(_assetFacade, element);
         }
     }
 }

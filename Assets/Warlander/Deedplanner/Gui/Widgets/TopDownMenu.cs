@@ -1,18 +1,25 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Logging;
+using VContainer;
 
 namespace Warlander.Deedplanner.Gui.Widgets
 {
     [RequireComponent(typeof(Button))]
     public class TopDownMenu : MonoBehaviour
     {
+        [Inject] private UiLog _uiLog;
+
+        private ICategoryLogger Logger => _uiLog.Logger;
+
         [SerializeField] private Button blockerPrefab = null;
 
         [SerializeField] private RectTransform contentTransform = null;
         private Button menuButton;
         private Button blockerButton;
 
-        private void Awake()
+        private void Start()
         {
             menuButton = GetComponent<Button>();
             if (menuButton)
@@ -21,7 +28,7 @@ namespace Warlander.Deedplanner.Gui.Widgets
             }
             else
             {
-                Debug.LogWarning("No button in top down menu, destroying");
+                Logger.Warning("No button in top down menu, destroying");
                 Destroy(this);
             }
         }

@@ -52,7 +52,6 @@ namespace Warlander.Deedplanner.Utils
             await www.SendWebRequest();
             if (www.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError(www.error + "\nLocation: " + location);
                 return null;
             }
             else

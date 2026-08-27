@@ -83,6 +83,7 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterEntryPoint<WindowOpenerPresenter>();
 
             builder.Register<LayoutContext>(Lifetime.Singleton);
+            builder.Register<UiLog>(Lifetime.Singleton);
             builder.RegisterEntryPoint<TabContext>().AsSelf();
             builder.RegisterEntryPoint<GroundLevelLock>().AsSelf();
             builder.RegisterInstance(_cameraCoordinator);

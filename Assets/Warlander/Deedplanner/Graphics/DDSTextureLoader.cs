@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
+using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;
 using Object = UnityEngine.Object;
 
@@ -8,25 +9,32 @@ namespace Warlander.Deedplanner.Graphics
 {
     public class DDSTextureLoader : ITextureLoader
     {
+        private readonly ICategoryLogger _logger;
+
+        public DDSTextureLoader(ICategoryLogger logger)
+        {
+            _logger = logger;
+        }
+
         public async Task<Texture2D> LoadTextureAsync(string location, bool readable)
         {
             var data = await WebUtils.ReadUrlToByteArrayAsync(location);
+            if (data == null)
+            {
+                _logger.Warning("Unable to load DDS texture: " + location + ". Returning placeholder instead.");
+                return Texture2D.whiteTexture;
+            }
+
             string name = location.Substring(location.LastIndexOf("/", StringComparison.Ordinal) + 1);
-            
+
             Texture2D texture = LoadTextureDxt(data);
             texture.name = name;
-            
+
             return texture;
         }
 
         private Texture2D LoadTextureDxt(byte[] ddsBytes)
         {
-            if (ddsBytes == null)
-            {
-                Debug.LogWarning("Unable to load DDS texture. Returning placeholder instead.");
-                return Texture2D.whiteTexture;
-            }
-            
             byte ddsSizeCheck = ddsBytes[4];
             if (ddsSizeCheck != 124)
                 throw new Exception("Invalid DDS DXTn texture. Unable to read");  //this header byte should be 124 for DDS image files
@@ -56,7 +64,14 @@ namespace Warlander.Deedplanner.Graphics
 
             Texture2D finalTexture = new Texture2D(dxtTexture.width, dxtTexture.height);
             Color32[] pixelBuffer = dxtTexture.GetPixels32();
-            Object.Destroy(dxtTexture);
+            if (Application.isPlaying)
+            {
+                Object.Destroy(dxtTexture);
+            }
+            else
+            {
+                Object.DestroyImmediate(dxtTexture);
+            }
 
             int yScanSize = finalTexture.height / 2;
             int xScanSize = finalTexture.width;

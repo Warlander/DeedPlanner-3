@@ -3,11 +3,15 @@ using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Editor
 {
     public static class BuildSystem
     {
+        public static readonly LogCategory Category = new LogCategory("Builds");
+
+        private static readonly ICategoryLogger Logger = new LoggerSource(new LogLevelFilter()).Create(Category);
         [MenuItem("Build/All Platforms", false, 0)]
         public static bool BuildAllPlatforms()
         {
@@ -52,12 +56,12 @@ namespace Warlander.Deedplanner.Editor
             if (summary.result == BuildResult.Succeeded)
             {
                 CreateSteamAppId("Build/"+ Constants.SimpleTitleString + " Windows/");
-                Debug.Log("SUCCESS BUILD Windows");
+                Logger.Message("SUCCESS BUILD Windows");
                 return true;
             } 
             else
             {
-                Debug.Log("FAILED BUILD Windows");
+                Logger.Message("FAILED BUILD Windows");
                 ExitBatchWithError();
                 return false;
             }
@@ -86,12 +90,12 @@ namespace Warlander.Deedplanner.Editor
             if (summary.result == BuildResult.Succeeded)
             {
                 CreateSteamAppId("Build/"+ Constants.SimpleTitleString + " Linux/");
-                Debug.Log("SUCCESS BUILD Linux");
+                Logger.Message("SUCCESS BUILD Linux");
                 return true;
             } 
             else
             {
-                Debug.Log("FAILED BUILD Linux");
+                Logger.Message("FAILED BUILD Linux");
                 ExitBatchWithError();
                 return false;
             }
@@ -127,12 +131,12 @@ namespace Warlander.Deedplanner.Editor
             {
                 // no steam_appid.txt on Mac: unsealed files in the bundle root make
                 // codesign refuse to sign, and Finder launches never read it (CWD=/)
-                Debug.Log("SUCCESS BUILD Mac");
+                Logger.Message("SUCCESS BUILD Mac");
                 return true;
             }
             else
             {
-                Debug.Log("FAILED BUILD Mac");
+                Logger.Message("FAILED BUILD Mac");
                 ExitBatchWithError();
                 return false;
             }
@@ -157,12 +161,12 @@ namespace Warlander.Deedplanner.Editor
             BuildSummary summary = report.summary;
             if (summary.result == BuildResult.Succeeded)
             {
-                Debug.Log("SUCCESS BUILD WebGL");
+                Logger.Message("SUCCESS BUILD WebGL");
                 return true;
             } 
             else
             {
-                Debug.Log("FAILED BUILD WebGL");
+                Logger.Message("FAILED BUILD WebGL");
                 ExitBatchWithError();
                 return false;
             }
@@ -190,7 +194,7 @@ namespace Warlander.Deedplanner.Editor
         {
             if (!Directory.Exists(path))
             {
-                Debug.LogError("Invalid directory for Steam app ID: " + path);
+                Logger.Error("Invalid directory for Steam app ID: " + path);
                 return;
             }
             

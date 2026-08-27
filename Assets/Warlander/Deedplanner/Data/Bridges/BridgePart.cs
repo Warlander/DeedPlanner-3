@@ -120,7 +120,7 @@ namespace Warlander.Deedplanner.Data.Bridges
                 transform.position = GetPositionForHeight(height, skew);
             }
 
-            Model rootModel = parentBridge.Data.GetModelForPart(partType, modelSide);
+            ModelHandle rootModel = parentBridge.Data.GetModelForPart(partType, modelSide);
             rootModel.CreateOrGetModel(new Vector2(0, _skew), OnModelCreated);
 
             RefreshPaving();
@@ -365,7 +365,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             model = newModel;
             model.transform.SetParent(transform, false);
 
-            Model sourceModel = ParentBridge.Data.GetModelForPart(partType, modelSide);
+            ModelHandle sourceModel = ParentBridge.Data.GetModelForPart(partType, modelSide);
 
             _extensionGeneration++;
             _extensions.Clear();
@@ -422,7 +422,7 @@ namespace Warlander.Deedplanner.Data.Bridges
                 return;
             }
 
-            Model extensionModel = ParentBridge.Data.GetModelForPart(BridgePartType.Extension, partSide);
+            ModelHandle extensionModel = ParentBridge.Data.GetModelForPart(BridgePartType.Extension, partSide);
             int supportHeight = ParentBridge.Data.SupportHeight;
             int extensionCount = GetExtensionCount();
             int generation = _extensionGeneration;

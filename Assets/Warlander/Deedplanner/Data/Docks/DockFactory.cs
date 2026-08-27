@@ -3,18 +3,23 @@ using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Logging;
 using VContainer;
 
 namespace Warlander.Deedplanner.Data.Docks
 {
     public class DockFactory
     {
+        public static readonly LogCategory Category = new LogCategory("Docks");
+
         private readonly ISharedMaterials _sharedMaterials;
+        private readonly ICategoryLogger _logger;
 
         [Inject]
-        public DockFactory(ISharedMaterials sharedMaterials)
+        public DockFactory(ISharedMaterials sharedMaterials, ILoggerSource loggerSource)
         {
             _sharedMaterials = sharedMaterials;
+            _logger = loggerSource.Create(Category);
         }
 
         public Dock CreateDock(Map map, XmlElement element)
@@ -28,7 +33,7 @@ namespace Warlander.Deedplanner.Data.Docks
                 string floorId = element.GetAttribute("floor");
                 if (!Database.Floors.TryGetValue(floorId, out FloorData floor))
                 {
-                    Debug.LogWarning("Unable to load dock: unknown floor " + floorId);
+                    _logger.Warning("Unable to load dock: unknown floor " + floorId);
                     return null;
                 }
 
@@ -36,7 +41,7 @@ namespace Warlander.Deedplanner.Data.Docks
                 DockSupportData support = null;
                 if (supportId != "none" && !Database.DockSupports.TryGetValue(supportId, out support))
                 {
-                    Debug.LogWarning("Unable to load dock: unknown support " + supportId);
+                    _logger.Warning("Unable to load dock: unknown support " + supportId);
                     return null;
                 }
 
@@ -56,7 +61,7 @@ namespace Warlander.Deedplanner.Data.Docks
             }
             catch (Exception e)
             {
-                Debug.LogWarning("Unable to load dock: " + e.Message);
+                _logger.Warning("Unable to load dock: " + e.Message);
                 return null;
             }
         }

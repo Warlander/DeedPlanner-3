@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Logging;
 using VContainer;
 
 namespace Warlander.Deedplanner.Gui
@@ -12,13 +13,15 @@ namespace Warlander.Deedplanner.Gui
 
         private LayoutContext _layoutContext;
         private CameraCoordinator _cameraCoordinator;
+        private ICategoryLogger _logger;
         private bool _isUpdatingFromCode;
 
         [Inject]
-        private void Inject(LayoutContext layoutContext, CameraCoordinator cameraCoordinator)
+        private void Inject(LayoutContext layoutContext, CameraCoordinator cameraCoordinator, UiLog uiLog)
         {
             _layoutContext = layoutContext;
             _cameraCoordinator = cameraCoordinator;
+            _logger = uiLog.Logger;
         }
 
         private void Start()
@@ -43,7 +46,7 @@ namespace Warlander.Deedplanner.Gui
             if (indicatorButtons[window].isOn)
             {
                 _cameraCoordinator.ChangeCurrentCamera(window);
-                Debug.Log("Active window changed to " + window);
+                _logger.Message("Active window changed to " + window);
             }
         }
 
