@@ -20,17 +20,18 @@ namespace Warlander.Deedplanner.Editor
 {
     /// <summary>
     /// Renders floors, walls and decorations from objects.xml into 64x64 preview atlas
-    /// textures with JSON manifests. Outputs live in Assets/Graphics/Previews.
+    /// textures with JSON manifests. Outputs live in generated Resources.
     /// </summary>
     public static class PreviewThumbnailGenerator
     {
-        private const int GeneratorVersion = 1;
+        // Render-input changes require this bump plus a harmless objects.xml change to invalidate CI caches.
+        public const int GeneratorVersion = 3;
         private const int CellSize = 64;
         private const int RenderResolution = 256;
         private const float FitMargin = 1.02f;
         private const float CameraElevationDeg = -30f;
         private const float CameraAzimuthDeg = -30f;
-        private const string OutputFolder = "Assets/Graphics/Previews";
+        public const string OutputFolder = "Assets/Generated/Resources/Previews";
         private const string ObjectsXmlLocation = "objects.xml";
         private static readonly TimeSpan ModelLoadTimeout = TimeSpan.FromSeconds(25);
 
@@ -80,26 +81,15 @@ namespace Warlander.Deedplanner.Editor
             }
         }
 
-        [Serializable]
-        private class AtlasManifest
+        private sealed class GroundPreviewEntry
         {
-            public int generatorVersion;
-            public int cellSize;
-            public int columns;
-            public string sourceSha256;
-            public List<ManifestEntry> entries = new List<ManifestEntry>();
-        }
+            public readonly string ShortName;
+            public readonly string TextureLocation;
 
-        [Serializable]
-        private class ManifestEntry
-        {
-            public int index;
-            public string shortName;
-
-            public ManifestEntry(int index, string shortName)
+            public GroundPreviewEntry(string shortName, string textureLocation)
             {
-                this.index = index;
-                this.shortName = shortName;
+                ShortName = shortName;
+                TextureLocation = textureLocation;
             }
         }
 
@@ -112,6 +102,16 @@ namespace Warlander.Deedplanner.Editor
                 return;
             }
 
+            RunAllAsync();
+        }
+
+        public static async Task GenerateAllAsync()
+        {
+            if (IsRunning)
+            {
+                throw new InvalidOperationException("Preview thumbnail generation is already running");
+            }
+
             IsRunning = true;
             CompletedCount = 0;
             TotalCount = 0;
@@ -121,11 +121,6 @@ namespace Warlander.Deedplanner.Editor
             LoadMilliseconds.Clear();
             RenderMilliseconds.Clear();
             LastRunStatus = "Running";
-            RunAllAsync();
-        }
-
-        private static async void RunAllAsync()
-        {
             try
             {
                 await GenerateAllCoreAsync();
@@ -133,6 +128,26 @@ namespace Warlander.Deedplanner.Editor
                     ? "Success"
                     : $"Success with {FailedEntries.Count} failed entries: " + string.Join(", ", FailedEntries);
                 Logger.Message("Preview thumbnail generation finished: " + LastRunStatus);
+            }
+            finally
+            {
+                IsRunning = false;
+                _assetFacade = null;
+                if (LoadMilliseconds.Count > 0)
+                {
+                    Logger.Message($"Preview thumbnails timing: {LoadMilliseconds.Count} entries, " +
+                              $"load avg {LoadMilliseconds.Average():F0}ms max {LoadMilliseconds.Max():F0}ms, " +
+                              $"render avg {RenderMilliseconds.Average():F0}ms max {RenderMilliseconds.Max():F0}ms");
+                }
+                EditorUtility.ClearProgressBar();
+            }
+        }
+
+        private static async void RunAllAsync()
+        {
+            try
+            {
+                await GenerateAllAsync();
             }
             catch (OperationCanceledException)
             {
@@ -146,15 +161,6 @@ namespace Warlander.Deedplanner.Editor
             }
             finally
             {
-                IsRunning = false;
-                _assetFacade = null;
-                if (LoadMilliseconds.Count > 0)
-                {
-                    Logger.Message($"Preview thumbnails timing: {LoadMilliseconds.Count} entries, " +
-                              $"load avg {LoadMilliseconds.Average():F0}ms max {LoadMilliseconds.Max():F0}ms, " +
-                              $"render avg {RenderMilliseconds.Average():F0}ms max {RenderMilliseconds.Max():F0}ms");
-                }
-                EditorUtility.ClearProgressBar();
             }
         }
 
@@ -178,7 +184,8 @@ namespace Warlander.Deedplanner.Editor
                 List<PreviewEntry> floors = CollectFloors(document);
                 List<PreviewEntry> walls = CollectWalls(document);
                 List<PreviewEntry> objects = CollectObjects(document);
-                TotalCount = floors.Count + walls.Count + objects.Count;
+                List<GroundPreviewEntry> grounds = CollectGrounds(document);
+                TotalCount = floors.Count + walls.Count + objects.Count + grounds.Count;
                 CompletedCount = 0;
 
                 List<string> writtenPaths = new List<string>();
@@ -188,6 +195,7 @@ namespace Warlander.Deedplanner.Editor
                     entry => entry.NormalModelElement ?? entry.BottomModelElement, xmlSha256));
                 writtenPaths.AddRange(await GenerateCategoryAsync("objects", objects, LayerMasks.DecorationLayer,
                     entry => entry.NormalModelElement, xmlSha256));
+                writtenPaths.AddRange(await GenerateGroundsAsync(grounds, xmlSha256));
 
                 ImportWrittenAtlases(writtenPaths);
             }
@@ -311,6 +319,32 @@ namespace Warlander.Deedplanner.Editor
             return entries;
         }
 
+        private static List<GroundPreviewEntry> CollectGrounds(XmlDocument document)
+        {
+            List<GroundPreviewEntry> entries = new List<GroundPreviewEntry>();
+            HashSet<string> seenShortNames = new HashSet<string>();
+            foreach (XmlElement element in document.GetElementsByTagName("ground"))
+            {
+                if (!VerifyShortName(element, seenShortNames))
+                {
+                    continue;
+                }
+
+                string location = null;
+                foreach (XmlElement textureElement in element.GetElementsByTagName("tex"))
+                {
+                    string target = textureElement.GetAttribute("target");
+                    if (string.IsNullOrEmpty(target) || target == "editmode")
+                    {
+                        location = textureElement.GetAttribute("location");
+                        break;
+                    }
+                }
+                entries.Add(new GroundPreviewEntry(element.GetAttribute("shortname"), location));
+            }
+            return entries;
+        }
+
         private static bool VerifyShortName(XmlElement element, HashSet<string> seenShortNames)
         {
             string shortName = element.GetAttribute("shortname");
@@ -370,19 +404,117 @@ namespace Warlander.Deedplanner.Editor
                 }
             }
 
-            AtlasManifest manifest = new AtlasManifest
+            PreviewAtlasManifest manifest = CreateManifest(categoryName, entries.Select(entry => entry.ShortName), columns,
+                xmlSha256);
+            return WriteAtlasOutputs(categoryName, cellPixels, columns, rows, manifest);
+        }
+
+        private static async Task<List<string>> GenerateGroundsAsync(List<GroundPreviewEntry> entries, string xmlSha256)
+        {
+            int columns = Mathf.CeilToInt(Mathf.Sqrt(entries.Count));
+            int rows = Mathf.CeilToInt(entries.Count / (float) columns);
+            Color[][] cellPixels = new Color[entries.Count][];
+            AggregateTextureLoader textureLoader = new AggregateTextureLoader(Logger);
+
+            for (int index = 0; index < entries.Count; index++)
+            {
+                GroundPreviewEntry entry = entries[index];
+                CurrentEntry = "grounds/" + entry.ShortName;
+                if (EditorUtility.DisplayCancelableProgressBar("Generating preview thumbnails",
+                        $"{CurrentEntry} ({CompletedCount}/{TotalCount})", CompletedCount / (float) TotalCount))
+                {
+                    throw new OperationCanceledException();
+                }
+
+                cellPixels[index] = await RenderGroundCellAsync(entry, textureLoader);
+                CompletedCount++;
+            }
+
+            PreviewAtlasManifest manifest = CreateManifest("grounds", entries.Select(entry => entry.ShortName), columns,
+                xmlSha256);
+            return WriteAtlasOutputs("grounds", cellPixels, columns, rows, manifest);
+        }
+
+        private static PreviewAtlasManifest CreateManifest(string categoryName, IEnumerable<string> shortNames,
+            int columns, string inputsHash)
+        {
+            PreviewAtlasManifest manifest = new PreviewAtlasManifest
             {
                 generatorVersion = GeneratorVersion,
                 cellSize = CellSize,
                 columns = columns,
-                sourceSha256 = xmlSha256,
+                category = categoryName,
+                inputsHash = inputsHash,
             };
-            for (int index = 0; index < entries.Count; index++)
+            int index = 0;
+            foreach (string shortName in shortNames)
             {
-                manifest.entries.Add(new ManifestEntry(index, entries[index].ShortName));
+                manifest.entries.Add(new PreviewAtlasEntry { index = index, shortName = shortName });
+                index++;
+            }
+            return manifest;
+        }
+
+        private static async Task<Color[]> RenderGroundCellAsync(GroundPreviewEntry entry,
+            AggregateTextureLoader textureLoader)
+        {
+            if (string.IsNullOrEmpty(entry.TextureLocation))
+            {
+                Logger.Warning("Preview thumbnails: " + entry.ShortName + " has no edit-mode ground texture");
+                return CreateMissingGroundCell();
             }
 
-            return WriteAtlasOutputs(categoryName, cellPixels, columns, rows, manifest);
+            string fullPath = Path.Combine(Application.streamingAssetsPath, entry.TextureLocation).Replace("\\", "/");
+            if (!File.Exists(fullPath))
+            {
+                Logger.Warning("Preview thumbnails: missing ground texture " + entry.TextureLocation);
+                return CreateMissingGroundCell();
+            }
+
+            Texture2D texture = null;
+            RenderTexture target = null;
+            RenderTexture previous = RenderTexture.active;
+            try
+            {
+                texture = await textureLoader.LoadTextureAsync(fullPath, true);
+                if (!texture)
+                {
+                    return CreateMissingGroundCell();
+                }
+                target = RenderTexture.GetTemporary(RenderResolution, RenderResolution, 0, RenderTextureFormat.ARGB32);
+                UnityEngine.Graphics.Blit(texture, target);
+                RenderTexture.active = target;
+                Texture2D readable = new Texture2D(RenderResolution, RenderResolution, TextureFormat.RGBA32, false);
+                readable.ReadPixels(new Rect(0, 0, RenderResolution, RenderResolution), 0, 0);
+                readable.Apply();
+                Color[] pixels = readable.GetPixels();
+                Object.DestroyImmediate(readable);
+                return pixels;
+            }
+            catch (Exception exception)
+            {
+                Logger.Warning("Preview thumbnails: " + entry.ShortName + " ground texture failed: " + exception.Message);
+                return CreateMissingGroundCell();
+            }
+            finally
+            {
+                RenderTexture.active = previous;
+                if (target)
+                {
+                    RenderTexture.ReleaseTemporary(target);
+                }
+                if (texture && texture != Texture2D.whiteTexture)
+                {
+                    Object.DestroyImmediate(texture);
+                }
+            }
+        }
+
+        private static Color[] CreateMissingGroundCell()
+        {
+            Color[] pixels = new Color[RenderResolution * RenderResolution];
+            Array.Fill(pixels, Color.magenta);
+            return pixels;
         }
 
         /// <summary>Returns cell pixels, or null for a valid empty cell (entry without a model).</summary>
@@ -635,7 +767,7 @@ namespace Warlander.Deedplanner.Editor
         }
 
         private static List<string> WriteAtlasOutputs(string categoryName, Color[][] cellPixels, int columns, int rows,
-            AtlasManifest manifest)
+            PreviewAtlasManifest manifest)
         {
             Texture2D atlas = new Texture2D(columns * CellSize, rows * CellSize, TextureFormat.RGBA32, false);
             Color[] clearPixels = new Color[atlas.width * atlas.height];
@@ -668,6 +800,7 @@ namespace Warlander.Deedplanner.Editor
                 if (AssetImporter.GetAtPath(pngPath) is TextureImporter importer)
                 {
                     importer.mipmapEnabled = false;
+                    importer.npotScale = TextureImporterNPOTScale.None;
                     importer.wrapMode = TextureWrapMode.Clamp;
                     importer.filterMode = FilterMode.Bilinear;
                     importer.SaveAndReimport();

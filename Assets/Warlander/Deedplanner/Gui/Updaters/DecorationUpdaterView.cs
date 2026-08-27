@@ -28,9 +28,10 @@ namespace Warlander.Deedplanner.Gui.Updaters
             _rotationSensitivityInput.onValueChanged.AddListener(OnRotationSensitivityChanged);
         }
 
-        public void AddDecorationEntry(DecorationData data, string[] category)
+        public void AddDecorationEntry(DecorationData data, string[] category, Sprite sprite)
         {
-            _decorationsTree.Add(data, category);
+            IconUnityListElement iconListElement = (IconUnityListElement) _decorationsTree.Add(data, category);
+            iconListElement.Sprite = sprite;
         }
 
         public void SetSnapToGrid(bool value)

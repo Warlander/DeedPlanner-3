@@ -370,11 +370,20 @@
       "dependencies": {},
       "url": "https://upm.maciejcyranowicz.com"
     },
-    "com.warlogic.launchredirect": {
-      "version": "1.2.0",
+    "com.warlogic.launchintercept": {
+      "version": "1.1.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
+      "url": "https://upm.maciejcyranowicz.com"
+    },
+    "com.warlogic.launchredirect": {
+      "version": "2.0.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.warlogic.launchintercept": "1.1.0"
+      },
       "url": "https://upm.maciejcyranowicz.com"
     },
     "com.warlogic.registrybrowser": {

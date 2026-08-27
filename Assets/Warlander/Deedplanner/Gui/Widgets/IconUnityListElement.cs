@@ -26,13 +26,23 @@ namespace Warlander.Deedplanner.Gui.Widgets
         }
 
         public TextureReference TextureReference {
-            get => TextureReference;
+            get => textureReference;
             set {
                 textureReference = value;
                 if (gameObject.activeInHierarchy && image.sprite == null)
                 {
                     LoadSprite();
                 }
+            }
+        }
+
+        public Sprite Sprite
+        {
+            set
+            {
+                textureReference = null;
+                image.sprite = value;
+                image.enabled = value;
             }
         }
 

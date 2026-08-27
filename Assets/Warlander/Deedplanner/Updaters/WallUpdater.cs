@@ -8,6 +8,7 @@ using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Settings;
+using Warlander.Deedplanner.Graphics;
 
 namespace Warlander.Deedplanner.Updaters
 {
@@ -19,13 +20,14 @@ namespace Warlander.Deedplanner.Updaters
         private readonly DPInput _input;
         private readonly MapHandler _mapHandler;
         private readonly TabContext _tabContext;
+        private readonly PreviewAtlasCatalog _previewAtlasCatalog;
 
         public Tab TargetTab => Tab.Walls;
 
         private WallData _selectedWall;
 
         public WallUpdater(IWallUpdaterView view, DPSettings settings, CameraCoordinator cameraCoordinator,
-            DPInput input, MapHandler mapHandler, TabContext tabContext)
+            DPInput input, MapHandler mapHandler, TabContext tabContext, PreviewAtlasCatalog previewAtlasCatalog)
         {
             _view = view;
             _settings = settings;
@@ -33,6 +35,7 @@ namespace Warlander.Deedplanner.Updaters
             _input = input;
             _mapHandler = mapHandler;
             _tabContext = tabContext;
+            _previewAtlasCatalog = previewAtlasCatalog;
         }
 
         public void Initialize()
@@ -45,7 +48,8 @@ namespace Warlander.Deedplanner.Updaters
             {
                 foreach (string[] category in data.Categories)
                 {
-                    _view.AddWallEntry(data, category);
+                    _previewAtlasCatalog.TryGetSprite(PreviewAtlasCategory.Walls, data.ShortName, out Sprite sprite);
+                    _view.AddWallEntry(data, category, sprite);
                 }
             }
 

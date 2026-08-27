@@ -6,6 +6,7 @@ using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Graphics;
 
 namespace Warlander.Deedplanner.Updaters
 {
@@ -16,6 +17,7 @@ namespace Warlander.Deedplanner.Updaters
         private readonly DPInput _input;
         private readonly MapHandler _mapHandler;
         private readonly TabContext _tabContext;
+        private readonly PreviewAtlasCatalog _previewAtlasCatalog;
 
         public Tab TargetTab => Tab.Ground;
 
@@ -26,13 +28,14 @@ namespace Warlander.Deedplanner.Updaters
         private bool _editCorners = true;
 
         public GroundUpdater(IGroundUpdaterView view, CameraCoordinator cameraCoordinator, DPInput input,
-            MapHandler mapHandler, TabContext tabContext)
+            MapHandler mapHandler, TabContext tabContext, PreviewAtlasCatalog previewAtlasCatalog)
         {
             _view = view;
             _cameraCoordinator = cameraCoordinator;
             _input = input;
             _mapHandler = mapHandler;
             _tabContext = tabContext;
+            _previewAtlasCatalog = previewAtlasCatalog;
         }
 
         public void Initialize()
@@ -43,15 +46,15 @@ namespace Warlander.Deedplanner.Updaters
             _view.EditCornersChanged += OnEditCornersChanged;
 
             _leftClickData = Database.DefaultGroundData;
-            _view.SetLeftClickData(_leftClickData);
+            _view.SetLeftClickData(_leftClickData, GetSprite(_leftClickData));
             _rightClickData = Database.DefaultSecondaryGroundData;
-            _view.SetRightClickData(_rightClickData);
+            _view.SetRightClickData(_rightClickData, GetSprite(_rightClickData));
 
             foreach (GroundData data in Database.Grounds.Values)
             {
                 foreach (string[] category in data.Categories)
                 {
-                    _view.AddGroundEntry(data, category);
+                    _view.AddGroundEntry(data, category, GetSprite(data));
                 }
             }
         }
@@ -80,12 +83,12 @@ namespace Warlander.Deedplanner.Updaters
             if (_leftClickTargeted)
             {
                 _leftClickData = groundData;
-                _view.SetLeftClickData(groundData);
+                _view.SetLeftClickData(groundData, GetSprite(groundData));
             }
             else
             {
                 _rightClickData = groundData;
-                _view.SetRightClickData(groundData);
+                _view.SetRightClickData(groundData, GetSprite(groundData));
             }
         }
 
@@ -129,12 +132,12 @@ namespace Warlander.Deedplanner.Updaters
                 if (_input.UpdatersShared.Placement.WasPressedThisFrame())
                 {
                     _leftClickData = ground.Data;
-                    _view.SetLeftClickData(_leftClickData);
+                    _view.SetLeftClickData(_leftClickData, GetSprite(_leftClickData));
                 }
                 else if (_input.UpdatersShared.Deletion.WasPressedThisFrame())
                 {
                     _rightClickData = ground.Data;
-                    _view.SetRightClickData(_rightClickData);
+                    _view.SetRightClickData(_rightClickData, GetSprite(_rightClickData));
                 }
             }
 
@@ -233,6 +236,12 @@ namespace Warlander.Deedplanner.Updaters
             }
 
             return null;
+        }
+
+        private Sprite GetSprite(GroundData data)
+        {
+            _previewAtlasCatalog.TryGetSprite(PreviewAtlasCategory.Grounds, data.ShortName, out Sprite sprite);
+            return sprite;
         }
     }
 }

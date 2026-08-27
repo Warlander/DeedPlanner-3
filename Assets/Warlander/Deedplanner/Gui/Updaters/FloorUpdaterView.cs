@@ -73,9 +73,10 @@ namespace Warlander.Deedplanner.Gui.Updaters
             UpdateFloorPickerVisibility(_docksModeToggle.isOn);
         }
 
-        public void AddFloorEntry(FloorData data, string[] category)
+        public void AddFloorEntry(FloorData data, string[] category, Sprite sprite)
         {
-            _floorsTree.Add(data, category);
+            IconUnityListElement iconListElement = (IconUnityListElement) _floorsTree.Add(data, category);
+            iconListElement.Sprite = sprite;
         }
 
         public void AddDockFloorEntry(FloorData data)

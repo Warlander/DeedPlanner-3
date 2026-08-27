@@ -27,6 +27,7 @@ namespace Warlander.Deedplanner.Updaters
         private readonly TabContext _tabContext;
         private readonly DockFactory _dockFactory;
         private readonly ISharedMaterials _sharedMaterials;
+        private readonly PreviewAtlasCatalog _previewAtlasCatalog;
 
         public Tab TargetTab => Tab.Floors;
 
@@ -51,7 +52,7 @@ namespace Warlander.Deedplanner.Updaters
 
         public FloorUpdater(IFloorUpdaterView view, TooltipHandler tooltipHandler, CameraCoordinator cameraCoordinator,
             DPInput input, MapHandler mapHandler, TabContext tabContext, DockFactory dockFactory,
-            ISharedMaterials sharedMaterials)
+            ISharedMaterials sharedMaterials, PreviewAtlasCatalog previewAtlasCatalog)
         {
             _view = view;
             _tooltipHandler = tooltipHandler;
@@ -61,6 +62,7 @@ namespace Warlander.Deedplanner.Updaters
             _tabContext = tabContext;
             _dockFactory = dockFactory;
             _sharedMaterials = sharedMaterials;
+            _previewAtlasCatalog = previewAtlasCatalog;
         }
 
         public void Initialize()
@@ -74,7 +76,8 @@ namespace Warlander.Deedplanner.Updaters
             {
                 foreach (string[] category in data.Categories)
                 {
-                    _view.AddFloorEntry(data, category);
+                    _previewAtlasCatalog.TryGetSprite(PreviewAtlasCategory.Floors, data.ShortName, out Sprite sprite);
+                    _view.AddFloorEntry(data, category, sprite);
                 }
 
                 if (data.SupportsDock)
