@@ -25,6 +25,11 @@ namespace Warlander.Deedplanner.Data.Grounds
             get => roadDirection;
             set => Tile.Map.CommandManager.AddToActionAndExecute(new RoadDirectionChangeCommand(this, roadDirection, value));
         }
+        
+        private static DoorOrientation CalculateOrientationFor(Ground ground, GroundData data)
+        {
+            return data != null && data.IsCaveDoor ? ground.Tile.CalculateDoorOrientation() : DoorOrientation.N;
+        }
 
         public Ground(Tile tile, GroundData data, ICategoryLogger logger)
         {
@@ -103,7 +108,8 @@ namespace Warlander.Deedplanner.Data.Grounds
                 if (newData != null)
                 {
                     ground.data = newData;
-                    ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection);
+                    DoorOrientation orientation = CalculateOrientationFor(ground, newData);
+                    ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection, orientation);
                 }
             }
 
@@ -112,7 +118,8 @@ namespace Warlander.Deedplanner.Data.Grounds
                 if (oldData != null)
                 {
                     ground.data = oldData;
-                    ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection);
+                    DoorOrientation orientation = CalculateOrientationFor(ground, newData);
+                    ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection, orientation);
                 }
             }
 
@@ -143,13 +150,15 @@ namespace Warlander.Deedplanner.Data.Grounds
             public void Execute()
             {
                 ground.roadDirection = newDirection;
-                ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection);
+                DoorOrientation orientation = CalculateOrientationFor(ground, ground.data);
+                ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection, orientation);
             }
 
             public void Undo()
             {
                 ground.roadDirection = oldDirection;
-                ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection);
+                DoorOrientation orientation = CalculateOrientationFor(ground, ground.data);
+                ground.Tile.Map.Ground.SetGroundData(ground.Tile.X, ground.Tile.Y, ground.data, ground.RoadDirection, orientation);
             }
 
             public void DisposeUndo()

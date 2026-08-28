@@ -169,6 +169,7 @@ namespace Warlander.Deedplanner.Data
                 TextureReference tex3d = null;
                 List<string[]> categories = new List<string[]>();
                 bool diagonal = false;
+                bool caveDoor = false;
 
                 foreach (XmlElement child in element)
                 {
@@ -192,6 +193,7 @@ namespace Warlander.Deedplanner.Data
                             break;
                         case "category":
                             categories.Add(child.InnerText.Split('/'));
+                            caveDoor = (child.InnerText == "Cave doors") ? true : false;
                             break;
                         case "diagonal":
                             diagonal = true;
@@ -204,7 +206,7 @@ namespace Warlander.Deedplanner.Data
                     _logger.Warning("No textures loaded, aborting");
                 }
 
-                GroundData data = new GroundData(name, shortName, categories.ToArray(), tex2d, tex3d, diagonal);
+                GroundData data = new GroundData(name, shortName, categories.ToArray(), tex2d, tex3d, diagonal, caveDoor);
                 Database.Grounds[shortName] = data;
                 _logger.Message("Ground data " + name + " loaded and ready to use!");
             }
