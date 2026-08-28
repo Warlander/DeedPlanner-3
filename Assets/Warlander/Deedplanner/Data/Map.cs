@@ -163,7 +163,7 @@ namespace Warlander.Deedplanner.Data
                 for (int i2 = 0; i2 <= Height; i2++)
                 {
                     this[i, i2].Refresh();
-                    RecalculateSurfaceHeight(i, i2);
+                    RecalculateSurfaceHeight(i, i2, this[i, i2].SurfaceHeight);
                 }
             }
 
@@ -423,14 +423,14 @@ namespace Warlander.Deedplanner.Data
             _levelRenderer.UpdateBridgesRendering();
         }
 
-        public void RecalculateSurfaceHeight(int x, int y)
+        public void RecalculateSurfaceHeight(int x, int y, int previousHeight)
         {
-            _heightTracker.RecalculateSurfaceHeight(x, y);
+            _heightTracker.RecalculateSurfaceHeight(x, y, previousHeight);
         }
 
-        public void RecalculateCaveHeight(int x, int y)
+        public void RecalculateCaveHeight(int x, int y, int previousHeight)
         {
-            _heightTracker.RecalculateCaveHeight(x, y);
+            _heightTracker.RecalculateCaveHeight(x, y, previousHeight);
         }
 
         public void RefreshBridgesForSurfaceHeight(int x, int y)

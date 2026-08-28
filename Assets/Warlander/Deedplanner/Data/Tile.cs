@@ -55,6 +55,7 @@ namespace Warlander.Deedplanner.Data
         public int CaveHeight {
             get => caveHeight;
             set {
+                int previousHeight = caveHeight;
                 caveHeight = value;
                 // TODO: add cave mesh handling
                 RefreshCaveEntities();
@@ -62,7 +63,7 @@ namespace Warlander.Deedplanner.Data
                 Map.GetRelativeTile(this, 0, -1)?.RefreshCaveEntities();
                 Map.GetRelativeTile(this, -1, -1)?.RefreshCaveEntities();
 
-                Map.RecalculateCaveHeight(X, Y);
+                Map.RecalculateCaveHeight(X, Y, previousHeight);
                 Map.RefreshBridgesForCaveHeight(X, Y);
             }
         }
@@ -77,7 +78,7 @@ namespace Warlander.Deedplanner.Data
                 Map.GetRelativeTile(this, 0, -1)?.RefreshCaveEntities();
                 Map.GetRelativeTile(this, -1, -1)?.RefreshCaveEntities();
 
-                Map.RecalculateCaveHeight(X, Y);
+                Map.RecalculateCaveHeight(X, Y, caveHeight);
             }
         }
 
@@ -1144,16 +1145,16 @@ namespace Warlander.Deedplanner.Data
             public void Execute()
             {
                 tile.surfaceHeight = newHeight;
-                Refresh();
+                Refresh(oldHeight);
             }
 
             public void Undo()
             {
                 tile.surfaceHeight = oldHeight;
-                Refresh();
+                Refresh(newHeight);
             }
 
-            private void Refresh()
+            private void Refresh(int previousHeight)
             {
                 tile.Map.Ground.SetSlope(tile.X, tile.Y, tile.surfaceHeight);
                 tile.RefreshSurfaceEntities();
@@ -1161,7 +1162,7 @@ namespace Warlander.Deedplanner.Data
                 tile.Map.GetRelativeTile(tile, 0, -1)?.RefreshSurfaceEntities();
                 tile.Map.GetRelativeTile(tile, -1, -1)?.RefreshSurfaceEntities();
 
-                tile.Map.RecalculateSurfaceHeight(tile.X, tile.Y);
+                tile.Map.RecalculateSurfaceHeight(tile.X, tile.Y, previousHeight);
                 tile.Map.RefreshBridgesForSurfaceHeight(tile.X, tile.Y);
                 tile.Map.RefreshDocksForSurfaceHeight(tile.X, tile.Y);
             }
