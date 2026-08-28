@@ -125,6 +125,12 @@ namespace Warlander.Deedplanner.Gui.Home
             _loadButton.gameObject.SetActive(visible);
         }
 
+        public void SetFundingLinksVisible(bool visible)
+        {
+            _patreonButton.gameObject.SetActive(visible);
+            _paypalButton.gameObject.SetActive(visible);
+        }
+
         public void SetCategories(IReadOnlyList<HomeScreenCategory> categories, SaveBackendId? selectedBackendId)
         {
             foreach (Button button in _categoryButtons)

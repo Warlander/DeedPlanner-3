@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using Warlander.Deedplanner.Logic.Saving;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Settings;
+using Warlander.Deedplanner.Steam;
 using VContainer.Unity;
 using Warlander.UI.Windows;
 
@@ -17,17 +18,19 @@ namespace Warlander.Deedplanner.Gui.Home
         private readonly HomeScreenCardCatalog _cardCatalog;
         private readonly WindowCoordinator _windowCoordinator;
         private readonly DPSettings _settings;
+        private readonly ISteamConnection _steamConnection;
         private readonly ICategoryLogger _logger;
 
         public HomeScreenPresenter(IHomeScreenView view, ISaveCoordinator saveCoordinator,
             HomeScreenCardCatalog cardCatalog, WindowCoordinator windowCoordinator, DPSettings settings,
-            UiLog uiLog)
+            ISteamConnection steamConnection, UiLog uiLog)
         {
             _view = view;
             _saveCoordinator = saveCoordinator;
             _cardCatalog = cardCatalog;
             _windowCoordinator = windowCoordinator;
             _settings = settings;
+            _steamConnection = steamConnection;
             _logger = uiLog.Logger;
         }
 
@@ -46,6 +49,8 @@ namespace Warlander.Deedplanner.Gui.Home
             _view.CardDeleteClicked += OnDeleteCard;
 
             _view.SetLoadButtonVisible(true);
+            // Steam policy: no external funding links while running under Steam
+            _view.SetFundingLinksVisible(!_steamConnection.Connected);
         }
 
         public void Dispose() { }

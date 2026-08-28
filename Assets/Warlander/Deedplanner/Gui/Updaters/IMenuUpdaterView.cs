@@ -8,6 +8,7 @@ namespace Warlander.Deedplanner.Gui.Updaters
 
         void SetQuitButtonVisible(bool visible);
         void SetFullscreenButtonVisible(bool visible);
+        void SetFundingLinksVisible(bool visible);
         void SetVersionText(string text);
         void SetSteamStatus(bool visible, string text);
         void SetSaveIndicator(string text, bool hasUnsavedChanges);

@@ -62,6 +62,9 @@ namespace Warlander.Deedplanner.Updaters
 
             _view.SetVersionText(Constants.TitleString);
 
+            // Steam policy: no external funding links while running under Steam
+            _view.SetFundingLinksVisible(!_steamConnection.Connected);
+
             _view.ButtonClicked += OnButtonClicked;
             _mapHandler.MapInitialized += OnMapInitialized;
             _saveCoordinator.SaveStateChanged += RefreshSaveIndicator;
