@@ -175,7 +175,8 @@ namespace Warlander.Deedplanner.Editor
                 xmlSha256 = BitConverter.ToString(sha256.ComputeHash(xmlBytes)).Replace("-", string.Empty);
             }
 
-            Scene previewScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+            NewSceneMode sceneMode = Application.isBatchMode ? NewSceneMode.Single : NewSceneMode.Additive;
+            Scene previewScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, sceneMode);
             try
             {
                 SetupLighting();
