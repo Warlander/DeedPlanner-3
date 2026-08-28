@@ -35,6 +35,7 @@ namespace Warlander.Deedplanner.Updaters
         private readonly ISharedMaterials _sharedMaterials;
         private readonly TabContext _tabContext;
         private readonly ICategoryLogger _logger;
+        private readonly PreviewAtlasCatalog _previewAtlasCatalog;
 
         public Tab TargetTab => Tab.Objects;
 
@@ -57,7 +58,8 @@ namespace Warlander.Deedplanner.Updaters
 
         public DecorationUpdater(IDecorationUpdaterView view, DPSettings settings, CameraCoordinator cameraCoordinator,
             DPInput input, MapHandler mapHandler, IOutlineCoordinator outlineCoordinator,
-            ISharedMaterials sharedMaterials, TabContext tabContext, ILoggerSource loggerSource)
+            ISharedMaterials sharedMaterials, TabContext tabContext, ILoggerSource loggerSource,
+            PreviewAtlasCatalog previewAtlasCatalog)
         {
             _view = view;
             _settings = settings;
@@ -68,6 +70,7 @@ namespace Warlander.Deedplanner.Updaters
             _sharedMaterials = sharedMaterials;
             _tabContext = tabContext;
             _logger = loggerSource.Create(Category);
+            _previewAtlasCatalog = previewAtlasCatalog;
         }
 
         public void Initialize()
@@ -86,7 +89,8 @@ namespace Warlander.Deedplanner.Updaters
             {
                 foreach (string[] category in data.Categories)
                 {
-                    _view.AddDecorationEntry(data, category);
+                    _previewAtlasCatalog.TryGetSprite(PreviewAtlasCategory.Objects, data.ShortName, out Sprite sprite);
+                    _view.AddDecorationEntry(data, category, sprite);
                 }
             }
 

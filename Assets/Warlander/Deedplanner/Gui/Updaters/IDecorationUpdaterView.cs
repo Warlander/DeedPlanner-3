@@ -1,5 +1,6 @@
 using System;
 using Warlander.Deedplanner.Data.Decorations;
+using UnityEngine;
 
 namespace Warlander.Deedplanner.Gui.Updaters
 {
@@ -10,7 +11,7 @@ namespace Warlander.Deedplanner.Gui.Updaters
         event Action<bool> RotationSnappingChanged;
         event Action<string> RotationSensitivityChanged;
 
-        void AddDecorationEntry(DecorationData data, string[] category);
+        void AddDecorationEntry(DecorationData data, string[] category, Sprite sprite);
         void SetSnapToGrid(bool value);
         void SetRotationSnapping(bool value);
         void SetRotationSensitivity(string text);

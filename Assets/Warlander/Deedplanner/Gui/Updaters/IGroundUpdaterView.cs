@@ -1,5 +1,6 @@
 using System;
 using Warlander.Deedplanner.Data.Grounds;
+using UnityEngine;
 
 namespace Warlander.Deedplanner.Gui.Updaters
 {
@@ -10,8 +11,8 @@ namespace Warlander.Deedplanner.Gui.Updaters
         event Action<bool> LeftClickTargetChanged;
         event Action<bool> EditCornersChanged;
 
-        void AddGroundEntry(GroundData data, string[] category);
-        void SetLeftClickData(GroundData data);
-        void SetRightClickData(GroundData data);
+        void AddGroundEntry(GroundData data, string[] category, Sprite sprite);
+        void SetLeftClickData(GroundData data, Sprite sprite);
+        void SetRightClickData(GroundData data, Sprite sprite);
     }
 }

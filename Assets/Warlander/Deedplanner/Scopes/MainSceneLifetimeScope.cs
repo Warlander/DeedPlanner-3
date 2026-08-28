@@ -8,6 +8,7 @@ using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Graphics.Screenshots;
 using Warlander.Deedplanner.Graphics.Water;
+using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Home;
 using Warlander.Deedplanner.Gui.Updaters;
@@ -84,6 +85,7 @@ namespace Warlander.Deedplanner.Scopes
 
             builder.Register<LayoutContext>(Lifetime.Singleton);
             builder.Register<UiLog>(Lifetime.Singleton);
+            builder.Register<PreviewAtlasCatalog>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.RegisterEntryPoint<TabContext>().AsSelf();
             builder.RegisterEntryPoint<GroundLevelLock>().AsSelf();
             builder.RegisterInstance(_cameraCoordinator);

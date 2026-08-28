@@ -1,4 +1,6 @@
 using System.IO;
+using System;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -13,28 +15,24 @@ namespace Warlander.Deedplanner.Editor
 
         private static readonly ICategoryLogger Logger = new LoggerSource(new LogLevelFilter()).Create(Category);
         [MenuItem("Build/All Platforms", false, 0)]
-        public static bool BuildAllPlatforms()
+        public static void BuildAllPlatforms()
         {
-            bool standaloneSuccess = BuildAllStandalone();
-            bool webSuccess = BuildWeb();
-
-            bool totalSuccess = standaloneSuccess && webSuccess;
-            return totalSuccess;
+            RunBuildAsync(async () => await BuildAllStandaloneCoreAsync() && BuildWebCore());
         }
         
         [MenuItem("Build/All Standalone", false, 1)]
-        public static bool BuildAllStandalone()
+        public static void BuildAllStandalone()
         {
-            bool windowsSuccess = BuildWindows64();
-            bool linuxSuccess = BuildLinux();
-            bool macSuccess = BuildMac();
-
-            bool totalSuccess = windowsSuccess && linuxSuccess && macSuccess;
-            return totalSuccess;
+            RunBuildAsync(BuildAllStandaloneCoreAsync);
         }
         
         [MenuItem("Build/Windows", false, 50)]
-        public static bool BuildWindows64()
+        public static void BuildWindows64()
+        {
+            RunBuildAsync(() => Task.FromResult(BuildWindows64Core()));
+        }
+
+        private static bool BuildWindows64Core()
         {
             if (Application.platform == RuntimePlatform.WindowsEditor)
             {
@@ -68,7 +66,12 @@ namespace Warlander.Deedplanner.Editor
         }
         
         [MenuItem("Build/Linux", false, 51)]
-        public static bool BuildLinux()
+        public static void BuildLinux()
+        {
+            RunBuildAsync(() => Task.FromResult(BuildLinuxCore()));
+        }
+
+        private static bool BuildLinuxCore()
         {
             if (Application.platform == RuntimePlatform.LinuxEditor)
             {
@@ -102,7 +105,12 @@ namespace Warlander.Deedplanner.Editor
         }
         
         [MenuItem("Build/Mac", false, 52)]
-        public static bool BuildMac()
+        public static void BuildMac()
+        {
+            RunBuildAsync(() => Task.FromResult(BuildMacCore()));
+        }
+
+        private static bool BuildMacCore()
         {
             if (Application.platform == RuntimePlatform.OSXEditor)
             {
@@ -143,7 +151,12 @@ namespace Warlander.Deedplanner.Editor
         }
 
         [MenuItem("Build/WebGL", false, 100)]
-        public static bool BuildWeb()
+        public static void BuildWeb()
+        {
+            RunBuildAsync(() => Task.FromResult(BuildWebCore()));
+        }
+
+        private static bool BuildWebCore()
         {
             // GitHub Pages serves compressed builds without Content-Encoding headers,
             // so the loader cannot boot them. Ship uncompressed instead.
@@ -178,6 +191,36 @@ namespace Warlander.Deedplanner.Editor
             options.scenes = new[] { "Assets/Scenes/LoadingScene.unity", "Assets/Scenes/MainScene.unity" };
 
             return options;
+        }
+
+        private static Task<bool> BuildAllStandaloneCoreAsync()
+        {
+            return Task.FromResult(BuildWindows64Core() && BuildLinuxCore() && BuildMacCore());
+        }
+
+        private static async void RunBuildAsync(Func<Task<bool>> build)
+        {
+            bool success = false;
+            try
+            {
+                if (!PreviewAtlasFreshness.IsFresh(out string reason))
+                {
+                    Logger.Message("Generating preview atlases before build: " + reason);
+                    await PreviewThumbnailGenerator.GenerateAllAsync();
+                }
+                success = await build();
+            }
+            catch (Exception exception)
+            {
+                Logger.Exception(exception);
+            }
+            finally
+            {
+                if (Application.isBatchMode)
+                {
+                    EditorApplication.Exit(success ? 0 : 1);
+                }
+            }
         }
 
         // -executeMethod ignores return values, so a failed build must exit the

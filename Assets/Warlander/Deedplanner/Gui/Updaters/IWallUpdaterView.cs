@@ -1,5 +1,6 @@
 using System;
 using Warlander.Deedplanner.Data.Walls;
+using UnityEngine;
 
 namespace Warlander.Deedplanner.Gui.Updaters
 {
@@ -9,7 +10,7 @@ namespace Warlander.Deedplanner.Gui.Updaters
         event Action<bool> ReverseChanged;
         event Action<bool> AutomaticReverseChanged;
 
-        void AddWallEntry(WallData data, string[] category);
+        void AddWallEntry(WallData data, string[] category, Sprite sprite);
         void SetReverseToggles(bool reverse, bool automaticReverse);
         void PushSelection();
     }

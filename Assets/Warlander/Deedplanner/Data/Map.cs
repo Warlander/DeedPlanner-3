@@ -196,10 +196,7 @@ namespace Warlander.Deedplanner.Data
             XmlElement mapRoot = document.DocumentElement;
             if (mapRoot == null || mapRoot.LocalName != "map")
             {
-                PreInitialize(25, 25);
-                CommandManager.Mutated -= MarkDirty;
-                CommandManager.Mutated += MarkDirty;
-                return;
+                throw new XmlException("Expected a map root element.");
             }
 
             OriginalExporter = mapRoot.GetAttribute("exporter");
@@ -210,8 +207,11 @@ namespace Warlander.Deedplanner.Data
                 OriginalExporterVersion = new Version(versionMatch.Value);
             }
 
-            int width = Convert.ToInt32(mapRoot.GetAttribute("width"));
-            int height = Convert.ToInt32(mapRoot.GetAttribute("height"));
+            if (!int.TryParse(mapRoot.GetAttribute("width"), out int width) || width <= 0 ||
+                !int.TryParse(mapRoot.GetAttribute("height"), out int height) || height <= 0)
+            {
+                throw new XmlException("Map dimensions must be positive integers.");
+            }
             string name = mapRoot.GetAttribute("name");
             DisplayName = string.IsNullOrEmpty(name) ? "Untitled" : name;
             PreInitialize(width, height);
@@ -540,6 +540,14 @@ namespace Warlander.Deedplanner.Data
         private void RecalculateHeights()
         {
             _heightTracker.RecalculateHeights();
+        }
+
+        internal void RestoreAsCurrentMap()
+        {
+            _heightTracker.SetCurrentMap(this);
+            _heightTracker.RecalculateHeights();
+            _roofCalculator.SetCurrentMap(this);
+            _roofCalculator.ScheduleRecalculation();
         }
 
         private void OnDestroy()

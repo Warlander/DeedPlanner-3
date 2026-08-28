@@ -81,7 +81,9 @@ namespace Warlander.Deedplanner.Utils
                 return;
             }
             
-            AddToStack(new ReversibleCommandAction(currentActionStack.ToArray()));
+            IReversibleCommand[] commands = currentActionStack.ToArray();
+            Array.Reverse(commands);
+            AddToStack(new ReversibleCommandAction(commands));
             currentActionStack.Clear();
         }
 
@@ -119,9 +121,9 @@ namespace Warlander.Deedplanner.Utils
 
             public void Undo()
             {
-                foreach (IReversibleCommand containedCommand in containedReversibleCommands)
+                for (int index = containedReversibleCommands.Length - 1; index >= 0; index--)
                 {
-                    containedCommand.Undo();
+                    containedReversibleCommands[index].Undo();
                 }
             }
 
