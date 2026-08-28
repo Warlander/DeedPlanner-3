@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Logging;
 using VContainer;
 using VContainer.Unity;
 
@@ -24,11 +25,13 @@ namespace Warlander.Deedplanner.Logic
             remove => _registry.MapInitialized -= value;
         }
 
-        public MapHandler(IObjectResolver resolver)
+        public ICategoryLogger Logger => _loader.Logger;
+
+        public MapHandler(IObjectResolver resolver, ILoggerSource loggerSource)
         {
             _registry = new MapRegistry();
             _factory = new MapFactory(resolver);
-            _loader = new MapLoader(_factory);
+            _loader = new MapLoader(_factory, loggerSource);
         }
 
         public void CreateNewMap(int width, int height)
@@ -64,33 +67,77 @@ namespace Warlander.Deedplanner.Logic
 
         public void LoadMap(string mapString)
         {
-            if (_registry.CurrentMap)
+            Map oldMap = _registry.CurrentMap;
+            Map newMap;
+            try
             {
-                GameObject oldMapObject = _registry.CurrentMap.gameObject;
+                newMap = _loader.LoadMap(mapString);
+            }
+            catch
+            {
+                Map currentMap = _registry.CurrentMap;
+                if (currentMap)
+                {
+                    currentMap.RestoreAsCurrentMap();
+                }
+
+                throw;
+            }
+
+            if (oldMap)
+            {
+                GameObject oldMapObject = oldMap.gameObject;
                 oldMapObject.SetActive(false);
                 UnityEngine.Object.Destroy(oldMapObject);
             }
 
-            Map newMap = _loader.LoadMap(mapString);
+            newMap.gameObject.SetActive(true);
             _registry.SetMap(newMap);
         }
 
         public async Task LoadMapAsync(Uri mapUri)
         {
-            Map newMap = await _loader.LoadMapAsync(mapUri);
+            Map oldMap = _registry.CurrentMap;
+            Map newMap;
+            try
+            {
+                newMap = await _loader.LoadMapAsync(mapUri);
+            }
+            catch
+            {
+                Map currentMap = _registry.CurrentMap;
+                if (currentMap)
+                {
+                    currentMap.RestoreAsCurrentMap();
+                }
+
+                throw;
+            }
 
             if (newMap == null)
             {
                 return;
             }
 
-            if (_registry.CurrentMap)
+            if (_registry.CurrentMap != oldMap)
             {
-                GameObject oldMapObject = _registry.CurrentMap.gameObject;
+                UnityEngine.Object.Destroy(newMap.gameObject);
+                if (_registry.CurrentMap)
+                {
+                    _registry.CurrentMap.RestoreAsCurrentMap();
+                }
+
+                return;
+            }
+
+            if (oldMap)
+            {
+                GameObject oldMapObject = oldMap.gameObject;
                 oldMapObject.SetActive(false);
                 UnityEngine.Object.Destroy(oldMapObject);
             }
 
+            newMap.gameObject.SetActive(true);
             _registry.SetMap(newMap);
         }
     }

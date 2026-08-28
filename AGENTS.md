@@ -128,6 +128,7 @@ Warlander.Deedplanner.Updaters     # Per-tab editing updaters
 Warlander.Deedplanner.Graphics     # Model/texture/material loading and caching
 Warlander.Deedplanner.Settings     # Application settings
 Warlander.Deedplanner.Features     # Feature flag system
+Warlander.Deedplanner.Logging      # Selective logging (categories, levels, runtime configurator)
 ```
 
 ## Coding Conventions
@@ -141,6 +142,8 @@ Warlander.Deedplanner.Features     # Feature flag system
 - **Class naming**: avoid generic, undescriptive suffixes — `Manager`, `Handler`, `Controller`, `Helper`, `Util`, `Service`, `Provider`, `Processor`, and similar vague nouns. These say *where* something lives but not *what it does*. Prefer names that describe the specific responsibility (e.g. `WaterFacade`, `WaterObjectContainer`, `MapHeightTracker`). Existing legacy names (`CommandManager`) are grandfathered in; new classes must follow this rule. The `View` suffix is the one intentional exception — MonoBehaviour view classes in the MVP pattern must end with `View` (e.g. `GroundPainterView`, `TileSelectionView`) to distinguish them from their presenter counterparts.
 - **Property formatting**: auto-properties and single-expression `get`-only properties stay on one line. Anything more complex splits `get`/`set` onto their own lines. If `get` or `set` contains more than one statement, use expanded block syntax (`{ ... }`) rather than expression-body (`=>`) shorthand.
 - **No tuples**: do not use tuples — neither implicit (`(int x, string y)`) nor explicit (`Tuple<int, string>`). Define a named `struct` or value class instead. Named types are self-documenting, refactorable, and avoid accidental structural coupling.
+- **System boundaries**: systems declare only well-thought, necessary dependencies and communicate with other systems through deliberate APIs. No reaching into a neighbor's internals and no convenience couplings — if two systems keep touching each other, the API between them is wrong.
+- **Logging**: log through the logging system in `Warlander.Deedplanner.Logging`, never via `Debug.Log*` directly. One static `LogCategory` per system, declared in the system's root class. The root takes `ILoggerSource`, creates the logger once (`_logger = loggerSource.Create(Category);`), and passes the `ICategoryLogger` to other classes in its system — they never reference another class's `Category` and never take `ILoggerSource` themselves. Systems with multiple container-created consumers get a composition-root facade registered once (`WurmAssetFacade`, `UiLog`) that creates the pieces internally and shares its logger. Static utilities do not log — they return failure and the caller logs. Editor-only tools build their own `LoggerSource` with a private `LogLevelFilter`. Per-category level tuning lives exclusively in `LoggingConfigurator` (runtime) or the utility's own filter.
 - **UI arrangement**: owned by project skills — `unity-ui-screenshot` (capture real UI before mockup/design work), `unity-ui-build` (prefab reuse, wiring, layout, mockup-to-implementation). Always load `unity-ui-build` before building UI.
 
 ## After Code Changes

@@ -39,8 +39,17 @@ namespace Warlander.Deedplanner.Logic
         public Map LoadFromXml(XmlDocument doc)
         {
             Map map = CreateMapGameObject();
-            map.Initialize(doc);
-            return map;
+            map.gameObject.SetActive(false);
+            try
+            {
+                map.Initialize(doc);
+                return map;
+            }
+            catch
+            {
+                Object.Destroy(map.gameObject);
+                throw;
+            }
         }
 
         private Map CreateMapGameObject()

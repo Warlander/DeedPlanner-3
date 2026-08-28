@@ -12,12 +12,15 @@ using Warlander.Deedplanner.Graphics.Outline;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logic.Outlines;
+using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Settings;
 
 namespace Warlander.Deedplanner.Updaters
 {
     public class DecorationUpdater : IUpdater
     {
+        public static readonly LogCategory Category = new LogCategory("Decorations");
+
         private static readonly Color AllowedGhostColor = new Color(0f, 1f, 0f, 0.5882353f);
         private static readonly Color DisabledGhostColor = new Color(1f, 0f, 0f, 0.5882353f);
         private const float MinimumPlacementGap = 0.25f;
@@ -31,6 +34,8 @@ namespace Warlander.Deedplanner.Updaters
         private readonly IOutlineCoordinator _outlineCoordinator;
         private readonly ISharedMaterials _sharedMaterials;
         private readonly TabContext _tabContext;
+        private readonly ICategoryLogger _logger;
+        private readonly PreviewAtlasCatalog _previewAtlasCatalog;
 
         public Tab TargetTab => Tab.Objects;
 
@@ -53,7 +58,8 @@ namespace Warlander.Deedplanner.Updaters
 
         public DecorationUpdater(IDecorationUpdaterView view, DPSettings settings, CameraCoordinator cameraCoordinator,
             DPInput input, MapHandler mapHandler, IOutlineCoordinator outlineCoordinator,
-            ISharedMaterials sharedMaterials, TabContext tabContext)
+            ISharedMaterials sharedMaterials, TabContext tabContext, ILoggerSource loggerSource,
+            PreviewAtlasCatalog previewAtlasCatalog)
         {
             _view = view;
             _settings = settings;
@@ -63,6 +69,8 @@ namespace Warlander.Deedplanner.Updaters
             _outlineCoordinator = outlineCoordinator;
             _sharedMaterials = sharedMaterials;
             _tabContext = tabContext;
+            _logger = loggerSource.Create(Category);
+            _previewAtlasCatalog = previewAtlasCatalog;
         }
 
         public void Initialize()
@@ -81,7 +89,8 @@ namespace Warlander.Deedplanner.Updaters
             {
                 foreach (string[] category in data.Categories)
                 {
-                    _view.AddDecorationEntry(data, category);
+                    _previewAtlasCatalog.TryGetSprite(PreviewAtlasCategory.Objects, data.ShortName, out Sprite sprite);
+                    _view.AddDecorationEntry(data, category, sprite);
                 }
             }
 
@@ -291,7 +300,11 @@ namespace Warlander.Deedplanner.Updaters
                 float decorationPositionX = _position.x - _targetedTile.X * 4f;
                 float decorationPositionY = _position.z - _targetedTile.Y * 4f;
                 Vector2 decorationPosition = new Vector2(decorationPositionX, decorationPositionY);
-                _targetedTile.SetDecoration(data, decorationPosition, _rotation * Mathf.Deg2Rad, targetFloor, data.Floating);
+                Decoration placed = _targetedTile.SetDecoration(data, decorationPosition, _rotation * Mathf.Deg2Rad, targetFloor, data.Floating);
+                if (placed == null)
+                {
+                    _logger.Warning("Attempted placing decoration at X: " + decorationPosition.x + ", Y: " + decorationPosition.y);
+                }
                 map.CommandManager.FinishAction();
 
                 _placingDecoration = false;

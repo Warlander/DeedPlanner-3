@@ -5,7 +5,7 @@ namespace Warlander.Deedplanner.Data.Decorations
 {
     public class DecorationData
     {
-        public Model Model { get; }
+        public ModelHandle Model { get; }
         public string Name { get; }
         public string ShortName { get; }
         public string[][] Categories { get; }
@@ -19,7 +19,7 @@ namespace Warlander.Deedplanner.Data.Decorations
 
         public Materials Materials { get; }
 
-        public DecorationData(Model model, string name, string shortName, string[][] categories, string type,
+        public DecorationData(ModelHandle model, string name, string shortName, string[][] categories, string type,
             bool centerOnly, bool cornerOnly, bool floating, bool tree, bool bush, Materials materials)
         {
             Model = model;

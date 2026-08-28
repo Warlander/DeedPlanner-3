@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem.Utilities;
 using Warlander.Deedplanner.Graphics.Outline;
 using Warlander.Deedplanner.Logic.Outlines;
+using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Data.Bridges
@@ -24,6 +25,8 @@ namespace Warlander.Deedplanner.Data.Bridges
         public event Action Rebuilt;
 
         private readonly IOutlineCoordinator _outlineCoordinator;
+        private readonly ICategoryLogger _logger;
+        private readonly BridgePavementSerializer _pavementSerializer;
 
         private BridgePartType[] segments;
         private readonly int firstLevel;
@@ -44,9 +47,11 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         public IReadOnlyList<BridgePart> Parts => bridgeParts;
         
-        public Bridge(Map map, XmlElement element, IOutlineCoordinator outlineCoordinator)
+        public Bridge(Map map, XmlElement element, IOutlineCoordinator outlineCoordinator, ICategoryLogger logger)
         {
             _outlineCoordinator = outlineCoordinator;
+            _logger = logger;
+            _pavementSerializer = new BridgePavementSerializer(logger);
             
             string dataString = element.GetAttribute("data");
             Data = Database.Bridges[dataString];
@@ -78,7 +83,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             }
             else
             {
-                Debug.LogError($"Bridge type enum parsing fail, type: {typeString}");
+                _logger.Error($"Bridge type enum parsing fail, type: {typeString}");
             }
 
             int requiredSegments = Mathf.Max(Mathf.Abs(secondX - firstX), Mathf.Abs(secondY - firstY)) + 1;
@@ -90,7 +95,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             BridgePavementData[,] pavements = null;
             if (element.HasAttribute("paving"))
             {
-                pavements = BridgePavementSerializer.Decode(element.GetAttribute("paving"),
+                pavements = _pavementSerializer.Decode(element.GetAttribute("paving"),
                     segments.Length, GetBridgeWidth());
             }
 
@@ -101,9 +106,11 @@ namespace Warlander.Deedplanner.Data.Bridges
         /// Constructor used for moving (previously) existing bridges around the map.
         /// </summary>
         public Bridge(Map map, Bridge originalBridge, Vector2Int tileShift,
-            IOutlineCoordinator outlineCoordinator)
+            IOutlineCoordinator outlineCoordinator, ICategoryLogger logger)
         {
             _outlineCoordinator = outlineCoordinator;
+            _logger = logger;
+            _pavementSerializer = new BridgePavementSerializer(logger);
 
             Data = originalBridge.Data;
 
@@ -128,9 +135,11 @@ namespace Warlander.Deedplanner.Data.Bridges
         /// </summary>
         public Bridge(Map map, TileCoords start, TileCoords end, BridgeData data,
             BridgeType type, int additionalData, string segments,
-            IOutlineCoordinator outlineCoordinator)
+            IOutlineCoordinator outlineCoordinator, ICategoryLogger logger)
         {
             _outlineCoordinator = outlineCoordinator;
+            _logger = logger;
+            _pavementSerializer = new BridgePavementSerializer(logger);
 
             Data = data;
             this.segments = BridgePartTypeUtils.DecodeSegments(segments);
@@ -198,7 +207,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         {
             if (bridgeParts.Count != 0)
             {
-                Debug.LogError("Bridge already exists, aborting construction");
+                _logger.Error("Bridge already exists, aborting construction");
                 return;
             }
 
@@ -219,7 +228,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             int maxWidth = Data.MaxWidth;
             int bridgeWidth = Mathf.Min(endX - startX, endY - startY) + 1;
             if (maxWidth < bridgeWidth) {
-                Debug.LogError($"Impossible bridge: requested width {bridgeWidth}, max possible: {maxWidth}");
+                _logger.Error($"Impossible bridge: requested width {bridgeWidth}, max possible: {maxWidth}");
                 return;
             }
 
@@ -633,7 +642,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             localRoot.SetAttribute("sag", additionalData.ToString());
             localRoot.SetAttribute("orientation", verticalOrientation ? "true" : "false");
             localRoot.SetAttribute("surfaced", surfaced ? "true" : "false");
-            string paving = BridgePavementSerializer.Encode(bridgeParts);
+            string paving = _pavementSerializer.Encode(bridgeParts);
             if (paving != null)
             {
                 localRoot.SetAttribute("paving", paving);

@@ -39,7 +39,6 @@ namespace Warlander.Deedplanner.Data.Decorations
                 case "BOTTOM_RIGHT":
                     return new Vector2(RightAlign, BottomAlign);
                 default:
-                    Debug.LogWarning("Invalid position string: " + upperPositionString);
                     return Vector2.zero;
             }
         }

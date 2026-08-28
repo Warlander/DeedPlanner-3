@@ -1,36 +1,38 @@
 using System.IO;
+using System;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Editor
 {
     public static class BuildSystem
     {
-        [MenuItem("Build/All Platforms", false, 0)]
-        public static bool BuildAllPlatforms()
-        {
-            bool standaloneSuccess = BuildAllStandalone();
-            bool webSuccess = BuildWeb();
+        public static readonly LogCategory Category = new LogCategory("Builds");
 
-            bool totalSuccess = standaloneSuccess && webSuccess;
-            return totalSuccess;
+        private static readonly ICategoryLogger Logger = new LoggerSource(new LogLevelFilter()).Create(Category);
+        [MenuItem("Build/All Platforms", false, 0)]
+        public static void BuildAllPlatforms()
+        {
+            RunBuildAsync(async () => await BuildAllStandaloneCoreAsync() && BuildWebCore());
         }
         
         [MenuItem("Build/All Standalone", false, 1)]
-        public static bool BuildAllStandalone()
+        public static void BuildAllStandalone()
         {
-            bool windowsSuccess = BuildWindows64();
-            bool linuxSuccess = BuildLinux();
-            bool macSuccess = BuildMac();
-
-            bool totalSuccess = windowsSuccess && linuxSuccess && macSuccess;
-            return totalSuccess;
+            RunBuildAsync(BuildAllStandaloneCoreAsync);
         }
         
         [MenuItem("Build/Windows", false, 50)]
-        public static bool BuildWindows64()
+        public static void BuildWindows64()
+        {
+            RunBuildAsync(() => Task.FromResult(BuildWindows64Core()));
+        }
+
+        private static bool BuildWindows64Core()
         {
             if (Application.platform == RuntimePlatform.WindowsEditor)
             {
@@ -52,19 +54,24 @@ namespace Warlander.Deedplanner.Editor
             if (summary.result == BuildResult.Succeeded)
             {
                 CreateSteamAppId("Build/"+ Constants.SimpleTitleString + " Windows/");
-                Debug.Log("SUCCESS BUILD Windows");
+                Logger.Message("SUCCESS BUILD Windows");
                 return true;
             } 
             else
             {
-                Debug.Log("FAILED BUILD Windows");
+                Logger.Message("FAILED BUILD Windows");
                 ExitBatchWithError();
                 return false;
             }
         }
         
         [MenuItem("Build/Linux", false, 51)]
-        public static bool BuildLinux()
+        public static void BuildLinux()
+        {
+            RunBuildAsync(() => Task.FromResult(BuildLinuxCore()));
+        }
+
+        private static bool BuildLinuxCore()
         {
             if (Application.platform == RuntimePlatform.LinuxEditor)
             {
@@ -86,19 +93,24 @@ namespace Warlander.Deedplanner.Editor
             if (summary.result == BuildResult.Succeeded)
             {
                 CreateSteamAppId("Build/"+ Constants.SimpleTitleString + " Linux/");
-                Debug.Log("SUCCESS BUILD Linux");
+                Logger.Message("SUCCESS BUILD Linux");
                 return true;
             } 
             else
             {
-                Debug.Log("FAILED BUILD Linux");
+                Logger.Message("FAILED BUILD Linux");
                 ExitBatchWithError();
                 return false;
             }
         }
         
         [MenuItem("Build/Mac", false, 52)]
-        public static bool BuildMac()
+        public static void BuildMac()
+        {
+            RunBuildAsync(() => Task.FromResult(BuildMacCore()));
+        }
+
+        private static bool BuildMacCore()
         {
             if (Application.platform == RuntimePlatform.OSXEditor)
             {
@@ -127,19 +139,24 @@ namespace Warlander.Deedplanner.Editor
             {
                 // no steam_appid.txt on Mac: unsealed files in the bundle root make
                 // codesign refuse to sign, and Finder launches never read it (CWD=/)
-                Debug.Log("SUCCESS BUILD Mac");
+                Logger.Message("SUCCESS BUILD Mac");
                 return true;
             }
             else
             {
-                Debug.Log("FAILED BUILD Mac");
+                Logger.Message("FAILED BUILD Mac");
                 ExitBatchWithError();
                 return false;
             }
         }
 
         [MenuItem("Build/WebGL", false, 100)]
-        public static bool BuildWeb()
+        public static void BuildWeb()
+        {
+            RunBuildAsync(() => Task.FromResult(BuildWebCore()));
+        }
+
+        private static bool BuildWebCore()
         {
             // GitHub Pages serves compressed builds without Content-Encoding headers,
             // so the loader cannot boot them. Ship uncompressed instead.
@@ -157,12 +174,12 @@ namespace Warlander.Deedplanner.Editor
             BuildSummary summary = report.summary;
             if (summary.result == BuildResult.Succeeded)
             {
-                Debug.Log("SUCCESS BUILD WebGL");
+                Logger.Message("SUCCESS BUILD WebGL");
                 return true;
             } 
             else
             {
-                Debug.Log("FAILED BUILD WebGL");
+                Logger.Message("FAILED BUILD WebGL");
                 ExitBatchWithError();
                 return false;
             }
@@ -174,6 +191,36 @@ namespace Warlander.Deedplanner.Editor
             options.scenes = new[] { "Assets/Scenes/LoadingScene.unity", "Assets/Scenes/MainScene.unity" };
 
             return options;
+        }
+
+        private static Task<bool> BuildAllStandaloneCoreAsync()
+        {
+            return Task.FromResult(BuildWindows64Core() && BuildLinuxCore() && BuildMacCore());
+        }
+
+        private static async void RunBuildAsync(Func<Task<bool>> build)
+        {
+            bool success = false;
+            try
+            {
+                if (!PreviewAtlasFreshness.IsFresh(out string reason))
+                {
+                    Logger.Message("Generating preview atlases before build: " + reason);
+                    await PreviewThumbnailGenerator.GenerateAllAsync();
+                }
+                success = await build();
+            }
+            catch (Exception exception)
+            {
+                Logger.Exception(exception);
+            }
+            finally
+            {
+                if (Application.isBatchMode)
+                {
+                    EditorApplication.Exit(success ? 0 : 1);
+                }
+            }
         }
 
         // -executeMethod ignores return values, so a failed build must exit the
@@ -190,7 +237,7 @@ namespace Warlander.Deedplanner.Editor
         {
             if (!Directory.Exists(path))
             {
-                Debug.LogError("Invalid directory for Steam app ID: " + path);
+                Logger.Error("Invalid directory for Steam app ID: " + path);
                 return;
             }
             

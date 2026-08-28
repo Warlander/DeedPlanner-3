@@ -4,6 +4,8 @@
 /[Bb]uild/
 /[Bb]uilds/
 /[Ll]ogs/
+/Assets/Generated/
+/Assets/Generated.meta
 
 /docs/
 

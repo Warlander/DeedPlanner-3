@@ -53,7 +53,7 @@ namespace Warlander.Deedplanner.Data.Walls
             }
         }
 
-        private void OnModelLoaded(Model originalModel, GameObject newModel)
+        private void OnModelLoaded(ModelHandle originalModel, GameObject newModel)
         {
             if (_model)
             {

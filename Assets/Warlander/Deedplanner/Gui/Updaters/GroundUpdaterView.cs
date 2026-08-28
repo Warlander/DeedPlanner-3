@@ -1,10 +1,8 @@
 using System;
-using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data.Grounds;
-using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui.Widgets;
 
 namespace Warlander.Deedplanner.Gui.Updaters
@@ -37,22 +35,24 @@ namespace Warlander.Deedplanner.Gui.Updaters
             _editCornersToggle.onValueChanged.AddListener(OnEditCornersChanged);
         }
 
-        public void AddGroundEntry(GroundData data, string[] category)
+        public void AddGroundEntry(GroundData data, string[] category, Sprite sprite)
         {
             IconUnityListElement iconListElement = (IconUnityListElement) _groundsTree.Add(data, category);
-            iconListElement.TextureReference = data.Tex2d;
+            iconListElement.Sprite = sprite;
         }
 
-        public void SetLeftClickData(GroundData data)
+        public void SetLeftClickData(GroundData data, Sprite sprite)
         {
             _leftClickText.text = data.Name;
-            data.Tex2d.LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite => _leftClickImage.sprite = sprite);
+            _leftClickImage.sprite = sprite;
+            _leftClickImage.enabled = sprite;
         }
 
-        public void SetRightClickData(GroundData data)
+        public void SetRightClickData(GroundData data, Sprite sprite)
         {
             _rightClickText.text = data.Name;
-            data.Tex2d.LoadOrGetSpriteAsync().ToObservable().Subscribe(sprite => _rightClickImage.sprite = sprite);
+            _rightClickImage.sprite = sprite;
+            _rightClickImage.enabled = sprite;
         }
 
         private void OnGroundsTreeValueChanged(object value)

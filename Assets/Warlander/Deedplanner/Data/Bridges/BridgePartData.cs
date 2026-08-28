@@ -9,13 +9,13 @@ namespace Warlander.Deedplanner.Data.Bridges
 {
     public class BridgePartData
     {
-        private readonly Dictionary<BridgePartSide, Model> models = new Dictionary<BridgePartSide, Model>();
+        private readonly Dictionary<BridgePartSide, ModelHandle> models = new Dictionary<BridgePartSide, ModelHandle>();
         private readonly TextureReference _uiSpriteReference;
         private readonly Materials materials;
-        
+
         public BridgePartType PartType { get; }
 
-        public BridgePartData(IWurmModelFactory modelFactory, ITextureReferenceFactory textureReferenceFactory, XmlElement element)
+        public BridgePartData(IWurmAssetFacade assetFacade, XmlElement element)
         {
             string typeString = element.GetAttribute("type");
             bool typeParseSuccess = Enum.TryParse(typeString, true, out BridgePartType type);
@@ -38,20 +38,15 @@ namespace Warlander.Deedplanner.Data.Bridges
 
                         if (sideString.Equals("side", StringComparison.OrdinalIgnoreCase))
                         {
-                            models.Add(BridgePartSide.LEFT, modelFactory.CreateModel(child, LayerMasks.BridgeLayer));
-                            models.Add(BridgePartSide.RIGHT, modelFactory.CreateModel(child, LayerMasks.BridgeLayer));
+                            models.Add(BridgePartSide.LEFT, assetFacade.GetModel(child, LayerMasks.BridgeLayer));
+                            models.Add(BridgePartSide.RIGHT, assetFacade.GetModel(child, LayerMasks.BridgeLayer));
                         }
-                        else if (sideParseSuccess)
-                        {
-                            models.Add(side, modelFactory.CreateModel(child, LayerMasks.BridgeLayer));
-                        }
-                        else
-                        {
-                            Debug.LogError($"Bridge side enum parsing fail: {sideString}");
+                        else {
+                            models.Add(side, assetFacade.GetModel(child, LayerMasks.BridgeLayer));
                         }
                         break;
                     case "tex":
-                        uiTex = textureReferenceFactory.GetTextureReference(child);
+                        uiTex = assetFacade.GetTextureReference(child);
                         break;
                     case "materials":
                         materials = new Materials(child);
@@ -62,7 +57,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             _uiSpriteReference = uiTex;
         }
 
-        public Model GetModel(BridgePartSide side)
+        public ModelHandle GetModel(BridgePartSide side)
         {
             return models[side];
         }

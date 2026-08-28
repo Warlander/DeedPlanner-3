@@ -3,11 +3,14 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using Warlander.Deedplanner.Logic.Outlines;
+using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Graphics.Outline
 {
     public class ScreenSpaceOutlineFeature : ScriptableRendererFeature
     {
+        public static readonly LogCategory Category = new LogCategory("Rendering");
+
         [SerializeField][Range(1f, 20f)] private float outlineWidth = 5f;
 
         private IOutlineCoordinator _coordinator;
@@ -36,8 +39,7 @@ namespace Warlander.Deedplanner.Graphics.Outline
             Shader shader = Shader.Find("DeedPlanner/ScreenSpaceOutline");
             if (shader == null)
             {
-                Debug.LogError("[ScreenSpaceOutlineFeature] Shader 'DeedPlanner/ScreenSpaceOutline' not found.");
-                return;
+                throw new System.InvalidOperationException("Shader 'DeedPlanner/ScreenSpaceOutline' not found.");
             }
 
             _solidMats = new Dictionary<OutlineType, Material>

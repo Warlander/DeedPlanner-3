@@ -83,7 +83,6 @@ namespace Warlander.Deedplanner.Debugging
                 case TestMap.Bridges:
                     return Path.Combine(Application.streamingAssetsPath, "./Special/Maps/Bridge World.MAP");
                 default:
-                    Debug.LogWarning($"No asset path mapping found for test map {map}");
                     return null;
             }
         }

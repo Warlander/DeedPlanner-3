@@ -24,10 +24,10 @@ namespace Warlander.Deedplanner.Gui.Updaters
             _automaticReverseToggle.onValueChanged.AddListener(OnAutomaticReverseChanged);
         }
 
-        public void AddWallEntry(WallData data, string[] category)
+        public void AddWallEntry(WallData data, string[] category, Sprite sprite)
         {
             IconUnityListElement iconListElement = (IconUnityListElement) _wallsTree.Add(data, category);
-            iconListElement.TextureReference = data.Icon;
+            iconListElement.Sprite = sprite;
         }
 
         public void SetReverseToggles(bool reverse, bool automaticReverse)

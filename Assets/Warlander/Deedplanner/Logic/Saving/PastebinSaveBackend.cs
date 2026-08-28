@@ -96,6 +96,11 @@ namespace Warlander.Deedplanner.Logic.Saving
         public async Task<string> LoadAsync(MapLocation source)
         {
             byte[] data = await WebUtils.ReadUrlToByteArrayAsync(source.Locator);
+            if (data == null)
+            {
+                throw new InvalidOperationException("Download failed: " + source.Locator);
+            }
+
             string text = Encoding.UTF8.GetString(data);
 
             try

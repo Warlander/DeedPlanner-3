@@ -18,24 +18,27 @@ using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Logging;
 using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Data
 {
     public class DataLoader : IInitializable
     {
+        public static readonly LogCategory Category = new LogCategory("DataLoad");
+
         private readonly UnityThreadRunner _unityThreadRunner;
-        private readonly ITextureReferenceFactory _textureReferenceFactory;
-        private readonly IWurmModelFactory _modelFactory;
+        private readonly IWurmAssetFacade _assetFacade;
         private readonly BridgePartDataFactory _bridgePartDataFactory;
-        
-        public DataLoader(UnityThreadRunner unityThreadRunner, ITextureReferenceFactory textureReferenceFactory,
-            IWurmModelFactory modelFactory, BridgePartDataFactory bridgePartDataFactory)
+        private readonly ICategoryLogger _logger;
+
+        public DataLoader(UnityThreadRunner unityThreadRunner, IWurmAssetFacade assetFacade,
+            ILoggerSource loggerSource)
         {
             _unityThreadRunner = unityThreadRunner;
-            _textureReferenceFactory = textureReferenceFactory;
-            _modelFactory = modelFactory;
-            _bridgePartDataFactory = bridgePartDataFactory;
+            _assetFacade = assetFacade;
+            _logger = loggerSource.Create(Category);
+            _bridgePartDataFactory = new BridgePartDataFactory(assetFacade);
         }
 
         public delegate void LoadingStepStartedDelegate(int stepNumber, string stepDescription);
@@ -60,7 +63,7 @@ namespace Warlander.Deedplanner.Data
             for (int i = 0; i < documents.Length; i++)
             {
                 int index = i;
-                Debug.Log("Parsing " + locations[i]);
+                _logger.Message("Parsing " + locations[i]);
                 UnityWebRequest request = UnityWebRequest.Get(locations[i]);
                 request.SendWebRequest().completed += operation =>
                 {
@@ -68,7 +71,7 @@ namespace Warlander.Deedplanner.Data
                     documents[index] = new XmlDocument();
                     documents[index].LoadXml(request.downloadHandler.text);
                     
-                    Debug.Log("Parsed " + locations[index]);
+                    _logger.Message("Parsed " + locations[index]);
 
                     if (completedLoadings == documents.Length)
                     {
@@ -124,7 +127,7 @@ namespace Warlander.Deedplanner.Data
             
             _unityThreadRunner.RunOnUnityThread(() =>
             {
-                Debug.Log("XML file loading complete");
+                _logger.Message("XML file loading complete");
                 LoadingComplete?.Invoke();
             });
         }
@@ -136,7 +139,7 @@ namespace Warlander.Deedplanner.Data
             
             _unityThreadRunner.RunOnUnityThread(() =>
             {
-                Debug.Log(description);
+                _logger.Message(description);
                 LoadingStepStarted?.Invoke(capturedStepNumber, description);
             });
             
@@ -153,12 +156,12 @@ namespace Warlander.Deedplanner.Data
                 string name = element.GetAttribute("name");
                 string shortName = element.GetAttribute("shortname");
 
-                Debug.Log("Loading ground " + name);
+                _logger.Message("Loading ground " + name);
 
                 bool unique = VerifyShortName(shortName);
                 if (!unique)
                 {
-                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    _logger.Warning("Shortname " + shortName + " already exists, aborting");
                     continue;
                 }
 
@@ -176,15 +179,15 @@ namespace Warlander.Deedplanner.Data
                             string target = child.GetAttribute("target");
                             if (target == "editmode")
                             {
-                                tex2d = _textureReferenceFactory.GetTextureReference(child);
+                                tex2d = _assetFacade.GetTextureReference(child);
                             }
                             else if (target == "previewmode")
                             {
-                                tex3d = _textureReferenceFactory.GetTextureReference(child);
+                                tex3d = _assetFacade.GetTextureReference(child);
                             }
                             else
                             {
-                                tex2d = _textureReferenceFactory.GetTextureReference(child);
+                                tex2d = _assetFacade.GetTextureReference(child);
                                 tex3d = tex2d;
                             }
                             break;
@@ -200,12 +203,12 @@ namespace Warlander.Deedplanner.Data
 
                 if (tex2d == null || tex3d == null)
                 {
-                    Debug.LogWarning("No textures loaded, aborting");
+                    _logger.Warning("No textures loaded, aborting");
                 }
 
                 GroundData data = new GroundData(name, shortName, categories.ToArray(), tex2d, tex3d, diagonal, caveDoor);
                 Database.Grounds[shortName] = data;
-                Debug.Log("Ground data " + name + " loaded and ready to use!");
+                _logger.Message("Ground data " + name + " loaded and ready to use!");
             }
         }
 
@@ -224,7 +227,7 @@ namespace Warlander.Deedplanner.Data
                 {
                     if (child.LocalName == "tex")
                     {
-                        tex = _textureReferenceFactory.GetTextureReference(child);
+                        tex = _assetFacade.GetTextureReference(child);
                     }
                     else if (child.LocalName == "materials")
                     {
@@ -234,19 +237,19 @@ namespace Warlander.Deedplanner.Data
 
                 if (tex == null)
                 {
-                    Debug.LogWarning("Bridge pavement " + name + " has no texture, skipping");
+                    _logger.Warning("Bridge pavement " + name + " has no texture, skipping");
                     continue;
                 }
 
                 bool unique = VerifyShortName(shortName);
                 if (!unique)
                 {
-                    Debug.LogWarning("Bridge pavement shortname " + shortName + " conflicts with an existing one, skipping");
+                    _logger.Warning("Bridge pavement shortname " + shortName + " conflicts with an existing one, skipping");
                     continue;
                 }
 
                 Database.BridgePavements[shortName] = new BridgePavementData(name, shortName, tex, materials);
-                Debug.Log("Bridge pavement " + name + " loaded and ready to use!");
+                _logger.Message("Bridge pavement " + name + " loaded and ready to use!");
             }
         }
 
@@ -259,8 +262,8 @@ namespace Warlander.Deedplanner.Data
                 string name = element.GetAttribute("name");
                 string shortName = element.GetAttribute("shortname");
                 DockSupportType supportType = ParseDockSupportType(element.GetAttribute("type"));
-                Model baseModel = null;
-                Model extensionModel = null;
+                ModelHandle baseModel = null;
+                ModelHandle extensionModel = null;
                 Materials materials = null;
 
                 foreach (XmlElement child in element)
@@ -278,33 +281,33 @@ namespace Warlander.Deedplanner.Data
 
                     if (child.GetAttribute("tag") == "extension")
                     {
-                        extensionModel = _modelFactory.CreateModel(child, LayerMasks.FloorRoofLayer);
+                        extensionModel = _assetFacade.GetModel(child, LayerMasks.FloorRoofLayer);
                     }
                     else
                     {
-                        baseModel = _modelFactory.CreateModel(child, LayerMasks.FloorRoofLayer);
+                        baseModel = _assetFacade.GetModel(child, LayerMasks.FloorRoofLayer);
                     }
                 }
 
                 if (baseModel == null)
                 {
-                    Debug.LogWarning("Dock support " + name + " has no base model, skipping");
+                    _logger.Warning("Dock support " + name + " has no base model, skipping");
                     continue;
                 }
 
                 bool unique = VerifyShortName(shortName);
                 if (!unique)
                 {
-                    Debug.LogWarning("Dock support shortname " + shortName + " conflicts with an existing one, skipping");
+                    _logger.Warning("Dock support shortname " + shortName + " conflicts with an existing one, skipping");
                     continue;
                 }
 
                 Database.DockSupports[shortName] = new DockSupportData(name, shortName, supportType, baseModel, extensionModel, materials);
-                Debug.Log("Dock support " + name + " loaded and ready to use!");
+                _logger.Message("Dock support " + name + " loaded and ready to use!");
             }
         }
 
-        private static DockSupportType ParseDockSupportType(string type)
+        private DockSupportType ParseDockSupportType(string type)
         {
             switch (type)
             {
@@ -315,7 +318,7 @@ namespace Warlander.Deedplanner.Data
                 case "brace":
                     return DockSupportType.Brace;
                 default:
-                    Debug.LogWarning("Unknown dock support type: " + type);
+                    _logger.Warning("Unknown dock support type: " + type);
                     return DockSupportType.None;
             }
         }
@@ -329,16 +332,16 @@ namespace Warlander.Deedplanner.Data
                 string name = element.GetAttribute("name");
                 string shortName = element.GetAttribute("shortname");
 
-                Debug.Log("Loading cave data " + name);
+                _logger.Message("Loading cave data " + name);
 
                 bool unique = VerifyShortName(shortName);
                 if (!unique)
                 {
-                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    _logger.Warning("Shortname " + shortName + " already exists, aborting");
                     continue;
                 }
 
-                TextureReference texture = _textureReferenceFactory.GetTextureReference(element.GetAttribute("tex"));
+                TextureReference texture = _assetFacade.GetTextureReference(element.GetAttribute("tex"));
                 string type = element.GetAttribute("type");
                 bool wall = type == "wall";
                 bool entrance = type == "entrance";
@@ -373,16 +376,16 @@ namespace Warlander.Deedplanner.Data
                 string name = element.GetAttribute("name");
                 string shortName = element.GetAttribute("shortname");
 
-                Debug.Log("Loading floor " + name);
+                _logger.Message("Loading floor " + name);
 
                 bool unique = VerifyShortName(shortName);
                 if (!unique)
                 {
-                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    _logger.Warning("Shortname " + shortName + " already exists, aborting");
                     continue;
                 }
 
-                Model model = null;
+                ModelHandle model = null;
                 List<string[]> categories = new List<string[]>();
                 bool opening = false;
                 bool supportsDock = element.GetAttribute("dockable") == "true";
@@ -393,7 +396,7 @@ namespace Warlander.Deedplanner.Data
                     switch (child.LocalName)
                     {
                         case "model":
-                            model = _modelFactory.CreateModel(child, LayerMasks.FloorRoofLayer);
+                            model = _assetFacade.GetModel(child, LayerMasks.FloorRoofLayer);
                             break;
                         case "category":
                             categories.Add(child.InnerText.Split('/'));
@@ -409,7 +412,7 @@ namespace Warlander.Deedplanner.Data
 
                 if (model == null)
                 {
-                    Debug.LogWarning("No model loaded, aborting");
+                    _logger.Warning("No model loaded, aborting");
                 }
 
                 FloorData data = new FloorData(model, name, shortName, categories.ToArray(), opening, supportsDock, materials);
@@ -430,7 +433,7 @@ namespace Warlander.Deedplanner.Data
                 bool unique = VerifyShortName(shortName);
                 if (!unique)
                 {
-                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    _logger.Warning("Shortname " + shortName + " already exists, aborting");
                     continue;
                 }
 
@@ -439,8 +442,8 @@ namespace Warlander.Deedplanner.Data
                 bool arch = type == "arch";
                 bool archBuildable = type == "lowfence";
 
-                Model bottomModel = null;
-                Model normalModel = null;
+                ModelHandle bottomModel = null;
+                ModelHandle normalModel = null;
                 TextureReference icon = null;
                 Color color = Color.white;
 
@@ -452,7 +455,7 @@ namespace Warlander.Deedplanner.Data
                     switch (child.LocalName)
                     {
                         case "model":
-                            Model model = _modelFactory.CreateModel(child, LayerMasks.WallLayer);
+                            ModelHandle model = _assetFacade.GetModel(child, LayerMasks.WallLayer);
                             if (model.Tag == "bottom")
                             {
                                 bottomModel = model;
@@ -475,7 +478,7 @@ namespace Warlander.Deedplanner.Data
                             materials = new Materials(child);
                             break;
                         case "icon":
-                            icon = _textureReferenceFactory.GetTextureReference(child.GetAttribute("location"));
+                            icon = _assetFacade.GetTextureReference(child.GetAttribute("location"));
                             break;
                     }
                 }
@@ -500,16 +503,16 @@ namespace Warlander.Deedplanner.Data
                 string name = element.GetAttribute("name");
                 string shortName = element.GetAttribute("shortname");
 
-                Debug.Log("Loading roof " + name);
+                _logger.Message("Loading roof " + name);
 
                 bool unique = VerifyShortName(shortName);
                 if (!unique)
                 {
-                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    _logger.Warning("Shortname " + shortName + " already exists, aborting");
                     continue;
                 }
 
-                TextureReference texture = _textureReferenceFactory.GetTextureReference(element.GetAttribute("tex"));
+                TextureReference texture = _assetFacade.GetTextureReference(element.GetAttribute("tex"));
                 Materials materials = null;
 
                 foreach (XmlElement child in element)
@@ -526,7 +529,7 @@ namespace Warlander.Deedplanner.Data
                 Database.Roofs[shortName] = data;
             }
             
-            RoofType.Initialize(_modelFactory);
+            RoofType.Initialize(_assetFacade);
         }
 
         private void LoadObjects(XmlDocument document)
@@ -544,16 +547,16 @@ namespace Warlander.Deedplanner.Data
                 bool tree = type == "tree";
                 bool bush = type == "bush";
 
-                Debug.Log("Loading object " + name);
+                _logger.Message("Loading object " + name);
 
                 bool unique = VerifyShortName(shortName);
                 if (!unique)
                 {
-                    Debug.LogWarning("Shortname " + shortName + " already exists, aborting");
+                    _logger.Warning("Shortname " + shortName + " already exists, aborting");
                     continue;
                 }
 
-                Model model = null;
+                ModelHandle model = null;
                 List<string[]> categories = new List<string[]>();
                 Materials materials = null;
 
@@ -562,7 +565,7 @@ namespace Warlander.Deedplanner.Data
                     switch (child.LocalName)
                     {
                         case "model":
-                            model = _modelFactory.CreateModel(child, LayerMasks.DecorationLayer);
+                            model = _assetFacade.GetModel(child, LayerMasks.DecorationLayer);
                             break;
                         case "materials":
                             materials = new Materials(child);
@@ -591,12 +594,12 @@ namespace Warlander.Deedplanner.Data
                 int maxWidth = int.Parse(element.GetAttribute("maxwidth"));
                 bool canBePaved = element.GetAttribute("paveable") == "true";
 
-                Debug.Log("Loading object " + name);
+                _logger.Message("Loading object " + name);
 
                 bool unique = VerifyShortName(name);
                 if (!unique)
                 {
-                    Debug.LogWarning("Name " + name + " already exists, aborting");
+                    _logger.Warning("Name " + name + " already exists, aborting");
                     continue;
                 }
 
@@ -618,7 +621,7 @@ namespace Warlander.Deedplanner.Data
                             }
                             else
                             {
-                                Debug.LogError($"Bridge type enum parsing fail for bridge {name}, type: {typeString}");
+                                _logger.Error($"Bridge type enum parsing fail for bridge {name}, type: {typeString}");
                             }
                             break;
                         case "lane":
@@ -645,7 +648,7 @@ namespace Warlander.Deedplanner.Data
                             }
                             else
                             {
-                                Debug.LogError($"Bridge side enum parsing fail for bridge {name}, type: {sideString}");
+                                _logger.Error($"Bridge side enum parsing fail for bridge {name}, type: {sideString}");
                             }
                             break;
                         case "part":
