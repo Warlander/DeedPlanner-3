@@ -23,8 +23,6 @@ namespace Warlander.Deedplanner.Gui.Updaters
 
         [SerializeField] private Toggle _floorsModeToggle;
         [SerializeField] private Toggle _docksModeToggle;
-        [SerializeField] private Image _floorsModeIcon;
-        [SerializeField] private Image _docksModeIcon;
 
         [SerializeField] private GameObject _dockSupportSection;
         [SerializeField] private Toggle _autoSupportToggle;
@@ -51,9 +49,6 @@ namespace Warlander.Deedplanner.Gui.Updaters
 
             _floorsModeToggle.onValueChanged.AddListener(toggled => OnPaintModeToggled(toggled, FloorPaintMode.Floors));
             _docksModeToggle.onValueChanged.AddListener(toggled => OnPaintModeToggled(toggled, FloorPaintMode.Docks));
-            _floorsModeToggle.onValueChanged.AddListener(toggled => UpdateModeIcons());
-            _docksModeToggle.onValueChanged.AddListener(toggled => UpdateModeIcons());
-            UpdateModeIcons();
 
             _autoSupportToggle.onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, true, null));
             _noneSupportToggle.onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, false, null));
@@ -132,17 +127,6 @@ namespace Warlander.Deedplanner.Gui.Updaters
         {
             _floorsTree.gameObject.SetActive(!docksMode);
             _dockFloorsList.gameObject.SetActive(docksMode);
-        }
-
-        // Icons sit directly on the panel background: dark = active, faded = inactive.
-        private void UpdateModeIcons()
-        {
-            _floorsModeIcon.color = _floorsModeToggle.isOn
-                ? new Color(0.16f, 0.13f, 0.11f)
-                : new Color(0.16f, 0.13f, 0.11f, 0.35f);
-            _docksModeIcon.color = _docksModeToggle.isOn
-                ? new Color(0.16f, 0.13f, 0.11f)
-                : new Color(0.16f, 0.13f, 0.11f, 0.35f);
         }
 
         private void OnDockSupportToggled(bool toggledOn, bool auto, DockSupportData support)
