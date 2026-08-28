@@ -36,6 +36,7 @@ namespace Warlander.Deedplanner.Data.Grounds
         private int[,] slopesArray;
         private GroundData[,] dataArray;
         private RoadDirection[,] directionsArray;
+        private DoorOrientation[,] doorOrientationsArray;
         
         private Vector3[] renderVertices;
         private Vector2[] uv2;
@@ -85,6 +86,7 @@ namespace Warlander.Deedplanner.Data.Grounds
             slopesArray = new int[Width + 1, Height + 1];
             dataArray = new GroundData[Width, Height];
             directionsArray = new RoadDirection[Width, Height];
+            doorOrientationsArray = new DoorOrientation[Width, Height];
 
             RenderMesh = new Mesh();
             RenderMesh.name = "ground render mesh";
@@ -404,6 +406,44 @@ namespace Warlander.Deedplanner.Data.Grounds
                 needsVerticesUpdate = true;
             }
         }
+        
+        private void ApplyUvRotation(int x, int y, DoorOrientation doorOrientation)
+        {
+            int vertexIndex = (x * Height + y) * VerticesPerRenderTile;
+            Vector2[] meshUvs = RenderMesh.uv;
+
+            Vector2 v00 = new Vector2(0, 0);
+            Vector2 v10 = new Vector2(1, 0);
+            Vector2 v01 = new Vector2(0, 1);
+            Vector2 v11 = new Vector2(1, 1);
+            Vector2 vCenter = new Vector2(0.5f, 0.5f);
+
+            (v00, v10, v01, v11) = doorOrientation switch
+            {
+                DoorOrientation.E => (v10, v11, v00, v01),
+                DoorOrientation.S => (v11, v01, v10, v00),
+                DoorOrientation.W => (v01, v00, v11, v10),
+                _                 => (v00, v10, v01, v11),
+            };
+
+            meshUvs[vertexIndex]     = v00;
+            meshUvs[vertexIndex + 1] = v01;
+            meshUvs[vertexIndex + 2] = vCenter;
+
+            meshUvs[vertexIndex + 3] = v01;
+            meshUvs[vertexIndex + 4] = v11;
+            meshUvs[vertexIndex + 5] = vCenter;
+
+            meshUvs[vertexIndex + 6] = v11;
+            meshUvs[vertexIndex + 7] = v10;
+            meshUvs[vertexIndex + 8] = vCenter;
+
+            meshUvs[vertexIndex + 9]  = v10;
+            meshUvs[vertexIndex + 10] = v00;
+            meshUvs[vertexIndex + 11] = vCenter;
+
+            RenderMesh.uv = meshUvs;
+        }
 
         private void UpdateRenderVertices(int x, int y, float newHeight)
         {
@@ -545,21 +585,32 @@ namespace Warlander.Deedplanner.Data.Grounds
             return directionsArray[x, y];
         }
         
-        public void SetGroundData(int x, int y, GroundData data, RoadDirection direction)
+        public void SetGroundData(int x, int y, GroundData data, RoadDirection direction, DoorOrientation doorOrientation = DoorOrientation.N)
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height)
             {
                 return;
             }
             
-            if (dataArray[x, y] == data && directionsArray[x, y] == direction)
+            bool wasCaveDoor = dataArray[x, y] != null && dataArray[x, y].IsCaveDoor;
+            bool isCaveDoor = data != null && data.IsCaveDoor;
+            DoorOrientation effectiveOrientation = isCaveDoor ? doorOrientation : DoorOrientation.N;
+            bool orientationChanged = doorOrientationsArray[x, y] != effectiveOrientation;
+            
+            if (dataArray[x, y] == data && directionsArray[x, y] == direction && doorOrientationsArray[x, y] == effectiveOrientation)
             {
                 return;
             }
 
             dataArray[x, y] = data;
             directionsArray[x, y] = direction;
+            doorOrientationsArray[x, y] = effectiveOrientation;
 
+            if ((isCaveDoor && orientationChanged) || (wasCaveDoor && !isCaveDoor))
+            {
+                ApplyUvRotation(x, y, effectiveOrientation);
+            }
+            
             UpdateUV2(x, y, true);
             UpdateUV2(x - 1, y, false);
             UpdateUV2(x + 1, y, false);
@@ -590,16 +641,33 @@ namespace Warlander.Deedplanner.Data.Grounds
             int vertexIndex = index * VerticesPerRenderTile;
 
             RoadDirection roadDirection = directionsArray[x, y];
+            DoorOrientation doorOrientation = doorOrientationsArray[x, y];
             Vector2Int selfCoords = new Vector2Int(x, y);
             
+            var (wOffset, nOffset, eOffset, sOffset) = (data.IsCaveDoor ? doorOrientation : DoorOrientation.N) switch
+            {
+                DoorOrientation.E => (9, 0, 3, 6),
+                DoorOrientation.S => (6, 9, 0, 3),
+                DoorOrientation.W => (3, 6, 9, 0),
+                _                 => (0, 3, 6, 9),
+            };
+            
+            int westSlot  = vertexIndex + wOffset;
+            int northSlot = vertexIndex + nOffset;
+            int eastSlot  = vertexIndex + eOffset;
+            int southSlot = vertexIndex + sOffset;
+            
             bool forceSelfDataWest = roadDirection.IsCenter() || roadDirection.IsWest();
-            UpdateUV2Triangle(selfCoords, new Vector2Int(x - 1, y), vertexIndex, primaryChangedTile, forceSelfDataWest);
+            UpdateUV2Triangle(selfCoords, new Vector2Int(x - 1, y), westSlot, primaryChangedTile, forceSelfDataWest);
+
             bool forceSelfDataNorth = roadDirection.IsCenter() || roadDirection.IsNorth();
-            UpdateUV2Triangle(selfCoords, new Vector2Int(x, y + 1), vertexIndex + 3, primaryChangedTile, forceSelfDataNorth);
+            UpdateUV2Triangle(selfCoords, new Vector2Int(x, y + 1), northSlot, primaryChangedTile, forceSelfDataNorth);
+
             bool forceSelfDataEast = roadDirection.IsCenter() || roadDirection.IsEast();
-            UpdateUV2Triangle(selfCoords, new Vector2Int(x + 1, y), vertexIndex + 6, primaryChangedTile, forceSelfDataEast);
+            UpdateUV2Triangle(selfCoords, new Vector2Int(x + 1, y), eastSlot, primaryChangedTile, forceSelfDataEast);
+
             bool forceSelfDataSouth = roadDirection.IsCenter() || roadDirection.IsSouth();
-            UpdateUV2Triangle(selfCoords, new Vector2Int(x, y - 1), vertexIndex + 9, primaryChangedTile, forceSelfDataSouth);
+            UpdateUV2Triangle(selfCoords, new Vector2Int(x, y - 1), southSlot, primaryChangedTile, forceSelfDataSouth);
         }
 
         private void UpdateUV2Triangle(Vector2Int selfCoords, Vector2Int diagonalCoords, int uvIndex, bool primaryChangedTile, bool forceSelfData)

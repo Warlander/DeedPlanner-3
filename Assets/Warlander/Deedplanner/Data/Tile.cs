@@ -135,7 +135,8 @@ namespace Warlander.Deedplanner.Data
         {
             if (Ground.Data.IsCaveDoor)
             {
-                Map.Ground.SetGroundData(X, Y, Ground.Data, Ground.RoadDirection);
+                DoorOrientation orientation = CalculateDoorOrientation();
+                Map.Ground.SetGroundData(X, Y, Ground.Data, Ground.RoadDirection, orientation);
             }
         }
         
