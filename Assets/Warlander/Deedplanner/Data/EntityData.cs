@@ -21,7 +21,10 @@ namespace Warlander.Deedplanner.Data
 
         public virtual void Apply(Tile tile, Transform targetTransform)
         {
-            targetTransform.localPosition = new Vector3(tile.X * 4, tile.GetHeightForLevel(Level) * 0.1f + Level * 3f, tile.Y * 4);
+            int height = Type == EntityType.Floorroof
+                ? tile.GetHeightForLevelOnTile(Level)
+                : tile.GetHeightForLevel(Level);
+            targetTransform.localPosition = new Vector3(tile.X * 4, height * 0.1f + Level * 3f, tile.Y * 4);
         }
 
         public virtual void Serialize(XmlDocument document, XmlElement localRoot)

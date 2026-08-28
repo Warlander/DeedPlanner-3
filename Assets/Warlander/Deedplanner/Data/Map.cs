@@ -390,20 +390,27 @@ namespace Warlander.Deedplanner.Data
             RefreshEntitiesAroundDock(dock.Tile);
         }
 
-        // A dock switches its tile (and wall-slope-wise its neighbors) between terrain and the
-        // deck's virtual surface — re-apply entity positions so nothing floats or buries.
+        // A dock overrides all four of its height corners. Re-apply entities around the full
+        // footprint so positions and wall slopes use the deck's virtual surface.
         private void RefreshEntitiesAroundDock(Tile tile)
         {
-            tile.Refresh();
-            this[tile.X + 1, tile.Y]?.Refresh();
-            this[tile.X - 1, tile.Y]?.Refresh();
-            this[tile.X, tile.Y + 1]?.Refresh();
-            this[tile.X, tile.Y - 1]?.Refresh();
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    this[tile.X + dx, tile.Y + dy]?.Refresh();
+                }
+            }
         }
 
         public Dock GetDock(Tile tile)
         {
             return _dockCollection.GetDock(tile);
+        }
+
+        public Dock GetDockSharingCorner(Tile corner)
+        {
+            return _dockCollection.GetDockSharingCorner(corner);
         }
 
         public event Action DocksChanged

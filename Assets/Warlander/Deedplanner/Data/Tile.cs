@@ -193,8 +193,22 @@ namespace Warlander.Deedplanner.Data
                 return caveHeight;
             }
 
-            // Dock tiles use the dock as their reference surface: entities above a dock stack
-            // from the deck's anchor level, independent of how deep the terrain below is.
+            Dock cornerDock = Map.GetDockSharingCorner(this);
+            if (cornerDock != null)
+            {
+                return cornerDock.Height - cornerDock.AnchorLevel * 30;
+            }
+
+            return SurfaceHeight;
+        }
+
+        public int GetHeightForLevelOnTile(int level)
+        {
+            if (level < 0)
+            {
+                return caveHeight;
+            }
+
             if (dock != null)
             {
                 return dock.Height - dock.AnchorLevel * 30;
