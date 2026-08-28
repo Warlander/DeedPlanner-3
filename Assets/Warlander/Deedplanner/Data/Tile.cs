@@ -104,11 +104,11 @@ namespace Warlander.Deedplanner.Data
         
         public DoorOrientation CalculateDoorOrientation()
         {
-            if (X <= 0 || X + 1 >= Map.Width || Y <= 0 || Y + 1 >= Map.Height) return DoorOrientation.N;
+            if (X < 0 || X >= Map.Width || Y < 0 || Y >= Map.Height) return DoorOrientation.N;
             
-            Tile nwTile = this.Map[X, Y + 1];
-            Tile neTile = this.Map[X + 1, Y + 1];
-            Tile seTile = this.Map[X + 1, Y];
+            Tile nwTile = Map.GetRelativeTile(this, 0, 1);
+            Tile neTile = Map.GetRelativeTile(this, 1, 1);
+            Tile seTile = Map.GetRelativeTile(this, 1, 0);
 
             if (nwTile == null || neTile == null || seTile == null) return DoorOrientation.N;
             
