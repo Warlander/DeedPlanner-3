@@ -64,7 +64,8 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: Assets/Generated
-          key: previews-windows-v3-${{ hashFiles('Assets/StreamingAssets/objects.xml') }}
+          # v4: v3 cache is poisoned - atlases were generated under -nographics (all-white PNGs)
+          key: previews-windows-v4-${{ hashFiles('Assets/StreamingAssets/objects.xml') }}
 
       - name: Ensure Docker daemon is running
         shell: pwsh
@@ -110,7 +111,9 @@ jobs:
               --volume "C:/Program Files (x86)/Windows Kits:C:/Program Files (x86)/Windows Kits" `
               --volume "C:/ProgramData/Microsoft/VisualStudio:C:/ProgramData/Microsoft/VisualStudio" `
               unityci/editor:windows-6000.3.20f1-windows-il2cpp-3.2.2 `
-              powershell -NoProfile -Command "& 'c:/workspace/.github/workflows/install-llvmpipe.ps1' -EditorPath 'C:/UnityEditor/6000.3.20f1/Editor'; if (-not `$?) { exit 1 }; & 'C:/UnityEditor/6000.3.20f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe' --activate-all --include-personal --username `$env:UNITY_EMAIL --password `$env:UNITY_PASSWORD; if (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }; & 'C:/UnityEditor/6000.3.20f1/Editor/Unity.exe' -force-opengl -batchmode -nographics -silent-crashes -logfile - -projectPath c:/workspace -executeMethod Warlander.Deedplanner.Editor.BuildSystem.BuildWindows64 | Out-Host; exit `$LASTEXITCODE" `
+              # no -nographics: llvmpipe gives the editor a real GL device, needed both for full
+              # shader variants and for preview atlas rendering (camera.Render/Blit no-op without a device)
+              powershell -NoProfile -Command "& 'c:/workspace/.github/workflows/install-llvmpipe.ps1' -EditorPath 'C:/UnityEditor/6000.3.20f1/Editor'; if (-not `$?) { exit 1 }; & 'C:/UnityEditor/6000.3.20f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe' --activate-all --include-personal --username `$env:UNITY_EMAIL --password `$env:UNITY_PASSWORD; if (`$LASTEXITCODE -ne 0) { exit `$LASTEXITCODE }; & 'C:/UnityEditor/6000.3.20f1/Editor/Unity.exe' -force-opengl -batchmode -silent-crashes -logfile - -projectPath c:/workspace -executeMethod Warlander.Deedplanner.Editor.BuildSystem.BuildWindows64 | Out-Host; exit `$LASTEXITCODE" `
               | Tee-Object -FilePath $logFile
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           } finally {

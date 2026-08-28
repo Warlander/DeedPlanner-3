@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Xml;
 using UnityEngine;
+using Warlander.Deedplanner.Data.Docks;
 
 namespace Warlander.Deedplanner.Data
 {
@@ -21,7 +22,10 @@ namespace Warlander.Deedplanner.Data
         {
             float x = tile.X * 4 + X;
             float z = tile.Y * 4 + Y;
-            float interpolatedHeight = tile.Map.GetInterpolatedHeight(x, z);
+            Dock dock = Level >= 0 ? tile.Dock : null;
+            float interpolatedHeight = dock != null
+                ? (dock.Height - dock.AnchorLevel * 30) * 0.1f
+                : tile.Map.GetInterpolatedHeight(x, z);
             if (FloatOnWater)
             {
                 interpolatedHeight = Mathf.Max(interpolatedHeight, 0);

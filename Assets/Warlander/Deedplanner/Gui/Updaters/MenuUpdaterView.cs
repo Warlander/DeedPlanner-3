@@ -57,6 +57,12 @@ namespace Warlander.Deedplanner.Gui.Updaters
             _fullscreenButton.gameObject.SetActive(visible);
         }
 
+        public void SetFundingLinksVisible(bool visible)
+        {
+            _patreonButton.gameObject.SetActive(visible);
+            _paypalButton.gameObject.SetActive(visible);
+        }
+
         public void SetVersionText(string text)
         {
             _versionText.text = text;

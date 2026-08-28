@@ -22,6 +22,7 @@ namespace Warlander.Deedplanner.Gui.Home
         void Show(bool animated);
         void Hide(bool animated);
         void SetLoadButtonVisible(bool visible);
+        void SetFundingLinksVisible(bool visible);
         void SetCategories(IReadOnlyList<HomeScreenCategory> categories, SaveBackendId? selectedBackendId);
         void SetCards(IReadOnlyList<HomeScreenCardData> cards);
         void UpdateCard(MapLocation location, HomeScreenCardData data);

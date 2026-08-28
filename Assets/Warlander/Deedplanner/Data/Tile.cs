@@ -55,6 +55,7 @@ namespace Warlander.Deedplanner.Data
         public int CaveHeight {
             get => caveHeight;
             set {
+                int previousHeight = caveHeight;
                 caveHeight = value;
                 // TODO: add cave mesh handling
                 RefreshCaveEntities();
@@ -62,7 +63,7 @@ namespace Warlander.Deedplanner.Data
                 Map.GetRelativeTile(this, 0, -1)?.RefreshCaveEntities();
                 Map.GetRelativeTile(this, -1, -1)?.RefreshCaveEntities();
 
-                Map.RecalculateCaveHeight(X, Y);
+                Map.RecalculateCaveHeight(X, Y, previousHeight);
                 Map.RefreshBridgesForCaveHeight(X, Y);
             }
         }
@@ -77,7 +78,7 @@ namespace Warlander.Deedplanner.Data
                 Map.GetRelativeTile(this, 0, -1)?.RefreshCaveEntities();
                 Map.GetRelativeTile(this, -1, -1)?.RefreshCaveEntities();
 
-                Map.RecalculateCaveHeight(X, Y);
+                Map.RecalculateCaveHeight(X, Y, caveHeight);
             }
         }
 
@@ -231,8 +232,22 @@ namespace Warlander.Deedplanner.Data
                 return caveHeight;
             }
 
-            // Dock tiles use the dock as their reference surface: entities above a dock stack
-            // from the deck's anchor level, independent of how deep the terrain below is.
+            Dock cornerDock = Map.GetDockSharingCorner(this);
+            if (cornerDock != null)
+            {
+                return cornerDock.Height - cornerDock.AnchorLevel * 30;
+            }
+
+            return SurfaceHeight;
+        }
+
+        public int GetHeightForLevelOnTile(int level)
+        {
+            if (level < 0)
+            {
+                return caveHeight;
+            }
+
             if (dock != null)
             {
                 return dock.Height - dock.AnchorLevel * 30;
@@ -1183,16 +1198,16 @@ namespace Warlander.Deedplanner.Data
             public void Execute()
             {
                 tile.surfaceHeight = newHeight;
-                Refresh();
+                Refresh(oldHeight);
             }
 
             public void Undo()
             {
                 tile.surfaceHeight = oldHeight;
-                Refresh();
+                Refresh(newHeight);
             }
 
-            private void Refresh()
+            private void Refresh(int previousHeight)
             {
                 tile.Map.Ground.SetSlope(tile.X, tile.Y, tile.surfaceHeight);
                 
@@ -1210,7 +1225,7 @@ namespace Warlander.Deedplanner.Data
                 t01?.RefreshDoorOrientation();
                 t11?.RefreshDoorOrientation();
 
-                tile.Map.RecalculateSurfaceHeight(tile.X, tile.Y);
+                tile.Map.RecalculateSurfaceHeight(tile.X, tile.Y, previousHeight);
                 tile.Map.RefreshBridgesForSurfaceHeight(tile.X, tile.Y);
                 tile.Map.RefreshDocksForSurfaceHeight(tile.X, tile.Y);
             }

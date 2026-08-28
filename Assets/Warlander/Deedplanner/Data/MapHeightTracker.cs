@@ -4,18 +4,48 @@ namespace Warlander.Deedplanner.Data
     {
         private Map _currentMap;
 
-        public int LowestSurfaceHeight { get; private set; }
-        public int HighestSurfaceHeight { get; private set; }
-        public int LowestCaveHeight { get; private set; }
-        public int HighestCaveHeight { get; private set; }
+        private int _lowestSurfaceHeight;
+        private int _highestSurfaceHeight;
+        private int _lowestCaveHeight;
+        private int _highestCaveHeight;
+        private bool _boundsDirty;
+
+        public int LowestSurfaceHeight {
+            get {
+                RecalculateIfDirty();
+                return _lowestSurfaceHeight;
+            }
+        }
+
+        public int HighestSurfaceHeight {
+            get {
+                RecalculateIfDirty();
+                return _highestSurfaceHeight;
+            }
+        }
+
+        public int LowestCaveHeight {
+            get {
+                RecalculateIfDirty();
+                return _lowestCaveHeight;
+            }
+        }
+
+        public int HighestCaveHeight {
+            get {
+                RecalculateIfDirty();
+                return _highestCaveHeight;
+            }
+        }
 
         public void SetCurrentMap(Map map)
         {
             _currentMap = map;
-            LowestSurfaceHeight = 0;
-            HighestSurfaceHeight = 0;
-            LowestCaveHeight = 0;
-            HighestCaveHeight = 0;
+            _lowestSurfaceHeight = 0;
+            _highestSurfaceHeight = 0;
+            _lowestCaveHeight = 0;
+            _highestCaveHeight = 0;
+            _boundsDirty = true;
         }
 
         // destroyed maps call this from OnDestroy, which runs end-of-frame - potentially AFTER
@@ -50,29 +80,48 @@ namespace Warlander.Deedplanner.Data
                 }
             }
 
-            LowestSurfaceHeight = min;
-            HighestSurfaceHeight = max;
-            LowestCaveHeight = caveMin;
-            HighestCaveHeight = caveMax;
+            _lowestSurfaceHeight = min;
+            _highestSurfaceHeight = max;
+            _lowestCaveHeight = caveMin;
+            _highestCaveHeight = caveMax;
+            _boundsDirty = false;
         }
 
-        public void RecalculateSurfaceHeight(int x, int y)
+        private void RecalculateIfDirty()
+        {
+            if (_boundsDirty)
+            {
+                RecalculateHeights();
+            }
+        }
+
+        public void RecalculateSurfaceHeight(int x, int y, int previousElevation)
         {
             if (_currentMap == null) return;
 
             int elevation = _currentMap[x, y].SurfaceHeight;
-            if (elevation > HighestSurfaceHeight) HighestSurfaceHeight = elevation;
-            if (elevation < LowestSurfaceHeight) LowestSurfaceHeight = elevation;
+            if (elevation > _highestSurfaceHeight) _highestSurfaceHeight = elevation;
+            if (elevation < _lowestSurfaceHeight) _lowestSurfaceHeight = elevation;
+            if (previousElevation == _highestSurfaceHeight && elevation < previousElevation ||
+                previousElevation == _lowestSurfaceHeight && elevation > previousElevation)
+            {
+                _boundsDirty = true;
+            }
             _currentMap.SurfaceGridMesh.SetHeight(x, y, elevation);
         }
 
-        public void RecalculateCaveHeight(int x, int y)
+        public void RecalculateCaveHeight(int x, int y, int previousElevation)
         {
             if (_currentMap == null) return;
 
             int caveElevation = _currentMap[x, y].CaveHeight;
-            if (caveElevation > HighestCaveHeight) HighestCaveHeight = caveElevation;
-            if (caveElevation < LowestCaveHeight) LowestCaveHeight = caveElevation;
+            if (caveElevation > _highestCaveHeight) _highestCaveHeight = caveElevation;
+            if (caveElevation < _lowestCaveHeight) _lowestCaveHeight = caveElevation;
+            if (previousElevation == _highestCaveHeight && caveElevation < previousElevation ||
+                previousElevation == _lowestCaveHeight && caveElevation > previousElevation)
+            {
+                _boundsDirty = true;
+            }
             _currentMap.CaveGridMesh.SetHeight(x, y, caveElevation);
         }
     }

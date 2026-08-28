@@ -275,12 +275,12 @@ namespace Warlander.Deedplanner.Updaters
             }
             else if (hitFloor != null && hitFloor.Valid && hitFloor.Level >= 0)
             {
-                _strokeHeight = tile.GetHeightForLevel(hitFloor.Level) + hitFloor.Level * 30;
+                _strokeHeight = tile.GetHeightForLevelOnTile(hitFloor.Level) + hitFloor.Level * 30;
                 _strokeAnchorLevel = hitFloor.Level;
             }
             else if (TryPlaceStarterFloor(tile))
             {
-                _strokeHeight = tile.GetHeightForLevel(0);
+                _strokeHeight = tile.GetHeightForLevelOnTile(0);
                 _strokeAnchorLevel = 0;
             }
             else

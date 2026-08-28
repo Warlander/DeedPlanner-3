@@ -56,8 +56,31 @@ namespace Warlander.Deedplanner.Data.Docks
 
         public Dock GetDock(Tile tile)
         {
+            if (tile == null)
+            {
+                return null;
+            }
+
             _docksByTile.TryGetValue(tile, out Dock dock);
             return dock;
+        }
+
+        public Dock GetDockSharingCorner(Tile corner)
+        {
+            Dock dock = GetDock(corner);
+            if (dock != null)
+            {
+                return dock;
+            }
+
+            dock = GetDock(_map[corner.X - 1, corner.Y]);
+            if (dock != null)
+            {
+                return dock;
+            }
+
+            dock = GetDock(_map[corner.X, corner.Y - 1]);
+            return dock ?? GetDock(_map[corner.X - 1, corner.Y - 1]);
         }
 
         public void RefreshDocksForSurfaceHeight(int x, int y)
@@ -128,11 +151,6 @@ namespace Warlander.Deedplanner.Data.Docks
             {
                 for (int dy = -1; dy <= 1; dy++)
                 {
-                    if (dx != 0 && dy != 0)
-                    {
-                        continue;
-                    }
-
                     RevalidateDockAt(tile.X + dx, tile.Y + dy);
                 }
             }

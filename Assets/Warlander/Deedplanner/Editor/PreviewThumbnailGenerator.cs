@@ -166,6 +166,14 @@ namespace Warlander.Deedplanner.Editor
 
         private static async Task GenerateAllCoreAsync()
         {
+            // without a graphics device (-nographics) camera.Render and Blit are silent no-ops
+            // that produce all-white atlases; fail loudly instead of caching garbage
+            if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null)
+            {
+                throw new InvalidOperationException(
+                    "Preview thumbnail generation requires a graphics device (editor launched with -nographics?)");
+            }
+
             byte[] xmlBytes = File.ReadAllBytes(Path.Combine(Application.streamingAssetsPath, ObjectsXmlLocation));
             XmlDocument document = new XmlDocument();
             document.LoadXml(Encoding.UTF8.GetString(xmlBytes));

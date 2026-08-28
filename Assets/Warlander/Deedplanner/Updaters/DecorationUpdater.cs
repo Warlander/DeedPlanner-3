@@ -3,6 +3,7 @@ using System.Globalization;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
+using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
@@ -163,6 +164,8 @@ namespace Warlander.Deedplanner.Updaters
             OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
             GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             LevelEntity levelEntity = raycast.transform.GetComponent<LevelEntity>();
+            Dock dock = raycast.transform.GetComponent<Dock>();
+            bool validDock = dock != null && dock.Tile != null && dock.Tile.Dock == dock;
 
             Material ghostMaterial = _sharedMaterials.GhostMaterial;
             if (data != _lastGhostData || !_ghostObject)
@@ -176,6 +179,10 @@ namespace Warlander.Deedplanner.Updaters
             if (levelEntity && levelEntity.Valid && levelEntity.GetType() == typeof(Floor))
             {
                 targetFloor = levelEntity.Level;
+            }
+            else if (validDock)
+            {
+                targetFloor = dock.AnchorLevel;
             }
 
             if (data.CenterOnly || data.Tree || data.Bush)
@@ -202,7 +209,10 @@ namespace Warlander.Deedplanner.Updaters
                     int tileX = Mathf.FloorToInt(_position.x / 4f);
                     int tileY = Mathf.FloorToInt(_position.z / 4f);
                     _targetedTile = map[tileX, tileY];
-                    _position.y = map.GetInterpolatedHeight(_position.x, _position.z);
+                    Dock targetedDock = _targetedTile?.Dock;
+                    _position.y = targetedDock != null
+                        ? (targetedDock.Height - targetedDock.AnchorLevel * 30) * 0.1f
+                        : map.GetInterpolatedHeight(_position.x, _position.z);
                     if (data.Floating)
                     {
                         _position.y = Mathf.Max(_position.y, 0);
@@ -217,6 +227,10 @@ namespace Warlander.Deedplanner.Updaters
                 {
                     _targetedTile = levelEntity.Tile;
                 }
+                else if (validDock)
+                {
+                    _targetedTile = dock.Tile;
+                }
             }
 
             if (_targetedTile != null)
@@ -227,7 +241,9 @@ namespace Warlander.Deedplanner.Updaters
                 }
             }
 
-            bool canPlaceNewObject = overlayMesh || groundMesh || (levelEntity && levelEntity.Valid && levelEntity.GetType() == typeof(Floor));
+            bool canPlaceNewObject = overlayMesh || groundMesh ||
+                (levelEntity && levelEntity.Valid && levelEntity.GetType() == typeof(Floor)) ||
+                validDock;
             if (canPlaceNewObject || _placingDecoration)
             {
                 _ghostObject.gameObject.SetActive(true);
@@ -256,7 +272,7 @@ namespace Warlander.Deedplanner.Updaters
 
             ToggleGhostPropertyBlock(placementOverlap ? _allowedGhostPropertyBlock : _disabledGhostPropertyBlock);
 
-            if (_input.UpdatersShared.Placement.WasPressedThisFrame())
+            if (_input.UpdatersShared.Placement.WasPressedThisFrame() && canPlaceNewObject && _targetedTile != null)
             {
                 _placingDecoration = true;
                 _dragStartPos = _cameraCoordinator.Current.MousePosition;

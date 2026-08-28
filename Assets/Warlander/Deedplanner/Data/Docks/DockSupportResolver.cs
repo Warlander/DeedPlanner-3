@@ -43,6 +43,11 @@ namespace Warlander.Deedplanner.Data.Docks
                 return DockHardBlock.DockAtDifferentHeight;
             }
 
+            if (HasTouchingDockAtDifferentHeight(map, x, y, height))
+            {
+                return DockHardBlock.DockAtDifferentHeight;
+            }
+
             if (HasAnyFloor(tile))
             {
                 return DockHardBlock.FloorPresent;
@@ -172,7 +177,8 @@ namespace Warlander.Deedplanner.Data.Docks
 
             for (int level = 0; level < MaxLevels; level++)
             {
-                if (neighbor.GetTileContent(level) is Floor && neighbor.GetHeightForLevel(level) + level * 30 == height)
+                if (neighbor.GetTileContent(level) is Floor &&
+                    neighbor.GetHeightForLevelOnTile(level) + level * 30 == height)
                 {
                     return true;
                 }
@@ -235,6 +241,28 @@ namespace Warlander.Deedplanner.Data.Docks
             return false;
         }
 
+        private static bool HasTouchingDockAtDifferentHeight(Map map, int x, int y, int height)
+        {
+            for (int dx = -1; dx <= 1; dx++)
+            {
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    if (dx == 0 && dy == 0)
+                    {
+                        continue;
+                    }
+
+                    Dock dock = map[x + dx, y + dy]?.Dock;
+                    if (dock != null && dock.Height != height)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public static List<string> ValidateDock(Map map, Dock dock)
         {
             var errors = new List<string>();
@@ -244,6 +272,11 @@ namespace Warlander.Deedplanner.Data.Docks
             if (MaxCornerHeight(map, tile.X, tile.Y) > height)
             {
                 errors.Add("terrain above deck");
+            }
+
+            if (HasTouchingDockAtDifferentHeight(map, tile.X, tile.Y, height))
+            {
+                errors.Add("touches dock at different height");
             }
 
             DockSupportData support = dock.Support;
