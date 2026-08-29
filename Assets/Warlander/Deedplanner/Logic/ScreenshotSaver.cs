@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using UnityEngine;
 using Warlander.Deedplanner.Logging;
@@ -38,7 +37,14 @@ namespace Warlander.Deedplanner.Logic
             if (!_folderOpened)
             {
                 _folderOpened = true;
-                Process.Start(new ProcessStartInfo { FileName = directory, UseShellExecute = true });
+                try
+                {
+                    Application.OpenURL($"file://{directory}");
+                }
+                catch (Exception e)
+                {
+                    _logger.Warning($"Failed to open screenshots folder: {e.Message}");
+                }
             }
 #endif
         }
