@@ -10,6 +10,8 @@ namespace Warlander.UI.Utils
     {
         [SerializeField] private InputActionReference _toggle;
 
+        private static bool _shown = true;
+
         private bool _initialized;
         
         /// <summary>
@@ -38,7 +40,8 @@ namespace Warlander.UI.Utils
 
         private void ActionOnStarted(InputAction.CallbackContext obj)
         {
-            gameObject.SetActive(gameObject.activeSelf == false);
+            _shown = !_shown;
+            gameObject.SetActive(_shown);
         }
 
         private void OnDestroy()
