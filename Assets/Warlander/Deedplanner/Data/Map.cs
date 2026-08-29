@@ -479,16 +479,51 @@ namespace Warlander.Deedplanner.Data
 
         public float GetInterpolatedHeight(float x, float y)
         {
-            Ray ray = new Ray(new Vector3(x, 10000, y), new Vector3(0, -1, 0));
-            RaycastHit raycastHit;
-            const int mask = LayerMasks.GroundMask;
-            bool hit = Physics.Raycast(ray, out raycastHit, 20000, mask);
-            if (hit)
+            const float tileSize = 4f;
+            if (x < 0 || y < 0 || x > Width * tileSize || y > Height * tileSize)
             {
-                return raycastHit.point.y;
+                return 0;
             }
 
-            return 0;
+            int tileX = Mathf.Min((int) (x / tileSize), Width - 1);
+            int tileY = Mathf.Min((int) (y / tileSize), Height - 1);
+            float u = x / tileSize - tileX;
+            float v = y / tileSize - tileY;
+
+            float h00 = this[tileX, tileY].SurfaceHeight * 0.1f;
+            float h10 = this[tileX + 1, tileY].SurfaceHeight * 0.1f;
+            float h01 = this[tileX, tileY + 1].SurfaceHeight * 0.1f;
+            float h11 = this[tileX + 1, tileY + 1].SurfaceHeight * 0.1f;
+            float hCenter = (h00 + h10 + h01 + h11) * 0.25f;
+
+            // ground mesh is 4 triangles fanning from the tile center; pick by quadrant
+            float du = u - 0.5f;
+            float dv = v - 0.5f;
+            if (dv >= Mathf.Abs(du))
+            {
+                return BarycentricHeight(u, v, 0, 1, h01, 1, 1, h11, 0.5f, 0.5f, hCenter);
+            }
+            if (dv <= -Mathf.Abs(du))
+            {
+                return BarycentricHeight(u, v, 1, 0, h10, 0, 0, h00, 0.5f, 0.5f, hCenter);
+            }
+            if (du > 0)
+            {
+                return BarycentricHeight(u, v, 1, 1, h11, 1, 0, h10, 0.5f, 0.5f, hCenter);
+            }
+            return BarycentricHeight(u, v, 0, 0, h00, 0, 1, h01, 0.5f, 0.5f, hCenter);
+        }
+
+        private static float BarycentricHeight(float u, float v,
+            float u1, float v1, float h1,
+            float u2, float v2, float h2,
+            float u3, float v3, float h3)
+        {
+            float d = (v2 - v3) * (u1 - u3) + (u3 - u2) * (v1 - v3);
+            float w1 = ((v2 - v3) * (u - u3) + (u3 - u2) * (v - v3)) / d;
+            float w2 = ((v3 - v1) * (u - u3) + (u1 - u3) * (v - v3)) / d;
+            float w3 = 1f - w1 - w2;
+            return w1 * h1 + w2 * h2 + w3 * h3;
         }
         
         public IEnumerator<Tile> GetEnumerator()
