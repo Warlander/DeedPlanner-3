@@ -84,9 +84,9 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
                 _pendingSupports = _bridge.GetSupportPositions();
                 _editable = _bridge.Type == BridgeType.Flat;
                 _tooltipSuffix = GetTooltipSuffix(_bridge.Type);
+                _view.SetSupportsModeAvailable(_bridge.Data.CanBePaved);
             }
 
-            _view.SetSupportsModeAvailable(_bridge != null && _bridge.Data.CanBePaved);
             RefreshDisplay();
         }
 

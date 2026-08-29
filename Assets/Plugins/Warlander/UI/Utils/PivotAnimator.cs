@@ -28,6 +28,11 @@ namespace Warlander.UI.Utils
 
         public void SetShown(bool shown)
         {
+            if (_shown == shown)
+            {
+                return;
+            }
+
             _shown = shown;
             AnimatePivotChange(_shown, false);
         }
