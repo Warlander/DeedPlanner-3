@@ -18,6 +18,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         private readonly IBridgeSegmentBarView _view;
         private readonly BridgesUpdater _bridgesUpdater;
         private readonly MapHandler _mapHandler;
+        private readonly IDataCatalog _dataCatalog;
 
         private Bridge _bridge;
         private bool[] _pendingSupports;
@@ -28,11 +29,12 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         private int _selectedPavingIndex;
 
         public BridgeSegmentBarPresenter(IBridgeSegmentBarView view, BridgesUpdater bridgesUpdater,
-            MapHandler mapHandler)
+            MapHandler mapHandler, IDataCatalog dataCatalog)
         {
             _view = view;
             _bridgesUpdater = bridgesUpdater;
             _mapHandler = mapHandler;
+            _dataCatalog = dataCatalog;
         }
 
         public void Initialize()
@@ -44,7 +46,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             _bridgesUpdater.SelectedBridgeChanged += OnSelectedBridgeChanged;
 
             // index 0 is null, the eraser ("no paving")
-            _pavingChoices = new BridgePavementData[] { null }.Concat(Database.BridgePavements.Values).ToArray();
+            _pavingChoices = new BridgePavementData[] { null }.Concat(_dataCatalog.GetAllBridgePavements()).ToArray();
             _view.SetPavingMode(false);
 
             OnSelectedBridgeChanged();

@@ -21,13 +21,15 @@ namespace Warlander.Deedplanner.Updaters
         private readonly MapHandler _mapHandler;
         private readonly TabContext _tabContext;
         private readonly PreviewAtlasCatalog _previewAtlasCatalog;
+        private readonly IDataCatalog _dataCatalog;
 
         public Tab TargetTab => Tab.Walls;
 
         private WallData _selectedWall;
 
         public WallUpdater(IWallUpdaterView view, DPSettings settings, CameraCoordinator cameraCoordinator,
-            DPInput input, MapHandler mapHandler, TabContext tabContext, PreviewAtlasCatalog previewAtlasCatalog)
+            DPInput input, MapHandler mapHandler, TabContext tabContext, PreviewAtlasCatalog previewAtlasCatalog,
+            IDataCatalog dataCatalog)
         {
             _view = view;
             _settings = settings;
@@ -36,6 +38,7 @@ namespace Warlander.Deedplanner.Updaters
             _mapHandler = mapHandler;
             _tabContext = tabContext;
             _previewAtlasCatalog = previewAtlasCatalog;
+            _dataCatalog = dataCatalog;
         }
 
         public void Initialize()
@@ -44,7 +47,7 @@ namespace Warlander.Deedplanner.Updaters
             _view.ReverseChanged += OnReverseChanged;
             _view.AutomaticReverseChanged += OnAutomaticReverseChanged;
 
-            foreach (WallData data in Database.Walls.Values)
+            foreach (WallData data in _dataCatalog.GetAllWalls())
             {
                 foreach (string[] category in data.Categories)
                 {

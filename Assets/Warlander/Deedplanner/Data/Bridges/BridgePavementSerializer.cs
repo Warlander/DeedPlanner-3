@@ -7,12 +7,14 @@ namespace Warlander.Deedplanner.Data.Bridges
 {
     public class BridgePavementSerializer
     {
+        private readonly IDataCatalog _dataCatalog;
         private readonly ICategoryLogger _logger;
 
         public const string NoneToken = "none";
 
-        public BridgePavementSerializer(ICategoryLogger logger)
+        public BridgePavementSerializer(IDataCatalog dataCatalog, ICategoryLogger logger)
         {
+            _dataCatalog = dataCatalog;
             _logger = logger;
         }
 
@@ -51,7 +53,8 @@ namespace Warlander.Deedplanner.Data.Bridges
                         continue;
                     }
 
-                    if (!Database.BridgePavements.TryGetValue(token, out BridgePavementData pavement))
+                    BridgePavementData pavement = _dataCatalog.GetBridgePavement(token);
+                    if (pavement == null)
                     {
                         _logger.Warning("Unknown bridge pavement token: " + token);
                     }

@@ -12,12 +12,14 @@ namespace Warlander.Deedplanner.Data.Bridges
         public static readonly LogCategory Category = new LogCategory("Bridges");
 
         private readonly IOutlineCoordinator _outlineCoordinator;
+        private readonly IDataCatalog _dataCatalog;
         private readonly ICategoryLogger _logger;
 
         [Inject]
-        public BridgeFactory(IOutlineCoordinator outlineCoordinator, ILoggerSource loggerSource)
+        public BridgeFactory(IOutlineCoordinator outlineCoordinator, IDataCatalog dataCatalog, ILoggerSource loggerSource)
         {
             _outlineCoordinator = outlineCoordinator;
+            _dataCatalog = dataCatalog;
             _logger = loggerSource.Create(Category);
         }
 
@@ -25,7 +27,7 @@ namespace Warlander.Deedplanner.Data.Bridges
         {
             try
             {
-                return new Bridge(map, element, _outlineCoordinator, _logger);
+                return new Bridge(map, element, _dataCatalog, _outlineCoordinator, _logger);
             }
             catch (Exception e)
             {
@@ -39,13 +41,13 @@ namespace Warlander.Deedplanner.Data.Bridges
         /// </summary>
         public Bridge CreateBridge(Map map, Bridge originalBridge, Vector2Int tileShift)
         {
-            return new Bridge(map, originalBridge, tileShift, _outlineCoordinator, _logger);
+            return new Bridge(map, originalBridge, tileShift, _dataCatalog, _outlineCoordinator, _logger);
         }
 
         public Bridge CreateBridge(Map map, TileCoords start, TileCoords end, BridgeData data,
             BridgeType type, int additionalData, string segments)
         {
-            return new Bridge(map, start, end, data, type, additionalData, segments, _outlineCoordinator, _logger);
+            return new Bridge(map, start, end, data, type, additionalData, segments, _dataCatalog, _outlineCoordinator, _logger);
         }
     }
 }

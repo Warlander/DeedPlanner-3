@@ -23,6 +23,7 @@ namespace Warlander.Deedplanner.Data
     public class Tile : IXmlSerializable
     {
         private readonly IOutlineCoordinator _outlineCoordinator;
+        private readonly IDataCatalog _dataCatalog;
         private readonly ICategoryLogger _logger;
         
         private int surfaceHeight = 0;
@@ -82,18 +83,19 @@ namespace Warlander.Deedplanner.Data
             }
         }
 
-        public Tile(Map map, int x, int y, IOutlineCoordinator outlineCoordinator, ICategoryLogger logger)
+        public Tile(Map map, int x, int y, IOutlineCoordinator outlineCoordinator, IDataCatalog dataCatalog, ICategoryLogger logger)
         {
             Map = map;
             X = x;
             Y = y;
 
             _outlineCoordinator = outlineCoordinator;
+            _dataCatalog = dataCatalog;
             _logger = logger;
 
             Entities = new Dictionary<EntityData, LevelEntity>();
 
-            Ground = new Ground(this, Database.DefaultGroundData, logger);
+            Ground = new Ground(this, _dataCatalog.DefaultGroundData, _dataCatalog, logger);
 
             // GameObject caveObject = new GameObject("Cave", typeof(Cave));
             // caveObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
@@ -803,8 +805,7 @@ namespace Warlander.Deedplanner.Data
         private void DeserializeFloor(XmlElement element, int level)
         {
             string id = element.GetAttribute("id");
-            FloorData data;
-            Database.Floors.TryGetValue(id, out data);
+            FloorData data = _dataCatalog.GetFloor(id);
             if (data == null)
             {
                 _logger.Warning("Unable to load floor " + id);
@@ -835,8 +836,7 @@ namespace Warlander.Deedplanner.Data
         private void DeserializeWall(XmlElement element, int level)
         {
             string id = element.GetAttribute("id");
-            WallData data;
-            Database.Walls.TryGetValue(id, out data);
+            WallData data = _dataCatalog.GetWall(id);
             if (data == null)
             {
                 _logger.Warning("Unable to load wall " + id);
@@ -863,8 +863,7 @@ namespace Warlander.Deedplanner.Data
         private void DeserializeRoof(XmlElement element, int level)
         {
             string id = element.GetAttribute("id");
-            RoofData data;
-            Database.Roofs.TryGetValue(id, out data);
+            RoofData data = _dataCatalog.GetRoof(id);
             if (data == null)
             {
                 _logger.Warning("Unable to load roof " + id);
@@ -882,8 +881,7 @@ namespace Warlander.Deedplanner.Data
             string xString = element.GetAttribute("x");
             string yString = element.GetAttribute("y");
 
-            DecorationData data;
-            Database.Decorations.TryGetValue(id, out data);
+            DecorationData data = _dataCatalog.GetDecoration(id);
             if (data == null)
             {
                 _logger.Warning("Unable to load decoration " + id);

@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Gui.Widgets;
 
@@ -36,7 +35,7 @@ namespace Warlander.Deedplanner.Gui.Updaters
         public event Action<FloorData> FloorSelected;
         public event Action<EntityOrientation> OrientationChanged;
         public event Action<FloorPaintMode> PaintModeChanged;
-        public event Action<bool, DockSupportData> DockSupportChanged;
+        public event Action<bool, string> DockSupportChanged;
 
         private void Awake()
         {
@@ -52,14 +51,14 @@ namespace Warlander.Deedplanner.Gui.Updaters
 
             _autoSupportToggle.onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, true, null));
             _noneSupportToggle.onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, false, null));
-            _woodSupportToggle.onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, false, Database.DockSupports["dwp"]));
+            _woodSupportToggle.onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, false, "dwp"));
             _stoneSupportToggle.onValueChanged.AddListener(toggled => OnStoneSupportToggled(toggled));
-            _braceSupportToggle.onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, false, Database.DockSupports["dwb"]));
+            _braceSupportToggle.onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, false, "dwb"));
 
             for (int i = 0; i < _stoneVariantToggles.Length; i++)
             {
-                DockSupportData variant = Database.DockSupports[StoneVariantShortNames[i]];
-                _stoneVariantToggles[i].onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, false, variant));
+                string shortName = StoneVariantShortNames[i];
+                _stoneVariantToggles[i].onValueChanged.AddListener(toggled => OnDockSupportToggled(toggled, false, shortName));
             }
 
             // Visibility always derives from toggle state, never from serialized active flags.
@@ -130,11 +129,11 @@ namespace Warlander.Deedplanner.Gui.Updaters
             _dockFloorsList.gameObject.SetActive(docksMode);
         }
 
-        private void OnDockSupportToggled(bool toggledOn, bool auto, DockSupportData support)
+        private void OnDockSupportToggled(bool toggledOn, bool auto, string supportShortName)
         {
             if (toggledOn)
             {
-                DockSupportChanged?.Invoke(auto, support);
+                DockSupportChanged?.Invoke(auto, supportShortName);
             }
         }
 
@@ -150,7 +149,7 @@ namespace Warlander.Deedplanner.Gui.Updaters
                     index = 0;
                 }
 
-                DockSupportChanged?.Invoke(false, Database.DockSupports[StoneVariantShortNames[index]]);
+                DockSupportChanged?.Invoke(false, StoneVariantShortNames[index]);
             }
         }
     }

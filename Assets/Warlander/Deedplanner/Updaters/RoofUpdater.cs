@@ -17,13 +17,14 @@ namespace Warlander.Deedplanner.Updaters
         private readonly DPInput _input;
         private readonly MapHandler _mapHandler;
         private readonly TabContext _tabContext;
+        private readonly IDataCatalog _dataCatalog;
 
         public Tab TargetTab => Tab.Roofs;
 
         private RoofData _selectedRoof;
 
         public RoofUpdater(IRoofUpdaterView view, TooltipHandler tooltipHandler, CameraCoordinator cameraCoordinator,
-            DPInput input, MapHandler mapHandler, TabContext tabContext)
+            DPInput input, MapHandler mapHandler, TabContext tabContext, IDataCatalog dataCatalog)
         {
             _view = view;
             _tooltipHandler = tooltipHandler;
@@ -31,13 +32,14 @@ namespace Warlander.Deedplanner.Updaters
             _input = input;
             _mapHandler = mapHandler;
             _tabContext = tabContext;
+            _dataCatalog = dataCatalog;
         }
 
         public void Initialize()
         {
             _view.RoofSelected += OnRoofSelected;
 
-            foreach (RoofData data in Database.Roofs.Values)
+            foreach (RoofData data in _dataCatalog.GetAllRoofs())
             {
                 _view.AddRoofEntry(data);
             }

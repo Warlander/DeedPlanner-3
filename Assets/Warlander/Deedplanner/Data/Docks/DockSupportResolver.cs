@@ -62,7 +62,7 @@ namespace Warlander.Deedplanner.Data.Docks
         }
 
         public static DockSupportData ResolveAutoSupport(Map map, int x, int y, int height,
-            DockSupportData pillarPreference, out EntityOrientation braceDir)
+            DockSupportData pillarPreference, IDataCatalog dataCatalog, out EntityOrientation braceDir)
         {
             if (IsFlatAtDeckLevel(map, x, y, height))
             {
@@ -78,7 +78,7 @@ namespace Warlander.Deedplanner.Data.Docks
 
             if (TryPickBraceSide(map, x, y, height, null, out braceDir))
             {
-                return Database.DockSupports["dwb"];
+                return dataCatalog.GetDockSupport("dwb");
             }
 
             // Nothing fits: paint with the preferred pillar, chunk 6 marks it invalid.

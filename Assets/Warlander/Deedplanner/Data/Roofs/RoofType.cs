@@ -9,81 +9,81 @@ namespace Warlander.Deedplanner.Data.Roofs
     {
         public static RoofType[] RoofTypes { get; private set; }
 
-        public static void Initialize(IWurmAssetFacade assetFacade)
+        public static void Initialize(IWurmAssetFacade assetFacade, IDataCatalog dataCatalog)
         {
             List<RoofType> roofTypesList = new List<RoofType>();
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/side.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/side.wom",
                               new int[,] {{ 1, 1, 1},
                                                     { 0, 0, 0},
                                                     {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/sideCorner.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/sideCorner.wom",
                               new int[,] {{-1,-2,-1},
                                                     { 0, 0,-2},
                                                     { 1, 0,-1}}));
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/sideCut.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/sideCut.wom",
                               new int[,] {{ 1, 1, 1},
                                                     { 0, 0, 1},
                                                     {-2, 0, 1}}));
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/spine.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/spine.wom",
                               new int[,] {{-1,-2,-1},
                                                     { 0, 0, 0},
                                                     {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/spineEnd.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/spineEnd.wom",
                               new int[,] {{-1,-2,-1},
                                                     { 0, 0,-2},
                                                     {-1,-2,-1}}));
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/spineEndUp.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/spineEndUp.wom",
                               new int[,] {{-1,-2,-1},
                                                     { 0, 0, 3},
                                                     { 1, 0,-1}}));
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/spineEndUp.wom", new Vector3(-1, 1, 1),
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/spineEndUp.wom", new Vector3(-1, 1, 1),
                               new int[,] {{-1,-2,-1},
                                                     { 3, 0, 0},
                                                     {-1, 0, 1}}));
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/spineCorner.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/spineCorner.wom",
                               new int[,] {{-1,-2,-1},
                                                     {-2, 0, 0},
                                                     {-1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/spineCornerUp.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/spineCornerUp.wom",
                               new int[,] {{-2, 0,-2},
                                                     { 0, 0, 0},
                                                     { 1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/spineCross.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/spineCross.wom",
                               new int[,] {{-2, 0,-2},
                                                     { 0, 0, 0},
                                                     {-2, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/spineTCross.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/spineTCross.wom",
                               new int[,] {{-1, 0,-2},
                                                     {-2, 0, 0},
                                                     {-1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/spineTip.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/spineTip.wom",
                               new int[,] {{-1,-2,-1},
                                                     {-2, 0,-2},
                                                     {-1,-2,-1}}));
             
-            roofTypesList.Add(new RoofType(assetFacade, "Special/spineUp.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/spineUp.wom",
                               new int[,] {{ 1, 0,-2},
                                                     { 1, 0, 0},
                                                     { 1, 0,-2}}));
             
-            roofTypesList.Add(new RoofType(assetFacade, "Special/sideToSpine.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/sideToSpine.wom",
                               new int[,] {{ 1, 0,-2},
                                                     { 1, 0, 0},
                                                     { 1, 0,-2}}));
 
-            roofTypesList.Add(new RoofType(assetFacade, "Special/levelsCross.wom",
+            roofTypesList.Add(new RoofType(assetFacade, dataCatalog, "Special/levelsCross.wom",
                               new int[,] {{-2, 0, 1},
                                                     { 0, 0, 0},
                                                     { 1, 0,-2}}));
@@ -94,14 +94,14 @@ namespace Warlander.Deedplanner.Data.Roofs
         private readonly Dictionary<RoofData, ModelHandle> models;
         private readonly int[,] conditions;
 
-        private RoofType(IWurmAssetFacade assetFacade, string modelLocation, int[,] conditions) : this(assetFacade, modelLocation, new Vector3(1, 1, 1), conditions) {}
+        private RoofType(IWurmAssetFacade assetFacade, IDataCatalog dataCatalog, string modelLocation, int[,] conditions) : this(assetFacade, dataCatalog, modelLocation, new Vector3(1, 1, 1), conditions) {}
 
-        private RoofType(IWurmAssetFacade assetFacade, string modelLocation, Vector3 scale, int[,] conditions)
+        private RoofType(IWurmAssetFacade assetFacade, IDataCatalog dataCatalog, string modelLocation, Vector3 scale, int[,] conditions)
         {
             models = new Dictionary<RoofData, ModelHandle>();
             this.conditions = conditions;
 
-            foreach (RoofData data in Database.Roofs.Values)
+            foreach (RoofData data in dataCatalog.GetAllRoofs())
             {
                 ModelHandle model = assetFacade.GetModel(modelLocation, scale, LayerMasks.FloorRoofLayer);
                 model.AddTextureOverride("*", data.Texture.Location);

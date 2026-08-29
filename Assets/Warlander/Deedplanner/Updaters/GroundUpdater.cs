@@ -18,6 +18,7 @@ namespace Warlander.Deedplanner.Updaters
         private readonly MapHandler _mapHandler;
         private readonly TabContext _tabContext;
         private readonly PreviewAtlasCatalog _previewAtlasCatalog;
+        private readonly IDataCatalog _dataCatalog;
 
         public Tab TargetTab => Tab.Ground;
 
@@ -28,7 +29,8 @@ namespace Warlander.Deedplanner.Updaters
         private bool _editCorners = true;
 
         public GroundUpdater(IGroundUpdaterView view, CameraCoordinator cameraCoordinator, DPInput input,
-            MapHandler mapHandler, TabContext tabContext, PreviewAtlasCatalog previewAtlasCatalog)
+            MapHandler mapHandler, TabContext tabContext, PreviewAtlasCatalog previewAtlasCatalog,
+            IDataCatalog dataCatalog)
         {
             _view = view;
             _cameraCoordinator = cameraCoordinator;
@@ -36,6 +38,7 @@ namespace Warlander.Deedplanner.Updaters
             _mapHandler = mapHandler;
             _tabContext = tabContext;
             _previewAtlasCatalog = previewAtlasCatalog;
+            _dataCatalog = dataCatalog;
         }
 
         public void Initialize()
@@ -45,12 +48,12 @@ namespace Warlander.Deedplanner.Updaters
             _view.LeftClickTargetChanged += OnLeftClickTargetChanged;
             _view.EditCornersChanged += OnEditCornersChanged;
 
-            _leftClickData = Database.DefaultGroundData;
+            _leftClickData = _dataCatalog.DefaultGroundData;
             _view.SetLeftClickData(_leftClickData, GetSprite(_leftClickData));
-            _rightClickData = Database.DefaultSecondaryGroundData;
+            _rightClickData = _dataCatalog.DefaultSecondaryGroundData;
             _view.SetRightClickData(_rightClickData, GetSprite(_rightClickData));
 
-            foreach (GroundData data in Database.Grounds.Values)
+            foreach (GroundData data in _dataCatalog.GetAllGrounds())
             {
                 foreach (string[] category in data.Categories)
                 {

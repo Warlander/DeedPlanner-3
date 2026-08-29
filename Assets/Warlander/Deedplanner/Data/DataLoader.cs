@@ -29,14 +29,16 @@ namespace Warlander.Deedplanner.Data
 
         private readonly UnityThreadRunner _unityThreadRunner;
         private readonly IWurmAssetFacade _assetFacade;
+        private readonly Database _database;
         private readonly BridgePartDataFactory _bridgePartDataFactory;
         private readonly ICategoryLogger _logger;
 
         public DataLoader(UnityThreadRunner unityThreadRunner, IWurmAssetFacade assetFacade,
-            ILoggerSource loggerSource)
+            Database database, ILoggerSource loggerSource)
         {
             _unityThreadRunner = unityThreadRunner;
             _assetFacade = assetFacade;
+            _database = database;
             _logger = loggerSource.Create(Category);
             _bridgePartDataFactory = new BridgePartDataFactory(assetFacade);
         }
@@ -205,7 +207,7 @@ namespace Warlander.Deedplanner.Data
                 }
 
                 GroundData data = new GroundData(name, shortName, categories.ToArray(), tex2d, tex3d, diagonal);
-                Database.Grounds[shortName] = data;
+                _database.AddGround(data);
                 _logger.Message("Ground data " + name + " loaded and ready to use!");
             }
         }
@@ -246,7 +248,7 @@ namespace Warlander.Deedplanner.Data
                     continue;
                 }
 
-                Database.BridgePavements[shortName] = new BridgePavementData(name, shortName, tex, materials);
+                _database.AddBridgePavement(new BridgePavementData(name, shortName, tex, materials));
                 _logger.Message("Bridge pavement " + name + " loaded and ready to use!");
             }
         }
@@ -300,7 +302,7 @@ namespace Warlander.Deedplanner.Data
                     continue;
                 }
 
-                Database.DockSupports[shortName] = new DockSupportData(name, shortName, supportType, baseModel, extensionModel, materials);
+                _database.AddDockSupport(new DockSupportData(name, shortName, supportType, baseModel, extensionModel, materials));
                 _logger.Message("Dock support " + name + " loaded and ready to use!");
             }
         }
@@ -361,7 +363,7 @@ namespace Warlander.Deedplanner.Data
                 }
 
                 CaveData data = new CaveData(texture, name, shortName, categories.ToArray(), wall, show, entrance);
-                Database.Caves[shortName] = data;
+                _database.AddCave(data);
             }
         }
 
@@ -414,7 +416,7 @@ namespace Warlander.Deedplanner.Data
                 }
 
                 FloorData data = new FloorData(model, name, shortName, categories.ToArray(), opening, supportsDock, materials);
-                Database.Floors[shortName] = data;
+                _database.AddFloor(data);
             }
         }
 
@@ -488,7 +490,7 @@ namespace Warlander.Deedplanner.Data
 
                 WallData data = new WallData(bottomModel, normalModel, name, shortName, categories.ToArray(), color,
                     scale, houseWall, arch, archBuildable, materials, icon);
-                Database.Walls[shortName] = data;
+                _database.AddWall(data);
             }
         }
 
@@ -524,10 +526,10 @@ namespace Warlander.Deedplanner.Data
                 }
 
                 RoofData data = new RoofData(texture, name, shortName, materials);
-                Database.Roofs[shortName] = data;
+                _database.AddRoof(data);
             }
             
-            RoofType.Initialize(_assetFacade);
+            RoofType.Initialize(_assetFacade, _database);
         }
 
         private void LoadObjects(XmlDocument document)
@@ -577,7 +579,7 @@ namespace Warlander.Deedplanner.Data
                 DecorationData data = new DecorationData(model, name, shortName, categories.ToArray(),
                     type, centerOnly, cornerOnly, floating,
                     tree, bush, materials);
-                Database.Decorations[shortName] = data;
+                _database.AddDecoration(data);
             }
         }
 
@@ -657,7 +659,7 @@ namespace Warlander.Deedplanner.Data
 
                 BridgeData data = new BridgeData(name, maxWidth, supportHeight, partsData.ToArray(),
                     allowedTypes.ToArray(), sidesCost, canBePaved);
-                Database.Bridges[name] = data;
+                _database.AddBridge(data);
             }
         }
 

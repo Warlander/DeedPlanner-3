@@ -37,6 +37,7 @@ namespace Warlander.Deedplanner.Updaters
         private readonly TabContext _tabContext;
         private readonly ICategoryLogger _logger;
         private readonly PreviewAtlasCatalog _previewAtlasCatalog;
+        private readonly IDataCatalog _dataCatalog;
 
         public Tab TargetTab => Tab.Objects;
 
@@ -60,7 +61,7 @@ namespace Warlander.Deedplanner.Updaters
         public DecorationUpdater(IDecorationUpdaterView view, DPSettings settings, CameraCoordinator cameraCoordinator,
             DPInput input, MapHandler mapHandler, IOutlineCoordinator outlineCoordinator,
             ISharedMaterials sharedMaterials, TabContext tabContext, ILoggerSource loggerSource,
-            PreviewAtlasCatalog previewAtlasCatalog)
+            PreviewAtlasCatalog previewAtlasCatalog, IDataCatalog dataCatalog)
         {
             _view = view;
             _settings = settings;
@@ -72,6 +73,7 @@ namespace Warlander.Deedplanner.Updaters
             _tabContext = tabContext;
             _logger = loggerSource.Create(Category);
             _previewAtlasCatalog = previewAtlasCatalog;
+            _dataCatalog = dataCatalog;
         }
 
         public void Initialize()
@@ -86,7 +88,7 @@ namespace Warlander.Deedplanner.Updaters
             _view.RotationSnappingChanged += OnRotationSnappingChanged;
             _view.RotationSensitivityChanged += OnRotationSensitivityChanged;
 
-            foreach (DecorationData data in Database.Decorations.Values)
+            foreach (DecorationData data in _dataCatalog.GetAllDecorations())
             {
                 foreach (string[] category in data.Categories)
                 {

@@ -28,6 +28,7 @@ namespace Warlander.Deedplanner.Updaters
         private readonly DockFactory _dockFactory;
         private readonly ISharedMaterials _sharedMaterials;
         private readonly PreviewAtlasCatalog _previewAtlasCatalog;
+        private readonly IDataCatalog _dataCatalog;
 
         public Tab TargetTab => Tab.Floors;
 
@@ -52,7 +53,7 @@ namespace Warlander.Deedplanner.Updaters
 
         public FloorUpdater(IFloorUpdaterView view, TooltipHandler tooltipHandler, CameraCoordinator cameraCoordinator,
             DPInput input, MapHandler mapHandler, TabContext tabContext, DockFactory dockFactory,
-            ISharedMaterials sharedMaterials, PreviewAtlasCatalog previewAtlasCatalog)
+            ISharedMaterials sharedMaterials, PreviewAtlasCatalog previewAtlasCatalog, IDataCatalog dataCatalog)
         {
             _view = view;
             _tooltipHandler = tooltipHandler;
@@ -63,6 +64,7 @@ namespace Warlander.Deedplanner.Updaters
             _dockFactory = dockFactory;
             _sharedMaterials = sharedMaterials;
             _previewAtlasCatalog = previewAtlasCatalog;
+            _dataCatalog = dataCatalog;
         }
 
         public void Initialize()
@@ -72,7 +74,7 @@ namespace Warlander.Deedplanner.Updaters
             _view.PaintModeChanged += OnPaintModeChanged;
             _view.DockSupportChanged += OnDockSupportChanged;
 
-            foreach (FloorData data in Database.Floors.Values)
+            foreach (FloorData data in _dataCatalog.GetAllFloors())
             {
                 foreach (string[] category in data.Categories)
                 {
@@ -87,7 +89,7 @@ namespace Warlander.Deedplanner.Updaters
             }
 
             _view.PushSelection();
-            _lastPillarSupport = Database.DockSupports["dwp"];
+            _lastPillarSupport = _dataCatalog.GetDockSupport("dwp");
         }
 
         public void Enable()
@@ -118,13 +120,13 @@ namespace Warlander.Deedplanner.Updaters
             ResetDockStroke();
         }
 
-        private void OnDockSupportChanged(bool auto, DockSupportData support)
+        private void OnDockSupportChanged(bool auto, string supportShortName)
         {
             _dockSupportAuto = auto;
-            _selectedDockSupport = support;
-            if (support != null && (support.Type == DockSupportType.WoodPillar || support.Type == DockSupportType.StonePillar))
+            _selectedDockSupport = supportShortName == null ? null : _dataCatalog.GetDockSupport(supportShortName);
+            if (_selectedDockSupport != null && (_selectedDockSupport.Type == DockSupportType.WoodPillar || _selectedDockSupport.Type == DockSupportType.StonePillar))
             {
-                _lastPillarSupport = support;
+                _lastPillarSupport = _selectedDockSupport;
             }
         }
 
@@ -339,7 +341,7 @@ namespace Warlander.Deedplanner.Updaters
             if (_dockSupportAuto)
             {
                 return DockSupportResolver.ResolveAutoSupport(map, tile.X, tile.Y, _strokeHeight,
-                    _lastPillarSupport, out braceDir);
+                    _lastPillarSupport, _dataCatalog, out braceDir);
             }
 
             DockSupportData support = _selectedDockSupport;

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Graphics.Projectors;
@@ -14,6 +13,7 @@ namespace Warlander.Deedplanner.Debugging
         [Inject] private DebugProperties _debugProperties;
         [Inject] private IMapProjectorFacade _mapProjectorFacade;
         [Inject] private TabContext _tabContext;
+        [Inject] private IDataCatalog _dataCatalog;
 
         void IInitializable.Initialize()
         {
@@ -29,9 +29,8 @@ namespace Warlander.Deedplanner.Debugging
 
             if (_debugProperties.PreloadAllDecorations)
             {
-                foreach (KeyValuePair<string,DecorationData> pair in Database.Decorations)
+                foreach (DecorationData data in _dataCatalog.GetAllDecorations())
                 {
-                    DecorationData data = pair.Value;
                     data.Model.CreateOrGetModel(GameObject.Destroy);
                 }
             }

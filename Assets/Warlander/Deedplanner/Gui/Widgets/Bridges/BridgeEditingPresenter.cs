@@ -15,12 +15,15 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         private readonly IBridgeEditingView _view;
         private readonly BridgesUpdater _bridgesUpdater;
         private readonly MapHandler _mapHandler;
+        private readonly IDataCatalog _dataCatalog;
 
-        public BridgeEditingPresenter(IBridgeEditingView view, BridgesUpdater bridgesUpdater, MapHandler mapHandler)
+        public BridgeEditingPresenter(IBridgeEditingView view, BridgesUpdater bridgesUpdater, MapHandler mapHandler,
+            IDataCatalog dataCatalog)
         {
             _view = view;
             _bridgesUpdater = bridgesUpdater;
             _mapHandler = mapHandler;
+            _dataCatalog = dataCatalog;
         }
 
         public void Initialize()
@@ -153,7 +156,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
                 Mathf.Abs(bridge.SecondTile.x - bridge.FirstTile.x),
                 Mathf.Abs(bridge.SecondTile.y - bridge.FirstTile.y)) + 1;
 
-            List<BridgeData> materials = Database.Bridges.Values
+            List<BridgeData> materials = _dataCatalog.GetAllBridges()
                 .Where(data => data.MaxWidth >= width && data.IsTypeAllowed(bridge.Type))
                 .ToList();
 

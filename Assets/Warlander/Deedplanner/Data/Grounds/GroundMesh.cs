@@ -20,6 +20,7 @@ namespace Warlander.Deedplanner.Data.Grounds
         private const float SlopeToHeight = 0.1f;
 
         private ISharedMaterials _sharedMaterials;
+        private IDataCatalog _dataCatalog;
 
         private Material material;
         private MeshRenderer meshRenderer;
@@ -44,9 +45,11 @@ namespace Warlander.Deedplanner.Data.Grounds
         private bool needsVerticesUpdate = false;
         private bool needsUvUpdate = false;
 
-        public void Initialize(int width, int height, OverlayMesh newOverlayMesh, ISharedMaterials sharedMaterials)
+        public void Initialize(int width, int height, OverlayMesh newOverlayMesh, ISharedMaterials sharedMaterials,
+            IDataCatalog dataCatalog)
         {
             _sharedMaterials = sharedMaterials;
+            _dataCatalog = dataCatalog;
             gameObject.layer = LayerMasks.GroundLayer;
             if (groundTexturesArray == null)
             {
@@ -104,9 +107,9 @@ namespace Warlander.Deedplanner.Data.Grounds
         {
             HashSet<TextureReference> textures = new HashSet<TextureReference>();
 
-            foreach (KeyValuePair<string, GroundData> pair in Database.Grounds)
+            foreach (GroundData data in _dataCatalog.GetAllGrounds())
             {
-                textures.Add(pair.Value.Tex3d);
+                textures.Add(data.Tex3d);
             }
 
             return textures.Count;

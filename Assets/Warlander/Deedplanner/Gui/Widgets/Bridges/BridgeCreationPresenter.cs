@@ -15,6 +15,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         private readonly BridgesUpdater _bridgesUpdater;
         private readonly MapHandler _mapHandler;
         private readonly BridgeFactory _bridgeFactory;
+        private readonly IDataCatalog _dataCatalog;
 
         private TileCoords _start;
         private TileCoords _end;
@@ -23,12 +24,13 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
         private int _hiddenMaterials;
 
         public BridgeCreationPresenter(IBridgeCreationView view, BridgesUpdater bridgesUpdater,
-            MapHandler mapHandler, BridgeFactory bridgeFactory)
+            MapHandler mapHandler, BridgeFactory bridgeFactory, IDataCatalog dataCatalog)
         {
             _view = view;
             _bridgesUpdater = bridgesUpdater;
             _mapHandler = mapHandler;
             _bridgeFactory = bridgeFactory;
+            _dataCatalog = dataCatalog;
         }
 
         public void Initialize()
@@ -232,7 +234,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
             List<BridgeData> materials = new List<BridgeData>();
             int bridgeWidth = Mathf.Min(Mathf.Abs(end.X - start.X), Mathf.Abs(end.Y - start.Y)) + 1;
 
-            foreach (BridgeData data in Database.Bridges.Values)
+            foreach (BridgeData data in _dataCatalog.GetAllBridges())
             {
                 if (data.MaxWidth >= bridgeWidth)
                 {
@@ -240,7 +242,7 @@ namespace Warlander.Deedplanner.Gui.Widgets.Bridges
                 }
             }
 
-            _hiddenMaterials = Database.Bridges.Values.Count - materials.Count;
+            _hiddenMaterials = _dataCatalog.GetAllBridges().Count - materials.Count;
             return materials;
         }
 

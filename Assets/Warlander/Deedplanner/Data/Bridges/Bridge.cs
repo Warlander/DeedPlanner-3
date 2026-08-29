@@ -47,14 +47,15 @@ namespace Warlander.Deedplanner.Data.Bridges
 
         public IReadOnlyList<BridgePart> Parts => bridgeParts;
         
-        public Bridge(Map map, XmlElement element, IOutlineCoordinator outlineCoordinator, ICategoryLogger logger)
+        public Bridge(Map map, XmlElement element, IDataCatalog dataCatalog,
+            IOutlineCoordinator outlineCoordinator, ICategoryLogger logger)
         {
             _outlineCoordinator = outlineCoordinator;
             _logger = logger;
-            _pavementSerializer = new BridgePavementSerializer(logger);
-            
+            _pavementSerializer = new BridgePavementSerializer(dataCatalog, logger);
+
             string dataString = element.GetAttribute("data");
-            Data = Database.Bridges[dataString];
+            Data = dataCatalog.GetBridge(dataString);
 
             segments = BridgePartTypeUtils.DecodeSegments(element.InnerText);
             firstLevel = int.Parse(element.GetAttribute("firstFloor"));
@@ -105,12 +106,12 @@ namespace Warlander.Deedplanner.Data.Bridges
         /// <summary>
         /// Constructor used for moving (previously) existing bridges around the map.
         /// </summary>
-        public Bridge(Map map, Bridge originalBridge, Vector2Int tileShift,
+        public Bridge(Map map, Bridge originalBridge, Vector2Int tileShift, IDataCatalog dataCatalog,
             IOutlineCoordinator outlineCoordinator, ICategoryLogger logger)
         {
             _outlineCoordinator = outlineCoordinator;
             _logger = logger;
-            _pavementSerializer = new BridgePavementSerializer(logger);
+            _pavementSerializer = new BridgePavementSerializer(dataCatalog, logger);
 
             Data = originalBridge.Data;
 
@@ -134,12 +135,12 @@ namespace Warlander.Deedplanner.Data.Bridges
         /// Constructor used for runtime bridge creation from the Bridges tab.
         /// </summary>
         public Bridge(Map map, TileCoords start, TileCoords end, BridgeData data,
-            BridgeType type, int additionalData, string segments,
+            BridgeType type, int additionalData, string segments, IDataCatalog dataCatalog,
             IOutlineCoordinator outlineCoordinator, ICategoryLogger logger)
         {
             _outlineCoordinator = outlineCoordinator;
             _logger = logger;
-            _pavementSerializer = new BridgePavementSerializer(logger);
+            _pavementSerializer = new BridgePavementSerializer(dataCatalog, logger);
 
             Data = data;
             this.segments = BridgePartTypeUtils.DecodeSegments(segments);

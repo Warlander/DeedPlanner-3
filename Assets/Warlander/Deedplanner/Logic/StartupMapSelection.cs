@@ -4,6 +4,7 @@ using R3;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
+using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Home;
@@ -18,14 +19,16 @@ namespace Warlander.Deedplanner.Logic
         private readonly IObjectResolver _resolver;
         private readonly ISaveCoordinator _saveCoordinator;
         private readonly IHomeScreenPresenter _homeScreenPresenter;
+        private readonly IDataCatalog _dataCatalog;
 
         public StartupMapSelection(MapHandler mapHandler, IObjectResolver resolver,
-            ISaveCoordinator saveCoordinator, IHomeScreenPresenter homeScreenPresenter)
+            ISaveCoordinator saveCoordinator, IHomeScreenPresenter homeScreenPresenter, IDataCatalog dataCatalog)
         {
             _mapHandler = mapHandler;
             _resolver = resolver;
             _saveCoordinator = saveCoordinator;
             _homeScreenPresenter = homeScreenPresenter;
+            _dataCatalog = dataCatalog;
         }
 
         public void Initialize()
@@ -66,7 +69,7 @@ namespace Warlander.Deedplanner.Logic
             {
                 if (debugProperties != null && debugProperties.SelectedTestMap == DebugProperties.TestMap.AssetZoo)
                 {
-                    new AssetZooMapGenerator(_mapHandler).Generate();
+                    new AssetZooMapGenerator(_mapHandler, _dataCatalog).Generate();
                     // test maps skip the home screen for fast iteration
                     _homeScreenPresenter.HideHomeScreen();
                     return;

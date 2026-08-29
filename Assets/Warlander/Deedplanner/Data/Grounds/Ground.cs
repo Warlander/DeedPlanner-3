@@ -9,6 +9,7 @@ namespace Warlander.Deedplanner.Data.Grounds
 {
     public class Ground : IXmlSerializable
     {
+        private readonly IDataCatalog _dataCatalog;
         private readonly ICategoryLogger _logger;
 
         private GroundData data;
@@ -26,11 +27,12 @@ namespace Warlander.Deedplanner.Data.Grounds
             set => Tile.Map.CommandManager.AddToActionAndExecute(new RoadDirectionChangeCommand(this, roadDirection, value));
         }
 
-        public Ground(Tile tile, GroundData data, ICategoryLogger logger)
+        public Ground(Tile tile, GroundData data, IDataCatalog dataCatalog, ICategoryLogger logger)
         {
             Tile = tile;
             Data = data;
             RoadDirection = RoadDirection.Center;
+            _dataCatalog = dataCatalog;
             _logger = logger;
         }
 
@@ -47,12 +49,11 @@ namespace Warlander.Deedplanner.Data.Grounds
             string id = element.GetAttribute("id");
             string dir = element.GetAttribute("dir");
 
-            GroundData groundData;
-            Database.Grounds.TryGetValue(id, out groundData);
+            GroundData groundData = _dataCatalog.GetGround(id);
             if (groundData == null)
             {
                 _logger.Warning("Unable to load ground " + id + ", using default instead");
-                groundData = Database.DefaultGroundData;
+                groundData = _dataCatalog.DefaultGroundData;
             }
             Data = groundData;
             switch (dir)

@@ -12,19 +12,22 @@ namespace Warlander.Deedplanner.Updaters
         private readonly ICaveUpdaterView _view;
         private readonly CameraCoordinator _cameraCoordinator;
         private readonly TabContext _tabContext;
+        private readonly IDataCatalog _dataCatalog;
 
         public Tab TargetTab => Tab.Caves;
 
-        public CaveUpdater(ICaveUpdaterView view, CameraCoordinator cameraCoordinator, TabContext tabContext)
+        public CaveUpdater(ICaveUpdaterView view, CameraCoordinator cameraCoordinator, TabContext tabContext,
+            IDataCatalog dataCatalog)
         {
             _view = view;
             _cameraCoordinator = cameraCoordinator;
             _tabContext = tabContext;
+            _dataCatalog = dataCatalog;
         }
 
         public void Initialize()
         {
-            foreach (CaveData data in Database.Caves.Values)
+            foreach (CaveData data in _dataCatalog.GetAllCaves())
             {
                 foreach (string[] category in data.Categories)
                 {

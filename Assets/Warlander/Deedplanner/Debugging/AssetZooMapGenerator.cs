@@ -33,32 +33,34 @@ namespace Warlander.Deedplanner.Debugging
         };
 
         private readonly MapHandler _mapHandler;
+        private readonly IDataCatalog _dataCatalog;
 
-        public AssetZooMapGenerator(MapHandler mapHandler)
+        public AssetZooMapGenerator(MapHandler mapHandler, IDataCatalog dataCatalog)
         {
             _mapHandler = mapHandler;
+            _dataCatalog = dataCatalog;
         }
 
         public void Generate()
         {
-            int wallDisplays = Database.Walls.Count * 2;
+            int wallDisplays = _dataCatalog.GetAllWalls().Count * 2;
             int width = 1
-                        + SectionWidth(Database.Grounds.Count) + 3
-                        + SectionWidth(Database.Floors.Count) + 3
+                        + SectionWidth(_dataCatalog.GetAllGrounds().Count) + 3
+                        + SectionWidth(_dataCatalog.GetAllFloors().Count) + 3
                         + SectionWidth(wallDisplays) + 3
                         + RoofSectionWidth + 3
-                        + SectionWidth(Database.Decorations.Count) + 1;
+                        + SectionWidth(_dataCatalog.GetAllDecorations().Count) + 1;
 
             _mapHandler.CreateNewMap(width, MapHeight);
             Map map = _mapHandler.Map;
 
             int x = 1;
             PlaceGrounds(map, x);
-            x += SectionWidth(Database.Grounds.Count);
+            x += SectionWidth(_dataCatalog.GetAllGrounds().Count);
             PlaceSeparator(map, x);
             x += 3;
             PlaceFloors(map, x);
-            x += SectionWidth(Database.Floors.Count);
+            x += SectionWidth(_dataCatalog.GetAllFloors().Count);
             PlaceSeparator(map, x);
             x += 3;
             PlaceWalls(map, x);
@@ -89,20 +91,20 @@ namespace Warlander.Deedplanner.Debugging
             return map[startX + column * 2, 1 + row * 2];
         }
 
-        private static void PlaceGrounds(Map map, int startX)
+        private void PlaceGrounds(Map map, int startX)
         {
             int i = 0;
-            foreach (GroundData data in Database.Grounds.Values)
+            foreach (GroundData data in _dataCatalog.GetAllGrounds())
             {
                 DisplayTile(map, startX, i).Ground.Data = data;
                 i++;
             }
         }
 
-        private static void PlaceFloors(Map map, int startX)
+        private void PlaceFloors(Map map, int startX)
         {
             int i = 0;
-            foreach (FloorData data in Database.Floors.Values)
+            foreach (FloorData data in _dataCatalog.GetAllFloors())
             {
                 int level = data.Opening ? 1 : 0;
                 DisplayTile(map, startX, i).SetFloor(data, EntityOrientation.Up, level);
@@ -110,10 +112,10 @@ namespace Warlander.Deedplanner.Debugging
             }
         }
 
-        private static void PlaceWalls(Map map, int startX)
+        private void PlaceWalls(Map map, int startX)
         {
             int i = 0;
-            foreach (WallData data in Database.Walls.Values)
+            foreach (WallData data in _dataCatalog.GetAllWalls())
             {
                 for (int orientation = 0; orientation < 2; orientation++)
                 {
@@ -128,9 +130,9 @@ namespace Warlander.Deedplanner.Debugging
             }
         }
 
-        private static void PlaceRoofs(Map map, int startX)
+        private void PlaceRoofs(Map map, int startX)
         {
-            List<RoofData> materials = new List<RoofData>(Database.Roofs.Values);
+            List<RoofData> materials = new List<RoofData>(_dataCatalog.GetAllRoofs());
             int instances = Mathf.Min(4, materials.Count);
             for (int instance = 0; instance < instances; instance++)
             {
@@ -151,10 +153,10 @@ namespace Warlander.Deedplanner.Debugging
             }
         }
 
-        private static void PlaceDecorations(Map map, int startX)
+        private void PlaceDecorations(Map map, int startX)
         {
             int i = 0;
-            foreach (DecorationData data in Database.Decorations.Values)
+            foreach (DecorationData data in _dataCatalog.GetAllDecorations())
             {
                 Vector2 position = data.CornerOnly ? Vector2.zero : new Vector2(2f, 2f);
                 DisplayTile(map, startX, i).SetDecoration(data, position, 0f, 0, data.Floating);
@@ -162,9 +164,9 @@ namespace Warlander.Deedplanner.Debugging
             }
         }
 
-        private static void PlaceSeparator(Map map, int startX)
+        private void PlaceSeparator(Map map, int startX)
         {
-            GroundData slab = Database.Grounds["sl"];
+            GroundData slab = _dataCatalog.GetGround("sl");
             for (int y = 0; y < MapHeight; y++)
             {
                 map[startX + 1, y].Ground.Data = slab;

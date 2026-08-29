@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.CrashReportHandler;
 using VContainer;
 using VContainer.Unity;
+using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Features;
 using Warlogic.Features;
@@ -40,6 +41,8 @@ namespace Warlander.Deedplanner.Scopes
             }
 
             builder.RegisterInstance(new SettingsFactory(loggerSource).Create());
+
+            builder.Register<Database>(Lifetime.Singleton).AsSelf().As<IDataCatalog>();
 
 #if DISABLESTEAMWORKS
             builder.RegisterEntryPoint<DummySteamConnection>();
