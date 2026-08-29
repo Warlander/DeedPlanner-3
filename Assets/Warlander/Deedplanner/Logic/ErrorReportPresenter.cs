@@ -7,6 +7,7 @@ using VContainer.Unity;
 using Warlander.Deedplanner.Features;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Windows;
+using Warlander.Deedplanner.Steam;
 using Warlander.UI.Windows;
 using Warlogic.Features;
 
@@ -24,12 +25,14 @@ namespace Warlander.Deedplanner.Logic
 
         private readonly WindowCoordinator _windowCoordinator;
         private readonly IFeatureStateRetriever<Feature> _featureStateRetriever;
+        private readonly ISteamConnection _steamConnection;
         private SynchronizationContext _mainThreadContext;
 
-        public ErrorReportPresenter(WindowCoordinator windowCoordinator, IFeatureStateRetriever<Feature> featureStateRetriever)
+        public ErrorReportPresenter(WindowCoordinator windowCoordinator, IFeatureStateRetriever<Feature> featureStateRetriever, ISteamConnection steamConnection)
         {
             _windowCoordinator = windowCoordinator;
             _featureStateRetriever = featureStateRetriever;
+            _steamConnection = steamConnection;
         }
 
         public void Initialize()
@@ -77,7 +80,7 @@ namespace Warlander.Deedplanner.Logic
             window?.ShowReport(BuildReportText(_firstReport), GetPlayerLogFolder());
         }
 
-        private static string BuildReportText(ErrorReport report)
+        private string BuildReportText(ErrorReport report)
         {
             StringBuilder builder = new StringBuilder();
             builder.AppendLine("DeedPlanner 3 error report");
@@ -85,10 +88,20 @@ namespace Warlander.Deedplanner.Logic
             builder.AppendLine($"Platform: {Application.platform} ({SystemInfo.operatingSystem})");
             builder.AppendLine($"Time: {report.UtcTime:yyyy-MM-dd HH:mm:ss} UTC");
             builder.AppendLine($"Scene: {SceneManager.GetActiveScene().name}");
+            builder.AppendLine($"Steam: {GetSteamStatus()}");
             builder.AppendLine();
             builder.AppendLine(report.Condition);
             builder.Append(report.StackTrace);
             return builder.ToString();
+        }
+
+        private string GetSteamStatus()
+        {
+            if (!_steamConnection.Supported)
+            {
+                return "unsupported platform";
+            }
+            return _steamConnection.Connected ? "connected" : "disconnected";
         }
 
         private static string GetPlayerLogFolder()
