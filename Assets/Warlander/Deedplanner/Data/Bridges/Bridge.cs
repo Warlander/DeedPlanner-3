@@ -235,7 +235,8 @@ namespace Warlander.Deedplanner.Data.Bridges
 
             IBridgeType bridgeTypeCalc = GetTypeForBridge(bridgeType);
 
-            int bridgeLength = Mathf.Max(endX - startX, endY - startY) + 2;
+            // Length axis only - max of both spans overestimates for bridges wider than long.
+            int bridgeLength = (verticalOrientation ? endY - startY : endX - startX) + 2;
             int startHeight = GetAbsoluteHeight(map[startX, startY], firstLevel);
             int endHeight = GetAbsoluteHeight(map[endX + 1, endY + 1], secondLevel);
             float heightStep = (float)(endHeight - startHeight) / (bridgeLength - 1);
@@ -578,7 +579,7 @@ namespace Warlander.Deedplanner.Data.Bridges
             int endX = Mathf.Max(firstX, secondX);
             int startY = Mathf.Min(firstY, secondY);
             int endY = Mathf.Max(firstY, secondY);
-            int bridgeLength = Mathf.Max(endX - startX, endY - startY) + 2;
+            int bridgeLength = (verticalOrientation ? endY - startY : endX - startX) + 2;
 
             IBridgeType bridgeTypeCalc = GetTypeForBridge(bridgeType);
             int startHeight = GetAbsoluteHeight(map[startX, startY], firstLevel);
