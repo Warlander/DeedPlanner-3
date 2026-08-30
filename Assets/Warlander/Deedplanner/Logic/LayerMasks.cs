@@ -29,7 +29,7 @@ namespace Warlander.Deedplanner.Logic
         public const int DecorationEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | DecorationMask | BridgeMask;
         public const int LabelEditMask = GroundMask;
         public const int BorderEditMask = GroundMask;
-        public const int BridgeEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
+        public const int BridgeEditMask = TileMask | GroundMask | FloorRoofMask | BridgeMask;
         public const int ToolsEditMask = TileMask;
         public const int MenuEditMask = GroundMask;
 
