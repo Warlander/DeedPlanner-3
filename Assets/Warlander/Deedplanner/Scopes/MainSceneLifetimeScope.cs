@@ -121,6 +121,7 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterEntryPoint<QuickSaveInputHandler>();
             builder.Register<ScreenshotRenderer>(Lifetime.Singleton).As<IScreenshotRenderer>();
             builder.Register<CurrentViewScreenshotCapture>(Lifetime.Singleton);
+            builder.Register<BackbufferScreenshotCapture>(Lifetime.Singleton);
             builder.Register<DeedThumbnailCapture>(Lifetime.Singleton);
             builder.Register<PastebinSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
 #if !DISABLESTEAMWORKS

@@ -958,6 +958,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Take Screenshot With UI",
+                    "type": "Button",
+                    "id": "da4ba656-666c-4a5e-883b-16644500f963",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Quick Save",
                     "type": "Button",
                     "id": "adb98109-d7a8-44f7-8a86-d0a1d3eaf15d",
@@ -1097,6 +1106,17 @@
                     "processors": "",
                     "groups": "Mouse and Keyboard",
                     "action": "Take Screenshot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bae5ae25-a629-4f09-a79b-f67de086143c",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse and Keyboard",
+                    "action": "Take Screenshot With UI",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

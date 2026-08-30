@@ -1047,6 +1047,15 @@ namespace Warlander.Deedplanner.Inputs
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Take Screenshot With UI"",
+                    ""type"": ""Button"",
+                    ""id"": ""da4ba656-666c-4a5e-883b-16644500f963"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Quick Save"",
                     ""type"": ""Button"",
                     ""id"": ""adb98109-d7a8-44f7-8a86-d0a1d3eaf15d"",
@@ -1186,6 +1195,17 @@ namespace Warlander.Deedplanner.Inputs
                     ""processors"": """",
                     ""groups"": ""Mouse and Keyboard"",
                     ""action"": ""Take Screenshot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bae5ae25-a629-4f09-a79b-f67de086143c"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse and Keyboard"",
+                    ""action"": ""Take Screenshot With UI"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1516,6 +1536,7 @@ namespace Warlander.Deedplanner.Inputs
             m_EditingControls_Redo = m_EditingControls.FindAction("Redo", throwIfNotFound: true);
             m_EditingControls_ToggleUI = m_EditingControls.FindAction("Toggle UI", throwIfNotFound: true);
             m_EditingControls_TakeScreenshot = m_EditingControls.FindAction("Take Screenshot", throwIfNotFound: true);
+            m_EditingControls_TakeScreenshotWithUI = m_EditingControls.FindAction("Take Screenshot With UI", throwIfNotFound: true);
             m_EditingControls_QuickSave = m_EditingControls.FindAction("Quick Save", throwIfNotFound: true);
             // Updaters Shared
             m_UpdatersShared = asset.FindActionMap("Updaters Shared", throwIfNotFound: true);
@@ -2184,6 +2205,7 @@ namespace Warlander.Deedplanner.Inputs
         private readonly InputAction m_EditingControls_Redo;
         private readonly InputAction m_EditingControls_ToggleUI;
         private readonly InputAction m_EditingControls_TakeScreenshot;
+        private readonly InputAction m_EditingControls_TakeScreenshotWithUI;
         private readonly InputAction m_EditingControls_QuickSave;
         /// <summary>
         /// Provides access to input actions defined in input action map "Editing Controls".
@@ -2212,6 +2234,10 @@ namespace Warlander.Deedplanner.Inputs
             /// Provides access to the underlying input action "EditingControls/TakeScreenshot".
             /// </summary>
             public InputAction @TakeScreenshot => m_Wrapper.m_EditingControls_TakeScreenshot;
+            /// <summary>
+            /// Provides access to the underlying input action "EditingControls/TakeScreenshotWithUI".
+            /// </summary>
+            public InputAction @TakeScreenshotWithUI => m_Wrapper.m_EditingControls_TakeScreenshotWithUI;
             /// <summary>
             /// Provides access to the underlying input action "EditingControls/QuickSave".
             /// </summary>
@@ -2254,6 +2280,9 @@ namespace Warlander.Deedplanner.Inputs
                 @TakeScreenshot.started += instance.OnTakeScreenshot;
                 @TakeScreenshot.performed += instance.OnTakeScreenshot;
                 @TakeScreenshot.canceled += instance.OnTakeScreenshot;
+                @TakeScreenshotWithUI.started += instance.OnTakeScreenshotWithUI;
+                @TakeScreenshotWithUI.performed += instance.OnTakeScreenshotWithUI;
+                @TakeScreenshotWithUI.canceled += instance.OnTakeScreenshotWithUI;
                 @QuickSave.started += instance.OnQuickSave;
                 @QuickSave.performed += instance.OnQuickSave;
                 @QuickSave.canceled += instance.OnQuickSave;
@@ -2280,6 +2309,9 @@ namespace Warlander.Deedplanner.Inputs
                 @TakeScreenshot.started -= instance.OnTakeScreenshot;
                 @TakeScreenshot.performed -= instance.OnTakeScreenshot;
                 @TakeScreenshot.canceled -= instance.OnTakeScreenshot;
+                @TakeScreenshotWithUI.started -= instance.OnTakeScreenshotWithUI;
+                @TakeScreenshotWithUI.performed -= instance.OnTakeScreenshotWithUI;
+                @TakeScreenshotWithUI.canceled -= instance.OnTakeScreenshotWithUI;
                 @QuickSave.started -= instance.OnQuickSave;
                 @QuickSave.performed -= instance.OnQuickSave;
                 @QuickSave.canceled -= instance.OnQuickSave;
@@ -2953,6 +2985,13 @@ namespace Warlander.Deedplanner.Inputs
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnTakeScreenshot(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Take Screenshot With UI" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnTakeScreenshotWithUI(InputAction.CallbackContext context);
             /// <summary>
             /// Method invoked when associated input action "Quick Save" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>

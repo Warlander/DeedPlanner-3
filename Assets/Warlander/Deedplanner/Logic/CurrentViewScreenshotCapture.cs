@@ -1,10 +1,11 @@
+using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Graphics.Screenshots;
 using Warlander.Deedplanner.Logic.Cameras;
 
 namespace Warlander.Deedplanner.Logic
 {
-    public class CurrentViewScreenshotCapture
+    public class CurrentViewScreenshotCapture : IScreenshotCapture
     {
         public const int ScreenshotHeight = 2160;
 
@@ -15,6 +16,11 @@ namespace Warlander.Deedplanner.Logic
         {
             _cameraCoordinator = cameraCoordinator;
             _screenshotRenderer = screenshotRenderer;
+        }
+
+        public Task<Texture2D> CaptureAsync()
+        {
+            return Task.FromResult(CaptureCurrentView());
         }
 
         public Texture2D CaptureCurrentView()
