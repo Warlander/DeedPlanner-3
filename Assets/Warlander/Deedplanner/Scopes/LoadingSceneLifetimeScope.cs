@@ -17,7 +17,7 @@ namespace Warlander.Deedplanner.Scopes
                 {
                     foreach (MonoBehaviour mb in root.GetComponentsInChildren<MonoBehaviour>(true))
                     {
-                        container.InjectGameObject(mb.gameObject);
+                        container.Inject(mb);
                     }
                 }
             });

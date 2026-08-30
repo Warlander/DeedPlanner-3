@@ -37,7 +37,7 @@ namespace Warlander.Deedplanner.Scopes
                 {
                     foreach (MonoBehaviour mb in root.GetComponentsInChildren<MonoBehaviour>(true))
                     {
-                        container.InjectGameObject(mb.gameObject);
+                        container.Inject(mb);
                     }
                 }
             });
@@ -85,6 +85,7 @@ namespace Warlander.Deedplanner.Scopes
 
             builder.Register<LayoutContext>(Lifetime.Singleton);
             builder.Register<UiLog>(Lifetime.Singleton);
+            builder.Register<InterfaceVisibility>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<PreviewAtlasCatalog>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.RegisterEntryPoint<TabContext>().AsSelf();
             builder.RegisterEntryPoint<GroundLevelLock>().AsSelf();

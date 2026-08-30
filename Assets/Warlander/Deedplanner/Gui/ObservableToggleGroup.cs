@@ -37,6 +37,11 @@ namespace Warlander.Deedplanner.Gui
             }
         }
 
+        // Skip base: EnsureValidState force-selects a wrong toggle when group re-activates before it re-registers.
+        protected override void OnEnable()
+        {
+        }
+
         protected override void OnDestroy()
         {
             if (_toggleListeners == null)

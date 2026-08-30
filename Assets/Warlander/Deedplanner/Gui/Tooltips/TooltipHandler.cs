@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.UI;
 using Warlander.UI.Windows;
 using VContainer;
 using VContainer.Unity;
@@ -12,11 +13,13 @@ namespace Warlander.Deedplanner.Gui.Tooltips
     public class TooltipHandler : IInitializable, ILateTickable
     {
         private readonly WindowCoordinator _windowCoordinator;
+        private readonly IInterfaceVisibility _interfaceVisibility;
 
         [Inject]
-        public TooltipHandler(WindowCoordinator windowCoordinator)
+        public TooltipHandler(WindowCoordinator windowCoordinator, IInterfaceVisibility interfaceVisibility)
         {
             _windowCoordinator = windowCoordinator;
+            _interfaceVisibility = interfaceVisibility;
         }
         
         private readonly List<TooltipText> _scheduledTooltipTexts = new List<TooltipText>();
@@ -38,6 +41,13 @@ namespace Warlander.Deedplanner.Gui.Tooltips
 
         void ILateTickable.LateTick()
         {
+            if (_interfaceVisibility.Visible == false)
+            {
+                _scheduledTooltipTexts.Clear();
+                _tooltip.Value = "";
+                return;
+            }
+
             if (_scheduledTooltipTexts.Count == 0)
             {
                 _tooltip.Value = "";
