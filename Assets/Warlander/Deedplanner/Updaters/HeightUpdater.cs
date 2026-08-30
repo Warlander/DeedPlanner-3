@@ -50,6 +50,9 @@ namespace Warlander.Deedplanner.Updaters
         private bool _respectOriginalSlopes;
         private string _targetHeight = "0";
 
+        private SlopeGridView _slopeGrid;
+        private readonly int[] _heightsBuffer = new int[9];
+
         private bool ComplexSelectionEnabled => mode != HeightMode.PaintTerrain;
 
         public HeightUpdater(IHeightUpdaterView view, TooltipHandler tooltipHandler, DPSettings settings,
@@ -184,7 +187,14 @@ namespace Warlander.Deedplanner.Updaters
 
             if (activeHandle != null)
             {
-                _tooltipHandler.ShowTooltipText(activeHandle.ToRichString(_mapHandler.Map, _cameraCoordinator.Current.Level));
+                if (_slopeGrid == null)
+                {
+                    _slopeGrid = _tooltipHandler.GetContent<SlopeGridView>();
+                }
+                _tooltipHandler.ShowTooltipText("X: " + activeHandle.TileCoords.x + " Y: " + activeHandle.TileCoords.y);
+                activeHandle.WriteSlopeGridData(_mapHandler.Map, _cameraCoordinator.Current.Level, _heightsBuffer);
+                _slopeGrid.SetData(new SlopeGridData(3, _heightsBuffer));
+                _tooltipHandler.ShowTooltipContent(_slopeGrid);
             }
         }
 

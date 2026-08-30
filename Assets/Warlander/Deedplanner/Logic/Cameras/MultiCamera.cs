@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Plugins.Warlander.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
@@ -117,6 +116,8 @@ namespace Warlander.Deedplanner.Logic.Cameras
         
         private IMapProjector _attachedProjector;
         private DynamicModelBehaviour _outlinedModel;
+        private SlopeGridView _slopeGrid;
+        private readonly int[] _heightsBuffer = new int[9];
 
         private CameraMode cameraMode = CameraMode.Top;
         private int _level = 0;
@@ -265,11 +266,13 @@ namespace Warlander.Deedplanner.Logic.Cameras
 
                         if (heightmapHandle != null)
                         {
-                            tooltipBuild.Append(heightmapHandle.ToRichString(_mapHandler.Map, Level));
+                            ShowSlopeGridTooltip(heightmapHandle, tooltipBuild);
                         }
                         else if (isHeightEditing)
                         {
                             tooltipBuild.Append("X: " + x + " Y: " + y).AppendLine();
+                            _tooltipHandler.ShowTooltipText(tooltipBuild.ToString());
+                            tooltipBuild.Clear();
 
                             Map map = _mapHandler.Map;
                             Vector3 raycastPoint = raycastHit.point;
@@ -278,20 +281,12 @@ namespace Warlander.Deedplanner.Logic.Cameras
                             int clampedY = Mathf.Clamp(tileCoords.y, 0, map.Height);
                             tileCoords = new Vector2Int(clampedX, clampedY);
 
-                            int h00 = map[tileCoords.x, tileCoords.y].GetHeightForLevel(_level);
-                            int h10 = map[tileCoords.x + 1, tileCoords.y].GetHeightForLevel(_level);
-                            int h01 = map[tileCoords.x, tileCoords.y + 1].GetHeightForLevel(_level);
-                            int h11 = map[tileCoords.x + 1, tileCoords.y + 1].GetHeightForLevel(_level);
-                            int h00Digits = NumericStringUtils.CalculateDigitsCount(h00);
-                            int h10Digits = NumericStringUtils.CalculateDigitsCount(h10);
-                            int h01Digits = NumericStringUtils.CalculateDigitsCount(h01);
-                            int h11Digits = NumericStringUtils.CalculateDigitsCount(h11);
-                            int maxDigits = Mathf.Max(h00Digits, h10Digits, h01Digits, h11Digits);
-
-                            tooltipBuild.Append("<mspace=0.5em>");
-                            tooltipBuild.Append(NumericStringUtils.PadIntFromBothSidesTMP(h01, maxDigits)).Append("   ").Append(NumericStringUtils.PadIntFromBothSidesTMP(h11, maxDigits)).AppendLine();
-                            tooltipBuild.AppendLine();
-                            tooltipBuild.Append(NumericStringUtils.PadIntFromBothSidesTMP(h00, maxDigits)).Append("   ").Append(NumericStringUtils.PadIntFromBothSidesTMP(h10, maxDigits)).Append("</mspace>");
+                            _heightsBuffer[0] = map[tileCoords.x, tileCoords.y + 1].GetHeightForLevel(_level);
+                            _heightsBuffer[1] = map[tileCoords.x + 1, tileCoords.y + 1].GetHeightForLevel(_level);
+                            _heightsBuffer[2] = map[tileCoords.x, tileCoords.y].GetHeightForLevel(_level);
+                            _heightsBuffer[3] = map[tileCoords.x + 1, tileCoords.y].GetHeightForLevel(_level);
+                            SlopeGrid.SetData(new SlopeGridData(2, _heightsBuffer));
+                            _tooltipHandler.ShowTooltipContent(SlopeGrid);
                         }
                         else
                         {
@@ -307,7 +302,7 @@ namespace Warlander.Deedplanner.Logic.Cameras
                     }
                     else if (heightmapHandle != null)
                     {
-                        tooltipBuild.Append(heightmapHandle.ToRichString(_mapHandler.Map, Level));
+                        ShowSlopeGridTooltip(heightmapHandle, tooltipBuild);
                     }
 
                     Decoration hoveredDecoration = FindClosestDecorationToCursor(ray, mask);
@@ -330,8 +325,19 @@ namespace Warlander.Deedplanner.Logic.Cameras
             }
         }
 
-        private Decoration FindClosestDecorationToCursor(Ray ray, int mask)
+        private SlopeGridView SlopeGrid => _slopeGrid != null ? _slopeGrid : (_slopeGrid = _tooltipHandler.GetContent<SlopeGridView>());
+
+        private void ShowSlopeGridTooltip(HeightmapHandle handle, StringBuilder tooltipBuild)
         {
+            tooltipBuild.Append("X: " + handle.TileCoords.x + " Y: " + handle.TileCoords.y).AppendLine();
+            _tooltipHandler.ShowTooltipText(tooltipBuild.ToString());
+            tooltipBuild.Clear();
+            handle.WriteSlopeGridData(_mapHandler.Map, Level, _heightsBuffer);
+            SlopeGrid.SetData(new SlopeGridData(3, _heightsBuffer));
+            _tooltipHandler.ShowTooltipContent(SlopeGrid);
+        }
+
+        private Decoration FindClosestDecorationToCursor(Ray ray, int mask)        {
             if ((mask & LayerMasks.DecorationMask) == 0)
             {
                 return null;

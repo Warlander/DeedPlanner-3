@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.UI;
 using Warlander.UI.Windows;
@@ -21,69 +20,80 @@ namespace Warlander.Deedplanner.Gui.Tooltips
             _windowCoordinator = windowCoordinator;
             _interfaceVisibility = interfaceVisibility;
         }
-        
-        private readonly List<TooltipText> _scheduledTooltipTexts = new List<TooltipText>();
+
+        private readonly List<ScheduledContent> _scheduledContents = new List<ScheduledContent>();
+        private readonly List<ITooltipContent> _sortedContents = new List<ITooltipContent>();
 
         private Tooltip _tooltip;
-        
+
         void IInitializable.Initialize()
         {
             _tooltip = _windowCoordinator.CreateWindow<Tooltip>(WindowNames.TooltipWindow);
         }
-        
+
         /// <summary>
-        /// Shows tooltip text next frame.
+        /// Shows tooltip text next frame. Blocks are laid out top to bottom by ascending priority.
         /// </summary>
         public void ShowTooltipText(string text, int priority = 0)
         {
-            _scheduledTooltipTexts.Add(new TooltipText(priority, text));
+            TooltipTextBlock block = _tooltip.ClaimTextBlock();
+            block.SetText(text);
+            ShowTooltipContent(block, priority);
+        }
+
+        /// <summary>
+        /// Returns the shared tooltip content block of the given type (e.g. SlopeGridView).
+        /// Producers cache it, update its data and schedule it every frame while hovered.
+        /// </summary>
+        public T GetContent<T>() where T : TooltipContentBlock
+        {
+            return _tooltip.GetContent<T>();
+        }
+
+        /// <summary>
+        /// Shows a tooltip content block next frame. Blocks are laid out top to bottom by ascending priority.
+        /// </summary>
+        public void ShowTooltipContent(ITooltipContent content, int priority = 0)
+        {
+            _scheduledContents.Add(new ScheduledContent(priority, content));
         }
 
         void ILateTickable.LateTick()
         {
             if (_interfaceVisibility.Visible == false)
             {
-                _scheduledTooltipTexts.Clear();
-                _tooltip.Value = "";
+                _scheduledContents.Clear();
+                _tooltip.SetContents(null);
                 return;
             }
 
-            if (_scheduledTooltipTexts.Count == 0)
+            if (_scheduledContents.Count == 0)
             {
-                _tooltip.Value = "";
+                _tooltip.SetContents(null);
             }
             else
             {
-                StringBuilder finalTooltip = new StringBuilder();
-                _scheduledTooltipTexts.Sort((t1, t2) => t1.Priority - t2.Priority);
-                for (int i = 0; i < _scheduledTooltipTexts.Count; i++)
-                {
-                    TooltipText tooltipText = _scheduledTooltipTexts[i];
-                    finalTooltip.Append(tooltipText.Text);
-
-                    if (i != _scheduledTooltipTexts.Count - 1)
-                    {
-                        finalTooltip.Append("\n");
-                    }
-                }
-
-                _tooltip.Value = finalTooltip.ToString();
-                _scheduledTooltipTexts.Clear();
+                _sortedContents.AddRange(_scheduledContents
+                    .OrderBy(scheduled => scheduled.Priority)
+                    .Select(scheduled => scheduled.Content));
+                _tooltip.SetContents(_sortedContents);
+                _scheduledContents.Clear();
+                _sortedContents.Clear();
             }
         }
 
-        private struct TooltipText
+        private struct ScheduledContent
         {
-            private int _priority;
-            private string _text;
+            private readonly int _priority;
+            private readonly ITooltipContent _content;
 
             public int Priority => _priority;
-            public string Text => _text;
+            public ITooltipContent Content => _content;
 
-            public TooltipText(int priority, string text)
+            public ScheduledContent(int priority, ITooltipContent content)
             {
                 _priority = priority;
-                _text = text;
+                _content = content;
             }
         }
     }

@@ -1,6 +1,4 @@
-﻿using System.Text;
-using Plugins.Warlander.Utils;
-using UnityEngine;
+﻿using UnityEngine;
 using Warlander.Deedplanner.Data;
 
 namespace Warlander.Deedplanner.Logic
@@ -65,45 +63,19 @@ namespace Warlander.Deedplanner.Logic
             return distance;
         }
         
-        public string ToRichString(Map map, int floor)
+        public void WriteSlopeGridData(Map map, int floor, int[] heightsBuffer)
         {
-            StringBuilder build = new StringBuilder();
-            
-            build.Append("X: " + TileCoords.x + " Y: " + TileCoords.y).AppendLine();
-            
-            build.Append("<mspace=0.5em>");
-            
             Tile centralTile = map[TileCoords.x, TileCoords.y];
             int centralHeight = centralTile.GetHeightForLevel(floor);
+
+            int index = 0;
             for (int i = 1; i >= -1; i--)
             {
                 for (int i2 = -1; i2 <= 1; i2++)
                 {
-                    if (i == 0 && i2 == 0)
-                    {
-                        build.Append("<b>").Append(NumericStringUtils.PadIntFromBothSidesTMP(centralHeight, 5)).Append("</b>");
-                    }
-                    else
-                    {
-                        int heightDifference = TileHeightOrDefault(map[TileCoords.x + i2, TileCoords.y + i], centralHeight, floor) - centralHeight;
-                        build.Append(NumericStringUtils.PadIntFromBothSidesTMP(heightDifference, 5));
-                    }
-
-                    if (i2 != 1)
-                    {
-                        build.Append(" ");
-                    }
-                }
-
-                if (i != -1)
-                {
-                    build.Append("<br>");
+                    heightsBuffer[index++] = TileHeightOrDefault(map[TileCoords.x + i2, TileCoords.y + i], centralHeight, floor);
                 }
             }
-                        
-            build.Append("</mspace>");
-
-            return build.ToString();
         }
         
         private static int TileHeightOrDefault(Tile tile, int defaultHeight, int floor)
