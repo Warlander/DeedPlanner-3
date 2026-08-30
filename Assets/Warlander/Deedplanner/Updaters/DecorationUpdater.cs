@@ -289,7 +289,7 @@ namespace Warlander.Deedplanner.Updaters
             else if (_input.DecorationUpdater.SnappyObjectRotate.IsPressed())
             {
                 _isScrollRotate = true;
-                if (_input.DecorationUpdater.SmoothObjectRotate.ReadValue<float>() > 0)
+                if (_input.DecorationUpdater.SnappyObjectRotate.ReadValue<float>() > 0)
                 {
                     _rotation += 11.25f;
                 }
