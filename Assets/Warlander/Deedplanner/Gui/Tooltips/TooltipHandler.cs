@@ -36,6 +36,10 @@ namespace Warlander.Deedplanner.Gui.Tooltips
         /// </summary>
         public void ShowTooltipText(string text, int priority = 0)
         {
+            if (string.IsNullOrEmpty(text))
+            {
+                return;
+            }
             TooltipTextBlock block = _tooltip.ClaimTextBlock();
             block.SetText(text);
             ShowTooltipContent(block, priority);
