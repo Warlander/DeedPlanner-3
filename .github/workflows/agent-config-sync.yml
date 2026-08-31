@@ -1,0 +1,27 @@
+name: Agent Config Sync
+
+# Alarm only: the local .githooks/pre-commit is the real gate. This catches drift
+# that slipped through (clone without hooksPath, --no-verify) on direct-to-master pushes.
+on:
+  push:
+    branches: [master]
+    paths: ['.agents/**', '.claude/**', 'CLAUDE.md']
+
+permissions:
+  contents: read
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Skill mirror matches canonical
+        run: diff -r .agents/skills .claude/skills
+
+      - name: CLAUDE.md still imports AGENTS.md
+        run: grep -qx '@AGENTS.md' CLAUDE.md

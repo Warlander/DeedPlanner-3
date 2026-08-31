@@ -1,6 +1,10 @@
 # AGENTS.md
 
-This file provides guidance to AI coding agents (OpenAI Codex and others) when working with this repository. It mirrors `CLAUDE.md` (Claude Code) — when updating one, update the other.
+This file provides guidance to AI coding agents (OpenAI Codex and others) when working with this repository. It is the canonical instruction file: `CLAUDE.md` is a fixed stub that imports this file, and the pre-commit hook rejects edits to the stub. Always edit here.
+
+## Agent Config Layout
+
+Skills live canonically in `.agents/skills/`. `.claude/skills/` is a generated mirror: the pre-commit hook regenerates it and rejects commits that edit only the mirror. Never edit `.claude/skills/` directly. Fresh clones need `git config core.hooksPath .githooks` once to enable the hook.
 
 ## Project Overview
 

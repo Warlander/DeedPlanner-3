@@ -46,8 +46,7 @@ Top Bar                     [PREFAB: Top Bar.prefab] ToggleOnKeyPress
 Horizontal Camera Holder 1  Screen 1, Screen 2 — ResizableRenderTexture + RawImage + MouseEventCatcher per screen
 Horizontal Camera Holder 2  Screen 3, Screen 4 (inactive by default)
 Splits                      [PREFAB: Splits.prefab] window-split border overlays (referenced by EditorAreaLayouterView.splits)
-Bridge Bar Root             ToggleOnKeyPress — global F10 visibility wrapper
-  Bridge Bar                [PREFAB: Bridge Bar.prefab] BridgeSegmentContainer (registered as IBridgeSegmentBarView), PivotAnimator
+Bridge Bar                  [PREFAB: Bridge Bar.prefab] BridgeSegmentContainer (registered as IBridgeSegmentBarView), ToggleOnKeyPress
 Compass 1..4 Manager        CompassManager — one per screen; 2-4 inactive by default
 ```
 

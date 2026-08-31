@@ -1,0 +1,43 @@
+#!/bin/sh
+# DeedPlanner repo guards. Enabled per clone via: git config core.hooksPath .githooks
+
+STAGED=$(git diff --cached --name-only)
+
+# CLAUDE.md is a fixed stub that imports AGENTS.md
+if echo "$STAGED" | grep -qx 'CLAUDE.md'; then
+    if [ "$ALLOW_CLAUDE_MD_EDIT" != "1" ]; then
+        echo "ERROR: CLAUDE.md is a fixed stub that imports AGENTS.md. Edit AGENTS.md instead."
+        echo "One-time override: ALLOW_CLAUDE_MD_EDIT=1 git commit ..."
+        exit 1
+    fi
+fi
+
+CANONICAL=$(echo "$STAGED" | grep -c '^\.agents/skills/' || true)
+MIRROR=$(echo "$STAGED" | grep -c '^\.claude/skills/' || true)
+
+if [ "$MIRROR" -gt 0 ] && [ "$CANONICAL" -eq 0 ]; then
+    echo "ERROR: .claude/skills is a generated mirror of .agents/skills. Edit .agents/skills instead."
+    exit 1
+fi
+
+# Regenerate mirror; rm+cp covers adds, deletes, and renames
+if [ "$CANONICAL" -gt 0 ]; then
+    rm -rf .claude/skills
+    if [ -d .agents/skills ]; then
+        cp -r .agents/skills .claude/skills
+    fi
+    git add -A .claude/skills
+    echo "Synced .claude/skills from .agents/skills."
+fi
+
+# Registry Browser embedded-package guard (absorbed from old .git/hooks/pre-commit)
+REGISTRY=$(echo "$STAGED" | grep -E '^Packages/(manifest\.json|packages-lock\.json)$' || true)
+if [ -n "$REGISTRY" ]; then
+    if git diff --cached -- $REGISTRY | grep -q '"file:Embeds/'; then
+        echo "ERROR: Staged changes contain embedded package references (file:Embeds/...)."
+        echo "Use the Registry Browser (Window > DeedPlanner > Registry Browser) to un-embed packages before committing."
+        exit 1
+    fi
+fi
+
+exit 0
