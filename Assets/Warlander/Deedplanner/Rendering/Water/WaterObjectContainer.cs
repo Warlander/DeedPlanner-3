@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Graphics.Water
+namespace Warlander.Deedplanner.Rendering.Water
 {
     public class WaterObjectContainer : IDisposable
     {

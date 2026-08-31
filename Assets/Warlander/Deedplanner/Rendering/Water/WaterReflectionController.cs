@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-namespace Warlander.Deedplanner.Graphics.Water
+namespace Warlander.Deedplanner.Rendering.Water
 {
     /// <summary>
     /// Manages a shared planar reflection camera for Ultra quality water.

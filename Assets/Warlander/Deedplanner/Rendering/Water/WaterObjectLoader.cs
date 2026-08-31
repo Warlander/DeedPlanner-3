@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Graphics.Water
+namespace Warlander.Deedplanner.Rendering.Water
 {
     /// <summary>
     /// Stores resource paths for water prefabs and instantiates them on request.

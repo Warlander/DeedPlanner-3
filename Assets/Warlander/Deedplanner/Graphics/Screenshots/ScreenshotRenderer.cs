@@ -1,6 +1,6 @@
 using UnityEngine;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Graphics.Water;
+using Warlander.Deedplanner.Rendering.Water;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Outlines;

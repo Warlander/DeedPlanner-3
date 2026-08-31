@@ -1,7 +1,7 @@
 using UnityEngine;
 using Warlander.Deedplanner.Logic.Cameras;
 
-namespace Warlander.Deedplanner.Graphics.Water
+namespace Warlander.Deedplanner.Rendering.Water
 {
     public interface IWaterFacade
     {

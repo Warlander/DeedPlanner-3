@@ -4,7 +4,7 @@ using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Settings;
 
-namespace Warlander.Deedplanner.Graphics.Water
+namespace Warlander.Deedplanner.Rendering.Water
 {
     public class WaterController : IDisposable
     {

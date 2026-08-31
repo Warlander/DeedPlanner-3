@@ -3,7 +3,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Settings;
 
-namespace Warlander.Deedplanner.Graphics.Water
+namespace Warlander.Deedplanner.Rendering.Water
 {
     /// <summary>
     /// Subscribes to DPSettings.Modified and keeps the PLANAR_REFLECTIONS shader keyword

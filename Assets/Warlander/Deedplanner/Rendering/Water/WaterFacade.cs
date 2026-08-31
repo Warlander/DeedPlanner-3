@@ -5,7 +5,7 @@ using Warlander.Deedplanner.Settings;
 using VContainer;
 using VContainer.Unity;
 
-namespace Warlander.Deedplanner.Graphics.Water
+namespace Warlander.Deedplanner.Rendering.Water
 {
     public class WaterFacade : IWaterFacade, IDisposable
     {

@@ -10,7 +10,7 @@ using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Graphics.Outline;
-using Warlander.Deedplanner.Graphics.Water;
+using Warlander.Deedplanner.Rendering.Water;
 using Warlander.Deedplanner.Graphics.Projectors;
 using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Gui;
