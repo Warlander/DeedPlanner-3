@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Logic.Outlines;
+using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logging;
 using VContainer;
 

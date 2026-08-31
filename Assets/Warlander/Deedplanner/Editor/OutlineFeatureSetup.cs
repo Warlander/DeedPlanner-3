@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
-using Warlander.Deedplanner.Graphics.Outline;
+using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Editor

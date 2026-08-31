@@ -2,10 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Logging;
 
-namespace Warlander.Deedplanner.Graphics.Outline
+namespace Warlander.Deedplanner.Rendering.Outline
 {
     public class ScreenSpaceOutlineFeature : ScriptableRendererFeature
     {

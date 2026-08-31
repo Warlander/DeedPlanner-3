@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Graphics.Outline;
 
-namespace Warlander.Deedplanner.Logic.Outlines
+namespace Warlander.Deedplanner.Rendering.Outline
 {
     public interface IOutlineCoordinator
     {

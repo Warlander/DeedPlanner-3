@@ -4,8 +4,7 @@ using System.Collections.ObjectModel;
 using System.Xml;
 using UnityEngine;
 using UnityEngine.InputSystem.Utilities;
-using Warlander.Deedplanner.Graphics.Outline;
-using Warlander.Deedplanner.Logic.Outlines;
+using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;
 

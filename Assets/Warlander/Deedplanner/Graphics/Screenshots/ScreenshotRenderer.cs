@@ -3,7 +3,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Rendering.Water;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
-using Warlander.Deedplanner.Logic.Outlines;
+using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Settings;
 
 namespace Warlander.Deedplanner.Graphics.Screenshots

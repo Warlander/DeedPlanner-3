@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Graphics.Outline
+namespace Warlander.Deedplanner.Rendering.Outline
 {
     public readonly struct OutlineEntry
     {

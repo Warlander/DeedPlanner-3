@@ -1,4 +1,4 @@
-namespace Warlander.Deedplanner.Graphics.Outline
+namespace Warlander.Deedplanner.Rendering.Outline
 {
     /// <summary>
     /// Indicates which kind of outline to use (the main difference being color).

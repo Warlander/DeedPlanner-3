@@ -4,11 +4,10 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-using Warlander.Deedplanner.Graphics.Outline;
 using VContainer;
 using VContainer.Unity;
 
-namespace Warlander.Deedplanner.Logic.Outlines
+namespace Warlander.Deedplanner.Rendering.Outline
 {
     public class OutlineFeatureBridge : IInitializable, IDisposable
     {

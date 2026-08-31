@@ -17,7 +17,7 @@ using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logic.Compression;
-using Warlander.Deedplanner.Logic.Outlines;
+using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logic.Saving;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Updaters;
