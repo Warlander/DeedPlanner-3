@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 using UnityEngine;
-using Warlander.Deedplanner.Graphics.Screenshots;
 using Warlander.Deedplanner.Logic.Cameras;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Screenshots
 {
     public class CurrentViewScreenshotCapture : IScreenshotCapture
     {

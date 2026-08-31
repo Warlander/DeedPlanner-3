@@ -6,7 +6,7 @@ using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Debugging;
 using Warlander.Deedplanner.Rendering.Projectors;
-using Warlander.Deedplanner.Graphics.Screenshots;
+using Warlander.Deedplanner.Screenshots;
 using Warlander.Deedplanner.Rendering.Water;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
@@ -142,6 +142,7 @@ namespace Warlander.Deedplanner.Scopes
             builder.RegisterEntryPoint<AutoSaveScheduler>().AsSelf();
             builder.Register<IAutoSaveScheduler>(container => container.Resolve<AutoSaveScheduler>(), Lifetime.Singleton);
             builder.Register<ScreenshotSaver>(Lifetime.Singleton);
+            builder.Register<ScreenshotFacade>(Lifetime.Singleton).As<IScreenshotFacade>();
             builder.RegisterEntryPoint<ScreenshotInputListener>();
             builder.RegisterEntryPoint<UpdaterCoordinator>();
             builder.Register<MapProjectorFacade>(Lifetime.Singleton).AsImplementedInterfaces();

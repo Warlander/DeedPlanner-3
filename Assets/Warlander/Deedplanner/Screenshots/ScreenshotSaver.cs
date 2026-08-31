@@ -4,7 +4,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Screenshots
 {
     public class ScreenshotSaver
     {

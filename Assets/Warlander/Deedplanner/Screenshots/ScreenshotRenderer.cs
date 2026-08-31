@@ -6,7 +6,7 @@ using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Settings;
 
-namespace Warlander.Deedplanner.Graphics.Screenshots
+namespace Warlander.Deedplanner.Screenshots
 {
     public class ScreenshotRenderer : IScreenshotRenderer
     {

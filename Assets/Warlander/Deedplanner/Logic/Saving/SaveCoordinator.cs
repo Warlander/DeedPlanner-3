@@ -7,13 +7,14 @@ using UnityEngine;
 using VContainer;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logging;
+using Warlander.Deedplanner.Screenshots;
 
 namespace Warlander.Deedplanner.Logic.Saving
 {
     public class SaveCoordinator : ISaveCoordinator
     {
         private readonly MapHandler _mapHandler;
-        private readonly DeedThumbnailCapture _thumbnailCapture;
+        private readonly IScreenshotFacade _screenshotFacade;
         private readonly IReadOnlyList<ISaveBackend> _backends;
         private readonly RecentMapsStore _recentMaps;
         private readonly IObjectResolver _resolver;
@@ -31,11 +32,11 @@ namespace Warlander.Deedplanner.Logic.Saving
         /// Fired whenever CurrentLocation or LastSaveTimeUtc changes: save, quick save, load, new map.
         public event Action SaveStateChanged = delegate { };
 
-        public SaveCoordinator(MapHandler mapHandler, DeedThumbnailCapture thumbnailCapture,
+        public SaveCoordinator(MapHandler mapHandler, IScreenshotFacade screenshotFacade,
             IReadOnlyList<ISaveBackend> backends, RecentMapsStore recentMaps, IObjectResolver resolver)
         {
             _mapHandler = mapHandler;
-            _thumbnailCapture = thumbnailCapture;
+            _screenshotFacade = screenshotFacade;
             _backends = backends;
             _recentMaps = recentMaps;
             _resolver = resolver;
@@ -67,7 +68,7 @@ namespace Warlander.Deedplanner.Logic.Saving
         public string SerializeCurrentMap(out byte[] thumbnailJpeg)
         {
             Map map = _mapHandler.Map;
-            thumbnailJpeg = _thumbnailCapture.CaptureJpeg(map);
+            thumbnailJpeg = _screenshotFacade.CaptureThumbnailJpeg(map);
 
             StringBuilder build = new StringBuilder();
             XmlWriterSettings settings = new XmlWriterSettings();

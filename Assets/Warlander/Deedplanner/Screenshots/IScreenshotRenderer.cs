@@ -1,7 +1,7 @@
 using UnityEngine;
 using Warlander.Deedplanner.Logic.Cameras;
 
-namespace Warlander.Deedplanner.Graphics.Screenshots
+namespace Warlander.Deedplanner.Screenshots
 {
     public readonly struct ScreenshotRequest
     {
