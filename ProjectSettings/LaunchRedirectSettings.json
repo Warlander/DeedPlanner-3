@@ -1,3 +1,4 @@
 {
-    "startupScenePath": "Assets/Scenes/LoadingScene.unity"
+    "startupScenePath": "Assets/Scenes/LoadingScene.unity",
+    "redirectOnEmptyScene": true
 }
