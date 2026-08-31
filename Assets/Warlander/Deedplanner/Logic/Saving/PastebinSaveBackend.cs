@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
+using Warlander.Deedplanner.Logic.Compression;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Logic.Saving
@@ -30,6 +29,13 @@ namespace Warlander.Deedplanner.Logic.Saving
         public bool CompressesOutput => true;
         public bool IsAvailable => true;
 
+        private readonly IByteCompressor _compressor;
+
+        public PastebinSaveBackend(IByteCompressor compressor)
+        {
+            _compressor = compressor;
+        }
+
         public SaveFeasibility CheckSave(long payloadBytes)
         {
             if (payloadBytes > PasteLimitBytes)
@@ -51,7 +57,7 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         public async Task<MapLocation?> SaveAsync(string payload, string suggestedName)
         {
-            byte[] compressed = Compress(Encoding.UTF8.GetBytes(payload));
+            byte[] compressed = _compressor.Compress(Encoding.UTF8.GetBytes(payload));
             string base64 = Convert.ToBase64String(compressed);
 
             WWWForm form = new WWWForm();
@@ -106,7 +112,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             try
             {
                 byte[] compressed = Convert.FromBase64String(text);
-                return Encoding.UTF8.GetString(DecompressGzip(compressed));
+                return Encoding.UTF8.GetString(_compressor.Decompress(compressed));
             }
             catch
             {
@@ -126,30 +132,5 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         public Task<IReadOnlyList<SavedMapInfo>> ListSavesAsync() =>
             Task.FromResult<IReadOnlyList<SavedMapInfo>>(Array.Empty<SavedMapInfo>());
-
-        private static byte[] Compress(byte[] raw)
-        {
-            using (MemoryStream memory = new MemoryStream())
-            {
-                using (GZipStream stream = new GZipStream(memory, CompressionMode.Compress, true))
-                {
-                    stream.Write(raw, 0, raw.Length);
-                }
-
-                return memory.ToArray();
-            }
-        }
-
-        private static byte[] DecompressGzip(byte[] gzip)
-        {
-            using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
-            {
-                using (MemoryStream memory = new MemoryStream())
-                {
-                    stream.CopyTo(memory);
-                    return memory.ToArray();
-                }
-            }
-        }
     }
 }

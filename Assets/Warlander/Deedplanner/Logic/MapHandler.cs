@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logging;
+using Warlander.Deedplanner.Logic.Compression;
 using VContainer;
 using VContainer.Unity;
 
@@ -27,11 +28,11 @@ namespace Warlander.Deedplanner.Logic
 
         public ICategoryLogger Logger => _loader.Logger;
 
-        public MapHandler(IObjectResolver resolver, ILoggerSource loggerSource)
+        public MapHandler(IObjectResolver resolver, IByteCompressor compressor, ILoggerSource loggerSource)
         {
             _registry = new MapRegistry();
             _factory = new MapFactory(resolver);
-            _loader = new MapLoader(_factory, loggerSource);
+            _loader = new MapLoader(_factory, compressor, loggerSource);
         }
 
         public void CreateNewMap(int width, int height)

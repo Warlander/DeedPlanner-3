@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
 using SimpleFileBrowser;
+using Warlander.Deedplanner.Logic.Compression;
 
 namespace Warlander.Deedplanner.Logic.Saving
 {
@@ -18,6 +18,13 @@ namespace Warlander.Deedplanner.Logic.Saving
         public string VolatileWarning => null;
         public bool CompressesOutput => false;
         public bool IsAvailable => true;
+
+        private readonly IByteCompressor _compressor;
+
+        public FileSaveBackend(IByteCompressor compressor)
+        {
+            _compressor = compressor;
+        }
 
         public SaveFeasibility CheckSave(long payloadBytes) => SaveFeasibility.Ok;
 
@@ -89,9 +96,9 @@ namespace Warlander.Deedplanner.Logic.Saving
         public Task<string> LoadAsync(MapLocation source)
         {
             byte[] data = File.ReadAllBytes(source.Locator);
-            if (data.Length > 2 && data[0] == 0x1F && data[1] == 0x8B)
+            if (_compressor.IsCompressed(data))
             {
-                data = DecompressGzip(data);
+                data = _compressor.Decompress(data);
             }
 
             return Task.FromResult(Encoding.UTF8.GetString(data));
@@ -142,18 +149,6 @@ namespace Warlander.Deedplanner.Logic.Saving
             {
                 File.Delete(path);
                 File.Move(tempPath, path);
-            }
-        }
-
-        private static byte[] DecompressGzip(byte[] gzip)
-        {
-            using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
-            {
-                using (MemoryStream memory = new MemoryStream())
-                {
-                    stream.CopyTo(memory);
-                    return memory.ToArray();
-                }
             }
         }
     }

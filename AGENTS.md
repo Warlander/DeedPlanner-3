@@ -56,13 +56,15 @@ Without it, play mode ENTRY stalls indefinitely while the Editor window is unfoc
 
 ## Agentic Verification
 
-No automated test suite exists (despite the Test Framework package being present), but the project iterates fast — domain reload and play-mode enter/exit each take only a few seconds. After triggering a recompile or play-mode change, allow a ~5 second buffer, then poll `unity status` for the Editor state before issuing the next command.
+The project iterates fast — domain reload and play-mode enter/exit each take only a few seconds. After triggering a recompile or play-mode change, allow a ~5 second buffer, then poll `unity status` for the Editor state before issuing the next command.
+
+**Unit tests are EditMode only — even for non-editor code.** No PlayMode tests. Test files live in a `Tests/Editor/` folder next to the tested code (e.g. `Logic/Compression/Tests/Editor/`): the `Editor` folder compiles them into Assembly-CSharp-Editor, which the Test Framework discovers and runs without any asmdef. Do not add test asmdefs.
 
 **Never recompile while in play mode.** A domain reload mid-play silently breaks the session: the running app loses its state (map references go null, evals fail with NullReferenceException) while the Editor reports itself ready. Always `editor_stop` → recompile → `editor_play` → re-run the scenario.
 
 Suggested verification ladder, cheapest first:
 1. Compile check (connected Editor via `unity command`, or `unity test --mode EditMode` batch) — catches syntax/type errors.
-2. EditMode smoke run if tests are ever added (`unity test --mode EditMode`).
+2. EditMode tests (`unity test --mode EditMode` batch, or `run_tests` on the connected Editor) when the change touches covered logic.
 3. Play mode enter/exit on the connected Editor to catch startup/initialization exceptions (VContainer wiring, scene load). While in play mode, use the Pipeline CodeEval command to execute C# against the running app — assert state, drive interactions, and read back results, giving real behavioral testing without a test assembly.
 4. Manual/QA pass by the developer for visual or gameplay behavior — agents cannot judge rendering correctness.
 

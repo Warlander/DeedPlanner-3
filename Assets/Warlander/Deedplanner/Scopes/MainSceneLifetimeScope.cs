@@ -16,6 +16,7 @@ using Warlander.Deedplanner.Gui.Widgets.Bridges;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Logic.Compression;
 using Warlander.Deedplanner.Logic.Outlines;
 using Warlander.Deedplanner.Logic.Saving;
 using Warlander.Deedplanner.Settings;
@@ -124,6 +125,8 @@ namespace Warlander.Deedplanner.Scopes
             builder.Register<CurrentViewScreenshotCapture>(Lifetime.Singleton);
             builder.Register<BackbufferScreenshotCapture>(Lifetime.Singleton);
             builder.Register<DeedThumbnailCapture>(Lifetime.Singleton);
+            builder.Register<IByteCompressor, GzipByteCompressor>(Lifetime.Singleton);
+            builder.Register<ISaveNameSanitizer, SaveNameSanitizer>(Lifetime.Singleton);
             builder.Register<PastebinSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
 #if !DISABLESTEAMWORKS
             builder.Register<SteamCloudSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();

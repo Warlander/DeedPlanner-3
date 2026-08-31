@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Warlander.Deedplanner.Logic.Compression;
 
 namespace Warlander.Deedplanner.Logic.Saving
 {
@@ -24,6 +23,15 @@ namespace Warlander.Deedplanner.Logic.Saving
         public bool CompressesOutput => true;
         public bool IsAvailable => true;
 
+        private readonly IByteCompressor _compressor;
+        private readonly ISaveNameSanitizer _nameSanitizer;
+
+        public LocalStorageSaveBackend(IByteCompressor compressor, ISaveNameSanitizer nameSanitizer)
+        {
+            _compressor = compressor;
+            _nameSanitizer = nameSanitizer;
+        }
+
         public SaveFeasibility CheckSave(long payloadBytes)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -41,7 +49,7 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         public Task<MapLocation?> SaveAsync(string payload, string suggestedName)
         {
-            string key = SanitizeKeyName(suggestedName) + ".MAP";
+            string key = _nameSanitizer.Sanitize(suggestedName) + ".MAP";
             WriteEnvelope(key, payload);
             return Task.FromResult<MapLocation?>(new MapLocation(Id, key, suggestedName));
         }
@@ -69,7 +77,7 @@ namespace Warlander.Deedplanner.Logic.Saving
             string envelopeJson = Utils.JavaScriptUtils.LocalStorageGetItem(source.Locator);
             Envelope envelope = JsonUtility.FromJson<Envelope>(envelopeJson);
             byte[] compressed = Convert.FromBase64String(envelope.d);
-            return Task.FromResult(Encoding.UTF8.GetString(DecompressGzip(compressed)));
+            return Task.FromResult(Encoding.UTF8.GetString(_compressor.Decompress(compressed)));
 #else
             throw new NotSupportedException("LocalStorage backend is only available in WebGL builds");
 #endif
@@ -121,10 +129,10 @@ namespace Warlander.Deedplanner.Logic.Saving
             return Task.FromResult<IReadOnlyList<SavedMapInfo>>(saves);
         }
 
-        private static void WriteEnvelope(string key, string payload)
+        private void WriteEnvelope(string key, string payload)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            byte[] compressed = Compress(Encoding.UTF8.GetBytes(payload));
+            byte[] compressed = _compressor.Compress(Encoding.UTF8.GetBytes(payload));
             var envelope = new Envelope
             {
                 t = DateTime.UtcNow.Ticks,
@@ -139,53 +147,6 @@ namespace Warlander.Deedplanner.Logic.Saving
 #else
             throw new NotSupportedException("LocalStorage backend is only available in WebGL builds");
 #endif
-        }
-
-        private static string SanitizeKeyName(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return "Untitled";
-            }
-
-            var builder = new StringBuilder(name.Length);
-            foreach (char c in name)
-            {
-                builder.Append(char.IsLetterOrDigit(c) || c == ' ' || c == '-' || c == '_' ? c : '_');
-            }
-
-            string sanitized = builder.ToString().Trim();
-            if (sanitized.Length > 64)
-            {
-                sanitized = sanitized.Substring(0, 64);
-            }
-
-            return sanitized.Length > 0 ? sanitized : "Untitled";
-        }
-
-        private static byte[] Compress(byte[] raw)
-        {
-            using (MemoryStream memory = new MemoryStream())
-            {
-                using (GZipStream stream = new GZipStream(memory, CompressionMode.Compress, true))
-                {
-                    stream.Write(raw, 0, raw.Length);
-                }
-
-                return memory.ToArray();
-            }
-        }
-
-        private static byte[] DecompressGzip(byte[] gzip)
-        {
-            using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
-            {
-                using (MemoryStream memory = new MemoryStream())
-                {
-                    stream.CopyTo(memory);
-                    return memory.ToArray();
-                }
-            }
         }
 
         [Serializable]

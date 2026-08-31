@@ -1,12 +1,11 @@
 using System;
-using System.IO;
-using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logging;
+using Warlander.Deedplanner.Logic.Compression;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Logic
@@ -16,13 +15,15 @@ namespace Warlander.Deedplanner.Logic
         public static readonly LogCategory Category = new LogCategory("Maps");
 
         private readonly MapFactory _mapFactory;
+        private readonly IByteCompressor _compressor;
         private readonly ICategoryLogger _logger;
 
         public ICategoryLogger Logger => _logger;
 
-        public MapLoader(MapFactory mapFactory, ILoggerSource loggerSource)
+        public MapLoader(MapFactory mapFactory, IByteCompressor compressor, ILoggerSource loggerSource)
         {
             _mapFactory = mapFactory;
+            _compressor = compressor;
             _logger = loggerSource.Create(Category);
         }
 
@@ -35,9 +36,9 @@ namespace Warlander.Deedplanner.Logic
 
         public Map LoadMap(byte[] mapData)
         {
-            if (mapData.Length > 2 && mapData[0] == 0x1F && mapData[1] == 0x8B)
+            if (_compressor.IsCompressed(mapData))
             {
-                return LoadMap(Encoding.UTF8.GetString(DecompressGzip(mapData)));
+                return LoadMap(Encoding.UTF8.GetString(_compressor.Decompress(mapData)));
             }
 
             return LoadMap(Encoding.UTF8.GetString(mapData));
@@ -59,7 +60,7 @@ namespace Warlander.Deedplanner.Logic
             try
             {
                 byte[] requestBytes = Convert.FromBase64String(requestText);
-                byte[] decompressedBytes = await DecompressGzipAsync(requestBytes);
+                byte[] decompressedBytes = await _compressor.DecompressAsync(requestBytes);
                 requestText = Encoding.UTF8.GetString(decompressedBytes, 0, decompressedBytes.Length);
                 _logger.Message("Compressed map, decompressed");
             }
@@ -69,30 +70,6 @@ namespace Warlander.Deedplanner.Logic
             }
 
             return LoadMap(requestText);
-        }
-
-        private static byte[] DecompressGzip(byte[] gzip)
-        {
-            using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
-            {
-                using (MemoryStream memory = new MemoryStream())
-                {
-                    stream.CopyTo(memory);
-                    return memory.ToArray();
-                }
-            }
-        }
-
-        private async Task<byte[]> DecompressGzipAsync(byte[] gzip)
-        {
-            using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
-            {
-                using (MemoryStream memory = new MemoryStream())
-                {
-                    await stream.CopyToAsync(memory);
-                    return memory.ToArray();
-                }
-            }
         }
     }
 }

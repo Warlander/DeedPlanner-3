@@ -1,11 +1,10 @@
 #if !DISABLESTEAMWORKS
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
 using Steamworks;
+using Warlander.Deedplanner.Logic.Compression;
 using Warlander.Deedplanner.Steam;
 
 namespace Warlander.Deedplanner.Logic.Saving
@@ -15,6 +14,8 @@ namespace Warlander.Deedplanner.Logic.Saving
         public const int MaxMainSaves = 50;
 
         private readonly ISteamConnection _connection;
+        private readonly IByteCompressor _compressor;
+        private readonly ISaveNameSanitizer _nameSanitizer;
 
         public SaveBackendId Id => SaveBackendId.SteamCloud;
         public string DisplayName => "Steam Cloud";
@@ -26,9 +27,11 @@ namespace Warlander.Deedplanner.Logic.Saving
         public bool CompressesOutput => true;
         public bool IsAvailable => _connection.Connected;
 
-        public SteamCloudSaveBackend(ISteamConnection connection)
+        public SteamCloudSaveBackend(ISteamConnection connection, IByteCompressor compressor, ISaveNameSanitizer nameSanitizer)
         {
             _connection = connection;
+            _compressor = compressor;
+            _nameSanitizer = nameSanitizer;
         }
 
         public SaveFeasibility CheckSave(long payloadBytes)
@@ -57,7 +60,7 @@ namespace Warlander.Deedplanner.Logic.Saving
 
         public Task<MapLocation?> SaveAsync(string payload, string suggestedName)
         {
-            string fileName = SanitizeFileName(suggestedName) + ".MAP";
+            string fileName = _nameSanitizer.Sanitize(suggestedName) + ".MAP";
             WriteCloudFile(fileName, payload);
             return Task.FromResult<MapLocation?>(new MapLocation(Id, fileName, suggestedName));
         }
@@ -89,7 +92,7 @@ namespace Warlander.Deedplanner.Logic.Saving
                 throw new InvalidOperationException("Failed to read Steam Cloud file: " + source.Locator);
             }
 
-            return Task.FromResult(Encoding.UTF8.GetString(DecompressGzip(compressed)));
+            return Task.FromResult(Encoding.UTF8.GetString(_compressor.Decompress(compressed)));
         }
 
         public Task<SaveLocationStatus> TrackAsync(MapLocation target)
@@ -135,59 +138,12 @@ namespace Warlander.Deedplanner.Logic.Saving
             return Task.FromResult<IReadOnlyList<SavedMapInfo>>(saves);
         }
 
-        private static void WriteCloudFile(string fileName, string payload)
+        private void WriteCloudFile(string fileName, string payload)
         {
-            byte[] data = Compress(Encoding.UTF8.GetBytes(payload));
+            byte[] data = _compressor.Compress(Encoding.UTF8.GetBytes(payload));
             if (!SteamRemoteStorage.FileWrite(fileName, data, data.Length))
             {
                 throw new InvalidOperationException("Steam Cloud write failed: " + fileName);
-            }
-        }
-
-        private static string SanitizeFileName(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return "Untitled";
-            }
-
-            var builder = new StringBuilder(name.Length);
-            foreach (char c in name)
-            {
-                builder.Append(char.IsLetterOrDigit(c) || c == ' ' || c == '-' || c == '_' ? c : '_');
-            }
-
-            string sanitized = builder.ToString().Trim();
-            if (sanitized.Length > 64)
-            {
-                sanitized = sanitized.Substring(0, 64);
-            }
-
-            return sanitized.Length > 0 ? sanitized : "Untitled";
-        }
-
-        private static byte[] Compress(byte[] raw)
-        {
-            using (MemoryStream memory = new MemoryStream())
-            {
-                using (GZipStream stream = new GZipStream(memory, CompressionMode.Compress, true))
-                {
-                    stream.Write(raw, 0, raw.Length);
-                }
-
-                return memory.ToArray();
-            }
-        }
-
-        private static byte[] DecompressGzip(byte[] gzip)
-        {
-            using (GZipStream stream = new GZipStream(new MemoryStream(gzip), CompressionMode.Decompress))
-            {
-                using (MemoryStream memory = new MemoryStream())
-                {
-                    stream.CopyTo(memory);
-                    return memory.ToArray();
-                }
             }
         }
     }
