@@ -1,7 +1,7 @@
 using UnityEngine;
 using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Graphics.Projectors
+namespace Warlander.Deedplanner.Rendering.Projectors
 {
     public interface IMapProjector
     {

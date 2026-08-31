@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Graphics.Projectors
+namespace Warlander.Deedplanner.Rendering.Projectors
 {
     public class MapProjectorPrefabsRetriever : IMapProjectorPrefabsRetriever
     {

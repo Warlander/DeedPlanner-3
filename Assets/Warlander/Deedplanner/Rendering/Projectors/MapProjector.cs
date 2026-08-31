@@ -6,7 +6,7 @@ using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Cameras;
 using VContainer;
 
-namespace Warlander.Deedplanner.Graphics.Projectors
+namespace Warlander.Deedplanner.Rendering.Projectors
 {
     public class MapProjector : MonoBehaviour, IToggleableMapProjector
     {
