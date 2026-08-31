@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
 namespace Warlander.Deedplanner.Data
 {
-    public sealed class Materials : Dictionary<string, int>
+    public sealed class Materials
     {
+        private readonly Dictionary<string, int> _entries;
+
         public Materials()
-        { }
+        {
+            _entries = new Dictionary<string, int>();
+        }
 
         public Materials(XmlNode node)
         {
@@ -18,7 +22,7 @@ namespace Warlander.Deedplanner.Data
                 string[] parts = material.Split('=');
                 string name = parts[0].Trim();
                 int count = int.Parse(parts[1].Trim());
-                this[name] = count;
+                _entries[name] = count;
             }
         }
 
@@ -29,24 +33,16 @@ namespace Warlander.Deedplanner.Data
                 return;
             }
 
-            foreach (KeyValuePair<string, int> entry in materials)
+            foreach (KeyValuePair<string, int> entry in materials._entries)
             {
                 Add(entry.Key, entry.Value);
             }
         }
 
-        public new void Add(string name, int count)
+        public void Add(string name, int count)
         {
-            if (ContainsKey(name))
-            {
-                int newCount = this[name] + count;
-                Remove(name);
-                base.Add(name, newCount);
-            }
-            else
-            {
-                base.Add(name, count);
-            }
+            _entries.TryGetValue(name, out int existing);
+            _entries[name] = existing + count;
         }
 
         public override string ToString()
@@ -55,11 +51,11 @@ namespace Warlander.Deedplanner.Data
             builder.AppendLine("Materials needed:");
             builder.AppendLine();
 
-            foreach (KeyValuePair<string, int> entry in this)
+            foreach (KeyValuePair<string, int> entry in _entries)
             {
                 builder.Append(entry.Key).Append(" = ").AppendLine(entry.Value.ToString());
             }
-            if (Count == 0)
+            if (_entries.Count == 0)
             {
                 builder.AppendLine("None");
             }
