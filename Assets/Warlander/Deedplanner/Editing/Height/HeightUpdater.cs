@@ -4,9 +4,8 @@ using System.Globalization;
 using UnityEngine;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Rendering.Projectors;
-using Warlander.Deedplanner.Gui.Tooltips;
+using Warlander.Deedplanner.Ui.Tooltips;
 using Warlander.Deedplanner.Inputs;
-using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;
 using Warlander.Deedplanner.Settings;
 

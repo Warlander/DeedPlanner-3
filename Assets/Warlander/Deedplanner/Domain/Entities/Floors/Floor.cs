@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Domain.Entities.Floors
 {

@@ -7,8 +7,8 @@ using VContainer;
 using VContainer.Unity;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Platform.Debugging;
-using Warlander.Deedplanner.Gui;
-using Warlander.Deedplanner.Gui.Home;
+using Warlander.Deedplanner.Ui;
+using Warlander.Deedplanner.Ui.Home;
 
 namespace Warlander.Deedplanner.Persistence
 {

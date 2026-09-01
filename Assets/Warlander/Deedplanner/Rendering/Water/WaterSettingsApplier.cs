@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Ui;
 using Warlander.Deedplanner.Settings;
 
 namespace Warlander.Deedplanner.Rendering.Water

@@ -1,6 +1,5 @@
 using Warlander.Deedplanner.Editing;
 using UnityEngine;
-using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Rendering.Projectors
 {

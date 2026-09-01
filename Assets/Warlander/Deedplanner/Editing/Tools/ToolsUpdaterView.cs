@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Ui.Widgets;
 
 namespace Warlander.Deedplanner.Editing
 {

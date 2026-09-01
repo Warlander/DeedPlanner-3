@@ -1,4 +1,4 @@
-﻿using Warlander.Deedplanner.Logic;
+﻿using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Persistence;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logging;

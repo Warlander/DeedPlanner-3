@@ -1,7 +1,6 @@
 ﻿using System;
 using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Persistence;
-using Warlander.Deedplanner.Logic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,9 +14,9 @@ using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Rendering.Water;
 using Warlander.Deedplanner.Rendering.Projectors;
-using Warlander.Deedplanner.Gui;
-using Warlander.Deedplanner.Gui.Tooltips;
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Ui;
+using Warlander.Deedplanner.Ui.Tooltips;
+using Warlander.Deedplanner.Ui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using VContainer;
 

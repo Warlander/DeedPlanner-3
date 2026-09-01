@@ -7,9 +7,8 @@
 using UnityEditor;
 using UnityEngine;
 using Warlander.Deedplanner.Domain;
-using Warlander.Deedplanner.Gui;
-using Warlander.Deedplanner.Gui.Home;
-using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Ui;
+using Warlander.Deedplanner.Ui.Home;
 using Warlander.Deedplanner.Persistence;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Platform.Steam;

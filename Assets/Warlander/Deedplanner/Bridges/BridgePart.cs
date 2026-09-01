@@ -5,7 +5,6 @@ using System.Xml;
 using Plugins.Warlander.Utils;
 using UnityEngine;
 using Warlander.Deedplanner.Rendering.Assets;
-using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Bridges
 {

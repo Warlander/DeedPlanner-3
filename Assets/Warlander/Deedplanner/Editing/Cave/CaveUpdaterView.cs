@@ -1,6 +1,6 @@
 using UnityEngine;
 using Warlander.Deedplanner.Domain.Entities.Caves;
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Ui.Widgets;
 
 namespace Warlander.Deedplanner.Editing
 {

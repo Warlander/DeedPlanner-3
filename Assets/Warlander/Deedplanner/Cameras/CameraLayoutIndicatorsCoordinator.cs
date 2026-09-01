@@ -1,7 +1,6 @@
-using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Ui;
 using UnityEngine;
 using UnityEngine.UI;
-using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logging;
 using VContainer;
 

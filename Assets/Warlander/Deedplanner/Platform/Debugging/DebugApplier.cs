@@ -3,7 +3,6 @@ using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Domain.Entities.Decorations;
 using Warlander.Deedplanner.Rendering.Projectors;
-using Warlander.Deedplanner.Logic;
 using VContainer;
 using VContainer.Unity;
 

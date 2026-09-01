@@ -2,9 +2,8 @@ using Warlander.Deedplanner.Persistence;
 using UnityEngine;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Domain.Entities.Roofs;
-using Warlander.Deedplanner.Gui.Tooltips;
+using Warlander.Deedplanner.Ui.Tooltips;
 using Warlander.Deedplanner.Inputs;
-using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;
 
 namespace Warlander.Deedplanner.Editing

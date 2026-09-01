@@ -14,7 +14,6 @@ using Warlander.Deedplanner.Domain.Entities.Grounds;
 using Warlander.Deedplanner.Domain.Entities.Roofs;
 using Warlander.Deedplanner.Domain.Summary;
 using Warlander.Deedplanner.Domain.Entities.Walls;
-using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;

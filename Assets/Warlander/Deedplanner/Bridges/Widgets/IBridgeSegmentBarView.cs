@@ -1,4 +1,4 @@
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Ui.Widgets;
 using System;
 using Warlander.Deedplanner.Bridges;
 

@@ -1,4 +1,4 @@
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Ui.Widgets;
 using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Persistence;
 using System;
@@ -7,7 +7,6 @@ using UnityEngine;
 using VContainer.Unity;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Bridges;
-using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Bridges.Widgets
 {

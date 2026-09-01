@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Domain.Entities.Floors;
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Ui.Widgets;
 
 namespace Warlander.Deedplanner.Editing
 {

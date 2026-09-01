@@ -6,11 +6,10 @@ using UnityEngine;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Rendering.Projectors;
-using Warlander.Deedplanner.Gui.Tooltips;
+using Warlander.Deedplanner.Ui.Tooltips;
 using Warlander.Deedplanner.Bridges.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Rendering.Outline;
-using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;
 
 namespace Warlander.Deedplanner.Editing

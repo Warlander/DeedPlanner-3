@@ -3,7 +3,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using UnityEngine;
-using Warlander.Deedplanner.Gui;
+using Warlander.Deedplanner.Ui;
 using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Settings

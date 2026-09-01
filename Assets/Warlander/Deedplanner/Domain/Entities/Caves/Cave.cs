@@ -1,6 +1,5 @@
 ﻿using System.Xml;
 using Warlander.Deedplanner.Persistence;
-using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Domain.Entities.Caves

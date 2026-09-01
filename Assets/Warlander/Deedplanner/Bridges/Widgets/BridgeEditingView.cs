@@ -1,4 +1,4 @@
-using Warlander.Deedplanner.Gui.Widgets;
+using Warlander.Deedplanner.Ui.Widgets;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

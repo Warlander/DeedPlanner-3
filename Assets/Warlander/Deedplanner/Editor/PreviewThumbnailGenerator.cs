@@ -14,7 +14,6 @@ using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Logging;
-using Warlander.Deedplanner.Logic;
 using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Editor

@@ -1,6 +1,5 @@
 using UnityEngine;
 using Warlander.Deedplanner.Domain;
-using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;
 
 namespace Warlander.Deedplanner.Editing

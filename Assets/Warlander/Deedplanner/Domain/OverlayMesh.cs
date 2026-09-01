@@ -1,5 +1,4 @@
 using UnityEngine;
-using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Domain
 {

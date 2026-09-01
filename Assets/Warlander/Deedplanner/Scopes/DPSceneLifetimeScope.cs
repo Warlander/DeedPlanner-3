@@ -1,8 +1,7 @@
 using Warlander.Deedplanner.Platform;
 using VContainer;
 using VContainer.Unity;
-using Warlander.Deedplanner.Gui.Tooltips;
-using Warlander.Deedplanner.Logic;
+using Warlander.Deedplanner.Ui.Tooltips;
 using Warlander.Scopes;
 
 namespace Warlander.Deedplanner.Scopes
