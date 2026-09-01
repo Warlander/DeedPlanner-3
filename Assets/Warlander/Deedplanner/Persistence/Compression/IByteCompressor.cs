@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Warlander.Deedplanner.Logic.Compression
+namespace Warlander.Deedplanner.Persistence.Compression
 {
     public interface IByteCompressor
     {

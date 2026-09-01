@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Steamworks;
-using Warlander.Deedplanner.Logic.Compression;
+using Warlander.Deedplanner.Persistence.Compression;
 using Warlander.Deedplanner.Platform.Steam;
 
 namespace Warlander.Deedplanner.Logic.Saving

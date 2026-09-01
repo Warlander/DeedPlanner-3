@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Warlander.Deedplanner.Logic.Compression;
+using Warlander.Deedplanner.Persistence.Compression;
 
 namespace Warlander.Deedplanner.Tests
 {

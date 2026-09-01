@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
-using Warlander.Deedplanner.Logic.Compression;
+using Warlander.Deedplanner.Persistence.Compression;
 using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Logic.Saving

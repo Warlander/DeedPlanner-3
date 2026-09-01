@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using SimpleFileBrowser;
-using Warlander.Deedplanner.Logic.Compression;
+using Warlander.Deedplanner.Persistence.Compression;
 
 namespace Warlander.Deedplanner.Logic.Saving
 {

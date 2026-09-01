@@ -2,7 +2,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
 
-namespace Warlander.Deedplanner.Logic.Compression
+namespace Warlander.Deedplanner.Persistence.Compression
 {
     public class GzipByteCompressor : IByteCompressor
     {

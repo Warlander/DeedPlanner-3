@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logging;
-using Warlander.Deedplanner.Logic.Compression;
+using Warlander.Deedplanner.Persistence.Compression;
 using VContainer;
 using VContainer.Unity;
 
