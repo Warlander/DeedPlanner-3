@@ -1,9 +1,10 @@
+using Warlander.Deedplanner.Data;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Warlander.Deedplanner.Logging;
 
-namespace Warlander.Deedplanner.Data.Bridges
+namespace Warlander.Deedplanner.Bridges
 {
     public class BridgePavementSerializer
     {

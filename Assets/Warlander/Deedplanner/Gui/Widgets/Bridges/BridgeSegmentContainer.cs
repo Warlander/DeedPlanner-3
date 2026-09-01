@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Bridges;
 using Warlander.UI.Utils;
 using VContainer;
 using VContainer.Unity;

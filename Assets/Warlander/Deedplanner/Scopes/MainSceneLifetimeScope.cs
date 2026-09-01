@@ -3,7 +3,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Platform.Debugging;
 using Warlander.Deedplanner.Rendering.Projectors;

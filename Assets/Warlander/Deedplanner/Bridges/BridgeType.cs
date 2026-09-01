@@ -1,4 +1,4 @@
-﻿namespace Warlander.Deedplanner.Data.Bridges
+﻿namespace Warlander.Deedplanner.Bridges
 {
     public enum BridgeType
     {

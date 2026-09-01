@@ -4,7 +4,7 @@ using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Bridges;
 
 namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 {

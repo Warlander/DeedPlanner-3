@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using VContainer.Unity;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Gui.Widgets.Bridges

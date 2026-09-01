@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Warlander.Deedplanner.Data;
 using System.Text;
 using System.Xml;
 using Plugins.Warlander.Utils;
@@ -6,7 +7,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Data.Bridges
+namespace Warlander.Deedplanner.Bridges
 {
     public class BridgePart : TileEntity
     {

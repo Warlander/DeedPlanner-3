@@ -3,7 +3,7 @@ using UnityEngine.CrashReportHandler;
 using VContainer;
 using VContainer.Unity;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Platform.Features;
 using Warlogic.Features;
 using Warlander.Deedplanner.Graphics;

@@ -8,7 +8,7 @@ using System.Xml;
 using Plugins.Warlander.Utils;
 using UnityEngine;
 using UnityEngine.Networking;
-using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Docks;

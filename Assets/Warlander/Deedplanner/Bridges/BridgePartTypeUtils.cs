@@ -1,8 +1,9 @@
+using Warlander.Deedplanner.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Warlander.Deedplanner.Data.Bridges
+namespace Warlander.Deedplanner.Bridges
 {
     public static class BridgePartTypeUtils
     {

@@ -1,7 +1,8 @@
+using Warlander.Deedplanner.Data;
 using System;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Data.Bridges
+namespace Warlander.Deedplanner.Bridges
 {
     public class ArchedBridgeType : IBridgeType
     {

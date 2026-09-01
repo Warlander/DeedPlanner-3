@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Decorations;
 using Warlander.Deedplanner.Data.Docks;

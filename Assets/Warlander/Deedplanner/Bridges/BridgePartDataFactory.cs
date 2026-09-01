@@ -1,7 +1,8 @@
+using Warlander.Deedplanner.Data;
 using System.Xml;
 using Warlander.Deedplanner.Graphics;
 
-namespace Warlander.Deedplanner.Data.Bridges
+namespace Warlander.Deedplanner.Bridges
 {
     public class BridgePartDataFactory
     {

@@ -1,7 +1,8 @@
+using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Data.Bridges
+namespace Warlander.Deedplanner.Bridges
 {
     public class BridgeExtraArgumentChangeCommand : IReversibleCommand
     {

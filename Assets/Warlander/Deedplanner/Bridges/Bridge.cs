@@ -1,4 +1,5 @@
 ﻿using System;
+using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Persistence;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +10,7 @@ using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Data.Bridges
+namespace Warlander.Deedplanner.Bridges
 {
     public class Bridge : IXmlSerializable
     {

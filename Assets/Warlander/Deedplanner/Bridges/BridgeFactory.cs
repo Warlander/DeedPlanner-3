@@ -1,11 +1,12 @@
 ﻿using System;
+using Warlander.Deedplanner.Data;
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logging;
 using VContainer;
 
-namespace Warlander.Deedplanner.Data.Bridges
+namespace Warlander.Deedplanner.Bridges
 {
     public class BridgeFactory
     {

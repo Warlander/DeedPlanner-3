@@ -7,7 +7,7 @@ using System.Linq;
 using System.Xml;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;

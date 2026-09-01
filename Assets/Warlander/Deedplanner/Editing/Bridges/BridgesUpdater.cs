@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Rendering.Projectors;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Gui.Widgets.Bridges;

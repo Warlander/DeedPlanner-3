@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using Warlander.Deedplanner.Data;
 using System.Linq;
 using UnityEngine;
 using Warlander.Deedplanner.Graphics;
 
-namespace Warlander.Deedplanner.Data.Bridges
+namespace Warlander.Deedplanner.Bridges
 {
     public class BridgeData
     {

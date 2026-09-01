@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Warlander.Deedplanner.Data.Bridges;
+using Warlander.Deedplanner.Bridges;
 
 namespace Warlander.Deedplanner.Gui.Widgets.Bridges
 {
