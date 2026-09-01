@@ -7,7 +7,7 @@
 using System;
 using VContainer.Unity;
 
-namespace Warlander.Deedplanner.Steam
+namespace Warlander.Deedplanner.Platform.Steam
 {
     public interface ISteamConnection : IInitializable, IDisposable
     {

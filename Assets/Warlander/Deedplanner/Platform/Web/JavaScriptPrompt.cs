@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Utils
+namespace Warlander.Deedplanner.Platform.Web
 {
     [RequireComponent(typeof(TMP_InputField))]
     public class JavaScriptPrompt : MonoBehaviour

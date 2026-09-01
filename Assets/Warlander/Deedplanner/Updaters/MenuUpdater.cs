@@ -13,7 +13,7 @@ using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Logic.Saving;
 using Warlander.Deedplanner.Settings;
-using Warlander.Deedplanner.Steam;
+using Warlander.Deedplanner.Platform.Steam;
 using Warlander.UI.Windows;
 
 namespace Warlander.Deedplanner.Updaters

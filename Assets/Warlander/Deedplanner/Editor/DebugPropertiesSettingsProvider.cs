@@ -1,6 +1,6 @@
 using UnityEditor;
 using UnityEngine;
-using Warlander.Deedplanner.Debugging;
+using Warlander.Deedplanner.Platform.Debugging;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Editor

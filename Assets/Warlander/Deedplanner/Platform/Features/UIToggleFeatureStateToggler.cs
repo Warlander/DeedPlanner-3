@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using VContainer;
 using Warlogic.Features;
 
-namespace Warlander.Deedplanner.Features
+namespace Warlander.Deedplanner.Platform.Features
 {
     [RequireComponent(typeof(Toggle))]
     public class UIToggleFeatureStateToggler : MonoBehaviour

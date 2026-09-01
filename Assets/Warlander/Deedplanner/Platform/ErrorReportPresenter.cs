@@ -4,14 +4,14 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer.Unity;
-using Warlander.Deedplanner.Features;
+using Warlander.Deedplanner.Platform.Features;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Windows;
-using Warlander.Deedplanner.Steam;
+using Warlander.Deedplanner.Platform.Steam;
 using Warlander.UI.Windows;
 using Warlogic.Features;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Platform
 {
     /// <summary>
     /// Shows a modal report window for the first exception/error logged in the session.

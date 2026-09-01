@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Warlander.Deedplanner.Utils
+namespace Warlander.Deedplanner.Platform.Web
 {
     public static class WebUtils
     {

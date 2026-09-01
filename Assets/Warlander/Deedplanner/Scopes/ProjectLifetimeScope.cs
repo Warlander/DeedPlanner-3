@@ -4,12 +4,12 @@ using VContainer;
 using VContainer.Unity;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
-using Warlander.Deedplanner.Features;
+using Warlander.Deedplanner.Platform.Features;
 using Warlogic.Features;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Settings;
-using Warlander.Deedplanner.Steam;
+using Warlander.Deedplanner.Platform.Steam;
 using Warlander.Deedplanner.Utils;
 using Warlander.Scopes;
 

@@ -8,7 +8,7 @@ using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Debugging
+namespace Warlander.Deedplanner.Platform.Debugging
 {
     public class AssetZooMapGenerator
     {

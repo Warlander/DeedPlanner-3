@@ -7,7 +7,7 @@ using UnityEngine;
 using VContainer.Unity;
 using Warlander.Deedplanner.Logging;
 
-namespace Warlander.Deedplanner.Steam
+namespace Warlander.Deedplanner.Platform.Steam
 {
     public class SteamConnection : ISteamConnection
     {

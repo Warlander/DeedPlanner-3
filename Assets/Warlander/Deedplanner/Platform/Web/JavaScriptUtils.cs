@@ -3,7 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Utils
+namespace Warlander.Deedplanner.Platform.Web
 {
     public static class JavaScriptUtils
     {

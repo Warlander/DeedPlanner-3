@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Platform.Web
 {
     public static class WebLinkUtils
     {

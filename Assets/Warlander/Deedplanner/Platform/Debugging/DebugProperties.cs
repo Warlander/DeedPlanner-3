@@ -3,7 +3,7 @@ using System.IO;
 using UnityEngine;
 using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Debugging
+namespace Warlander.Deedplanner.Platform.Debugging
 {
     public class DebugProperties : ScriptableObject
     {

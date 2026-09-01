@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using Warlander.Deedplanner.Logic.Saving;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Settings;
-using Warlander.Deedplanner.Steam;
+using Warlander.Deedplanner.Platform.Steam;
 using VContainer.Unity;
 using Warlander.UI.Windows;
 

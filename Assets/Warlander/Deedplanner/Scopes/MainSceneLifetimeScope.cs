@@ -4,7 +4,7 @@ using VContainer.Unity;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Bridges;
 using Warlander.Deedplanner.Data.Docks;
-using Warlander.Deedplanner.Debugging;
+using Warlander.Deedplanner.Platform.Debugging;
 using Warlander.Deedplanner.Rendering.Projectors;
 using Warlander.Deedplanner.Screenshots;
 using Warlander.Deedplanner.Rendering.Water;

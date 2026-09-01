@@ -6,7 +6,7 @@ using Warlander.Deedplanner.Logic;
 using VContainer;
 using VContainer.Unity;
 
-namespace Warlander.Deedplanner.Debugging
+namespace Warlander.Deedplanner.Platform.Debugging
 {
     public class DebugApplier : IInitializable, ITickable
     {

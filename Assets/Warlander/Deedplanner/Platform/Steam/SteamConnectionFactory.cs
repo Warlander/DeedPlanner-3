@@ -1,6 +1,6 @@
 using Warlander.Deedplanner.Logging;
 
-namespace Warlander.Deedplanner.Steam
+namespace Warlander.Deedplanner.Platform.Steam
 {
     public class SteamConnectionFactory
     {

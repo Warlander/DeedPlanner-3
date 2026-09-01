@@ -1,4 +1,4 @@
-namespace Warlander.Deedplanner.Features
+namespace Warlander.Deedplanner.Platform.Features
 {
     public enum Feature
     {
