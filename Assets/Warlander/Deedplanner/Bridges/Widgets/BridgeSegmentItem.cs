@@ -1,3 +1,4 @@
+using Warlander.Deedplanner.Gui.Widgets;
 using System;
 using R3;
 using UnityEngine;
@@ -8,7 +9,7 @@ using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.UI.Utils;
 using VContainer;
 
-namespace Warlander.Deedplanner.Gui.Widgets.Bridges
+namespace Warlander.Deedplanner.Bridges.Widgets
 {
     public class BridgeSegmentItem : MonoBehaviour
     {

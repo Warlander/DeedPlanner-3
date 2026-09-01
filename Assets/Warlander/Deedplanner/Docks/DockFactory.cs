@@ -1,3 +1,4 @@
+using Warlander.Deedplanner.Data;
 using System;
 using System.Xml;
 using UnityEngine;
@@ -6,7 +7,7 @@ using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Logging;
 using VContainer;
 
-namespace Warlander.Deedplanner.Data.Docks
+namespace Warlander.Deedplanner.Docks
 {
     public class DockFactory
     {

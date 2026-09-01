@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Warlander.Deedplanner.Gui.Widgets.Bridges
+namespace Warlander.Deedplanner.Bridges.Widgets
 {
     public class BridgeTabSwapper : MonoBehaviour
     {

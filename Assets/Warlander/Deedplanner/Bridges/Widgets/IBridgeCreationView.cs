@@ -1,8 +1,9 @@
+using Warlander.Deedplanner.Gui.Widgets;
 using System;
 using System.Collections.Generic;
 using Warlander.Deedplanner.Bridges;
 
-namespace Warlander.Deedplanner.Gui.Widgets.Bridges
+namespace Warlander.Deedplanner.Bridges.Widgets
 {
     public interface IBridgeCreationView
     {

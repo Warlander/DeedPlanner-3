@@ -1,3 +1,4 @@
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Persistence;
 using System;
@@ -7,7 +8,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Gui.Widgets.Bridges
+namespace Warlander.Deedplanner.Bridges.Widgets
 {
     public class BridgeSegmentBarPresenter : IInitializable, IDisposable
     {

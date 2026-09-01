@@ -1,4 +1,4 @@
-﻿namespace Warlander.Deedplanner.Gui.Widgets.Bridges
+﻿namespace Warlander.Deedplanner.Bridges.Widgets
 {
     public enum BridgeTab
     {

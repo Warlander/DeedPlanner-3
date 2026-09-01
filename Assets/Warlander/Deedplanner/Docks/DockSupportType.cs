@@ -1,4 +1,4 @@
-namespace Warlander.Deedplanner.Data.Docks
+namespace Warlander.Deedplanner.Docks
 {
     public enum DockSupportType
     {

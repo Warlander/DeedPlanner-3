@@ -1,8 +1,9 @@
 ﻿using System;
+using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Editing;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Gui.Widgets.Bridges
+namespace Warlander.Deedplanner.Bridges.Widgets
 {
     [Serializable]
     public class BridgeTabRecord

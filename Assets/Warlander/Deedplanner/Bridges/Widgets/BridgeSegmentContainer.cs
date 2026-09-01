@@ -1,3 +1,4 @@
+using Warlander.Deedplanner.Gui.Widgets;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,7 @@ using Warlander.UI.Utils;
 using VContainer;
 using VContainer.Unity;
 
-namespace Warlander.Deedplanner.Gui.Widgets.Bridges
+namespace Warlander.Deedplanner.Bridges.Widgets
 {
     public class BridgeSegmentContainer : MonoBehaviour, IBridgeSegmentBarView
     {

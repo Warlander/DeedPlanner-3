@@ -1,7 +1,8 @@
+using Warlander.Deedplanner.Gui.Widgets;
 using System;
 using Warlander.Deedplanner.Bridges;
 
-namespace Warlander.Deedplanner.Gui.Widgets.Bridges
+namespace Warlander.Deedplanner.Bridges.Widgets
 {
     public interface IBridgeSegmentBarView
     {

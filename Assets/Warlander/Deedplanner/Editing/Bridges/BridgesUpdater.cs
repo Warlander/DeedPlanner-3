@@ -7,7 +7,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Rendering.Projectors;
 using Warlander.Deedplanner.Gui.Tooltips;
-using Warlander.Deedplanner.Gui.Widgets.Bridges;
+using Warlander.Deedplanner.Bridges.Widgets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logic;

@@ -1,6 +1,7 @@
+using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Graphics;
 
-namespace Warlander.Deedplanner.Data.Docks
+namespace Warlander.Deedplanner.Docks
 {
     public class DockSupportData
     {

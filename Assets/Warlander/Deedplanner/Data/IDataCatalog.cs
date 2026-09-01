@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Data.Decorations;
-using Warlander.Deedplanner.Data.Docks;
+using Warlander.Deedplanner.Docks;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Roofs;

@@ -1,8 +1,9 @@
+using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Editing;
 using UnityEngine;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Data.Docks
+namespace Warlander.Deedplanner.Docks
 {
     public class DockPlacementCommand : IReversibleCommand
     {

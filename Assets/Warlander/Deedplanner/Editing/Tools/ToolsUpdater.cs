@@ -4,7 +4,7 @@ using System.Text;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Decorations;
-using Warlander.Deedplanner.Data.Docks;
+using Warlander.Deedplanner.Docks;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;

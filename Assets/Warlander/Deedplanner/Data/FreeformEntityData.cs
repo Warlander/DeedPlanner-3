@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Data.Docks;
+using Warlander.Deedplanner.Docks;
 
 namespace Warlander.Deedplanner.Data
 {

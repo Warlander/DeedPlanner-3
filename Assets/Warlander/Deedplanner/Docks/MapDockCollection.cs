@@ -1,8 +1,9 @@
+using Warlander.Deedplanner.Data;
 using System;
 using System.Collections.Generic;
 using System.Xml;
 
-namespace Warlander.Deedplanner.Data.Docks
+namespace Warlander.Deedplanner.Docks
 {
     public class MapDockCollection
     {

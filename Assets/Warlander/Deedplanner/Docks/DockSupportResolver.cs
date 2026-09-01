@@ -1,9 +1,10 @@
+using Warlander.Deedplanner.Data;
 using System.Collections.Generic;
 using UnityEngine;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Walls;
 
-namespace Warlander.Deedplanner.Data.Docks
+namespace Warlander.Deedplanner.Docks
 {
     public enum DockHardBlock
     {

@@ -1,3 +1,4 @@
+using Warlander.Deedplanner.Data;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
@@ -5,7 +6,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Data.Docks
+namespace Warlander.Deedplanner.Docks
 {
     public class Dock : TileEntity
     {
