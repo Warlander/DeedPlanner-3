@@ -1,7 +1,7 @@
 using Warlander.Deedplanner.Persistence;
 using UnityEngine;
-using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Data.Roofs;
+using Warlander.Deedplanner.Domain;
+using Warlander.Deedplanner.Domain.Entities.Roofs;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;

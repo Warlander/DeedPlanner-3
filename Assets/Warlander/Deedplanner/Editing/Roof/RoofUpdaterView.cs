@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using Warlander.Deedplanner.Data.Roofs;
+using Warlander.Deedplanner.Domain.Entities.Roofs;
 using Warlander.Deedplanner.Gui.Widgets;
 
 namespace Warlander.Deedplanner.Editing

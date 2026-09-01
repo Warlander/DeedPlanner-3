@@ -2,7 +2,7 @@ using System.Xml;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 
 namespace Warlander.Deedplanner.Persistence
 {

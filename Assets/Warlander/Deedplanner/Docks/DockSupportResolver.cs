@@ -1,8 +1,8 @@
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 using System.Collections.Generic;
 using UnityEngine;
-using Warlander.Deedplanner.Data.Floors;
-using Warlander.Deedplanner.Data.Walls;
+using Warlander.Deedplanner.Domain.Entities.Floors;
+using Warlander.Deedplanner.Domain.Entities.Walls;
 
 namespace Warlander.Deedplanner.Docks
 {

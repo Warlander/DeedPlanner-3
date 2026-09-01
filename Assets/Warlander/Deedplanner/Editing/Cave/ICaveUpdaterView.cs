@@ -1,4 +1,4 @@
-using Warlander.Deedplanner.Data.Caves;
+using Warlander.Deedplanner.Domain.Entities.Caves;
 
 namespace Warlander.Deedplanner.Editing
 {

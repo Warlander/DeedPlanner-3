@@ -6,7 +6,7 @@
 
 using UnityEditor;
 using UnityEngine;
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Home;
 using Warlander.Deedplanner.Logic;

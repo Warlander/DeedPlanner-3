@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 
 namespace Warlander.Deedplanner.Rendering.Outline
 {

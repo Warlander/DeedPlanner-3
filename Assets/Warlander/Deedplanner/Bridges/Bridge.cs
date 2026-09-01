@@ -1,5 +1,5 @@
 ﻿using System;
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Persistence;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

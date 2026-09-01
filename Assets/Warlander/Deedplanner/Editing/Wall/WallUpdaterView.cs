@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using Warlander.Deedplanner.Data.Walls;
+using Warlander.Deedplanner.Domain.Entities.Walls;
 using Warlander.Deedplanner.Gui.Widgets;
 
 namespace Warlander.Deedplanner.Editing

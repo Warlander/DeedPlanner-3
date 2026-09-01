@@ -2,12 +2,12 @@ using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Persistence;
 using System.Collections.Generic;
 using UnityEngine;
-using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Data.Decorations;
-using Warlander.Deedplanner.Data.Floors;
-using Warlander.Deedplanner.Data.Grounds;
-using Warlander.Deedplanner.Data.Roofs;
-using Warlander.Deedplanner.Data.Walls;
+using Warlander.Deedplanner.Domain;
+using Warlander.Deedplanner.Domain.Entities.Decorations;
+using Warlander.Deedplanner.Domain.Entities.Floors;
+using Warlander.Deedplanner.Domain.Entities.Grounds;
+using Warlander.Deedplanner.Domain.Entities.Roofs;
+using Warlander.Deedplanner.Domain.Entities.Walls;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Platform.Debugging

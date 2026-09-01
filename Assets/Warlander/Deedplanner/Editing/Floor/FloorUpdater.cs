@@ -1,9 +1,9 @@
 using Warlander.Deedplanner.Persistence;
 using System.Collections.Generic;
 using UnityEngine;
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Docks;
-using Warlander.Deedplanner.Data.Floors;
+using Warlander.Deedplanner.Domain.Entities.Floors;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Inputs;

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Persistence.Compression;
 using VContainer;

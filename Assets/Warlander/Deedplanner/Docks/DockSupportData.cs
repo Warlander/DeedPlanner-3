@@ -1,4 +1,4 @@
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Graphics;
 
 namespace Warlander.Deedplanner.Docks

@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 
 namespace Warlander.Deedplanner.Screenshots
 {

@@ -1,6 +1,6 @@
 using UnityEngine;
-using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Data.Caves;
+using Warlander.Deedplanner.Domain;
+using Warlander.Deedplanner.Domain.Entities.Caves;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;
 

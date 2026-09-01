@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Settings;
 using Warlander.ExtensionUtils;

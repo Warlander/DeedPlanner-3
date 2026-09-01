@@ -1,6 +1,6 @@
 using System;
-using Warlander.Deedplanner.Data;
-using Warlander.Deedplanner.Data.Floors;
+using Warlander.Deedplanner.Domain;
+using Warlander.Deedplanner.Domain.Entities.Floors;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Editing

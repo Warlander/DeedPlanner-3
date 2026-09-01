@@ -2,7 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Warlander.Deedplanner.Data.Decorations;
+using Warlander.Deedplanner.Domain.Entities.Decorations;
 using Warlander.Deedplanner.Gui.Widgets;
 
 namespace Warlander.Deedplanner.Editing

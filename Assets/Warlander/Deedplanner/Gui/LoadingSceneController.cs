@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Warlander.Core;
 using VContainer;
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 
 namespace Warlander.Deedplanner.Gui
 {

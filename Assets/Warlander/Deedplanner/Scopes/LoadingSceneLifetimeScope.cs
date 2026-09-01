@@ -1,7 +1,7 @@
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 using Warlander.Scopes;
 
 namespace Warlander.Deedplanner.Scopes

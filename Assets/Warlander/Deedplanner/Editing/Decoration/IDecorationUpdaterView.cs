@@ -1,5 +1,5 @@
 using System;
-using Warlander.Deedplanner.Data.Decorations;
+using Warlander.Deedplanner.Domain.Entities.Decorations;
 using UnityEngine;
 
 namespace Warlander.Deedplanner.Editing

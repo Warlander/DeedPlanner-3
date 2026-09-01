@@ -1,5 +1,5 @@
 ﻿using System;
-using Warlander.Deedplanner.Data;
+using Warlander.Deedplanner.Domain;
 using System.Linq;
 
 namespace Warlander.Deedplanner.Bridges
