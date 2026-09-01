@@ -58,7 +58,7 @@ Without it, play mode ENTRY stalls indefinitely while the Editor window is unfoc
 
 The project iterates fast — domain reload and play-mode enter/exit each take only a few seconds. After triggering a recompile or play-mode change, allow a ~5 second buffer, then poll `unity status` for the Editor state before issuing the next command.
 
-**Unit tests are EditMode only — even for non-editor code.** No PlayMode tests. Test files live in a `Tests/Editor/` folder next to the tested code (e.g. `Logic/Compression/Tests/Editor/`): the `Editor` folder compiles them into Assembly-CSharp-Editor, which the Test Framework discovers and runs without any asmdef. Do not add test asmdefs.
+**Unit tests are EditMode only — even for non-editor code.** No PlayMode tests. Test files live in a `Tests/Editor/` folder next to the tested code (e.g. `Persistence/Compression/Tests/Editor/`): the `Editor` folder compiles them into Assembly-CSharp-Editor, which the Test Framework discovers and runs without any asmdef. Do not add test asmdefs.
 
 **Never recompile while in play mode.** A domain reload mid-play silently breaks the session: the running app loses its state (map references go null, evals fail with NullReferenceException) while the Editor reports itself ready. Always `editor_stop` → recompile → `editor_play` → re-run the scenario.
 
@@ -73,7 +73,7 @@ When adding testable plain-C# logic (presenters, data model, commands), prefer c
 ## Architecture
 
 ### Dependency Injection & MVP Pattern
-The project uses **VContainer** as its IoC container. Scope classes in `Assets/Warlander/Deedplanner/Scopes/` (VContainer `LifetimeScope` subclasses) wire bindings.
+The project uses **VContainer** as its IoC container. Scope classes in `Assets/Warlander/Deedplanner/Composition/` (VContainer `LifetimeScope` subclasses) wire bindings.
 
 The UI follows a strict **MVP (Model-View-Presenter)** pattern:
 - **View** (MonoBehaviour): thin view only — handles its own internal visual state at most; all logic belongs in the presenter; no container access allowed
@@ -85,28 +85,28 @@ Injection style:
 - **MonoBehaviours (views)**: no container injection — the presenter receives the view, not the other way around; views must not reference their presenter
 
 ### Core Data Model
-- **Map** (`Data/Map*.cs`) — central data structure, recently split into:
+- **Map** (`Domain/Map*.cs`) — central data structure, recently split into:
   - `MapTileGrid` — 2D grid of tiles
   - `MapLevelRenderer` — per-level rendering
-  - `MapBridgesController` — bridge logic
+  - `MapBridgesController` — bridge logic (lives in the `Bridges/` module)
   - `MapRoofCalculator` — roof computation
   - `MapHeightTracker` — heightmap tracking
-- **Tile** (`Data/Tile.cs`) — individual grid cell containing ground, walls, floors, roof, decorations, cave data
-- **Database** (`Data/Database.cs`) — static dictionaries for all game asset metadata (ground/floor/wall/roof/decoration types)
-- **Materials** (`Data/Materials.cs`) — material costs are unit counts, not weights; weight-based goods use template-weight units (Mortar unit = 2 kg, Tar unit = 1 kg), matching the game's build-list convention
+- **Tile** (`Domain/Tile.cs`) — individual grid cell containing ground, walls, floors, roof, decorations, cave data
+- **Database** (`Domain/Database.cs`) — static dictionaries for all game asset metadata (ground/floor/wall/roof/decoration types)
+- **Materials** (`Domain/Materials.cs`) — material costs are unit counts, not weights; weight-based goods use template-weight units (Mortar unit = 2 kg, Tar unit = 1 kg), matching the game's build-list convention
 
 ### Tab-Based Updater Pattern
-Each editing mode maps to a UI tab and a corresponding `*Updater` class in `Assets/Warlander/Deedplanner/Updaters/`. Updaters are plain C# classes implementing `IUpdater` (`TargetTab`, `Initialize`, `Enable`, `Disable`, `Tick`), constructor-injected, and registered in the VContainer scope. `UpdaterCoordinator` (`Logic/UpdaterCoordinator.cs`) receives them as `IReadOnlyList<IUpdater>`, initializes all, and on `TabContext.TabChanged` disables the active updater, enables the one whose `TargetTab` matches, and ticks only the active one. Views follow MVP: each updater holds an `I*UpdaterView` interface (implementations in `Gui/Updaters/`).
+Each editing mode maps to a UI tab and a corresponding `*Updater` class in `Assets/Warlander/Deedplanner/Editing/<Tab>/` (updater, `I*UpdaterView` interface, and view MonoBehaviour co-located per tab). Updaters are plain C# classes implementing `IUpdater` (`TargetTab`, `Initialize`, `Enable`, `Disable`, `Tick`), constructor-injected, and registered in the VContainer scope. `UpdaterCoordinator` (`Editing/UpdaterCoordinator.cs`) receives them as `IReadOnlyList<IUpdater>`, initializes all, and on `TabContext.TabChanged` disables the active updater, enables the one whose `TargetTab` matches, and ticks only the active one.
 
 ### Camera System
-`CameraCoordinator` in `Logic/Cameras/` manages four modes: Perspective (FPP), Wurmian, Isometric (ISO), and Top. Each camera renders a specific level via independent camera controllers implementing `ICameraController`.
+`CameraCoordinator` in `Cameras/` manages four modes: Perspective (FPP), Wurmian, Isometric (ISO), and Top. Each camera renders a specific level via independent camera controllers implementing `ICameraController`.
 
 ### Screen-Space Outline System
-Custom screen-space selection outline split across `Graphics/Outline/` and `Logic/Outlines/`:
-- `ScreenSpaceOutlineFeature` (`Graphics/Outline/`) — `ScriptableRendererFeature`; renders outlined objects to a mask RT, dilates, composites border over scene
-- `OutlineCoordinator` (`Logic/Outlines/`) — pure plain C# class tracking `Dictionary<DynamicModelBehaviour, OutlineEntry>`; no statics
-- `OutlineFeatureBridge` (`Logic/Outlines/`) — `IInitializable`+`IDisposable`, bound NonLazy; discovers and wires the feature on startup via reflection
-- `OutlineEntry` (`Graphics/Outline/`) — readonly struct grouping renderers and outline type
+Custom screen-space selection outline unified under `Rendering/Outline/`:
+- `ScreenSpaceOutlineFeature` — `ScriptableRendererFeature`; renders outlined objects to a mask RT, dilates, composites border over scene
+- `OutlineCoordinator` — pure plain C# class tracking `Dictionary<DynamicModelBehaviour, OutlineEntry>`; no statics
+- `OutlineFeatureBridge` — `IInitializable`+`IDisposable`, bound NonLazy; discovers and wires the feature on startup via reflection
+- `OutlineEntry` — readonly struct grouping renderers and outline type
 - Auto-setup: `Editor/OutlineFeatureSetup.cs` uses `[InitializeOnLoad]` + `EditorApplication.update`
 
 ### Command Pattern (Undo/Redo)
@@ -126,16 +126,27 @@ Map serialization uses a custom `IXmlSerializable` interface. `MapHandler` orche
 
 ## Key Namespaces
 
+Namespaces are **vertical system modules**, not technical layers. Each module owns its model, presenters, views, and commands; cross-module access goes through interfaces at the module root (e.g. `IWaterFacade`, `IScreenshotFacade`, `IMapProjectorFacade`). Dependency rule: downward only — `Composition` → everything; `Editing`/`Bridges`/`Docks`/`Ui`/`Screenshots` → `Domain`, `Rendering`, `Persistence`, `Cameras`; `Domain` → `Rendering`(assets), `Logging`; `Persistence` → `Domain`; `Platform`/`Settings`/`Logging` → nothing internal.
+
 ```
-Warlander.Deedplanner.Data         # Tile, Map, Database, entity types
-Warlander.Deedplanner.Logic        # MapHandler, CameraCoordinator, TileSelection
-Warlander.Deedplanner.Gui          # Windows, widgets, tab layout
-Warlander.Deedplanner.Updaters     # Per-tab editing updaters
-Warlander.Deedplanner.Graphics     # Model/texture/material loading and caching
-Warlander.Deedplanner.Settings     # Application settings
-Warlander.Deedplanner.Features     # Feature flag system
-Warlander.Deedplanner.Logging      # Selective logging (categories, levels, runtime configurator)
+Warlander.Deedplanner.Domain         # Map, Tile, Database, IDataCatalog, Materials, Summary; entities in Domain/Entities/<Type>/
+Warlander.Deedplanner.Editing        # IUpdater, UpdaterCoordinator, TileSelection, TabContext, CommandManager; tab pairs in Editing/<Tab>/ (updater+view co-located)
+Warlander.Deedplanner.Bridges        # Bridge model, types, commands, widgets (Bridges/Widgets/)
+Warlander.Deedplanner.Docks          # Dock model, commands, support resolver
+Warlander.Deedplanner.Persistence    # Save backends, SaveCoordinator, MapHandler/MapLoader/MapFactory, Compression/
+Warlander.Deedplanner.Rendering      # Assets/ (Wurm loaders, caches), Outline/, Projectors/, Water/
+Warlander.Deedplanner.Cameras        # CameraCoordinator, MultiCamera, controllers, camera UI
+Warlander.Deedplanner.Screenshots    # Screenshot captures/renderer/saver behind IScreenshotFacade
+Warlander.Deedplanner.Ui             # Layout, tabs, windows, widgets, tooltips, home screen
+Warlander.Deedplanner.Platform       # Steam/, Debugging/, Features/, Web/ interop, error reporting
+Warlander.Deedplanner.Composition    # VContainer LifetimeScopes (DI wiring)
+Warlander.Deedplanner.Settings       # Application settings
+Warlander.Deedplanner.Logging        # Selective logging (categories, levels, runtime configurator)
+Warlander.Deedplanner.Editor         # Editor-only tooling (build system, preview generation, feature setup)
+Warlander.Deedplanner.Inputs         # Generated input actions (DPInput)
 ```
+
+Promotion rule: an entity type inside `Domain/Entities/` graduates to its own module when it grows its own commands, UI, and controller (the path Bridges took).
 
 ## Coding Conventions
 
