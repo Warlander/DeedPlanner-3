@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Warlander.Deedplanner.Updaters;
 using VContainer.Unity;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Editing
 {
     public class UpdaterCoordinator : IInitializable, ITickable
     {

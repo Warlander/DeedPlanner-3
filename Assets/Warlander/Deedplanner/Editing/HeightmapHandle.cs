@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Warlander.Deedplanner.Data;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Editing
 {
     public class HeightmapHandle
     {

@@ -1,6 +1,6 @@
 using Warlander.Deedplanner.Logic;
 
-namespace Warlander.Deedplanner.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public interface IUpdater
     {

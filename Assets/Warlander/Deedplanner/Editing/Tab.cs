@@ -1,4 +1,4 @@
-﻿namespace Warlander.Deedplanner.Logic
+﻿namespace Warlander.Deedplanner.Editing
 {
     public enum Tab
     {

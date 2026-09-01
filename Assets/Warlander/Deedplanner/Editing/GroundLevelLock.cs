@@ -2,7 +2,7 @@ using System;
 using Warlander.Deedplanner.Cameras;
 using VContainer.Unity;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Editing
 {
     /// <summary>
     /// Locks the viewed level to the ground-level set while a surface-only editing tab

@@ -1,4 +1,4 @@
-namespace Warlander.Deedplanner.Utils
+namespace Warlander.Deedplanner.Editing
 {
     public interface IReversibleCommand
     {

@@ -4,7 +4,7 @@ using Warlander.Deedplanner.Inputs;
 using VContainer;
 using VContainer.Unity;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Editing
 {
     public class UndoRedoInputHandler : IInitializable
     {

@@ -4,6 +4,7 @@
     #undef DISABLESTEAMWORKS
 #endif
 
+using Warlander.Deedplanner.Editing;
 using UnityEditor;
 using UnityEngine;
 using Warlander.Deedplanner.Data;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Data
+namespace Warlander.Deedplanner.Editing
 {
     public class HeightmapHandleMeshLoader
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Warlander.Deedplanner.Utils
+namespace Warlander.Deedplanner.Editing
 {
     public class CommandManager
     {

@@ -3,7 +3,7 @@ using Warlander.Deedplanner.Cameras;
 using VContainer;
 using VContainer.Unity;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Editing
 {
     public class TabContext : IInitializable, IDisposable
     {
