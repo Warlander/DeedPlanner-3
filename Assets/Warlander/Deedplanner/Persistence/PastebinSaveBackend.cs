@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 using Warlander.Deedplanner.Persistence.Compression;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Logic.Saving
+namespace Warlander.Deedplanner.Persistence
 {
     public class PastebinSaveBackend : ISaveBackend
     {

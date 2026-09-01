@@ -1,6 +1,6 @@
 using System;
 
-namespace Warlander.Deedplanner.Logic.Saving
+namespace Warlander.Deedplanner.Persistence
 {
     public class RecentMapEntry
     {

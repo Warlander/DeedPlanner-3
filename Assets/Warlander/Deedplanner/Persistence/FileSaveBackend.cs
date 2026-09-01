@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SimpleFileBrowser;
 using Warlander.Deedplanner.Persistence.Compression;
 
-namespace Warlander.Deedplanner.Logic.Saving
+namespace Warlander.Deedplanner.Persistence
 {
     public class FileSaveBackend : ISaveBackend
     {

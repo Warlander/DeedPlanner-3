@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Persistence.Compression;
 
-namespace Warlander.Deedplanner.Logic.Saving
+namespace Warlander.Deedplanner.Persistence
 {
     /// Browser localStorage. Volatile (browser cleanup can wipe it), gzip+base64 envelopes with write time.
     public class LocalStorageSaveBackend : ISaveBackend

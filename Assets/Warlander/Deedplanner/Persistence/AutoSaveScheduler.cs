@@ -5,7 +5,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Data;
 using VContainer.Unity;
 
-namespace Warlander.Deedplanner.Logic.Saving
+namespace Warlander.Deedplanner.Persistence
 {
     public class AutoSaveScheduler : IAutoSaveScheduler, IInitializable, ITickable, IDisposable
     {

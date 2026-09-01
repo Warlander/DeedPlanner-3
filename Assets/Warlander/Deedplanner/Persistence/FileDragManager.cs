@@ -6,9 +6,8 @@ using B83.Win32;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
-using Warlander.Deedplanner.Logic.Saving;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Persistence
 {
     public class FileDragManager : IInitializable, IDisposable
     {

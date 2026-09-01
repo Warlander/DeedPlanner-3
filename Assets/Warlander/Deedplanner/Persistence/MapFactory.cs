@@ -4,7 +4,7 @@ using VContainer;
 using VContainer.Unity;
 using Warlander.Deedplanner.Data;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Persistence
 {
     public class MapFactory
     {

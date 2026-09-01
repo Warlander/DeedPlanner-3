@@ -1,6 +1,6 @@
 using System;
 
-namespace Warlander.Deedplanner.Logic.Saving
+namespace Warlander.Deedplanner.Persistence
 {
     /// One save discovered by backend enumeration (SaveCapabilities.List).
     public readonly struct SavedMapInfo

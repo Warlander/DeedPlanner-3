@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Warlander.Deedplanner.Logic.Saving
+namespace Warlander.Deedplanner.Persistence
 {
     /// WebGL file downloads through the browser. Save-only; the browser owns the files.
     public class WebFileSaveBackend : ISaveBackend

@@ -1,7 +1,7 @@
 using System;
 using Warlander.Deedplanner.Data;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Persistence
 {
     public class MapRegistry
     {

@@ -7,7 +7,7 @@ using Steamworks;
 using Warlander.Deedplanner.Persistence.Compression;
 using Warlander.Deedplanner.Platform.Steam;
 
-namespace Warlander.Deedplanner.Logic.Saving
+namespace Warlander.Deedplanner.Persistence
 {
     public class SteamCloudSaveBackend : ISaveBackend
     {

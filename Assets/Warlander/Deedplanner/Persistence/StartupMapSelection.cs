@@ -9,9 +9,8 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Platform.Debugging;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Home;
-using Warlander.Deedplanner.Logic.Saving;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Persistence
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class StartupMapSelection : IInitializable

@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Logic.Saving
+namespace Warlander.Deedplanner.Persistence
 {
     public class RecentMapsStore
     {

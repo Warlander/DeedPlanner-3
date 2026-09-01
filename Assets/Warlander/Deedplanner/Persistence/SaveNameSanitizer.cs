@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Warlander.Deedplanner.Logic.Saving
+namespace Warlander.Deedplanner.Persistence
 {
     public class SaveNameSanitizer : ISaveNameSanitizer
     {

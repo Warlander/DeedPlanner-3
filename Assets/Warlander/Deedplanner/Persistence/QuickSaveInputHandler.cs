@@ -1,11 +1,10 @@
 using UnityEngine.InputSystem;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Inputs;
-using Warlander.Deedplanner.Logic.Saving;
 using VContainer.Unity;
 using Warlander.UI.Windows;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Persistence
 {
     public class QuickSaveInputHandler : IInitializable
     {

@@ -7,7 +7,7 @@ using Warlander.Deedplanner.Persistence.Compression;
 using VContainer;
 using VContainer.Unity;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Persistence
 {
     public class MapHandler
     {

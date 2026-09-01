@@ -10,7 +10,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Screenshots;
 
-namespace Warlander.Deedplanner.Logic.Saving
+namespace Warlander.Deedplanner.Persistence
 {
     public class SaveCoordinator : ISaveCoordinator
     {

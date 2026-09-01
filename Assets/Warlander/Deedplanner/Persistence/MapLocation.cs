@@ -1,4 +1,4 @@
-namespace Warlander.Deedplanner.Logic.Saving
+namespace Warlander.Deedplanner.Persistence
 {
     public readonly struct MapLocation
     {

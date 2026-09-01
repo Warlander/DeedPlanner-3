@@ -9,7 +9,7 @@ using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Persistence.Compression;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Persistence
 {
     public class MapLoader
     {

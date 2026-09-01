@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 
-namespace Warlander.Deedplanner.Utils
+namespace Warlander.Deedplanner.Persistence
 {
     public interface IXmlSerializable
     {
