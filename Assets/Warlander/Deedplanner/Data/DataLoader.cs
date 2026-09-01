@@ -79,7 +79,17 @@ namespace Warlander.Deedplanner.Data
                     {
                         if (Application.platform != RuntimePlatform.WebGLPlayer)
                         {
-                            Task.Run(() => PerformLoading(documents));
+                            Task.Run(() =>
+                            {
+                                try
+                                {
+                                    PerformLoading(documents);
+                                }
+                                catch (Exception e)
+                                {
+                                    _logger.Error("Data loading failed: " + e);
+                                }
+                            });
                         }
                         else
                         {

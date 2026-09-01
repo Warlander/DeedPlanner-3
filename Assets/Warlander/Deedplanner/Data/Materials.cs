@@ -13,7 +13,7 @@ namespace Warlander.Deedplanner.Data
             _entries = new Dictionary<string, int>();
         }
 
-        public Materials(XmlNode node)
+        public Materials(XmlNode node) : this()
         {
             string content = node.InnerText;
             string[] materials = content.Split(',');
