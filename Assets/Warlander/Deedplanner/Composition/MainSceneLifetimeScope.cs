@@ -21,7 +21,7 @@ using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Persistence;
 using Warlander.Deedplanner.Settings;
 
-namespace Warlander.Deedplanner.Scopes
+namespace Warlander.Deedplanner.Composition
 {
     public class MainSceneLifetimeScope : DPSceneLifetimeScope
     {

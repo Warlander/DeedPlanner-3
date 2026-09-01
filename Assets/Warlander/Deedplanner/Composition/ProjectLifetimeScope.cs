@@ -10,10 +10,9 @@ using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Platform.Steam;
-using Warlander.Deedplanner.Utils;
 using Warlander.Scopes;
 
-namespace Warlander.Deedplanner.Scopes
+namespace Warlander.Deedplanner.Composition
 {
     public class ProjectLifetimeScope : CommonProjectScope
     {

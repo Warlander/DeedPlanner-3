@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 using Warlander.Deedplanner.Persistence.Compression;
-using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Persistence
 {

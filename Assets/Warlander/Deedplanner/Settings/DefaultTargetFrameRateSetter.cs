@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using VContainer.Unity;
 
-namespace Warlander.Deedplanner.Utils
+namespace Warlander.Deedplanner.Settings
 {
     public class DefaultTargetFrameRateSetter : IInitializable
     {

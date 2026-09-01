@@ -4,7 +4,7 @@ using VContainer.Unity;
 using Warlander.Deedplanner.Domain;
 using Warlander.Scopes;
 
-namespace Warlander.Deedplanner.Scopes
+namespace Warlander.Deedplanner.Composition
 {
     public class LoadingSceneLifetimeScope : CommonSceneScope
     {

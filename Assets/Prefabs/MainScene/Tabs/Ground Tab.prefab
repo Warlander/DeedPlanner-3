@@ -2219,7 +2219,7 @@ PrefabInstance:
     - target: {fileID: 1984117482146686279, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Updaters.GroundUpdater, Assembly-CSharp
+      value: Warlander.Deedplanner.Editing.GroundUpdater, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1984117482146686279, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
@@ -3075,7 +3075,7 @@ PrefabInstance:
     - target: {fileID: 1984117482146686279, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Updaters.GroundUpdater, Assembly-CSharp
+      value: Warlander.Deedplanner.Editing.GroundUpdater, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1984117482146686279, guid: 5e144ec137108d04a8df14e4f780d6d1,
         type: 3}

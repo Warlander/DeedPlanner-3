@@ -3922,7 +3922,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Installers.MainSceneLifetimeScope
   parentReference:
-    TypeName: Warlander.Deedplanner.Scopes.ProjectLifetimeScope
+    TypeName: Warlander.Deedplanner.Composition.ProjectLifetimeScope
   autoRun: 1
   autoInjectGameObjects: []
   _cameraCoordinator: {fileID: 1890273981}

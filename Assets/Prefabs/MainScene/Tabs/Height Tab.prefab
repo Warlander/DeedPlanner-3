@@ -3261,7 +3261,7 @@ PrefabInstance:
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Updaters.HeightUpdater, Assembly-CSharp
+      value: Warlander.Deedplanner.Editing.HeightUpdater, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
@@ -3544,7 +3544,7 @@ PrefabInstance:
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Updaters.HeightUpdater, Assembly-CSharp
+      value: Warlander.Deedplanner.Editing.HeightUpdater, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
@@ -3827,7 +3827,7 @@ PrefabInstance:
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Updaters.HeightUpdater, Assembly-CSharp
+      value: Warlander.Deedplanner.Editing.HeightUpdater, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
@@ -4627,7 +4627,7 @@ PrefabInstance:
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Warlander.Deedplanner.Updaters.HeightUpdater, Assembly-CSharp
+      value: Warlander.Deedplanner.Editing.HeightUpdater, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2677359101550328492, guid: b1cf16c48bd1f93499b8cbf93c11208a,
         type: 3}

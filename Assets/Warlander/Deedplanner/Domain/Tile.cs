@@ -16,7 +16,6 @@ using Warlander.Deedplanner.Domain.Summary;
 using Warlander.Deedplanner.Domain.Entities.Walls;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logging;
-using Warlander.Deedplanner.Utils;
 using Object = UnityEngine.Object;
 
 namespace Warlander.Deedplanner.Domain

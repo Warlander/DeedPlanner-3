@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Warlander.Deedplanner.Utils
+namespace Warlander.Deedplanner.Ui
 {
     public class TransformFollower : MonoBehaviour
     {

@@ -4,7 +4,7 @@ using VContainer.Unity;
 using Warlander.Deedplanner.Ui.Tooltips;
 using Warlander.Scopes;
 
-namespace Warlander.Deedplanner.Scopes
+namespace Warlander.Deedplanner.Composition
 {
     public class DPSceneLifetimeScope : CommonSceneScope
     {

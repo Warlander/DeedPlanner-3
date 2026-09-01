@@ -7,7 +7,6 @@ using UnityEngine;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Persistence.Compression;
-using Warlander.Deedplanner.Utils;
 
 namespace Warlander.Deedplanner.Persistence
 {

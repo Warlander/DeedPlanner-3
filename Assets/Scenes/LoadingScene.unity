@@ -945,7 +945,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Installers.LoadingSceneLifetimeScope
   parentReference:
-    TypeName: Warlander.Deedplanner.Scopes.ProjectLifetimeScope
+    TypeName: Warlander.Deedplanner.Composition.ProjectLifetimeScope
   autoRun: 1
   autoInjectGameObjects: []
 --- !u!1 &1502563898

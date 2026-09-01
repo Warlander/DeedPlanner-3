@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Utils
+namespace Warlander.Deedplanner.Platform.Debugging
 {
     public class DestroyIfNotDebug : MonoBehaviour
     {
