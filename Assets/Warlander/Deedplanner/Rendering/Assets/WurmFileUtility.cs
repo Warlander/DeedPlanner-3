@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     public static class WurmFileUtility
     {

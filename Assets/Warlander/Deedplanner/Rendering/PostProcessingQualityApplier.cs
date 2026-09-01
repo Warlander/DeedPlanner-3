@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 using VContainer.Unity;
 using Warlander.Deedplanner.Cameras;
 
-namespace Warlander.Deedplanner.Logic
+namespace Warlander.Deedplanner.Rendering
 {
     public class PostProcessingQualityApplier : IInitializable, IDisposable
     {

@@ -3,7 +3,7 @@ using Warlander.Deedplanner.Domain;
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Bridges

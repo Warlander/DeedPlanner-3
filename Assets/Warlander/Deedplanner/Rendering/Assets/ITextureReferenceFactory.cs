@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     public interface ITextureReferenceFactory
     {

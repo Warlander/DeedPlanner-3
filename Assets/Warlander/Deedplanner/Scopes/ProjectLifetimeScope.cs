@@ -6,7 +6,7 @@ using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Platform.Features;
 using Warlogic.Features;
-using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Platform.Steam;

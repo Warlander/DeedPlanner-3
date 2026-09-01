@@ -4,7 +4,7 @@ using System.Xml;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     /// <summary>
     /// Descriptor of a single Wurm model (location, scale, layer, texture overrides)

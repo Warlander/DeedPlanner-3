@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     public class TextureReference
     {

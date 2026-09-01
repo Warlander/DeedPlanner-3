@@ -4,7 +4,7 @@ using R3;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Bridges;
-using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.UI.Utils;
 using VContainer;

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     public class MaterialCache : IMaterialCache
     {

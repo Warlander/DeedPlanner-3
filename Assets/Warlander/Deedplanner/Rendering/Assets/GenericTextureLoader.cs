@@ -5,7 +5,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     public class GenericTextureLoader : ITextureLoader
     {

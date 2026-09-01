@@ -1,7 +1,7 @@
 using System.Xml;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     public interface IWurmAssetFacade
     {

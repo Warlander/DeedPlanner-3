@@ -5,7 +5,7 @@ using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Docks;
 using Warlander.Deedplanner.Domain.Entities.Floors;
 using Warlander.Deedplanner.Gui.Tooltips;
-using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;

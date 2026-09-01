@@ -2,7 +2,7 @@ using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Logic;
 
 namespace Warlander.Deedplanner.Gui.Widgets

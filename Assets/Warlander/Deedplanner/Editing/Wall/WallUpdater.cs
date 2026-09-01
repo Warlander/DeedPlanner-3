@@ -8,7 +8,7 @@ using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;
 using Warlander.Deedplanner.Settings;
-using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Rendering.Assets;
 
 namespace Warlander.Deedplanner.Editing
 {

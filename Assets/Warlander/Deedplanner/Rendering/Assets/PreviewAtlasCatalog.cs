@@ -4,7 +4,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Logging;
 using Object = UnityEngine.Object;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     public enum PreviewAtlasCategory
     {

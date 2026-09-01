@@ -2,7 +2,7 @@ using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Logging;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     /// <summary>
     /// Single entry point and composition root for the Wurm asset loading stack

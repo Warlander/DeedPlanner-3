@@ -1,6 +1,6 @@
 using Warlander.Deedplanner.Domain;
 using UnityEngine;
-using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Rendering.Assets;
 
 namespace Warlander.Deedplanner.Bridges
 {

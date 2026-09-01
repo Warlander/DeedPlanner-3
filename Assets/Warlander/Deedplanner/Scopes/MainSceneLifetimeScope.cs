@@ -1,3 +1,4 @@
+using Warlander.Deedplanner.Rendering;
 using Warlander.Deedplanner.Editing;
 using UnityEngine;
 using VContainer;
@@ -9,7 +10,7 @@ using Warlander.Deedplanner.Platform.Debugging;
 using Warlander.Deedplanner.Rendering.Projectors;
 using Warlander.Deedplanner.Screenshots;
 using Warlander.Deedplanner.Rendering.Water;
-using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Home;
 using Warlander.Deedplanner.Bridges.Widgets;

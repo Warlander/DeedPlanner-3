@@ -11,7 +11,7 @@ using UnityEngine.Rendering;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Domain.Entities.Decorations;
 using Warlander.Deedplanner.Domain.Entities.Grounds;
-using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Rendering.Water;
 using Warlander.Deedplanner.Rendering.Projectors;

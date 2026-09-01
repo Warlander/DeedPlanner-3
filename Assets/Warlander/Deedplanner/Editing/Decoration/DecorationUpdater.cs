@@ -7,7 +7,7 @@ using Warlander.Deedplanner.Domain.Entities.Decorations;
 using Warlander.Deedplanner.Docks;
 using Warlander.Deedplanner.Domain.Entities.Floors;
 using Warlander.Deedplanner.Domain.Entities.Grounds;
-using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logic;

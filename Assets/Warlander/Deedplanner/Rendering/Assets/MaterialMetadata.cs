@@ -1,4 +1,4 @@
-﻿namespace Warlander.Deedplanner.Graphics
+﻿namespace Warlander.Deedplanner.Rendering.Assets
 {
     public struct MaterialMetadata
     {

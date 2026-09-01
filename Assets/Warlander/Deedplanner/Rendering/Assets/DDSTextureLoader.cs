@@ -6,7 +6,7 @@ using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Utils;
 using Object = UnityEngine.Object;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     public class DDSTextureLoader : ITextureLoader
     {

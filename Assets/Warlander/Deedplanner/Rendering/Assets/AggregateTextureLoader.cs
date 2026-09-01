@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Warlander.Deedplanner.Logging;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     public class AggregateTextureLoader : ITextureLoader
     {

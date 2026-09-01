@@ -1,6 +1,6 @@
 using System;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     [Serializable]
     public class PreviewAtlasEntry

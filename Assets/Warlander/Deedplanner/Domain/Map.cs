@@ -14,7 +14,7 @@ using Warlander.Deedplanner.Domain.Entities.Roofs;
 using Warlander.Deedplanner.Domain.Summary;
 using Warlogic.Features;
 using Warlander.Deedplanner.Platform.Features;
-using Warlander.Deedplanner.Graphics;
+using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Utils;

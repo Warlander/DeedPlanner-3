@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Graphics
+namespace Warlander.Deedplanner.Rendering.Assets
 {
     [CreateAssetMenu(fileName = "SharedMaterials", menuName = "DeedPlanner/SharedMaterials")]
     public class SharedMaterials : ScriptableObject, ISharedMaterials
