@@ -1,3 +1,5 @@
+using Warlander.Deedplanner.Gui.Updaters;
+using Warlander.Deedplanner.Updaters;
 using Warlander.Deedplanner.Editing;
 using UnityEngine;
 using VContainer;
@@ -12,7 +14,7 @@ using Warlander.Deedplanner.Rendering.Water;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Home;
-using Warlander.Deedplanner.Gui.Updaters;
+using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Gui.Widgets.Bridges;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
@@ -21,7 +23,7 @@ using Warlander.Deedplanner.Persistence.Compression;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Persistence;
 using Warlander.Deedplanner.Settings;
-using Warlander.Deedplanner.Updaters;
+using Warlander.Deedplanner.Editing;
 
 namespace Warlander.Deedplanner.Scopes
 {

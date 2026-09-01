@@ -2,7 +2,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Gui.Widgets;
 
-namespace Warlander.Deedplanner.Gui.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public class CaveUpdaterView : MonoBehaviour, ICaveUpdaterView
     {

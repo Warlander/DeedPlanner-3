@@ -2,7 +2,7 @@ using System;
 using Warlander.Deedplanner.Data.Grounds;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Gui.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public interface IGroundUpdaterView
     {

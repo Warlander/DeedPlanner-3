@@ -5,14 +5,14 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Data.Walls;
-using Warlander.Deedplanner.Gui.Updaters;
+using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Graphics;
 
-namespace Warlander.Deedplanner.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public class WallUpdater : IUpdater
     {

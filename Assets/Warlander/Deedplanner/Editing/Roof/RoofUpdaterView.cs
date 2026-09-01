@@ -3,7 +3,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Gui.Widgets;
 
-namespace Warlander.Deedplanner.Gui.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public class RoofUpdaterView : MonoBehaviour, IRoofUpdaterView
     {

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui.Widgets;
 
-namespace Warlander.Deedplanner.Gui.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public class WallUpdaterView : MonoBehaviour, IWallUpdaterView
     {

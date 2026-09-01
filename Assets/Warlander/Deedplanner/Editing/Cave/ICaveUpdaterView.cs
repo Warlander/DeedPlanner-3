@@ -1,6 +1,6 @@
 using Warlander.Deedplanner.Data.Caves;
 
-namespace Warlander.Deedplanner.Gui.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public interface ICaveUpdaterView
     {

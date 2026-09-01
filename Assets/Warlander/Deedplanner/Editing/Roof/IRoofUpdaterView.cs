@@ -1,7 +1,7 @@
 using System;
 using Warlander.Deedplanner.Data.Roofs;
 
-namespace Warlander.Deedplanner.Gui.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public interface IRoofUpdaterView
     {

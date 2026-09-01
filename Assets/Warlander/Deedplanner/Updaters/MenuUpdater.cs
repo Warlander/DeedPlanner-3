@@ -4,13 +4,14 @@
     #undef DISABLESTEAMWORKS
 #endif
 
+using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Editing;
 using UnityEditor;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Gui.Home;
-using Warlander.Deedplanner.Gui.Updaters;
+using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Persistence;
 using Warlander.Deedplanner.Settings;

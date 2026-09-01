@@ -5,7 +5,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Gui.Widgets;
 
-namespace Warlander.Deedplanner.Gui.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public class FloorUpdaterView : MonoBehaviour, IFloorUpdaterView
     {

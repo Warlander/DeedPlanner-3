@@ -6,13 +6,13 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Gui.Tooltips;
-using Warlander.Deedplanner.Gui.Updaters;
+using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;
 
-namespace Warlander.Deedplanner.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public class FloorUpdater : IUpdater
     {

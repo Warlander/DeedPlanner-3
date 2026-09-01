@@ -6,13 +6,13 @@ using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Rendering.Projectors;
 using Warlander.Deedplanner.Gui.Tooltips;
-using Warlander.Deedplanner.Gui.Updaters;
+using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;
 using Warlander.Deedplanner.Settings;
 
-namespace Warlander.Deedplanner.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public class HeightUpdater : IUpdater
     {

@@ -2,11 +2,11 @@ using Warlander.Deedplanner.Editing;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Caves;
-using Warlander.Deedplanner.Gui.Updaters;
+using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;
 
-namespace Warlander.Deedplanner.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public class CaveUpdater : IUpdater
     {

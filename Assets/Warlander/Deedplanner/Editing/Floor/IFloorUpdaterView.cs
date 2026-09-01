@@ -3,7 +3,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Floors;
 using UnityEngine;
 
-namespace Warlander.Deedplanner.Gui.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public interface IFloorUpdaterView
     {

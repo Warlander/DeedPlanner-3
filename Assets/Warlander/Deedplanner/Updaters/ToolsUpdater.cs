@@ -1,3 +1,4 @@
+using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Persistence;
 using System;
@@ -9,7 +10,7 @@ using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
-using Warlander.Deedplanner.Gui.Updaters;
+using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Gui.Windows;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;

@@ -1,4 +1,4 @@
-namespace Warlander.Deedplanner.Gui.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public enum GroundTool
     {
