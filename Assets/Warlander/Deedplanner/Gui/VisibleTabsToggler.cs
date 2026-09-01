@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Cameras;
 using VContainer;
 
 namespace Warlander.Deedplanner.Gui

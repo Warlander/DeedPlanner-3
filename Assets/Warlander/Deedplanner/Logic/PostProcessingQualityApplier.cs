@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using VContainer.Unity;
-using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Cameras;
 
 namespace Warlander.Deedplanner.Logic
 {

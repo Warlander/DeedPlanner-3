@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using Warlander.Deedplanner.Data;
 
-namespace Warlander.Deedplanner.Logic.Cameras
+namespace Warlander.Deedplanner.Cameras
 {
     public interface ICameraController
     {

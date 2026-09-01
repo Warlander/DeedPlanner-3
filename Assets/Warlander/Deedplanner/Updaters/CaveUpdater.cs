@@ -3,7 +3,7 @@ using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Caves;
 using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Logic;
-using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Cameras;
 
 namespace Warlander.Deedplanner.Updaters
 {

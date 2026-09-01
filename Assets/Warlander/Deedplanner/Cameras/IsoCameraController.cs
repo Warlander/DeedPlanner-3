@@ -6,7 +6,7 @@ using Warlander.Deedplanner.Settings;
 using Warlander.ExtensionUtils;
 using VContainer;
 
-namespace Warlander.Deedplanner.Logic.Cameras
+namespace Warlander.Deedplanner.Cameras
 {
     public class IsoCameraController : ICameraController
     {

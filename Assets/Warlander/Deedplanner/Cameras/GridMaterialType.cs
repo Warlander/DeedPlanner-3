@@ -1,4 +1,4 @@
-﻿namespace Warlander.Deedplanner.Logic.Cameras
+﻿namespace Warlander.Deedplanner.Cameras
 {
     public enum GridMaterialType
     {

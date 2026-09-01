@@ -15,7 +15,7 @@ using Warlander.Deedplanner.Gui.Updaters;
 using Warlander.Deedplanner.Gui.Widgets.Bridges;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
-using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Cameras;
 using Warlander.Deedplanner.Persistence.Compression;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logic.Saving;

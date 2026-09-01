@@ -1,5 +1,5 @@
 using UnityEngine;
-using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Cameras;
 
 namespace Warlander.Deedplanner.Rendering.Water
 {

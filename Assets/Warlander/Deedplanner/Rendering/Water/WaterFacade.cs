@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Cameras;
 using Warlander.Deedplanner.Settings;
 using VContainer;
 using VContainer.Unity;

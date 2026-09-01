@@ -1,5 +1,5 @@
 using System;
-using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Cameras;
 using VContainer;
 using VContainer.Unity;
 

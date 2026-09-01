@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 using Warlander.Deedplanner.Graphics;
 using Warlander.Deedplanner.Gui;
 using Warlander.Deedplanner.Logic;
-using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Cameras;
 using Warlander.ExtensionUtils;
 using VContainer;
 

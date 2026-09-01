@@ -1,7 +1,7 @@
 using System;
 using VContainer.Unity;
 using Warlander.Deedplanner.Logic;
-using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Cameras;
 
 namespace Warlander.Deedplanner.Gui
 {

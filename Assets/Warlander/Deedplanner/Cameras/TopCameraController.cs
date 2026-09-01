@@ -5,7 +5,7 @@ using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Settings;
 using VContainer;
 
-namespace Warlander.Deedplanner.Logic.Cameras
+namespace Warlander.Deedplanner.Cameras
 {
     public class TopCameraController : ICameraController
     {

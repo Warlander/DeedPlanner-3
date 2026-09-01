@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Warlander.Deedplanner.Platform.Features;
 using Warlander.Deedplanner.Gui.Tooltips;
 using Warlander.Deedplanner.Logic;
-using Warlander.Deedplanner.Logic.Cameras;
+using Warlander.Deedplanner.Cameras;
 using Warlogic.Features;
 using VContainer;
 

@@ -1,10 +1,9 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
-using Warlander.Deedplanner.Logic.Cameras;
 using VContainer;
 
-namespace Warlander.Deedplanner.Gui.Widgets
+namespace Warlander.Deedplanner.Cameras
 {
     [RequireComponent(typeof(Toggle))]
     public class CameraModeToggle : MonoBehaviour

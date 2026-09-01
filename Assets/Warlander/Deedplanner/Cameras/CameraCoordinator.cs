@@ -1,9 +1,10 @@
 ﻿using System;
+using Warlander.Deedplanner.Logic;
 using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 
-namespace Warlander.Deedplanner.Logic.Cameras
+namespace Warlander.Deedplanner.Cameras
 {
     public class CameraCoordinator : MonoBehaviour
     {

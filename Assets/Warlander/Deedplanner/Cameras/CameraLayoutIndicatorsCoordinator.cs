@@ -1,11 +1,11 @@
+using Warlander.Deedplanner.Gui;
 using UnityEngine;
 using UnityEngine.UI;
 using Warlander.Deedplanner.Logic;
-using Warlander.Deedplanner.Logic.Cameras;
 using Warlander.Deedplanner.Logging;
 using VContainer;
 
-namespace Warlander.Deedplanner.Gui
+namespace Warlander.Deedplanner.Cameras
 {
     public class CameraLayoutIndicatorsCoordinator : MonoBehaviour
     {

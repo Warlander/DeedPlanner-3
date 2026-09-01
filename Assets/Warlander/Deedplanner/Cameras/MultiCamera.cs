@@ -1,4 +1,5 @@
 ﻿using System;
+using Warlander.Deedplanner.Logic;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ using Warlander.Deedplanner.Gui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using VContainer;
 
-namespace Warlander.Deedplanner.Logic.Cameras
+namespace Warlander.Deedplanner.Cameras
 {
     [RequireComponent(typeof(Camera))]
     public class MultiCamera : MonoBehaviour
