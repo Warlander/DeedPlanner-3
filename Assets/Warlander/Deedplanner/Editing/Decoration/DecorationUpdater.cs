@@ -1,5 +1,3 @@
-using Warlander.Deedplanner.Gui.Updaters;
-using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Persistence;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +8,6 @@ using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Floors;
 using Warlander.Deedplanner.Data.Grounds;
 using Warlander.Deedplanner.Graphics;
-using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logic;
@@ -18,7 +15,7 @@ using Warlander.Deedplanner.Cameras;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Settings;
 
-namespace Warlander.Deedplanner.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public class DecorationUpdater : IUpdater
     {

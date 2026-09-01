@@ -1,6 +1,6 @@
 using System;
 
-namespace Warlander.Deedplanner.Gui.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public interface IToolsUpdaterView
     {

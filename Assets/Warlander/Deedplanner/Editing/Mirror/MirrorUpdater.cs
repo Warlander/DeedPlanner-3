@@ -1,10 +1,9 @@
-using Warlander.Deedplanner.Editing;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;
 
-namespace Warlander.Deedplanner.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public class MirrorUpdater : IUpdater
     {

@@ -1,10 +1,8 @@
-using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Persistence;
 using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Data.Roofs;
 using Warlander.Deedplanner.Gui.Tooltips;
-using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;

@@ -1,5 +1,4 @@
 ﻿using System;
-using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Persistence;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;
 
-namespace Warlander.Deedplanner.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public class BridgesUpdater : IUpdater
     {

@@ -1,5 +1,3 @@
-using Warlander.Deedplanner.Gui.Updaters;
-using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Persistence;
 using System;
 using System.Text;
@@ -10,7 +8,6 @@ using Warlander.Deedplanner.Data.Docks;
 using Warlander.Deedplanner.Data.Summary;
 using Warlander.Deedplanner.Data.Walls;
 using Warlander.Deedplanner.Gui;
-using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Gui.Windows;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
@@ -18,7 +15,7 @@ using Warlander.Deedplanner.Cameras;
 using Warlander.Deedplanner.Logging;
 using Warlander.UI.Windows;
 
-namespace Warlander.Deedplanner.Updaters
+namespace Warlander.Deedplanner.Editing
 {
     public class ToolsUpdater : IUpdater
     {

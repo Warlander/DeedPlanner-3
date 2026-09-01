@@ -1,4 +1,3 @@
-using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Persistence;
 using System.Collections.Generic;
 using System.Globalization;
@@ -6,7 +5,6 @@ using UnityEngine;
 using Warlander.Deedplanner.Data;
 using Warlander.Deedplanner.Rendering.Projectors;
 using Warlander.Deedplanner.Gui.Tooltips;
-using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Logic;
 using Warlander.Deedplanner.Cameras;

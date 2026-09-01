@@ -9,7 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using Warlander.Deedplanner.Updaters;
+using Warlander.Deedplanner.Editing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
