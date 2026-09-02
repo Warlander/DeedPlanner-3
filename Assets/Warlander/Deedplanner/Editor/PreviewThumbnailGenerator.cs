@@ -25,7 +25,7 @@ namespace Warlander.Deedplanner.Editor
     public static class PreviewThumbnailGenerator
     {
         // Render-input changes require this bump plus a harmless objects.xml change to invalidate CI caches.
-        public const int GeneratorVersion = 3;
+        public const int GeneratorVersion = 4;
         private const int CellSize = 64;
         private const int RenderResolution = 256;
         private const float FitMargin = 1.02f;
@@ -198,6 +198,12 @@ namespace Warlander.Deedplanner.Editor
                 CompletedCount = 0;
 
                 List<string> writtenPaths = new List<string>();
+                if (floors.Count > 0)
+                {
+                    // first camera.Render() of a batch run samples freshly uploaded textures wrong on
+                    // software rasterizers (llvmpipe/swrast CI) - discard that render as warm-up
+                    await WarmUpRenderAsync(floors[0], LayerMasks.FloorRoofLayer);
+                }
                 writtenPaths.AddRange(await GenerateCategoryAsync("floors", floors, LayerMasks.FloorRoofLayer,
                     entry => entry.NormalModelElement, xmlSha256));
                 writtenPaths.AddRange(await GenerateCategoryAsync("walls", walls, LayerMasks.WallLayer,
@@ -527,6 +533,21 @@ namespace Warlander.Deedplanner.Editor
         }
 
         /// <summary>Returns cell pixels, or null for a valid empty cell (entry without a model).</summary>
+        private static async Task WarmUpRenderAsync(PreviewEntry entry, int layer)
+        {
+            XmlElement modelElement = entry.NormalModelElement;
+            if (modelElement == null)
+            {
+                return;
+            }
+
+            Dictionary<string, int> remainingUses = new Dictionary<string, int>
+            {
+                [modelElement.GetAttribute("location")] = 1,
+            };
+            await TryRenderEntryCellAsync(entry, layer, e => e.NormalModelElement, remainingUses);
+        }
+
         private static async Task<Color[]> RenderEntryCellAsync(PreviewEntry entry, int layer,
             Func<PreviewEntry, XmlElement> modelSelector, Dictionary<string, int> remainingUses)
         {

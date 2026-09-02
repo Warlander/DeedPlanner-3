@@ -64,8 +64,8 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: Assets/Generated
-          # v4: v3 cache is poisoned - atlases were generated under -nographics (all-white PNGs)
-          key: previews-windows-v4-${{ hashFiles('Assets/StreamingAssets/objects.xml') }}
+          # v5: v4 cache is poisoned - first llvmpipe run rendered the wFloor cell red (software GL first-render quirk)
+          key: previews-windows-v5-${{ hashFiles('Assets/StreamingAssets/objects.xml') }}
 
       - name: Ensure Docker daemon is running
         shell: pwsh
@@ -159,7 +159,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: Assets/Generated
-          key: previews-linux-v3-${{ hashFiles('Assets/StreamingAssets/objects.xml') }}
+          key: previews-linux-v4-${{ hashFiles('Assets/StreamingAssets/objects.xml') }}
 
       - name: Build (IL2CPP)
         run: |
@@ -228,7 +228,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: Assets/Generated
-          key: previews-macos-v3-${{ hashFiles('Assets/StreamingAssets/objects.xml') }}
+          key: previews-macos-v4-${{ hashFiles('Assets/StreamingAssets/objects.xml') }}
 
       - name: Install Unity editor + Mac IL2CPP module
         run: |
@@ -319,7 +319,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: Assets/Generated
-          key: previews-webgl-v3-${{ hashFiles('Assets/StreamingAssets/objects.xml') }}
+          key: previews-webgl-v4-${{ hashFiles('Assets/StreamingAssets/objects.xml') }}
 
       - name: Build (WebGL)
         run: |
