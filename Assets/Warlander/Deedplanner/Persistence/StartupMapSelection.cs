@@ -40,7 +40,7 @@ namespace Warlander.Deedplanner.Persistence
         {
             string mapLocationString = "";
 #if UNITY_WEBGL && !UNITY_EDITOR
-            mapLocationString = Utils.JavaScriptUtils.GetMapLocationString();
+            mapLocationString = JavaScriptUtils.GetMapLocationString();
             if (!string.IsNullOrEmpty(mapLocationString))
             {
                 mapLocationString = WebLinkUtils.ParseToDirectDownloadLink(mapLocationString);

@@ -24,7 +24,7 @@ namespace Warlander.Deedplanner.Persistence
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
             string fileName = suggestedName + ".MAP";
-            Utils.JavaScriptUtils.DownloadNative(fileName, payload);
+            JavaScriptUtils.DownloadNative(fileName, payload);
             return Task.FromResult<MapLocation?>(new MapLocation(Id, fileName, suggestedName));
 #else
             throw new NotSupportedException("WebFile backend is only available in WebGL builds");

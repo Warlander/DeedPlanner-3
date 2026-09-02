@@ -36,7 +36,7 @@ namespace Warlander.Deedplanner.Persistence
         public SaveFeasibility CheckSave(long payloadBytes)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            long projected = Utils.JavaScriptUtils.LocalStorageTotalSize() + payloadBytes * 2;
+            long projected = JavaScriptUtils.LocalStorageTotalSize() + payloadBytes * 2;
             if (projected > StorageLimitChars)
             {
                 return new SaveFeasibility(false, StorageLimitChars,
@@ -70,12 +70,12 @@ namespace Warlander.Deedplanner.Persistence
         public Task<string> LoadAsync(MapLocation source)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            if (!Utils.JavaScriptUtils.LocalStorageHasItem(source.Locator))
+            if (!JavaScriptUtils.LocalStorageHasItem(source.Locator))
             {
                 throw new InvalidOperationException("Browser save not found: " + source.Locator);
             }
 
-            string envelopeJson = Utils.JavaScriptUtils.LocalStorageGetItem(source.Locator);
+            string envelopeJson = JavaScriptUtils.LocalStorageGetItem(source.Locator);
             Envelope envelope = JsonUtility.FromJson<Envelope>(envelopeJson);
             byte[] compressed = Convert.FromBase64String(envelope.d);
             return Task.FromResult(Encoding.UTF8.GetString(_compressor.Decompress(compressed)));
@@ -87,12 +87,12 @@ namespace Warlander.Deedplanner.Persistence
         public Task<SaveLocationStatus> TrackAsync(MapLocation target)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            if (!Utils.JavaScriptUtils.LocalStorageHasItem(target.Locator))
+            if (!JavaScriptUtils.LocalStorageHasItem(target.Locator))
             {
                 return Task.FromResult(new SaveLocationStatus(false, default, 0));
             }
 
-            string envelopeJson = Utils.JavaScriptUtils.LocalStorageGetItem(target.Locator);
+            string envelopeJson = JavaScriptUtils.LocalStorageGetItem(target.Locator);
             Envelope envelope = JsonUtility.FromJson<Envelope>(envelopeJson);
             var writeTime = new DateTime(envelope.t, DateTimeKind.Utc);
             return Task.FromResult(new SaveLocationStatus(true, writeTime, envelope.d.Length));
@@ -104,7 +104,7 @@ namespace Warlander.Deedplanner.Persistence
         public Task DeleteAsync(MapLocation target)
         {
 #if UNITY_WEBGL && !UNITY_EDITOR
-            Utils.JavaScriptUtils.LocalStorageRemoveItem(target.Locator);
+            JavaScriptUtils.LocalStorageRemoveItem(target.Locator);
 #endif
             return Task.CompletedTask;
         }
@@ -113,14 +113,14 @@ namespace Warlander.Deedplanner.Persistence
         {
             var saves = new List<SavedMapInfo>();
 #if UNITY_WEBGL && !UNITY_EDITOR
-            foreach (string key in Utils.JavaScriptUtils.LocalStorageGetKeys())
+            foreach (string key in JavaScriptUtils.LocalStorageGetKeys())
             {
                 if (!key.EndsWith(".MAP", StringComparison.OrdinalIgnoreCase) || key.Contains(".auto"))
                 {
                     continue;
                 }
 
-                string envelopeJson = Utils.JavaScriptUtils.LocalStorageGetItem(key);
+                string envelopeJson = JavaScriptUtils.LocalStorageGetItem(key);
                 Envelope envelope = JsonUtility.FromJson<Envelope>(envelopeJson);
                 var writeTime = new DateTime(envelope.t, DateTimeKind.Utc);
                 string displayName = key.Substring(0, key.Length - ".MAP".Length);
@@ -140,7 +140,7 @@ namespace Warlander.Deedplanner.Persistence
                 d = Convert.ToBase64String(compressed)
             };
 
-            if (!Utils.JavaScriptUtils.LocalStorageSetItem(key, JsonUtility.ToJson(envelope)))
+            if (!JavaScriptUtils.LocalStorageSetItem(key, JsonUtility.ToJson(envelope)))
             {
                 throw new InvalidOperationException(
                     "Browser storage quota exceeded. Export the map as a file to keep it safe.");
