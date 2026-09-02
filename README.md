@@ -16,7 +16,8 @@ This repository is a work in progress version of DeedPlanner 3. DeedPlanner 2 - 
 
 ## Screenshots:
 
-![Screenshot 1](https://i.imgur.com/z8E2871.jpg)
-![Screenshot 2](https://i.imgur.com/c8AD7mO.jpg)
+![Screenshot 1](https://i.imgur.com/4hLRnv6.jpeg)
+![Screenshot 2](https://i.imgur.com/WOzpySx.jpeg)
+![Screenshot 3](https://i.imgur.com/DaDMQTJ.jpeg)
 
 Graphical assets in StreamingAssets folder are © Code Club AB or their respective authors and may not be reused, modified or distributed without written permission.
