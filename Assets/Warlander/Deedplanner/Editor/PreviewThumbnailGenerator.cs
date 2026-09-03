@@ -532,7 +532,6 @@ namespace Warlander.Deedplanner.Editor
             return pixels;
         }
 
-        /// <summary>Returns cell pixels, or null for a valid empty cell (entry without a model).</summary>
         private static async Task WarmUpRenderAsync(PreviewEntry entry, int layer)
         {
             XmlElement modelElement = entry.NormalModelElement;
@@ -548,6 +547,7 @@ namespace Warlander.Deedplanner.Editor
             await TryRenderEntryCellAsync(entry, layer, e => e.NormalModelElement, remainingUses);
         }
 
+        /// <summary>Returns cell pixels, or null for a valid empty cell (entry without a model).</summary>
         private static async Task<Color[]> RenderEntryCellAsync(PreviewEntry entry, int layer,
             Func<PreviewEntry, XmlElement> modelSelector, Dictionary<string, int> remainingUses)
         {

@@ -200,6 +200,15 @@ namespace Warlander.Deedplanner.Editor
 
         private static async void RunBuildAsync(Func<Task<bool>> build)
         {
+            // a pending script compile (e.g. input wrapper codegen on cold Library) forces
+            // a domain reload that silently kills this async chain - defer it, settle first
+            EditorApplication.LockReloadAssemblies();
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            while (EditorApplication.isCompiling || EditorApplication.isUpdating)
+            {
+                await Task.Delay(500);
+            }
+
             bool success = false;
             try
             {
@@ -218,7 +227,12 @@ namespace Warlander.Deedplanner.Editor
             {
                 if (Application.isBatchMode)
                 {
+                    // no unlock: the process exits here, a deferred reload would be pointless
                     EditorApplication.Exit(success ? 0 : 1);
+                }
+                else
+                {
+                    EditorApplication.UnlockReloadAssemblies();
                 }
             }
         }
