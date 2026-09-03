@@ -1,5 +1,6 @@
 using System.IO;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.Build;
@@ -17,19 +18,19 @@ namespace Warlander.Deedplanner.Editor
         [MenuItem("Build/All Platforms", false, 0)]
         public static void BuildAllPlatforms()
         {
-            RunBuildAsync(async () => await BuildAllStandaloneCoreAsync() && BuildWebCore());
+            RunBuildAsync(nameof(BuildAllPlatforms), async () => await BuildAllStandaloneCoreAsync() && BuildWebCore());
         }
         
         [MenuItem("Build/All Standalone", false, 1)]
         public static void BuildAllStandalone()
         {
-            RunBuildAsync(BuildAllStandaloneCoreAsync);
+            RunBuildAsync(nameof(BuildAllStandalone), BuildAllStandaloneCoreAsync);
         }
         
         [MenuItem("Build/Windows", false, 50)]
         public static void BuildWindows64()
         {
-            RunBuildAsync(() => Task.FromResult(BuildWindows64Core()));
+            RunBuildAsync(nameof(BuildWindows64), () => Task.FromResult(BuildWindows64Core()));
         }
 
         private static bool BuildWindows64Core()
@@ -68,7 +69,7 @@ namespace Warlander.Deedplanner.Editor
         [MenuItem("Build/Linux", false, 51)]
         public static void BuildLinux()
         {
-            RunBuildAsync(() => Task.FromResult(BuildLinuxCore()));
+            RunBuildAsync(nameof(BuildLinux), () => Task.FromResult(BuildLinuxCore()));
         }
 
         private static bool BuildLinuxCore()
@@ -107,7 +108,7 @@ namespace Warlander.Deedplanner.Editor
         [MenuItem("Build/Mac", false, 52)]
         public static void BuildMac()
         {
-            RunBuildAsync(() => Task.FromResult(BuildMacCore()));
+            RunBuildAsync(nameof(BuildMac), () => Task.FromResult(BuildMacCore()));
         }
 
         private static bool BuildMacCore()
@@ -153,7 +154,7 @@ namespace Warlander.Deedplanner.Editor
         [MenuItem("Build/WebGL", false, 100)]
         public static void BuildWeb()
         {
-            RunBuildAsync(() => Task.FromResult(BuildWebCore()));
+            RunBuildAsync(nameof(BuildWeb), () => Task.FromResult(BuildWebCore()));
         }
 
         private static bool BuildWebCore()
@@ -198,15 +199,27 @@ namespace Warlander.Deedplanner.Editor
             return Task.FromResult(BuildWindows64Core() && BuildLinuxCore() && BuildMacCore());
         }
 
-        private static async void RunBuildAsync(Func<Task<bool>> build)
+        private static async void RunBuildAsync(string entryMethod, Func<Task<bool>> build)
         {
-            // a pending script compile (e.g. input wrapper codegen on cold Library) forces
-            // a domain reload that silently kills this async chain - defer it, settle first
-            EditorApplication.LockReloadAssemblies();
-            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-            while (EditorApplication.isCompiling || EditorApplication.isUpdating)
+            if (Application.isBatchMode)
             {
-                await Task.Delay(500);
+                // a cold-Library import can leave a script compile pending (e.g. regenerated
+                // input wrapper); its domain reload silently kills this async chain, and
+                // BuildPlayer refuses to run with a reload pending. Settle the compile up
+                // front and keep a SessionState marker so we resume after the reload.
+                int attempt = ParsePendingBuildAttempt(SessionState.GetString(PendingBuildKey, null), entryMethod);
+                if (attempt > MaxReloadAttempts)
+                {
+                    Logger.Error("Build aborted: domain reloads keep interrupting the build");
+                    EditorApplication.Exit(1);
+                    return;
+                }
+                SessionState.SetString(PendingBuildKey, entryMethod + "|" + attempt);
+                AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+                while (EditorApplication.isCompiling || EditorApplication.isUpdating)
+                {
+                    await Task.Delay(500);
+                }
             }
 
             bool success = false;
@@ -217,6 +230,7 @@ namespace Warlander.Deedplanner.Editor
                     Logger.Message("Generating preview atlases before build: " + reason);
                     await PreviewThumbnailGenerator.GenerateAllAsync();
                 }
+                SessionState.EraseString(PendingBuildKey);
                 success = await build();
             }
             catch (Exception exception)
@@ -227,14 +241,47 @@ namespace Warlander.Deedplanner.Editor
             {
                 if (Application.isBatchMode)
                 {
-                    // no unlock: the process exits here, a deferred reload would be pointless
                     EditorApplication.Exit(success ? 0 : 1);
                 }
-                else
-                {
-                    EditorApplication.UnlockReloadAssemblies();
-                }
             }
+        }
+
+        private const string PendingBuildKey = "DeedPlanner.PendingBatchBuild";
+        private const int MaxReloadAttempts = 2;
+
+        [InitializeOnLoadMethod]
+        private static void ResumePendingBatchBuild()
+        {
+            if (!Application.isBatchMode)
+            {
+                return;
+            }
+            string pending = SessionState.GetString(PendingBuildKey, null);
+            if (string.IsNullOrEmpty(pending))
+            {
+                return;
+            }
+            string entryMethod = pending.Split('|')[0];
+            EditorApplication.delayCall += () =>
+            {
+                Logger.Message("Resuming batch build after domain reload: " + entryMethod);
+                typeof(BuildSystem).GetMethod(entryMethod, BindingFlags.Public | BindingFlags.Static)
+                    .Invoke(null, null);
+            };
+        }
+
+        private static int ParsePendingBuildAttempt(string pending, string entryMethod)
+        {
+            if (string.IsNullOrEmpty(pending))
+            {
+                return 0;
+            }
+            string[] parts = pending.Split('|');
+            if (parts[0] != entryMethod || parts.Length < 2 || !int.TryParse(parts[1], out int attempt))
+            {
+                return 0;
+            }
+            return attempt + 1;
         }
 
         // -executeMethod ignores return values, so a failed build must exit the
