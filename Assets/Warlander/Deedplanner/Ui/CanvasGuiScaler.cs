@@ -8,20 +8,15 @@ namespace Warlander.Deedplanner.Ui
 {
     public class CanvasGuiScaler : MonoBehaviour
     {
-        [Inject] private DPSettings _settings;
-        
+        [Inject] private UiSettings _settings;
+
         [SerializeField] private CanvasScaler _canvasScaler;
 
         private void Start()
         {
             ApplyScale();
-            
-            _settings.Modified += DpSettingsOnModified;
-        }
 
-        private void DpSettingsOnModified()
-        {
-            ApplyScale();
+            _settings.GuiScaleChanged += ApplyScale;
         }
 
         private void ApplyScale()
@@ -34,7 +29,7 @@ namespace Warlander.Deedplanner.Ui
         
         private void OnDestroy()
         {
-            _settings.Modified -= DpSettingsOnModified;
+            _settings.GuiScaleChanged -= ApplyScale;
         }
     }
 }

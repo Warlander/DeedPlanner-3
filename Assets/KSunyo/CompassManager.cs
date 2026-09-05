@@ -8,7 +8,7 @@ namespace KSunyo
 {
     public class CompassManager : MonoBehaviour
     {
-        [Inject] private DPSettings _settings;
+        [Inject] private UiSettings _settings;
         [Inject] private IInterfaceVisibility _interfaceVisibility;
 
         [SerializeField] private Transform cameraTransform;

@@ -14,13 +14,13 @@ namespace Warlander.Deedplanner.Rendering.Water
         private readonly WaterController _waterController;
         private readonly WaterSettingsApplier _settingsApplier;
         
-        public WaterFacade(DPSettings settings)
+        public WaterFacade(GraphicsOptions graphics)
         {
             var loader = new WaterObjectLoader();
             _objectContainer = new WaterObjectContainer(loader);
             _reflectionController = new WaterReflectionController();
-            _waterController = new WaterController(_objectContainer, _reflectionController, settings);
-            _settingsApplier = new WaterSettingsApplier(_objectContainer, settings);
+            _waterController = new WaterController(_objectContainer, _reflectionController, graphics);
+            _settingsApplier = new WaterSettingsApplier(_objectContainer, graphics);
         }
         
         public void PrepareForCamera(Camera camera, ICameraController cameraController, bool renderWater)

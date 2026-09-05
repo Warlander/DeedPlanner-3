@@ -6,15 +6,11 @@
 
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Warlander.Deedplanner.Domain;
-using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Ui;
 using Warlander.Deedplanner.Ui.Home;
 using Warlander.Deedplanner.Persistence;
-using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Platform.Steam;
-using InputSettings = Warlander.Deedplanner.Settings.InputSettings;
 using Warlander.Deedplanner.Ui.Windows;
 using Warlander.UI.Windows;
 using Warlogic.Settings;
@@ -24,33 +20,28 @@ namespace Warlander.Deedplanner.Editing
     public class MenuUpdater : IUpdater
     {
         private readonly IMenuUpdaterView _view;
-        private readonly DPSettings _settings;
+        private readonly SettingsRegistry _settingsRegistry;
         private readonly WindowCoordinator _windowCoordinator;
         private readonly ISteamConnection _steamConnection;
         private readonly TabContext _tabContext;
         private readonly ISaveCoordinator _saveCoordinator;
         private readonly MapHandler _mapHandler;
         private readonly IHomeScreenPresenter _homeScreenPresenter;
-        private readonly DPInput _input;
-        private readonly InputSettings _inputSettings;
 
         public Tab TargetTab => Tab.Menu;
 
-        public MenuUpdater(IMenuUpdaterView view, DPSettings settings, WindowCoordinator windowCoordinator,
+        public MenuUpdater(IMenuUpdaterView view, SettingsRegistry settingsRegistry, WindowCoordinator windowCoordinator,
             ISteamConnection steamConnection, TabContext tabContext,
-            ISaveCoordinator saveCoordinator, MapHandler mapHandler, IHomeScreenPresenter homeScreenPresenter,
-            DPInput input, InputSettings inputSettings)
+            ISaveCoordinator saveCoordinator, MapHandler mapHandler, IHomeScreenPresenter homeScreenPresenter)
         {
             _view = view;
-            _settings = settings;
+            _settingsRegistry = settingsRegistry;
             _windowCoordinator = windowCoordinator;
             _steamConnection = steamConnection;
             _tabContext = tabContext;
             _saveCoordinator = saveCoordinator;
             _mapHandler = mapHandler;
             _homeScreenPresenter = homeScreenPresenter;
-            _input = input;
-            _inputSettings = inputSettings;
         }
 
         public void Initialize()
@@ -197,55 +188,10 @@ namespace Warlander.Deedplanner.Editing
             }
         }
 
-        // TEMP until chunk 5 wires the real registry: sample settings so the new window is browsable
         private void OpenNewSettingsWindow()
         {
-            var registry = new SettingsRegistry();
-            SettingsTab generalTab = registry.AddTab("general", "General");
-            SettingsTab graphicsTab = registry.AddTab("graphics", "Graphics");
-            generalTab.Add(new IntSetting("fpsLimit", "FPS Limit", 60, 30, 240, "Caps the frame rate.", ApplyMode.OnSave));
-            generalTab.Add(new BoolSetting("tooltips", "Tooltips", true, null, ApplyMode.OnSave));
-            graphicsTab.Add(new FloatSetting("guiScale", "GUI Scale", 1.0f, 0.5f, 2.0f, "Scales the whole user interface.", ApplyMode.OnSave));
-            graphicsTab.Add(new BoolSetting("shadows", "Shadows", true, null, ApplyMode.OnSave));
-            graphicsTab.Add(new EnumSetting<WaterQuality>("waterQuality", "Water Quality", WaterQuality.High, null, ApplyMode.OnSave));
-            AddSampleKeybindsTab(registry);
-
             Window window = _windowCoordinator.CreateWindowExclusive(WindowNames.SettingsWindow);
-            window.GetComponent<SettingsWindowView>().Initialize(registry);
-        }
-
-        // TEMP chunk 4 sample: real keybind rows, replaced by the full keybind declaration in chunk 5
-        private void AddSampleKeybindsTab(SettingsRegistry registry)
-        {
-            SettingsTab keybindsTab = registry.AddTab("keybinds", "Keybinds");
-            foreach (InputActionMap actionMap in _input.asset.actionMaps)
-            {
-                // UI map stays non-rebindable so the user can't lock themselves out of the UI
-                if (actionMap == _input.UI.Submit.actionMap)
-                {
-                    continue;
-                }
-
-                foreach (InputAction action in actionMap.actions)
-                {
-                    for (int i = 0; i < action.bindings.Count; i++)
-                    {
-                        InputBinding binding = action.bindings[i];
-                        if (binding.isComposite)
-                        {
-                            continue;
-                        }
-
-                        keybindsTab.Add(new KeybindSetting(action, i, _inputSettings));
-
-                        if (!binding.isPartOfComposite)
-                        {
-                            // standalone actions show only their first binding
-                            break;
-                        }
-                    }
-                }
-            }
+            window.GetComponent<SettingsWindowView>().Initialize(_settingsRegistry);
         }
 
         private void ToggleFullscreen()
@@ -264,7 +210,6 @@ namespace Warlander.Deedplanner.Editing
         private async System.Threading.Tasks.Task QuitAsync()
         {
             await _saveCoordinator.PrepareForQuitAsync();
-            _settings.Save();
 
 #if UNITY_EDITOR
             EditorApplication.ExitPlaymode();

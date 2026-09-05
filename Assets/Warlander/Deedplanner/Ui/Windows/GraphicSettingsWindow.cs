@@ -4,12 +4,14 @@ using UnityEngine.UI;
 using VContainer;
 using Warlander.Deedplanner.Settings;
 using Warlander.UI.Windows;
+using QualityLevel = Warlander.Deedplanner.Settings.QualityLevel;
 
 namespace Warlander.Deedplanner.Ui.Windows
 {
     public class GraphicSettingsWindow : MonoBehaviour
     {
-        [Inject] private DPSettings _settings;
+        [Inject] private GraphicsOptions _graphics;
+        [Inject] private UiSettings _ui;
         private Window _window;
         
         [SerializeField] private Toggle simpleWaterToggle;
@@ -53,7 +55,7 @@ namespace Warlander.Deedplanner.Ui.Windows
 
         private void ApplyProperties()
         {
-            WaterQuality waterQuality = _settings.WaterQuality;
+            WaterQuality waterQuality = _graphics.WaterQuality;
             switch (waterQuality)
             {
                 case WaterQuality.Simple:
@@ -67,7 +69,7 @@ namespace Warlander.Deedplanner.Ui.Windows
                     break;
             }
             
-            bool compassVisibility = _settings.CompassVisibility;
+            bool compassVisibility = _ui.CompassVisibility;
             if (compassVisibility)
             {
                 compassToggle.isOn = true;
@@ -77,8 +79,7 @@ namespace Warlander.Deedplanner.Ui.Windows
                 compassToggle.isOn = false;
             }
             
-            overallQualityDropdown.value = QualitySettings.GetQualityLevel();
-            guiScaleSlider.value = _settings.GuiScale;
+            overallQualityDropdown.value = (int) _graphics.QualityLevel;            guiScaleSlider.value = _ui.GuiScale;
             guiScaleValueText.text = Mathf.RoundToInt(guiScaleSlider.value).ToString();
         }
 
@@ -89,34 +90,22 @@ namespace Warlander.Deedplanner.Ui.Windows
         
         private void SaveProperties()
         {
-            _settings.Modify(settings =>
+            if (simpleWaterToggle.isOn)
             {
-                if (simpleWaterToggle.isOn)
-                {
-                    settings.WaterQuality = WaterQuality.Simple;
-                }
-                else if (highWaterToggle.isOn)
-                {
-                    settings.WaterQuality = WaterQuality.High;
-                }
-                else if (ultraWaterToggle.isOn)
-                {
-                    settings.WaterQuality = WaterQuality.Ultra;
-                }
+                _graphics.WaterQuality = WaterQuality.Simple;
+            }
+            else if (highWaterToggle.isOn)
+            {
+                _graphics.WaterQuality = WaterQuality.High;
+            }
+            else if (ultraWaterToggle.isOn)
+            {
+                _graphics.WaterQuality = WaterQuality.Ultra;
+            }
 
-                settings.GuiScale = Mathf.RoundToInt(guiScaleSlider.value);
-
-                if (compassToggle.isOn)
-                {
-                    settings.CompassVisibility = true;
-                }
-                else
-                {
-                    settings.CompassVisibility = false;
-                }
-            });
-
-            QualitySettings.SetQualityLevel(overallQualityDropdown.value, true);
+            _ui.GuiScale = Mathf.RoundToInt(guiScaleSlider.value);
+            _ui.CompassVisibility = compassToggle.isOn;
+            _graphics.QualityLevel = (QualityLevel) overallQualityDropdown.value;
         }
     }
 }

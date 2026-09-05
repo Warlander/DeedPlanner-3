@@ -10,10 +10,10 @@ namespace Warlander.Deedplanner.Cameras
 {
     public class IsoCameraController : ICameraController
     {
-        private readonly DPSettings _settings;
+        private readonly CameraSettings _settings;
         private readonly DPInput _input;
-        
-        public IsoCameraController(DPSettings settings, DPInput input)
+
+        public IsoCameraController(CameraSettings settings, DPInput input)
         {
             _settings = settings;
             _input = input;

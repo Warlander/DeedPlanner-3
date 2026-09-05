@@ -26,7 +26,7 @@ namespace Warlander.Deedplanner.Editing
         private const float CornerSnapDistance = 0.25f;
 
         private readonly IDecorationUpdaterView _view;
-        private readonly DPSettings _settings;
+        private readonly EditingSettings _settings;
         private readonly CameraCoordinator _cameraCoordinator;
         private readonly DPInput _input;
         private readonly MapHandler _mapHandler;
@@ -56,7 +56,7 @@ namespace Warlander.Deedplanner.Editing
 
         private bool _isScrollRotate = false;
 
-        public DecorationUpdater(IDecorationUpdaterView view, DPSettings settings, CameraCoordinator cameraCoordinator,
+        public DecorationUpdater(IDecorationUpdaterView view, EditingSettings settings, CameraCoordinator cameraCoordinator,
             DPInput input, MapHandler mapHandler, IOutlineCoordinator outlineCoordinator,
             ISharedMaterials sharedMaterials, TabContext tabContext, ILoggerSource loggerSource,
             PreviewAtlasCatalog previewAtlasCatalog, IDataCatalog dataCatalog)
@@ -95,7 +95,7 @@ namespace Warlander.Deedplanner.Editing
                 }
             }
 
-            _rotationSensitivity = _settings.DecorationRotationSensitivity;
+            _rotationSensitivity = _settings.DecorationRotationSensitivity.ToString(CultureInfo.InvariantCulture);
             _rotationSnapping = _settings.DecorationRotationSnapping;
 
             _view.SetRotationSensitivity(_rotationSensitivity);
@@ -116,28 +116,20 @@ namespace Warlander.Deedplanner.Editing
 
         private void OnSnapToGridChanged(bool value)
         {
-            _settings.Modify(settings =>
-            {
-                settings.DecorationSnapToGrid = value;
-            });
+            _settings.DecorationSnapToGrid = value;
         }
 
         private void OnRotationSnappingChanged(bool value)
         {
             _rotationSnapping = value;
-            _settings.Modify(settings =>
-            {
-                settings.DecorationRotationSnapping = value;
-            });
+            _settings.DecorationRotationSnapping = value;
         }
 
         private void OnRotationSensitivityChanged(string value)
         {
             _rotationSensitivity = value;
-            _settings.Modify(settings =>
-            {
-                settings.DecorationRotationSensitivity = value;
-            });
+            float.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out float parsed);
+            _settings.DecorationRotationSensitivity = parsed;
         }
 
         public void Tick()
