@@ -6,12 +6,15 @@
 
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Warlander.Deedplanner.Domain;
+using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Ui;
 using Warlander.Deedplanner.Ui.Home;
 using Warlander.Deedplanner.Persistence;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Platform.Steam;
+using InputSettings = Warlander.Deedplanner.Settings.InputSettings;
 using Warlander.Deedplanner.Ui.Windows;
 using Warlander.UI.Windows;
 using Warlogic.Settings;
@@ -28,12 +31,15 @@ namespace Warlander.Deedplanner.Editing
         private readonly ISaveCoordinator _saveCoordinator;
         private readonly MapHandler _mapHandler;
         private readonly IHomeScreenPresenter _homeScreenPresenter;
+        private readonly DPInput _input;
+        private readonly InputSettings _inputSettings;
 
         public Tab TargetTab => Tab.Menu;
 
         public MenuUpdater(IMenuUpdaterView view, DPSettings settings, WindowCoordinator windowCoordinator,
             ISteamConnection steamConnection, TabContext tabContext,
-            ISaveCoordinator saveCoordinator, MapHandler mapHandler, IHomeScreenPresenter homeScreenPresenter)
+            ISaveCoordinator saveCoordinator, MapHandler mapHandler, IHomeScreenPresenter homeScreenPresenter,
+            DPInput input, InputSettings inputSettings)
         {
             _view = view;
             _settings = settings;
@@ -43,6 +49,8 @@ namespace Warlander.Deedplanner.Editing
             _saveCoordinator = saveCoordinator;
             _mapHandler = mapHandler;
             _homeScreenPresenter = homeScreenPresenter;
+            _input = input;
+            _inputSettings = inputSettings;
         }
 
         public void Initialize()
@@ -200,9 +208,44 @@ namespace Warlander.Deedplanner.Editing
             graphicsTab.Add(new FloatSetting("guiScale", "GUI Scale", 1.0f, 0.5f, 2.0f, "Scales the whole user interface.", ApplyMode.OnSave));
             graphicsTab.Add(new BoolSetting("shadows", "Shadows", true, null, ApplyMode.OnSave));
             graphicsTab.Add(new EnumSetting<WaterQuality>("waterQuality", "Water Quality", WaterQuality.High, null, ApplyMode.OnSave));
+            AddSampleKeybindsTab(registry);
 
             Window window = _windowCoordinator.CreateWindowExclusive(WindowNames.SettingsWindow);
             window.GetComponent<SettingsWindowView>().Initialize(registry);
+        }
+
+        // TEMP chunk 4 sample: real keybind rows, replaced by the full keybind declaration in chunk 5
+        private void AddSampleKeybindsTab(SettingsRegistry registry)
+        {
+            SettingsTab keybindsTab = registry.AddTab("keybinds", "Keybinds");
+            foreach (InputActionMap actionMap in _input.asset.actionMaps)
+            {
+                // UI map stays non-rebindable so the user can't lock themselves out of the UI
+                if (actionMap == _input.UI.Submit.actionMap)
+                {
+                    continue;
+                }
+
+                foreach (InputAction action in actionMap.actions)
+                {
+                    for (int i = 0; i < action.bindings.Count; i++)
+                    {
+                        InputBinding binding = action.bindings[i];
+                        if (binding.isComposite)
+                        {
+                            continue;
+                        }
+
+                        keybindsTab.Add(new KeybindSetting(action, i, _inputSettings));
+
+                        if (!binding.isPartOfComposite)
+                        {
+                            // standalone actions show only their first binding
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         private void ToggleFullscreen()
