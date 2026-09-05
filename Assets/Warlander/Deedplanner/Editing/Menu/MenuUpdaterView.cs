@@ -15,6 +15,7 @@ namespace Warlander.Deedplanner.Editing
         [SerializeField] private Button _loadButton;
         [SerializeField] private Button _graphicsSettingsButton;
         [SerializeField] private Button _inputSettingsButton;
+        [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _creditsButton;
         [SerializeField] private Button _fullscreenButton;
         [SerializeField] private Button _quitButton;
@@ -40,6 +41,7 @@ namespace Warlander.Deedplanner.Editing
             _loadButton.onClick.AddListener(() => ButtonClicked?.Invoke(MenuAction.Load));
             _graphicsSettingsButton.onClick.AddListener(() => ButtonClicked?.Invoke(MenuAction.GraphicsSettings));
             _inputSettingsButton.onClick.AddListener(() => ButtonClicked?.Invoke(MenuAction.InputSettings));
+            _settingsButton.onClick.AddListener(() => ButtonClicked?.Invoke(MenuAction.Settings));
             _creditsButton.onClick.AddListener(() => ButtonClicked?.Invoke(MenuAction.Credits));
             _fullscreenButton.onClick.AddListener(() => ButtonClicked?.Invoke(MenuAction.Fullscreen));
             _quitButton.onClick.AddListener(() => ButtonClicked?.Invoke(MenuAction.Quit));

@@ -387,6 +387,14 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.warlogic.settings.ugui": {
+      "version": "file:com.warlogic.settings.ugui",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.warlogic.settings": "0.1.0"
+      }
+    },
     "com.warlogic.utils.markdown": {
       "version": "1.2.0",
       "depth": 1,
