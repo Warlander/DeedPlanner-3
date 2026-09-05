@@ -1,0 +1,12 @@
+{
+  "name": "com.warlogic.settings",
+  "displayName": "Warlogic Settings",
+  "version": "0.1.0",
+  "description": "Typed, code-declared settings registry with per-setting apply modes and pluggable JSON persistence.",
+  "unity": "2021.3",
+  "author": {
+    "name": "Maciej Cyranowicz",
+    "url": "https://github.com/Warlander"
+  },
+  "license": "MIT"
+}
