@@ -1,19 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Warlogic.Settings.Ugui
 {
     public sealed class SettingsWindowPresenter
     {
+        private sealed class TabContent
+        {
+            public readonly List<ISettingWidget> Widgets = new List<ISettingWidget>();
+            public readonly List<GameObject> Roots = new List<GameObject>();
+        }
+
         private readonly SettingsRegistry _registry;
         private readonly SettingsWidgetCatalog _catalog;
         private readonly ISettingsWindowView _view;
-        private readonly Dictionary<string, List<ISettingWidget>> _widgetsByTab = new Dictionary<string, List<ISettingWidget>>();
+        private readonly Dictionary<string, TabContent> _contentByTab = new Dictionary<string, TabContent>();
         private readonly Dictionary<string, SettingsTabButton> _tabButtons = new Dictionary<string, SettingsTabButton>();
         private string _activeTabId;
 
         public event Action<string> TabContentBuilt;
+        public event Action<string> ActiveTabChanged;
 
         public SettingsWindowPresenter(SettingsRegistry registry, SettingsWidgetCatalog catalog, ISettingsWindowView view)
         {
@@ -32,7 +40,7 @@ namespace Warlogic.Settings.Ugui
 
         public bool IsTabBuilt(string tabId)
         {
-            return _widgetsByTab.ContainsKey(tabId);
+            return _contentByTab.ContainsKey(tabId);
         }
 
         public void SelectTab(string tabId)
@@ -53,6 +61,7 @@ namespace Warlogic.Settings.Ugui
             }
             SetTabContentVisible(tabId, true);
             _tabButtons[tabId].SetSelected(true);
+            ActiveTabChanged?.Invoke(tabId);
         }
 
         private void BuildTabButtons()
@@ -70,9 +79,17 @@ namespace Warlogic.Settings.Ugui
         private void BuildTabContent(string tabId)
         {
             SettingsTab tab = _registry.Tabs.First(t => t.Id == tabId);
-            var widgets = new List<ISettingWidget>();
+            var content = new TabContent();
+            string currentGroup = null;
             foreach (ISetting setting in tab.Settings)
             {
+                if (setting is IGroupedSetting grouped && grouped.Group != currentGroup)
+                {
+                    currentGroup = grouped.Group;
+                    SettingsGroupHeader header = _catalog.CreateGroupHeader(currentGroup, _view.ContentRoot);
+                    content.Roots.Add(header.gameObject);
+                    header.gameObject.SetActive(false);
+                }
                 ISettingWidget widget = _catalog.CreateWidget(setting, _view.ContentRoot);
                 if (widget == null)
                 {
@@ -80,17 +97,18 @@ namespace Warlogic.Settings.Ugui
                 }
                 widget.ValueEdited += RefreshFooter;
                 widget.Root.gameObject.SetActive(false);
-                widgets.Add(widget);
+                content.Widgets.Add(widget);
+                content.Roots.Add(widget.Root.gameObject);
             }
-            _widgetsByTab[tabId] = widgets;
+            _contentByTab[tabId] = content;
             TabContentBuilt?.Invoke(tabId);
         }
 
         private void SetTabContentVisible(string tabId, bool visible)
         {
-            foreach (ISettingWidget widget in _widgetsByTab[tabId])
+            foreach (GameObject root in _contentByTab[tabId].Roots)
             {
-                widget.Root.gameObject.SetActive(visible);
+                root.SetActive(visible);
             }
         }
 
@@ -118,9 +136,9 @@ namespace Warlogic.Settings.Ugui
                     setting.Revert();
                 }
             }
-            foreach (List<ISettingWidget> widgets in _widgetsByTab.Values)
+            foreach (TabContent content in _contentByTab.Values)
             {
-                foreach (ISettingWidget widget in widgets)
+                foreach (ISettingWidget widget in content.Widgets)
                 {
                     widget.Refresh();
                 }
