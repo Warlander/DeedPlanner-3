@@ -1,0 +1,13 @@
+{
+    "name": "Warlogic.Settings.Ugui",
+    "rootNamespace": "Warlogic.Settings.Ugui",
+    "references": [
+        "Warlogic.Settings",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "autoReferenced": true,
+    "noEngineReferences": false
+}

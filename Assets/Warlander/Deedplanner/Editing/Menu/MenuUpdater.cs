@@ -12,7 +12,9 @@ using Warlander.Deedplanner.Ui.Home;
 using Warlander.Deedplanner.Persistence;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Platform.Steam;
+using Warlander.Deedplanner.Ui.Windows;
 using Warlander.UI.Windows;
+using Warlogic.Settings;
 
 namespace Warlander.Deedplanner.Editing
 {
@@ -166,6 +168,9 @@ namespace Warlander.Deedplanner.Editing
                 case MenuAction.InputSettings:
                     _windowCoordinator.CreateWindowExclusive(WindowNames.InputSettingsWindow);
                     break;
+                case MenuAction.Settings:
+                    OpenNewSettingsWindow();
+                    break;
                 case MenuAction.Credits:
                     _windowCoordinator.CreateWindow(WindowNames.CreditsWindow);
                     break;
@@ -182,6 +187,22 @@ namespace Warlander.Deedplanner.Editing
                     Application.OpenURL("https://www.paypal.me/MCyranowicz/10eur");
                     break;
             }
+        }
+
+        // TEMP until chunk 5 wires the real registry: sample settings so the new window is browsable
+        private void OpenNewSettingsWindow()
+        {
+            var registry = new SettingsRegistry();
+            SettingsTab generalTab = registry.AddTab("general", "General");
+            SettingsTab graphicsTab = registry.AddTab("graphics", "Graphics");
+            generalTab.Add(new IntSetting("fpsLimit", "FPS Limit", 60, 30, 240, "Caps the frame rate.", ApplyMode.OnSave));
+            generalTab.Add(new BoolSetting("tooltips", "Tooltips", true, null, ApplyMode.OnSave));
+            graphicsTab.Add(new FloatSetting("guiScale", "GUI Scale", 1.0f, 0.5f, 2.0f, "Scales the whole user interface.", ApplyMode.OnSave));
+            graphicsTab.Add(new BoolSetting("shadows", "Shadows", true, null, ApplyMode.OnSave));
+            graphicsTab.Add(new EnumSetting<WaterQuality>("waterQuality", "Water Quality", WaterQuality.High, null, ApplyMode.OnSave));
+
+            Window window = _windowCoordinator.CreateWindowExclusive(WindowNames.SettingsWindow);
+            window.GetComponent<SettingsWindowView>().Initialize(registry);
         }
 
         private void ToggleFullscreen()
