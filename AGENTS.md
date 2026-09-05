@@ -54,6 +54,8 @@ Without it, play mode ENTRY stalls indefinitely while the Editor window is unfoc
 
 **eval_file quirks (verified):** `eval` rejects bare expressions; use `eval_file` with an explicit `return`. `eval_file` wraps the file in an `Execute()` method body: statements only (no `using` directives, no class/method definitions), fully-qualified names (`UnityEngine.Object`, `System.IO.Path` — `Object` collides with `object`). Write eval scripts to system temp, never under `Assets/` (stray .cs files break compilation).
 
+**Driving the running app (project commands, `Platform/AgentCommands.cs`):** prefer these over eval for app-level actions. `app_await_ready` (blocks in-game until playing + MainScene active + map present; pass CLI `--timeout` above `--timeoutSeconds`), `app_status` (instant snapshot: scene/map/tab/camera/save state), `map_new`/`map_load <path>`/`map_save` (quicksave only)/`map_info` (compact entity counts), `tab_select <name>`, `camera_set <fpp|wurmian|top|iso> [level]` (no position control — controllers own it), `await_idle [frames]` (wait out saves + rendered frames before screenshots), `edit_undo`/`edit_redo`. Typical loop: `editor_play` → `app_await_ready --timeout 120` → act → `await_idle` → `screenshot --output <file>` → `editor_stop`. For screenshots use `screenshot --output <path>` — bare `capture_game_view` returns huge inline base64.
+
 ## Agentic Verification
 
 The project iterates fast — domain reload and play-mode enter/exit each take only a few seconds. After triggering a recompile or play-mode change, allow a ~5 second buffer, then poll `unity status` for the Editor state before issuing the next command.
