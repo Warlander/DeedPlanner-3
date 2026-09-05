@@ -381,6 +381,12 @@
       },
       "url": "https://upm.maciejcyranowicz.com"
     },
+    "com.warlogic.settings": {
+      "version": "file:com.warlogic.settings",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.warlogic.utils.markdown": {
       "version": "1.2.0",
       "depth": 1,
