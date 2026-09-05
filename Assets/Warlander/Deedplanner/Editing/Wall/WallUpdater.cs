@@ -14,7 +14,7 @@ namespace Warlander.Deedplanner.Editing
     public class WallUpdater : IUpdater
     {
         private readonly IWallUpdaterView _view;
-        private readonly DPSettings _settings;
+        private readonly EditingSettings _settings;
         private readonly CameraCoordinator _cameraCoordinator;
         private readonly DPInput _input;
         private readonly MapHandler _mapHandler;
@@ -26,7 +26,7 @@ namespace Warlander.Deedplanner.Editing
 
         private WallData _selectedWall;
 
-        public WallUpdater(IWallUpdaterView view, DPSettings settings, CameraCoordinator cameraCoordinator,
+        public WallUpdater(IWallUpdaterView view, EditingSettings settings, CameraCoordinator cameraCoordinator,
             DPInput input, MapHandler mapHandler, TabContext tabContext, PreviewAtlasCatalog previewAtlasCatalog,
             IDataCatalog dataCatalog)
         {
@@ -73,18 +73,12 @@ namespace Warlander.Deedplanner.Editing
 
         private void OnReverseChanged(bool value)
         {
-            _settings.Modify(settings =>
-            {
-                settings.WallReverse = value;
-            });
+            _settings.WallReverse = value;
         }
 
         private void OnAutomaticReverseChanged(bool value)
         {
-            _settings.Modify(settings =>
-            {
-                settings.WallAutomaticReverse = value;
-            });
+            _settings.WallAutomaticReverse = value;
         }
 
         public void Tick()

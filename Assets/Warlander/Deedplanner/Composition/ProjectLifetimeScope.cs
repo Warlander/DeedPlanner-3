@@ -39,7 +39,13 @@ namespace Warlander.Deedplanner.Composition
                 CrashReportHandler.enableCaptureExceptions = false;
             }
 
-            builder.RegisterInstance(new SettingsFactory(loggerSource).Create());
+            var settings = DeedPlannerSettings.Create();
+            builder.RegisterInstance(settings.Registry);
+            builder.RegisterInstance(settings.Camera);
+            builder.RegisterInstance(settings.Editing);
+            builder.RegisterInstance(settings.Ui);
+            builder.RegisterInstance(settings.Graphics);
+            builder.RegisterEntryPoint<QualityLevelApplier>();
 
             builder.Register<Database>(Lifetime.Singleton).AsSelf().As<IDataCatalog>();
 

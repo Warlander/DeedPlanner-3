@@ -115,6 +115,7 @@ namespace Warlander.Deedplanner.Composition
             builder.RegisterInstance(input);
 
             builder.RegisterEntryPoint<InputSettings>().AsSelf();
+            builder.RegisterEntryPoint<KeybindSettingsRegistrar>();
             builder.Register<MapRenderSettings>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
             builder.Register<MapHandler>(Lifetime.Singleton);

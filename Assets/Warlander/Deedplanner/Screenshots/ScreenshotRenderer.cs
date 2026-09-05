@@ -13,17 +13,17 @@ namespace Warlander.Deedplanner.Screenshots
         private readonly MapHandler _mapHandler;
         private readonly IWaterFacade _waterFacade;
         private readonly IOutlineCoordinator _outlineCoordinator;
-        private readonly DPSettings _settings;
+        private readonly GraphicsOptions _graphics;
 
         private Camera _screenshotCamera;
 
         public ScreenshotRenderer(MapHandler mapHandler, IWaterFacade waterFacade,
-            IOutlineCoordinator outlineCoordinator, DPSettings settings)
+            IOutlineCoordinator outlineCoordinator, GraphicsOptions graphics)
         {
             _mapHandler = mapHandler;
             _waterFacade = waterFacade;
             _outlineCoordinator = outlineCoordinator;
-            _settings = settings;
+            _graphics = graphics;
         }
 
         public Texture2D TakeScreenshot(ScreenshotRequest request)
@@ -34,12 +34,12 @@ namespace Warlander.Deedplanner.Screenshots
                 return null;
             }
 
-            WaterQuality previousWaterQuality = _settings.WaterQuality;
+            WaterQuality previousWaterQuality = _graphics.WaterQuality;
             bool previousRenderGrid = map.RenderGrid;
 
             _outlineCoordinator.RenderingSuspended = true;
             map.RenderGrid = false;
-            _settings.Modify(settings => settings.WaterQuality = WaterQuality.Ultra, autoSave: false);
+            _graphics.WaterQuality = WaterQuality.Ultra;
 
             try
             {
@@ -83,7 +83,7 @@ namespace Warlander.Deedplanner.Screenshots
             }
             finally
             {
-                _settings.Modify(settings => settings.WaterQuality = previousWaterQuality, autoSave: false);
+                _graphics.WaterQuality = previousWaterQuality;
                 map.RenderGrid = previousRenderGrid;
                 _outlineCoordinator.RenderingSuspended = false;
             }

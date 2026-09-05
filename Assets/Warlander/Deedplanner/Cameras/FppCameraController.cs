@@ -11,10 +11,10 @@ namespace Warlander.Deedplanner.Cameras
 {
     public class FppCameraController : ICameraController
     {
-        private readonly DPSettings _settings;
+        private readonly CameraSettings _settings;
         private readonly DPInput _input;
-        
-        public FppCameraController(DPSettings settings, DPInput input)
+
+        public FppCameraController(CameraSettings settings, DPInput input)
         {
             _settings = settings;
             _input = input;
