@@ -161,14 +161,8 @@ namespace Warlander.Deedplanner.Editing
                 case MenuAction.Load:
                     _homeScreenPresenter.ShowHomeScreen(true);
                     break;
-                case MenuAction.GraphicsSettings:
-                    _windowCoordinator.CreateWindowExclusive(WindowNames.GraphicsSettingsWindow);
-                    break;
-                case MenuAction.InputSettings:
-                    _windowCoordinator.CreateWindowExclusive(WindowNames.InputSettingsWindow);
-                    break;
                 case MenuAction.Settings:
-                    OpenNewSettingsWindow();
+                    OpenSettingsWindow();
                     break;
                 case MenuAction.Credits:
                     _windowCoordinator.CreateWindow(WindowNames.CreditsWindow);
@@ -188,7 +182,7 @@ namespace Warlander.Deedplanner.Editing
             }
         }
 
-        private void OpenNewSettingsWindow()
+        private void OpenSettingsWindow()
         {
             Window window = _windowCoordinator.CreateWindowExclusive(WindowNames.SettingsWindow);
             window.GetComponent<SettingsWindowView>().Initialize(_settingsRegistry);
