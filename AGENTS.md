@@ -62,7 +62,7 @@ The project iterates fast — domain reload and play-mode enter/exit each take o
 
 **Unit tests are EditMode only — even for non-editor code.** No PlayMode tests. Test files live in a `Tests/Editor/` folder next to the tested code (e.g. `Persistence/Compression/Tests/Editor/`): the `Editor` folder compiles them into Assembly-CSharp-Editor, which the Test Framework discovers and runs without any asmdef. Do not add test asmdefs.
 
-**Never recompile while in play mode.** A domain reload mid-play silently breaks the session: the running app loses its state (map references go null, evals fail with NullReferenceException) while the Editor reports itself ready. Always `editor_stop` → recompile → `editor_play` → re-run the scenario.
+**Never recompile or run tests while in play mode.** Before `recompile`, `run_tests`, or any action that triggers an assembly reload (package add/remove/resolve, script creation), verify the Editor is in edit mode (`unity status`) — if it is playing, `editor_stop` first. A domain reload mid-play silently breaks the session: the running app loses its state (map references go null, evals fail with NullReferenceException) while the Editor reports itself ready, and a test run started mid-play triggers exactly that reload. Always `editor_stop` → recompile/test → `editor_play` → re-run the scenario.
 
 Suggested verification ladder, cheapest first:
 1. Compile check (connected Editor via `unity command`, or `unity test --mode EditMode` batch) — catches syntax/type errors.
