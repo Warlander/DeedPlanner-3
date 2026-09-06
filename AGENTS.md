@@ -175,6 +175,18 @@ Verify compilation after every code edit before considering the task done:
 3. If the Unity CLI itself is missing: ask the developer to install it (never install it yourself) and ask them to confirm compilation in the Editor.
 4. Do not consider a task finished until compilation is clean (errors AND new warnings).
 
+## Changelog
+
+`CHANGELOG.md` (repo root) records user-facing changes, newest first, with the top section being the unreleased version. Update it as part of any task that changes something a user can see or do: features, UI changes, fixes, new content (models, textures, items), platform/behavior differences. Skip purely internal work (refactors, code health, CI, tests) unless it has a user-observable effect (e.g. performance).
+
+Rules:
+
+- Format: `## [x.y.z] - YYYY-MM-DD` (or `- Unreleased` on top) followed directly by a flat dash-bullet list. No preamble paragraphs, no summary text, no Added/Changed/Fixed subsections, no known-issues blocks.
+- Match the existing entry style: one concise dash bullet per change, written for players, not developers. Fixes start with "Fixed ...".
+- Add entries to the current unreleased section only. Never edit released sections — they are historical record sourced from published GitHub releases.
+- Keep the section coherent: it describes the delta users will experience on upgrade. Do not add fix/tweak entries for a feature introduced in the same unreleased version — fold the improvement into the feature's entry (or drop it); that bug never reached users. When editing an existing entry of yours, prefer updating it over adding a corrective bullet.
+- On release, the developer renames the unreleased section to the version and date; agents never create new version sections on their own.
+
 ## Honesty About Feasibility
 
 If a proposed approach is architecturally poor, has no clean implementation path, or would require unreasonable workarounds — say so clearly and explain why. Do not attempt to implement it anyway. Proposing a better alternative or declining with reasoning is preferable to producing bad code.
