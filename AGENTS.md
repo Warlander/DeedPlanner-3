@@ -6,6 +6,10 @@ This file provides guidance to AI coding agents (OpenAI Codex and others) when w
 
 Skills live canonically in `.agents/skills/`. `.claude/skills/` is a generated mirror: the pre-commit hook regenerates it and rejects commits that edit only the mirror. Never edit `.claude/skills/` directly. Fresh clones need `git config core.hooksPath .githooks` once to enable the hook. The hook also runs `.githooks/check-meta-pairing.sh`, which rejects commits where a tracked file/dir under `Assets/` or an embedded `Packages/<pkg>/` lacks its Unity `.meta` (or a `.meta` lost its base file); fix by staging the Unity-generated meta or removing the orphan. A same-named CI workflow alarms on violations that bypass the local hook.
 
+## Commit Message Style
+
+Use a short, plain, capitalized imperative subject without a Conventional Commit prefix, for example `Sync Unity agent skills`. Check recent commit history before committing and follow it if the dominant convention changes.
+
 ## Project Overview
 
 DeedPlanner 3 is a 3D deed/house planning tool for Wurm Online and Wurm Unlimited, built with Unity 6000.3.20f1. It runs as a standalone application (Windows/Linux/Mac) and WebGL version.
