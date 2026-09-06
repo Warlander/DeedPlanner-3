@@ -48,7 +48,15 @@ namespace Warlander.Deedplanner.Settings
                 "Simple - very basic water that uses almost no resources\nHigh - fancy water without reflections\nUltra - fancy water with reflections");
             graphicsTab.Add(waterQuality);
             var qualityLevel = new EnumSetting<QualityLevel>("qualityLevel", "Quality Level",
-                (QualityLevel) UnityEngine.QualitySettings.GetQualityLevel(), "Controls shadow quality, post-processing and ambient occlusion.");
+                (QualityLevel) UnityEngine.QualitySettings.GetQualityLevel(), "Controls shadow quality, post-processing and ambient occlusion.")
+            {
+                OptionLabel = q => q switch
+                {
+                    QualityLevel.VeryLow => "Very Low",
+                    QualityLevel.VeryHigh => "Very High",
+                    _ => q.ToString()
+                }
+            };
             graphicsTab.Add(qualityLevel);
 
             var fppMouseSensitivity = new FloatSetting("fppMouseSensitivity", "Mouse Sensitivity", 0.5f, 0.05f, 3f);

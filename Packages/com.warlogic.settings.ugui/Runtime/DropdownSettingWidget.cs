@@ -40,7 +40,8 @@ namespace Warlogic.Settings.Ugui
             var options = new System.Collections.Generic.List<TMP_Dropdown.OptionData>();
             foreach (object value in values)
             {
-                options.Add(new TMP_Dropdown.OptionData(value.ToString()));
+                string text = setting is IEnumOptionLabels labels ? labels.GetOptionLabel(value) : value.ToString();
+                options.Add(new TMP_Dropdown.OptionData(text));
             }
             dropdown.options = options;
 
