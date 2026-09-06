@@ -10,19 +10,16 @@ namespace Warlander.Deedplanner.Rendering.Water
     {
         private readonly WaterObjectContainer _container;
         private readonly WaterReflectionController _reflectionController;
-        private readonly DPSettings _settings;
 
-        public WaterController(WaterObjectContainer container, WaterReflectionController reflectionController, DPSettings settings)
+        public WaterController(WaterObjectContainer container, WaterReflectionController reflectionController)
         {
             _container = container;
             _reflectionController = reflectionController;
-            _settings = settings;
         }
-        
-        public void PrepareForCamera(Camera camera, ICameraController cameraController, bool renderWater)
-        {
-            WaterQuality quality = _settings.WaterQuality;
 
+        public void PrepareForCamera(Camera camera, ICameraController cameraController, bool renderWater,
+            WaterQuality quality)
+        {
             if (quality == WaterQuality.Ultra || quality == WaterQuality.High)
             {
                 _container.ComplexWater.SetActive(renderWater);

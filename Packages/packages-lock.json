@@ -199,7 +199,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.pipeline": {
-      "version": "0.5.0-exp.1",
+      "version": "0.6.0-exp.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -378,6 +378,22 @@
       "source": "registry",
       "dependencies": {
         "com.warlogic.utils.markdown": "1.2.0"
+      },
+      "url": "https://upm.maciejcyranowicz.com"
+    },
+    "com.warlogic.settings": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://upm.maciejcyranowicz.com"
+    },
+    "com.warlogic.settings.ugui": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.warlogic.settings": "1.0.0"
       },
       "url": "https://upm.maciejcyranowicz.com"
     },

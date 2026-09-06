@@ -40,4 +40,9 @@ if [ -n "$REGISTRY" ]; then
     fi
 fi
 
+# Unity .meta pairing guard
+if ! sh .githooks/check-meta-pairing.sh; then
+    exit 1
+fi
+
 exit 0

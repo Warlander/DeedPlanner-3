@@ -1,0 +1,26 @@
+name: Meta Pairing
+
+# Alarm only: the local .githooks/pre-commit is the real gate. This catches
+# violations that slipped through (clone without hooksPath, --no-verify).
+on:
+  push:
+    branches: [master]
+    paths: ['Assets/**', 'Packages/**', '.githooks/**']
+  pull_request:
+    paths: ['Assets/**', 'Packages/**', '.githooks/**']
+
+permissions:
+  contents: read
+
+jobs:
+  meta-pairing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Every tracked asset has its .meta and vice versa
+        run: sh .githooks/check-meta-pairing.sh

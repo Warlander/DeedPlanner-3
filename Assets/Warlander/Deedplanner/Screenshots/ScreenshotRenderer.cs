@@ -4,7 +4,6 @@ using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Rendering.Water;
 using Warlander.Deedplanner.Ui;
 using Warlander.Deedplanner.Rendering.Outline;
-using Warlander.Deedplanner.Settings;
 
 namespace Warlander.Deedplanner.Screenshots
 {
@@ -13,17 +12,15 @@ namespace Warlander.Deedplanner.Screenshots
         private readonly MapHandler _mapHandler;
         private readonly IWaterFacade _waterFacade;
         private readonly IOutlineCoordinator _outlineCoordinator;
-        private readonly DPSettings _settings;
 
         private Camera _screenshotCamera;
 
         public ScreenshotRenderer(MapHandler mapHandler, IWaterFacade waterFacade,
-            IOutlineCoordinator outlineCoordinator, DPSettings settings)
+            IOutlineCoordinator outlineCoordinator)
         {
             _mapHandler = mapHandler;
             _waterFacade = waterFacade;
             _outlineCoordinator = outlineCoordinator;
-            _settings = settings;
         }
 
         public Texture2D TakeScreenshot(ScreenshotRequest request)
@@ -34,12 +31,10 @@ namespace Warlander.Deedplanner.Screenshots
                 return null;
             }
 
-            WaterQuality previousWaterQuality = _settings.WaterQuality;
             bool previousRenderGrid = map.RenderGrid;
 
             _outlineCoordinator.RenderingSuspended = true;
             map.RenderGrid = false;
-            _settings.Modify(settings => settings.WaterQuality = WaterQuality.Ultra, autoSave: false);
 
             try
             {
@@ -66,9 +61,10 @@ namespace Warlander.Deedplanner.Screenshots
                 camera.targetTexture = renderTexture;
 
                 bool renderWater = request.RenderEntireMap || request.Level == 0 || request.Level == -1;
-                _waterFacade.PrepareForCamera(camera, request.CameraController, renderWater);
-
-                camera.Render();
+                using (_waterFacade.PrepareForCamera(camera, request.CameraController, renderWater, WaterQuality.Ultra))
+                {
+                    camera.Render();
+                }
 
                 RenderTexture.active = renderTexture;
                 Texture2D result = new Texture2D(request.Width, request.Height, TextureFormat.RGBA32, false);
@@ -83,7 +79,6 @@ namespace Warlander.Deedplanner.Screenshots
             }
             finally
             {
-                _settings.Modify(settings => settings.WaterQuality = previousWaterQuality, autoSave: false);
                 map.RenderGrid = previousRenderGrid;
                 _outlineCoordinator.RenderingSuspended = false;
             }

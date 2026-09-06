@@ -22,7 +22,7 @@ namespace Warlander.Deedplanner.Editing
 
         private readonly IHeightUpdaterView _view;
         private readonly TooltipHandler _tooltipHandler;
-        private readonly DPSettings _settings;
+        private readonly EditingSettings _settings;
         private readonly CameraCoordinator _cameraCoordinator;
         private readonly DPInput _input;
         private readonly MapHandler _mapHandler;
@@ -54,7 +54,7 @@ namespace Warlander.Deedplanner.Editing
 
         private bool ComplexSelectionEnabled => mode != HeightMode.PaintTerrain;
 
-        public HeightUpdater(IHeightUpdaterView view, TooltipHandler tooltipHandler, DPSettings settings,
+        public HeightUpdater(IHeightUpdaterView view, TooltipHandler tooltipHandler, EditingSettings settings,
             CameraCoordinator cameraCoordinator, DPInput input, MapHandler mapHandler,
             IMapProjectorFacade mapProjectorFacade, TabContext tabContext)
         {
@@ -100,19 +100,13 @@ namespace Warlander.Deedplanner.Editing
             _dragSensitivity = value;
             float.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out float dragSensitivity);
 
-            _settings.Modify(settings =>
-            {
-                settings.HeightDragSensitivity = dragSensitivity;
-            });
+            _settings.HeightDragSensitivity = dragSensitivity;
         }
 
         private void OnRespectOriginalSlopesChanged(bool value)
         {
             _respectOriginalSlopes = value;
-            _settings.Modify(settings =>
-            {
-                settings.HeightRespectOriginalSlopes = value;
-            });
+            _settings.HeightRespectOriginalSlopes = value;
         }
 
         private void OnTargetHeightChanged(string value)

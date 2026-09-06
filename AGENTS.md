@@ -4,7 +4,7 @@ This file provides guidance to AI coding agents (OpenAI Codex and others) when w
 
 ## Agent Config Layout
 
-Skills live canonically in `.agents/skills/`. `.claude/skills/` is a generated mirror: the pre-commit hook regenerates it and rejects commits that edit only the mirror. Never edit `.claude/skills/` directly. Fresh clones need `git config core.hooksPath .githooks` once to enable the hook.
+Skills live canonically in `.agents/skills/`. `.claude/skills/` is a generated mirror: the pre-commit hook regenerates it and rejects commits that edit only the mirror. Never edit `.claude/skills/` directly. Fresh clones need `git config core.hooksPath .githooks` once to enable the hook. The hook also runs `.githooks/check-meta-pairing.sh`, which rejects commits where a tracked file/dir under `Assets/` or an embedded `Packages/<pkg>/` lacks its Unity `.meta` (or a `.meta` lost its base file); fix by staging the Unity-generated meta or removing the orphan. A same-named CI workflow alarms on violations that bypass the local hook.
 
 ## Project Overview
 
@@ -38,9 +38,9 @@ Useful commands:
 
 Add `--json` for machine-readable output in agentic loops.
 
-A **Unity MCP server** may also be available. The ONLY acceptable option is the official one: the project includes `com.unity.pipeline`, which powers both the CLI commands and the official MCP server (`unity mcp configure`). Do NOT add, configure, or use any other MCP server (e.g. the community "MCP for Unity") — alternatives require installing extra packages into the project itself.
+**Unity MCP is intentionally disabled.** Do not configure or run the official `unity mcp` adapter, and do not add a community MCP-for-Unity package. The project retains `com.unity.pipeline` because it powers the Unity CLI commands and the custom agent commands in `Platform/AgentCommands.cs`.
 
-**Opening the project:** if `unity status` shows no connected Editor, use `unity open` to launch the project — after startup, both CLI commands and MCP become usable. For automation workflows, launch with the `-automated` flag:
+**Opening the project:** if `unity status` shows no connected Editor, use `unity open` to launch the project — after startup, the CLI commands become usable. For automation workflows, launch with the `-automated` flag:
 
 ```
 unity open "E:/Unity/DeedPlanner-3" --args "-automated"
@@ -54,13 +54,19 @@ Without it, play mode ENTRY stalls indefinitely while the Editor window is unfoc
 
 **eval_file quirks (verified):** `eval` rejects bare expressions; use `eval_file` with an explicit `return`. `eval_file` wraps the file in an `Execute()` method body: statements only (no `using` directives, no class/method definitions), fully-qualified names (`UnityEngine.Object`, `System.IO.Path` — `Object` collides with `object`). Write eval scripts to system temp, never under `Assets/` (stray .cs files break compilation).
 
+**Driving the running app (project commands, `Platform/AgentCommands.cs`):** prefer these over eval for app-level actions. `app_await_ready` (blocks in-game until playing + MainScene active + map present; pass CLI `--timeout` above `--timeoutSeconds`), `app_status` (instant snapshot: scene/map/tab/camera/save state), `map_new`/`map_load <path>`/`map_save` (quicksave only)/`map_info` (compact entity counts), `tab_select <name>`, `camera_set <fpp|wurmian|top|iso> [level]` (no position control — controllers own it), `await_idle [frames]` (wait out saves + rendered frames before screenshots), `edit_undo`/`edit_redo`. Typical loop: `editor_play` → `app_await_ready --timeout 120` → act → `await_idle` → `screenshot --output <file>` → `editor_stop`. For screenshots use `screenshot --output <path>` — bare `capture_game_view` returns huge inline base64.
+
 ## Agentic Verification
 
 The project iterates fast — domain reload and play-mode enter/exit each take only a few seconds. After triggering a recompile or play-mode change, allow a ~5 second buffer, then poll `unity status` for the Editor state before issuing the next command.
 
 **Unit tests are EditMode only — even for non-editor code.** No PlayMode tests. Test files live in a `Tests/Editor/` folder next to the tested code (e.g. `Persistence/Compression/Tests/Editor/`): the `Editor` folder compiles them into Assembly-CSharp-Editor, which the Test Framework discovers and runs without any asmdef. Do not add test asmdefs.
 
-**Never recompile while in play mode.** A domain reload mid-play silently breaks the session: the running app loses its state (map references go null, evals fail with NullReferenceException) while the Editor reports itself ready. Always `editor_stop` → recompile → `editor_play` → re-run the scenario.
+**Never recompile or run tests while in play mode.** Before `recompile`, `run_tests`, or any action that triggers an assembly reload (package add/remove/resolve, script creation), verify the Editor is in edit mode (`unity status`) — if it is playing, `editor_stop` first. A domain reload mid-play silently breaks the session: the running app loses its state (map references go null, evals fail with NullReferenceException) while the Editor reports itself ready, and an EditMode test run submitted mid-play hard-fails (`RestoreSceneSetupTask`: "This cannot be used during play mode"). Always `editor_stop` → recompile/test → `editor_play` → re-run the scenario.
+
+**Pipeline wedge detection and recovery.** Signature: every `unity command` times out while `unity status` still reports "ready" (status reads the port file, never touches the pipeline). It may self-recover after minutes, but do not wait it out — restart the Editor (kill PID, `unity open` again). While wedged, `cancel_tests`/`editor_stop` cannot reach the Editor either. Note `unity command --timeout` is in **seconds** (default 30) — do not pass millisecond values.
+
+**Run tests detached, then wait on the job.** `unity command run_tests --mode EditMode --detach` returns a job ID; `unity job wait <id>` blocks until done and prints the pass/fail summary. Job records do not survive domain reloads — if a reload lands mid-run the job vanishes ("Job Not Found"), so re-run after recompile settles. Blocking `run_tests` couples the CLI call to a full test+reload cycle and turns any editor-side failure into a CLI hang.
 
 Suggested verification ladder, cheapest first:
 1. Compile check (connected Editor via `unity command`, or `unity test --mode EditMode` batch) — catches syntax/type errors.
@@ -121,7 +127,7 @@ All map edits are implemented as `IReversibleCommand` objects managed by `Comman
 Map serialization uses a custom `IXmlSerializable` interface. `MapHandler` orchestrates load/save (backed by `MapLoader` and `MapFactory`); `StartupMapLoader` (plain C# class) handles initial load on startup.
 
 ### Settings & Features
-- `DPSettings`, `InputSettings`, `MapRenderSettings` — global settings classes
+- `DeedPlannerSettings` declares the unified registry and typed module settings (`CameraSettings`, `EditingSettings`, `UiSettings`, `GraphicsOptions`); project-scoped `InputSettings` owns the shared `DPInput`; `MapRenderSettings` remains session-only
 - `DPFeatureStateRepository` — feature flags for experimental features
 
 ## Key Namespaces
@@ -172,6 +178,18 @@ Verify compilation after every code edit before considering the task done:
 2. If no Editor is connected: `unity test --mode EditMode` forces a full compile and surfaces errors, or check `Editor.log` after a domain reload.
 3. If the Unity CLI itself is missing: ask the developer to install it (never install it yourself) and ask them to confirm compilation in the Editor.
 4. Do not consider a task finished until compilation is clean (errors AND new warnings).
+
+## Changelog
+
+`CHANGELOG.md` (repo root) records user-facing changes, newest first, with the top section being the unreleased version. Update it as part of any task that changes something a user can see or do: features, UI changes, fixes, new content (models, textures, items), platform/behavior differences. Skip purely internal work (refactors, code health, CI, tests) unless it has a user-observable effect (e.g. performance).
+
+Rules:
+
+- Format: `## [x.y.z] - YYYY-MM-DD` (or `- Unreleased` on top) followed directly by a flat dash-bullet list. No preamble paragraphs, no summary text, no Added/Changed/Fixed subsections, no known-issues blocks.
+- Match the existing entry style: one concise dash bullet per change, written for players, not developers. Fixes start with "Fixed ...".
+- Add entries to the current unreleased section only. Never edit released sections — they are historical record sourced from published GitHub releases.
+- Keep the section coherent: it describes the delta users will experience on upgrade. Do not add fix/tweak entries for a feature introduced in the same unreleased version — fold the improvement into the feature's entry (or drop it); that bug never reached users. When editing an existing entry of yours, prefer updating it over adding a corrective bullet.
+- On release, the developer renames the unreleased section to the version and date; agents never create new version sections on their own.
 
 ## Honesty About Feasibility
 

@@ -6,7 +6,7 @@ using Warlander.Deedplanner.Settings;
 namespace Warlander.Deedplanner.Rendering.Water
 {
     /// <summary>
-    /// Subscribes to DPSettings.Modified and keeps the PLANAR_REFLECTIONS shader keyword
+    /// Subscribes to GraphicsOptions.WaterQualityChanged and keeps the PLANAR_REFLECTIONS shader keyword
     /// in sync with the current water quality setting.
     /// Independent of WaterController — neither depends on the other.
     /// </summary>
@@ -15,20 +15,25 @@ namespace Warlander.Deedplanner.Rendering.Water
         private static readonly string PlanarReflectionsKeyword = "PLANAR_REFLECTIONS";
 
         private readonly WaterObjectContainer _container;
-        private readonly DPSettings _settings;
+        private readonly GraphicsOptions _graphics;
 
-        public WaterSettingsApplier(WaterObjectContainer container, DPSettings settings)
+        public WaterSettingsApplier(WaterObjectContainer container, GraphicsOptions graphics)
         {
             _container = container;
-            _settings = settings;
-            _settings.Modified += Apply;
+            _graphics = graphics;
+            _graphics.WaterQualityChanged += Apply;
             Apply();
         }
 
         private void Apply()
         {
+            Apply(_graphics.WaterQuality);
+        }
+
+        public void Apply(WaterQuality quality)
+        {
             Material mat = _container.ComplexWaterRenderer.sharedMaterial;
-            if (_settings.WaterQuality == WaterQuality.Ultra)
+            if (quality == WaterQuality.Ultra)
             {
                 mat.EnableKeyword(PlanarReflectionsKeyword);
             }
@@ -40,7 +45,7 @@ namespace Warlander.Deedplanner.Rendering.Water
 
         public void Dispose()
         {
-            _settings.Modified -= Apply;
+            _graphics.WaterQualityChanged -= Apply;
         }
     }
 }

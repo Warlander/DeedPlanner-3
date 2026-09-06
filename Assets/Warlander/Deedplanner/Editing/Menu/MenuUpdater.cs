@@ -10,16 +10,19 @@ using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Ui;
 using Warlander.Deedplanner.Ui.Home;
 using Warlander.Deedplanner.Persistence;
-using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Platform.Steam;
+using Warlander.Deedplanner.Settings;
+using Warlander.Deedplanner.Ui.Windows;
 using Warlander.UI.Windows;
+using Warlogic.Settings;
 
 namespace Warlander.Deedplanner.Editing
 {
     public class MenuUpdater : IUpdater
     {
         private readonly IMenuUpdaterView _view;
-        private readonly DPSettings _settings;
+        private readonly SettingsRegistry _settingsRegistry;
+        private readonly InputSettings _inputSettings;
         private readonly WindowCoordinator _windowCoordinator;
         private readonly ISteamConnection _steamConnection;
         private readonly TabContext _tabContext;
@@ -29,12 +32,14 @@ namespace Warlander.Deedplanner.Editing
 
         public Tab TargetTab => Tab.Menu;
 
-        public MenuUpdater(IMenuUpdaterView view, DPSettings settings, WindowCoordinator windowCoordinator,
+        public MenuUpdater(IMenuUpdaterView view, SettingsRegistry settingsRegistry, InputSettings inputSettings,
+            WindowCoordinator windowCoordinator,
             ISteamConnection steamConnection, TabContext tabContext,
             ISaveCoordinator saveCoordinator, MapHandler mapHandler, IHomeScreenPresenter homeScreenPresenter)
         {
             _view = view;
-            _settings = settings;
+            _settingsRegistry = settingsRegistry;
+            _inputSettings = inputSettings;
             _windowCoordinator = windowCoordinator;
             _steamConnection = steamConnection;
             _tabContext = tabContext;
@@ -160,11 +165,8 @@ namespace Warlander.Deedplanner.Editing
                 case MenuAction.Load:
                     _homeScreenPresenter.ShowHomeScreen(true);
                     break;
-                case MenuAction.GraphicsSettings:
-                    _windowCoordinator.CreateWindowExclusive(WindowNames.GraphicsSettingsWindow);
-                    break;
-                case MenuAction.InputSettings:
-                    _windowCoordinator.CreateWindowExclusive(WindowNames.InputSettingsWindow);
+                case MenuAction.Settings:
+                    OpenSettingsWindow();
                     break;
                 case MenuAction.Credits:
                     _windowCoordinator.CreateWindow(WindowNames.CreditsWindow);
@@ -184,6 +186,18 @@ namespace Warlander.Deedplanner.Editing
             }
         }
 
+        private void OpenSettingsWindow()
+        {
+            Window window = _windowCoordinator.CreateWindowExclusive(WindowNames.SettingsWindow);
+            if (window == null)
+            {
+                return;
+            }
+
+            var view = window.GetComponent<SettingsWindowView>();
+            _ = new SettingsWindowSession(_settingsRegistry, _inputSettings, view);
+        }
+
         private void ToggleFullscreen()
         {
             if (Screen.fullScreen)
@@ -200,7 +214,6 @@ namespace Warlander.Deedplanner.Editing
         private async System.Threading.Tasks.Task QuitAsync()
         {
             await _saveCoordinator.PrepareForQuitAsync();
-            _settings.Save();
 
 #if UNITY_EDITOR
             EditorApplication.ExitPlaymode();
