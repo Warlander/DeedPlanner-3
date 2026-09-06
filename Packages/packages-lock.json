@@ -382,18 +382,20 @@
       "url": "https://upm.maciejcyranowicz.com"
     },
     "com.warlogic.settings": {
-      "version": "file:com.warlogic.settings",
+      "version": "1.0.0",
       "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://upm.maciejcyranowicz.com"
     },
     "com.warlogic.settings.ugui": {
-      "version": "file:com.warlogic.settings.ugui",
+      "version": "1.0.0",
       "depth": 0,
-      "source": "embedded",
+      "source": "registry",
       "dependencies": {
-        "com.warlogic.settings": "0.1.0"
-      }
+        "com.warlogic.settings": "1.0.0"
+      },
+      "url": "https://upm.maciejcyranowicz.com"
     },
     "com.warlogic.utils.markdown": {
       "version": "1.2.0",
