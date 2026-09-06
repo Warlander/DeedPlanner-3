@@ -16,6 +16,7 @@
     "com.unity.memoryprofiler": "1.1.12",
     "com.unity.mobile.android-logcat": "1.4.7",
     "com.unity.performance.profile-analyzer": "1.4.0",
+    "com.unity.pipeline": "0.6.0-exp.1",
     "com.unity.profiling.core": "1.0.3",
     "com.unity.render-pipelines.universal": "17.3.0",
     "com.unity.scriptablebuildpipeline": "2.6.1",
@@ -62,8 +63,7 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.unity.pipeline": "0.5.0-exp.1"
+    "com.unity.modules.xr": "1.0.0"
   },
   "enablePreviewPackages": true,
   "scopedRegistries": [
