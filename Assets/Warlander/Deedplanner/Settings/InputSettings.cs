@@ -1,41 +1,36 @@
-﻿using System;
-using UnityEngine;
+using System;
 using UnityEngine.InputSystem;
 using Warlander.Deedplanner.Inputs;
 using VContainer;
 using VContainer.Unity;
+using Warlogic.Settings;
 
 namespace Warlander.Deedplanner.Settings
 {
     public class InputSettings : IInitializable
     {
-        public const string InputSettingsKey = "inputSettings";
-        
         [Inject] private DPInput _input;
+        [Inject] private ISettingsStore _store;
 
         public event Action SettingsReset;
 
         void IInitializable.Initialize()
         {
-            if (PlayerPrefs.HasKey(InputSettingsKey))
+            if (_store.TryLoad(LegacySettingsMigration.BindingOverridesKey, out string bindingOverrides))
             {
-                string bindingOverrides = PlayerPrefs.GetString(InputSettingsKey);
                 _input.LoadBindingOverridesFromJson(bindingOverrides);
             }
         }
 
         public void Save()
         {
-            PlayerPrefs.SetString(InputSettingsKey, _input.SaveBindingOverridesAsJson());
-            PlayerPrefs.Save();
+            _store.Save(LegacySettingsMigration.BindingOverridesKey, _input.SaveBindingOverridesAsJson());
         }
 
         public void Reset()
         {
-            PlayerPrefs.DeleteKey(InputSettingsKey);
-            PlayerPrefs.Save();
-            
             _input.RemoveAllBindingOverrides();
+            Save();
             SettingsReset?.Invoke();
         }
     }
