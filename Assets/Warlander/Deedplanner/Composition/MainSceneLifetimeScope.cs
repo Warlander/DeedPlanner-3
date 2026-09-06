@@ -14,7 +14,6 @@ using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Ui;
 using Warlander.Deedplanner.Ui.Home;
 using Warlander.Deedplanner.Bridges.Widgets;
-using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Cameras;
 using Warlander.Deedplanner.Persistence.Compression;
 using Warlander.Deedplanner.Rendering.Outline;
@@ -110,12 +109,6 @@ namespace Warlander.Deedplanner.Composition
                 builder.RegisterInstance(DebugProperties.Current);
             }
 
-            DPInput input = new DPInput();
-            input.Enable();
-            builder.RegisterInstance(input);
-
-            builder.RegisterEntryPoint<InputSettings>().AsSelf();
-            builder.RegisterEntryPoint<KeybindSettingsRegistrar>();
             builder.Register<MapRenderSettings>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
             builder.Register<MapHandler>(Lifetime.Singleton);

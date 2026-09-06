@@ -1,3 +1,5 @@
+using System;
+using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Ui;
 using Warlogic.Settings;
 
@@ -6,11 +8,12 @@ namespace Warlander.Deedplanner.Settings
     /// <summary>
     /// Declares every game setting in one place, wires them into a registry backed by the
     /// PlayerPrefs JSON store, and exposes per-module translators for consumers.
-    /// The Keybinds tab is not declared here - keybinds need the scene-scoped DPInput,
-    /// see KeybindSettingsRegistrar.
+    /// The Keybinds tab is declared by the project-scoped KeybindSettingsRegistrar.
     /// </summary>
     public sealed class DeedPlannerSettings
     {
+        public static readonly LogCategory Category = new LogCategory("Settings");
+
         public SettingsRegistry Registry { get; }
         public ISettingsStore Store { get; }
         public CameraSettings Camera { get; }
@@ -29,10 +32,12 @@ namespace Warlander.Deedplanner.Settings
             Graphics = graphics;
         }
 
-        public static DeedPlannerSettings Create()
+        public static DeedPlannerSettings Create(ICategoryLogger logger)
         {
             var store = new PlayerPrefsJsonSettingsStore();
             LegacySettingsMigration.Migrate(store);
+            WarnForInvalidEnum<WaterQuality>(store, "waterQuality", logger);
+            WarnForInvalidEnum<QualityLevel>(store, "qualityLevel", logger);
             var registry = new SettingsRegistry(store);
 
             SettingsTab generalTab = registry.AddTab("general", "General");
@@ -45,11 +50,15 @@ namespace Warlander.Deedplanner.Settings
             generalTab.Add(compassVisibility);
 
             var waterQuality = new EnumSetting<WaterQuality>("waterQuality", "Water Quality", WaterQuality.Ultra,
-                "Simple - very basic water that uses almost no resources\nHigh - fancy water without reflections\nUltra - fancy water with reflections");
+                "Simple - very basic water that uses almost no resources\nHigh - fancy water without reflections\nUltra - fancy water with reflections")
+            {
+                Validator = value => System.Enum.IsDefined(typeof(WaterQuality), value)
+            };
             graphicsTab.Add(waterQuality);
             var qualityLevel = new EnumSetting<QualityLevel>("qualityLevel", "Quality Level",
                 (QualityLevel) UnityEngine.QualitySettings.GetQualityLevel(), "Controls shadow quality, post-processing and ambient occlusion.")
             {
+                Validator = value => System.Enum.IsDefined(typeof(QualityLevel), value),
                 OptionLabel = q => q switch
                 {
                     QualityLevel.VeryLow => "Very Low",
@@ -99,6 +108,20 @@ namespace Warlander.Deedplanner.Settings
             var graphics = new GraphicsOptions(waterQuality, qualityLevel);
 
             return new DeedPlannerSettings(registry, store, camera, editing, ui, graphics);
+        }
+
+        private static void WarnForInvalidEnum<T>(ISettingsStore store, string key, ICategoryLogger logger)
+            where T : struct, Enum
+        {
+            if (!store.TryLoad(key, out string raw))
+            {
+                return;
+            }
+
+            if (!Enum.TryParse(raw, true, out T value) || !Enum.IsDefined(typeof(T), value))
+            {
+                logger.Warning($"Ignored invalid saved value '{raw}' for setting '{key}'.");
+            }
         }
     }
 }

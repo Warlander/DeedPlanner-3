@@ -27,8 +27,13 @@ namespace Warlander.Deedplanner.Rendering.Water
 
         private void Apply()
         {
+            Apply(_graphics.WaterQuality);
+        }
+
+        public void Apply(WaterQuality quality)
+        {
             Material mat = _container.ComplexWaterRenderer.sharedMaterial;
-            if (_graphics.WaterQuality == WaterQuality.Ultra)
+            if (quality == WaterQuality.Ultra)
             {
                 mat.EnableKeyword(PlanarReflectionsKeyword);
             }

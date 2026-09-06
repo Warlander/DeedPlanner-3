@@ -30,12 +30,7 @@ namespace Warlander.Deedplanner.Settings
         public QualityLevel QualityLevel
         {
             get => _qualityLevel.Value;
-            set
-            {
-                // quality level is staged (ApplyMode.OnSave); translator commits so callers see immediate semantics
-                _qualityLevel.Value = value;
-                _qualityLevel.Commit();
-            }
+            set => _qualityLevel.Value = value;
         }
 
         internal GraphicsOptions(ISetting<WaterQuality> waterQuality, ISetting<QualityLevel> qualityLevel)

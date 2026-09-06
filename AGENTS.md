@@ -127,7 +127,7 @@ All map edits are implemented as `IReversibleCommand` objects managed by `Comman
 Map serialization uses a custom `IXmlSerializable` interface. `MapHandler` orchestrates load/save (backed by `MapLoader` and `MapFactory`); `StartupMapLoader` (plain C# class) handles initial load on startup.
 
 ### Settings & Features
-- `DPSettings`, `InputSettings`, `MapRenderSettings` — global settings classes
+- `DeedPlannerSettings` declares the unified registry and typed module settings (`CameraSettings`, `EditingSettings`, `UiSettings`, `GraphicsOptions`); project-scoped `InputSettings` owns the shared `DPInput`; `MapRenderSettings` remains session-only
 - `DPFeatureStateRepository` — feature flags for experimental features
 
 ## Key Namespaces

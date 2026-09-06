@@ -11,7 +11,7 @@
 - New 4K screenshot options, including 4K with UI visible (unbound by default, can be bound in settings)
 - Lighting and visuals overhaul: tonemapping, bloom, ambient occlusion, improved anti-aliasing and retuned shadows
 - Sharper water reflections on Ultra quality
-- Settings window overhaul - a single window with tabs now covers all settings, replacing the old separate graphics and input windows
+- Settings window overhaul - a single immediate-apply tabbed window now covers all settings, with reliable cancellable key rebinding
 - Errors now open a window with a copyable report you can attach when reporting bugs
 - Richer tooltips, including a tinted slope grid when hovering terrain on the Height tab
 - New dragon HOTA statue model (the old one was oversized)

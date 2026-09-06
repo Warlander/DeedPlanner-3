@@ -33,7 +33,13 @@ namespace Warlander.Deedplanner.Settings
 
         public static Dictionary<string, string> TranslatePropertiesXml(string xml)
         {
-            var result = new Dictionary<string, string>();
+            TryTranslatePropertiesXml(xml, out Dictionary<string, string> result);
+            return result;
+        }
+
+        private static bool TryTranslatePropertiesXml(string xml, out Dictionary<string, string> result)
+        {
+            result = new Dictionary<string, string>();
             XElement root;
             try
             {
@@ -41,7 +47,7 @@ namespace Warlander.Deedplanner.Settings
             }
             catch (Exception)
             {
-                return result;
+                return false;
             }
 
             TranslateFloat(root, "FppMouseSensitivity", "fppMouseSensitivity", result);
@@ -62,7 +68,7 @@ namespace Warlander.Deedplanner.Settings
             TranslateWaterQuality(root, result);
             TranslateBool(root, "CompassVisibility", "compassVisibility", result);
 
-            return result;
+            return true;
         }
 
         private static void MigrateProperties(ISettingsStore store, string propertiesKey)
@@ -71,16 +77,24 @@ namespace Warlander.Deedplanner.Settings
             {
                 return;
             }
-            Dictionary<string, string> translated = TranslatePropertiesXml(PlayerPrefs.GetString(propertiesKey));
+            if (!TryTranslatePropertiesXml(PlayerPrefs.GetString(propertiesKey),
+                    out Dictionary<string, string> translated) || translated.Count == 0)
+            {
+                return;
+            }
+
             foreach (KeyValuePair<string, string> pair in translated)
             {
-                store.Save(pair.Key, pair.Value);
+                if (!store.TryLoad(pair.Key, out _))
+                {
+                    store.Save(pair.Key, pair.Value);
+                }
             }
 
             bool confirmed = true;
             foreach (KeyValuePair<string, string> pair in translated)
             {
-                confirmed &= store.TryLoad(pair.Key, out string value) && value == pair.Value;
+                confirmed &= store.TryLoad(pair.Key, out _);
             }
             if (confirmed)
             {
@@ -98,11 +112,6 @@ namespace Warlander.Deedplanner.Settings
             if (!store.TryLoad(BindingOverridesKey, out _))
             {
                 store.Save(BindingOverridesKey, PlayerPrefs.GetString(inputSettingsKey));
-            }
-            if (store.TryLoad(BindingOverridesKey, out _))
-            {
-                PlayerPrefs.DeleteKey(inputSettingsKey);
-                PlayerPrefs.Save();
             }
         }
 
