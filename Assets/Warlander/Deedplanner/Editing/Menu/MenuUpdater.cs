@@ -11,6 +11,7 @@ using Warlander.Deedplanner.Ui;
 using Warlander.Deedplanner.Ui.Home;
 using Warlander.Deedplanner.Persistence;
 using Warlander.Deedplanner.Platform.Steam;
+using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Ui.Windows;
 using Warlander.UI.Windows;
 using Warlogic.Settings;
@@ -21,6 +22,7 @@ namespace Warlander.Deedplanner.Editing
     {
         private readonly IMenuUpdaterView _view;
         private readonly SettingsRegistry _settingsRegistry;
+        private readonly InputSettings _inputSettings;
         private readonly WindowCoordinator _windowCoordinator;
         private readonly ISteamConnection _steamConnection;
         private readonly TabContext _tabContext;
@@ -30,12 +32,14 @@ namespace Warlander.Deedplanner.Editing
 
         public Tab TargetTab => Tab.Menu;
 
-        public MenuUpdater(IMenuUpdaterView view, SettingsRegistry settingsRegistry, WindowCoordinator windowCoordinator,
+        public MenuUpdater(IMenuUpdaterView view, SettingsRegistry settingsRegistry, InputSettings inputSettings,
+            WindowCoordinator windowCoordinator,
             ISteamConnection steamConnection, TabContext tabContext,
             ISaveCoordinator saveCoordinator, MapHandler mapHandler, IHomeScreenPresenter homeScreenPresenter)
         {
             _view = view;
             _settingsRegistry = settingsRegistry;
+            _inputSettings = inputSettings;
             _windowCoordinator = windowCoordinator;
             _steamConnection = steamConnection;
             _tabContext = tabContext;
@@ -185,7 +189,13 @@ namespace Warlander.Deedplanner.Editing
         private void OpenSettingsWindow()
         {
             Window window = _windowCoordinator.CreateWindowExclusive(WindowNames.SettingsWindow);
-            window.GetComponent<SettingsWindowView>().Initialize(_settingsRegistry);
+            if (window == null)
+            {
+                return;
+            }
+
+            var view = window.GetComponent<SettingsWindowView>();
+            _ = new SettingsWindowSession(_settingsRegistry, _inputSettings, view);
         }
 
         private void ToggleFullscreen()

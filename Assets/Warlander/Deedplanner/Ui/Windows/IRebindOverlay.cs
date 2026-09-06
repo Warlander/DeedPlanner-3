@@ -1,8 +1,9 @@
+using Warlander.Deedplanner.Settings;
+
 namespace Warlander.Deedplanner.Ui.Windows
 {
     public interface IRebindOverlay
     {
-        void ShowRebind(string bindingLabel);
-        void HideRebind();
+        void BeginRebind(KeybindSetting setting);
     }
 }

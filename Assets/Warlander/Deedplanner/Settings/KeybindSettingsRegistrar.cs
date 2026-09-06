@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using VContainer.Unity;
 using Warlander.Deedplanner.Inputs;
@@ -7,14 +9,14 @@ using InputSettings = Warlander.Deedplanner.Settings.InputSettings;
 namespace Warlander.Deedplanner.Settings
 {
     /// <summary>
-    /// Declares the Keybinds tab on the project-wide registry. Scene-scoped because it needs
-    /// the live DPInput and InputSettings.
+    /// Declares the Keybinds tab on the project-wide registry.
     /// </summary>
-    public sealed class KeybindSettingsRegistrar : IInitializable
+    public sealed class KeybindSettingsRegistrar : IInitializable, IDisposable
     {
         private readonly SettingsRegistry _registry;
         private readonly DPInput _input;
         private readonly InputSettings _inputSettings;
+        private readonly List<KeybindSetting> _settings = new List<KeybindSetting>();
 
         public KeybindSettingsRegistrar(SettingsRegistry registry, DPInput input, InputSettings inputSettings)
         {
@@ -44,7 +46,9 @@ namespace Warlander.Deedplanner.Settings
                             continue;
                         }
 
-                        keybindsTab.Add(new KeybindSetting(action, i, _inputSettings));
+                        var setting = new KeybindSetting(action, i, _inputSettings);
+                        _settings.Add(setting);
+                        keybindsTab.Add(setting);
 
                         if (!binding.isPartOfComposite)
                         {
@@ -54,6 +58,15 @@ namespace Warlander.Deedplanner.Settings
                     }
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            foreach (KeybindSetting setting in _settings)
+            {
+                setting.Dispose();
+            }
+            _settings.Clear();
         }
     }
 }

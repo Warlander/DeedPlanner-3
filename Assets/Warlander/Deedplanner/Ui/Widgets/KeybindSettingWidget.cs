@@ -41,14 +41,7 @@ namespace Warlander.Deedplanner.Ui.Widgets
 
         private void OnRebindClick()
         {
-            _overlay.ShowRebind(_setting.Label);
-            _setting.PerformInteractiveRebind(
-                () =>
-                {
-                    _overlay.HideRebind();
-                    ValueEdited?.Invoke();
-                },
-                () => _overlay.HideRebind());
+            _overlay.BeginRebind(_setting);
         }
 
         private void OnDestroy()

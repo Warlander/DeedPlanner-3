@@ -9,11 +9,12 @@ namespace Warlander.Deedplanner.Settings
     /// Setting wrapping one Input System binding. Value is the effective binding path.
     /// Persistence goes through InputSettings (JSON binding overrides in the unified store).
     /// </summary>
-    public sealed class KeybindSetting : ISetting<string>, IGroupedSetting
+    public sealed class KeybindSetting : ISetting<string>, IGroupedSetting, IDisposable
     {
         private readonly InputAction _action;
         private readonly int _bindingIndex;
         private readonly InputSettings _inputSettings;
+        private InputActionRebindingExtensions.RebindingOperation _rebindOperation;
 
         public string Key { get; }
         public string Label { get; }
@@ -76,21 +77,44 @@ namespace Warlander.Deedplanner.Settings
 
         public void PerformInteractiveRebind(Action onSuccess, Action onCancel)
         {
+            CancelInteractiveRebind();
             _action.Disable();
 
-            _action.PerformInteractiveRebinding(_bindingIndex).OnComplete(operation =>
+            _rebindOperation = _action.PerformInteractiveRebinding(_bindingIndex)
+                .WithCancelingThrough("<Keyboard>/escape")
+                .OnComplete(operation =>
             {
-                operation.Dispose();
-                _action.Enable();
+                FinishRebind(operation);
                 _inputSettings.Save();
                 Changed?.Invoke();
                 onSuccess?.Invoke();
             }).OnCancel(operation =>
             {
-                operation.Dispose();
-                _action.Enable();
+                FinishRebind(operation);
                 onCancel?.Invoke();
-            }).Start();
+            });
+            _rebindOperation.Start();
+        }
+
+        public void CancelInteractiveRebind()
+        {
+            _rebindOperation?.Cancel();
+        }
+
+        public void Dispose()
+        {
+            _inputSettings.SettingsReset -= OnSettingsReset;
+            CancelInteractiveRebind();
+        }
+
+        private void FinishRebind(InputActionRebindingExtensions.RebindingOperation operation)
+        {
+            if (_rebindOperation == operation)
+            {
+                _rebindOperation = null;
+            }
+            operation.Dispose();
+            _action.Enable();
         }
 
         private string ComputeLabel()

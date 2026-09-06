@@ -12,6 +12,7 @@ using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Platform.Steam;
 using Warlander.Scopes;
 using Warlogic.Settings;
+using Warlander.Deedplanner.Inputs;
 
 namespace Warlander.Deedplanner.Composition
 {
@@ -40,7 +41,7 @@ namespace Warlander.Deedplanner.Composition
                 CrashReportHandler.enableCaptureExceptions = false;
             }
 
-            var settings = DeedPlannerSettings.Create();
+            var settings = DeedPlannerSettings.Create(loggerSource.Create(DeedPlannerSettings.Category));
             builder.RegisterInstance(settings.Registry);
             builder.RegisterInstance<ISettingsStore>(settings.Store);
             builder.RegisterInstance(settings.Camera);
@@ -48,6 +49,10 @@ namespace Warlander.Deedplanner.Composition
             builder.RegisterInstance(settings.Ui);
             builder.RegisterInstance(settings.Graphics);
             builder.RegisterEntryPoint<QualityLevelApplier>();
+
+            builder.RegisterInstance(new DPInput());
+            builder.RegisterEntryPoint<InputSettings>().AsSelf();
+            builder.RegisterEntryPoint<KeybindSettingsRegistrar>();
 
             builder.Register<Database>(Lifetime.Singleton).AsSelf().As<IDataCatalog>();
 

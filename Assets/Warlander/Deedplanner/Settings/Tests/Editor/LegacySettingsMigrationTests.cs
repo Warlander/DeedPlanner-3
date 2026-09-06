@@ -2,7 +2,10 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using Warlander.Deedplanner.Settings;
+using Warlander.Deedplanner.Inputs;
+using Warlander.Deedplanner.Logging;
 using Warlogic.Settings;
+using VContainer.Unity;
 
 namespace Warlander.Deedplanner.Tests
 {
@@ -104,7 +107,7 @@ namespace Warlander.Deedplanner.Tests
         }
 
         [Test]
-        public void Migrate_SeededLegacyPrefs_MovesValuesAndDeletesLegacyKeys()
+        public void Migrate_SeededLegacyPrefs_MovesValuesAndDeletesConfirmedProperties()
         {
             PlayerPrefs.SetString(PropertiesKey, FullLegacyXml);
             PlayerPrefs.SetString(InputSettingsKey, "[{\"action\":\"Map/Forward\",\"path\":\"<Keyboard>/w\"}]");
@@ -122,7 +125,7 @@ namespace Warlander.Deedplanner.Tests
             Assert.IsTrue(store.TryLoad(LegacySettingsMigration.BindingOverridesKey, out string overrides));
             Assert.AreEqual("[{\"action\":\"Map/Forward\",\"path\":\"<Keyboard>/w\"}]", overrides);
             Assert.IsFalse(PlayerPrefs.HasKey(PropertiesKey));
-            Assert.IsFalse(PlayerPrefs.HasKey(InputSettingsKey));
+            Assert.IsTrue(PlayerPrefs.HasKey(InputSettingsKey));
 
             var reloaded = new PlayerPrefsJsonSettingsStore(StoreKey);
             Assert.IsTrue(reloaded.TryLoad("guiScale", out string guiScale));
@@ -152,7 +155,118 @@ namespace Warlander.Deedplanner.Tests
 
             Assert.IsTrue(store.TryLoad(LegacySettingsMigration.BindingOverridesKey, out string overrides));
             Assert.AreEqual("[]", overrides);
-            Assert.IsFalse(PlayerPrefs.HasKey(InputSettingsKey));
+            Assert.IsTrue(PlayerPrefs.HasKey(InputSettingsKey));
+        }
+
+        [Test]
+        public void Migrate_ExistingUnifiedProperty_KeepsNewerValue()
+        {
+            var store = new PlayerPrefsJsonSettingsStore(StoreKey);
+            store.Save("guiScale", "18");
+            PlayerPrefs.SetString(PropertiesKey, FullLegacyXml);
+
+            LegacySettingsMigration.Migrate(store, PropertiesKey, InputSettingsKey);
+
+            Assert.IsTrue(store.TryLoad("guiScale", out string guiScale));
+            Assert.AreEqual("18", guiScale);
+            Assert.IsFalse(PlayerPrefs.HasKey(PropertiesKey));
+        }
+
+        [TestCase("{{{not xml")]
+        [TestCase("<DPSettings />")]
+        public void Migrate_UntranslatableProperties_KeepsLegacyData(string xml)
+        {
+            PlayerPrefs.SetString(PropertiesKey, xml);
+            var store = new PlayerPrefsJsonSettingsStore(StoreKey);
+
+            LegacySettingsMigration.Migrate(store, PropertiesKey, InputSettingsKey);
+
+            Assert.IsTrue(PlayerPrefs.HasKey(PropertiesKey));
+            Assert.AreEqual(xml, PlayerPrefs.GetString(PropertiesKey));
+        }
+
+        [Test]
+        public void Migrate_UnconfirmedPropertyWrite_KeepsLegacyData()
+        {
+            PlayerPrefs.SetString(PropertiesKey, "<DPSettings><GuiScale>12</GuiScale></DPSettings>");
+
+            LegacySettingsMigration.Migrate(new RejectingStore(), PropertiesKey, InputSettingsKey);
+
+            Assert.IsTrue(PlayerPrefs.HasKey(PropertiesKey));
+        }
+
+        private sealed class RejectingStore : ISettingsStore
+        {
+            public bool TryLoad(string key, out string value)
+            {
+                value = null;
+                return false;
+            }
+
+            public void Save(string key, string value) { }
+        }
+    }
+
+    public class InputSettingsTests
+    {
+        [Test]
+        public void Initialize_InvalidBindings_UsesDefaultsAndEnablesInput()
+        {
+            var input = new DPInput();
+            var store = new MemoryStore();
+            store.Save(LegacySettingsMigration.BindingOverridesKey, "not json");
+            var loggerSource = new RecordingLoggerSource();
+            var settings = new InputSettings(input, store, loggerSource);
+
+            Assert.DoesNotThrow(() => ((IInitializable) settings).Initialize());
+            Assert.IsTrue(input.UI.enabled);
+            Assert.IsNotNull(loggerSource.Logger.LastWarning);
+
+            input.Disable();
+            Object.DestroyImmediate(input.asset);
+        }
+
+        private sealed class MemoryStore : ISettingsStore
+        {
+            private readonly Dictionary<string, string> _values = new Dictionary<string, string>();
+
+            public bool TryLoad(string key, out string value)
+            {
+                return _values.TryGetValue(key, out value);
+            }
+
+            public void Save(string key, string value)
+            {
+                _values[key] = value;
+            }
+        }
+
+        private sealed class RecordingLoggerSource : ILoggerSource
+        {
+            public readonly RecordingLogger Logger = new RecordingLogger();
+
+            public ICategoryLogger Create(LogCategory category)
+            {
+                return Logger;
+            }
+        }
+
+        private sealed class RecordingLogger : ICategoryLogger
+        {
+            public string LastWarning { get; private set; }
+
+            public void Message(string message) { }
+
+            public void Warning(string message)
+            {
+                LastWarning = message;
+            }
+
+            public void Error(string message) { }
+
+            public void Exception(System.Exception exception) { }
+
+            public void Write(LogType type, string message) { }
         }
     }
 }
