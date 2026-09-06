@@ -31,6 +31,7 @@
 - Fixed compass not hiding when the UI is toggled off
 - Fixed UI toggle (F10) desyncing the bridge bar and tabs
 - Fixed ground smoothness rendering
+- Fixed ground texture errors continuing after leaving Play Mode in the Editor
 - Fixed textures sometimes failing to load
 - Maps referencing objects missing from game data now load with fallbacks instead of failing
 

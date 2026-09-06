@@ -34,6 +34,7 @@ namespace Warlander.Deedplanner.Domain
         [Inject] private MapRoofCalculator _roofCalculator;
         [Inject] private ISharedMaterials _sharedMaterials;
         [Inject] private IDataCatalog _dataCatalog;
+        [Inject] private GroundTextureArray _groundTextures;
         [Inject] private TabContext _tabContext;
 
         public GroundMesh Ground { get; private set; }
@@ -300,7 +301,7 @@ namespace Warlander.Deedplanner.Domain
 
             GameObject groundObject = new GameObject("Ground Mesh", typeof(GroundMesh));
             Ground = groundObject.GetComponent<GroundMesh>();
-            Ground.Initialize(width, height, surfaceOverlayMesh, _sharedMaterials, _dataCatalog);
+            Ground.Initialize(width, height, surfaceOverlayMesh, _sharedMaterials, _groundTextures);
             surfaceOverlayMesh.Initialize(Ground.ColliderMesh);
             AddEntityToMap(groundObject, 0);
 
