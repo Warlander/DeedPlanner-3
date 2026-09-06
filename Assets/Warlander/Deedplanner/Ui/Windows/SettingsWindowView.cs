@@ -44,6 +44,9 @@ namespace Warlander.Deedplanner.Ui.Windows
 
             rebindFade.gameObject.SetActive(false);
             resetBindingsButton.gameObject.SetActive(false);
+            // all settings apply immediately; buttons kept for future OnSave settings
+            saveButton.gameObject.SetActive(false);
+            discardButton.gameObject.SetActive(false);
         }
 
         public SettingsWindowPresenter Initialize(SettingsRegistry registry)

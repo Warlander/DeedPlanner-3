@@ -50,7 +50,20 @@ namespace Warlogic.Settings
             return _settingsByKey.TryGetValue(key, out ISetting setting) ? (ISetting<T>) setting : null;
         }
 
+        public void Register(ISetting setting)
+        {
+            RegisterCore(setting);
+            setting.Changed += () => SettingChanged?.Invoke(setting);
+        }
+
         internal void Register(SettingsTab tab, ISetting setting)
+        {
+            RegisterCore(setting);
+            tab.AddDirect(setting);
+            setting.Changed += () => SettingChanged?.Invoke(setting);
+        }
+
+        private void RegisterCore(ISetting setting)
         {
             if (setting == null)
             {
@@ -65,8 +78,6 @@ namespace Warlogic.Settings
                 attachable.AttachStore(_store);
             }
             _settingsByKey.Add(setting.Key, setting);
-            tab.AddDirect(setting);
-            setting.Changed += () => SettingChanged?.Invoke(setting);
         }
     }
 }
