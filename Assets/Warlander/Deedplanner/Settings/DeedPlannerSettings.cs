@@ -38,17 +38,17 @@ namespace Warlander.Deedplanner.Settings
             SettingsTab generalTab = registry.AddTab("general", "General");
             SettingsTab graphicsTab = registry.AddTab("graphics", "Graphics");
             SettingsTab camerasTab = registry.AddTab("cameras", "Cameras");
-            SettingsTab editingTab = registry.AddTab("editing", "Editing");
 
             var guiScale = new IntSetting("guiScale", "GUI Scale", 10, 5, 20, "Scales the whole user interface.");
             generalTab.Add(guiScale);
-            var compassVisibility = new BoolSetting("compassVisibility", "Compass", true, "Shows the compass in first-person mode.");
+            var compassVisibility = new BoolSetting("compassVisibility", "Show Compass", true);
             generalTab.Add(compassVisibility);
 
-            var waterQuality = new EnumSetting<WaterQuality>("waterQuality", "Water Quality", WaterQuality.Ultra);
+            var waterQuality = new EnumSetting<WaterQuality>("waterQuality", "Water Quality", WaterQuality.Ultra,
+                "Simple - very basic water that uses almost no resources\nHigh - fancy water without reflections\nUltra - fancy water with reflections");
             graphicsTab.Add(waterQuality);
             var qualityLevel = new EnumSetting<QualityLevel>("qualityLevel", "Quality Level",
-                (QualityLevel) UnityEngine.QualitySettings.GetQualityLevel(), "Unity quality preset.", ApplyMode.OnSave);
+                (QualityLevel) UnityEngine.QualitySettings.GetQualityLevel(), "Controls shadow quality, post-processing and ambient occlusion.");
             graphicsTab.Add(qualityLevel);
 
             var fppMouseSensitivity = new FloatSetting("fppMouseSensitivity", "Mouse Sensitivity", 0.5f, 0.05f, 3f);
@@ -66,20 +66,21 @@ namespace Warlander.Deedplanner.Settings
             var controlSpeedModifier = new FloatSetting("controlSpeedModifier", "Precise Speed Modifier", 0.2f, 0.05f, 1f);
             camerasTab.Add(controlSpeedModifier);
 
+            // editing settings live in their mode tabs (Height/Wall/Decoration), registered tab-less
             var heightDragSensitivity = new FloatSetting("heightDragSensitivity", "Height Drag Sensitivity", 0.5f, 0.05f, 2f);
-            editingTab.Add(heightDragSensitivity);
+            registry.Register(heightDragSensitivity);
             var heightRespectOriginalSlopes = new BoolSetting("heightRespectOriginalSlopes", "Respect Original Slopes", true);
-            editingTab.Add(heightRespectOriginalSlopes);
+            registry.Register(heightRespectOriginalSlopes);
             var wallAutomaticReverse = new BoolSetting("wallAutomaticReverse", "Automatic Wall Reverse", true);
-            editingTab.Add(wallAutomaticReverse);
+            registry.Register(wallAutomaticReverse);
             var wallReverse = new BoolSetting("wallReverse", "Wall Reverse", false);
-            editingTab.Add(wallReverse);
+            registry.Register(wallReverse);
             var decorationSnapToGrid = new BoolSetting("decorationSnapToGrid", "Decoration Snap To Grid", false);
-            editingTab.Add(decorationSnapToGrid);
+            registry.Register(decorationSnapToGrid);
             var decorationRotationSnapping = new BoolSetting("decorationRotationSnapping", "Decoration Rotation Snapping", false);
-            editingTab.Add(decorationRotationSnapping);
+            registry.Register(decorationRotationSnapping);
             var decorationRotationSensitivity = new FloatSetting("decorationRotationSensitivity", "Decoration Rotation Sensitivity", 1f, 0.1f, 10f);
-            editingTab.Add(decorationRotationSensitivity);
+            registry.Register(decorationRotationSensitivity);
 
             var camera = new CameraSettings(fppMouseSensitivity, fppKeyboardRotationSensitivity,
                 fppMovementSpeed, topMovementSpeed, isoMovementSpeed, shiftSpeedModifier, controlSpeedModifier);
