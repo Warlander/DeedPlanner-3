@@ -38,9 +38,9 @@ Useful commands:
 
 Add `--json` for machine-readable output in agentic loops.
 
-A **Unity MCP server** may also be available. The ONLY acceptable option is the official one: the project includes `com.unity.pipeline`, which powers both the CLI commands and the official MCP server (`unity mcp configure`). Do NOT add, configure, or use any other MCP server (e.g. the community "MCP for Unity") — alternatives require installing extra packages into the project itself.
+**Unity MCP is intentionally disabled.** Do not configure or run the official `unity mcp` adapter, and do not add a community MCP-for-Unity package. The project retains `com.unity.pipeline` because it powers the Unity CLI commands and the custom agent commands in `Platform/AgentCommands.cs`.
 
-**Opening the project:** if `unity status` shows no connected Editor, use `unity open` to launch the project — after startup, both CLI commands and MCP become usable. For automation workflows, launch with the `-automated` flag:
+**Opening the project:** if `unity status` shows no connected Editor, use `unity open` to launch the project — after startup, the CLI commands become usable. For automation workflows, launch with the `-automated` flag:
 
 ```
 unity open "E:/Unity/DeedPlanner-3" --args "-automated"
