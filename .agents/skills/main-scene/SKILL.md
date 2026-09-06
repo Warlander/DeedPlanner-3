@@ -92,7 +92,7 @@ To EDIT a tab: open its prefab in Prefab Mode (`Assets/Prefabs/MainScene/Tabs/<T
 
 ## DI Wiring (read this before moving things)
 
-`MainSceneLifetimeScope` (`Assets/Warlander/Deedplanner/Scopes/MainSceneLifetimeScope.cs`) is the scene's composition root:
+`MainSceneLifetimeScope` (`Assets/Warlander/Deedplanner/Composition/MainSceneLifetimeScope.cs`) is the scene's composition root:
 
 - Views are bound with `builder.RegisterComponentInHierarchy<TView>().As<IView>()` — **this searches only the scope's own scene**, which is the main technical reason the app stays one scene.
 - A build callback runs `container.InjectGameObject` over **every MonoBehaviour in the scene** (legacy pattern, marked TODO). Any MonoBehaviour with `[Inject]` fields anywhere in the hierarchy gets them filled.

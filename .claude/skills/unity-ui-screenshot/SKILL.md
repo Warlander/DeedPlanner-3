@@ -3,7 +3,7 @@ name: unity-ui-screenshot
 description: Capture real screenshots of DeedPlanner 3 UI panels from the connected Unity Editor via CLI, for UI design/mockup work. Use whenever a task involves designing, documenting, or mocking up DP3 UI — never infer layout from view code alone.
 ---
 
-# Unity UI Screenshot
+# Unity UI Screenshot — DeedPlanner Capture
 
 View code tells what a panel contains, never how it looks. For any UI design, mockup, or doc work, capture the REAL panel first.
 
@@ -15,31 +15,21 @@ For turning an approved mockup into real Unity UI, use the `unity-ui-build` skil
 
 - Editor connected: `unity status`. If not connected: `unity open "E:/Unity/DeedPlanner-3" --args "-automated"` as background task (never wait on it), continue other work, check status once later.
 
-## eval_file rules (hard-won, do not skip)
+Generic CLI and `eval_file` rules live in `AGENTS.md` and `unity-cli`; do not duplicate them here.
 
-`eval_file` wraps file content in an `Execute()` method body:
-
-- **No `using` directives, no class/method definitions** — statements only.
-- **Fully qualify everything**: `UnityEngine.Object.FindObjectsOfType<...>`, `System.IO.Path`, `TMPro.TMP_Text`.
-- `UnityEngine.Object` collides with `object` — always write the full name.
-- Must end with an explicit `return <value>;` (bare expressions rejected).
-- Write scripts to SYSTEM TEMP (`$env:TEMP`), never under `Assets/` (breaks compile, spams SourceAssetDB).
-- Invoke: `unity command eval_file --file <path> --json`
-
-## What does NOT work
+## Capture constraint
 
 - **Edit-mode capture of screen-space-overlay UI**: camera `Render()` does not composite overlay canvases. Result: blank grey image. Same for `capture_game_view` in edit mode (GameView does not repaint unfocused).
 - Guess-clicking coordinates with `simulate_pointer` — brittle, resolution/origin dependent.
 
 ## Reliable capture workflow (play mode)
 
-1. Open the scene if needed: eval `UnityEditor.SceneManagement.EditorSceneManager.OpenScene("Assets/Scenes/MainScene.unity");`
-2. `unity command editor_focus` (play entry stalls unfocused unless Editor launched with `-automated`), then `unity command editor_play`.
-3. App boots to the HOME SCREEN. Drive it via component methods, not pointer coordinates:
-   - Load a map: find `UnityEngine.UI.Button` whose child `TMPro.TMP_Text.text` matches the save name, call `btn.onClick.Invoke()`.
-   - Select a tab: find `UnityEngine.UI.Toggle` by name (e.g. "Floors" under Tab Toggles Panel), set `tg.isOn = true`.
-4. Wait a few seconds for load, then screenshot: eval `UnityEngine.ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(System.IO.Path.GetTempPath(), "dp_ui.png"));` — play-mode capture includes overlay UI. Wait ~2s, Read the PNG (full screen, 2560x1296 — panel is the right column).
-5. **Cleanup (mandatory)**: `unity command editor_stop`, then reopen the scene via `OpenScene` (no save) to discard any scene mutations made during setup.
+1. Enter play mode: `unity command editor_play`.
+2. Wait for the app: `unity command app_await_ready --timeoutSeconds 120 --timeout 130`.
+3. Set up the target state with project commands: `map_load <path>` or `map_new`, then `tab_select <name>` and `camera_set <mode> [level]` as needed.
+4. Wait for saves and rendered frames: `unity command await_idle`.
+5. Capture to a file: `unity command screenshot --output <path>`. Inspect the PNG; the active editor panel is in the right column.
+6. **Cleanup (mandatory):** `unity command editor_stop`, even when setup or capture fails.
 
 ## Reference layout (verified 2026-08-21)
 

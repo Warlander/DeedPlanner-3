@@ -1,25 +1,32 @@
 ---
 name: unity-ui-build
-description: Implement approved UI mockups as real DeedPlanner 3 Unity UI (uGUI). Use when turning a design doc/mockup into actual panels, buttons, palettes — covers prefab reuse, layout, MVP wiring, and verification against the mockup.
+description: DeedPlanner 3 overlay for implementing approved UI mockups as real uGUI. Use with ui and ui-ugui when turning a design into panels, buttons, or palettes; owns project-specific prefab reuse, MVP wiring, and verification.
 ---
 
-# Unity UI Build
+# Unity UI Build — DeedPlanner Overlay
 
-Turns a mockup into real DP3 UI with minimal surprises. Pair with `unity-ui-screenshot` (capture before/after).
+Load `ui` and `ui-ugui` first for generic Unity UI guidance. This skill adds or overrides only DeedPlanner-specific rules. Pair it with `unity-ui-screenshot` for before/after capture.
 
-CLAUDE.md owns the general rules — follow them, don't restate them: MVP pattern (thin views, constructor-injected presenters, `View` suffix), .meta GUID preservation, verification ladder. This skill owns UI arrangement and adds the workflow specifics.
+`AGENTS.md` owns the project-wide rules: MVP, `.meta` GUID preservation, Unity CLI usage, and the verification ladder.
+
+## DeedPlanner overrides to `ui-ugui`
+
+- Match existing C# imports; fully qualify UI types only where ambiguity requires it and always in CLI eval code.
+- Keep C# with its owning module, not beside prefabs. Updater views live in `Assets/Warlander/Deedplanner/Editing/<Tab>/`; shared UI lives under `Ui/<Feature>/`; bridge widgets live under `Bridges/Widgets/`.
+- Keep prefabs in the established `Assets/Prefabs/` hierarchy.
+- Fix existing hierarchy objects in place. Deliberate, approved removal of dead UI is allowed after updating serialized references.
 
 ## Prefab rules (owned here, non-negotiable)
 
-- **Reuse existing prefabs.** Before building UI, check `Assets/Prefabs/` for a similar control: `Simple Button.prefab`, `Icon and Text Toggle Button.prefab`, tab panels in `Assets/Prefabs/MainScene/Tabs/`, tree/search composites. Never hand-build what a prefab already does.
+- **Reuse existing prefabs.** Before building UI, check `Assets/Prefabs/` for a similar control: `Assets/Prefabs/Gui/Simple Button.prefab`, `Assets/Prefabs/Gui/Icon and Text Toggle Button.prefab`, tab panels in `Assets/Prefabs/MainScene/Tabs/`, and tree/search composites. Never hand-build what a prefab already does.
 - **Wire inside the parent prefab context**, never as scene overrides. If the things being wired live inside a prefab, edit that prefab, not the scene instance.
 - **Delete dead UI from prefabs.** Never disable with `SetActive(false)` and leave it — remove unused objects outright.
 - New tab panels follow the `* Tab.prefab` convention with a `UIContentTab` component (serialized `tab` int must match the `Tab` enum value).
 
 ## MVP wiring specifics
 
-- View location: `Gui/Updaters/` (updater panels) or `Gui/Widgets/` (reusable widgets). Interface per view (`I*View`).
-- Register in `Scopes/MainSceneLifetimeScope.cs`: view via `RegisterComponentInHierarchy`, presenter via `RegisterEntryPoint`. Updaters register `.As<IUpdater>()` (add `.AsSelf()` if presenters depend on the concrete updater, like BridgesUpdater).
+- Keep each view and its `I*View` interface with the owning module path described above.
+- Register in `Composition/MainSceneLifetimeScope.cs`: view via `RegisterComponentInHierarchy`, presenter via `RegisterEntryPoint`. Updaters register `.As<IUpdater>()` (add `.AsSelf()` if presenters depend on the concrete updater, like `BridgesUpdater`).
 - Input: reuse the shared `UpdatersShared` action map (LMB place / RMB delete) — no new bindings without asking.
 
 ## Editing via CLI (connected Editor)
