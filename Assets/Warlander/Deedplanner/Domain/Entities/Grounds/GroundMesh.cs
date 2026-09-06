@@ -1,25 +1,18 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Warlander.Deedplanner.Rendering.Assets;
-using Warlander.Render;
 
 namespace Warlander.Deedplanner.Domain.Entities.Grounds
 {
     public class GroundMesh : MonoBehaviour
     {
-        private const int GroundTexturesWidth = 512;
-        private const int GroundTexturesHeight = 512;
-        
-        private static IndexedTextureArray<TextureReference> groundTexturesArray;
-        
         private const int VerticesPerRenderTile = 12;
         private const int TrianglesPerTile = 12; // 4 triangles, 4*3
         private const float TileSize = 4f;
         private const float SlopeToHeight = 0.1f;
 
         private ISharedMaterials _sharedMaterials;
-        private IDataCatalog _dataCatalog;
+        private GroundTextureArray _groundTextures;
 
         private Material material;
         private MeshRenderer meshRenderer;
@@ -45,23 +38,17 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
         private bool needsUvUpdate = false;
 
         public void Initialize(int width, int height, OverlayMesh newOverlayMesh, ISharedMaterials sharedMaterials,
-            IDataCatalog dataCatalog)
+            GroundTextureArray groundTextures)
         {
             _sharedMaterials = sharedMaterials;
-            _dataCatalog = dataCatalog;
-            gameObject.layer = LayerMasks.GroundLayer;
-            if (groundTexturesArray == null)
-            {
-                int groundTexturesCount = CalculateGroundTexturesCount();
-                groundTexturesArray = new IndexedTextureArray<TextureReference>(GroundTexturesWidth, GroundTexturesHeight, groundTexturesCount);
-            }
+            _groundTextures = groundTextures;
 
             gameObject.layer = LayerMasks.GroundLayer;
 
             if (!material)
             {
                 material = new Material(_sharedMaterials.TerrainMaterial);
-                material.SetTexture("_MainTex", groundTexturesArray.TextureArray);
+                _groundTextures.ApplyTo(material);
             }
 
             if (!meshRenderer)
@@ -100,18 +87,6 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
             
             needsVerticesUpdate = true;
             needsUvUpdate = true;
-        }
-
-        private int CalculateGroundTexturesCount()
-        {
-            HashSet<TextureReference> textures = new HashSet<TextureReference>();
-
-            foreach (GroundData data in _dataCatalog.GetAllGrounds())
-            {
-                textures.Add(data.Tex3d);
-            }
-
-            return textures.Count;
         }
 
         private void InitializeRenderMesh()
@@ -640,12 +615,16 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
         private async void UpdateUV2Async(GroundData data, int uvIndex, Vector2Int tileCoords)
         {
             Texture2D loadedTexture = await data.Tex3d.LoadOrGetTextureAsync();
-            if (!loadedTexture)
+            if (!this || !loadedTexture || dataArray[tileCoords.x, tileCoords.y] != data)
             {
                 return;
             }
 
-            int texIndex = groundTexturesArray.PutOrGetTexture(data.Tex3d, loadedTexture);
+            if (!_groundTextures.TryGetOrAdd(data.Tex3d, loadedTexture, out int texIndex))
+            {
+                return;
+            }
+
             Vector2 texVector = new Vector2(texIndex, 0);
             uv2[uvIndex] = texVector;
             uv2[uvIndex + 1] = texVector;

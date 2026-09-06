@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 
 namespace Warlander.Render
 {
-    public class IndexedTextureArray<T>
+    public class IndexedTextureArray<T> : IDisposable
     {
         private const TextureFormat DefaultGroundTexturesFormat = TextureFormat.DXT5;
         private const TextureFormat FallbackGroundTexturesFormat = TextureFormat.ARGB32;
@@ -13,6 +13,7 @@ namespace Warlander.Render
         private readonly Dictionary<T, int> indexToSlice;
         
         public Texture2DArray TextureArray { get; private set; }
+        public bool IsValid => TextureArray;
         public int MaxLength => TextureArray.depth;
         public int Length { get; private set; }
 
@@ -139,6 +140,30 @@ namespace Warlander.Render
             nTex.Apply();
             RenderTexture.active = null;
             return nTex;
+        }
+
+        public void Dispose()
+        {
+            DestroyObject(TextureArray);
+            DestroyObject(blitCopyMaterial);
+            TextureArray = null;
+        }
+
+        private static void DestroyObject(UnityEngine.Object target)
+        {
+            if (!target)
+            {
+                return;
+            }
+
+            if (Application.isPlaying)
+            {
+                UnityEngine.Object.Destroy(target);
+            }
+            else
+            {
+                UnityEngine.Object.DestroyImmediate(target);
+            }
         }
     }
 }
