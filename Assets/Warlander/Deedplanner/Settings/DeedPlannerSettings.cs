@@ -12,15 +12,17 @@ namespace Warlander.Deedplanner.Settings
     public sealed class DeedPlannerSettings
     {
         public SettingsRegistry Registry { get; }
+        public ISettingsStore Store { get; }
         public CameraSettings Camera { get; }
         public EditingSettings Editing { get; }
         public UiSettings Ui { get; }
         public GraphicsOptions Graphics { get; }
 
-        private DeedPlannerSettings(SettingsRegistry registry, CameraSettings camera,
+        private DeedPlannerSettings(SettingsRegistry registry, ISettingsStore store, CameraSettings camera,
             EditingSettings editing, UiSettings ui, GraphicsOptions graphics)
         {
             Registry = registry;
+            Store = store;
             Camera = camera;
             Editing = editing;
             Ui = ui;
@@ -30,6 +32,7 @@ namespace Warlander.Deedplanner.Settings
         public static DeedPlannerSettings Create()
         {
             var store = new PlayerPrefsJsonSettingsStore();
+            LegacySettingsMigration.Migrate(store);
             var registry = new SettingsRegistry(store);
 
             SettingsTab generalTab = registry.AddTab("general", "General");
@@ -86,7 +89,7 @@ namespace Warlander.Deedplanner.Settings
             var ui = new UiSettings(guiScale, compassVisibility);
             var graphics = new GraphicsOptions(waterQuality, qualityLevel);
 
-            return new DeedPlannerSettings(registry, camera, editing, ui, graphics);
+            return new DeedPlannerSettings(registry, store, camera, editing, ui, graphics);
         }
     }
 }

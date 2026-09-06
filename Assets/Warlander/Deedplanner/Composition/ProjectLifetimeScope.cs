@@ -11,6 +11,7 @@ using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Platform.Steam;
 using Warlander.Scopes;
+using Warlogic.Settings;
 
 namespace Warlander.Deedplanner.Composition
 {
@@ -41,6 +42,7 @@ namespace Warlander.Deedplanner.Composition
 
             var settings = DeedPlannerSettings.Create();
             builder.RegisterInstance(settings.Registry);
+            builder.RegisterInstance<ISettingsStore>(settings.Store);
             builder.RegisterInstance(settings.Camera);
             builder.RegisterInstance(settings.Editing);
             builder.RegisterInstance(settings.Ui);

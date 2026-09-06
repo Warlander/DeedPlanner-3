@@ -7,7 +7,7 @@ namespace Warlander.Deedplanner.Settings
 {
     /// <summary>
     /// Setting wrapping one Input System binding. Value is the effective binding path.
-    /// Persistence goes through InputSettings (JSON binding overrides) until the store migration chunk.
+    /// Persistence goes through InputSettings (JSON binding overrides in the unified store).
     /// </summary>
     public sealed class KeybindSetting : ISetting<string>, IGroupedSetting
     {

@@ -1,0 +1,158 @@
+using System.Collections.Generic;
+using NUnit.Framework;
+using UnityEngine;
+using Warlander.Deedplanner.Settings;
+using Warlogic.Settings;
+
+namespace Warlander.Deedplanner.Tests
+{
+    public class LegacySettingsMigrationTests
+    {
+        private const string StoreKey = "warlogic.settings.migration-tests";
+        private const string PropertiesKey = "properties.migration-tests";
+        private const string InputSettingsKey = "inputSettings.migration-tests";
+
+        private const string FullLegacyXml =
+            "<DPSettings>" +
+            "<FppMouseSensitivity>0.75</FppMouseSensitivity>" +
+            "<FppKeyboardRotationSensitivity>90</FppKeyboardRotationSensitivity>" +
+            "<FppMovementSpeed>24</FppMovementSpeed>" +
+            "<TopMovementSpeed>8</TopMovementSpeed>" +
+            "<IsoMovementSpeed>12</IsoMovementSpeed>" +
+            "<FppShiftModifier>7</FppShiftModifier>" +
+            "<FppControlModifier>0.5</FppControlModifier>" +
+            "<HeightDragSensitivity>1.25</HeightDragSensitivity>" +
+            "<HeightRespectOriginalSlopes>false</HeightRespectOriginalSlopes>" +
+            "<WallAutomaticReverse>false</WallAutomaticReverse>" +
+            "<WallReverse>true</WallReverse>" +
+            "<DecorationSnapToGrid>true</DecorationSnapToGrid>" +
+            "<DecorationRotationSnapping>true</DecorationRotationSnapping>" +
+            "<DecorationRotationSensitivity>2.5</DecorationRotationSensitivity>" +
+            "<GuiScale>14</GuiScale>" +
+            "<WaterQuality>SIMPLE</WaterQuality>" +
+            "<CompassVisibility>false</CompassVisibility>" +
+            "</DPSettings>";
+
+        [TearDown]
+        public void TearDown()
+        {
+            PlayerPrefs.DeleteKey(StoreKey);
+            PlayerPrefs.DeleteKey(PropertiesKey);
+            PlayerPrefs.DeleteKey(InputSettingsKey);
+            PlayerPrefs.Save();
+        }
+
+        [Test]
+        public void TranslatePropertiesXml_FullDocument_TranslatesAllKeys()
+        {
+            Dictionary<string, string> result = LegacySettingsMigration.TranslatePropertiesXml(FullLegacyXml);
+
+            Assert.AreEqual(17, result.Count);
+            Assert.AreEqual("0.75", result["fppMouseSensitivity"]);
+            Assert.AreEqual("90", result["fppKeyboardRotationSensitivity"]);
+            Assert.AreEqual("24", result["fppMovementSpeed"]);
+            Assert.AreEqual("8", result["topMovementSpeed"]);
+            Assert.AreEqual("12", result["isoMovementSpeed"]);
+            Assert.AreEqual("7", result["shiftSpeedModifier"]);
+            Assert.AreEqual("0.5", result["controlSpeedModifier"]);
+            Assert.AreEqual("1.25", result["heightDragSensitivity"]);
+            Assert.AreEqual("false", result["heightRespectOriginalSlopes"]);
+            Assert.AreEqual("false", result["wallAutomaticReverse"]);
+            Assert.AreEqual("true", result["wallReverse"]);
+            Assert.AreEqual("true", result["decorationSnapToGrid"]);
+            Assert.AreEqual("true", result["decorationRotationSnapping"]);
+            Assert.AreEqual("2.5", result["decorationRotationSensitivity"]);
+            Assert.AreEqual("14", result["guiScale"]);
+            Assert.AreEqual("Simple", result["waterQuality"]);
+            Assert.AreEqual("false", result["compassVisibility"]);
+        }
+
+        [Test]
+        public void TranslatePropertiesXml_StringRotationSensitivity_RetypesToFloat()
+        {
+            Dictionary<string, string> result = LegacySettingsMigration.TranslatePropertiesXml(
+                "<DPSettings><DecorationRotationSensitivity>1</DecorationRotationSensitivity></DPSettings>");
+
+            Assert.AreEqual("1", result["decorationRotationSensitivity"]);
+        }
+
+        [Test]
+        public void TranslatePropertiesXml_MalformedXml_ReturnsEmpty()
+        {
+            Dictionary<string, string> result = LegacySettingsMigration.TranslatePropertiesXml("{{{not xml");
+
+            Assert.AreEqual(0, result.Count);
+        }
+
+        [Test]
+        public void TranslatePropertiesXml_MissingElements_SkipsThem()
+        {
+            Dictionary<string, string> result = LegacySettingsMigration.TranslatePropertiesXml(
+                "<DPSettings><GuiScale>12</GuiScale></DPSettings>");
+
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual("12", result["guiScale"]);
+        }
+
+        [Test]
+        public void TranslatePropertiesXml_InvalidValues_SkipsThem()
+        {
+            Dictionary<string, string> result = LegacySettingsMigration.TranslatePropertiesXml(
+                "<DPSettings><GuiScale>abc</GuiScale><WaterQuality>Medium</WaterQuality></DPSettings>");
+
+            Assert.AreEqual(0, result.Count);
+        }
+
+        [Test]
+        public void Migrate_SeededLegacyPrefs_MovesValuesAndDeletesLegacyKeys()
+        {
+            PlayerPrefs.SetString(PropertiesKey, FullLegacyXml);
+            PlayerPrefs.SetString(InputSettingsKey, "[{\"action\":\"Map/Forward\",\"path\":\"<Keyboard>/w\"}]");
+            PlayerPrefs.Save();
+            var store = new PlayerPrefsJsonSettingsStore(StoreKey);
+
+            LegacySettingsMigration.Migrate(store, PropertiesKey, InputSettingsKey);
+
+            Assert.IsTrue(store.TryLoad("fppMouseSensitivity", out string sensitivity));
+            Assert.AreEqual("0.75", sensitivity);
+            Assert.IsTrue(store.TryLoad("decorationRotationSensitivity", out string rotation));
+            Assert.AreEqual("2.5", rotation);
+            Assert.IsTrue(store.TryLoad("waterQuality", out string water));
+            Assert.AreEqual("Simple", water);
+            Assert.IsTrue(store.TryLoad(LegacySettingsMigration.BindingOverridesKey, out string overrides));
+            Assert.AreEqual("[{\"action\":\"Map/Forward\",\"path\":\"<Keyboard>/w\"}]", overrides);
+            Assert.IsFalse(PlayerPrefs.HasKey(PropertiesKey));
+            Assert.IsFalse(PlayerPrefs.HasKey(InputSettingsKey));
+
+            var reloaded = new PlayerPrefsJsonSettingsStore(StoreKey);
+            Assert.IsTrue(reloaded.TryLoad("guiScale", out string guiScale));
+            Assert.AreEqual("14", guiScale);
+        }
+
+        [Test]
+        public void Migrate_NoLegacyPrefs_LeavesStoreUntouched()
+        {
+            var store = new PlayerPrefsJsonSettingsStore(StoreKey);
+
+            LegacySettingsMigration.Migrate(store, PropertiesKey, InputSettingsKey);
+
+            Assert.IsFalse(store.TryLoad("guiScale", out _));
+            Assert.IsFalse(PlayerPrefs.HasKey(StoreKey));
+        }
+
+        [Test]
+        public void Migrate_ExistingBindingOverrides_KeepsNewerValue()
+        {
+            var store = new PlayerPrefsJsonSettingsStore(StoreKey);
+            store.Save(LegacySettingsMigration.BindingOverridesKey, "[]");
+            PlayerPrefs.SetString(InputSettingsKey, "[{\"action\":\"Map/Forward\",\"path\":\"<Keyboard>/w\"}]");
+            PlayerPrefs.Save();
+
+            LegacySettingsMigration.Migrate(store, PropertiesKey, InputSettingsKey);
+
+            Assert.IsTrue(store.TryLoad(LegacySettingsMigration.BindingOverridesKey, out string overrides));
+            Assert.AreEqual("[]", overrides);
+            Assert.IsFalse(PlayerPrefs.HasKey(InputSettingsKey));
+        }
+    }
+}
