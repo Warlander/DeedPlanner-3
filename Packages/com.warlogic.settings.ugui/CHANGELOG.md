@@ -1,5 +1,5 @@
 # Changelog
 
-## [0.1.0] - 2026-09-05
+## [0.1.0] - 2026-09-06
 
-- Initial release: widget factory registry, six widget prefabs (slider, toggle, dropdown, keybind placeholder, group header, tab button), unified settings window view + presenter.
+- Initial release: widget factory registry (`SettingsWidgetCatalog`), widget prefabs (slider, toggle, dropdown, keybind row, group header, tab button), setting grouping via `IGroupedSetting`, unified settings window view + presenter with per-tab lazy build and shared Save/Discard footer.
