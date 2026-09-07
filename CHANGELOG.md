@@ -2,6 +2,7 @@
 
 ## [3.4.0] - Unreleased
 
+- Cave level controls and cave editing are now enabled
 - Docks can now be planned over water from the Floors tab - paint dock decks with multiple materials and support types, with full undo, validation and save/load support
 - New saving system with a home screen on startup listing your deeds with thumbnails - saves can now be renamed and deleted
 - Quick save and auto-save with crash recovery - unsaved work is no longer lost on a crash
