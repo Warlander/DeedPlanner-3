@@ -17,12 +17,13 @@ namespace Warlander.Deedplanner.Domain
         private readonly IGroundDataResolver _groundDataResolver;
 
         [Inject]
-        public TileFactory(IOutlineCoordinator outlineCoordinator, IDataCatalog dataCatalog, MapHandler mapHandler)
+        public TileFactory(IOutlineCoordinator outlineCoordinator, IDataCatalog dataCatalog, MapHandler mapHandler,
+            ICaveDataResolver caveDataResolver)
         {
             _outlineCoordinator = outlineCoordinator;
             _dataCatalog = dataCatalog;
             _logger = mapHandler.Logger;
-            _caveDataResolver = new CaveDataResolver(dataCatalog);
+            _caveDataResolver = caveDataResolver;
             _groundDataResolver = new GroundDataResolver(dataCatalog, _logger);
         }
 

@@ -20,6 +20,7 @@ using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Persistence;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Domain.Entities.Grounds;
+using Warlander.Deedplanner.Caves;
 
 namespace Warlander.Deedplanner.Composition
 {
@@ -147,6 +148,7 @@ namespace Warlander.Deedplanner.Composition
             builder.Register<OverlayMeshLoader>(Lifetime.Singleton);
             builder.Register<HeightmapHandleMeshLoader>(Lifetime.Singleton);
 
+            builder.Register<CaveDataResolver>(Lifetime.Singleton).As<ICaveDataResolver>();
             builder.Register<TileFactory>(Lifetime.Singleton);
             builder.Register<BridgeFactory>(Lifetime.Singleton);
             builder.Register<DockFactory>(Lifetime.Singleton);
