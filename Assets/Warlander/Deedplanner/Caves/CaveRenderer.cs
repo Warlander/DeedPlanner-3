@@ -19,14 +19,17 @@ namespace Warlander.Deedplanner.Caves
         private CaveTopologyBuilder _builder;
         private CaveTextureArray _textures;
         private Material _material;
+        private ICaveRenderOptions _renderOptions;
 
         public void Initialize(int width, int height, ICaveMap map, ICaveEditor editor, CaveData defaultTerrain,
-            Material material, CaveTextureArray textures)
+            Material material, CaveTextureArray textures, ICaveRenderOptions renderOptions)
         {
             _editor = editor;
             _textures = textures;
+            _renderOptions = renderOptions;
             _material = new Material(material) { name = "Cave Shell Material" };
             _textures.ApplyTo(_material);
+            ApplyCulling();
             _builder = new CaveTopologyBuilder(map, textures, defaultTerrain, width, height);
 
             for (int x = 0; x < width; x += ChunkSize)
@@ -48,7 +51,15 @@ namespace Warlander.Deedplanner.Caves
 
             _editor.Changed += OnCavesChanged;
             _editor.EditCompleted += OnCaveEditCompleted;
+            _renderOptions.Changed += ApplyCulling;
             LoadTexturesAsync();
+        }
+
+        private void ApplyCulling()
+        {
+            _material.SetFloat("_Cull", _renderOptions.IsCullingEnabled()
+                ? (float)UnityEngine.Rendering.CullMode.Back
+                : (float)UnityEngine.Rendering.CullMode.Off);
         }
 
         public CaveChunk GetChunk(int index)
@@ -124,6 +135,11 @@ namespace Warlander.Deedplanner.Caves
             {
                 _editor.Changed -= OnCavesChanged;
                 _editor.EditCompleted -= OnCaveEditCompleted;
+            }
+
+            if (_renderOptions != null)
+            {
+                _renderOptions.Changed -= ApplyCulling;
             }
 
             if (_material)

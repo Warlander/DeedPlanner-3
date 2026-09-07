@@ -19,6 +19,7 @@ using Warlander.Deedplanner.Ui.Tooltips;
 using Warlander.Deedplanner.Ui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using VContainer;
+using Warlander.Deedplanner.Caves;
 
 namespace Warlander.Deedplanner.Cameras
 {
@@ -35,6 +36,7 @@ namespace Warlander.Deedplanner.Cameras
         [Inject] private ISharedMaterials _sharedMaterials;
         [Inject] private IWaterFacade _waterFacade;
         [Inject] private TabContext _tabContext;
+        [Inject] private ICaveHitResolver _caveHitResolver;
 
         public event Action LevelChanged;
         public event Action ModeChanged;
@@ -53,6 +55,8 @@ namespace Warlander.Deedplanner.Cameras
         public bool MouseOver { get; private set; } = false;
 
         public RaycastHit CurrentRaycast { get; private set; }
+        public CaveHit CurrentCaveHit { get; private set; }
+        public bool HasCurrentCaveHit { get; private set; }
 
         public ICameraController CameraController
         {
@@ -119,6 +123,8 @@ namespace Warlander.Deedplanner.Cameras
         private DynamicModelBehaviour _outlinedModel;
         private SlopeGridView _slopeGrid;
         private readonly int[] _heightsBuffer = new int[9];
+        private IDisposable _mapRenderScope;
+        private IDisposable _gridRenderScope;
 
         private CameraMode cameraMode = CameraMode.Top;
         private int _level = 0;
@@ -127,6 +133,7 @@ namespace Warlander.Deedplanner.Cameras
         {
             AttachedCamera = GetComponent<Camera>();
             RenderPipelineManager.beginCameraRendering += RenderPipelineManagerOnbeginCameraRendering;
+            RenderPipelineManager.endCameraRendering += RenderPipelineManagerOnEndCameraRendering;
         }
         
         private void Start()
@@ -169,6 +176,8 @@ namespace Warlander.Deedplanner.Cameras
         private void OnDestroy()
         {
             RenderPipelineManager.beginCameraRendering -= RenderPipelineManagerOnbeginCameraRendering;
+            RenderPipelineManager.endCameraRendering -= RenderPipelineManagerOnEndCameraRendering;
+            CompleteCameraRendering();
         }
 
         private void Update()
@@ -205,15 +214,31 @@ namespace Warlander.Deedplanner.Cameras
                 return;
             }
 
-            Tab tab = _tabContext.CurrentTab;
-            bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
-            int currentlyEditedLevel = forceSurfaceEditing ? 0 : _level;
-            bool renderWater = RenderEntireMap || currentlyEditedLevel == 0 || currentlyEditedLevel == -1;
+            CompleteCameraRendering();
+            Map map = _mapHandler.Map;
+            _mapRenderScope = map.PrepareForCamera(new MapRenderView(Level, RenderEntireMap, map.RenderGrid));
+            bool renderWater = RenderEntireMap || Level == 0 || Level == -1;
             _waterFacade.PrepareForCamera(AttachedCamera, CameraController, renderWater);
-            PrepareMapState();
+            PrepareGridState();
             UpdateRaycast();
             UpdateHoverOutline();
             PrepareProjector();
+        }
+
+        private void RenderPipelineManagerOnEndCameraRendering(ScriptableRenderContext context, Camera camera)
+        {
+            if (camera == AttachedCamera)
+            {
+                CompleteCameraRendering();
+            }
+        }
+
+        private void CompleteCameraRendering()
+        {
+            _gridRenderScope?.Dispose();
+            _gridRenderScope = null;
+            _mapRenderScope?.Dispose();
+            _mapRenderScope = null;
         }
 
         private void UpdateHoverOutline()
@@ -235,18 +260,24 @@ namespace Warlander.Deedplanner.Cameras
         private void UpdateRaycast()
         {
             CurrentRaycast = default;
+            CurrentCaveHit = default;
+            HasCurrentCaveHit = false;
 
             if (MouseOver)
             {
                 Ray ray = CreateMouseRay();
                 RaycastHit raycastHit;
-                int mask = LayerMasks.GetMaskForTab(_tabContext.CurrentTab);
+                int mask = LayerMasks.GetMaskForTab(_tabContext.CurrentTab, Level);
                 bool hit = Physics.Raycast(ray, out raycastHit, 20000, mask);
                 StringBuilder tooltipBuild = new StringBuilder();
 
                 if (hit && Cursor.visible)
                 {
                     CurrentRaycast = raycastHit;
+                    CaveChunk caveChunk = raycastHit.collider.GetComponent<CaveChunk>();
+                    HasCurrentCaveHit = _caveHitResolver.TryResolve(caveChunk, raycastHit.triangleIndex,
+                        out CaveHit caveHit);
+                    CurrentCaveHit = caveHit;
 
                     bool isHeightEditing = _tabContext.CurrentTab == Tab.Height;
 
@@ -254,7 +285,10 @@ namespace Warlander.Deedplanner.Cameras
                     TileEntity tileEntity = hitObject.GetComponent<TileEntity>();
                     GroundMesh groundMesh = hitObject.GetComponent<GroundMesh>();
                     OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
-                    HeightmapHandle heightmapHandle = _mapHandler.Map.SurfaceGridMesh.RaycastHandles();
+                    GridMesh activeGrid = Level < 0
+                        ? _mapHandler.Map.CaveGridMesh
+                        : _mapHandler.Map.SurfaceGridMesh;
+                    HeightmapHandle heightmapHandle = isHeightEditing ? activeGrid.RaycastHandles() : null;
 
                     if (tileEntity)
                     {
@@ -304,6 +338,12 @@ namespace Warlander.Deedplanner.Cameras
                     else if (heightmapHandle != null)
                     {
                         ShowSlopeGridTooltip(heightmapHandle, tooltipBuild);
+                    }
+                    else if (HasCurrentCaveHit)
+                    {
+                        tooltipBuild.Append("X: ").Append(caveHit.CellX)
+                            .Append(" Y: ").Append(caveHit.CellY).AppendLine();
+                        tooltipBuild.Append(_mapHandler.Map[caveHit.CellX, caveHit.CellY].Cave.Terrain.Name);
                     }
 
                     Decoration hoveredDecoration = FindClosestDecorationToCursor(ray, mask);
@@ -391,30 +431,15 @@ namespace Warlander.Deedplanner.Cameras
             return ray;
         }
 
-        private void PrepareMapState()
+        private void PrepareGridState()
         {
             Tab tab = _tabContext.CurrentTab;
-            bool forceSurfaceEditing = tab == Tab.Ground || tab == Tab.Height;
-            int currentlyEditedLevel = forceSurfaceEditing ? 0 : Level;
-
             Map map = _mapHandler.Map;
-            if (map.RenderedLevel != currentlyEditedLevel)
-            {
-                map.RenderedLevel = currentlyEditedLevel;
-            }
-            if (map.RenderEntireMap != RenderEntireMap)
-            {
-                map.RenderEntireMap = RenderEntireMap;
-            }
-            
             bool renderHeights = tab == Tab.Height;
             GridMesh gridMeshToUse = Level < 0 ? map.CaveGridMesh : map.SurfaceGridMesh;
-            
-            gridMeshToUse.HandlesVisible = renderHeights;
-            gridMeshToUse.SetRenderHeightColors(renderHeights);
-            gridMeshToUse.SetAlphaMultiplier(CameraController.CalculateGridAlphaMultiplier());
-            gridMeshToUse.SetMaterial(GetMaterialForGridMaterialType(CameraController.GridMaterialToUse));
-            gridMeshToUse.ApplyAllChanges();
+            _gridRenderScope = gridMeshToUse.PrepareForCamera(renderHeights,
+                CameraController.CalculateGridAlphaMultiplier(),
+                GetMaterialForGridMaterialType(CameraController.GridMaterialToUse));
         }
 
         private Material GetMaterialForGridMaterialType(GridMaterialType gridMaterialType)
@@ -442,6 +467,15 @@ namespace Warlander.Deedplanner.Cameras
                 return;
 
             GameObject hitObject = CurrentRaycast.collider.gameObject;
+            if (HasCurrentCaveHit)
+            {
+                TileSelectionHit caveSelection = GetCaveSelectionHit(CurrentCaveHit);
+                _attachedProjector = _mapProjectorFacade.RequestProjector(ProjectorColor.Yellow);
+                _attachedProjector.SetRenderCameraId(screenId);
+                _attachedProjector.ProjectTile(new Vector2Int(caveSelection.X, caveSelection.Y), caveSelection.Target);
+                return;
+            }
+
             bool gridOrGroundHit = hitObject.GetComponent<GroundMesh>() || hitObject.GetComponent<OverlayMesh>();
             if (!gridOrGroundHit)
                 return;
@@ -460,6 +494,28 @@ namespace Warlander.Deedplanner.Cameras
             _attachedProjector.ProjectTile(tileCoords, target);
         }
 
+        private static TileSelectionHit GetCaveSelectionHit(CaveHit hit)
+        {
+            if (!hit.HasEdge)
+            {
+                return new TileSelectionHit(TileSelectionTarget.Tile, hit.CellX, hit.CellY);
+            }
+
+            switch (hit.Edge)
+            {
+                case CaveEdge.South:
+                    return new TileSelectionHit(TileSelectionTarget.BottomBorder, hit.OpenCellX, hit.OpenCellY);
+                case CaveEdge.East:
+                    return new TileSelectionHit(TileSelectionTarget.LeftBorder, hit.OpenCellX + 1, hit.OpenCellY);
+                case CaveEdge.North:
+                    return new TileSelectionHit(TileSelectionTarget.BottomBorder, hit.OpenCellX, hit.OpenCellY + 1);
+                case CaveEdge.West:
+                    return new TileSelectionHit(TileSelectionTarget.LeftBorder, hit.OpenCellX, hit.OpenCellY);
+                default:
+                    return default;
+            }
+        }
+
         private void UpdateState()
         {
             CameraController.UpdateState(this, AttachedCamera.transform);
@@ -475,7 +531,10 @@ namespace Warlander.Deedplanner.Cameras
             GameObject hitObject = CurrentRaycast.collider.gameObject;
             GroundMesh groundMesh = hitObject.GetComponent<GroundMesh>();
             OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
-            HeightmapHandle heightmapHandle = _mapHandler.Map.SurfaceGridMesh.RaycastHandles();
+            GridMesh activeGrid = Level < 0 ? _mapHandler.Map.CaveGridMesh : _mapHandler.Map.SurfaceGridMesh;
+            HeightmapHandle heightmapHandle = _tabContext.CurrentTab == Tab.Height
+                ? activeGrid.RaycastHandles()
+                : null;
 
             bool gridOrGroundHit = groundMesh || overlayMesh || heightmapHandle != null;
 
@@ -510,9 +569,20 @@ namespace Warlander.Deedplanner.Cameras
                     normals = new Vector3[vertices.Length];
                 }
                 int[] triangles = mesh.triangles;
+                int firstTriangle = 0;
+                int triangleCount = triangles.Length / 3;
+                CaveChunk caveChunk = hitCollider.GetComponent<CaveChunk>();
+                if (caveChunk != null && caveChunk.TryGetLogicalFaceTriangleRange(
+                        CurrentRaycast.triangleIndex, out int logicalFirst, out int logicalCount))
+                {
+                    firstTriangle = logicalFirst;
+                    triangleCount = logicalCount;
+                }
                 GL.Begin(GL.TRIANGLES);
                 GL.Color(pickerColor);
-                for (int i = 0; i < triangles.Length; i += 3)
+                int firstIndex = firstTriangle * 3;
+                int lastIndex = firstIndex + triangleCount * 3;
+                for (int i = firstIndex; i < lastIndex; i += 3)
                 {
                     GL.Vertex(vertices[triangles[i]] + normals[triangles[i]] * 0.05f);
                     GL.Vertex(vertices[triangles[i + 1]] + normals[triangles[i + 1]] * 0.05f);

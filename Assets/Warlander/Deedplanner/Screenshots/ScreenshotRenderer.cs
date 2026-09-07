@@ -31,16 +31,12 @@ namespace Warlander.Deedplanner.Screenshots
                 return null;
             }
 
-            bool previousRenderGrid = map.RenderGrid;
+            bool previousOutlineSuspension = _outlineCoordinator.RenderingSuspended;
 
             _outlineCoordinator.RenderingSuspended = true;
-            map.RenderGrid = false;
 
             try
             {
-                map.RenderedLevel = request.Level;
-                map.RenderEntireMap = request.RenderEntireMap;
-
                 Camera camera = GetOrCreateCamera();
                 // Shaders read camera position from the transform (_WorldSpaceCameraPos),
                 // not from the view matrix — both must be set or view-dependent lighting breaks.
@@ -61,7 +57,9 @@ namespace Warlander.Deedplanner.Screenshots
                 camera.targetTexture = renderTexture;
 
                 bool renderWater = request.RenderEntireMap || request.Level == 0 || request.Level == -1;
-                using (_waterFacade.PrepareForCamera(camera, request.CameraController, renderWater, WaterQuality.Ultra))
+                using (map.PrepareForCamera(new MapRenderView(request.Level, request.RenderEntireMap, false)))
+                using (_waterFacade.PrepareForCamera(camera, request.CameraController, renderWater,
+                           WaterQuality.Ultra))
                 {
                     camera.Render();
                 }
@@ -79,8 +77,7 @@ namespace Warlander.Deedplanner.Screenshots
             }
             finally
             {
-                map.RenderGrid = previousRenderGrid;
-                _outlineCoordinator.RenderingSuspended = false;
+                _outlineCoordinator.RenderingSuspended = previousOutlineSuspension;
             }
         }
 

@@ -3,6 +3,7 @@ Shader "DeedPlanner/Cave Shell"
     Properties
     {
         [NoScaleOffset] _MainTex("Cave Textures", 2DArray) = "white" {}
+        _BaseColor("Base Color", Color) = (1, 1, 1, 1)
         [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", Float) = 2
     }
 
@@ -27,6 +28,10 @@ Shader "DeedPlanner/Cave Shell"
 
             TEXTURE2D_ARRAY(_MainTex);
             SAMPLER(sampler_MainTex);
+
+            CBUFFER_START(UnityPerMaterial)
+                half4 _BaseColor;
+            CBUFFER_END
 
             struct Attributes
             {
@@ -56,6 +61,7 @@ Shader "DeedPlanner/Cave Shell"
             half4 Fragment(Varyings input) : SV_Target
             {
                 half4 color = SAMPLE_TEXTURE2D_ARRAY(_MainTex, sampler_MainTex, input.uv, input.textureIndex);
+                color.rgb *= _BaseColor.rgb;
                 color.rgb = MixFog(color.rgb, input.fogFactor);
                 return color;
             }

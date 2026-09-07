@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using Warlander.Deedplanner.Domain;
 
 namespace Warlander.Deedplanner.Caves
 {
@@ -21,6 +22,7 @@ namespace Warlander.Deedplanner.Caves
 
         public void Initialize(int minimumX, int minimumY, int width, int height, Material material)
         {
+            gameObject.layer = LayerMasks.CaveLayer;
             MinimumX = minimumX;
             MinimumY = minimumY;
             Width = width;
@@ -69,16 +71,43 @@ namespace Warlander.Deedplanner.Caves
             }
 
             face = _faces[triangleIndex];
+            return face.Revision == ColliderRevision;
+        }
+
+        public bool TryGetLogicalFaceTriangleRange(int triangleIndex, out int firstTriangleIndex,
+            out int triangleCount)
+        {
+            if (!TryGetFace(triangleIndex, out CaveFace face))
+            {
+                firstTriangleIndex = 0;
+                triangleCount = 0;
+                return false;
+            }
+
+            firstTriangleIndex = triangleIndex;
+            while (firstTriangleIndex > 0 && face.IsSameLogicalFace(_faces[firstTriangleIndex - 1]))
+            {
+                firstTriangleIndex--;
+            }
+
+            int lastTriangleIndex = triangleIndex;
+            while (lastTriangleIndex + 1 < _faces.Length
+                   && face.IsSameLogicalFace(_faces[lastTriangleIndex + 1]))
+            {
+                lastTriangleIndex++;
+            }
+
+            triangleCount = lastTriangleIndex - firstTriangleIndex + 1;
             return true;
         }
 
         private void OnDestroy()
         {
-            DestroyObject(_renderMesh);
-            DestroyObject(_colliderMesh);
+            DestroyMesh(_renderMesh);
+            DestroyMesh(_colliderMesh);
         }
 
-        private static void DestroyObject(Object target)
+        private static void DestroyMesh(Object target)
         {
             if (!target)
             {

@@ -38,6 +38,18 @@ namespace Warlander.Deedplanner.Domain
 
         public bool HandlesVisible { get; set; }
 
+        public IDisposable PrepareForCamera(bool showHeightColors, float alphaMultiplier, Material material)
+        {
+            var scope = new CameraScope(this, HandlesVisible, renderHeightColors, _alphaMultiplier,
+                meshRenderer.sharedMaterial);
+            HandlesVisible = showHeightColors;
+            SetRenderHeightColors(showHeightColors);
+            SetAlphaMultiplier(alphaMultiplier);
+            SetMaterial(material);
+            ApplyAllChanges();
+            return scope;
+        }
+
         public void Initialize(Map map, bool cave)
         {
             meshFilter = GetComponent<MeshFilter>();
@@ -283,6 +295,40 @@ namespace Warlander.Deedplanner.Domain
 
             dirty = false;
             verticesChanged = false;
+        }
+
+        private sealed class CameraScope : IDisposable
+        {
+            private GridMesh _grid;
+            private readonly bool _handlesVisible;
+            private readonly bool _renderHeightColors;
+            private readonly float _alphaMultiplier;
+            private readonly Material _material;
+
+            public CameraScope(GridMesh grid, bool handlesVisible, bool renderHeightColors,
+                float alphaMultiplier, Material material)
+            {
+                _grid = grid;
+                _handlesVisible = handlesVisible;
+                _renderHeightColors = renderHeightColors;
+                _alphaMultiplier = alphaMultiplier;
+                _material = material;
+            }
+
+            public void Dispose()
+            {
+                if (_grid == null)
+                {
+                    return;
+                }
+
+                _grid.HandlesVisible = _handlesVisible;
+                _grid.SetRenderHeightColors(_renderHeightColors);
+                _grid.SetAlphaMultiplier(_alphaMultiplier);
+                _grid.SetMaterial(_material);
+                _grid.ApplyAllChanges();
+                _grid = null;
+            }
         }
     }
 }

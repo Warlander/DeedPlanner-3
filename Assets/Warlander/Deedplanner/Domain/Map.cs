@@ -38,6 +38,7 @@ namespace Warlander.Deedplanner.Domain
         [Inject] private ICaveDataResolver _caveDataResolver;
         [Inject] private GroundTextureArray _groundTextures;
         [Inject] private CaveTextureArray _caveTextures;
+        [Inject] private ICaveRenderOptions _caveRenderOptions;
         [Inject] private TabContext _tabContext;
 
         public GroundMesh Ground { get; private set; }
@@ -129,6 +130,11 @@ namespace Warlander.Deedplanner.Domain
         {
             get => _levelRenderer.RenderGrid;
             set => _levelRenderer.RenderGrid = value;
+        }
+
+        public IDisposable PrepareForCamera(MapRenderView view)
+        {
+            return _levelRenderer.PrepareForCamera(view);
         }
 
         private void Start()
@@ -331,7 +337,7 @@ namespace Warlander.Deedplanner.Domain
             GameObject caveShellObject = new GameObject("Cave Shell", typeof(CaveRenderer));
             CaveShell = caveShellObject.GetComponent<CaveRenderer>();
             CaveShell.Initialize(width, height, Caves, CaveEditor, _dataCatalog.DefaultCaveData,
-                _sharedMaterials.CaveMaterial, _caveTextures);
+                _sharedMaterials.CaveMaterial, _caveTextures, _caveRenderOptions);
             caveShellObject.transform.SetParent(_caveShellRoot, false);
 
             SurfaceGridMesh = PrepareGridMesh("Surface grid", _surfaceGridRoot, false);

@@ -115,6 +115,7 @@ namespace Warlander.Deedplanner.Composition
 
             builder.Register<GroundTextureArray>(Lifetime.Singleton);
             builder.Register<CaveTextureArray>(Lifetime.Singleton);
+            builder.Register<CaveRenderOptions>(Lifetime.Singleton).AsSelf().As<ICaveRenderOptions>();
             builder.Register<MapHandler>(Lifetime.Singleton);
             builder.RegisterEntryPoint<UndoRedoInputHandler>();
             builder.RegisterEntryPoint<QuickSaveInputHandler>();
@@ -150,6 +151,7 @@ namespace Warlander.Deedplanner.Composition
             builder.Register<HeightmapHandleMeshLoader>(Lifetime.Singleton);
 
             builder.Register<CaveDataResolver>(Lifetime.Singleton).As<ICaveDataResolver>();
+            builder.Register<CaveHitResolver>(Lifetime.Singleton).As<ICaveHitResolver>();
             builder.Register<IGroundDataResolver>(container => new GroundDataResolver(
                 container.Resolve<IDataCatalog>(), container.Resolve<MapHandler>().Logger), Lifetime.Singleton);
             builder.Register<TileFactory>(Lifetime.Singleton);

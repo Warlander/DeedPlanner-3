@@ -12,6 +12,7 @@ namespace Warlander.Deedplanner.Domain
         public const int WallLayer = 12;
         public const int DecorationLayer = 13;
         public const int BridgeLayer = 14;
+        public const int CaveLayer = 15;
 
         // Masks from layers to use in raytracer
         public const int TileMask = 1 << TileLayer;
@@ -20,6 +21,7 @@ namespace Warlander.Deedplanner.Domain
         public const int WallMask = 1 << WallLayer;
         public const int DecorationMask = 1 << DecorationLayer;
         public const int BridgeMask = 1 << BridgeLayer;
+        public const int CaveMask = 1 << CaveLayer;
 
         // Combined masks to toggle what is raytraced for given feature
         public const int GroundEditMask = GroundMask;
@@ -36,14 +38,19 @@ namespace Warlander.Deedplanner.Domain
 
         public static int GetMaskForTab(Tab tab)
         {
+            return GetMaskForTab(tab, 0);
+        }
+
+        public static int GetMaskForTab(Tab tab, int level)
+        {
             switch (tab)
             {
                 case Tab.Ground:
                     return GroundEditMask;
                 case Tab.Caves:
-                    return GroundEditMask;
+                    return CaveMask;
                 case Tab.Height:
-                    return HeightEditMask;
+                    return level < 0 ? CaveMask : HeightEditMask;
                 case Tab.Floors:
                     return FloorEditMask;
                 case Tab.Roofs:

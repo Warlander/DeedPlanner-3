@@ -43,5 +43,17 @@ namespace Warlander.Deedplanner.Caves
             HasSolidOwner = true;
             Revision = revision;
         }
+
+        public bool IsSameLogicalFace(CaveFace other)
+        {
+            return Kind == other.Kind
+                   && OpenCellX == other.OpenCellX
+                   && OpenCellY == other.OpenCellY
+                   && SolidOwnerX == other.SolidOwnerX
+                   && SolidOwnerY == other.SolidOwnerY
+                   && Edge == other.Edge
+                   && HasSolidOwner == other.HasSolidOwner
+                   && Revision == other.Revision;
+        }
     }
 }
