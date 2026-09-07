@@ -9,7 +9,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using Warlander.Deedplanner.Editing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1266,6 +1265,15 @@ namespace Warlander.Deedplanner.Inputs
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Pick Tile"",
+                    ""type"": ""Button"",
+                    ""id"": ""dc4d947b-e81f-4043-8480-1c93255f3521"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1290,24 +1298,7 @@ namespace Warlander.Deedplanner.Inputs
                     ""action"": ""Deletion"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
-            ""name"": ""Ground Updater"",
-            ""id"": ""14c71b29-8c4d-4c85-a9bc-a763f93d7ed4"",
-            ""actions"": [
-                {
-                    ""name"": ""Pick Tile"",
-                    ""type"": ""Button"",
-                    ""id"": ""dc4d947b-e81f-4043-8480-1c93255f3521"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
+                },
                 {
                     ""name"": """",
                     ""id"": ""30536ec3-6f95-4d47-aeee-2403378380c1"",
@@ -1543,9 +1534,7 @@ namespace Warlander.Deedplanner.Inputs
             m_UpdatersShared = asset.FindActionMap("Updaters Shared", throwIfNotFound: true);
             m_UpdatersShared_Placement = m_UpdatersShared.FindAction("Placement", throwIfNotFound: true);
             m_UpdatersShared_Deletion = m_UpdatersShared.FindAction("Deletion", throwIfNotFound: true);
-            // Ground Updater
-            m_GroundUpdater = asset.FindActionMap("Ground Updater", throwIfNotFound: true);
-            m_GroundUpdater_PickTile = m_GroundUpdater.FindAction("Pick Tile", throwIfNotFound: true);
+            m_UpdatersShared_PickTile = m_UpdatersShared.FindAction("Pick Tile", throwIfNotFound: true);
             // Height Updater
             m_HeightUpdater = asset.FindActionMap("Height Updater", throwIfNotFound: true);
             m_HeightUpdater_DragSelection = m_HeightUpdater.FindAction("Drag Selection", throwIfNotFound: true);
@@ -1564,7 +1553,6 @@ namespace Warlander.Deedplanner.Inputs
             UnityEngine.Debug.Assert(!m_MapInput3D.enabled, "This will cause a leak and performance issues, DPInput.MapInput3D.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_EditingControls.enabled, "This will cause a leak and performance issues, DPInput.EditingControls.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_UpdatersShared.enabled, "This will cause a leak and performance issues, DPInput.UpdatersShared.Disable() has not been called.");
-            UnityEngine.Debug.Assert(!m_GroundUpdater.enabled, "This will cause a leak and performance issues, DPInput.GroundUpdater.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_HeightUpdater.enabled, "This will cause a leak and performance issues, DPInput.HeightUpdater.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_DecorationUpdater.enabled, "This will cause a leak and performance issues, DPInput.DecorationUpdater.Disable() has not been called.");
         }
@@ -2355,6 +2343,7 @@ namespace Warlander.Deedplanner.Inputs
         private List<IUpdatersSharedActions> m_UpdatersSharedActionsCallbackInterfaces = new List<IUpdatersSharedActions>();
         private readonly InputAction m_UpdatersShared_Placement;
         private readonly InputAction m_UpdatersShared_Deletion;
+        private readonly InputAction m_UpdatersShared_PickTile;
         /// <summary>
         /// Provides access to input actions defined in input action map "Updaters Shared".
         /// </summary>
@@ -2374,6 +2363,10 @@ namespace Warlander.Deedplanner.Inputs
             /// Provides access to the underlying input action "UpdatersShared/Deletion".
             /// </summary>
             public InputAction @Deletion => m_Wrapper.m_UpdatersShared_Deletion;
+            /// <summary>
+            /// Provides access to the underlying input action "UpdatersShared/PickTile".
+            /// </summary>
+            public InputAction @PickTile => m_Wrapper.m_UpdatersShared_PickTile;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -2406,6 +2399,9 @@ namespace Warlander.Deedplanner.Inputs
                 @Deletion.started += instance.OnDeletion;
                 @Deletion.performed += instance.OnDeletion;
                 @Deletion.canceled += instance.OnDeletion;
+                @PickTile.started += instance.OnPickTile;
+                @PickTile.performed += instance.OnPickTile;
+                @PickTile.canceled += instance.OnPickTile;
             }
 
             /// <summary>
@@ -2423,6 +2419,9 @@ namespace Warlander.Deedplanner.Inputs
                 @Deletion.started -= instance.OnDeletion;
                 @Deletion.performed -= instance.OnDeletion;
                 @Deletion.canceled -= instance.OnDeletion;
+                @PickTile.started -= instance.OnPickTile;
+                @PickTile.performed -= instance.OnPickTile;
+                @PickTile.canceled -= instance.OnPickTile;
             }
 
             /// <summary>
@@ -2456,102 +2455,6 @@ namespace Warlander.Deedplanner.Inputs
         /// Provides a new <see cref="UpdatersSharedActions" /> instance referencing this action map.
         /// </summary>
         public UpdatersSharedActions @UpdatersShared => new UpdatersSharedActions(this);
-
-        // Ground Updater
-        private readonly InputActionMap m_GroundUpdater;
-        private List<IGroundUpdaterActions> m_GroundUpdaterActionsCallbackInterfaces = new List<IGroundUpdaterActions>();
-        private readonly InputAction m_GroundUpdater_PickTile;
-        /// <summary>
-        /// Provides access to input actions defined in input action map "Ground Updater".
-        /// </summary>
-        public struct GroundUpdaterActions
-        {
-            private @DPInput m_Wrapper;
-
-            /// <summary>
-            /// Construct a new instance of the input action map wrapper class.
-            /// </summary>
-            public GroundUpdaterActions(@DPInput wrapper) { m_Wrapper = wrapper; }
-            /// <summary>
-            /// Provides access to the underlying input action "GroundUpdater/PickTile".
-            /// </summary>
-            public InputAction @PickTile => m_Wrapper.m_GroundUpdater_PickTile;
-            /// <summary>
-            /// Provides access to the underlying input action map instance.
-            /// </summary>
-            public InputActionMap Get() { return m_Wrapper.m_GroundUpdater; }
-            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
-            public void Enable() { Get().Enable(); }
-            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
-            public void Disable() { Get().Disable(); }
-            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
-            public bool enabled => Get().enabled;
-            /// <summary>
-            /// Implicitly converts an <see ref="GroundUpdaterActions" /> to an <see ref="InputActionMap" /> instance.
-            /// </summary>
-            public static implicit operator InputActionMap(GroundUpdaterActions set) { return set.Get(); }
-            /// <summary>
-            /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
-            /// </summary>
-            /// <param name="instance">Callback instance.</param>
-            /// <remarks>
-            /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
-            /// </remarks>
-            /// <seealso cref="GroundUpdaterActions" />
-            public void AddCallbacks(IGroundUpdaterActions instance)
-            {
-                if (instance == null || m_Wrapper.m_GroundUpdaterActionsCallbackInterfaces.Contains(instance)) return;
-                m_Wrapper.m_GroundUpdaterActionsCallbackInterfaces.Add(instance);
-                @PickTile.started += instance.OnPickTile;
-                @PickTile.performed += instance.OnPickTile;
-                @PickTile.canceled += instance.OnPickTile;
-            }
-
-            /// <summary>
-            /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
-            /// </summary>
-            /// <remarks>
-            /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
-            /// </remarks>
-            /// <seealso cref="GroundUpdaterActions" />
-            private void UnregisterCallbacks(IGroundUpdaterActions instance)
-            {
-                @PickTile.started -= instance.OnPickTile;
-                @PickTile.performed -= instance.OnPickTile;
-                @PickTile.canceled -= instance.OnPickTile;
-            }
-
-            /// <summary>
-            /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="GroundUpdaterActions.UnregisterCallbacks(IGroundUpdaterActions)" />.
-            /// </summary>
-            /// <seealso cref="GroundUpdaterActions.UnregisterCallbacks(IGroundUpdaterActions)" />
-            public void RemoveCallbacks(IGroundUpdaterActions instance)
-            {
-                if (m_Wrapper.m_GroundUpdaterActionsCallbackInterfaces.Remove(instance))
-                    UnregisterCallbacks(instance);
-            }
-
-            /// <summary>
-            /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
-            /// </summary>
-            /// <remarks>
-            /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
-            /// </remarks>
-            /// <seealso cref="GroundUpdaterActions.AddCallbacks(IGroundUpdaterActions)" />
-            /// <seealso cref="GroundUpdaterActions.RemoveCallbacks(IGroundUpdaterActions)" />
-            /// <seealso cref="GroundUpdaterActions.UnregisterCallbacks(IGroundUpdaterActions)" />
-            public void SetCallbacks(IGroundUpdaterActions instance)
-            {
-                foreach (var item in m_Wrapper.m_GroundUpdaterActionsCallbackInterfaces)
-                    UnregisterCallbacks(item);
-                m_Wrapper.m_GroundUpdaterActionsCallbackInterfaces.Clear();
-                AddCallbacks(instance);
-            }
-        }
-        /// <summary>
-        /// Provides a new <see cref="GroundUpdaterActions" /> instance referencing this action map.
-        /// </summary>
-        public GroundUpdaterActions @GroundUpdater => new GroundUpdaterActions(this);
 
         // Height Updater
         private readonly InputActionMap m_HeightUpdater;
@@ -3022,14 +2925,6 @@ namespace Warlander.Deedplanner.Inputs
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnDeletion(InputAction.CallbackContext context);
-        }
-        /// <summary>
-        /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Ground Updater" which allows adding and removing callbacks.
-        /// </summary>
-        /// <seealso cref="GroundUpdaterActions.AddCallbacks(IGroundUpdaterActions)" />
-        /// <seealso cref="GroundUpdaterActions.RemoveCallbacks(IGroundUpdaterActions)" />
-        public interface IGroundUpdaterActions
-        {
             /// <summary>
             /// Method invoked when associated input action "Pick Tile" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>

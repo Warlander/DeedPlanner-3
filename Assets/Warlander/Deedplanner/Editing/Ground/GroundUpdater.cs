@@ -129,7 +129,7 @@ namespace Warlander.Deedplanner.Editing
             Tile tile = map[tileX, tileZ];
             Ground ground = tile.Ground;
 
-            if (_input.GroundUpdater.PickTile.IsPressed())
+            if (_input.UpdatersShared.PickTile.IsPressed())
             {
                 if (_input.UpdatersShared.Placement.WasPressedThisFrame())
                 {

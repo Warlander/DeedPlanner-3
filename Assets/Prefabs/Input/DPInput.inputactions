@@ -1176,6 +1176,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Pick Tile",
+                    "type": "Button",
+                    "id": "dc4d947b-e81f-4043-8480-1c93255f3521",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1200,24 +1209,7 @@
                     "action": "Deletion",
                     "isComposite": false,
                     "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Ground Updater",
-            "id": "14c71b29-8c4d-4c85-a9bc-a763f93d7ed4",
-            "actions": [
-                {
-                    "name": "Pick Tile",
-                    "type": "Button",
-                    "id": "dc4d947b-e81f-4043-8480-1c93255f3521",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
+                },
                 {
                     "name": "",
                     "id": "30536ec3-6f95-4d47-aeee-2403378380c1",
