@@ -35,6 +35,7 @@ namespace Warlander.Deedplanner.Domain
         [Inject] private MapRoofCalculator _roofCalculator;
         [Inject] private ISharedMaterials _sharedMaterials;
         [Inject] private IDataCatalog _dataCatalog;
+        [Inject] private ICaveDataResolver _caveDataResolver;
         [Inject] private GroundTextureArray _groundTextures;
         [Inject] private TabContext _tabContext;
 
@@ -43,6 +44,7 @@ namespace Warlander.Deedplanner.Domain
         public GridMesh SurfaceGridMesh { get; private set; }
         public GridMesh CaveGridMesh { get; private set; }
         public ICaveMap Caves { get; private set; }
+        public ICaveEditor CaveEditor { get; private set; }
 
         public int Width => _tileGrid.Width;
         public int Height => _tileGrid.Height;
@@ -317,6 +319,7 @@ namespace Warlander.Deedplanner.Domain
             }
 
             Caves = new CaveMap(width, height, (x, y) => _tileGrid[x, y]?.Cave, _dataCatalog.DefaultCaveData);
+            CaveEditor = new CaveEditor(new MapCaveMutationTarget(this), _caveDataResolver);
 
             SurfaceGridMesh = PrepareGridMesh("Surface grid", _surfaceGridRoot, false);
             CaveGridMesh = PrepareGridMesh("Cave grid", _caveGridRoot, true);

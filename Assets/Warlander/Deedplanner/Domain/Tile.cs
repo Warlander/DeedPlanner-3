@@ -53,32 +53,12 @@ namespace Warlander.Deedplanner.Domain
 
         public int CaveHeight {
             get => Cave.FloorHeight;
-            set {
-                int previousHeight = Cave.FloorHeight;
-                Cave.SetFloorHeight(value);
-                // TODO: add cave mesh handling
-                RefreshCaveEntities();
-                Map.GetRelativeTile(this, -1, 0)?.RefreshCaveEntities();
-                Map.GetRelativeTile(this, 0, -1)?.RefreshCaveEntities();
-                Map.GetRelativeTile(this, -1, -1)?.RefreshCaveEntities();
-
-                Map.RecalculateCaveHeight(X, Y, previousHeight);
-                Map.RefreshBridgesForCaveHeight(X, Y);
-            }
+            set => Map.CaveEditor.SetFloorHeightAtVertex(X, Y, value);
         }
 
         public int CaveSize {
             get => Cave.Clearance;
-            set {
-                Cave.SetClearance(value);
-                // TODO: add cave mesh handling
-                RefreshCaveEntities();
-                Map.GetRelativeTile(this, -1, 0)?.RefreshCaveEntities();
-                Map.GetRelativeTile(this, 0, -1)?.RefreshCaveEntities();
-                Map.GetRelativeTile(this, -1, -1)?.RefreshCaveEntities();
-
-                Map.RecalculateCaveHeight(X, Y, Cave.FloorHeight);
-            }
+            set => Map.CaveEditor.SetClearanceAtVertex(X, Y, value);
         }
 
         private readonly ICaveDataResolver _caveDataResolver;
@@ -118,6 +98,35 @@ namespace Warlander.Deedplanner.Domain
 
             RefreshSurfaceEntities();
             RefreshCaveEntities();
+        }
+
+        internal void ApplyCaveTerrain(CaveData terrain)
+        {
+            Cave.SetTerrain(terrain);
+            RefreshCaveEntities();
+        }
+
+        internal void ApplyCaveFloorHeight(int height)
+        {
+            int previousHeight = Cave.FloorHeight;
+            Cave.SetFloorHeight(height);
+            RefreshCaveCornerEntities();
+            Map.RecalculateCaveHeight(X, Y, previousHeight);
+            Map.RefreshBridgesForCaveHeight(X, Y);
+        }
+
+        internal void ApplyCaveClearance(int clearance)
+        {
+            Cave.SetClearance(clearance);
+            RefreshCaveCornerEntities();
+        }
+
+        private void RefreshCaveCornerEntities()
+        {
+            RefreshCaveEntities();
+            Map.GetRelativeTile(this, -1, 0)?.RefreshCaveEntities();
+            Map.GetRelativeTile(this, 0, -1)?.RefreshCaveEntities();
+            Map.GetRelativeTile(this, -1, -1)?.RefreshCaveEntities();
         }
 
         private void PasteEntity(EntityData data, LevelEntity entity)
@@ -275,6 +284,24 @@ namespace Warlander.Deedplanner.Domain
             LevelEntity levelEntity;
             Entities.TryGetValue(entityData, out levelEntity);
             return levelEntity;
+        }
+
+        internal bool HasCaveContent()
+        {
+            foreach (EntityData entityData in Entities.Keys)
+            {
+                if (entityData.IsCave)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal ICaveContentRemoval CreateCaveContentRemoval()
+        {
+            return new CaveContentRemoval(this);
         }
 
         public Floor SetFloor(FloorData data, EntityOrientation orientation, int level)
@@ -967,6 +994,99 @@ namespace Warlander.Deedplanner.Domain
             bool shouldRender = renderDecorations && renderTrees && renderBushes && renderShips;
 
             decoration.gameObject.SetActive(shouldRender);
+        }
+
+        private sealed class CaveContentRemoval : ICaveContentRemoval
+        {
+            private readonly Tile _tile;
+            private readonly EntityData[] _data;
+            private readonly LevelEntity[] _entities;
+
+            public CaveContentRemoval(Tile tile)
+            {
+                _tile = tile;
+                var data = new List<EntityData>();
+                var entities = new List<LevelEntity>();
+                foreach (KeyValuePair<EntityData, LevelEntity> pair in tile.Entities)
+                {
+                    if (pair.Key.IsCave)
+                    {
+                        data.Add(pair.Key);
+                        entities.Add(pair.Value);
+                    }
+                }
+
+                _data = data.ToArray();
+                _entities = entities.ToArray();
+            }
+
+            public void Remove()
+            {
+                for (int i = 0; i < _data.Length; i++)
+                {
+                    _tile.Entities.Remove(_data[i]);
+                    if (_entities[i])
+                    {
+                        _entities[i].gameObject.SetActive(false);
+                    }
+                }
+
+                Refresh();
+            }
+
+            public void Restore()
+            {
+                for (int i = 0; i < _data.Length; i++)
+                {
+                    _tile.Entities[_data[i]] = _entities[i];
+                    if (_entities[i])
+                    {
+                        _entities[i].gameObject.SetActive(true);
+                    }
+                }
+
+                Refresh();
+            }
+
+            public void DestroyRemoved()
+            {
+                foreach (LevelEntity entity in _entities)
+                {
+                    if (entity)
+                    {
+                        Object.Destroy(entity.gameObject);
+                    }
+                }
+            }
+
+            private void Refresh()
+            {
+                bool recalculateRoofs = false;
+                foreach (EntityData data in _data)
+                {
+                    switch (data.Type)
+                    {
+                        case EntityType.Vwall:
+                        case EntityType.Vfence:
+                            _tile.Map.RefreshDocksForWallChange(_tile.X, _tile.Y, true);
+                            break;
+                        case EntityType.Hwall:
+                        case EntityType.Hfence:
+                            _tile.Map.RefreshDocksForWallChange(_tile.X, _tile.Y, false);
+                            break;
+                        case EntityType.Floorroof:
+                            recalculateRoofs = true;
+                            _tile.Map.RefreshDocksForFloorChange(_tile.X, _tile.Y);
+                            break;
+                    }
+                }
+
+                _tile.RefreshCaveEntities();
+                if (recalculateRoofs)
+                {
+                    _tile.Map.RecalculateRoofs();
+                }
+            }
         }
 
         private class TileEntityChangeCommand : IReversibleCommand

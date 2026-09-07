@@ -91,6 +91,11 @@ namespace Warlander.Deedplanner.Caves
             FloorHeight = floorHeight;
         }
 
+        internal void SetTerrain(CaveData terrain)
+        {
+            Terrain = terrain;
+        }
+
         internal void SetClearance(int clearance)
         {
             Clearance = clearance;
