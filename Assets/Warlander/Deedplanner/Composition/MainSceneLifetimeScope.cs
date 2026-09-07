@@ -114,6 +114,7 @@ namespace Warlander.Deedplanner.Composition
             builder.Register<MapRenderSettings>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
             builder.Register<GroundTextureArray>(Lifetime.Singleton);
+            builder.Register<CaveTextureArray>(Lifetime.Singleton);
             builder.Register<MapHandler>(Lifetime.Singleton);
             builder.RegisterEntryPoint<UndoRedoInputHandler>();
             builder.RegisterEntryPoint<QuickSaveInputHandler>();

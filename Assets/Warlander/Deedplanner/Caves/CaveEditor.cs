@@ -11,6 +11,7 @@ namespace Warlander.Deedplanner.Caves
         private readonly ICaveDataResolver _dataResolver;
 
         public event Action<CaveDirtyRegion> Changed = delegate { };
+        public event Action<CaveDirtyRegion> EditCompleted = delegate { };
 
         public CaveEditor(ICaveMutationTarget target, ICaveDataResolver dataResolver)
         {
@@ -73,7 +74,7 @@ namespace Warlander.Deedplanner.Caves
         private void ApplyLive(CaveEditChange change)
         {
             ApplyChange(change, true);
-            PublishDirtyRegion(new[] { change });
+            Changed(CreateDirtyRegion(new[] { change }));
         }
 
         private void Apply(CaveEditChange[] changes, bool forward)
@@ -93,7 +94,9 @@ namespace Warlander.Deedplanner.Caves
                 }
             }
 
-            PublishDirtyRegion(changes);
+            CaveDirtyRegion region = CreateDirtyRegion(changes);
+            Changed(region);
+            EditCompleted(region);
         }
 
         private void ApplyChange(CaveEditChange change, bool forward)
@@ -127,7 +130,7 @@ namespace Warlander.Deedplanner.Caves
             }
         }
 
-        private void PublishDirtyRegion(IEnumerable<CaveEditChange> changes)
+        private CaveDirtyRegion CreateDirtyRegion(IEnumerable<CaveEditChange> changes)
         {
             var region = new CaveDirtyRegion();
             foreach (CaveEditChange change in changes)
@@ -142,7 +145,7 @@ namespace Warlander.Deedplanner.Caves
                 }
             }
 
-            Changed(region);
+            return region;
         }
 
         private void AddTerrainDirtyCells(CaveDirtyRegion region, int x, int y)
@@ -228,6 +231,7 @@ namespace Warlander.Deedplanner.Caves
                 if (_changes.Count > 0)
                 {
                     _editor._target.Record(new CaveEditCommand(_editor, _changes.ToArray()));
+                    _editor.EditCompleted(_editor.CreateDirtyRegion(_changes));
                 }
 
                 _completed = true;

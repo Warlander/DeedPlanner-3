@@ -60,6 +60,34 @@ namespace Warlander.Deedplanner.Caves.Tests
         }
 
         [Test]
+        public void CompletedRegionPublishesOnceAfterLiveStroke()
+        {
+            int liveCount = 0;
+            int completedCount = 0;
+            CaveDirtyRegion completedRegion = null;
+            _editor.Changed += _ => liveCount++;
+            _editor.EditCompleted += region =>
+            {
+                completedCount++;
+                completedRegion = region;
+            };
+
+            using (ICaveEditStroke stroke = _editor.BeginTerrainStroke(
+                       _stoneWall, CaveOccupiedCellPolicy.PreserveAndHide))
+            {
+                stroke.ApplyAt(0, 0);
+                stroke.ApplyAt(2, 2);
+                Assert.That(completedCount, Is.Zero);
+                stroke.Commit();
+            }
+
+            Assert.That(liveCount, Is.EqualTo(2));
+            Assert.That(completedCount, Is.EqualTo(1));
+            Assert.That(completedRegion.ContainsCell(0, 0), Is.True);
+            Assert.That(completedRegion.ContainsCell(2, 2), Is.True);
+        }
+
+        [Test]
         public void TerrainChangeDirtiesCellAndCardinalNeighbors()
         {
             CaveDirtyRegion dirtyRegion = null;

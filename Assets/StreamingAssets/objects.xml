@@ -9063,7 +9063,7 @@
 
 	<caves>
 
-		<rock name="Stone wall" shortname="sw" type="wall" tex="Caves/cave_512.dds">
+		<rock name="Stone wall" shortname="sw" type="wall" tex="Caves/cave512.dds">
 			<category>Walls</category>
 		</rock>
 		<rock name="Reinforced stone wall" shortname="rsw" type="wall" tex="Caves/reinforcedcave_v1.dds">
@@ -9138,7 +9138,7 @@
 			<category>Walls/Decorative</category>
 		</rock>
 
-		<rock name="Stone floor" shortname="sfl" type="floor" tex="Caves/cave_512.dds">
+		<rock name="Stone floor" shortname="sfl" type="floor" tex="Caves/cave512.dds">
 			<category>Floors</category>
 		</rock>
 		<rock name="Reinforced stone floor" shortname="rsfl" type="floor" tex="Caves/reinforcedcaveFloor_v1.dds">

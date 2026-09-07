@@ -6,6 +6,7 @@ namespace Warlander.Deedplanner.Caves
     public interface ICaveEditor
     {
         event Action<CaveDirtyRegion> Changed;
+        event Action<CaveDirtyRegion> EditCompleted;
 
         bool SetTerrain(int x, int y, CaveData terrain, CaveOccupiedCellPolicy occupiedCellPolicy);
         bool SetFloorHeightAtVertex(int x, int y, int height);

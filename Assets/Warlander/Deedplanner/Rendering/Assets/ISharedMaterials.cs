@@ -7,6 +7,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
         Material SimpleDrawingMaterial { get; }
         Material SimpleSubtleDrawingMaterial { get; }
         Material TerrainMaterial { get; }
+        Material CaveMaterial { get; }
         Material GhostMaterial { get; }
     }
 }

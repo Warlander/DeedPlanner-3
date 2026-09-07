@@ -18,4 +18,5 @@ MonoBehaviour:
     type: 2}
   _terrainMaterial: {fileID: -876546973899608171, guid: de79bf08bc5080f4dae0f6429a577874,
     type: 3}
+  _caveMaterial: {fileID: 2100000, guid: 9ed4203edbb7761459546de7188d7c76, type: 2}
   _ghostMaterial: {fileID: 2100000, guid: 8f0ac5ff2be70c9458e974013c318ccc, type: 2}

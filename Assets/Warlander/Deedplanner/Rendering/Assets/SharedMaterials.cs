@@ -8,11 +8,13 @@ namespace Warlander.Deedplanner.Rendering.Assets
         [SerializeField] private Material _simpleDrawingMaterial;
         [SerializeField] private Material _simpleSubtleDrawingMaterial;
         [SerializeField] private Material _terrainMaterial;
+        [SerializeField] private Material _caveMaterial;
         [SerializeField] private Material _ghostMaterial;
 
         public Material SimpleDrawingMaterial => _simpleDrawingMaterial;
         public Material SimpleSubtleDrawingMaterial => _simpleSubtleDrawingMaterial;
         public Material TerrainMaterial => _terrainMaterial;
+        public Material CaveMaterial => _caveMaterial;
         public Material GhostMaterial => _ghostMaterial;
     }
 }

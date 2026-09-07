@@ -37,6 +37,7 @@ namespace Warlander.Deedplanner.Domain
         [Inject] private IDataCatalog _dataCatalog;
         [Inject] private ICaveDataResolver _caveDataResolver;
         [Inject] private GroundTextureArray _groundTextures;
+        [Inject] private CaveTextureArray _caveTextures;
         [Inject] private TabContext _tabContext;
 
         public GroundMesh Ground { get; private set; }
@@ -45,6 +46,7 @@ namespace Warlander.Deedplanner.Domain
         public GridMesh CaveGridMesh { get; private set; }
         public ICaveMap Caves { get; private set; }
         public ICaveEditor CaveEditor { get; private set; }
+        public CaveRenderer CaveShell { get; private set; }
 
         public int Width => _tileGrid.Width;
         public int Height => _tileGrid.Height;
@@ -105,6 +107,7 @@ namespace Warlander.Deedplanner.Domain
         private Transform[] _caveLevelRoots;
         private Transform _surfaceGridRoot;
         private Transform _caveGridRoot;
+        private Transform _caveShellRoot;
 
         public Tile this[int x, int y] => _tileGrid[x, y];
 
@@ -297,10 +300,14 @@ namespace Warlander.Deedplanner.Domain
             _caveGridRoot = new GameObject("Cave Grid").transform;
             _caveGridRoot.SetParent(transform);
             _caveGridRoot.gameObject.SetActive(false);
+            _caveShellRoot = new GameObject("Cave Shell Root").transform;
+            _caveShellRoot.SetParent(transform);
+            _caveShellRoot.gameObject.SetActive(false);
             PlaneLineRoot = new GameObject("Plane Lines").transform;
 
             _levelRenderer = new MapLevelRenderer();
             _levelRenderer.Initialize(_surfaceLevelRoots, _caveLevelRoots, _surfaceGridRoot, _caveGridRoot,
+                _caveShellRoot,
                 () => _bridgesController.Bridges, () => _dockCollection.Docks);
 
             GameObject groundObject = new GameObject("Ground Mesh", typeof(GroundMesh));
@@ -320,6 +327,12 @@ namespace Warlander.Deedplanner.Domain
 
             Caves = new CaveMap(width, height, (x, y) => _tileGrid[x, y]?.Cave, _dataCatalog.DefaultCaveData);
             CaveEditor = new CaveEditor(new MapCaveMutationTarget(this), _caveDataResolver);
+
+            GameObject caveShellObject = new GameObject("Cave Shell", typeof(CaveRenderer));
+            CaveShell = caveShellObject.GetComponent<CaveRenderer>();
+            CaveShell.Initialize(width, height, Caves, CaveEditor, _dataCatalog.DefaultCaveData,
+                _sharedMaterials.CaveMaterial, _caveTextures);
+            caveShellObject.transform.SetParent(_caveShellRoot, false);
 
             SurfaceGridMesh = PrepareGridMesh("Surface grid", _surfaceGridRoot, false);
             CaveGridMesh = PrepareGridMesh("Cave grid", _caveGridRoot, true);

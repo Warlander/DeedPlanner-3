@@ -14,6 +14,7 @@ namespace Warlander.Deedplanner.Domain
         private Transform[] _caveLevelRoots;
         private Transform _surfaceGridRoot;
         private Transform _caveGridRoot;
+        private Transform _caveShellRoot;
         private Func<IEnumerable<Bridge>> _getBridges;
         private Func<IEnumerable<Dock>> _getDocks;
 
@@ -28,6 +29,7 @@ namespace Warlander.Deedplanner.Domain
             Transform[] caveLevelRoots,
             Transform surfaceGridRoot,
             Transform caveGridRoot,
+            Transform caveShellRoot,
             Func<IEnumerable<Bridge>> getBridges,
             Func<IEnumerable<Dock>> getDocks)
         {
@@ -35,6 +37,7 @@ namespace Warlander.Deedplanner.Domain
             _caveLevelRoots = caveLevelRoots;
             _surfaceGridRoot = surfaceGridRoot;
             _caveGridRoot = caveGridRoot;
+            _caveShellRoot = caveShellRoot;
             _getBridges = getBridges;
             _getDocks = getDocks;
         }
@@ -105,6 +108,7 @@ namespace Warlander.Deedplanner.Domain
                 _surfaceGridRoot.gameObject.SetActive(false);
                 _caveGridRoot.gameObject.SetActive(_renderGrid);
                 _caveGridRoot.localPosition = new Vector3(0, absoluteLevel * 3, 0);
+                _caveShellRoot.gameObject.SetActive(true);
             }
             else
             {
@@ -116,6 +120,7 @@ namespace Warlander.Deedplanner.Domain
 
                 _surfaceGridRoot.gameObject.SetActive(_renderGrid);
                 _caveGridRoot.gameObject.SetActive(false);
+                _caveShellRoot.gameObject.SetActive(false);
                 _surfaceGridRoot.localPosition = new Vector3(0, absoluteLevel * 3 + 0.01f, 0);
             }
 
