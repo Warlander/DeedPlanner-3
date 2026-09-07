@@ -15,7 +15,7 @@ namespace Warlander.Deedplanner.Ui.Widgets
     [RequireComponent(typeof(Toggle))]
     public class LevelToggle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        private const string LevelLockedTooltip = "Current editing mode works only on the ground floor";
+        private const string LevelLockedTooltip = "Current editing mode does not support this level";
 
         [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private GroundLevelLock _groundLevelLock;
@@ -110,14 +110,13 @@ namespace Warlander.Deedplanner.Ui.Widgets
                 {
                     return false;
                 }
-                return !_groundLevelLock.Locked || _level == -1;
             }
             return _groundLevelLock.IsLevelAllowed(_level);
         }
 
         private bool ShowsLockTooltip()
         {
-            return _level > 0 && !_groundLevelLock.IsLevelAllowed(_level);
+            return !_groundLevelLock.IsLevelAllowed(_level);
         }
 
         private void OnDestroy()

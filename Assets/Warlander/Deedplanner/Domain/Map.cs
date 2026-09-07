@@ -340,8 +340,8 @@ namespace Warlander.Deedplanner.Domain
                 _sharedMaterials.CaveMaterial, _caveTextures, _caveRenderOptions);
             caveShellObject.transform.SetParent(_caveShellRoot, false);
 
-            SurfaceGridMesh = PrepareGridMesh("Surface grid", _surfaceGridRoot, false);
-            CaveGridMesh = PrepareGridMesh("Cave grid", _caveGridRoot, true);
+            SurfaceGridMesh = PrepareGridMesh("Surface grid", _surfaceGridRoot);
+            CaveGridMesh = PrepareGridMesh("Cave grid", _caveGridRoot);
 
             _heightTracker.SetCurrentMap(this);
             _roofCalculator.SetCurrentMap(this);
@@ -358,12 +358,12 @@ namespace Warlander.Deedplanner.Domain
             }
         }
 
-        private GridMesh PrepareGridMesh(string name, Transform parent, bool cave)
+        private GridMesh PrepareGridMesh(string name, Transform parent)
         {
             var gridMeshGO = new GameObject(name);
             GridMesh gridMesh = gridMeshGO.AddComponent<GridMesh>();
             _resolver.InjectGameObject(gridMeshGO);
-            gridMesh.Initialize(this, cave);
+            gridMesh.Initialize(this);
             gridMesh.transform.SetParent(parent);
             gridMesh.transform.localPosition = new Vector3(0, 0.01f, 0);
 

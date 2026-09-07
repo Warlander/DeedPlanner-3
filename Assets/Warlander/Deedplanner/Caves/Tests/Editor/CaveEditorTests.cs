@@ -263,6 +263,58 @@ namespace Warlander.Deedplanner.Caves.Tests
             Assert.That(_target.GetFloorHeightAtVertex(0, 0), Is.EqualTo(CaveCell.DefaultFloorHeight));
         }
 
+        [Test]
+        public void HeightEditKeepsLatestPreviewInOneUndoStep()
+        {
+            int completedCount = 0;
+            _editor.EditCompleted += _ => completedCount++;
+            using (ICaveHeightEdit edit = _editor.BeginFloorHeightEdit())
+            {
+                edit.SetAt(0, 0, 10);
+                edit.SetAt(0, 0, 20);
+                edit.SetAt(1, 0, 15);
+                edit.Commit();
+            }
+
+            Assert.That(_target.GetFloorHeightAtVertex(0, 0), Is.EqualTo(20));
+            Assert.That(_target.GetFloorHeightAtVertex(1, 0), Is.EqualTo(15));
+            Assert.That(completedCount, Is.EqualTo(1));
+
+            _target.CommandManager.Undo();
+
+            Assert.That(_target.GetFloorHeightAtVertex(0, 0), Is.EqualTo(CaveCell.DefaultFloorHeight));
+            Assert.That(_target.GetFloorHeightAtVertex(1, 0), Is.EqualTo(CaveCell.DefaultFloorHeight));
+        }
+
+        [Test]
+        public void CancelHeightEditRestoresOriginalValues()
+        {
+            using (ICaveHeightEdit edit = _editor.BeginClearanceEdit())
+            {
+                edit.SetAt(0, 0, 10);
+                edit.SetAt(0, 0, 20);
+                edit.Cancel();
+            }
+
+            Assert.That(_target.GetClearanceAtVertex(0, 0), Is.EqualTo(CaveCell.DefaultClearance));
+        }
+
+        [Test]
+        public void HeightEditReturningToOriginalRecordsNothing()
+        {
+            int mutationCount = 0;
+            _target.CommandManager.Mutated += () => mutationCount++;
+            using (ICaveHeightEdit edit = _editor.BeginClearanceEdit())
+            {
+                edit.SetAt(0, 0, 10);
+                edit.SetAt(0, 0, CaveCell.DefaultClearance);
+                edit.Commit();
+            }
+
+            Assert.That(mutationCount, Is.Zero);
+            Assert.That(_target.GetClearanceAtVertex(0, 0), Is.EqualTo(CaveCell.DefaultClearance));
+        }
+
         private sealed class FakeMutationTarget : ICaveMutationTarget
         {
             private readonly int _width;

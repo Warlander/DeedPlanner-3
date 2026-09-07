@@ -14,5 +14,7 @@ namespace Warlander.Deedplanner.Caves
         ICaveEditStroke BeginTerrainStroke(CaveData terrain, CaveOccupiedCellPolicy occupiedCellPolicy);
         ICaveEditStroke BeginFloorHeightStroke(int height);
         ICaveEditStroke BeginClearanceStroke(int clearance);
+        ICaveHeightEdit BeginFloorHeightEdit();
+        ICaveHeightEdit BeginClearanceEdit();
     }
 }

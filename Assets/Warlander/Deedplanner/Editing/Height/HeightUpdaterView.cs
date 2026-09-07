@@ -11,6 +11,9 @@ namespace Warlander.Deedplanner.Editing
         [SerializeField] private Toggle _createRampsToggle = null;
         [SerializeField] private Toggle _levelAreaToggle = null;
         [SerializeField] private Toggle _paintTerrainToggle = null;
+        [SerializeField] private Toggle _caveFloorToggle = null;
+        [SerializeField] private Toggle _caveClearanceToggle = null;
+        [SerializeField] private RectTransform _caveHeightModesTransform = null;
 
         [SerializeField] private RectTransform _handlesSettingsTransform = null;
         [SerializeField] private RectTransform _paintingSettingsTransform = null;
@@ -29,6 +32,7 @@ namespace Warlander.Deedplanner.Editing
         public event Action<string> DragSensitivityChanged;
         public event Action<bool> RespectOriginalSlopesChanged;
         public event Action<string> TargetHeightChanged;
+        public event Action<CaveHeightMode> CaveHeightModeChanged;
 
         private void Awake()
         {
@@ -36,6 +40,8 @@ namespace Warlander.Deedplanner.Editing
             _createRampsToggle.onValueChanged.AddListener(toggled => OnModeToggled(toggled, HeightMode.CreateRamps));
             _levelAreaToggle.onValueChanged.AddListener(toggled => OnModeToggled(toggled, HeightMode.LevelArea));
             _paintTerrainToggle.onValueChanged.AddListener(toggled => OnModeToggled(toggled, HeightMode.PaintTerrain));
+            _caveFloorToggle.onValueChanged.AddListener(toggled => OnCaveHeightModeToggled(toggled, CaveHeightMode.Floor));
+            _caveClearanceToggle.onValueChanged.AddListener(toggled => OnCaveHeightModeToggled(toggled, CaveHeightMode.Clearance));
 
             _dragSensitivityInput.onValueChanged.AddListener(OnDragSensitivityChanged);
             _respectOriginalSlopesToggle.onValueChanged.AddListener(OnRespectOriginalSlopesChanged);
@@ -63,6 +69,16 @@ namespace Warlander.Deedplanner.Editing
             _respectOriginalSlopesToggle.SetIsOnWithoutNotify(value);
         }
 
+        public void SetTargetHeight(string text)
+        {
+            _targetHeightInput.SetTextWithoutNotify(text);
+        }
+
+        public void ShowCaveHeightModes(bool visible)
+        {
+            _caveHeightModesTransform.gameObject.SetActive(visible);
+        }
+
         private void OnModeToggled(bool toggledOn, HeightMode mode)
         {
             if (toggledOn)
@@ -84,6 +100,14 @@ namespace Warlander.Deedplanner.Editing
         private void OnTargetHeightChanged(string value)
         {
             TargetHeightChanged?.Invoke(value);
+        }
+
+        private void OnCaveHeightModeToggled(bool toggledOn, CaveHeightMode caveHeightMode)
+        {
+            if (toggledOn)
+            {
+                CaveHeightModeChanged?.Invoke(caveHeightMode);
+            }
         }
     }
 }

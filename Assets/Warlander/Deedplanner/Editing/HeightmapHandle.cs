@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Warlander.Deedplanner.Domain;
 
 namespace Warlander.Deedplanner.Editing
 {
@@ -63,24 +62,5 @@ namespace Warlander.Deedplanner.Editing
             return distance;
         }
         
-        public void WriteSlopeGridData(Map map, int floor, int[] heightsBuffer)
-        {
-            Tile centralTile = map[TileCoords.x, TileCoords.y];
-            int centralHeight = centralTile.GetHeightForLevel(floor);
-
-            int index = 0;
-            for (int i = 1; i >= -1; i--)
-            {
-                for (int i2 = -1; i2 <= 1; i2++)
-                {
-                    heightsBuffer[index++] = TileHeightOrDefault(map[TileCoords.x + i2, TileCoords.y + i], centralHeight, floor);
-                }
-            }
-        }
-        
-        private static int TileHeightOrDefault(Tile tile, int defaultHeight, int floor)
-        {
-            return tile?.GetHeightForLevel(floor) ?? defaultHeight;
-        }
     }
 }

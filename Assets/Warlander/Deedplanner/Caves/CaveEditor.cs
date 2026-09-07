@@ -57,6 +57,16 @@ namespace Warlander.Deedplanner.Caves
                 CaveOccupiedCellPolicy.PreserveAndHide);
         }
 
+        public ICaveHeightEdit BeginFloorHeightEdit()
+        {
+            return new CaveHeightEdit(this, CaveEditKind.FloorHeight);
+        }
+
+        public ICaveHeightEdit BeginClearanceEdit()
+        {
+            return new CaveHeightEdit(this, CaveEditKind.Clearance);
+        }
+
         private static bool ApplySingle(ICaveEditStroke stroke, int x, int y)
         {
             using (stroke)
@@ -309,6 +319,131 @@ namespace Warlander.Deedplanner.Caves
                 }
 
                 return CaveEditChange.CreateTerrain(x, y, oldTerrain, _terrain, contentRemoval);
+            }
+        }
+
+        private sealed class CaveHeightEdit : ICaveHeightEdit
+        {
+            private readonly CaveEditor _editor;
+            private readonly CaveEditKind _kind;
+            private readonly Dictionary<CaveCellCoordinate, CaveHeightEditEntry> _entries =
+                new Dictionary<CaveCellCoordinate, CaveHeightEditEntry>();
+            private readonly List<CaveCellCoordinate> _order = new List<CaveCellCoordinate>();
+            private bool _completed;
+
+            public CaveHeightEdit(CaveEditor editor, CaveEditKind kind)
+            {
+                _editor = editor;
+                _kind = kind;
+            }
+
+            public bool SetAt(int x, int y, int value)
+            {
+                if (_completed)
+                {
+                    throw new InvalidOperationException("The cave height edit is already complete.");
+                }
+                if (!_editor._target.ContainsVertex(x, y))
+                {
+                    return false;
+                }
+
+                var coordinate = new CaveCellCoordinate(x, y);
+                int currentValue = GetCurrentValue(x, y);
+                if (currentValue == value)
+                {
+                    return false;
+                }
+
+                if (!_entries.TryGetValue(coordinate, out CaveHeightEditEntry entry))
+                {
+                    entry = new CaveHeightEditEntry(x, y, currentValue, value);
+                    _entries.Add(coordinate, entry);
+                    _order.Add(coordinate);
+                }
+                else
+                {
+                    entry.CurrentValue = value;
+                }
+
+                _editor.ApplyLive(CaveEditChange.CreateHeight(_kind, x, y, currentValue, value));
+                return true;
+            }
+
+            public void Commit()
+            {
+                if (_completed)
+                {
+                    return;
+                }
+
+                CaveEditChange[] changes = CreateChanges();
+                if (changes.Length > 0)
+                {
+                    _editor._target.Record(new CaveEditCommand(_editor, changes));
+                    _editor.EditCompleted(_editor.CreateDirtyRegion(changes));
+                }
+
+                _completed = true;
+            }
+
+            public void Cancel()
+            {
+                if (_completed)
+                {
+                    return;
+                }
+
+                CaveEditChange[] changes = CreateChanges();
+                if (changes.Length > 0)
+                {
+                    _editor.Apply(changes, false);
+                }
+
+                _completed = true;
+            }
+
+            public void Dispose()
+            {
+                Cancel();
+            }
+
+            private int GetCurrentValue(int x, int y)
+            {
+                return _kind == CaveEditKind.FloorHeight
+                    ? _editor._target.GetFloorHeightAtVertex(x, y)
+                    : _editor._target.GetClearanceAtVertex(x, y);
+            }
+
+            private CaveEditChange[] CreateChanges()
+            {
+                var changes = new List<CaveEditChange>();
+                foreach (CaveCellCoordinate coordinate in _order)
+                {
+                    CaveHeightEditEntry entry = _entries[coordinate];
+                    if (entry.OriginalValue != entry.CurrentValue)
+                    {
+                        changes.Add(CaveEditChange.CreateHeight(_kind, entry.X, entry.Y,
+                            entry.OriginalValue, entry.CurrentValue));
+                    }
+                }
+                return changes.ToArray();
+            }
+        }
+
+        private sealed class CaveHeightEditEntry
+        {
+            public int X { get; }
+            public int Y { get; }
+            public int OriginalValue { get; }
+            public int CurrentValue { get; set; }
+
+            public CaveHeightEditEntry(int x, int y, int originalValue, int currentValue)
+            {
+                X = x;
+                Y = y;
+                OriginalValue = originalValue;
+                CurrentValue = currentValue;
             }
         }
 

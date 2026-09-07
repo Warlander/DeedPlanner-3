@@ -5,18 +5,18 @@ using VContainer.Unity;
 namespace Warlander.Deedplanner.Editing
 {
     /// <summary>
-    /// Locks the viewed level to the ground-level set while a surface-only editing tab
-    /// (Ground, Height) is active. Restores the previous level when the lock ends.
+    /// Restricts editing tabs to the levels their data supports and restores the previous level afterward.
     /// </summary>
     public class GroundLevelLock : IInitializable, IDisposable
     {
-        private static readonly int[] AllowedLevels = { 0 };
-
         private readonly TabContext _tabContext;
         private readonly CameraCoordinator _cameraCoordinator;
 
         private bool _locked;
+        private MultiCamera _restrictedCamera;
         private int _levelBeforeLock;
+        private Tab _lockTab;
+        private bool _changingLevel;
 
         public event Action LockChanged;
 
@@ -35,49 +35,64 @@ namespace Warlander.Deedplanner.Editing
                 return true;
             }
 
-            return Array.IndexOf(AllowedLevels, level) >= 0;
+            return _lockTab == Tab.Height
+                ? level == 0 || level == -1
+                : level == 0;
         }
 
         void IInitializable.Initialize()
         {
-            // Camera controllers are not injected yet during container build,
-            // so only adopt the lock state here; the camera starts at level 0 anyway.
+            // Camera controllers are not injected yet, so record the starting level without changing it.
             _locked = IsLockTab(_tabContext.CurrentTab);
+            _lockTab = _tabContext.CurrentTab;
+            if (_locked)
+            {
+                RestrictCurrentCamera();
+            }
             _tabContext.TabChanged += OnTabChanged;
             _cameraCoordinator.CurrentCameraChanged += OnCurrentCameraChanged;
+            _cameraCoordinator.LevelChanged += OnLevelChanged;
         }
 
         void IDisposable.Dispose()
         {
             _tabContext.TabChanged -= OnTabChanged;
             _cameraCoordinator.CurrentCameraChanged -= OnCurrentCameraChanged;
+            _cameraCoordinator.LevelChanged -= OnLevelChanged;
         }
 
         private void OnTabChanged(Tab tab)
         {
             bool shouldLock = IsLockTab(tab);
-            if (shouldLock == _locked)
+            bool wasLocked = _locked;
+            Tab previousLockTab = _lockTab;
+
+            if (!wasLocked && shouldLock)
             {
-                return;
+                RestrictCurrentCamera();
             }
 
             _locked = shouldLock;
+            _lockTab = tab;
             if (_locked)
             {
-                _levelBeforeLock = _cameraCoordinator.Current.Level;
-                _cameraCoordinator.Current.Level = AllowedLevels[0];
+                NormalizeCurrentLevel();
             }
-            else
+            else if (wasLocked)
             {
                 int levelToRestore = _levelBeforeLock;
                 if (tab == Tab.Caves && levelToRestore >= 0)
                 {
                     levelToRestore = -1;
                 }
-                _cameraCoordinator.Current.Level = levelToRestore;
+                SetLevel(_restrictedCamera, levelToRestore);
+                _restrictedCamera = null;
             }
 
-            LockChanged?.Invoke();
+            if (wasLocked != _locked || previousLockTab != _lockTab)
+            {
+                LockChanged?.Invoke();
+            }
         }
 
         private static bool IsLockTab(Tab tab)
@@ -87,9 +102,63 @@ namespace Warlander.Deedplanner.Editing
 
         private void OnCurrentCameraChanged()
         {
-            if (_locked && !IsLevelAllowed(_cameraCoordinator.Current.Level))
+            if (_locked)
             {
-                _cameraCoordinator.Current.Level = AllowedLevels[0];
+                MultiCamera previousCamera = _restrictedCamera;
+                int previousLevel = _levelBeforeLock;
+                RestrictCurrentCamera();
+                NormalizeCurrentLevel();
+                if (previousCamera != null && previousCamera != _restrictedCamera)
+                {
+                    SetLevel(previousCamera, previousLevel);
+                }
+            }
+        }
+
+        private void OnLevelChanged()
+        {
+            if (!_locked || _changingLevel || _cameraCoordinator.Current != _restrictedCamera)
+            {
+                return;
+            }
+
+            if (IsLevelAllowed(_restrictedCamera.Level))
+            {
+                _levelBeforeLock = _restrictedCamera.Level;
+            }
+            else
+            {
+                NormalizeCurrentLevel();
+            }
+        }
+
+        private void RestrictCurrentCamera()
+        {
+            _restrictedCamera = _cameraCoordinator.Current;
+            _levelBeforeLock = _restrictedCamera.Level;
+        }
+
+        private void NormalizeCurrentLevel()
+        {
+            int level = _cameraCoordinator.Current.Level;
+            if (IsLevelAllowed(level))
+            {
+                return;
+            }
+
+            SetLevel(_cameraCoordinator.Current, _lockTab == Tab.Height && level < 0 ? -1 : 0);
+        }
+
+        private void SetLevel(MultiCamera camera, int level)
+        {
+            _changingLevel = true;
+            try
+            {
+                camera.Level = level;
+            }
+            finally
+            {
+                _changingLevel = false;
             }
         }
     }

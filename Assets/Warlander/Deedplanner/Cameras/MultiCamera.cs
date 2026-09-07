@@ -288,7 +288,9 @@ namespace Warlander.Deedplanner.Cameras
                     GridMesh activeGrid = Level < 0
                         ? _mapHandler.Map.CaveGridMesh
                         : _mapHandler.Map.SurfaceGridMesh;
-                    HeightmapHandle heightmapHandle = isHeightEditing ? activeGrid.RaycastHandles() : null;
+                    HeightmapHandle heightmapHandle = isHeightEditing && Level >= 0
+                        ? activeGrid.RaycastHandles(CreateMouseRay())
+                        : null;
 
                     if (tileEntity)
                     {
@@ -339,7 +341,7 @@ namespace Warlander.Deedplanner.Cameras
                     {
                         ShowSlopeGridTooltip(heightmapHandle, tooltipBuild);
                     }
-                    else if (HasCurrentCaveHit)
+                    else if (HasCurrentCaveHit && !isHeightEditing)
                     {
                         tooltipBuild.Append("X: ").Append(caveHit.CellX)
                             .Append(" Y: ").Append(caveHit.CellY).AppendLine();
@@ -373,7 +375,10 @@ namespace Warlander.Deedplanner.Cameras
             tooltipBuild.Append("X: " + handle.TileCoords.x + " Y: " + handle.TileCoords.y).AppendLine();
             _tooltipHandler.ShowTooltipText(tooltipBuild.ToString());
             tooltipBuild.Clear();
-            handle.WriteSlopeGridData(_mapHandler.Map, Level, _heightsBuffer);
+            GridMesh activeGrid = Level < 0
+                ? _mapHandler.Map.CaveGridMesh
+                : _mapHandler.Map.SurfaceGridMesh;
+            activeGrid.WriteSlopeGridData(handle.TileCoords, _heightsBuffer);
             SlopeGrid.SetData(new SlopeGridData(3, _heightsBuffer));
             _tooltipHandler.ShowTooltipContent(SlopeGrid);
         }
@@ -440,6 +445,10 @@ namespace Warlander.Deedplanner.Cameras
             _gridRenderScope = gridMeshToUse.PrepareForCamera(renderHeights,
                 CameraController.CalculateGridAlphaMultiplier(),
                 GetMaterialForGridMaterialType(CameraController.GridMaterialToUse));
+            if (renderHeights && this == _cameraCoordinator.Current)
+            {
+                gridMeshToUse.RenderHandles(AttachedCamera);
+            }
         }
 
         private Material GetMaterialForGridMaterialType(GridMaterialType gridMaterialType)
@@ -533,7 +542,7 @@ namespace Warlander.Deedplanner.Cameras
             OverlayMesh overlayMesh = hitObject.GetComponent<OverlayMesh>();
             GridMesh activeGrid = Level < 0 ? _mapHandler.Map.CaveGridMesh : _mapHandler.Map.SurfaceGridMesh;
             HeightmapHandle heightmapHandle = _tabContext.CurrentTab == Tab.Height
-                ? activeGrid.RaycastHandles()
+                ? activeGrid.RaycastHandles(CreateMouseRay())
                 : null;
 
             bool gridOrGroundHit = groundMesh || overlayMesh || heightmapHandle != null;

@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Ui;
-using Warlander.Deedplanner.Cameras;
 using Warlander.ExtensionUtils;
 using VContainer;
 
@@ -13,12 +12,10 @@ namespace Warlander.Deedplanner.Domain
 {
     public class GridMesh : MonoBehaviour
     {
-        [Inject] private CameraCoordinator _cameraCoordinator;
         [Inject] private HeightmapHandleMeshLoader _heightmapHandleMeshLoader;
         [Inject] private ISharedMaterials _sharedMaterials;
         
         private Map map;
-        private bool cave;
 
         private MeshFilter meshFilter;
         private MeshRenderer meshRenderer;
@@ -27,6 +24,7 @@ namespace Warlander.Deedplanner.Domain
         private Vector3[] vertices;
         private Color[] uniformColors;
         private Color[] heightColors;
+        private int[] displayValues;
         private float _alphaMultiplier;
         private bool renderHeightColors = false;
         private bool verticesChanged = false;
@@ -50,7 +48,7 @@ namespace Warlander.Deedplanner.Domain
             return scope;
         }
 
-        public void Initialize(Map map, bool cave)
+        public void Initialize(Map map)
         {
             meshFilter = GetComponent<MeshFilter>();
             if (!meshFilter)
@@ -65,7 +63,6 @@ namespace Warlander.Deedplanner.Domain
             }
 
             this.map = map;
-            this.cave = cave;
             heightmapHandles = new HeightmapHandle[map.Width + 1, map.Height + 1];
             heightmapRenderCache = new Dictionary<Color, List<Matrix4x4>>();
             heightmapPropertiesCache = new Dictionary<Color, MaterialPropertyBlock>();
@@ -76,6 +73,7 @@ namespace Warlander.Deedplanner.Domain
             vertices = new Vector3[(map.Width + 1) * (map.Height + 1)];
             uniformColors = new Color[(map.Width + 1) * (map.Height + 1)];
             heightColors = new Color[(map.Width + 1) * (map.Height + 1)];
+            displayValues = new int[(map.Width + 1) * (map.Height + 1)];
 
             for (int i = 0; i <= map.Width; i++)
             {
@@ -118,16 +116,13 @@ namespace Warlander.Deedplanner.Domain
             dirty = false;
         }
 
-        private void Update()
+        public void RenderHandles(Camera targetCamera)
         {
-            if (HandlesVisible)
+            if (!HandlesVisible)
             {
-                RenderHandles();
+                return;
             }
-        }
 
-        private void RenderHandles()
-        {
             foreach (HeightmapHandle heightmapHandle in heightmapHandles)
             {
                 Color color = heightmapHandle.Color;
@@ -161,7 +156,8 @@ namespace Warlander.Deedplanner.Domain
                 {
                     int currentBatchSize = Math.Min(matrices.Count - i, batchSize);
                     List<Matrix4x4> currentBatch = matrices.GetRange(i, currentBatchSize);
-                    UnityEngine.Graphics.DrawMeshInstanced(heightmapMesh, 0, drawMaterial, currentBatch, drawPropertyBlock, ShadowCastingMode.Off, false);
+                    UnityEngine.Graphics.DrawMeshInstanced(heightmapMesh, 0, drawMaterial, currentBatch,
+                        drawPropertyBlock, ShadowCastingMode.Off, false, gameObject.layer, targetCamera);
                 }
             }
 
@@ -171,10 +167,8 @@ namespace Warlander.Deedplanner.Domain
             }
         }
 
-        public HeightmapHandle RaycastHandles()
+        public HeightmapHandle RaycastHandles(Ray ray)
         {
-            Ray ray = _cameraCoordinator.Current.CreateMouseRay();
-
             float closestDistance = float.MaxValue;
             HeightmapHandle closestHandle = null;
             
@@ -207,14 +201,21 @@ namespace Warlander.Deedplanner.Domain
 
         public void SetHeight(int x, int y, int height)
         {
+            SetDisplayHeight(x, y, height, height);
+        }
+
+        public void SetDisplayHeight(int x, int y, int worldHeight, int displayValue)
+        {
             int pos = map.CoordinateToIndex(x, y);
-            Vector3 newVector = new Vector3(x * 4, height * 0.1f, y * 4);
-            if (newVector != vertices[pos])
+            Vector3 newVector = new Vector3(x * 4, worldHeight * 0.1f, y * 4);
+            bool valueChanged = displayValues[pos] != displayValue;
+            if (newVector != vertices[pos] || valueChanged)
             {
                 vertices[pos] = newVector;
+                displayValues[pos] = displayValue;
 
                 HeightmapHandle handle = heightmapHandles[x, y];
-                handle.Slope = height;
+                handle.Slope = worldHeight;
 
                 verticesChanged = true;
                 dirty = true;
@@ -247,6 +248,29 @@ namespace Warlander.Deedplanner.Domain
             return heightmapHandles[x, y];
         }
 
+        public void WriteSlopeGridData(Vector2Int coordinates, int[] heightsBuffer)
+        {
+            int defaultValue = GetDisplayValue(coordinates.x, coordinates.y, 0);
+            int index = 0;
+            for (int y = 1; y >= -1; y--)
+            {
+                for (int x = -1; x <= 1; x++)
+                {
+                    heightsBuffer[index++] = GetDisplayValue(coordinates.x + x,
+                        coordinates.y + y, defaultValue);
+                }
+            }
+        }
+
+        private int GetDisplayValue(int x, int y, int defaultValue)
+        {
+            if (x < 0 || y < 0 || x > map.Width || y > map.Height)
+            {
+                return defaultValue;
+            }
+            return displayValues[map.CoordinateToIndex(x, y)];
+        }
+
         public void ApplyAllChanges()
         {
             if (!dirty)
@@ -256,8 +280,13 @@ namespace Warlander.Deedplanner.Domain
 
             if (verticesChanged)
             {
-                float highestHeight = cave ? map.HighestCaveHeight : map.HighestSurfaceHeight;
-                float lowestHeight = cave ? map.LowestCaveHeight : map.LowestSurfaceHeight;
+                int lowestHeight = int.MaxValue;
+                int highestHeight = int.MinValue;
+                foreach (int value in displayValues)
+                {
+                    lowestHeight = Math.Min(lowestHeight, value);
+                    highestHeight = Math.Max(highestHeight, value);
+                }
                 float heightDelta = highestHeight - lowestHeight;
                 if (heightDelta == 0)
                 {
@@ -269,7 +298,7 @@ namespace Warlander.Deedplanner.Domain
                     for (int i2 = 0; i2 <= map.Height; i2++)
                     {
                         int index = map.CoordinateToIndex(i, i2);
-                        float cornerHeight = cave ? map[i, i2].CaveHeight : map[i, i2].SurfaceHeight;
+                        float cornerHeight = displayValues[index];
                         float cornerColorComponent = (cornerHeight - lowestHeight) / heightDelta;
                         heightColors[index] = new Color(cornerColorComponent, 1f - cornerColorComponent, 0, 1);
                     }
