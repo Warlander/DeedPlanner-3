@@ -35,9 +35,7 @@ namespace Warlander.Deedplanner.Editing
                 return true;
             }
 
-            return _lockTab == Tab.Height
-                ? level == 0 || level == -1
-                : level == 0;
+            return level == 0 || level == -1;
         }
 
         void IInitializable.Initialize()
