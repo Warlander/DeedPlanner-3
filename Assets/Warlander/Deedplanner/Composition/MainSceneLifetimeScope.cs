@@ -149,6 +149,8 @@ namespace Warlander.Deedplanner.Composition
             builder.Register<HeightmapHandleMeshLoader>(Lifetime.Singleton);
 
             builder.Register<CaveDataResolver>(Lifetime.Singleton).As<ICaveDataResolver>();
+            builder.Register<IGroundDataResolver>(container => new GroundDataResolver(
+                container.Resolve<IDataCatalog>(), container.Resolve<MapHandler>().Logger), Lifetime.Singleton);
             builder.Register<TileFactory>(Lifetime.Singleton);
             builder.Register<BridgeFactory>(Lifetime.Singleton);
             builder.Register<DockFactory>(Lifetime.Singleton);
