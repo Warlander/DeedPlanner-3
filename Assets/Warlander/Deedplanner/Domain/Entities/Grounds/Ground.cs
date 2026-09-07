@@ -3,14 +3,12 @@ using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Persistence;
 using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Domain.Entities.Grounds
 {
     public class Ground : IXmlSerializable
     {
-        private readonly IDataCatalog _dataCatalog;
-        private readonly ICategoryLogger _logger;
+        private readonly IGroundDataResolver _dataResolver;
 
         private GroundData data;
         private RoadDirection roadDirection = RoadDirection.Center;
@@ -27,13 +25,12 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
             set => Tile.Map.CommandManager.AddToActionAndExecute(new RoadDirectionChangeCommand(this, roadDirection, value));
         }
 
-        public Ground(Tile tile, GroundData data, IDataCatalog dataCatalog, ICategoryLogger logger)
+        public Ground(Tile tile, GroundData data, IGroundDataResolver dataResolver)
         {
             Tile = tile;
             Data = data;
             RoadDirection = RoadDirection.Center;
-            _dataCatalog = dataCatalog;
-            _logger = logger;
+            _dataResolver = dataResolver;
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
@@ -49,13 +46,7 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
             string id = element.GetAttribute("id");
             string dir = element.GetAttribute("dir");
 
-            GroundData groundData = _dataCatalog.GetGround(id);
-            if (groundData == null)
-            {
-                _logger.Warning("Unable to load ground " + id + ", using default instead");
-                groundData = _dataCatalog.DefaultGroundData;
-            }
-            Data = groundData;
+            Data = _dataResolver.Resolve(id);
             switch (dir)
             {
                 case "NW":

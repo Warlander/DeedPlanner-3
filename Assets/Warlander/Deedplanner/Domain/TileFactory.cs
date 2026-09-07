@@ -1,5 +1,6 @@
 ﻿using Warlander.Deedplanner.Caves;
 using Warlander.Deedplanner.Domain;
+using Warlander.Deedplanner.Domain.Entities.Grounds;
 using Warlander.Deedplanner.Persistence;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logging;
@@ -13,6 +14,7 @@ namespace Warlander.Deedplanner.Domain
         private readonly IDataCatalog _dataCatalog;
         private readonly ICategoryLogger _logger;
         private readonly ICaveDataResolver _caveDataResolver;
+        private readonly IGroundDataResolver _groundDataResolver;
 
         [Inject]
         public TileFactory(IOutlineCoordinator outlineCoordinator, IDataCatalog dataCatalog, MapHandler mapHandler)
@@ -21,11 +23,13 @@ namespace Warlander.Deedplanner.Domain
             _dataCatalog = dataCatalog;
             _logger = mapHandler.Logger;
             _caveDataResolver = new CaveDataResolver(dataCatalog);
+            _groundDataResolver = new GroundDataResolver(dataCatalog, _logger);
         }
 
         public Tile CreateTile(Map map, int x, int y)
         {
-            return new Tile(map, x, y, _outlineCoordinator, _dataCatalog, _caveDataResolver, _logger);
+            return new Tile(map, x, y, _outlineCoordinator, _dataCatalog, _caveDataResolver, _groundDataResolver,
+                _logger);
         }
     }
 }

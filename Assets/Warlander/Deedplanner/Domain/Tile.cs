@@ -84,7 +84,7 @@ namespace Warlander.Deedplanner.Domain
         private readonly ICaveDataResolver _caveDataResolver;
 
         public Tile(Map map, int x, int y, IOutlineCoordinator outlineCoordinator, IDataCatalog dataCatalog,
-            ICaveDataResolver caveDataResolver, ICategoryLogger logger)
+            ICaveDataResolver caveDataResolver, IGroundDataResolver groundDataResolver, ICategoryLogger logger)
         {
             Map = map;
             X = x;
@@ -97,7 +97,7 @@ namespace Warlander.Deedplanner.Domain
 
             Entities = new Dictionary<EntityData, LevelEntity>();
 
-            Ground = new Ground(this, _dataCatalog.DefaultGroundData, _dataCatalog, logger);
+            Ground = new Ground(this, groundDataResolver.Resolve(null), groundDataResolver);
             Cave = new CaveCell(_dataCatalog.DefaultCaveData);
         }
 
