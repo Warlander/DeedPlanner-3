@@ -17,6 +17,7 @@ using Warlander.Deedplanner.Domain.Entities.Walls;
 using Warlander.Deedplanner.Rendering.Outline;
 using Warlander.Deedplanner.Logging;
 using Object = UnityEngine.Object;
+using Warlander.Deedplanner.Caves;
 
 namespace Warlander.Deedplanner.Domain
 {
@@ -27,9 +28,6 @@ namespace Warlander.Deedplanner.Domain
         private readonly ICategoryLogger _logger;
         
         private int surfaceHeight = 0;
-        private int caveHeight = 0;
-        private int caveSize = 0;
-
         private BridgePart surfaceBridgePart;
         private Dock dock;
         
@@ -39,7 +37,7 @@ namespace Warlander.Deedplanner.Domain
         private Dictionary<EntityData, LevelEntity> Entities { get; set; }
 
         public Ground Ground { get; private set; }
-        public Cave Cave { get; private set; }
+        public CaveCell Cave { get; }
         public BridgePart BridgePart => surfaceBridgePart;
         public Dock Dock => dock;
 
@@ -54,10 +52,10 @@ namespace Warlander.Deedplanner.Domain
         }
 
         public int CaveHeight {
-            get => caveHeight;
+            get => Cave.FloorHeight;
             set {
-                int previousHeight = caveHeight;
-                caveHeight = value;
+                int previousHeight = Cave.FloorHeight;
+                Cave.SetFloorHeight(value);
                 // TODO: add cave mesh handling
                 RefreshCaveEntities();
                 Map.GetRelativeTile(this, -1, 0)?.RefreshCaveEntities();
@@ -70,20 +68,23 @@ namespace Warlander.Deedplanner.Domain
         }
 
         public int CaveSize {
-            get => caveSize;
+            get => Cave.Clearance;
             set {
-                caveSize = value;
+                Cave.SetClearance(value);
                 // TODO: add cave mesh handling
                 RefreshCaveEntities();
                 Map.GetRelativeTile(this, -1, 0)?.RefreshCaveEntities();
                 Map.GetRelativeTile(this, 0, -1)?.RefreshCaveEntities();
                 Map.GetRelativeTile(this, -1, -1)?.RefreshCaveEntities();
 
-                Map.RecalculateCaveHeight(X, Y, caveHeight);
+                Map.RecalculateCaveHeight(X, Y, Cave.FloorHeight);
             }
         }
 
-        public Tile(Map map, int x, int y, IOutlineCoordinator outlineCoordinator, IDataCatalog dataCatalog, ICategoryLogger logger)
+        private readonly ICaveDataResolver _caveDataResolver;
+
+        public Tile(Map map, int x, int y, IOutlineCoordinator outlineCoordinator, IDataCatalog dataCatalog,
+            ICaveDataResolver caveDataResolver, ICategoryLogger logger)
         {
             Map = map;
             X = x;
@@ -91,29 +92,22 @@ namespace Warlander.Deedplanner.Domain
 
             _outlineCoordinator = outlineCoordinator;
             _dataCatalog = dataCatalog;
+            _caveDataResolver = caveDataResolver;
             _logger = logger;
 
             Entities = new Dictionary<EntityData, LevelEntity>();
 
             Ground = new Ground(this, _dataCatalog.DefaultGroundData, _dataCatalog, logger);
-
-            // GameObject caveObject = new GameObject("Cave", typeof(Cave));
-            // caveObject.transform.localPosition = new Vector3(X * 4, 0, Y * 4);
-            // Cave = caveObject.GetComponent<Cave>();
-            // Map.AddEntityToMap(caveObject, -1);
-            // Cave.Initialize(this, Database.DefaultCaveData);
+            Cave = new CaveCell(_dataCatalog.DefaultCaveData);
         }
 
         public void PasteTile(Tile otherTile)
         {
             SurfaceHeight = otherTile.SurfaceHeight;
-            CaveHeight = otherTile.CaveHeight;
-            CaveSize = otherTile.CaveSize;
+            Cave.Initialize(otherTile.Cave.Terrain, otherTile.CaveHeight, otherTile.CaveSize);
 
             Ground.Data = otherTile.Ground.Data;
             Ground.RoadDirection = otherTile.Ground.RoadDirection;
-
-            // Cave.Data = otherTile.Cave.Data;
 
             foreach (KeyValuePair<EntityData,LevelEntity> pair in otherTile.Entities)
             {
@@ -192,7 +186,7 @@ namespace Warlander.Deedplanner.Domain
         {
             if (level < 0)
             {
-                return caveHeight;
+                return Cave.FloorHeight;
             }
 
             Dock cornerDock = Map.GetDockSharingCorner(this);
@@ -208,7 +202,7 @@ namespace Warlander.Deedplanner.Domain
         {
             if (level < 0)
             {
-                return caveHeight;
+                return Cave.FloorHeight;
             }
 
             if (dock != null)
@@ -690,16 +684,12 @@ namespace Warlander.Deedplanner.Domain
             localRoot.SetAttribute("x", X.ToString());
             localRoot.SetAttribute("y", Y.ToString());
             localRoot.SetAttribute("height", SurfaceHeight.ToString());
-            localRoot.SetAttribute("caveHeight", CaveHeight.ToString());
-            localRoot.SetAttribute("caveSize", CaveSize.ToString());
 
             XmlElement ground = document.CreateElement("ground");
             Ground.Serialize(document, ground);
             localRoot.AppendChild(ground);
 
-            // XmlElement cave = document.CreateElement("cave");
-            // Cave.Serialize(document, cave);
-            // localRoot.AppendChild(cave);
+            Cave.Serialize(document, localRoot, _caveDataResolver);
 
             Dictionary<int, XmlElement> levelElements = new Dictionary<int, XmlElement>();
             foreach (KeyValuePair<EntityData, LevelEntity> e in Entities)
@@ -754,10 +744,7 @@ namespace Warlander.Deedplanner.Domain
         public void DeserializeHeightmap(XmlElement tileElement)
         {
             SurfaceHeight = (int) Convert.ToSingle(tileElement.GetAttribute("height"), CultureInfo.InvariantCulture);
-            if (tileElement.HasAttribute("caveHeight"))
-            {
-                CaveHeight = (int) Convert.ToSingle(tileElement.GetAttribute("caveHeight"), CultureInfo.InvariantCulture);
-            }
+            Cave.Deserialize(tileElement, _caveDataResolver);
         }
 
         public void DeserializeEntities(XmlElement tileElement)

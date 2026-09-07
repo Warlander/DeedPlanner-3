@@ -16,6 +16,7 @@ using Warlogic.Features;
 using Warlander.Deedplanner.Platform.Features;
 using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Settings;
+using Warlander.Deedplanner.Caves;
 using VContainer;
 using VContainer.Unity;
 
@@ -41,6 +42,7 @@ namespace Warlander.Deedplanner.Domain
 
         public GridMesh SurfaceGridMesh { get; private set; }
         public GridMesh CaveGridMesh { get; private set; }
+        public ICaveMap Caves { get; private set; }
 
         public int Width => _tileGrid.Width;
         public int Height => _tileGrid.Height;
@@ -313,6 +315,8 @@ namespace Warlander.Deedplanner.Domain
                     _tileGrid.SetTile(i, i2, tile);
                 }
             }
+
+            Caves = new CaveMap(width, height, (x, y) => _tileGrid[x, y]?.Cave, _dataCatalog.DefaultCaveData);
 
             SurfaceGridMesh = PrepareGridMesh("Surface grid", _surfaceGridRoot, false);
             CaveGridMesh = PrepareGridMesh("Cave grid", _caveGridRoot, true);

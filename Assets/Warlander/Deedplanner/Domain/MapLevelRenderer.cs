@@ -4,6 +4,7 @@ using UnityEngine;
 using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Docks;
 using Warlander.Deedplanner;
+using Warlander.Deedplanner.Caves;
 
 namespace Warlander.Deedplanner.Domain
 {
@@ -79,7 +80,7 @@ namespace Warlander.Deedplanner.Domain
         public void AddEntityToMap(GameObject entity, int level)
         {
             bool cave = level < 0;
-            int absoluteLevel = cave ? -level - 1 : level;
+            int absoluteLevel = cave ? CaveLevel.GetStoreyIndex(level) : level;
             if (cave)
                 entity.transform.SetParent(_caveLevelRoots[absoluteLevel]);
             else
@@ -91,7 +92,7 @@ namespace Warlander.Deedplanner.Domain
             if (_surfaceLevelRoots == null) return;
 
             bool underground = _renderedLevel < 0;
-            int absoluteLevel = underground ? -_renderedLevel + 1 : _renderedLevel;
+            int absoluteLevel = underground ? CaveLevel.GetStoreyIndex(_renderedLevel) : _renderedLevel;
 
             if (underground)
             {
@@ -145,7 +146,7 @@ namespace Warlander.Deedplanner.Domain
             if (_surfaceLevelRoots == null) return;
 
             bool underground = _renderedLevel < 0;
-            int absoluteLevel = underground ? -_renderedLevel + 1 : _renderedLevel;
+            int absoluteLevel = underground ? CaveLevel.GetStoreyIndex(_renderedLevel) : _renderedLevel;
             RefreshBridgesRendering(absoluteLevel);
         }
 
@@ -196,7 +197,7 @@ namespace Warlander.Deedplanner.Domain
             if (_surfaceLevelRoots == null) return;
 
             bool underground = _renderedLevel < 0;
-            int absoluteLevel = underground ? -_renderedLevel + 1 : _renderedLevel;
+            int absoluteLevel = underground ? CaveLevel.GetStoreyIndex(_renderedLevel) : _renderedLevel;
             RefreshDocksRendering(absoluteLevel, underground);
         }
 
