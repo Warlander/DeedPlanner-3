@@ -67,6 +67,8 @@ namespace Warlander.Deedplanner.Caves.Tests
             Assert.That(face.OpenCellX, Is.EqualTo(0));
             Assert.That(face.OpenCellY, Is.EqualTo(0));
             Assert.That(topology.GetTriangleNormal(0).y, Is.GreaterThan(0f));
+            Assert.That(topology.GetTriangleVertex(0, 0).y,
+                Is.EqualTo(CaveCell.DefaultFloorHeight * 0.1f));
         }
 
         [Test]

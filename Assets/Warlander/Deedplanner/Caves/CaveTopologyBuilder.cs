@@ -69,10 +69,10 @@ namespace Warlander.Deedplanner.Caves
 
         private void AddSolidSurface(CaveTopology topology, int x, int y, int originX, int originY, int revision)
         {
-            Vector3 southWest = GetCorner(x, y, CaveCorner.SouthWest, originX, originY, true);
-            Vector3 southEast = GetCorner(x, y, CaveCorner.SouthEast, originX, originY, true);
-            Vector3 northWest = GetCorner(x, y, CaveCorner.NorthWest, originX, originY, true);
-            Vector3 northEast = GetCorner(x, y, CaveCorner.NorthEast, originX, originY, true);
+            Vector3 southWest = GetCorner(x, y, CaveCorner.SouthWest, originX, originY, false);
+            Vector3 southEast = GetCorner(x, y, CaveCorner.SouthEast, originX, originY, false);
+            Vector3 northWest = GetCorner(x, y, CaveCorner.NorthWest, originX, originY, false);
+            Vector3 northEast = GetCorner(x, y, CaveCorner.NorthEast, originX, originY, false);
             CaveFace face = new CaveFace(CaveFaceKind.SolidSurface, x, y, revision);
 
             AddTriangle(topology, southWest, northWest, northEast, Vector2.zero, Vector2.up, Vector2.one, 0, face);

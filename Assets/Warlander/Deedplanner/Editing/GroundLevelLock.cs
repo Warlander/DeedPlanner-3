@@ -139,13 +139,15 @@ namespace Warlander.Deedplanner.Editing
         private void NormalizeCurrentLevel()
         {
             int level = _cameraCoordinator.Current.Level;
-            if (IsLevelAllowed(level))
+            if (_lockTab == Tab.Ground && level == 0
+                || _lockTab == Tab.Caves && level == -1
+                || _lockTab == Tab.Height && IsLevelAllowed(level))
             {
                 return;
             }
 
-            bool keepUnderground = (_lockTab == Tab.Caves || _lockTab == Tab.Height) && level < 0;
-            SetLevel(_cameraCoordinator.Current, keepUnderground ? -1 : 0);
+            int normalizedLevel = _lockTab == Tab.Caves || (_lockTab == Tab.Height && level < 0) ? -1 : 0;
+            SetLevel(_cameraCoordinator.Current, normalizedLevel);
         }
 
         private void SetLevel(MultiCamera camera, int level)
