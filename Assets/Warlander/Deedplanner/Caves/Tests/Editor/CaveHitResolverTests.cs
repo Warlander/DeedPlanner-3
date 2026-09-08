@@ -68,6 +68,21 @@ namespace Warlander.Deedplanner.Caves.Tests
         }
 
         [Test]
+        public void SolidSurfaceResolvesToSolidCell()
+        {
+            CaveChunk chunk = CreateChunk(2, 2, -1, -1, out CaveTopology topology);
+            int triangle = Find(topology, CaveFaceKind.SolidSurface);
+
+            bool resolved = _resolver.TryResolve(chunk, triangle, out CaveHit hit);
+
+            Assert.That(resolved, Is.True);
+            Assert.That(hit.CellX, Is.EqualTo(0));
+            Assert.That(hit.CellY, Is.EqualTo(0));
+            Assert.That(hit.Kind, Is.EqualTo(CaveFaceKind.SolidSurface));
+            Assert.That(hit.HasEdge, Is.False);
+        }
+
+        [Test]
         public void MapEdgeCapIsNotEditable()
         {
             CaveChunk chunk = CreateChunk(2, 2, 0, 0, out CaveTopology topology);
@@ -138,9 +153,12 @@ namespace Warlander.Deedplanner.Caves.Tests
             out CaveTopologyBuilder builder)
         {
             var map = new TestMap(width, height, _stone);
-            map.Open(openX, openY, _floor);
+            if (openX >= 0 && openY >= 0)
+            {
+                map.Open(openX, openY, _floor);
+            }
             builder = new CaveTopologyBuilder(map.Map, new TestTextureIndex(), _stone, width, height);
-            topology = builder.Build(0, 0, width, height, 1);
+            topology = builder.BuildCollider(0, 0, width, height, 1);
 
             var chunkObject = new GameObject("Cave Chunk Test");
             _objects.Add(chunkObject);

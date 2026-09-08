@@ -14,6 +14,7 @@ namespace Warlander.Deedplanner.Caves
             {
                 case CaveFaceKind.Floor:
                 case CaveFaceKind.Ceiling:
+                case CaveFaceKind.SolidSurface:
                     hit = new CaveHit(chunk, triangleIndex, face, face.OpenCellX, face.OpenCellY);
                     return true;
                 case CaveFaceKind.Wall when face.HasSolidOwner:

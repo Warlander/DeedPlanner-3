@@ -47,6 +47,38 @@ namespace Warlander.Deedplanner.Caves
             return topology;
         }
 
+        public CaveTopology BuildCollider(int minimumX, int minimumY, int width, int height, int revision)
+        {
+            CaveTopology topology = Build(minimumX, minimumY, width, height, revision);
+            int maximumX = Mathf.Min(minimumX + width, _mapWidth);
+            int maximumY = Mathf.Min(minimumY + height, _mapHeight);
+
+            for (int x = minimumX; x < maximumX; x++)
+            {
+                for (int y = minimumY; y < maximumY; y++)
+                {
+                    if (!_map.IsOpen(x, y))
+                    {
+                        AddSolidSurface(topology, x, y, minimumX, minimumY, revision);
+                    }
+                }
+            }
+
+            return topology;
+        }
+
+        private void AddSolidSurface(CaveTopology topology, int x, int y, int originX, int originY, int revision)
+        {
+            Vector3 southWest = GetCorner(x, y, CaveCorner.SouthWest, originX, originY, true);
+            Vector3 southEast = GetCorner(x, y, CaveCorner.SouthEast, originX, originY, true);
+            Vector3 northWest = GetCorner(x, y, CaveCorner.NorthWest, originX, originY, true);
+            Vector3 northEast = GetCorner(x, y, CaveCorner.NorthEast, originX, originY, true);
+            CaveFace face = new CaveFace(CaveFaceKind.SolidSurface, x, y, revision);
+
+            AddTriangle(topology, southWest, northWest, northEast, Vector2.zero, Vector2.up, Vector2.one, 0, face);
+            AddTriangle(topology, southWest, northEast, southEast, Vector2.zero, Vector2.one, Vector2.right, 0, face);
+        }
+
         private void AddCell(CaveTopology topology, int x, int y, int originX, int originY, int revision)
         {
             Vector3 floorSouthWest = GetCorner(x, y, CaveCorner.SouthWest, originX, originY, false);

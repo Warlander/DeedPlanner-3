@@ -54,6 +54,22 @@ namespace Warlander.Deedplanner.Caves.Tests
         }
 
         [Test]
+        public void ColliderAddsEditableSurfacesForSolidCells()
+        {
+            TestMap map = CreateMap(2, 2);
+            var builder = new CaveTopologyBuilder(map.Map, new TestTextureIndex(), _stone, map.Width, map.Height);
+
+            CaveTopology topology = builder.BuildCollider(0, 0, 2, 2, 3);
+
+            Assert.That(Count(topology, CaveFaceKind.SolidSurface), Is.EqualTo(8));
+            CaveFace face = topology.GetFace(0);
+            Assert.That(face.Kind, Is.EqualTo(CaveFaceKind.SolidSurface));
+            Assert.That(face.OpenCellX, Is.EqualTo(0));
+            Assert.That(face.OpenCellY, Is.EqualTo(0));
+            Assert.That(topology.GetTriangleNormal(0).y, Is.GreaterThan(0f));
+        }
+
+        [Test]
         public void WallMetadataUsesSolidNeighborAndItsTexture()
         {
             TestMap map = CreateMap(3, 3);

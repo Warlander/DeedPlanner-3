@@ -6,5 +6,7 @@ namespace Warlander.Deedplanner.Ui
     public interface ITabSelectionView
     {
         event Action<Tab> TabSelected;
+
+        void SelectTab(Tab tab);
     }
 }

@@ -95,7 +95,7 @@ namespace Warlander.Deedplanner.Editing
 
         private static bool IsLockTab(Tab tab)
         {
-            return tab == Tab.Ground || tab == Tab.Height;
+            return tab == Tab.Ground || tab == Tab.Caves || tab == Tab.Height;
         }
 
         private void OnCurrentCameraChanged()
@@ -144,7 +144,8 @@ namespace Warlander.Deedplanner.Editing
                 return;
             }
 
-            SetLevel(_cameraCoordinator.Current, _lockTab == Tab.Height && level < 0 ? -1 : 0);
+            bool keepUnderground = (_lockTab == Tab.Caves || _lockTab == Tab.Height) && level < 0;
+            SetLevel(_cameraCoordinator.Current, keepUnderground ? -1 : 0);
         }
 
         private void SetLevel(MultiCamera camera, int level)

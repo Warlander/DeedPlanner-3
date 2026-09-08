@@ -51,7 +51,7 @@ namespace Warlander.Deedplanner.Caves
         public void RebuildCollider(CaveTopologyBuilder builder)
         {
             int revision = ColliderRevision + 1;
-            CaveTopology topology = builder.Build(MinimumX, MinimumY, Width, Height, revision);
+            CaveTopology topology = builder.BuildCollider(MinimumX, MinimumY, Width, Height, revision);
             topology.ApplyTo(_colliderMesh);
             _meshCollider.sharedMesh = null;
             if (topology.TriangleCount > 0)

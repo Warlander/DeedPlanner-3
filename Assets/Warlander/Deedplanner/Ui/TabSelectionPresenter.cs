@@ -18,16 +18,24 @@ namespace Warlander.Deedplanner.Ui
         public void Initialize()
         {
             _view.TabSelected += OnTabSelected;
+            _tabContext.TabChanged += OnTabChanged;
+            _view.SelectTab(_tabContext.CurrentTab);
         }
 
         public void Dispose()
         {
             _view.TabSelected -= OnTabSelected;
+            _tabContext.TabChanged -= OnTabChanged;
         }
 
         private void OnTabSelected(Tab tab)
         {
             _tabContext.CurrentTab = tab;
+        }
+
+        private void OnTabChanged(Tab tab)
+        {
+            _view.SelectTab(tab);
         }
     }
 }

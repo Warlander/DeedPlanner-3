@@ -5,7 +5,8 @@ namespace Warlander.Deedplanner.Caves
         Floor,
         Ceiling,
         Wall,
-        MapEdgeCap
+        MapEdgeCap,
+        SolidSurface
     }
 
     public readonly struct CaveFace

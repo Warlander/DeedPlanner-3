@@ -24,6 +24,35 @@ namespace Warlander.Deedplanner.Ui
             }
         }
 
+        public void SelectTab(Tab tab)
+        {
+            Toggle selectedToggle = null;
+            foreach (Toggle toggle in _tabToggleGroup.GetComponentsInChildren<Toggle>(true))
+            {
+                if (toggle.TryGetComponent(out TabReference tabReference) && tabReference.Tab == tab)
+                {
+                    selectedToggle = toggle;
+                    break;
+                }
+            }
+
+            if (!selectedToggle)
+            {
+                return;
+            }
+
+            bool allowSwitchOff = _tabToggleGroup.allowSwitchOff;
+            _tabToggleGroup.allowSwitchOff = true;
+            foreach (Toggle toggle in _tabToggleGroup.GetComponentsInChildren<Toggle>(true))
+            {
+                if (toggle.TryGetComponent<TabReference>(out _))
+                {
+                    toggle.SetIsOnWithoutNotify(toggle == selectedToggle);
+                }
+            }
+            _tabToggleGroup.allowSwitchOff = allowSwitchOff;
+        }
+
         private void OnDestroy()
         {
             if (_tabToggleGroup)
