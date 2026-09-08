@@ -234,7 +234,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textTemplate: {fileID: 8524595820700967236}
   canvasGroup: {fileID: 5758364276332548563}
-  _canvasScaler: {fileID: 9018120239069122212}
   _referenceCanvasTransform: {fileID: 1060395969191119484}
   _transformToMove: {fileID: 5002695278348008188}
   animationSpeed: 10
