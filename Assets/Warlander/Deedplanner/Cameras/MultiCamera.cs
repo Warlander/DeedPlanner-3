@@ -214,9 +214,12 @@ namespace Warlander.Deedplanner.Cameras
                 return;
             }
 
-            CompleteCameraRendering();
             Map map = _mapHandler.Map;
-            _mapRenderScope = map.PrepareForCamera(new MapRenderView(Level, RenderEntireMap, map.RenderGrid));
+            CompleteCameraRendering();
+            if (this != _cameraCoordinator.Current)
+            {
+                _mapRenderScope = map.PrepareForCamera(new MapRenderView(Level, RenderEntireMap, map.RenderGrid));
+            }
             bool renderWater = RenderEntireMap || Level == 0 || Level == -1;
             _waterFacade.PrepareForCamera(AttachedCamera, CameraController, renderWater);
             PrepareGridState();
@@ -384,7 +387,7 @@ namespace Warlander.Deedplanner.Cameras
         }
 
         private Decoration FindClosestDecorationToCursor(Ray ray, int mask)        {
-            if ((mask & LayerMasks.DecorationMask) == 0)
+            if ((mask & (LayerMasks.DecorationMask | LayerMasks.CaveDecorationMask)) == 0)
             {
                 return null;
             }

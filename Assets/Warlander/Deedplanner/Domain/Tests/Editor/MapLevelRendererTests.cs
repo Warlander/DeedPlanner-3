@@ -30,7 +30,7 @@ namespace Warlander.Deedplanner.Domain.Tests
                 Assert.That(_fixture.Surface[1].Renderer.forceRenderingOff, Is.False);
                 Assert.That(GetEffectiveBaseColor(_fixture.Surface[1].Renderer).r, Is.EqualTo(1f));
                 Assert.That(_fixture.Surface[2].Renderer.forceRenderingOff, Is.True);
-                Assert.That(_fixture.Surface[2].Collider.enabled, Is.False);
+                Assert.That(_fixture.Surface[2].Collider.enabled, Is.True);
                 Assert.That(_fixture.Cave[0].Renderer.forceRenderingOff, Is.True);
                 Assert.That(_fixture.SurfaceGrid.Renderer.forceRenderingOff, Is.False);
                 Assert.That(_fixture.CaveGrid.Renderer.forceRenderingOff, Is.True);
@@ -110,6 +110,36 @@ namespace Warlander.Deedplanner.Domain.Tests
                 Assert.That(fadedColor.b, Is.EqualTo(0.12f).Within(0.001f));
                 Assert.That(fadedColor.a, Is.EqualTo(0.25f));
             }
+        }
+
+        [Test]
+        public void AddEntityToMapAssignsCaveRaycastLayer()
+        {
+            GameObject entity = new GameObject("Cave floor", typeof(DynamicModelBehaviour), typeof(BoxCollider));
+            entity.layer = LayerMasks.FloorRoofLayer;
+            GameObject modelCollider = new GameObject("Model collider", typeof(BoxCollider));
+            modelCollider.layer = LayerMasks.FloorRoofLayer;
+            modelCollider.transform.SetParent(entity.transform);
+
+            _fixture.Renderer.AddEntityToMap(entity, -1);
+
+            Assert.That(entity.layer, Is.EqualTo(LayerMasks.CaveFloorRoofLayer));
+            Assert.That(modelCollider.layer, Is.EqualTo(LayerMasks.CaveFloorRoofLayer));
+        }
+
+        [Test]
+        public void CaveEditMasksExcludeSurfaceEntityLayers()
+        {
+            int mask = LayerMasks.GetMaskForTab(Editing.Tab.Objects, -1);
+
+            Assert.That(mask & LayerMasks.CaveFloorRoofMask, Is.Not.Zero);
+            Assert.That(mask & LayerMasks.CaveWallMask, Is.Not.Zero);
+            Assert.That(mask & LayerMasks.CaveDecorationMask, Is.Not.Zero);
+            Assert.That(mask & LayerMasks.CaveBridgeMask, Is.Not.Zero);
+            Assert.That(mask & LayerMasks.FloorRoofMask, Is.Zero);
+            Assert.That(mask & LayerMasks.WallMask, Is.Zero);
+            Assert.That(mask & LayerMasks.DecorationMask, Is.Zero);
+            Assert.That(mask & LayerMasks.BridgeMask, Is.Zero);
         }
 
         private static Color GetBaseColor(Renderer renderer)

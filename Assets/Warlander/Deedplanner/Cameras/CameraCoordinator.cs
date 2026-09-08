@@ -3,6 +3,7 @@ using Warlander.Deedplanner.Persistence;
 using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
+using Warlander.Deedplanner.Domain;
 
 namespace Warlander.Deedplanner.Cameras
 {
@@ -25,11 +26,6 @@ namespace Warlander.Deedplanner.Cameras
 
         private void Awake()
         {
-            if (_mapHandler.Map != null)
-            {
-                ChangeCurrentCamera(0);
-            }
-            
             foreach (MultiCamera cam in _cameras)
             {
                 cam.LevelChanged += CameraOnLevelChanged;
@@ -38,6 +34,7 @@ namespace Warlander.Deedplanner.Cameras
             }
             
             _mapHandler.MapInitialized += MapHandlerOnMapInitialized;
+            ApplyCurrentView();
         }
 
         private void MapHandlerOnMapInitialized()
@@ -45,11 +42,15 @@ namespace Warlander.Deedplanner.Cameras
             if (_activeCamera == -1)
             {
                 ChangeCurrentCamera(0);
+                return;
             }
+
+            ApplyCurrentView();
         }
 
         private void CameraOnModeChanged()
         {
+            ApplyCurrentView();
             ModeChanged?.Invoke();
         }
 
@@ -60,6 +61,7 @@ namespace Warlander.Deedplanner.Cameras
 
         private void CameraOnLevelChanged()
         {
+            ApplyCurrentView();
             LevelChanged?.Invoke();
         }
 
@@ -71,6 +73,7 @@ namespace Warlander.Deedplanner.Cameras
             }
             
             _activeCamera = newCamera;
+            ApplyCurrentView();
             CurrentCameraChanged?.Invoke();
             LevelChanged?.Invoke();
         }
@@ -78,6 +81,17 @@ namespace Warlander.Deedplanner.Cameras
         public void ToggleCamera(int cameraId, bool render)
         {
             _cameras[cameraId].gameObject.SetActive(render);
+        }
+
+        private void ApplyCurrentView()
+        {
+            Map map = _mapHandler.Map;
+            if (!map)
+            {
+                return;
+            }
+
+            map.SetActiveRenderView(new MapRenderView(Current.Level, Current.RenderEntireMap, map.RenderGrid));
         }
         
         private MultiCamera GetCurrentlyHoveredCamera()

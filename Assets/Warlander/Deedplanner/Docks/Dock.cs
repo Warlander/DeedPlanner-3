@@ -59,7 +59,8 @@ namespace Warlander.Deedplanner.Docks
             BraceRotation = braceRotation;
             _ghostMaterial = ghostMaterial;
 
-            gameObject.layer = LayerMasks.FloorRoofLayer;
+            SetRaycastLayer(LayerMasks.GetLayerForLevel(LayerMasks.FloorRoofLayer,
+                realm == DockRealm.Cave ? -1 : 0));
             transform.position = new Vector3(tile.X * 4, height * 0.1f, tile.Y * 4);
             transform.rotation = Quaternion.Euler(0, 180, 0);
 

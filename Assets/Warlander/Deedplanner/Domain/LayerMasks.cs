@@ -13,6 +13,10 @@ namespace Warlander.Deedplanner.Domain
         public const int DecorationLayer = 13;
         public const int BridgeLayer = 14;
         public const int CaveLayer = 15;
+        public const int CaveFloorRoofLayer = 16;
+        public const int CaveWallLayer = 17;
+        public const int CaveDecorationLayer = 18;
+        public const int CaveBridgeLayer = 19;
 
         // Masks from layers to use in raytracer
         public const int TileMask = 1 << TileLayer;
@@ -22,6 +26,10 @@ namespace Warlander.Deedplanner.Domain
         public const int DecorationMask = 1 << DecorationLayer;
         public const int BridgeMask = 1 << BridgeLayer;
         public const int CaveMask = 1 << CaveLayer;
+        public const int CaveFloorRoofMask = 1 << CaveFloorRoofLayer;
+        public const int CaveWallMask = 1 << CaveWallLayer;
+        public const int CaveDecorationMask = 1 << CaveDecorationLayer;
+        public const int CaveBridgeMask = 1 << CaveBridgeLayer;
 
         // Combined masks to toggle what is raytraced for given feature
         public const int GroundEditMask = GroundMask;
@@ -53,27 +61,49 @@ namespace Warlander.Deedplanner.Domain
                 case Tab.Height:
                     return level < 0 ? CaveMask : HeightEditMask;
                 case Tab.Floors:
-                    return cave ? CaveMask | FloorRoofMask | WallMask : FloorEditMask;
+                    return cave ? CaveMask | CaveFloorRoofMask | CaveWallMask : FloorEditMask;
                 case Tab.Roofs:
-                    return cave ? CaveMask | FloorRoofMask | WallMask | BridgeMask : RoofEditMask;
+                    return cave ? CaveMask | CaveFloorRoofMask | CaveWallMask | CaveBridgeMask : RoofEditMask;
                 case Tab.Walls:
-                    return cave ? CaveMask | WallMask : WallEditMask;
+                    return cave ? CaveMask | CaveWallMask : WallEditMask;
                 case Tab.Objects:
                     return cave
-                        ? CaveMask | FloorRoofMask | WallMask | DecorationMask | BridgeMask
+                        ? CaveMask | CaveFloorRoofMask | CaveWallMask | CaveDecorationMask | CaveBridgeMask
                         : DecorationEditMask;
                 case Tab.Labels:
                     return cave ? CaveMask : LabelEditMask;
                 case Tab.Borders:
                     return cave ? CaveMask : BorderEditMask;
                 case Tab.Bridges:
-                    return cave ? CaveMask | FloorRoofMask | BridgeMask : BridgeEditMask;
+                    return cave ? CaveMask | CaveFloorRoofMask | CaveBridgeMask : BridgeEditMask;
                 case Tab.Tools:
-                    return cave ? CaveMask | FloorRoofMask : ToolsEditMask;
+                    return cave ? CaveMask | CaveFloorRoofMask : ToolsEditMask;
                 case Tab.Menu:
                     return MenuEditMask;
                 default:
                     throw new ArgumentException("Cannot find mask for tab " + tab, nameof(tab));
+            }
+        }
+
+        public static int GetLayerForLevel(int surfaceLayer, int level)
+        {
+            if (level >= 0)
+            {
+                return surfaceLayer;
+            }
+
+            switch (surfaceLayer)
+            {
+                case FloorRoofLayer:
+                    return CaveFloorRoofLayer;
+                case WallLayer:
+                    return CaveWallLayer;
+                case DecorationLayer:
+                    return CaveDecorationLayer;
+                case BridgeLayer:
+                    return CaveBridgeLayer;
+                default:
+                    return surfaceLayer;
             }
         }
     }

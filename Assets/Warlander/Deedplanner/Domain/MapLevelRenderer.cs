@@ -20,7 +20,6 @@ namespace Warlander.Deedplanner.Domain
         private IDisposable _legacyRenderScope;
         private readonly Dictionary<Renderer, RendererBaseState> _baseRendererStates =
             new Dictionary<Renderer, RendererBaseState>();
-        private readonly Dictionary<Collider, bool> _baseColliderStates = new Dictionary<Collider, bool>();
         private int _scopeDepth;
 
         private int _renderedLevel;
@@ -58,6 +57,7 @@ namespace Warlander.Deedplanner.Domain
             get => _renderedLevel;
             set
             {
+                if (_renderedLevel == value) return;
                 _renderedLevel = value;
                 UpdateLevelsRendering();
             }
@@ -68,6 +68,7 @@ namespace Warlander.Deedplanner.Domain
             get => _renderEntireMap;
             set
             {
+                if (_renderEntireMap == value) return;
                 _renderEntireMap = value;
                 UpdateLevelsRendering();
             }
@@ -78,9 +79,18 @@ namespace Warlander.Deedplanner.Domain
             get => _renderGrid;
             set
             {
+                if (_renderGrid == value) return;
                 _renderGrid = value;
                 UpdateLevelsRendering();
             }
+        }
+
+        public void SetActiveView(MapRenderView view)
+        {
+            _renderedLevel = view.Level;
+            _renderEntireMap = view.RenderEntireMap;
+            _renderGrid = view.RenderGrid;
+            UpdateLevelsRendering();
         }
 
         public float GetRelativeLevelOpacity(int relativeLevel)
@@ -99,6 +109,12 @@ namespace Warlander.Deedplanner.Domain
                 entity.transform.SetParent(_caveLevelRoots[absoluteLevel]);
             else
                 entity.transform.SetParent(_surfaceLevelRoots[absoluteLevel]);
+
+            DynamicModelBehaviour dynamicModel = entity.GetComponent<DynamicModelBehaviour>();
+            if (dynamicModel)
+            {
+                dynamicModel.SetRaycastLayer(LayerMasks.GetLayerForLevel(entity.layer, level));
+            }
         }
 
         public void UpdateLevelsRendering()
@@ -120,7 +136,6 @@ namespace Warlander.Deedplanner.Domain
             if (_scopeDepth == 0)
             {
                 _baseRendererStates.Clear();
-                _baseColliderStates.Clear();
             }
 
             _scopeDepth++;
@@ -202,18 +217,6 @@ namespace Warlander.Deedplanner.Domain
                 }
             }
 
-            Collider[] colliders = root.GetComponentsInChildren<Collider>(true);
-            foreach (Collider collider in colliders)
-            {
-                scope.Add(new ColliderState(collider, collider.enabled));
-                if (!_baseColliderStates.TryGetValue(collider, out bool baseEnabled))
-                {
-                    baseEnabled = collider.enabled;
-                    _baseColliderStates.Add(collider, baseEnabled);
-                }
-
-                collider.enabled = baseEnabled && visible;
-            }
         }
 
         private static Color GetBaseColor(Renderer renderer, MaterialPropertyBlock propertyBlock)
@@ -236,7 +239,6 @@ namespace Warlander.Deedplanner.Domain
             if (_scopeDepth == 0)
             {
                 _baseRendererStates.Clear();
-                _baseColliderStates.Clear();
             }
         }
 
@@ -298,7 +300,6 @@ namespace Warlander.Deedplanner.Domain
         {
             private readonly MapLevelRenderer _owner;
             private readonly List<RendererState> _renderers = new List<RendererState>();
-            private readonly List<ColliderState> _colliders = new List<ColliderState>();
             private readonly Vector3 _surfaceGridPosition;
             private readonly Vector3 _caveGridPosition;
             private bool _disposed;
@@ -315,17 +316,10 @@ namespace Warlander.Deedplanner.Domain
                 _renderers.Add(state);
             }
 
-            public void Add(ColliderState state)
-            {
-                _colliders.Add(state);
-            }
-
             public void Restore()
             {
                 for (int i = _renderers.Count - 1; i >= 0; i--)
                     _renderers[i].Restore();
-                for (int i = _colliders.Count - 1; i >= 0; i--)
-                    _colliders[i].Restore();
 
                 _owner._surfaceGridRoot.localPosition = _surfaceGridPosition;
                 _owner._caveGridRoot.localPosition = _caveGridPosition;
@@ -374,24 +368,6 @@ namespace Warlander.Deedplanner.Domain
                 if (!Renderer) return;
                 Renderer.forceRenderingOff = ForceRenderingOff;
                 Renderer.SetPropertyBlock(PropertyBlock);
-            }
-        }
-
-        private readonly struct ColliderState
-        {
-            private Collider Collider { get; }
-            private bool Enabled { get; }
-
-            public ColliderState(Collider collider, bool enabled)
-            {
-                Collider = collider;
-                Enabled = enabled;
-            }
-
-            public void Restore()
-            {
-                if (Collider)
-                    Collider.enabled = Enabled;
             }
         }
 

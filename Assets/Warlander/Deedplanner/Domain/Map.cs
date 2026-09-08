@@ -134,6 +134,11 @@ namespace Warlander.Deedplanner.Domain
             return _levelRenderer.PrepareForCamera(view);
         }
 
+        public void SetActiveRenderView(MapRenderView view)
+        {
+            _levelRenderer.SetActiveView(view);
+        }
+
         private void Start()
         {
             _mapRenderSettingsRetriever.Changed += GameManagerOnRenderSettingsChanged;

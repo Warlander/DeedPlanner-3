@@ -63,7 +63,7 @@ namespace Warlander.Deedplanner.Bridges
             EntityOrientation orientation, int x, int y, float height, int skew, int segmentIndex, int laneIndex,
             int level)
         {
-            gameObject.layer = LayerMasks.BridgeLayer;
+            SetRaycastLayer(LayerMasks.GetLayerForLevel(LayerMasks.BridgeLayer, level));
             ParentBridge = parentBridge;
             this.partType = partType;
             this.partSide = partSide;
@@ -166,7 +166,7 @@ namespace Warlander.Deedplanner.Bridges
         private GameObject CreatePavingOverlay()
         {
             GameObject overlay = new GameObject("Paving Overlay");
-            overlay.layer = LayerMasks.BridgeLayer;
+            overlay.layer = gameObject.layer;
             overlay.transform.SetParent(transform, false);
 
             float lowY = PavingEpsilon;
