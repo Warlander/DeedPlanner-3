@@ -288,7 +288,7 @@ namespace Warlander.Deedplanner.Cameras
                     GridMesh activeGrid = Level < 0
                         ? _mapHandler.Map.CaveGridMesh
                         : _mapHandler.Map.SurfaceGridMesh;
-                    HeightmapHandle heightmapHandle = isHeightEditing && Level >= 0
+                    HeightmapHandle heightmapHandle = isHeightEditing
                         ? activeGrid.RaycastHandles(CreateMouseRay())
                         : null;
 

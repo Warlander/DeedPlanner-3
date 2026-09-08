@@ -1692,10 +1692,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5414954473135851106}
-    - targetCorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7187182471414551580}
   m_SourcePrefab: {fileID: 100100000, guid: 19574092408115b4393b449b1e80f5db, type: 3}
 --- !u!224 &404241128265920708 stripped
 RectTransform:
@@ -1722,22 +1718,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _level: -4
---- !u!114 &7187182471414551580
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 404241128265920709}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: 'Cave editing not available
-
-    in current alpha version'
-  showDelay: 0
 --- !u!1001 &1647378933210010754
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3687,10 +3667,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5554380670790034888}
-    - targetCorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 430720697866470807}
   m_SourcePrefab: {fileID: 100100000, guid: 19574092408115b4393b449b1e80f5db, type: 3}
 --- !u!1 &2741558230456198620 stripped
 GameObject:
@@ -3711,22 +3687,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _level: -5
---- !u!114 &430720697866470807
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2741558230456198620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: 'Cave editing not available
-
-    in current alpha version'
-  showDelay: 0
 --- !u!224 &2741558230456198621 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
@@ -4188,10 +4148,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5379432512441209378}
-    - targetCorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3824464841674107293}
   m_SourcePrefab: {fileID: 100100000, guid: 19574092408115b4393b449b1e80f5db, type: 3}
 --- !u!1 &3188175762041044782 stripped
 GameObject:
@@ -4212,22 +4168,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _level: -1
---- !u!114 &3824464841674107293
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3188175762041044782}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: 'Cave editing not available
-
-    in current alpha version'
-  showDelay: 0
 --- !u!224 &3188175762041044783 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
@@ -5202,10 +5142,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3937632079394565292}
-    - targetCorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1974351614500726871}
   m_SourcePrefab: {fileID: 100100000, guid: 19574092408115b4393b449b1e80f5db, type: 3}
 --- !u!1 &6846005900131257092 stripped
 GameObject:
@@ -5226,22 +5162,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _level: -3
---- !u!114 &1974351614500726871
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6846005900131257092}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: 'Cave editing not available
-
-    in current alpha version'
-  showDelay: 0
 --- !u!224 &6846005900131257093 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
@@ -7553,10 +7473,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1629560976238528306}
-    - targetCorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 9114291664027053349}
   m_SourcePrefab: {fileID: 100100000, guid: 19574092408115b4393b449b1e80f5db, type: 3}
 --- !u!1 &7938833790615828224 stripped
 GameObject:
@@ -7577,22 +7493,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _level: -6
---- !u!114 &9114291664027053349
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7938833790615828224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: 'Cave editing not available
-
-    in current alpha version'
-  showDelay: 0
 --- !u!224 &7938833790615828225 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1652071402628677655, guid: 19574092408115b4393b449b1e80f5db,
@@ -7815,10 +7715,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 4452319405047047084}
-    - targetCorrespondingSourceObject: {fileID: 1652071402628677654, guid: 19574092408115b4393b449b1e80f5db,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1550627160270026088}
   m_SourcePrefab: {fileID: 100100000, guid: 19574092408115b4393b449b1e80f5db, type: 3}
 --- !u!224 &7999741308380897978 stripped
 RectTransform:
@@ -7845,22 +7741,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _level: -2
---- !u!114 &1550627160270026088
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7999741308380897979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: 'Cave editing not available
-
-    in current alpha version'
-  showDelay: 0
 --- !u!1001 &8831701578847453395
 PrefabInstance:
   m_ObjectHideFlags: 0

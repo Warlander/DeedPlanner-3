@@ -73,8 +73,8 @@ Editing Panel
 | Tab root | View component | Notes |
 |---|---|---|
 | Ground Tab | GroundUpdaterView | Toolbelt (pencil/fill/diagonal), click-mode info, Grounds Tree (UnityTree + search) |
-| Caves Tab | CaveUpdaterView | Caves Tree only |
-| Height Tab | HeightUpdaterView | 4 mode toggles; Handles Settings / Painting Settings panels |
+| Caves Tab | CaveUpdaterView | Four-button toolbelt (pencil, fill, culling off/on), primary/secondary cave choices, Caves Tree |
+| Height Tab | HeightUpdaterView | 4 edit-mode toggles; cave Floor/Clearance modes; optional Preserve ceiling height; Handles Settings / Painting Settings panels |
 | Floors Tab | FloorUpdaterView | Orientation box (N/W/E/S toggles), Floors Tree |
 | Walls Tab | WallUpdaterView | Automatic Reverse / Reverse checkboxes, Walls Tree |
 | Roofs Tab | RoofUpdaterView | Roofs List (UnityList) |

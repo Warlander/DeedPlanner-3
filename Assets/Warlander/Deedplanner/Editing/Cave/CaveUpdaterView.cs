@@ -17,7 +17,8 @@ namespace Warlander.Deedplanner.Editing
         [SerializeField] private Toggle _primaryToggle;
         [SerializeField] private Toggle _pencilToggle;
         [SerializeField] private Toggle _fillToggle;
-        [SerializeField] private Toggle _cullingToggle;
+        [SerializeField] private Toggle _cullingOffToggle;
+        [SerializeField] private Toggle _cullingOnToggle;
 
         public event Action<CaveData> CaveSelected;
         public event Action<CaveTool> ToolChanged;
@@ -39,7 +40,14 @@ namespace Warlander.Deedplanner.Editing
             {
                 if (value) ToolChanged?.Invoke(CaveTool.Fill);
             });
-            _cullingToggle.onValueChanged.AddListener(value => CullingChanged?.Invoke(value));
+            _cullingOffToggle.onValueChanged.AddListener(value =>
+            {
+                if (value) CullingChanged?.Invoke(false);
+            });
+            _cullingOnToggle.onValueChanged.AddListener(value =>
+            {
+                if (value) CullingChanged?.Invoke(true);
+            });
         }
 
         public void AddCaveEntry(CaveData data, string[] category)
@@ -62,7 +70,10 @@ namespace Warlander.Deedplanner.Editing
 
         public void SetCullingEnabled(bool enabled)
         {
-            _cullingToggle.SetIsOnWithoutNotify(enabled);
+            Toggle selected = enabled ? _cullingOnToggle : _cullingOffToggle;
+            Toggle deselected = enabled ? _cullingOffToggle : _cullingOnToggle;
+            selected.SetIsOnWithoutNotify(true);
+            deselected.SetIsOnWithoutNotify(false);
         }
 
         private void OnCaveSelected(object value)

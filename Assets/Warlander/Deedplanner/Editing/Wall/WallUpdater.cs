@@ -116,7 +116,7 @@ namespace Warlander.Deedplanner.Editing
                 EntityType type = levelEntity.Type;
                 horizontal = (type == EntityType.Hwall || type == EntityType.Hfence);
             }
-            else if (overlayMesh || groundMesh)
+            else if (overlayMesh || groundMesh || _cameraCoordinator.Current.HasCurrentCaveHit)
             {
                 if (overlayMesh)
                 {
@@ -125,6 +125,16 @@ namespace Warlander.Deedplanner.Editing
                 else if (groundMesh)
                 {
                     floor = 0;
+                }
+                else
+                {
+                    floor = _cameraCoordinator.Current.Level;
+                    int caveX = _cameraCoordinator.Current.CurrentCaveHit.CellX;
+                    int caveY = _cameraCoordinator.Current.CurrentCaveHit.CellY;
+                    if (!_mapHandler.Map.Caves.IsOpen(caveX, caveY))
+                    {
+                        return;
+                    }
                 }
                 TileSelectionHit tileSelectionHit = TileSelection.PositionToTileSelectionHit(raycast.point, TileSelectionMode.Borders);
                 TileSelectionTarget target = tileSelectionHit.Target;

@@ -105,7 +105,6 @@ namespace Warlander.Deedplanner.Editing
                 MultiCamera previousCamera = _restrictedCamera;
                 int previousLevel = _levelBeforeLock;
                 RestrictCurrentCamera();
-                NormalizeCurrentLevel();
                 if (previousCamera != null && previousCamera != _restrictedCamera)
                 {
                     SetLevel(previousCamera, previousLevel);

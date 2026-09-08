@@ -157,7 +157,8 @@ namespace Warlander.Deedplanner.Editing
             GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             LevelEntity levelEntity = raycast.transform.GetComponent<LevelEntity>();
             Dock dock = raycast.transform.GetComponent<Dock>();
-            bool validDock = dock != null && dock.Tile != null && dock.Tile.Dock == dock;
+            bool validDock = dock != null && dock.Tile != null && dock.Tile.GetDock(dock.Realm) == dock;
+            bool caveHit = _cameraCoordinator.Current.HasCurrentCaveHit;
 
             Material ghostMaterial = _sharedMaterials.GhostMaterial;
             if (data != _lastGhostData || !_ghostObject)
@@ -177,11 +178,6 @@ namespace Warlander.Deedplanner.Editing
                 targetFloor = dock.AnchorLevel;
             }
 
-            if (data.CenterOnly || data.Tree || data.Bush)
-            {
-                targetFloor = 0;
-            }
-
             Map map = _mapHandler.Map;
 
             if (_targetedTile != null)
@@ -196,23 +192,27 @@ namespace Warlander.Deedplanner.Editing
             {
                 _position = CalculateCorrectedPosition(raycast.point, data, _settings.DecorationSnapToGrid);
                 _targetedTile = null;
-                if (overlayMesh)
+                if (overlayMesh || caveHit)
                 {
-                    int tileX = Mathf.FloorToInt(_position.x / 4f);
-                    int tileY = Mathf.FloorToInt(_position.z / 4f);
+                    int tileX = caveHit
+                        ? _cameraCoordinator.Current.CurrentCaveHit.CellX
+                        : Mathf.FloorToInt(_position.x / 4f);
+                    int tileY = caveHit
+                        ? _cameraCoordinator.Current.CurrentCaveHit.CellY
+                        : Mathf.FloorToInt(_position.z / 4f);
                     _targetedTile = map[tileX, tileY];
-                    Dock targetedDock = _targetedTile?.Dock;
+                    if (caveHit && !map.Caves.IsOpen(tileX, tileY))
+                    {
+                        _targetedTile = null;
+                    }
+                    DockRealm realm = targetFloor < 0 ? DockRealm.Cave : DockRealm.Surface;
+                    Dock targetedDock = _targetedTile?.GetDock(realm);
                     _position.y = targetedDock != null
-                        ? (targetedDock.Height - targetedDock.AnchorLevel * 30) * 0.1f
-                        : map.GetInterpolatedHeight(_position.x, _position.z);
+                        ? targetedDock.Height * 0.1f
+                        : map.GetInterpolatedHeightForLevel(_position.x, _position.z, targetFloor);
                     if (data.Floating)
                     {
                         _position.y = Mathf.Max(_position.y, 0);
-                    }
-                    else
-                    {
-                        float floorHeight = 3f;
-                        _position.y += targetFloor * floorHeight;
                     }
                 }
                 else if (levelEntity && levelEntity.Valid)
@@ -233,9 +233,9 @@ namespace Warlander.Deedplanner.Editing
                 }
             }
 
-            bool canPlaceNewObject = overlayMesh || groundMesh ||
-                (levelEntity && levelEntity.Valid && levelEntity.GetType() == typeof(Floor)) ||
-                validDock;
+            bool canPlaceNewObject = ((overlayMesh || groundMesh || caveHit) && _targetedTile != null) ||
+                                     (levelEntity && levelEntity.Valid && levelEntity.GetType() == typeof(Floor)) ||
+                                     validDock;
             if (canPlaceNewObject || _placingDecoration)
             {
                 _ghostObject.gameObject.SetActive(true);

@@ -7,6 +7,7 @@ using System.Xml;
 using UnityEngine;
 using UnityEngine.InputSystem.Utilities;
 using Warlander.Deedplanner.Rendering.Outline;
+using Warlander.Deedplanner.Caves;
 using Warlander.Deedplanner.Logging;
 
 namespace Warlander.Deedplanner.Bridges
@@ -19,6 +20,7 @@ namespace Warlander.Deedplanner.Bridges
         public int AdditionalData => additionalData;
         public int LowerLevel => Mathf.Min(firstLevel, secondLevel);
         public int HigherLevel => Mathf.Max(firstLevel, secondLevel);
+        public bool IsCave => !surfaced;
         public Vector2Int FirstTile => new Vector2Int(firstX, firstY);
         public Vector2Int SecondTile => new Vector2Int(secondX, secondY);
 
@@ -256,9 +258,10 @@ namespace Warlander.Deedplanner.Bridges
 
                     GameObject bridgePartObject = new GameObject("Bridge Part " + Data.Name, typeof(BridgePart));
                     BridgePart bridgePart = bridgePartObject.GetComponent<BridgePart>();
-                    map[x, y].RegisterBridgePart(bridgePart);
+                    map[x, y].RegisterBridgePart(bridgePart, IsCave);
+                    int partLevel = GetLevelAtSegment(currentSegment, bridgeLength);
                     bridgePart.Initialise(this, segment, side, orientation, x, y, totalHeight, delta,
-                        currentSegment, currentLane);
+                        currentSegment, currentLane, partLevel);
                     if (pavements != null)
                     {
                         bridgePart.SetPavement(pavements[currentSegment, currentLane]);
@@ -293,27 +296,32 @@ namespace Warlander.Deedplanner.Bridges
             float totalHeight = currentHeight + currentExtraData;
             return totalHeight;
         }
+
+        private int GetLevelAtSegment(int segment, int bridgeLength)
+        {
+            float progress = bridgeLength <= 1 ? 0f : (float)segment / (bridgeLength - 1);
+            if (!IsCave)
+            {
+                return Mathf.RoundToInt(Mathf.Lerp(firstLevel, secondLevel, progress));
+            }
+
+            int firstStorey = CaveLevel.GetStoreyIndex(firstLevel);
+            int secondStorey = CaveLevel.GetStoreyIndex(secondLevel);
+            int storey = Mathf.RoundToInt(Mathf.Lerp(firstStorey, secondStorey, progress));
+            return -storey - 1;
+        }
         
         private int GetAbsoluteHeight(Tile tile, int level) 
         {
-            int baseHeight;
-            if (level < 0)
-            {
-                baseHeight = tile.CaveHeight;
-            }
-            else
-            {
-                baseHeight = tile.SurfaceHeight;
-            }
-
-            int buildingLevel = level >= 0 ? level : -level - 1;
+            int baseHeight = tile.GetAbsoluteHeightForLevel(level);
+            int buildingLevel = level >= 0 ? level : CaveLevel.GetStoreyIndex(level);
             if (buildingLevel > 0)
             {
                 // Tiny bit of extra height for levels above ground level to account for height of the level.
                 baseHeight += 3;
             }
             
-            return baseHeight + buildingLevel * 30;
+            return baseHeight;
         }
         
         private BridgePartSide GetPartSide(int startX, int startY, int endX, int endY, int x, int y, bool isVertical) {
@@ -391,7 +399,7 @@ namespace Warlander.Deedplanner.Bridges
 
             foreach (BridgePart part in bridgeParts)
             {
-                part.Tile.RegisterBridgePart(part);
+                part.Tile.RegisterBridgePart(part, IsCave);
             }
 
             SetVisible(true);
@@ -411,7 +419,7 @@ namespace Warlander.Deedplanner.Bridges
             {
                 if (part.Tile != null)
                 {
-                    part.Tile.UnregisterBridgePart();
+                part.Tile.UnregisterBridgePart(part);
                 }
             }
 
@@ -427,7 +435,7 @@ namespace Warlander.Deedplanner.Bridges
             {
                 if (part.Tile != null)
                 {
-                    part.Tile.UnregisterBridgePart();
+                part.Tile.UnregisterBridgePart(part);
                 }
 
                 UnityEngine.Object.Destroy(part.gameObject);
@@ -608,7 +616,7 @@ namespace Warlander.Deedplanner.Bridges
             {
                 if (part.Tile != null)
                 {
-                    part.Tile.UnregisterBridgePart();
+                part.Tile.UnregisterBridgePart(part);
                 }
 
                 UnityEngine.Object.Destroy(part.gameObject);

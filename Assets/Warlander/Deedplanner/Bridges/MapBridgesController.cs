@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
-using Warlander.Deedplanner.Platform.Features;
-using Warlogic.Features;
 
 namespace Warlander.Deedplanner.Bridges
 {
@@ -12,25 +10,20 @@ namespace Warlander.Deedplanner.Bridges
     {
         private readonly Map _map;
         private readonly BridgeFactory _bridgeFactory;
-        private readonly IFeatureStateRetriever<Feature> _featureStateRetriever;
         private readonly List<Bridge> _bridges = new List<Bridge>();
 
         public IReadOnlyList<Bridge> Bridges => _bridges;
 
         public event Action BridgesChanged;
 
-        public MapBridgesController(Map map, BridgeFactory bridgeFactory, IFeatureStateRetriever<Feature> featureStateRetriever)
+        public MapBridgesController(Map map, BridgeFactory bridgeFactory)
         {
             _map = map;
             _bridgeFactory = bridgeFactory;
-            _featureStateRetriever = featureStateRetriever;
         }
 
         public void InitializeBridges(XmlElement mapRoot)
         {
-            if (!_featureStateRetriever.IsFeatureEnabled(Feature.Bridges))
-                return;
-
             XmlNodeList bridgesList = mapRoot.GetElementsByTagName("bridge");
             foreach (XmlElement bridgeElement in bridgesList)
             {
@@ -44,9 +37,6 @@ namespace Warlander.Deedplanner.Bridges
 
         public void InitializeBridgesAfterResize(Map originalMap, int addLeft, int addBottom)
         {
-            if (!_featureStateRetriever.IsFeatureEnabled(Feature.Bridges))
-                return;
-
             Vector2Int bridgeShift = new Vector2Int(addLeft, addBottom);
 
             foreach (Bridge originalMapBridge in originalMap.Bridges)

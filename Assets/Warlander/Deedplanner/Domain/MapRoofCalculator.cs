@@ -44,7 +44,7 @@ namespace Warlander.Deedplanner.Domain
             {
                 for (int i2 = 0; i2 <= _currentMap.Height; i2++)
                 {
-                    for (int i3 = 0; i3 < Constants.LevelLimit; i3++)
+                    for (int i3 = Constants.NegativeLevelLimit; i3 < Constants.LevelLimit; i3++)
                     {
                         LevelEntity entity = _currentMap[i, i2].GetTileContent(i3);
                         if (entity && entity.GetType() == typeof(Roof))
@@ -57,7 +57,7 @@ namespace Warlander.Deedplanner.Domain
             {
                 for (int i2 = 0; i2 <= _currentMap.Height; i2++)
                 {
-                    for (int i3 = 0; i3 < Constants.LevelLimit; i3++)
+                    for (int i3 = Constants.NegativeLevelLimit; i3 < Constants.LevelLimit; i3++)
                     {
                         LevelEntity entity = _currentMap[i, i2].GetTileContent(i3);
                         if (entity && entity.GetType() == typeof(Roof))

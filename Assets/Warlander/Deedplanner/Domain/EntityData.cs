@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using Warlander.Deedplanner.Persistence;
 using UnityEngine;
+using Warlander.Deedplanner.Caves;
 
 namespace Warlander.Deedplanner.Domain
 {
@@ -24,7 +25,10 @@ namespace Warlander.Deedplanner.Domain
             int height = Type == EntityType.Floorroof
                 ? tile.GetHeightForLevelOnTile(Level)
                 : tile.GetHeightForLevel(Level);
-            targetTransform.localPosition = new Vector3(tile.X * 4, height * 0.1f + Level * 3f, tile.Y * 4);
+            float worldHeight = Level < 0
+                ? CaveLevel.GetWorldHeight(height, Level)
+                : height * 0.1f + Level * 3f;
+            targetTransform.localPosition = new Vector3(tile.X * 4, worldHeight, tile.Y * 4);
         }
 
         public virtual void Serialize(XmlDocument document, XmlElement localRoot)

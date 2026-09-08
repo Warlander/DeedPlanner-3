@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Domain.Entities.Floors;
+using Warlander.Deedplanner.Caves;
 
 namespace Warlander.Deedplanner.Docks
 {
@@ -20,6 +21,7 @@ namespace Warlander.Deedplanner.Docks
 
         public int Height { get; private set; }
         public int AnchorLevel { get; private set; }
+        public DockRealm Realm { get; private set; }
         public FloorData Floor { get; private set; }
         public DockSupportData Support { get; private set; }
         public EntityOrientation BraceRotation { get; private set; }
@@ -45,10 +47,12 @@ namespace Warlander.Deedplanner.Docks
         }
 
         public void Initialize(Tile tile, int height, FloorData floor, DockSupportData support,
-            EntityOrientation braceRotation, Material ghostMaterial = null, int? anchorLevel = null)
+            EntityOrientation braceRotation, DockRealm realm = DockRealm.Surface, Material ghostMaterial = null,
+            int? anchorLevel = null)
         {
             Tile = tile;
             Height = height;
+            Realm = realm;
             AnchorLevel = anchorLevel ?? ComputeTerrainLevel();
             Floor = floor;
             Support = support;
@@ -86,29 +90,15 @@ namespace Warlander.Deedplanner.Docks
             ApplyVisualState();
         }
 
-        // Level visibility anchors to the floor level the dock was painted from, not the terrain
-        // below — a pier over deep water keeps the level of the structure it extends.
-        public int GetEffectiveLevel()
-        {
-            return AnchorLevel;
-        }
-
         private int ComputeTerrainLevel()
         {
+            if (Realm == DockRealm.Cave)
+            {
+                int storey = Mathf.Max(0, Mathf.RoundToInt((Height - Tile.CaveHeight) / 30f));
+                return -storey - 1;
+            }
             return Mathf.RoundToInt((Height - Mathf.Max(Tile.SurfaceHeight, 0)) / 30f);
         }
-
-        public void ApplyLevelRendering(float opacity)
-        {
-            _levelOpacity = opacity;
-            gameObject.SetActive(opacity > 0);
-            if (opacity > 0)
-            {
-                ApplyVisualState();
-            }
-        }
-
-        private float _levelOpacity = 1f;
 
         private void ApplyVisualState()
         {
@@ -126,7 +116,7 @@ namespace Warlander.Deedplanner.Docks
                 }
 
                 _invalidPropertyBlock.SetColor(ShaderPropertyIds.BaseColor,
-                    new Color(_levelOpacity, 0.2f * _levelOpacity, 0.2f * _levelOpacity, 0.6f));
+                    new Color(1f, 0.2f, 0.2f, 0.6f));
 
                 foreach (Renderer childRenderer in GetComponentsInChildren<Renderer>())
                 {
@@ -142,7 +132,6 @@ namespace Warlander.Deedplanner.Docks
             else
             {
                 MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                Color opacityColor = new Color(_levelOpacity, _levelOpacity, _levelOpacity);
                 foreach (Renderer childRenderer in GetComponentsInChildren<Renderer>())
                 {
                     if (_originalMaterials.TryGetValue(childRenderer, out Material original))
@@ -150,7 +139,7 @@ namespace Warlander.Deedplanner.Docks
                         childRenderer.sharedMaterial = original;
                     }
 
-                    propertyBlock.SetColor(ShaderPropertyIds.BaseColor, opacityColor);
+                    propertyBlock.SetColor(ShaderPropertyIds.BaseColor, Color.white);
                     childRenderer.SetPropertyBlock(propertyBlock);
                 }
             }
@@ -324,11 +313,12 @@ namespace Warlander.Deedplanner.Docks
         private int MinCornerHeight()
         {
             Map map = Tile.Map;
+            bool cave = Realm == DockRealm.Cave;
             return Mathf.Min(
-                map[Tile.X, Tile.Y].SurfaceHeight,
-                map[Tile.X + 1, Tile.Y].SurfaceHeight,
-                map[Tile.X, Tile.Y + 1].SurfaceHeight,
-                map[Tile.X + 1, Tile.Y + 1].SurfaceHeight);
+                cave ? map[Tile.X, Tile.Y].CaveHeight : map[Tile.X, Tile.Y].SurfaceHeight,
+                cave ? map[Tile.X + 1, Tile.Y].CaveHeight : map[Tile.X + 1, Tile.Y].SurfaceHeight,
+                cave ? map[Tile.X, Tile.Y + 1].CaveHeight : map[Tile.X, Tile.Y + 1].SurfaceHeight,
+                cave ? map[Tile.X + 1, Tile.Y + 1].CaveHeight : map[Tile.X + 1, Tile.Y + 1].SurfaceHeight);
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
@@ -337,6 +327,7 @@ namespace Warlander.Deedplanner.Docks
             localRoot.SetAttribute("y", Tile.Y.ToString());
             localRoot.SetAttribute("height", Height.ToString());
             localRoot.SetAttribute("anchorLevel", AnchorLevel.ToString());
+            localRoot.SetAttribute("realm", Realm.ToString().ToLowerInvariant());
             localRoot.SetAttribute("floor", Floor.ShortName);
             localRoot.SetAttribute("support", Support != null ? Support.ShortName : "none");
             if (Support != null && Support.Type == DockSupportType.Brace)

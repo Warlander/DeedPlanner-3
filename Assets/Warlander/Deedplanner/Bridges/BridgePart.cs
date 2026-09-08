@@ -41,6 +41,7 @@ namespace Warlander.Deedplanner.Bridges
         public int LaneIndex { get; private set; }
         public BridgePavementData Pavement { get; private set; }
         public bool Mirrored => orientation == EntityOrientation.Right || orientation == EntityOrientation.Up;
+        public int Level { get; private set; }
 
         private BridgePartType partType;
         private BridgePartSide partSide;
@@ -59,7 +60,8 @@ namespace Warlander.Deedplanner.Bridges
         private float _height;
 
         public void Initialise(Bridge parentBridge, BridgePartType partType, BridgePartSide partSide,
-            EntityOrientation orientation, int x, int y, float height, int skew, int segmentIndex, int laneIndex)
+            EntityOrientation orientation, int x, int y, float height, int skew, int segmentIndex, int laneIndex,
+            int level)
         {
             gameObject.layer = LayerMasks.BridgeLayer;
             ParentBridge = parentBridge;
@@ -68,6 +70,7 @@ namespace Warlander.Deedplanner.Bridges
             this.orientation = orientation;
             SegmentIndex = segmentIndex;
             LaneIndex = laneIndex;
+            Level = level;
             _height = height;
 
             // Abutment and bracing have dedicated left/right models selected by lane and row
@@ -396,7 +399,8 @@ namespace Warlander.Deedplanner.Bridges
 
             // The column lands in the tile interior where ground blends all four corners;
             // min guarantees the chain reaches ground on slopes.
-            int groundHeight = Tile.SurfaceHeight;
+            bool cave = Level < 0;
+            int groundHeight = cave ? Tile.CaveHeight : Tile.SurfaceHeight;
             for (int dx = 0; dx <= 1; dx++)
             {
                 for (int dy = 0; dy <= 1; dy++)
@@ -404,7 +408,7 @@ namespace Warlander.Deedplanner.Bridges
                     Tile corner = Tile.Map[Tile.X + dx, Tile.Y + dy];
                     if (corner != null)
                     {
-                        groundHeight = Mathf.Min(groundHeight, corner.SurfaceHeight);
+                        groundHeight = Mathf.Min(groundHeight, cave ? corner.CaveHeight : corner.SurfaceHeight);
                     }
                 }
             }

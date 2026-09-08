@@ -29,7 +29,9 @@ namespace Warlander.Deedplanner.Domain
         
         private int surfaceHeight = 0;
         private BridgePart surfaceBridgePart;
-        private Dock dock;
+        private BridgePart caveBridgePart;
+        private Dock surfaceDock;
+        private Dock caveDock;
         
         public Map Map { get; }
         public int X { get; }
@@ -39,7 +41,6 @@ namespace Warlander.Deedplanner.Domain
         public Ground Ground { get; private set; }
         public CaveCell Cave { get; }
         public BridgePart BridgePart => surfaceBridgePart;
-        public Dock Dock => dock;
 
         public int SurfaceHeight {
             get => surfaceHeight;
@@ -113,12 +114,14 @@ namespace Warlander.Deedplanner.Domain
             RefreshCaveCornerEntities();
             Map.RecalculateCaveHeight(X, Y, previousHeight);
             Map.RefreshBridgesForCaveHeight(X, Y);
+            Map.RefreshDocksForCaveHeight(X, Y);
         }
 
         internal void ApplyCaveClearance(int clearance)
         {
             Cave.SetClearance(clearance);
             RefreshCaveCornerEntities();
+            Map.RefreshDocksForCaveHeight(X, Y);
         }
 
         private void RefreshCaveCornerEntities()
@@ -153,12 +156,12 @@ namespace Warlander.Deedplanner.Domain
 
         public EntityType FindTypeOfEntity(TileEntity entity)
         {
-            if (entity == BridgePart)
+            if (entity == surfaceBridgePart || entity == caveBridgePart)
             {
                 return EntityType.BridgePart;
             }
 
-            if (entity == Dock)
+            if (entity == surfaceDock || entity == caveDock)
             {
                 return EntityType.Dock;
             }
@@ -193,38 +196,55 @@ namespace Warlander.Deedplanner.Domain
 
         public int GetHeightForLevel(int level)
         {
-            if (level < 0)
-            {
-                return Cave.FloorHeight;
-            }
-
-            Dock cornerDock = Map.GetDockSharingCorner(this);
+            DockRealm realm = level < 0 ? DockRealm.Cave : DockRealm.Surface;
+            Dock cornerDock = Map.GetDockSharingCorner(this, realm);
             if (cornerDock != null)
             {
-                return cornerDock.Height - cornerDock.AnchorLevel * 30;
+                int offset = level < 0
+                    ? CaveLevel.GetHeightOffset(cornerDock.AnchorLevel)
+                    : cornerDock.AnchorLevel * 30;
+                return cornerDock.Height - offset;
             }
 
-            return SurfaceHeight;
+            return level < 0 ? Cave.FloorHeight : SurfaceHeight;
         }
 
         public int GetHeightForLevelOnTile(int level)
         {
-            if (level < 0)
-            {
-                return Cave.FloorHeight;
-            }
-
+            DockRealm realm = level < 0 ? DockRealm.Cave : DockRealm.Surface;
+            Dock dock = GetDock(realm);
             if (dock != null)
             {
-                return dock.Height - dock.AnchorLevel * 30;
+                int offset = level < 0
+                    ? CaveLevel.GetHeightOffset(dock.AnchorLevel)
+                    : dock.AnchorLevel * 30;
+                return dock.Height - offset;
             }
 
-            return SurfaceHeight;
+            return level < 0 ? Cave.FloorHeight : SurfaceHeight;
+        }
+
+        public int GetAbsoluteHeightForLevel(int level)
+        {
+            int baseHeight = GetHeightForLevel(level);
+            return level < 0 ? CaveLevel.GetAbsoluteHeight(baseHeight, level) : baseHeight + level * 30;
+        }
+
+        public int GetAbsoluteHeightForLevelOnTile(int level)
+        {
+            int baseHeight = GetHeightForLevelOnTile(level);
+            return level < 0 ? CaveLevel.GetAbsoluteHeight(baseHeight, level) : baseHeight + level * 30;
         }
 
         public Materials CalculateLevelMaterials(int level, TilePart tilePart)
         {
             Materials tileMaterials = new Materials();
+
+            if (level == -1 && tilePart == TilePart.Everything && X < Map.Width && Y < Map.Height &&
+                Cave.Terrain.Materials != null)
+            {
+                tileMaterials.Add(Cave.Terrain.Materials);
+            }
 
             foreach (KeyValuePair<EntityData,LevelEntity> pair in Entities)
             {
@@ -249,11 +269,31 @@ namespace Warlander.Deedplanner.Domain
 
         public Materials CalculateTileMaterials(TilePart tilePart)
         {
+            return CalculateTileMaterials(tilePart, null);
+        }
+
+        public Materials CalculateRealmMaterials(TilePart tilePart, bool cave)
+        {
+            return CalculateTileMaterials(tilePart, cave);
+        }
+
+        private Materials CalculateTileMaterials(TilePart tilePart, bool? cave)
+        {
             Materials tileMaterials = new Materials();
+
+            if (tilePart == TilePart.Everything && (!cave.HasValue || cave.Value) &&
+                X < Map.Width && Y < Map.Height && Cave.Terrain.Materials != null)
+            {
+                tileMaterials.Add(Cave.Terrain.Materials);
+            }
 
             foreach (KeyValuePair<EntityData,LevelEntity> pair in Entities)
             {
                 EntityData key = pair.Key;
+                if (cave.HasValue && key.IsCave != cave.Value)
+                {
+                    continue;
+                }
 
                 bool addAlways = tilePart == TilePart.Everything;
                 bool addHorizontalWalls = tilePart == TilePart.HorizontalWallOnly && key.Type.IsHorizontalTileBorder();
@@ -265,14 +305,28 @@ namespace Warlander.Deedplanner.Domain
                 }
             }
             
-            if (BridgePart != null)
+            if (!cave.HasValue || !cave.Value)
             {
-                tileMaterials.Add(BridgePart.Materials);
+                if (surfaceBridgePart != null)
+                {
+                    tileMaterials.Add(surfaceBridgePart.Materials);
+                }
+                if (surfaceDock != null)
+                {
+                    tileMaterials.Add(surfaceDock.Materials);
+                }
             }
 
-            if (dock != null)
+            if (!cave.HasValue || cave.Value)
             {
-                tileMaterials.Add(dock.Materials);
+                if (caveBridgePart != null)
+                {
+                    tileMaterials.Add(caveBridgePart.Materials);
+                }
+                if (caveDock != null)
+                {
+                    tileMaterials.Add(caveDock.Materials);
+                }
             }
 
             return tileMaterials;
@@ -288,6 +342,11 @@ namespace Warlander.Deedplanner.Domain
 
         internal bool HasCaveContent()
         {
+            if (caveBridgePart != null || caveDock != null)
+            {
+                return true;
+            }
+
             foreach (EntityData entityData in Entities.Keys)
             {
                 if (entityData.IsCave)
@@ -372,7 +431,6 @@ namespace Warlander.Deedplanner.Domain
 
             Entities[entity] = roof;
             Map.AddEntityToMap(roofObject, entity.Level);
-            RefreshSurfaceEntities();
 
             return roof;
         }
@@ -489,7 +547,6 @@ namespace Warlander.Deedplanner.Domain
 
             Entities[entity] = wall;
             Map.AddEntityToMap(wallObject, entity.Level);
-            RefreshSurfaceEntities();
 
             return wall;
         }
@@ -605,7 +662,6 @@ namespace Warlander.Deedplanner.Domain
 
             Entities[entity] = wall;
             Map.AddEntityToMap(wallObject, entity.Level);
-            RefreshSurfaceEntities();
 
             return wall;
         }
@@ -677,33 +733,76 @@ namespace Warlander.Deedplanner.Domain
             decoration.Initialize(this, data, position, rotation);
             Entities[entity] = decoration;
             Map.AddEntityToMap(decorationObject, entity.Level);
-            RefreshSurfaceEntities();
 
             return decoration;
         }
 
-        public void RegisterBridgePart(BridgePart bridgePart)
+        public void RegisterBridgePart(BridgePart bridgePart, bool cave)
         {
-            surfaceBridgePart = bridgePart;
+            if (cave)
+            {
+                caveBridgePart = bridgePart;
+            }
+            else
+            {
+                surfaceBridgePart = bridgePart;
+            }
             bridgePart.Tile = this;
             bridgePart.transform.SetParent(Map.transform);
         }
 
-        public void UnregisterBridgePart()
+        public void UnregisterBridgePart(BridgePart bridgePart)
         {
-            surfaceBridgePart = null;
+            if (bridgePart.ParentBridge.IsCave)
+            {
+                if (caveBridgePart == bridgePart)
+                {
+                    caveBridgePart = null;
+                }
+            }
+            else if (surfaceBridgePart == bridgePart)
+            {
+                surfaceBridgePart = null;
+            }
+        }
+
+        public BridgePart GetBridgePart(bool cave)
+        {
+            return cave ? caveBridgePart : surfaceBridgePart;
         }
 
         public void RegisterDock(Dock newDock)
         {
-            dock = newDock;
+            if (newDock.Realm == DockRealm.Cave)
+            {
+                caveDock = newDock;
+            }
+            else
+            {
+                surfaceDock = newDock;
+            }
             newDock.Tile = this;
             newDock.transform.SetParent(Map.transform);
         }
 
-        public void UnregisterDock()
+        public void UnregisterDock(Dock removedDock)
         {
-            dock = null;
+            if (removedDock.Realm == DockRealm.Cave)
+            {
+                if (caveDock == removedDock)
+                {
+                    caveDock = null;
+                }
+            }
+            else if (surfaceDock == removedDock)
+            {
+                surfaceDock = null;
+            }
+        }
+
+        public Dock GetDock(DockRealm realm)
+        {
+            return realm == DockRealm.Cave ? caveDock : surfaceDock;
         }
 
         public void Serialize(XmlDocument document, XmlElement localRoot)
@@ -957,6 +1056,11 @@ namespace Warlander.Deedplanner.Domain
                     continue;
                 }
                 LevelEntity levelEntity = pair.Value;
+                levelEntity.gameObject.SetActive(!Cave.IsSolid);
+                if (Cave.IsSolid)
+                {
+                    continue;
+                }
                 RefreshEntity(data, levelEntity);
             }
         }
@@ -1001,6 +1105,8 @@ namespace Warlander.Deedplanner.Domain
             private readonly Tile _tile;
             private readonly EntityData[] _data;
             private readonly LevelEntity[] _entities;
+            private readonly Bridge _bridge;
+            private readonly Dock _dock;
 
             public CaveContentRemoval(Tile tile)
             {
@@ -1018,6 +1124,8 @@ namespace Warlander.Deedplanner.Domain
 
                 _data = data.ToArray();
                 _entities = entities.ToArray();
+                _bridge = tile.caveBridgePart != null ? tile.caveBridgePart.ParentBridge : null;
+                _dock = tile.caveDock;
             }
 
             public void Remove()
@@ -1029,6 +1137,17 @@ namespace Warlander.Deedplanner.Domain
                     {
                         _entities[i].gameObject.SetActive(false);
                     }
+                }
+
+                if (_bridge != null)
+                {
+                    _tile.Map.RemoveBridge(_bridge);
+                }
+                if (_dock != null)
+                {
+                    _tile.UnregisterDock(_dock);
+                    _tile.Map.RemoveDock(_dock);
+                    _dock.gameObject.SetActive(false);
                 }
 
                 Refresh();
@@ -1045,6 +1164,17 @@ namespace Warlander.Deedplanner.Domain
                     }
                 }
 
+                if (_bridge != null)
+                {
+                    _tile.Map.AddBridge(_bridge);
+                }
+                if (_dock != null)
+                {
+                    _tile.RegisterDock(_dock);
+                    _tile.Map.AddDock(_dock);
+                    _dock.gameObject.SetActive(true);
+                }
+
                 Refresh();
             }
 
@@ -1056,6 +1186,11 @@ namespace Warlander.Deedplanner.Domain
                     {
                         Object.Destroy(entity.gameObject);
                     }
+                }
+                _bridge?.Destroy();
+                if (_dock)
+                {
+                    Object.Destroy(_dock.gameObject);
                 }
             }
 
@@ -1159,8 +1294,6 @@ namespace Warlander.Deedplanner.Domain
                     newEntity.gameObject.SetActive(false);
                 }
 
-                tile.RefreshSurfaceEntities();
-
                 if (data.IsSurface)
                 {
                     tile.RefreshSurfaceEntities();
@@ -1210,10 +1343,18 @@ namespace Warlander.Deedplanner.Domain
                 bool renderEntireMap = tile.Map.RenderEntireMap;
                 
                 bool underground = renderedLevel < 0;
-                int absoluteLevel = underground ? -renderedLevel + 1 : renderedLevel;
-                int relativeLevel = entity.Level - absoluteLevel;
+                if (entity.Level < 0 != underground)
+                {
+                    entity.gameObject.SetActive(false);
+                    return;
+                }
+
+                int renderedStorey = underground ? CaveLevel.GetStoreyIndex(renderedLevel) : renderedLevel;
+                int entityStorey = entity.Level < 0 ? CaveLevel.GetStoreyIndex(entity.Level) : entity.Level;
+                int relativeLevel = entityStorey - renderedStorey;
                 float opacity = renderEntireMap ? 1f : tile.Map.GetRelativeLevelOpacity(relativeLevel);
                 bool renderLevel = opacity > 0;
+                entity.gameObject.SetActive(renderLevel && (entity.Level >= 0 || !tile.Cave.IsSolid));
 
                 if (renderLevel)
                 {

@@ -44,6 +44,7 @@ namespace Warlander.Deedplanner.Editing
             new Dictionary<HeightmapHandle, int>();
         private ICaveHeightEdit _caveHeightEdit;
         private CaveHeightMode _caveHeightMode = CaveHeightMode.Floor;
+        private bool _preserveCaveCeiling;
         private bool? _lastCaveRealm;
         private Map _observedMap;
 
@@ -56,7 +57,7 @@ namespace Warlander.Deedplanner.Editing
         private bool _respectOriginalSlopes;
         private string _surfaceTargetHeight = "0";
         private string _caveFloorTargetHeight = "-40";
-        private string _caveClearanceTargetHeight = "30";
+        private string _caveClearanceTargetHeight = "-10";
 
         private SlopeGridView _slopeGrid;
         private readonly int[] _heightsBuffer = new int[9];
@@ -84,6 +85,7 @@ namespace Warlander.Deedplanner.Editing
             _view.RespectOriginalSlopesChanged += OnRespectOriginalSlopesChanged;
             _view.TargetHeightChanged += OnTargetHeightChanged;
             _view.CaveHeightModeChanged += OnCaveHeightModeChanged;
+            _view.PreserveCaveCeilingChanged += OnPreserveCaveCeilingChanged;
 
             _dragSensitivity = _settings.HeightDragSensitivity.ToString(CultureInfo.InvariantCulture);
             _respectOriginalSlopes = _settings.HeightRespectOriginalSlopes;
@@ -91,6 +93,7 @@ namespace Warlander.Deedplanner.Editing
             _view.SetDragSensitivity(_dragSensitivity);
             _view.SetRespectOriginalSlopes(_respectOriginalSlopes);
             _view.SetTargetHeight(_surfaceTargetHeight);
+            _view.SetPreserveCaveCeiling(false);
         }
 
         public void Enable()
@@ -143,6 +146,17 @@ namespace Warlander.Deedplanner.Editing
             ResetState();
             RefreshCaveGrid();
             _view.SetTargetHeight(CurrentTargetHeight);
+            _view.ShowPreserveCaveCeiling(IsCaveRealm && _caveHeightMode == CaveHeightMode.Floor);
+        }
+
+        private void OnPreserveCaveCeilingChanged(bool value)
+        {
+            _preserveCaveCeiling = value;
+            if (_caveHeightEdit != null)
+            {
+                CancelEdit();
+                RefreshCaveGrid();
+            }
         }
 
         private void RefreshTileSelectionMode()
@@ -187,6 +201,7 @@ namespace Warlander.Deedplanner.Editing
                 ResetState();
                 _lastCaveRealm = caveRealm;
                 _view.ShowCaveHeightModes(caveRealm);
+                _view.ShowPreserveCaveCeiling(caveRealm && _caveHeightMode == CaveHeightMode.Floor);
                 _view.SetTargetHeight(CurrentTargetHeight);
                 if (!caveRealm)
                 {
@@ -792,7 +807,7 @@ namespace Warlander.Deedplanner.Editing
             }
 
             _caveHeightEdit = _caveHeightMode == CaveHeightMode.Floor
-                ? map.CaveEditor.BeginFloorHeightEdit()
+                ? map.CaveEditor.BeginFloorHeightEdit(_preserveCaveCeiling)
                 : map.CaveEditor.BeginClearanceEdit();
             _originalCaveValues.Clear();
 
@@ -818,7 +833,7 @@ namespace Warlander.Deedplanner.Editing
         {
             return _caveHeightMode == CaveHeightMode.Floor
                 ? map[coordinates].CaveHeight
-                : map[coordinates].CaveSize;
+                : map[coordinates].CaveHeight + map[coordinates].CaveSize;
         }
 
         private int GetWorldHeight(Map map, int x, int y)
@@ -848,7 +863,7 @@ namespace Warlander.Deedplanner.Editing
         {
             if (_caveHeightMode == CaveHeightMode.Clearance)
             {
-                value = Mathf.Max(0, value);
+                value = Mathf.Max(0, value - _mapHandler.Map[handle.TileCoords].CaveHeight);
             }
             if (_caveHeightEdit.SetAt(handle.TileCoords.x, handle.TileCoords.y, value))
             {
@@ -908,7 +923,7 @@ namespace Warlander.Deedplanner.Editing
         {
             int displayValue = _caveHeightMode == CaveHeightMode.Floor
                 ? map[x, y].CaveHeight
-                : map[x, y].CaveSize;
+                : map[x, y].CaveHeight + map[x, y].CaveSize;
             int worldHeight = _caveHeightMode == CaveHeightMode.Floor
                 ? map[x, y].CaveHeight
                 : map[x, y].CaveHeight + map[x, y].CaveSize;
@@ -1014,6 +1029,7 @@ namespace Warlander.Deedplanner.Editing
             ObserveMap(null);
             _lastCaveRealm = null;
             _view.ShowCaveHeightModes(false);
+            _view.ShowPreserveCaveCeiling(false);
         }
 
         private enum HeightUpdaterState

@@ -88,7 +88,8 @@ namespace Warlander.Deedplanner.Editing
             }
 
             OverlayMesh overlayMesh = raycast.transform.GetComponent<OverlayMesh>();
-            if (!overlayMesh)
+            bool caveHit = _cameraCoordinator.Current.HasCurrentCaveHit;
+            if (!overlayMesh && !caveHit)
             {
                 return;
             }
@@ -96,14 +97,20 @@ namespace Warlander.Deedplanner.Editing
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 int floor = _cameraCoordinator.Current.Level;
-                int x = Mathf.FloorToInt(raycast.point.x / 4f);
-                int y = Mathf.FloorToInt(raycast.point.z / 4f);
+                int x = caveHit
+                    ? _cameraCoordinator.Current.CurrentCaveHit.CellX
+                    : Mathf.FloorToInt(raycast.point.x / 4f);
+                int y = caveHit
+                    ? _cameraCoordinator.Current.CurrentCaveHit.CellY
+                    : Mathf.FloorToInt(raycast.point.z / 4f);
                 Map map = _mapHandler.Map;
                 Tile clickedTile = map[x, y];
 
                 if (_materialsScope == ToolsMaterialsScope.BuildingAllLevels)
                 {
-                    BuildingsSummary surfaceGroundSummary = new BuildingsSummary(map, 0);
+                    bool cave = floor < 0;
+                    int groundLevel = cave ? -1 : 0;
+                    BuildingsSummary surfaceGroundSummary = new BuildingsSummary(map, groundLevel);
                     Materials materials = new Materials();
                     Building building = surfaceGroundSummary.GetBuildingAtTile(clickedTile);
                     if (building == null)
@@ -115,7 +122,7 @@ namespace Warlander.Deedplanner.Editing
                     foreach (TileSummary tileSummary in building.AllTiles)
                     {
                         Tile tile = map[tileSummary.X, tileSummary.Y];
-                        materials.Add(tile.CalculateTileMaterials(tileSummary.TilePart));
+                        materials.Add(tile.CalculateRealmMaterials(tileSummary.TilePart, cave));
                     }
 
                     StringBuilder summary = new StringBuilder();
@@ -246,7 +253,12 @@ namespace Warlander.Deedplanner.Editing
 
         private void RefreshDockWarningsTile(Tile tile)
         {
-            Dock dock = tile.Dock;
+            AddDockWarnings(tile, tile.GetDock(DockRealm.Surface));
+            AddDockWarnings(tile, tile.GetDock(DockRealm.Cave));
+        }
+
+        private void AddDockWarnings(Tile tile, Dock dock)
+        {
             if (dock == null)
             {
                 return;
@@ -371,11 +383,14 @@ namespace Warlander.Deedplanner.Editing
         {
             Materials mapMaterials = _mapHandler.Map.CalculateMapMaterials();
 
-            BuildingsSummary surfaceGroundSummary = new BuildingsSummary(_mapHandler.Map, 0);
+            BuildingsSummary surfaceSummary = new BuildingsSummary(_mapHandler.Map, 0);
+            BuildingsSummary caveSummary = new BuildingsSummary(_mapHandler.Map, -1);
 
             StringBuilder build = new StringBuilder();
-            build.Append("Total buildings: ").Append(surfaceGroundSummary.BuildingsCount).AppendLine();
-            build.Append("Total rooms: ").Append(surfaceGroundSummary.RoomsCount).AppendLine();
+            build.Append("Surface buildings: ").Append(surfaceSummary.BuildingsCount).AppendLine();
+            build.Append("Surface rooms: ").Append(surfaceSummary.RoomsCount).AppendLine();
+            build.Append("Cave buildings: ").Append(caveSummary.BuildingsCount).AppendLine();
+            build.Append("Cave rooms: ").Append(caveSummary.RoomsCount).AppendLine();
             build.AppendLine();
             build.Append(mapMaterials);
 

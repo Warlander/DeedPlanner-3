@@ -383,7 +383,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
             {
                 for (int y = spanMinY; y <= spanMaxY; y++)
                 {
-                    if (map[x, y].BridgePart != null)
+                    if (map[x, y].GetBridgePart(start.Level < 0) != null)
                     {
                         error = "Bridge would intersect an existing bridge.";
                         return false;

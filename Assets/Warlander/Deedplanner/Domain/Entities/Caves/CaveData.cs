@@ -14,8 +14,10 @@ namespace Warlander.Deedplanner.Domain.Entities.Caves
         public bool Wall { get; }
         public bool Show { get; }
         public bool Entrance { get; }
+        public Materials Materials { get; }
 
-        public CaveData(TextureReference texture, string name, string shortName, string[][] categories, bool wall, bool show, bool entrance)
+        public CaveData(TextureReference texture, string name, string shortName, string[][] categories, bool wall,
+            bool show, bool entrance, Materials materials = null)
         {
             Texture = texture;
             Name = name;
@@ -24,6 +26,7 @@ namespace Warlander.Deedplanner.Domain.Entities.Caves
             Wall = wall;
             Show = show;
             Entrance = entrance;
+            Materials = materials;
         }
 
         public override string ToString()

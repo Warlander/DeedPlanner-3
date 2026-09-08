@@ -14,6 +14,8 @@ namespace Warlander.Deedplanner.Editing
         [SerializeField] private Toggle _caveFloorToggle = null;
         [SerializeField] private Toggle _caveClearanceToggle = null;
         [SerializeField] private RectTransform _caveHeightModesTransform = null;
+        [SerializeField] private Toggle _preserveCaveCeilingToggle = null;
+        [SerializeField] private RectTransform _preserveCaveCeilingTransform = null;
 
         [SerializeField] private RectTransform _handlesSettingsTransform = null;
         [SerializeField] private RectTransform _paintingSettingsTransform = null;
@@ -33,6 +35,7 @@ namespace Warlander.Deedplanner.Editing
         public event Action<bool> RespectOriginalSlopesChanged;
         public event Action<string> TargetHeightChanged;
         public event Action<CaveHeightMode> CaveHeightModeChanged;
+        public event Action<bool> PreserveCaveCeilingChanged;
 
         private void Awake()
         {
@@ -42,6 +45,8 @@ namespace Warlander.Deedplanner.Editing
             _paintTerrainToggle.onValueChanged.AddListener(toggled => OnModeToggled(toggled, HeightMode.PaintTerrain));
             _caveFloorToggle.onValueChanged.AddListener(toggled => OnCaveHeightModeToggled(toggled, CaveHeightMode.Floor));
             _caveClearanceToggle.onValueChanged.AddListener(toggled => OnCaveHeightModeToggled(toggled, CaveHeightMode.Clearance));
+            _preserveCaveCeilingToggle.onValueChanged.AddListener(
+                value => PreserveCaveCeilingChanged?.Invoke(value));
 
             _dragSensitivityInput.onValueChanged.AddListener(OnDragSensitivityChanged);
             _respectOriginalSlopesToggle.onValueChanged.AddListener(OnRespectOriginalSlopesChanged);
@@ -77,6 +82,16 @@ namespace Warlander.Deedplanner.Editing
         public void ShowCaveHeightModes(bool visible)
         {
             _caveHeightModesTransform.gameObject.SetActive(visible);
+        }
+
+        public void SetPreserveCaveCeiling(bool value)
+        {
+            _preserveCaveCeilingToggle.SetIsOnWithoutNotify(value);
+        }
+
+        public void ShowPreserveCaveCeiling(bool visible)
+        {
+            _preserveCaveCeilingTransform.gameObject.SetActive(visible);
         }
 
         private void OnModeToggled(bool toggledOn, HeightMode mode)

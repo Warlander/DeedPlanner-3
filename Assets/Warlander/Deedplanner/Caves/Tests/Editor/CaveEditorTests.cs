@@ -287,6 +287,40 @@ namespace Warlander.Deedplanner.Caves.Tests
         }
 
         [Test]
+        public void FloorHeightEditPreservesClearanceByDefault()
+        {
+            using (ICaveHeightEdit edit = _editor.BeginFloorHeightEdit())
+            {
+                edit.SetAt(0, 0, -50);
+                edit.Commit();
+            }
+
+            Assert.That(_target.GetFloorHeightAtVertex(0, 0), Is.EqualTo(-50));
+            Assert.That(_target.GetClearanceAtVertex(0, 0), Is.EqualTo(CaveCell.DefaultClearance));
+        }
+
+        [Test]
+        public void FloorHeightEditCanPreserveCeilingInOneUndoStep()
+        {
+            int originalCeiling = CaveCell.DefaultFloorHeight + CaveCell.DefaultClearance;
+            using (ICaveHeightEdit edit = _editor.BeginFloorHeightEdit(true))
+            {
+                edit.SetAt(0, 0, -50);
+                edit.SetAt(0, 0, -60);
+                edit.Commit();
+            }
+
+            Assert.That(_target.GetFloorHeightAtVertex(0, 0), Is.EqualTo(-60));
+            Assert.That(_target.GetFloorHeightAtVertex(0, 0) + _target.GetClearanceAtVertex(0, 0),
+                Is.EqualTo(originalCeiling));
+
+            _target.CommandManager.Undo();
+
+            Assert.That(_target.GetFloorHeightAtVertex(0, 0), Is.EqualTo(CaveCell.DefaultFloorHeight));
+            Assert.That(_target.GetClearanceAtVertex(0, 0), Is.EqualTo(CaveCell.DefaultClearance));
+        }
+
+        [Test]
         public void CancelHeightEditRestoresOriginalValues()
         {
             using (ICaveHeightEdit edit = _editor.BeginClearanceEdit())

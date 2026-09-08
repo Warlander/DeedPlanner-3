@@ -6,8 +6,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VContainer;
 using VContainer.Unity;
+using Warlander.Deedplanner.Bridges;
 using Warlander.Deedplanner.Cameras;
+using Warlander.Deedplanner.Caves;
 using Warlander.Deedplanner.Composition;
+using Warlander.Deedplanner.Docks;
 using Warlander.Deedplanner.Domain.Entities.Decorations;
 using Warlander.Deedplanner.Domain.Entities.Floors;
 using Warlander.Deedplanner.Domain.Entities.Roofs;
@@ -87,7 +90,7 @@ namespace Warlander.Deedplanner.Platform
             return new { saved, location = saves.CurrentLocation?.Locator };
         }
 
-        [CliCommand("map_info", "Compact map summary: size, dirty flag, location, entity counts (surface levels 0-15 only; cave content not counted).")]
+        [CliCommand("map_info", "Compact map summary with surface/cave content and cave chunk rebuild counters.")]
         public static object MapInfo()
         {
             IObjectResolver resolver = RequirePlayMode();
@@ -97,7 +100,9 @@ namespace Warlander.Deedplanner.Platform
                 throw new InvalidOperationException("No map loaded.");
             }
 
-            int walls = 0, floors = 0, roofs = 0, decorations = 0;
+            int surfaceWalls = 0, surfaceFloors = 0, surfaceRoofs = 0, surfaceDecorations = 0;
+            int caveWalls = 0, caveFloors = 0, caveRoofs = 0, caveDecorations = 0;
+            int openCaveCells = 0;
             for (int x = 0; x < map.Width; x++)
             {
                 for (int y = 0; y < map.Height; y++)
@@ -107,17 +112,49 @@ namespace Warlander.Deedplanner.Platform
                     {
                         continue;
                     }
-                    for (int level = 0; level < MaxSurfaceLevels; level++)
+                    if (map.Caves.IsOpen(x, y))
                     {
+                        openCaveCells++;
+                    }
+                    for (int level = Constants.NegativeLevelLimit; level < MaxSurfaceLevels; level++)
+                    {
+                        bool cave = level < 0;
+                        int walls = 0;
                         if (tile.GetVerticalWallOrFence(level) != null) walls++;
                         if (tile.GetHorizontalWallOrFence(level) != null) walls++;
                         Domain.LevelEntity content = tile.GetTileContent(level);
-                        if (content is Floor) floors++;
-                        else if (content is Roof) roofs++;
+                        if (cave)
+                        {
+                            caveWalls += walls;
+                            if (content is Floor) caveFloors++;
+                            else if (content is Roof) caveRoofs++;
+                        }
+                        else
+                        {
+                            surfaceWalls += walls;
+                            if (content is Floor) surfaceFloors++;
+                            else if (content is Roof) surfaceRoofs++;
+                        }
                     }
-                    foreach (Decoration _ in tile.GetDecorations()) decorations++;
-                    if (tile.GetCentralDecoration() != null) decorations++;
+                    foreach (Decoration decoration in tile.GetDecorations())
+                    {
+                        if (decoration.Level < 0) caveDecorations++;
+                        else surfaceDecorations++;
+                    }
                 }
+            }
+
+            int surfaceBridges = 0, caveBridges = 0;
+            foreach (Bridge bridge in map.Bridges)
+            {
+                if (bridge.IsCave) caveBridges++;
+                else surfaceBridges++;
+            }
+            int surfaceDocks = 0, caveDocks = 0;
+            foreach (Dock dock in map.Docks)
+            {
+                if (dock.Realm == DockRealm.Cave) caveDocks++;
+                else surfaceDocks++;
             }
 
             SaveCoordinator saves = resolver.Resolve<SaveCoordinator>();
@@ -127,12 +164,29 @@ namespace Warlander.Deedplanner.Platform
                 height = map.Height,
                 dirty = map.IsDirty,
                 location = saves.CurrentLocation?.Locator,
-                walls,
-                floors,
-                roofs,
-                decorations,
-                bridges = map.Bridges.Count,
-                docks = map.Docks.Count
+                surface = new
+                {
+                    walls = surfaceWalls,
+                    floors = surfaceFloors,
+                    roofs = surfaceRoofs,
+                    decorations = surfaceDecorations,
+                    bridges = surfaceBridges,
+                    docks = surfaceDocks
+                },
+                caves = new
+                {
+                    openCells = openCaveCells,
+                    solidCells = map.Width * map.Height - openCaveCells,
+                    walls = caveWalls,
+                    floors = caveFloors,
+                    roofs = caveRoofs,
+                    decorations = caveDecorations,
+                    bridges = caveBridges,
+                    docks = caveDocks,
+                    chunks = map.CaveShell.ChunkCount,
+                    renderRebuilds = map.CaveShell.RenderRebuildCount,
+                    colliderRebuilds = map.CaveShell.ColliderRebuildCount
+                }
             };
         }
 

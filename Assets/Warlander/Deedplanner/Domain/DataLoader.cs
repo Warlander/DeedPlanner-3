@@ -357,6 +357,7 @@ namespace Warlander.Deedplanner.Domain
 
                 List<string[]> categories = new List<string[]>();
                 bool show = true;
+                Materials materials = null;
 
                 foreach (XmlElement child in element)
                 {
@@ -368,10 +369,14 @@ namespace Warlander.Deedplanner.Domain
                         case "hidden":
                             show = false;
                             break;
+                        case "materials":
+                            materials = new Materials(child);
+                            break;
                     }
                 }
 
-                CaveData data = new CaveData(texture, name, shortName, categories.ToArray(), wall, show, entrance);
+                CaveData data = new CaveData(texture, name, shortName, categories.ToArray(), wall, show, entrance,
+                    materials);
                 _database.AddCave(data);
             }
         }

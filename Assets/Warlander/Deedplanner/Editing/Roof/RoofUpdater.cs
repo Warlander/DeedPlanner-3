@@ -84,8 +84,18 @@ namespace Warlander.Deedplanner.Editing
                 x = Mathf.FloorToInt(raycast.point.x / 4f);
                 y = Mathf.FloorToInt(raycast.point.z / 4f);
             }
+            else if (_cameraCoordinator.Current.HasCurrentCaveHit)
+            {
+                floor = _cameraCoordinator.Current.Level;
+                x = _cameraCoordinator.Current.CurrentCaveHit.CellX;
+                y = _cameraCoordinator.Current.CurrentCaveHit.CellY;
+                if (!_mapHandler.Map.Caves.IsOpen(x, y))
+                {
+                    return;
+                }
+            }
 
-            if (floor == 0 || floor == -1)
+            if (floor == 0)
             {
                 _tooltipHandler.ShowTooltipText("<color=red><b>It's not possible to place roofs on ground floor</b></color>");
                 return;

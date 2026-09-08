@@ -1,4 +1,5 @@
 using Warlogic.Settings;
+using Warlander.Deedplanner.Caves;
 
 namespace Warlander.Deedplanner.Settings
 {
@@ -11,6 +12,7 @@ namespace Warlander.Deedplanner.Settings
         private readonly ISetting<bool> _decorationSnapToGrid;
         private readonly ISetting<bool> _decorationRotationSnapping;
         private readonly ISetting<float> _decorationRotationSensitivity;
+        private readonly ISetting<CaveOccupiedCellPolicy> _caveOccupiedCellPolicy;
 
         public float HeightDragSensitivity
         {
@@ -54,11 +56,18 @@ namespace Warlander.Deedplanner.Settings
             set => _decorationRotationSensitivity.Value = value;
         }
 
+        public CaveOccupiedCellPolicy CaveOccupiedCellPolicy
+        {
+            get => _caveOccupiedCellPolicy.Value;
+            set => _caveOccupiedCellPolicy.Value = value;
+        }
+
         internal EditingSettings(
             ISetting<float> heightDragSensitivity, ISetting<bool> heightRespectOriginalSlopes,
             ISetting<bool> wallAutomaticReverse, ISetting<bool> wallReverse,
             ISetting<bool> decorationSnapToGrid, ISetting<bool> decorationRotationSnapping,
-            ISetting<float> decorationRotationSensitivity)
+            ISetting<float> decorationRotationSensitivity,
+            ISetting<CaveOccupiedCellPolicy> caveOccupiedCellPolicy)
         {
             _heightDragSensitivity = heightDragSensitivity;
             _heightRespectOriginalSlopes = heightRespectOriginalSlopes;
@@ -67,6 +76,7 @@ namespace Warlander.Deedplanner.Settings
             _decorationSnapToGrid = decorationSnapToGrid;
             _decorationRotationSnapping = decorationRotationSnapping;
             _decorationRotationSensitivity = decorationRotationSensitivity;
+            _caveOccupiedCellPolicy = caveOccupiedCellPolicy;
         }
     }
 }

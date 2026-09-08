@@ -74,13 +74,20 @@ namespace Warlander.Deedplanner.Caves
             }
 
             CaveData terrain = dataResolver.Resolve(null);
+            bool hasCaveElement = false;
             foreach (XmlNode childNode in tileElement.ChildNodes)
             {
                 if (childNode is XmlElement childElement && childElement.Name == "cave")
                 {
+                    hasCaveElement = true;
                     terrain = dataResolver.Resolve(childElement.GetAttribute("id"));
                     break;
                 }
+            }
+
+            if (!hasCaveElement && clearance == 0)
+            {
+                clearance = DefaultClearance;
             }
 
             Initialize(terrain, floorHeight, clearance);

@@ -10,7 +10,8 @@ namespace Warlander.Deedplanner.Docks
         private readonly Map _map;
         private readonly DockFactory _dockFactory;
         private readonly List<Dock> _docks = new List<Dock>();
-        private readonly Dictionary<Tile, Dock> _docksByTile = new Dictionary<Tile, Dock>();
+        private readonly Dictionary<Tile, Dock> _surfaceDocksByTile = new Dictionary<Tile, Dock>();
+        private readonly Dictionary<Tile, Dock> _caveDocksByTile = new Dictionary<Tile, Dock>();
 
         public IReadOnlyList<Dock> Docks => _docks;
 
@@ -47,7 +48,8 @@ namespace Warlander.Deedplanner.Docks
                 if (shiftedX >= 0 && shiftedX < _map.Width && shiftedY >= 0 && shiftedY < _map.Height)
                 {
                     Dock dock = _dockFactory.CreateDock(_map, shiftedX, shiftedY, originalDock.Height,
-                        originalDock.Floor, originalDock.Support, originalDock.BraceRotation, originalDock.AnchorLevel);
+                        originalDock.Floor, originalDock.Support, originalDock.BraceRotation, originalDock.Realm,
+                        originalDock.AnchorLevel);
                     Register(dock);
                 }
             }
@@ -55,39 +57,57 @@ namespace Warlander.Deedplanner.Docks
             RevalidateAll();
         }
 
-        public Dock GetDock(Tile tile)
+        public Dock GetDock(Tile tile, DockRealm realm)
         {
             if (tile == null)
             {
                 return null;
             }
 
-            _docksByTile.TryGetValue(tile, out Dock dock);
+            Dictionary<Tile, Dock> docksByTile = realm == DockRealm.Cave
+                ? _caveDocksByTile
+                : _surfaceDocksByTile;
+            docksByTile.TryGetValue(tile, out Dock dock);
             return dock;
         }
 
-        public Dock GetDockSharingCorner(Tile corner)
+        public Dock GetDockSharingCorner(Tile corner, DockRealm realm)
         {
-            Dock dock = GetDock(corner);
+            Dock dock = GetDock(corner, realm);
             if (dock != null)
             {
                 return dock;
             }
 
-            dock = GetDock(_map[corner.X - 1, corner.Y]);
+            dock = GetDock(_map[corner.X - 1, corner.Y], realm);
             if (dock != null)
             {
                 return dock;
             }
 
-            dock = GetDock(_map[corner.X, corner.Y - 1]);
-            return dock ?? GetDock(_map[corner.X - 1, corner.Y - 1]);
+            dock = GetDock(_map[corner.X, corner.Y - 1], realm);
+            return dock ?? GetDock(_map[corner.X - 1, corner.Y - 1], realm);
         }
 
         public void RefreshDocksForSurfaceHeight(int x, int y)
         {
+            RefreshDocksForHeight(x, y, DockRealm.Surface);
+        }
+
+        public void RefreshDocksForCaveHeight(int x, int y)
+        {
+            RefreshDocksForHeight(x, y, DockRealm.Cave);
+        }
+
+        private void RefreshDocksForHeight(int x, int y, DockRealm realm)
+        {
             foreach (Dock dock in _docks)
             {
+                if (dock.Realm != realm)
+                {
+                    continue;
+                }
+
                 int dx = x - dock.Tile.X;
                 int dy = y - dock.Tile.Y;
                 if (dx >= 0 && dx <= 1 && dy >= 0 && dy <= 1)
@@ -115,7 +135,7 @@ namespace Warlander.Deedplanner.Docks
         {
             Tile tile = dock.Tile;
             _docks.Remove(dock);
-            _docksByTile.Remove(dock.Tile);
+            GetDockIndex(dock.Realm).Remove(dock.Tile);
             RevalidateArea(tile);
             DocksChanged?.Invoke();
         }
@@ -164,17 +184,27 @@ namespace Warlander.Deedplanner.Docks
                 return;
             }
 
-            Dock dock = GetDock(_map[x, y]);
-            if (dock != null)
+            Dock surfaceDock = GetDock(_map[x, y], DockRealm.Surface);
+            if (surfaceDock != null)
             {
-                dock.Revalidate();
+                surfaceDock.Revalidate();
+            }
+            Dock caveDock = GetDock(_map[x, y], DockRealm.Cave);
+            if (caveDock != null)
+            {
+                caveDock.Revalidate();
             }
         }
 
         private void Register(Dock dock)
         {
             _docks.Add(dock);
-            _docksByTile[dock.Tile] = dock;
+            GetDockIndex(dock.Realm)[dock.Tile] = dock;
+        }
+
+        private Dictionary<Tile, Dock> GetDockIndex(DockRealm realm)
+        {
+            return realm == DockRealm.Cave ? _caveDocksByTile : _surfaceDocksByTile;
         }
     }
 }

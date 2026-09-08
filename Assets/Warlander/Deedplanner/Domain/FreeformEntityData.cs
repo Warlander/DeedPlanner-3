@@ -22,10 +22,11 @@ namespace Warlander.Deedplanner.Domain
         {
             float x = tile.X * 4 + X;
             float z = tile.Y * 4 + Y;
-            Dock dock = Level >= 0 ? tile.Dock : null;
+            DockRealm realm = Level < 0 ? DockRealm.Cave : DockRealm.Surface;
+            Dock dock = tile.Map.GetDock(tile, realm);
             float interpolatedHeight = dock != null
-                ? (dock.Height - dock.AnchorLevel * 30) * 0.1f
-                : tile.Map.GetInterpolatedHeight(x, z);
+                ? dock.Height * 0.1f
+                : tile.Map.GetInterpolatedHeightForLevel(x, z, Level);
             if (FloatOnWater)
             {
                 interpolatedHeight = Mathf.Max(interpolatedHeight, 0);
@@ -36,7 +37,7 @@ namespace Warlander.Deedplanner.Domain
             {
                 interpolatedHeight += floorHeight;
             }
-            targetTransform.localPosition = new Vector3(x, interpolatedHeight + Level * 3f, z);
+            targetTransform.localPosition = new Vector3(x, interpolatedHeight, z);
         }
 
         public override void Serialize(XmlDocument document, XmlElement localRoot)

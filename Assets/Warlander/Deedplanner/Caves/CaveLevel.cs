@@ -26,5 +26,15 @@ namespace Warlander.Deedplanner.Caves
         {
             return GetStoreyIndex(level) * WorldUnitsPerStorey;
         }
+
+        public static int GetAbsoluteHeight(int floorHeight, int level)
+        {
+            return floorHeight + GetHeightOffset(level);
+        }
+
+        public static float GetWorldHeight(int floorHeight, int level)
+        {
+            return floorHeight * 0.1f + GetWorldHeightOffset(level);
+        }
     }
 }

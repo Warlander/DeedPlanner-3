@@ -81,6 +81,35 @@ namespace Warlander.Deedplanner.Caves.Tests
         }
 
         [Test]
+        public void DeserializationRepairsLegacyDp3ZeroClearanceWithoutCaveState()
+        {
+            Database database = CreateDatabase();
+            var document = new XmlDocument();
+            document.LoadXml("<tile caveHeight='12' caveSize='0'/>");
+            var cell = new CaveCell(database.DefaultCaveData);
+
+            cell.Deserialize(document.DocumentElement, new CaveDataResolver(database));
+
+            Assert.That(cell.Terrain.ShortName, Is.EqualTo("sw"));
+            Assert.That(cell.FloorHeight, Is.EqualTo(12));
+            Assert.That(cell.Clearance, Is.EqualTo(30));
+        }
+
+        [Test]
+        public void DeserializationPreservesIntentionalZeroClearanceWithCaveState()
+        {
+            Database database = CreateDatabase();
+            var document = new XmlDocument();
+            document.LoadXml("<tile caveHeight='12' caveSize='0'><cave id='sw'/></tile>");
+            var cell = new CaveCell(database.DefaultCaveData);
+
+            cell.Deserialize(document.DocumentElement, new CaveDataResolver(database));
+
+            Assert.That(cell.FloorHeight, Is.EqualTo(12));
+            Assert.That(cell.Clearance, Is.Zero);
+        }
+
+        [Test]
         public void SerializationNormalizesUnsupportedTerrainToStoneWall()
         {
             Database database = CreateDatabase();

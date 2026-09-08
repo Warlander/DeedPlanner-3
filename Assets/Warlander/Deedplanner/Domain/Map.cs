@@ -12,8 +12,6 @@ using Warlander.Deedplanner.Docks;
 using Warlander.Deedplanner.Domain.Entities.Grounds;
 using Warlander.Deedplanner.Domain.Entities.Roofs;
 using Warlander.Deedplanner.Domain.Summary;
-using Warlogic.Features;
-using Warlander.Deedplanner.Platform.Features;
 using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Caves;
@@ -30,7 +28,6 @@ namespace Warlander.Deedplanner.Domain
         [Inject] private BridgeFactory _bridgeFactory;
         [Inject] private DockFactory _dockFactory;
         [Inject] private IMapRenderSettingsRetriever _mapRenderSettingsRetriever;
-        [Inject] private IFeatureStateRetriever<Feature> _featureStateRetriever;
         [Inject] private MapHeightTracker _heightTracker;
         [Inject] private MapRoofCalculator _roofCalculator;
         [Inject] private ISharedMaterials _sharedMaterials;
@@ -280,7 +277,7 @@ namespace Warlander.Deedplanner.Domain
         private void PreInitialize(int width, int height)
         {
             _tileGrid = new MapTileGrid(width, height);
-            _bridgesController = new MapBridgesController(this, _bridgeFactory, _featureStateRetriever);
+            _bridgesController = new MapBridgesController(this, _bridgeFactory);
             _dockCollection = new MapDockCollection(this, _dockFactory);
 
             _surfaceLevelRoots = new Transform[16];
@@ -431,14 +428,14 @@ namespace Warlander.Deedplanner.Domain
             }
         }
 
-        public Dock GetDock(Tile tile)
+        public Dock GetDock(Tile tile, DockRealm realm)
         {
-            return _dockCollection.GetDock(tile);
+            return _dockCollection.GetDock(tile, realm);
         }
 
-        public Dock GetDockSharingCorner(Tile corner)
+        public Dock GetDockSharingCorner(Tile corner, DockRealm realm)
         {
-            return _dockCollection.GetDockSharingCorner(corner);
+            return _dockCollection.GetDockSharingCorner(corner, realm);
         }
 
         public event Action DocksChanged
@@ -479,6 +476,12 @@ namespace Warlander.Deedplanner.Domain
             _levelRenderer.UpdateDocksRendering();
         }
 
+        public void RefreshDocksForCaveHeight(int x, int y)
+        {
+            _dockCollection.RefreshDocksForCaveHeight(x, y);
+            _levelRenderer.UpdateDocksRendering();
+        }
+
         public void RefreshDocksForWallChange(int x, int y, bool vertical)
         {
             _dockCollection.RevalidateForWallChange(x, y, vertical);
@@ -506,6 +509,19 @@ namespace Warlander.Deedplanner.Domain
 
         public float GetInterpolatedHeight(float x, float y)
         {
+            return GetInterpolatedHeight(x, y, false);
+        }
+
+        public float GetInterpolatedHeightForLevel(float x, float y, int level)
+        {
+            float baseHeight = GetInterpolatedHeight(x, y, level < 0);
+            return level < 0
+                ? baseHeight + CaveLevel.GetWorldHeightOffset(level)
+                : baseHeight + level * 3f;
+        }
+
+        private float GetInterpolatedHeight(float x, float y, bool cave)
+        {
             const float tileSize = 4f;
             if (x < 0 || y < 0 || x > Width * tileSize || y > Height * tileSize)
             {
@@ -517,10 +533,10 @@ namespace Warlander.Deedplanner.Domain
             float u = x / tileSize - tileX;
             float v = y / tileSize - tileY;
 
-            float h00 = this[tileX, tileY].SurfaceHeight * 0.1f;
-            float h10 = this[tileX + 1, tileY].SurfaceHeight * 0.1f;
-            float h01 = this[tileX, tileY + 1].SurfaceHeight * 0.1f;
-            float h11 = this[tileX + 1, tileY + 1].SurfaceHeight * 0.1f;
+            float h00 = GetCornerHeight(tileX, tileY, CaveCorner.SouthWest, cave);
+            float h10 = GetCornerHeight(tileX, tileY, CaveCorner.SouthEast, cave);
+            float h01 = GetCornerHeight(tileX, tileY, CaveCorner.NorthWest, cave);
+            float h11 = GetCornerHeight(tileX, tileY, CaveCorner.NorthEast, cave);
             float hCenter = (h00 + h10 + h01 + h11) * 0.25f;
 
             // ground mesh is 4 triangles fanning from the tile center; pick by quadrant
@@ -539,6 +555,21 @@ namespace Warlander.Deedplanner.Domain
                 return BarycentricHeight(u, v, 1, 1, h11, 1, 0, h10, 0.5f, 0.5f, hCenter);
             }
             return BarycentricHeight(u, v, 0, 0, h00, 0, 1, h01, 0.5f, 0.5f, hCenter);
+        }
+
+        private float GetCornerHeight(int tileX, int tileY, CaveCorner corner, bool cave)
+        {
+            int height = cave
+                ? Caves.GetFloorHeight(tileX, tileY, corner)
+                : corner switch
+                {
+                    CaveCorner.SouthWest => this[tileX, tileY].SurfaceHeight,
+                    CaveCorner.SouthEast => this[tileX + 1, tileY].SurfaceHeight,
+                    CaveCorner.NorthWest => this[tileX, tileY + 1].SurfaceHeight,
+                    CaveCorner.NorthEast => this[tileX + 1, tileY + 1].SurfaceHeight,
+                    _ => throw new ArgumentOutOfRangeException(nameof(corner), corner, null)
+                };
+            return height * 0.1f;
         }
 
         private static float BarycentricHeight(float u, float v,

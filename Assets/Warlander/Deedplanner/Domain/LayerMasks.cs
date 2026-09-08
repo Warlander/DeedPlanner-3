@@ -43,6 +43,7 @@ namespace Warlander.Deedplanner.Domain
 
         public static int GetMaskForTab(Tab tab, int level)
         {
+            bool cave = level < 0;
             switch (tab)
             {
                 case Tab.Ground:
@@ -52,21 +53,23 @@ namespace Warlander.Deedplanner.Domain
                 case Tab.Height:
                     return level < 0 ? CaveMask : HeightEditMask;
                 case Tab.Floors:
-                    return FloorEditMask;
+                    return cave ? CaveMask | FloorRoofMask | WallMask : FloorEditMask;
                 case Tab.Roofs:
-                    return RoofEditMask;
+                    return cave ? CaveMask | FloorRoofMask | WallMask | BridgeMask : RoofEditMask;
                 case Tab.Walls:
-                    return WallEditMask;
+                    return cave ? CaveMask | WallMask : WallEditMask;
                 case Tab.Objects:
-                    return DecorationEditMask;
+                    return cave
+                        ? CaveMask | FloorRoofMask | WallMask | DecorationMask | BridgeMask
+                        : DecorationEditMask;
                 case Tab.Labels:
-                    return LabelEditMask;
+                    return cave ? CaveMask : LabelEditMask;
                 case Tab.Borders:
-                    return BorderEditMask;
+                    return cave ? CaveMask : BorderEditMask;
                 case Tab.Bridges:
-                    return BridgeEditMask;
+                    return cave ? CaveMask | FloorRoofMask | BridgeMask : BridgeEditMask;
                 case Tab.Tools:
-                    return ToolsEditMask;
+                    return cave ? CaveMask | FloorRoofMask : ToolsEditMask;
                 case Tab.Menu:
                     return MenuEditMask;
                 default:

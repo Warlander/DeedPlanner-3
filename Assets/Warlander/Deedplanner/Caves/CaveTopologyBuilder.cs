@@ -8,6 +8,9 @@ namespace Warlander.Deedplanner.Caves
         private const float TileSize = 4f;
         private const float HeightScale = 0.1f;
         private const float MinimumTriangleArea = 0.000001f;
+        private const float FloorSurfaceKind = 0f;
+        private const float SolidSurfaceKind = 1f;
+        private const float ShellSurfaceKind = 2f;
 
         private readonly ICaveMap _map;
         private readonly ICaveTextureIndex _textureIndex;
@@ -27,6 +30,12 @@ namespace Warlander.Deedplanner.Caves
 
         public CaveTopology Build(int minimumX, int minimumY, int width, int height, int revision)
         {
+            return Build(minimumX, minimumY, width, height, revision, true);
+        }
+
+        private CaveTopology Build(int minimumX, int minimumY, int width, int height, int revision,
+            bool includeSolidSurfaces)
+        {
             var topology = new CaveTopology();
             int maximumX = Mathf.Min(minimumX + width, _mapWidth);
             int maximumY = Mathf.Min(minimumY + height, _mapHeight);
@@ -37,6 +46,10 @@ namespace Warlander.Deedplanner.Caves
                 {
                     if (!_map.IsOpen(x, y))
                     {
+                        if (includeSolidSurfaces)
+                        {
+                            AddSolidSurface(topology, x, y, minimumX, minimumY, revision);
+                        }
                         continue;
                     }
 
@@ -49,7 +62,7 @@ namespace Warlander.Deedplanner.Caves
 
         public CaveTopology BuildCollider(int minimumX, int minimumY, int width, int height, int revision)
         {
-            CaveTopology topology = Build(minimumX, minimumY, width, height, revision);
+            CaveTopology topology = Build(minimumX, minimumY, width, height, revision, false);
             int maximumX = Mathf.Min(minimumX + width, _mapWidth);
             int maximumY = Mathf.Min(minimumY + height, _mapHeight);
 
@@ -75,8 +88,11 @@ namespace Warlander.Deedplanner.Caves
             Vector3 northEast = GetCorner(x, y, CaveCorner.NorthEast, originX, originY, false);
             CaveFace face = new CaveFace(CaveFaceKind.SolidSurface, x, y, revision);
 
-            AddTriangle(topology, southWest, northWest, northEast, Vector2.zero, Vector2.up, Vector2.one, 0, face);
-            AddTriangle(topology, southWest, northEast, southEast, Vector2.zero, Vector2.one, Vector2.right, 0, face);
+            int textureIndex = _textureIndex.GetIndex(_map.GetTerrain(x, y));
+            AddTriangle(topology, southWest, northWest, northEast, Vector2.zero, Vector2.up, Vector2.one,
+                textureIndex, face, SolidSurfaceKind);
+            AddTriangle(topology, southWest, northEast, southEast, Vector2.zero, Vector2.one, Vector2.right,
+                textureIndex, face, SolidSurfaceKind);
         }
 
         private void AddCell(CaveTopology topology, int x, int y, int originX, int originY, int revision)
@@ -135,24 +151,24 @@ namespace Warlander.Deedplanner.Caves
             if (reverse)
             {
                 AddTriangle(topology, southWest, center, northWest, new Vector2(0f, 0f),
-                    new Vector2(0.5f, 0.5f), new Vector2(0f, 1f), textureIndex, face);
+                    new Vector2(0.5f, 0.5f), new Vector2(0f, 1f), textureIndex, face, ShellSurfaceKind);
                 AddTriangle(topology, northWest, center, northEast, new Vector2(0f, 1f),
-                    new Vector2(0.5f, 0.5f), new Vector2(1f, 1f), textureIndex, face);
+                    new Vector2(0.5f, 0.5f), new Vector2(1f, 1f), textureIndex, face, ShellSurfaceKind);
                 AddTriangle(topology, northEast, center, southEast, new Vector2(1f, 1f),
-                    new Vector2(0.5f, 0.5f), new Vector2(1f, 0f), textureIndex, face);
+                    new Vector2(0.5f, 0.5f), new Vector2(1f, 0f), textureIndex, face, ShellSurfaceKind);
                 AddTriangle(topology, southEast, center, southWest, new Vector2(1f, 0f),
-                    new Vector2(0.5f, 0.5f), new Vector2(0f, 0f), textureIndex, face);
+                    new Vector2(0.5f, 0.5f), new Vector2(0f, 0f), textureIndex, face, ShellSurfaceKind);
                 return;
             }
 
             AddTriangle(topology, southWest, northWest, center, new Vector2(0f, 0f),
-                new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), textureIndex, face);
+                new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), textureIndex, face, FloorSurfaceKind);
             AddTriangle(topology, northWest, northEast, center, new Vector2(0f, 1f),
-                new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), textureIndex, face);
+                new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), textureIndex, face, FloorSurfaceKind);
             AddTriangle(topology, northEast, southEast, center, new Vector2(1f, 1f),
-                new Vector2(1f, 0f), new Vector2(0.5f, 0.5f), textureIndex, face);
+                new Vector2(1f, 0f), new Vector2(0.5f, 0.5f), textureIndex, face, FloorSurfaceKind);
             AddTriangle(topology, southEast, southWest, center, new Vector2(1f, 0f),
-                new Vector2(0f, 0f), new Vector2(0.5f, 0.5f), textureIndex, face);
+                new Vector2(0f, 0f), new Vector2(0.5f, 0.5f), textureIndex, face, FloorSurfaceKind);
         }
 
         private void AddWall(CaveTopology topology, int x, int y, CaveEdge edge, Vector3 floorA,
@@ -176,7 +192,8 @@ namespace Warlander.Deedplanner.Caves
         }
 
         private static void AddTriangle(CaveTopology topology, Vector3 a, Vector3 b, Vector3 c,
-            Vector2 uvA, Vector2 uvB, Vector2 uvC, int textureIndex, CaveFace face)
+            Vector2 uvA, Vector2 uvB, Vector2 uvC, int textureIndex, CaveFace face,
+            float surfaceKind = ShellSurfaceKind)
         {
             Vector3 cross = Vector3.Cross(b - a, c - a);
             if (cross.sqrMagnitude <= MinimumTriangleArea)
@@ -195,7 +212,7 @@ namespace Warlander.Deedplanner.Caves
             topology.TextureCoordinates.Add(uvA);
             topology.TextureCoordinates.Add(uvB);
             topology.TextureCoordinates.Add(uvC);
-            Vector2 slice = new Vector2(textureIndex, 0f);
+            Vector2 slice = new Vector2(textureIndex, surfaceKind);
             topology.TextureIndices.Add(slice);
             topology.TextureIndices.Add(slice);
             topology.TextureIndices.Add(slice);

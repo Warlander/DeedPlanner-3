@@ -269,4 +269,80 @@ namespace Warlander.Deedplanner.Tests
             public void Write(LogType type, string message) { }
         }
     }
+
+    public class DeedPlannerSettingsTests
+    {
+        [Test]
+        public void CaveOccupiedCellPolicy_MissingKeyUsesPreserveAndHide()
+        {
+            var store = new MemoryStore();
+            store.Save("guiScale", "12");
+
+            DeedPlannerSettings settings = DeedPlannerSettings.Create(new RecordingLogger(), store);
+
+            Assert.AreEqual(Caves.CaveOccupiedCellPolicy.PreserveAndHide,
+                settings.Editing.CaveOccupiedCellPolicy);
+        }
+
+        [TestCase(Caves.CaveOccupiedCellPolicy.PreserveAndHide)]
+        [TestCase(Caves.CaveOccupiedCellPolicy.DeleteCellContent)]
+        [TestCase(Caves.CaveOccupiedCellPolicy.PreventSolidifying)]
+        public void CaveOccupiedCellPolicy_RoundTrips(Caves.CaveOccupiedCellPolicy policy)
+        {
+            var store = new MemoryStore();
+            DeedPlannerSettings settings = DeedPlannerSettings.Create(new RecordingLogger(), store);
+
+            settings.Editing.CaveOccupiedCellPolicy = policy;
+            DeedPlannerSettings reloaded = DeedPlannerSettings.Create(new RecordingLogger(), store);
+
+            Assert.AreEqual(policy, reloaded.Editing.CaveOccupiedCellPolicy);
+        }
+
+        [Test]
+        public void CaveOccupiedCellPolicy_InvalidValueUsesDefaultAndWarns()
+        {
+            var store = new MemoryStore();
+            store.Save("caveOccupiedCellPolicy", "Unsupported");
+            var logger = new RecordingLogger();
+
+            DeedPlannerSettings settings = DeedPlannerSettings.Create(logger, store);
+
+            Assert.AreEqual(Caves.CaveOccupiedCellPolicy.PreserveAndHide,
+                settings.Editing.CaveOccupiedCellPolicy);
+            StringAssert.Contains("caveOccupiedCellPolicy", logger.LastWarning);
+        }
+
+        private sealed class MemoryStore : ISettingsStore
+        {
+            private readonly Dictionary<string, string> _values = new Dictionary<string, string>();
+
+            public bool TryLoad(string key, out string value)
+            {
+                return _values.TryGetValue(key, out value);
+            }
+
+            public void Save(string key, string value)
+            {
+                _values[key] = value;
+            }
+        }
+
+        private sealed class RecordingLogger : ICategoryLogger
+        {
+            public string LastWarning { get; private set; }
+
+            public void Message(string message) { }
+
+            public void Warning(string message)
+            {
+                LastWarning = message;
+            }
+
+            public void Error(string message) { }
+
+            public void Exception(System.Exception exception) { }
+
+            public void Write(LogType type, string message) { }
+        }
+    }
 }

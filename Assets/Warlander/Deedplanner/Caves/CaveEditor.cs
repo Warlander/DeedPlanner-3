@@ -57,14 +57,14 @@ namespace Warlander.Deedplanner.Caves
                 CaveOccupiedCellPolicy.PreserveAndHide);
         }
 
-        public ICaveHeightEdit BeginFloorHeightEdit()
+        public ICaveHeightEdit BeginFloorHeightEdit(bool preserveCeilingHeight = false)
         {
-            return new CaveHeightEdit(this, CaveEditKind.FloorHeight);
+            return new CaveHeightEdit(this, CaveEditKind.FloorHeight, preserveCeilingHeight);
         }
 
         public ICaveHeightEdit BeginClearanceEdit()
         {
-            return new CaveHeightEdit(this, CaveEditKind.Clearance);
+            return new CaveHeightEdit(this, CaveEditKind.Clearance, false);
         }
 
         private static bool ApplySingle(ICaveEditStroke stroke, int x, int y)
@@ -83,8 +83,16 @@ namespace Warlander.Deedplanner.Caves
 
         private void ApplyLive(CaveEditChange change)
         {
-            ApplyChange(change, true);
-            Changed(CreateDirtyRegion(new[] { change }));
+            ApplyLive(new[] { change });
+        }
+
+        private void ApplyLive(CaveEditChange[] changes)
+        {
+            foreach (CaveEditChange change in changes)
+            {
+                ApplyChange(change, true);
+            }
+            Changed(CreateDirtyRegion(changes));
         }
 
         private void Apply(CaveEditChange[] changes, bool forward)
@@ -326,15 +334,17 @@ namespace Warlander.Deedplanner.Caves
         {
             private readonly CaveEditor _editor;
             private readonly CaveEditKind _kind;
+            private readonly bool _preserveCeilingHeight;
             private readonly Dictionary<CaveCellCoordinate, CaveHeightEditEntry> _entries =
                 new Dictionary<CaveCellCoordinate, CaveHeightEditEntry>();
             private readonly List<CaveCellCoordinate> _order = new List<CaveCellCoordinate>();
             private bool _completed;
 
-            public CaveHeightEdit(CaveEditor editor, CaveEditKind kind)
+            public CaveHeightEdit(CaveEditor editor, CaveEditKind kind, bool preserveCeilingHeight)
             {
                 _editor = editor;
                 _kind = kind;
+                _preserveCeilingHeight = preserveCeilingHeight;
             }
 
             public bool SetAt(int x, int y, int value)
@@ -350,14 +360,11 @@ namespace Warlander.Deedplanner.Caves
 
                 var coordinate = new CaveCellCoordinate(x, y);
                 int currentValue = GetCurrentValue(x, y);
-                if (currentValue == value)
-                {
-                    return false;
-                }
-
                 if (!_entries.TryGetValue(coordinate, out CaveHeightEditEntry entry))
                 {
-                    entry = new CaveHeightEditEntry(x, y, currentValue, value);
+                    int originalClearance = _editor._target.GetClearanceAtVertex(x, y);
+                    entry = new CaveHeightEditEntry(x, y, currentValue, value,
+                        originalClearance, originalClearance);
                     _entries.Add(coordinate, entry);
                     _order.Add(coordinate);
                 }
@@ -366,7 +373,34 @@ namespace Warlander.Deedplanner.Caves
                     entry.CurrentValue = value;
                 }
 
-                _editor.ApplyLive(CaveEditChange.CreateHeight(_kind, x, y, currentValue, value));
+                int targetClearance = entry.CurrentClearance;
+                if (_kind == CaveEditKind.FloorHeight && _preserveCeilingHeight)
+                {
+                    targetClearance = Math.Max(0,
+                        entry.OriginalValue + entry.OriginalClearance - value);
+                    entry.CurrentClearance = targetClearance;
+                }
+
+                bool valueChanged = currentValue != value;
+                int currentClearance = _editor._target.GetClearanceAtVertex(x, y);
+                bool clearanceChanged = _kind == CaveEditKind.FloorHeight && _preserveCeilingHeight
+                    && currentClearance != targetClearance;
+                if (!valueChanged && !clearanceChanged)
+                {
+                    return false;
+                }
+
+                var liveChanges = new List<CaveEditChange>();
+                if (valueChanged)
+                {
+                    liveChanges.Add(CaveEditChange.CreateHeight(_kind, x, y, currentValue, value));
+                }
+                if (clearanceChanged)
+                {
+                    liveChanges.Add(CaveEditChange.CreateHeight(CaveEditKind.Clearance, x, y,
+                        currentClearance, targetClearance));
+                }
+                _editor.ApplyLive(liveChanges.ToArray());
                 return true;
             }
 
@@ -426,6 +460,12 @@ namespace Warlander.Deedplanner.Caves
                         changes.Add(CaveEditChange.CreateHeight(_kind, entry.X, entry.Y,
                             entry.OriginalValue, entry.CurrentValue));
                     }
+                    if (_kind == CaveEditKind.FloorHeight && _preserveCeilingHeight
+                        && entry.OriginalClearance != entry.CurrentClearance)
+                    {
+                        changes.Add(CaveEditChange.CreateHeight(CaveEditKind.Clearance, entry.X, entry.Y,
+                            entry.OriginalClearance, entry.CurrentClearance));
+                    }
                 }
                 return changes.ToArray();
             }
@@ -437,13 +477,18 @@ namespace Warlander.Deedplanner.Caves
             public int Y { get; }
             public int OriginalValue { get; }
             public int CurrentValue { get; set; }
+            public int OriginalClearance { get; }
+            public int CurrentClearance { get; set; }
 
-            public CaveHeightEditEntry(int x, int y, int originalValue, int currentValue)
+            public CaveHeightEditEntry(int x, int y, int originalValue, int currentValue,
+                int originalClearance, int currentClearance)
             {
                 X = x;
                 Y = y;
                 OriginalValue = originalValue;
                 CurrentValue = currentValue;
+                OriginalClearance = originalClearance;
+                CurrentClearance = currentClearance;
             }
         }
 

@@ -9068,6 +9068,9 @@
 		</rock>
 		<rock name="Reinforced stone wall" shortname="rsw" type="wall" tex="Caves/reinforcedcave_v1.dds">
 			<category>Walls</category>
+			<materials>
+				Support beams = 1
+			</materials>
 		</rock>
 		<rock name="Iron vein" shortname="iv" type="wall" tex="Caves/ironvein_512.dds">
 			<category>Walls</category>
@@ -9115,27 +9118,68 @@
 		</rock>
 		<rock name="Stone brick reinforced cave wall" shortname="rswStone" type="wall" tex="Caves/cave_stonehouse.dds">
 			<category>Walls/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Stone bricks = 10,
+				Mortar = 10
+			</materials>
 		</rock>
 		<rock name="Marble brick reinforced cave wall" shortname="rswMarble" type="wall" tex="Caves/cave_marble.dds">
 			<category>Walls/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Marble bricks = 10,
+				Mortar = 10
+			</materials>
 		</rock>
 		<rock name="Slate brick reinforced cave wall" shortname="rswSlate" type="wall" tex="Caves/cave_slate.dds">
 			<category>Walls/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Slate bricks = 10,
+				Mortar = 10
+			</materials>
 		</rock>
 		<rock name="Pottery brick reinforced cave wall" shortname="rswPottery" type="wall" tex="Caves/cave_brick.dds">
 			<category>Walls/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Pottery bricks = 10,
+				Mortar = 10
+			</materials>
 		</rock>
 		<rock name="Rounded stone reinforced cave wall" shortname="rswRound" type="wall" tex="Caves/cave_rounded.dds">
 			<category>Walls/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Rounded stones = 10,
+				Mortar = 10
+			</materials>
 		</rock>
 		<rock name="Rendered reinforced cave wall" shortname="rswRend" type="wall" tex="Caves/cave_rendered.dds">
 			<category>Walls/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Stone bricks = 10,
+				Mortar = 10,
+				Clay = 10
+			</materials>
 		</rock>
 		<rock name="Sandstone reinforced cave wall" shortname="rswSand" type="wall" tex="Caves/cave_sandstone.dds">
 			<category>Walls/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Sandstone bricks = 10,
+				Mortar = 10
+			</materials>
 		</rock>
 		<rock name="Wooden reinforced cave wall" shortname="rswWood" type="wall" tex="Caves/cave_wood.dds">
 			<category>Walls/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Planks = 10,
+				Large nails = 1
+			</materials>
 		</rock>
 
 		<rock name="Stone floor" shortname="sfl" type="floor" tex="Caves/cave512.dds">
@@ -9143,45 +9187,113 @@
 		</rock>
 		<rock name="Reinforced stone floor" shortname="rsfl" type="floor" tex="Caves/reinforcedcaveFloor_v1.dds">
 			<category>Floors</category>
+			<materials>
+				Support beams = 1
+			</materials>
 		</rock>
 		<rock name="Gravel" shortname="grav" type="floor" tex="GroundTextures/gravel.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Rock shards = 1
+			</materials>
 		</rock>
 		<rock name="Cobblestone" shortname="cs" type="floor" tex="GroundTextures/cobble.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Stone bricks = 1
+			</materials>
 		</rock>
 		<rock name="Rough cobblestone" shortname="rcs" type="floor" tex="GroundTextures/cobble2.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Colossus bricks = 1
+			</materials>
 		</rock>
 		<rock name="Round cobblestone" shortname="csr" type="floor" tex="GroundTextures/cobble3.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Rounded stones = 1
+			</materials>
 		</rock>
 		<rock name="Stone slab" shortname="sl" type="floor" tex="GroundTextures/slab.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Stone slabs = 1
+			</materials>
 		</rock>
 		<rock name="Marble slab" shortname="msl" type="floor" tex="GroundTextures/marbleslab.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Marble slabs = 1
+			</materials>
 		</rock>
 		<rock name="Marble brick" shortname="mb" type="floor" tex="GroundTextures/marbleBricks.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Marble bricks = 1
+			</materials>
 		</rock>
 		<rock name="Slate slab" shortname="ssl2" type="floor" tex="GroundTextures/slateTiles.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Slate slabs = 1
+			</materials>
 		</rock>
 		<rock name="Slate brick" shortname="ssl" type="floor" tex="GroundTextures/slatebricks.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Slate bricks = 1
+			</materials>
 		</rock>
 		<rock name="Sandstone slab" shortname="sas" type="floor" tex="GroundTextures/sandstoneslab.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Sandstone slabs = 1
+			</materials>
 		</rock>
 		<rock name="Sandstone brick" shortname="sab" type="floor" tex="GroundTextures/sandstonebrick.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Sandstone bricks = 1
+			</materials>
 		</rock>
 		<rock name="Pottery brick" shortname="pb" type="floor" tex="GroundTextures/potterybrickpaving.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Pottery bricks = 1
+			</materials>
 		</rock>
 		<rock name="Planks" shortname="pl" type="floor" tex="GroundTextures/planks.dds">
 			<category>Floors/Decorative</category>
+			<materials>
+				Support beams = 1,
+				Mortar = 1,
+				Floor boards = 1
+			</materials>
 		</rock>
 
 		<rock name="Wooden cave door" shortname="wcaDoorC" type="entrance" tex="GroundTextures/minedoor_wooden.dds">

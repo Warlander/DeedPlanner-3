@@ -27,12 +27,13 @@ namespace Warlander.Deedplanner.Caves.Tests
 
             CaveTopology topology = Build(map, 0, 0, 3, 3, 7);
 
-            Assert.That(topology.TriangleCount, Is.EqualTo(16));
+            Assert.That(topology.TriangleCount, Is.EqualTo(32));
+            Assert.That(Count(topology, CaveFaceKind.SolidSurface), Is.EqualTo(16));
             Assert.That(Count(topology, CaveFaceKind.Floor), Is.EqualTo(4));
             Assert.That(Count(topology, CaveFaceKind.Ceiling), Is.EqualTo(4));
             Assert.That(Count(topology, CaveFaceKind.Wall), Is.EqualTo(8));
-            Assert.That(topology.GetTriangleNormal(0).y, Is.GreaterThan(0f));
-            Assert.That(topology.GetTriangleNormal(4).y, Is.LessThan(0f));
+            Assert.That(topology.GetTriangleNormal(Find(topology, CaveFaceKind.Floor)).y, Is.GreaterThan(0f));
+            Assert.That(topology.GetTriangleNormal(Find(topology, CaveFaceKind.Ceiling)).y, Is.LessThan(0f));
             for (int i = 0; i < topology.TriangleCount; i++)
             {
                 Assert.That(topology.GetFace(i).Revision, Is.EqualTo(7));
@@ -49,7 +50,7 @@ namespace Warlander.Deedplanner.Caves.Tests
 
             CaveTopology topology = Build(map, 0, 0, 4, 3, 1);
 
-            Assert.That(topology.TriangleCount, Is.EqualTo(28));
+            Assert.That(topology.TriangleCount, Is.EqualTo(48));
             Assert.That(Count(topology, CaveFaceKind.Wall), Is.EqualTo(12));
         }
 
@@ -72,6 +73,25 @@ namespace Warlander.Deedplanner.Caves.Tests
         }
 
         [Test]
+        public void RenderAddsTexturedSurfacesForSolidCells()
+        {
+            TestMap map = CreateMap(2, 1);
+            CaveData ore = CreateTerrain("ore", true);
+            map.SetTerrain(1, 0, ore);
+            var indices = new TestTextureIndex();
+            indices.Set(_stone, 2);
+            indices.Set(ore, 9);
+
+            CaveTopology topology = Build(map, 0, 0, 2, 1, 3, indices);
+
+            Assert.That(Count(topology, CaveFaceKind.SolidSurface), Is.EqualTo(4));
+            int oreSurface = Find(topology, CaveFaceKind.SolidSurface, 1, 0);
+            Assert.That(topology.GetTriangleTextureIndex(oreSurface), Is.EqualTo(9));
+            Assert.That(topology.GetTriangleVertex(oreSurface, 0).y,
+                Is.EqualTo(CaveCell.DefaultFloorHeight * 0.1f));
+        }
+
+        [Test]
         public void WallMetadataUsesSolidNeighborAndItsTexture()
         {
             TestMap map = CreateMap(3, 3);
@@ -90,8 +110,8 @@ namespace Warlander.Deedplanner.Caves.Tests
             Assert.That(east.SolidOwnerX, Is.EqualTo(2));
             Assert.That(east.SolidOwnerY, Is.EqualTo(1));
             Assert.That(topology.GetTriangleTextureIndex(eastTriangle), Is.EqualTo(9));
-            Assert.That(topology.GetTriangleTextureIndex(0), Is.EqualTo(3));
-            Assert.That(topology.GetTriangleTextureIndex(4), Is.EqualTo(2));
+            Assert.That(topology.GetTriangleTextureIndex(Find(topology, CaveFaceKind.Floor)), Is.EqualTo(3));
+            Assert.That(topology.GetTriangleTextureIndex(Find(topology, CaveFaceKind.Ceiling)), Is.EqualTo(2));
         }
 
         [Test]
@@ -163,8 +183,8 @@ namespace Warlander.Deedplanner.Caves.Tests
 
             Assert.That(Count(west, CaveFaceKind.Wall, CaveEdge.East), Is.Zero);
             Assert.That(Count(east, CaveFaceKind.Wall, CaveEdge.West), Is.Zero);
-            Assert.That(west.TriangleCount, Is.EqualTo(14));
-            Assert.That(east.TriangleCount, Is.EqualTo(14));
+            Assert.That(west.TriangleCount, Is.EqualTo(76));
+            Assert.That(east.TriangleCount, Is.EqualTo(76));
         }
 
         [Test]
@@ -236,6 +256,33 @@ namespace Warlander.Deedplanner.Caves.Tests
                 }
             }
             Assert.Fail($"No {kind} face for {edge}.");
+            return -1;
+        }
+
+        private static int Find(CaveTopology topology, CaveFaceKind kind)
+        {
+            for (int i = 0; i < topology.TriangleCount; i++)
+            {
+                if (topology.GetFace(i).Kind == kind)
+                {
+                    return i;
+                }
+            }
+            Assert.Fail($"No {kind} face.");
+            return -1;
+        }
+
+        private static int Find(CaveTopology topology, CaveFaceKind kind, int x, int y)
+        {
+            for (int i = 0; i < topology.TriangleCount; i++)
+            {
+                CaveFace face = topology.GetFace(i);
+                if (face.Kind == kind && face.OpenCellX == x && face.OpenCellY == y)
+                {
+                    return i;
+                }
+            }
+            Assert.Fail($"No {kind} face at {x}, {y}.");
             return -1;
         }
 

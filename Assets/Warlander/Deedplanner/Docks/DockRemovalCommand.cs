@@ -17,7 +17,7 @@ namespace Warlander.Deedplanner.Docks
 
         public void Execute()
         {
-            _dock.Tile.UnregisterDock();
+            _dock.Tile.UnregisterDock(_dock);
             _map.RemoveDock(_dock);
             _dock.gameObject.SetActive(false);
         }

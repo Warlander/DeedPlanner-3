@@ -108,12 +108,6 @@ namespace Warlander.Deedplanner.Domain
             _legacyRenderScope?.Dispose();
             _legacyRenderScope = PrepareForCamera(new MapRenderView(_renderedLevel, _renderEntireMap, _renderGrid));
 
-            RefreshBridgesRendering(_renderedLevel < 0
-                ? CaveLevel.GetStoreyIndex(_renderedLevel)
-                : _renderedLevel);
-            RefreshDocksRendering(_renderedLevel < 0
-                ? CaveLevel.GetStoreyIndex(_renderedLevel)
-                : _renderedLevel, _renderedLevel < 0);
         }
 
         public IDisposable PrepareForCamera(MapRenderView view)
@@ -154,6 +148,9 @@ namespace Warlander.Deedplanner.Domain
             ApplyRoot(scope, _caveGridRoot, view.IsUnderground && view.RenderGrid ? 1f : 0f);
             ApplyRoot(scope, _caveShellRoot,
                 view.IsUnderground ? GetOpacity(view, -storeyIndex) : 0f);
+            ApplyCaveShellView(view);
+            ApplyBridges(scope, view);
+            ApplyDocks(scope, view);
 
             if (view.IsUnderground)
                 _caveGridRoot.localPosition = new Vector3(0, storeyIndex * 3, 0);
@@ -164,6 +161,19 @@ namespace Warlander.Deedplanner.Domain
         private float GetOpacity(MapRenderView view, int relativeLevel)
         {
             return view.RenderEntireMap ? 1f : GetRelativeLevelOpacity(relativeLevel);
+        }
+
+        private void ApplyCaveShellView(MapRenderView view)
+        {
+            Renderer[] renderers = _caveShellRoot.GetComponentsInChildren<Renderer>(true);
+            foreach (Renderer renderer in renderers)
+            {
+                var propertyBlock = new MaterialPropertyBlock();
+                renderer.GetPropertyBlock(propertyBlock);
+                propertyBlock.SetFloat(ShaderPropertyIds.CaveOverview,
+                    view.IsUnderground && !view.RenderEntireMap ? 1f : 0f);
+                renderer.SetPropertyBlock(propertyBlock);
+            }
         }
 
         private void ApplyRoot(RenderScope scope, Transform root, float opacity)
@@ -239,50 +249,24 @@ namespace Warlander.Deedplanner.Domain
         public void UpdateBridgesRendering()
         {
             if (_surfaceLevelRoots == null) return;
-
-            bool underground = _renderedLevel < 0;
-            int absoluteLevel = underground ? CaveLevel.GetStoreyIndex(_renderedLevel) : _renderedLevel;
-            RefreshBridgesRendering(absoluteLevel);
+            UpdateLevelsRendering();
         }
 
-        private void RefreshBridgesRendering(int absoluteLevel)
+        private void ApplyBridges(RenderScope scope, MapRenderView view)
         {
             if (_getBridges == null) return;
 
-            if (!RenderBridges)
-            {
-                foreach (Bridge bridge in _getBridges())
-                    bridge.SetVisible(false);
-                return;
-            }
-
-            if (_renderEntireMap)
-            {
-                foreach (Bridge bridge in _getBridges())
-                    bridge.SetVisible(true);
-                return;
-            }
-
             foreach (Bridge bridge in _getBridges())
             {
-                int lowerLevel = bridge.LowerLevel;
-                int higherLevel = bridge.HigherLevel;
-
-                float opacity;
-                if (higherLevel > absoluteLevel)
-                    opacity = 0f;
-                else if (higherLevel < absoluteLevel && lowerLevel > absoluteLevel)
-                    opacity = 1f;
-                else
-                    opacity = GetRelativeLevelOpacity(higherLevel - absoluteLevel);
-
-                bool renderBridge = opacity > 0;
-                bridge.SetVisible(renderBridge);
-                if (renderBridge)
+                foreach (BridgePart part in bridge.Parts)
                 {
-                    var propertyBlock = new MaterialPropertyBlock();
-                    propertyBlock.SetColor(ShaderPropertyIds.BaseColor, new Color(opacity, opacity, opacity));
-                    bridge.SetPropertyBlock(propertyBlock);
+                    bool matchingRealm = part.Level < 0 == view.IsUnderground;
+                    int partStorey = part.Level < 0 ? CaveLevel.GetStoreyIndex(part.Level) : part.Level;
+                    bool hiddenInRock = part.Level < 0 && part.Tile.Cave.IsSolid;
+                    float opacity = RenderBridges && matchingRealm && !hiddenInRock
+                        ? GetOpacity(view, partStorey - view.StoreyIndex)
+                        : 0f;
+                    ApplyRoot(scope, part.transform, opacity);
                 }
             }
         }
@@ -290,33 +274,23 @@ namespace Warlander.Deedplanner.Domain
         public void UpdateDocksRendering()
         {
             if (_surfaceLevelRoots == null) return;
-
-            bool underground = _renderedLevel < 0;
-            int absoluteLevel = underground ? CaveLevel.GetStoreyIndex(_renderedLevel) : _renderedLevel;
-            RefreshDocksRendering(absoluteLevel, underground);
+            UpdateLevelsRendering();
         }
 
-        private void RefreshDocksRendering(int absoluteLevel, bool underground)
+        private void ApplyDocks(RenderScope scope, MapRenderView view)
         {
             if (_getDocks == null) return;
 
             foreach (Dock dock in _getDocks())
             {
-                float opacity;
-                if (underground || dock.GetEffectiveLevel() < 0)
-                {
-                    opacity = 0f;
-                }
-                else if (_renderEntireMap)
-                {
-                    opacity = 1f;
-                }
-                else
-                {
-                    opacity = GetRelativeLevelOpacity(dock.GetEffectiveLevel() - absoluteLevel);
-                }
-
-                dock.ApplyLevelRendering(opacity);
+                bool cave = dock.Realm == DockRealm.Cave;
+                bool matchingRealm = cave == view.IsUnderground;
+                int dockStorey = cave ? CaveLevel.GetStoreyIndex(dock.AnchorLevel) : dock.AnchorLevel;
+                bool hiddenInRock = cave && dock.Tile.Cave.IsSolid;
+                float opacity = matchingRealm && !hiddenInRock
+                    ? GetOpacity(view, dockStorey - view.StoreyIndex)
+                    : 0f;
+                ApplyRoot(scope, dock.transform, opacity);
             }
         }
 

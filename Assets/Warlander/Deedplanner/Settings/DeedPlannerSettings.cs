@@ -2,6 +2,7 @@ using System;
 using Warlander.Deedplanner.Logging;
 using Warlander.Deedplanner.Ui;
 using Warlogic.Settings;
+using Warlander.Deedplanner.Caves;
 
 namespace Warlander.Deedplanner.Settings
 {
@@ -36,8 +37,14 @@ namespace Warlander.Deedplanner.Settings
         {
             var store = new PlayerPrefsJsonSettingsStore();
             LegacySettingsMigration.Migrate(store);
+            return Create(logger, store);
+        }
+
+        public static DeedPlannerSettings Create(ICategoryLogger logger, ISettingsStore store)
+        {
             WarnForInvalidEnum<WaterQuality>(store, "waterQuality", logger);
             WarnForInvalidEnum<QualityLevel>(store, "qualityLevel", logger);
+            WarnForInvalidEnum<CaveOccupiedCellPolicy>(store, "caveOccupiedCellPolicy", logger);
             var registry = new SettingsRegistry(store);
 
             SettingsTab generalTab = registry.AddTab("general", "General");
@@ -48,6 +55,20 @@ namespace Warlander.Deedplanner.Settings
             generalTab.Add(guiScale);
             var compassVisibility = new BoolSetting("compassVisibility", "Show Compass", true);
             generalTab.Add(compassVisibility);
+            var caveOccupiedCellPolicy = new EnumSetting<CaveOccupiedCellPolicy>("caveOccupiedCellPolicy",
+                "Solidifying Occupied Cave Cells", CaveOccupiedCellPolicy.PreserveAndHide,
+                "Controls what happens to underground content when its cave cell becomes solid.")
+            {
+                Validator = value => Enum.IsDefined(typeof(CaveOccupiedCellPolicy), value),
+                OptionLabel = value => value switch
+                {
+                    CaveOccupiedCellPolicy.PreserveAndHide => "Preserve and Hide",
+                    CaveOccupiedCellPolicy.DeleteCellContent => "Delete Cell Content",
+                    CaveOccupiedCellPolicy.PreventSolidifying => "Prevent Solidifying",
+                    _ => value.ToString()
+                }
+            };
+            generalTab.Add(caveOccupiedCellPolicy);
 
             var waterQuality = new EnumSetting<WaterQuality>("waterQuality", "Water Quality", WaterQuality.Ultra,
                 "Simple - very basic water that uses almost no resources\nHigh - fancy water without reflections\nUltra - fancy water with reflections")
@@ -103,7 +124,7 @@ namespace Warlander.Deedplanner.Settings
                 fppMovementSpeed, topMovementSpeed, isoMovementSpeed, shiftSpeedModifier, controlSpeedModifier);
             var editing = new EditingSettings(heightDragSensitivity, heightRespectOriginalSlopes,
                 wallAutomaticReverse, wallReverse, decorationSnapToGrid, decorationRotationSnapping,
-                decorationRotationSensitivity);
+                decorationRotationSensitivity, caveOccupiedCellPolicy);
             var ui = new UiSettings(guiScale, compassVisibility);
             var graphics = new GraphicsOptions(waterQuality, qualityLevel);
 

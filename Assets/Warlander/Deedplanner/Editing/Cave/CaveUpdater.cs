@@ -5,6 +5,7 @@ using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Domain.Entities.Caves;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Persistence;
+using Warlander.Deedplanner.Settings;
 
 namespace Warlander.Deedplanner.Editing
 {
@@ -17,6 +18,7 @@ namespace Warlander.Deedplanner.Editing
         private readonly DPInput _input;
         private readonly MapHandler _mapHandler;
         private readonly ICaveRenderOptions _renderOptions;
+        private readonly EditingSettings _editingSettings;
 
         private CaveData _primaryData;
         private CaveData _secondaryData;
@@ -27,7 +29,8 @@ namespace Warlander.Deedplanner.Editing
         public Tab TargetTab => Tab.Caves;
 
         public CaveUpdater(ICaveUpdaterView view, CameraCoordinator cameraCoordinator, TabContext tabContext,
-            IDataCatalog dataCatalog, DPInput input, MapHandler mapHandler, ICaveRenderOptions renderOptions)
+            IDataCatalog dataCatalog, DPInput input, MapHandler mapHandler, ICaveRenderOptions renderOptions,
+            EditingSettings editingSettings)
         {
             _view = view;
             _cameraCoordinator = cameraCoordinator;
@@ -36,6 +39,7 @@ namespace Warlander.Deedplanner.Editing
             _input = input;
             _mapHandler = mapHandler;
             _renderOptions = renderOptions;
+            _editingSettings = editingSettings;
         }
 
         public void Initialize()
@@ -68,6 +72,7 @@ namespace Warlander.Deedplanner.Editing
         public void Enable()
         {
             _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
+            _view.SetCullingEnabled(_renderOptions.IsCullingEnabled());
         }
 
         public void Disable()
@@ -132,7 +137,7 @@ namespace Warlander.Deedplanner.Editing
 
             if (_stroke == null)
             {
-                _stroke = map.CaveEditor.BeginTerrainStroke(data, CaveOccupiedCellPolicy.PreserveAndHide);
+                _stroke = map.CaveEditor.BeginTerrainStroke(data, _editingSettings.CaveOccupiedCellPolicy);
             }
 
             _stroke.ApplyAt(x, y);
@@ -147,7 +152,7 @@ namespace Warlander.Deedplanner.Editing
             }
 
             using (ICaveEditStroke stroke = map.CaveEditor.BeginTerrainStroke(data,
-                       CaveOccupiedCellPolicy.PreserveAndHide))
+                       _editingSettings.CaveOccupiedCellPolicy))
             {
                 var pending = new Stack<CavePaintCell>();
                 var visited = new HashSet<int>();

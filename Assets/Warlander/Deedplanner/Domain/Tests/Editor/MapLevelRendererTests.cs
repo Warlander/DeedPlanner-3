@@ -51,8 +51,18 @@ namespace Warlander.Deedplanner.Domain.Tests
                 Assert.That(GetEffectiveBaseColor(_fixture.Cave[1].Renderer).r, Is.EqualTo(1f));
                 Assert.That(_fixture.Cave[2].Renderer.forceRenderingOff, Is.True);
                 Assert.That(GetBaseColor(_fixture.CaveShell.Renderer).r, Is.EqualTo(0.6f));
+                Assert.That(GetCaveOverview(_fixture.CaveShell.Renderer), Is.EqualTo(1f));
                 Assert.That(_fixture.CaveGrid.Renderer.forceRenderingOff, Is.False);
                 Assert.That(_fixture.CaveGrid.Root.localPosition.y, Is.EqualTo(3f));
+            }
+        }
+
+        [Test]
+        public void FullMapCaveViewHidesSolidSurfaceVisualization()
+        {
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(-1, true, true)))
+            {
+                Assert.That(GetCaveOverview(_fixture.CaveShell.Renderer), Is.Zero);
             }
         }
 
@@ -120,6 +130,13 @@ namespace Warlander.Deedplanner.Domain.Tests
             return material && material.HasProperty(ShaderPropertyIds.BaseColor)
                 ? material.GetColor(ShaderPropertyIds.BaseColor)
                 : Color.white;
+        }
+
+        private static float GetCaveOverview(Renderer renderer)
+        {
+            var propertyBlock = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(propertyBlock);
+            return propertyBlock.GetFloat(ShaderPropertyIds.CaveOverview);
         }
 
         private sealed class RenderFixture : IDisposable
