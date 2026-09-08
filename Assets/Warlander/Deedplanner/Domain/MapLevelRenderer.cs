@@ -181,11 +181,13 @@ namespace Warlander.Deedplanner.Domain
                 }
 
                 renderer.forceRenderingOff = baseState.ForceRenderingOff || !visible;
-                if (visible)
+                if (visible && opacity < 1f)
                 {
                     MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
                     renderer.GetPropertyBlock(propertyBlock);
-                    propertyBlock.SetColor(ShaderPropertyIds.BaseColor, new Color(opacity, opacity, opacity));
+                    Color baseColor = GetBaseColor(renderer, propertyBlock);
+                    propertyBlock.SetColor(ShaderPropertyIds.BaseColor,
+                        new Color(baseColor.r * opacity, baseColor.g * opacity, baseColor.b * opacity, baseColor.a));
                     renderer.SetPropertyBlock(propertyBlock);
                 }
             }
@@ -202,6 +204,19 @@ namespace Warlander.Deedplanner.Domain
 
                 collider.enabled = baseEnabled && visible;
             }
+        }
+
+        private static Color GetBaseColor(Renderer renderer, MaterialPropertyBlock propertyBlock)
+        {
+            if (propertyBlock.HasColor(ShaderPropertyIds.BaseColor))
+            {
+                return propertyBlock.GetColor(ShaderPropertyIds.BaseColor);
+            }
+
+            Material material = renderer.sharedMaterial;
+            return material && material.HasProperty(ShaderPropertyIds.BaseColor)
+                ? material.GetColor(ShaderPropertyIds.BaseColor)
+                : Color.white;
         }
 
         private void CompleteScope(RenderScope scope)

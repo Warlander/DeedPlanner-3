@@ -28,7 +28,7 @@ namespace Warlander.Deedplanner.Domain.Tests
                 Assert.That(_fixture.Surface[0].Renderer.forceRenderingOff, Is.False);
                 Assert.That(GetBaseColor(_fixture.Surface[0].Renderer).r, Is.EqualTo(0.6f));
                 Assert.That(_fixture.Surface[1].Renderer.forceRenderingOff, Is.False);
-                Assert.That(GetBaseColor(_fixture.Surface[1].Renderer).r, Is.EqualTo(1f));
+                Assert.That(GetEffectiveBaseColor(_fixture.Surface[1].Renderer).r, Is.EqualTo(1f));
                 Assert.That(_fixture.Surface[2].Renderer.forceRenderingOff, Is.True);
                 Assert.That(_fixture.Surface[2].Collider.enabled, Is.False);
                 Assert.That(_fixture.Cave[0].Renderer.forceRenderingOff, Is.True);
@@ -48,7 +48,7 @@ namespace Warlander.Deedplanner.Domain.Tests
                 Assert.That(_fixture.Cave[0].Renderer.forceRenderingOff, Is.False);
                 Assert.That(GetBaseColor(_fixture.Cave[0].Renderer).r, Is.EqualTo(0.6f));
                 Assert.That(_fixture.Cave[1].Renderer.forceRenderingOff, Is.False);
-                Assert.That(GetBaseColor(_fixture.Cave[1].Renderer).r, Is.EqualTo(1f));
+                Assert.That(GetEffectiveBaseColor(_fixture.Cave[1].Renderer).r, Is.EqualTo(1f));
                 Assert.That(_fixture.Cave[2].Renderer.forceRenderingOff, Is.True);
                 Assert.That(GetBaseColor(_fixture.CaveShell.Renderer).r, Is.EqualTo(0.6f));
                 Assert.That(_fixture.CaveGrid.Renderer.forceRenderingOff, Is.False);
@@ -66,7 +66,7 @@ namespace Warlander.Deedplanner.Domain.Tests
 
             using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, false, true)))
             {
-                Assert.That(GetBaseColor(_fixture.Surface[0].Renderer), Is.EqualTo(Color.white));
+                Assert.That(GetBaseColor(_fixture.Surface[0].Renderer), Is.EqualTo(Color.cyan));
 
                 using (_fixture.Renderer.PrepareForCamera(new MapRenderView(-1, false, false)))
                 {
@@ -75,7 +75,7 @@ namespace Warlander.Deedplanner.Domain.Tests
                 }
 
                 Assert.That(_fixture.Surface[0].Renderer.forceRenderingOff, Is.False);
-                Assert.That(GetBaseColor(_fixture.Surface[0].Renderer), Is.EqualTo(Color.white));
+                Assert.That(GetBaseColor(_fixture.Surface[0].Renderer), Is.EqualTo(Color.cyan));
                 Assert.That(_fixture.Surface[0].Collider.enabled, Is.False);
             }
 
@@ -84,11 +84,42 @@ namespace Warlander.Deedplanner.Domain.Tests
             Assert.That(_fixture.Surface[0].Collider.enabled, Is.False);
         }
 
+        [Test]
+        public void FadedRendererPreservesExistingColorAndAlpha()
+        {
+            Color originalColor = new Color(0.8f, 0.4f, 0.2f, 0.25f);
+            MaterialPropertyBlock originalBlock = new MaterialPropertyBlock();
+            originalBlock.SetColor(ShaderPropertyIds.BaseColor, originalColor);
+            _fixture.Surface[0].Renderer.SetPropertyBlock(originalBlock);
+
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, true)))
+            {
+                Color fadedColor = GetBaseColor(_fixture.Surface[0].Renderer);
+                Assert.That(fadedColor.r, Is.EqualTo(0.48f).Within(0.001f));
+                Assert.That(fadedColor.g, Is.EqualTo(0.24f).Within(0.001f));
+                Assert.That(fadedColor.b, Is.EqualTo(0.12f).Within(0.001f));
+                Assert.That(fadedColor.a, Is.EqualTo(0.25f));
+            }
+        }
+
         private static Color GetBaseColor(Renderer renderer)
         {
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
             renderer.GetPropertyBlock(propertyBlock);
             return propertyBlock.GetColor(ShaderPropertyIds.BaseColor);
+        }
+
+        private static Color GetEffectiveBaseColor(Renderer renderer)
+        {
+            MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(propertyBlock);
+            if (propertyBlock.HasColor(ShaderPropertyIds.BaseColor))
+                return propertyBlock.GetColor(ShaderPropertyIds.BaseColor);
+
+            Material material = renderer.sharedMaterial;
+            return material && material.HasProperty(ShaderPropertyIds.BaseColor)
+                ? material.GetColor(ShaderPropertyIds.BaseColor)
+                : Color.white;
         }
 
         private sealed class RenderFixture : IDisposable
