@@ -13,7 +13,7 @@
 - Sharper water reflections on Ultra quality
 - Settings window overhaul - a single immediate-apply tabbed window now covers all settings, with reliable cancellable key rebinding
 - Errors now open a window with a copyable report you can attach when reporting bugs
-- Richer tooltips, including a tinted slope grid when hovering terrain on the Height tab
+- Richer tooltips, including accurate edge-aware placement and a tinted slope grid when hovering terrain on the Height tab
 - New dragon HOTA statue model (the old one was oversized)
 - Added aged log wall texture
 - Improved Floor tab UI
