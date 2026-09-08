@@ -17,6 +17,7 @@ namespace Warlander.Deedplanner.Caves
 
         private Mesh _renderMesh;
         private Mesh _colliderMesh;
+        private Mesh _colliderStagingMesh;
         private MeshCollider _meshCollider;
         private CaveFace[] _faces = new CaveFace[0];
 
@@ -32,7 +33,8 @@ namespace Warlander.Deedplanner.Caves
             var meshRenderer = gameObject.AddComponent<MeshRenderer>();
             _meshCollider = gameObject.AddComponent<MeshCollider>();
             _renderMesh = new Mesh { name = $"Cave Render {minimumX},{minimumY}" };
-            _colliderMesh = new Mesh { name = $"Cave Collider {minimumX},{minimumY}" };
+            _colliderMesh = new Mesh { name = $"Cave Collider {minimumX},{minimumY} A" };
+            _colliderStagingMesh = new Mesh { name = $"Cave Collider {minimumX},{minimumY} B" };
             meshFilter.sharedMesh = _renderMesh;
             meshRenderer.sharedMaterial = material;
             meshRenderer.shadowCastingMode = ShadowCastingMode.Off;
@@ -52,12 +54,15 @@ namespace Warlander.Deedplanner.Caves
         {
             int revision = ColliderRevision + 1;
             CaveTopology topology = builder.BuildCollider(MinimumX, MinimumY, Width, Height, revision);
-            topology.ApplyTo(_colliderMesh);
+            topology.ApplyTo(_colliderStagingMesh);
             _meshCollider.sharedMesh = null;
             if (topology.TriangleCount > 0)
             {
-                _meshCollider.sharedMesh = _colliderMesh;
+                _meshCollider.sharedMesh = _colliderStagingMesh;
             }
+            Mesh previousMesh = _colliderMesh;
+            _colliderMesh = _colliderStagingMesh;
+            _colliderStagingMesh = previousMesh;
             _faces = topology.Faces.ToArray();
             ColliderRevision = revision;
         }
@@ -105,6 +110,7 @@ namespace Warlander.Deedplanner.Caves
         {
             DestroyMesh(_renderMesh);
             DestroyMesh(_colliderMesh);
+            DestroyMesh(_colliderStagingMesh);
         }
 
         private static void DestroyMesh(Object target)

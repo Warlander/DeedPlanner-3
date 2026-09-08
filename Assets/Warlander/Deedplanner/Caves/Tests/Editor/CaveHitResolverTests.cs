@@ -107,6 +107,20 @@ namespace Warlander.Deedplanner.Caves.Tests
         }
 
         [Test]
+        public void ColliderRemainsAssignedAfterRecook()
+        {
+            CaveChunk chunk = CreateChunk(3, 3, out _, out CaveTopologyBuilder builder);
+            MeshCollider collider = chunk.GetComponent<MeshCollider>();
+            Mesh previousMesh = collider.sharedMesh;
+
+            chunk.RebuildCollider(builder);
+
+            Assert.That(collider.sharedMesh, Is.Not.Null);
+            Assert.That(collider.sharedMesh, Is.Not.SameAs(previousMesh));
+            Assert.That(collider.sharedMesh.triangles.Length / 3, Is.EqualTo(chunk.ColliderTriangleCount));
+        }
+
+        [Test]
         public void LogicalFaceRangeIncludesOnlySelectedFaceTriangles()
         {
             CaveChunk chunk = CreateChunk(3, 3, out CaveTopology topology);
