@@ -60,7 +60,8 @@ namespace Warlander.Deedplanner.Persistence
 
         public Task<MapLocation?> SaveAsync(string payload, string suggestedName)
         {
-            string fileName = _nameSanitizer.Sanitize(suggestedName) + ".MAP";
+            string fileName = SaveLocatorPolicy.GetAvailable(
+                suggestedName, _nameSanitizer, SteamRemoteStorage.FileExists);
             WriteCloudFile(fileName, payload);
             return Task.FromResult<MapLocation?>(new MapLocation(Id, fileName, suggestedName));
         }
