@@ -72,8 +72,15 @@ namespace Warlander.Deedplanner.Editing.Tests
                     .GetComponent<Toggle>();
                 Transform clearanceToggle = root.transform.Find(
                     "Cave Height Modes Toggle Group/Cave Clearance Toggle");
+                Transform caveModes = clearanceToggle.parent;
+                HorizontalLayoutGroup caveModesLayout = caveModes.GetComponent<HorizontalLayoutGroup>();
 
                 Assert.That(preserveToggle.isOn, Is.False);
+                Assert.That(caveModes.GetComponent<VerticalLayoutGroup>(), Is.Null);
+                Assert.That(caveModesLayout, Is.Not.Null);
+                Assert.That(caveModesLayout.spacing, Is.Zero);
+                Assert.That(caveModesLayout.childControlWidth, Is.True);
+                Assert.That(caveModesLayout.childForceExpandWidth, Is.True);
                 var preserveTooltip = new SerializedObject(preserveBox.GetComponent<HoverTooltip>());
                 var clearanceTooltip = new SerializedObject(clearanceToggle.GetComponent<HoverTooltip>());
                 Assert.That(preserveTooltip.FindProperty("text").stringValue,
@@ -165,6 +172,8 @@ namespace Warlander.Deedplanner.Editing.Tests
                     Assert.That(instruction.text, Does.StartWith(
                         "Drag sensitivity controls how quickly heights change while dragging.\n\n"
                         + "Respect original slopes preserves existing slope differences while editing."));
+                    Assert.That(instruction.text, Does.Contain("editing.\n\n1."));
+                    Assert.That(instruction.text, Does.Not.Contain("editing.\n\n\n1."));
                 }
             }
             finally
