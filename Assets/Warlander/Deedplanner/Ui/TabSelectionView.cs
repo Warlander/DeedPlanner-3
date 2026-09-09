@@ -9,6 +9,8 @@ namespace Warlander.Deedplanner.Ui
     {
         [SerializeField] private ObservableToggleGroup _tabToggleGroup = null;
 
+        private bool _updatingSelection;
+
         public event Action<Tab> TabSelected;
 
         private void Start()
@@ -18,6 +20,9 @@ namespace Warlander.Deedplanner.Ui
 
         private void OnActiveToggleChanged(Toggle toggle)
         {
+            if (_updatingSelection)
+                return;
+
             if (toggle.TryGetComponent(out TabReference tabReference))
             {
                 TabSelected?.Invoke(tabReference.Tab);
@@ -42,15 +47,23 @@ namespace Warlander.Deedplanner.Ui
             }
 
             bool allowSwitchOff = _tabToggleGroup.allowSwitchOff;
-            _tabToggleGroup.allowSwitchOff = true;
-            foreach (Toggle toggle in _tabToggleGroup.GetComponentsInChildren<Toggle>(true))
+            _updatingSelection = true;
+            try
             {
-                if (toggle.TryGetComponent<TabReference>(out _))
+                _tabToggleGroup.allowSwitchOff = true;
+                foreach (Toggle toggle in _tabToggleGroup.GetComponentsInChildren<Toggle>(true))
                 {
-                    toggle.SetIsOnWithoutNotify(toggle == selectedToggle);
+                    if (toggle.TryGetComponent<TabReference>(out _))
+                    {
+                        toggle.isOn = toggle == selectedToggle;
+                    }
                 }
             }
-            _tabToggleGroup.allowSwitchOff = allowSwitchOff;
+            finally
+            {
+                _tabToggleGroup.allowSwitchOff = allowSwitchOff;
+                _updatingSelection = false;
+            }
         }
 
         private void OnDestroy()

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -20,9 +21,8 @@ namespace Warlander.Deedplanner.Ui
         {
             base.Start();
 
-            _toggleListeners = new ToggleListener[m_Toggles.Count];
-            int index = 0;
-            foreach (Toggle toggle in m_Toggles)
+            var toggleListeners = new List<ToggleListener>();
+            foreach (Toggle toggle in GetComponentsInChildren<Toggle>(true))
             {
                 if (toggle.group != this)
                     continue;
@@ -33,8 +33,9 @@ namespace Warlander.Deedplanner.Ui
                         ActiveToggleChanged?.Invoke(captured);
                 };
                 toggle.onValueChanged.AddListener(listener);
-                _toggleListeners[index++] = new ToggleListener { Toggle = captured, Listener = listener };
+                toggleListeners.Add(new ToggleListener { Toggle = captured, Listener = listener });
             }
+            _toggleListeners = toggleListeners.ToArray();
         }
 
         // Skip base: EnsureValidState force-selects a wrong toggle when group re-activates before it re-registers.

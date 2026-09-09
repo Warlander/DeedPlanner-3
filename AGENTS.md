@@ -78,6 +78,8 @@ Suggested verification ladder, cheapest first:
 3. Play mode enter/exit on the connected Editor to catch startup/initialization exceptions (VContainer wiring, scene load). While in play mode, use the Pipeline CodeEval command to execute C# against the running app — assert state, drive interactions, and read back results, giving real behavioral testing without a test assembly.
 4. Manual/QA pass by the developer for visual or gameplay behavior — agents cannot judge rendering correctness.
 
+For UI interaction bugs, reproduce through the real UI event path whenever practical and inexpensive. Direct model commands are useful for setup, but they do not replace clicking the affected controls and checking the actual visible elements rather than only their backing state.
+
 When adding testable plain-C# logic (presenters, data model, commands), prefer code that *could* be covered by EditMode tests later — keep it free of UnityEngine.Object dependencies where practical.
 
 ## Architecture

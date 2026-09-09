@@ -66,21 +66,21 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Drag sensitivity - changes sensitivity of slope changes, larger value
-    means faster, but less precise changes
-
-    Respect original slopes - when it''s
-    on, slopes are added on top of existing ones. When off, all slopes are changed
-    to single value (area becomes flat)
+  m_text: 'Drag sensitivity controls how quickly heights change while dragging.
 
 
-    1. Drag mouse to select area you want
-    to edit, shift-click to select multiple areas. Right-click while selecting cancels
-    current selection, otherwise it deselects selected area
+    Respect
+    original slopes preserves existing slope differences while editing.
 
-    2. Drag any handle
-    inside selected area and move pointer up/down to edit heights. Right-click cancels
-    this action'
+
+
+    1.
+    Drag mouse to select area you want to edit, shift-click to select multiple areas.
+    Right-click while selecting cancels current selection, otherwise it deselects
+    selected area
+
+    2. Drag any handle inside selected area and move pointer up/down
+    to edit heights. Right-click cancels this action'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2936,30 +2936,31 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Drag sensitivity - changes sensitivity of slope changes, larger value
-    means faster, but less precise changes
-
-    Respect original slopes - when it''s
-    on, slopes are added on top of existing ones. When off, all slopes are changed
-    to single value (area becomes flat)
+  m_text: 'Drag sensitivity controls how quickly heights change while dragging.
 
 
-    1. Drag mouse to select area you want
-    to edit, shift-click to select multiple areas. Right-click while selecting cancels
-    current selection, otherwise it deselects selected area
-
-    2. Click handle
-    inside selected area to make it an anchor. Moving pointer in any direction anchors
-    entire axis instead, represented with red line appearing. Anchor is point (or
-    axis) which won''t change its height in later step
-
-    3. Drag any handle inside
-    selected area and move pointer up/down to make ramp from that point to anchor
+    Respect
+    original slopes preserves existing slope differences while editing.
 
 
-    Right-click
-    during any action cancels the action. Otherwise, if there is an anchor it gets
-    deselected, and if the anchor doesn''t exist area gets deselected'
+
+    1.
+    Drag mouse to select area you want to edit, shift-click to select multiple areas.
+    Right-click while selecting cancels current selection, otherwise it deselects
+    selected area
+
+    2. Click handle inside selected area to make it an anchor.
+    Moving pointer in any direction anchors entire axis instead, represented with
+    red line appearing. Anchor is point (or axis) which won''t change its height
+    in later step
+
+    3. Drag any handle inside selected area and move pointer up/down
+    to make ramp from that point to anchor
+
+
+    Right-click during any action cancels
+    the action. Otherwise, if there is an anchor it gets deselected, and if the anchor
+    doesn''t exist area gets deselected'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

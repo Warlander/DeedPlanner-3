@@ -86,7 +86,15 @@ namespace Warlander.Deedplanner.Cameras
         public int Level {
             get => _level;
             set {
+                int previousLevel = _level;
                 _level = value;
+                if (_mapHandler.Map != null)
+                {
+                    foreach (ICameraController controller in _cameraControllers)
+                    {
+                        controller.OnLevelChanged(_mapHandler.Map, previousLevel, value);
+                    }
+                }
                 LevelChanged?.Invoke();
                 UpdateState();
             }

@@ -1,4 +1,6 @@
+using System.Linq;
 using NUnit.Framework;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -105,6 +107,64 @@ namespace Warlander.Deedplanner.Editing.Tests
                     {
                         Assert.That(levelToggle.GetComponentsInChildren<HoverTooltip>(true), Is.Empty);
                     }
+                }
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        [Test]
+        public void GroundAndCaveTabsUseRealmSwappedSlot()
+        {
+            const string path = "Assets/Prefabs/MainScene/Tab Toggles Panel.prefab";
+            GameObject root = PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                TabReference[] tabs = root.GetComponentsInChildren<TabReference>(true);
+                TabReference ground = tabs.Single(tab => tab.Tab == Tab.Ground);
+                TabReference caves = tabs.Single(tab => tab.Tab == Tab.Caves);
+
+                Assert.That(ground.gameObject.activeSelf, Is.True);
+                Assert.That(caves.gameObject.activeSelf, Is.False);
+
+                VisibleTabsToggler toggler = root.GetComponent<VisibleTabsToggler>();
+                Assert.That(toggler, Is.Not.Null);
+
+                SerializedObject serializedToggler = new SerializedObject(toggler);
+                Assert.That(serializedToggler.FindProperty("groundToggle").objectReferenceValue,
+                    Is.SameAs(ground.GetComponent<Toggle>()));
+                Assert.That(serializedToggler.FindProperty("cavesToggle").objectReferenceValue,
+                    Is.SameAs(caves.GetComponent<Toggle>()));
+
+                RectTransform groundOrb = ground.transform.Find("SelectedOrb").GetComponent<RectTransform>();
+                RectTransform cavesOrb = caves.transform.Find("SelectedOrb").GetComponent<RectTransform>();
+                Assert.That(cavesOrb.anchoredPosition, Is.EqualTo(groundOrb.anchoredPosition));
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        [Test]
+        public void HeightInstructionsUseConciseSettingDescriptions()
+        {
+            const string path = "Assets/Prefabs/MainScene/Tabs/Height Tab.prefab";
+            GameObject root = PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                TMP_Text[] instructions = root.GetComponentsInChildren<TMP_Text>(true)
+                    .Where(label => label.text.StartsWith("Drag sensitivity controls"))
+                    .ToArray();
+
+                Assert.That(instructions, Has.Length.EqualTo(2));
+                foreach (TMP_Text instruction in instructions)
+                {
+                    Assert.That(instruction.text, Does.StartWith(
+                        "Drag sensitivity controls how quickly heights change while dragging.\n\n"
+                        + "Respect original slopes preserves existing slope differences while editing."));
                 }
             }
             finally

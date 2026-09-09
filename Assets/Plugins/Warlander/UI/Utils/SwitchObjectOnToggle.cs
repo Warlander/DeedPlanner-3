@@ -20,6 +20,11 @@ namespace Warlander.UI.Utils
         {
             UpdateState();
         }
+
+        private void OnEnable()
+        {
+            UpdateState();
+        }
         
         private void UpdateState()
         {

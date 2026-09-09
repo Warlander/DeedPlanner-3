@@ -9,6 +9,7 @@ namespace Warlander.Deedplanner.Cameras
         GridMaterialType GridMaterialToUse { get; }
         
         bool SupportsMode(CameraMode mode);
+        void OnLevelChanged(Map map, int previousLevel, int currentLevel);
         void UpdateDrag(Camera attachedCamera, PointerEventData eventData);
         void UpdateInput(Map map, CameraMode mode, Vector3 focusedPoint, float aspect, int currentLevel, bool focusedWindow, bool mouseOver);
         void UpdateState(MultiCamera camera, Transform cameraTransform);

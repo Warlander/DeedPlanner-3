@@ -79,7 +79,7 @@ namespace Warlander.Deedplanner.Editing
             else if (wasLocked)
             {
                 int levelToRestore = _levelBeforeLock;
-                if (tab == Tab.Caves && levelToRestore >= 0)
+                if (previousLockTab == Tab.Caves && levelToRestore >= 0)
                 {
                     levelToRestore = -1;
                 }
