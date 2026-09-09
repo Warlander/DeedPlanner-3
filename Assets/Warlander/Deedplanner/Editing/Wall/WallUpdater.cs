@@ -154,17 +154,17 @@ namespace Warlander.Deedplanner.Editing
 
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
-                Floor currentFloor = _mapHandler.Map[x, y].GetTileContent(floor) as Floor;
+                Floor currentFloor = GetFloor(_mapHandler.Map[x, y], floor);
                 bool shouldReverse = false;
                 if (_settings.WallAutomaticReverse && horizontal)
                 {
-                    Floor nearFloor = _mapHandler.Map[x, y - 1].GetTileContent(floor) as Floor;
-                    shouldReverse = currentFloor && !nearFloor;
+                    Floor nearFloor = GetFloor(_mapHandler.Map[x, y - 1], floor);
+                    shouldReverse = ShouldReverseAutomatically(currentFloor, nearFloor, true);
                 }
                 else if (_settings.WallAutomaticReverse && !horizontal)
                 {
-                    Floor nearFloor = _mapHandler.Map[x - 1, y].GetTileContent(floor) as Floor;
-                    shouldReverse = !currentFloor && nearFloor;
+                    Floor nearFloor = GetFloor(_mapHandler.Map[x - 1, y], floor);
+                    shouldReverse = ShouldReverseAutomatically(currentFloor, nearFloor, false);
                 }
 
                 if (_settings.WallReverse)
@@ -196,6 +196,16 @@ namespace Warlander.Deedplanner.Editing
                     _mapHandler.Map[x, y].SetVerticalWall(null, false, floor);
                 }
             }
+        }
+
+        private static bool ShouldReverseAutomatically(Floor currentFloor, Floor nearFloor, bool horizontal)
+        {
+            return horizontal ? currentFloor && !nearFloor : !currentFloor && nearFloor;
+        }
+
+        private static Floor GetFloor(Tile tile, int floor)
+        {
+            return tile?.GetTileContent(floor) as Floor;
         }
     }
 }
