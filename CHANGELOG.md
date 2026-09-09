@@ -37,6 +37,7 @@
 - Maps referencing objects missing from game data now load with fallbacks instead of failing
 - Fixed exporting a map disabling auto-save recovery for later edits
 - Fixed file save errors blocking all later saves and loads
+- Fixed new Steam Cloud and browser saves silently replacing maps with the same sanitized name
 
 ## [3.3.2] - 2026-08-15
 

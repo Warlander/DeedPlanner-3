@@ -50,7 +50,12 @@ namespace Warlander.Deedplanner.Persistence
 
         public Task<MapLocation?> SaveAsync(string payload, string suggestedName)
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            string key = SaveLocatorPolicy.GetAvailable(
+                suggestedName, _nameSanitizer, JavaScriptUtils.LocalStorageHasItem);
+#else
             string key = _nameSanitizer.Sanitize(suggestedName) + ".MAP";
+#endif
             WriteEnvelope(key, payload);
             return Task.FromResult<MapLocation?>(new MapLocation(Id, key, suggestedName));
         }
