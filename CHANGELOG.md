@@ -36,6 +36,7 @@
 - Fixed textures sometimes failing to load
 - Maps referencing objects missing from game data now load with fallbacks instead of failing
 - Fixed exporting a map disabling auto-save recovery for later edits
+- Fixed file save errors blocking all later saves and loads
 
 ## [3.3.2] - 2026-08-15
 

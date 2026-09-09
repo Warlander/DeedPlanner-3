@@ -20,10 +20,12 @@ namespace Warlander.Deedplanner.Persistence
         public bool IsAvailable => true;
 
         private readonly IByteCompressor _compressor;
+        private readonly IMapSavePicker _savePicker;
 
-        public FileSaveBackend(IByteCompressor compressor)
+        public FileSaveBackend(IByteCompressor compressor, IMapSavePicker savePicker)
         {
             _compressor = compressor;
+            _savePicker = savePicker;
         }
 
         public SaveFeasibility CheckSave(long payloadBytes) => SaveFeasibility.Ok;
@@ -32,32 +34,22 @@ namespace Warlander.Deedplanner.Persistence
 
         public Task<MapLocation?> SaveAsync(string payload, string suggestedName)
         {
-            TaskCompletionSource<MapLocation?> completion = new TaskCompletionSource<MapLocation?>();
-
-            FileBrowser.SetFilters(false, new FileBrowser.Filter("DeedPlanner 3 save", "MAP"));
-            FileBrowser.ShowSaveDialog(
-                paths =>
+            var completion = new TaskCompletionSource<MapLocation?>(TaskCreationOptions.RunContinuationsAsynchronously);
+            try
+            {
+                bool opened = _savePicker.Show(
+                    paths => CompleteSave(completion, paths, payload),
+                    () => completion.TrySetResult(null),
+                    suggestedName);
+                if (!opened)
                 {
-                    string path = paths[0];
-                    if (string.IsNullOrEmpty(path))
-                    {
-                        completion.SetResult(null);
-                        return;
-                    }
-
-                    if (!path.EndsWith(".MAP", StringComparison.OrdinalIgnoreCase))
-                    {
-                        path += ".MAP";
-                    }
-
-                    WriteAllTextSafe(path, payload);
-                    completion.SetResult(new MapLocation(Id, path, Path.GetFileNameWithoutExtension(path)));
-                },
-                () => completion.SetResult(null),
-                FileBrowser.PickMode.Files,
-                initialFilename: suggestedName,
-                title: "Save Map",
-                saveButtonText: "Save");
+                    completion.TrySetException(new InvalidOperationException("Unable to open the save dialog."));
+                }
+            }
+            catch (Exception e)
+            {
+                completion.TrySetException(e);
+            }
 
             return completion.Task;
         }
@@ -128,6 +120,31 @@ namespace Warlander.Deedplanner.Persistence
         // file paths are unbounded — recents + the file dialog are the picker, nothing to enumerate
         public Task<IReadOnlyList<SavedMapInfo>> ListSavesAsync() =>
             Task.FromResult<IReadOnlyList<SavedMapInfo>>(Array.Empty<SavedMapInfo>());
+
+        private void CompleteSave(TaskCompletionSource<MapLocation?> completion, string[] paths, string payload)
+        {
+            try
+            {
+                if (paths == null || paths.Length != 1 || string.IsNullOrEmpty(paths[0]))
+                {
+                    completion.TrySetResult(null);
+                    return;
+                }
+
+                string path = paths[0];
+                if (!path.EndsWith(".MAP", StringComparison.OrdinalIgnoreCase))
+                {
+                    path += ".MAP";
+                }
+
+                WriteAllTextSafe(path, payload);
+                completion.TrySetResult(new MapLocation(Id, path, Path.GetFileNameWithoutExtension(path)));
+            }
+            catch (Exception e)
+            {
+                completion.TrySetException(e);
+            }
+        }
 
         // temp file, then atomic replace: a crash mid-write can never corrupt the last good save
         private static void WriteAllTextSafe(string path, string payload)
