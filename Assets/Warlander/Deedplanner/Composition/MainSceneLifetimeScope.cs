@@ -136,6 +136,7 @@ namespace Warlander.Deedplanner.Composition
             builder.Register<WebFileSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
             builder.Register<LocalStorageSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
 #else
+            builder.Register<IMapSavePicker, MapSavePicker>(Lifetime.Singleton);
             builder.Register<FileSaveBackend>(Lifetime.Singleton).As<ISaveBackend>();
 #endif
             builder.Register<SaveCoordinator>(Lifetime.Singleton);
