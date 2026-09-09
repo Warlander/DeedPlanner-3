@@ -42,6 +42,7 @@
 - Fixed failed or superseded web loads clearing the current map's save identity
 - Fixed painting terrain outside the map changing its southwest corner
 - Fixed automatic wall orientation failing along the south and west map boundaries
+- Fixed model and material loading failures preventing later retries
 
 ## [3.3.2] - 2026-08-15
 

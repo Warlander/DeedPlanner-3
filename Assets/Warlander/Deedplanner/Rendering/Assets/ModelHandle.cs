@@ -201,7 +201,19 @@ namespace Warlander.Deedplanner.Rendering.Assets
 
         private async void LoadMasterModelAsync(string fullLocation, Action onDone)
         {
-            GameObject model = await _facade.ModelLoader.LoadModelAsync(fullLocation, Scale);
+            GameObject model;
+            try
+            {
+                model = await _facade.ModelLoader.LoadModelAsync(fullLocation, Scale);
+            }
+            catch (Exception exception)
+            {
+                _loadingOriginalModel = false;
+                _modelRequests.Clear();
+                _facade.Logger.Error("Model failed to load: " + _location + ": " + exception.Message);
+                return;
+            }
+
             OnMasterModelLoaded(model);
             onDone();
         }
@@ -211,6 +223,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
             _loadingOriginalModel = false;
             if (!masterModel)
             {
+                _modelRequests.Clear();
                 _facade.Logger.Error("Model failed to load: " + _location);
                 return;
             }

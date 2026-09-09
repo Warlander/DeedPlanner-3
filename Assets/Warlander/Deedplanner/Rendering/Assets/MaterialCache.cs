@@ -31,13 +31,17 @@ namespace Warlander.Deedplanner.Rendering.Assets
 
             Task<Material> materialTask = _materialLoader.CreateMaterialAsync(materialMetadata);
             _pendingMaterials[materialKey] = materialTask;
-            
-            Material material = await materialTask;
-            
-            _cachedMaterials[materialKey] = material;
-            _pendingMaterials.Remove(materialKey);
-            
-            return material;
+
+            try
+            {
+                Material material = await materialTask;
+                _cachedMaterials[materialKey] = material;
+                return material;
+            }
+            finally
+            {
+                _pendingMaterials.Remove(materialKey);
+            }
         }
 
         private struct MaterialKey
