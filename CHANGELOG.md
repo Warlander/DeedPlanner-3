@@ -40,6 +40,7 @@
 - Fixed new Steam Cloud and browser saves silently replacing maps with the same sanitized name
 - Fixed bridge paving undo after changing a bridge's structure
 - Fixed failed or superseded web loads clearing the current map's save identity
+- Fixed painting terrain outside the map changing its southwest corner
 
 ## [3.3.2] - 2026-08-15
 
