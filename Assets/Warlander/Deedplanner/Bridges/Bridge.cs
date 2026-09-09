@@ -504,6 +504,19 @@ namespace Warlander.Deedplanner.Bridges
             return segmentParts[index];
         }
 
+        public BridgePart GetPart(int segmentIndex, int laneIndex)
+        {
+            foreach (BridgePart part in bridgeParts)
+            {
+                if (part.SegmentIndex == segmentIndex && part.LaneIndex == laneIndex)
+                {
+                    return part;
+                }
+            }
+
+            return null;
+        }
+
         public List<BridgePart> GetSegmentParts(int segmentIndex)
         {
             int startCoord = verticalOrientation ? Mathf.Min(firstY, secondY) : Mathf.Min(firstX, secondX);
