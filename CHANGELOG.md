@@ -35,6 +35,7 @@
 - Fixed ground texture errors continuing after leaving Play Mode in the Editor
 - Fixed textures sometimes failing to load
 - Maps referencing objects missing from game data now load with fallbacks instead of failing
+- Fixed exporting a map disabling auto-save recovery for later edits
 
 ## [3.3.2] - 2026-08-15
 

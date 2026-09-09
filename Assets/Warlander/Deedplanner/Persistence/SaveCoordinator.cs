@@ -114,7 +114,8 @@ namespace Warlander.Deedplanner.Persistence
                 {
                     map.DisplayName = location.Value.DisplayName;
                     map.ClearDirty();
-                    CurrentLocation = location;
+                    CurrentLocation = SelectCurrentLocationAfterSave(
+                        CurrentLocation, location.Value, backend.Capabilities);
                     LastSaveTimeUtc = DateTime.UtcNow;
                     _recentMaps.Record(location.Value, thumbnailJpeg);
                     SaveStateChanged();
@@ -415,6 +416,12 @@ namespace Warlander.Deedplanner.Persistence
             }
 
             await _autoSaveScheduler.AutoSaveNowAsync();
+        }
+
+        private static MapLocation? SelectCurrentLocationAfterSave(
+            MapLocation? currentLocation, MapLocation savedLocation, SaveCapabilities capabilities)
+        {
+            return (capabilities & SaveCapabilities.Overwrite) != 0 ? savedLocation : currentLocation;
         }
     }
 }
