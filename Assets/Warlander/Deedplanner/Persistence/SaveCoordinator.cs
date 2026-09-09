@@ -275,19 +275,40 @@ namespace Warlander.Deedplanner.Persistence
                 return await LoadAsync(new MapLocation(SaveBackendId.Pastebin, directLink, name));
             }
 
+            bool ownsBusy = false;
             try
             {
                 await AutoSaveBeforeDestructiveAsync();
-                await _mapHandler.LoadMapAsync(new Uri(directLink));
+
+                if (Busy)
+                {
+                    return false;
+                }
+
+                Busy = true;
+                ownsBusy = true;
+                bool loaded = await _mapHandler.LoadMapAsync(new Uri(directLink));
+                if (!loaded)
+                {
+                    return false;
+                }
+
                 CurrentLocation = null;
                 LastSaveTimeUtc = null;
                 SaveStateChanged();
-                return _mapHandler.Map != null;
+                return true;
             }
             catch (Exception e)
             {
                 _logger.Warning($"Unable to load map from {rawLink}: {e.Message}");
                 return false;
+            }
+            finally
+            {
+                if (ownsBusy)
+                {
+                    Busy = false;
+                }
             }
         }
 

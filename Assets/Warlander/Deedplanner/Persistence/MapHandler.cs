@@ -14,6 +14,7 @@ namespace Warlander.Deedplanner.Persistence
         private readonly MapRegistry _registry;
         private readonly MapFactory _factory;
         private readonly MapLoader _loader;
+        private readonly Func<Uri, Task<Map>> _loadMapAsync;
 
         public Map Map
         {
@@ -33,6 +34,7 @@ namespace Warlander.Deedplanner.Persistence
             _registry = new MapRegistry();
             _factory = new MapFactory(resolver);
             _loader = new MapLoader(_factory, compressor, loggerSource);
+            _loadMapAsync = _loader.LoadMapAsync;
         }
 
         public void CreateNewMap(int width, int height)
@@ -96,13 +98,13 @@ namespace Warlander.Deedplanner.Persistence
             _registry.SetMap(newMap);
         }
 
-        public async Task LoadMapAsync(Uri mapUri)
+        public async Task<bool> LoadMapAsync(Uri mapUri)
         {
             Map oldMap = _registry.CurrentMap;
             Map newMap;
             try
             {
-                newMap = await _loader.LoadMapAsync(mapUri);
+                newMap = await _loadMapAsync(mapUri);
             }
             catch
             {
@@ -117,7 +119,7 @@ namespace Warlander.Deedplanner.Persistence
 
             if (newMap == null)
             {
-                return;
+                return false;
             }
 
             if (_registry.CurrentMap != oldMap)
@@ -128,7 +130,7 @@ namespace Warlander.Deedplanner.Persistence
                     _registry.CurrentMap.RestoreAsCurrentMap();
                 }
 
-                return;
+                return false;
             }
 
             if (oldMap)
@@ -140,6 +142,7 @@ namespace Warlander.Deedplanner.Persistence
 
             newMap.gameObject.SetActive(true);
             _registry.SetMap(newMap);
+            return true;
         }
     }
 }

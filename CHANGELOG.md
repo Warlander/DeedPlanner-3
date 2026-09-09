@@ -39,6 +39,7 @@
 - Fixed file save errors blocking all later saves and loads
 - Fixed new Steam Cloud and browser saves silently replacing maps with the same sanitized name
 - Fixed bridge paving undo after changing a bridge's structure
+- Fixed failed or superseded web loads clearing the current map's save identity
 
 ## [3.3.2] - 2026-08-15
 
