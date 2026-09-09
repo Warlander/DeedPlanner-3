@@ -3909,6 +3909,18 @@
 			<category>House walls/Log</category>
 			<category>Materials/Wood</category>
 		</wall>
+		<wall name="Bark log double window" shortname="blDWindow" scale="4" type="house">
+			<model location="Walls/Log/logWindowDouble.wom">
+				<override mesh="windowsMesh" texture="Walls/Log/logwall_bark.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_double_bark.png"/>
+			<category>House walls/Log</category>
+			<category>Materials/Wood</category>
+		</wall>
 		<wall name="Bark log wide window" shortname="blWWindow" scale="4" type="house">
 			<model location="Walls/Log/logWideWindow.wom">
 				<override mesh="WallMesh" texture="Walls/Log/logwall_bark.dds"/>
@@ -4015,6 +4027,18 @@
 				Wooden Beams = 1
 			</materials>
 			<icon location="Walls/Log/Sprites/log_archdoublet_decid.png"/>
+			<category>House walls/Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Hardwood log double window" shortname="hlDWindow" scale="4" type="house">
+			<model location="Walls/Log/logWindowDouble.wom">
+				<override mesh="windowsMesh" texture="Walls/Log/logwall_decid.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_double_decid.png"/>
 			<category>House walls/Log</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -4127,6 +4151,18 @@
 			<category>House walls/Log</category>
 			<category>Materials/Wood</category>
 		</wall>
+		<wall name="Log double window" shortname="lDWindow" scale="4" type="house">
+			<model location="Walls/Log/logWindowDouble.wom">
+				<override mesh="windowsMesh" texture="Walls/Log/logwall_conif.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_double_conif.png"/>
+			<category>House walls/Log</category>
+			<category>Materials/Wood</category>
+		</wall>
 		<wall name="Log wide window" shortname="lWWindow" scale="4" type="house">
 			<model location="Walls/Log/logWideWindow.wom">
 				<override mesh="WallMesh" texture="Walls/Log/logwall_conif.dds"/>
@@ -4233,6 +4269,18 @@
 				Wooden Beams = 1
 			</materials>
 			<icon location="Walls/Log/Sprites/log_archdoublet_rustic.png"/>
+			<category>House walls/Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Rustic log double window" shortname="rlDWindow" scale="4" type="house">
+			<model location="Walls/Log/logWindowDouble.wom">
+				<override mesh="windowsMesh" texture="Walls/Log/logwall_rustic.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_double_rustic.png"/>
 			<category>House walls/Log</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -4355,6 +4403,20 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_archdoublet_bark.png"/>
+			<category>House walls/Log</category>
+			<category>Materials/Clay</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Bark log double window with chinking" shortname="blCDWindow" scale="4" type="house">
+			<model location="Walls/Log/logWindowDouble.wom">
+				<override mesh="windowsMesh" texture="Walls/Log/logwall_bark_chinking.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15,
+				Clay = 10
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_double_bark.png"/>
 			<category>House walls/Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
@@ -4486,6 +4548,20 @@
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
+		<wall name="Hardwood log double window with chinking" shortname="hlCDWindow" scale="4" type="house">
+			<model location="Walls/Log/logWindowDouble.wom">
+				<override mesh="windowsMesh" texture="Walls/Log/logwall_decid_chinking.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15,
+				Clay = 10
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_double_decid.png"/>
+			<category>House walls/Log</category>
+			<category>Materials/Clay</category>
+			<category>Materials/Wood</category>
+		</wall>
 		<wall name="Hardwood log wide window with chinking" shortname="hlCWWindow" scale="4" type="house">
 			<model location="Walls/Log/logWideWindow.wom">
 				<override mesh="WallMesh" texture="Walls/Log/logwall_decid_chinking.dds"/>
@@ -4613,6 +4689,20 @@
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
+		<wall name="Log double window with chinking" shortname="lCDWindow" scale="4" type="house">
+			<model location="Walls/Log/logWindowDouble.wom">
+				<override mesh="windowsMesh" texture="Walls/Log/logwall_conif_chinking.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15,
+				Clay = 10
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_double_conif.png"/>
+			<category>House walls/Log</category>
+			<category>Materials/Clay</category>
+			<category>Materials/Wood</category>
+		</wall>
 		<wall name="Log wide window with chinking" shortname="lCWWindow" scale="4" type="house">
 			<model location="Walls/Log/logWideWindow.wom">
 				<override mesh="WallMesh" texture="Walls/Log/logwall_conif_chinking.dds"/>
@@ -4736,6 +4826,20 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_archdoublet_rustic.png"/>
+			<category>House walls/Log</category>
+			<category>Materials/Clay</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Rustic log double window with chinking" shortname="rlCDWindow" scale="4" type="house">
+			<model location="Walls/Log/logWindowDouble.wom">
+				<override mesh="windowsMesh" texture="Walls/Log/logwall_rustic_chinking.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15,
+				Clay = 10
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_double_rustic.png"/>
 			<category>House walls/Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
@@ -8791,6 +8895,18 @@
 				Blue flowers = 10
 			</materials>
 			<category>Epic structures</category>
+		</object>
+		<object name="Temple" shortname="temple" type="normal">
+			<model location="Objects/Temple/Temple.wom"/>
+			<materials>
+				Stone slabs = 10,
+				Clay = 100,
+				Stone bricks = 1000,
+				Bronze lumps = 100,
+				White-dotted flowers = 10
+			</materials>
+			<category>Epic structures</category>
+			<category>Materials/Stone</category>
 		</object>
 		<object name="Pylon" shortname="pyl" type="normal">
 			<model location="Objects/pylon.wom"/>

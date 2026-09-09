@@ -17,6 +17,7 @@
 - Richer tooltips, including accurate edge-aware placement and a tinted slope grid when hovering terrain on the Height tab
 - New dragon HOTA statue model (the old one was oversized)
 - Added aged log wall texture
+- Added double-window log walls and the Temple epic structure
 - Improved Floor tab UI
 - Funding links are now hidden in the Steam version (EULA requirement)
 - Pastebin export is disabled on the web version (blocked by browsers)
