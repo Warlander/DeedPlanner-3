@@ -183,6 +183,13 @@ namespace Warlander.Deedplanner.Cameras
 
         private void OnDestroy()
         {
+            if (_cameraControllers != null)
+            {
+                foreach (ICameraController controller in _cameraControllers)
+                {
+                    (controller as IDisposable)?.Dispose();
+                }
+            }
             RenderPipelineManager.beginCameraRendering -= RenderPipelineManagerOnbeginCameraRendering;
             RenderPipelineManager.endCameraRendering -= RenderPipelineManagerOnEndCameraRendering;
             CompleteCameraRendering();

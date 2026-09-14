@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Ui;
@@ -6,13 +7,17 @@ using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Settings;
 using Warlander.ExtensionUtils;
 using VContainer;
+using Warlander.Deedplanner.Caves;
 
 namespace Warlander.Deedplanner.Cameras
 {
-    public class FppCameraController : ICameraController
+    public class FppCameraController : ICameraController, IDisposable
     {
         private readonly CameraSettings _settings;
         private readonly DPInput _input;
+        private Map _caveMap;
+        private CaveWalkSurface _caveWalkSurface;
+        private int? _pendingCaveLevel;
 
         public FppCameraController(CameraSettings settings, DPInput input)
         {
@@ -40,18 +45,12 @@ namespace Warlander.Deedplanner.Cameras
 
             if (currentLevel < 0)
             {
-                bool movedToOpenCell = MoveToNearestOpenCaveCellIfNeeded(map);
-                float floorHeight = SampleLevelHeight(map, fppPosition, currentLevel);
-                float clearance = SampleCaveClearance(map, fppPosition);
-                float maximumOffset = Mathf.Max(0.3f, clearance - 0.3f);
-                float offset = movedToOpenCell
-                    ? Mathf.Min(WurmianHeight, maximumOffset)
-                    : Mathf.Clamp(fppPosition.y - SampleLevelHeight(map, fppPosition, previousLevel),
-                        0.3f, maximumOffset);
-                fppPosition.y = floorHeight + offset;
+                _pendingCaveLevel ??= previousLevel;
                 return;
             }
 
+            previousLevel = _pendingCaveLevel ?? previousLevel;
+            _pendingCaveLevel = null;
             float previousHeight = SampleLevelHeight(map, fppPosition, previousLevel);
             float currentHeight = SampleLevelHeight(map, fppPosition, currentLevel);
             fppPosition.y += currentHeight - previousHeight;
@@ -65,6 +64,30 @@ namespace Warlander.Deedplanner.Cameras
 
         public void UpdateInput(Map map, CameraMode mode, Vector3 focusedPoint, float aspect, int currentLevel, bool focusedWindow, bool mouseOver)
         {
+            bool caveWalking = mode == CameraMode.Wurmian && currentLevel < 0;
+            if (caveWalking)
+            {
+                ObserveCaveMap(map);
+                if (!_caveWalkSurface.TryPlace(ref fppPosition))
+                {
+                    return;
+                }
+                _pendingCaveLevel = null;
+            }
+            else if (currentLevel < 0 && _pendingCaveLevel.HasValue)
+            {
+                bool movedToOpenCell = MoveToNearestOpenCaveCellIfNeeded(map);
+                float floorHeight = SampleLevelHeight(map, fppPosition, currentLevel);
+                float maximumOffset = Mathf.Max(0.3f, SampleCaveClearance(map, fppPosition) - 0.3f);
+                float offset = movedToOpenCell
+                    ? Mathf.Min(WurmianHeight, maximumOffset)
+                    : Mathf.Clamp(fppPosition.y - SampleLevelHeight(map, fppPosition, _pendingCaveLevel.Value),
+                        0.3f, maximumOffset);
+                fppPosition.y = floorHeight + offset;
+                _pendingCaveLevel = null;
+            }
+
+            Vector3 previousPosition = fppPosition;
             if (focusedWindow)
             {
                 float movementMultiplier = 1;
@@ -93,6 +116,11 @@ namespace Warlander.Deedplanner.Cameras
 
             if (mode == CameraMode.Wurmian)
             {
+                if (caveWalking)
+                {
+                    fppPosition = _caveWalkSurface.Move(previousPosition, fppPosition);
+                    return;
+                }
                 if (fppPosition.x < 0)
                 {
                     fppPosition.x = 0;
@@ -116,6 +144,40 @@ namespace Warlander.Deedplanner.Cameras
                     height = 0.3f;
                 }
                 fppPosition.y = height;
+            }
+        }
+
+        private void ObserveCaveMap(Map map)
+        {
+            if (_caveMap == map)
+            {
+                return;
+            }
+            Dispose();
+            _caveMap = map;
+            _caveWalkSurface = new CaveWalkSurface(map.Caves, map.Width, map.Height,
+                (x, y) => map[x, y].GetHeightForLevel(-1));
+            map.CaveEditor.Changed += OnCaveChanged;
+            map.CommandManager.Mutated += OnSupportChanged;
+        }
+
+        private void OnCaveChanged(CaveDirtyRegion region)
+        {
+            _caveWalkSurface.Invalidate();
+        }
+
+        private void OnSupportChanged()
+        {
+            _caveWalkSurface.Invalidate();
+        }
+
+        public void Dispose()
+        {
+            if (_caveMap != null)
+            {
+                _caveMap.CaveEditor.Changed -= OnCaveChanged;
+                _caveMap.CommandManager.Mutated -= OnSupportChanged;
+                _caveMap = null;
             }
         }
 
