@@ -1,3 +1,4 @@
+using System;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Domain.Entities.Caves;
 using Warlander.Deedplanner.Editing;
@@ -66,6 +67,11 @@ namespace Warlander.Deedplanner.Caves
         public void Record(IReversibleCommand command)
         {
             _map.CommandManager.AddToStack(command);
+        }
+
+        public IDisposable SuspendHistory()
+        {
+            return _map.CommandManager.SuspendHistory();
         }
     }
 }

@@ -200,6 +200,7 @@ namespace Warlander.Deedplanner.Caves
             private readonly CaveOccupiedCellPolicy _occupiedCellPolicy;
             private readonly HashSet<CaveCellCoordinate> _visited = new HashSet<CaveCellCoordinate>();
             private readonly List<CaveEditChange> _changes = new List<CaveEditChange>();
+            private readonly IDisposable _historySuspension;
             private bool _completed;
 
             public CaveEditStroke(CaveEditor editor, CaveEditKind kind, CaveData terrain, int value,
@@ -210,6 +211,7 @@ namespace Warlander.Deedplanner.Caves
                 _terrain = terrain;
                 _value = value;
                 _occupiedCellPolicy = occupiedCellPolicy;
+                _historySuspension = editor._target.SuspendHistory();
             }
 
             public bool ApplyAt(int x, int y)
@@ -253,6 +255,7 @@ namespace Warlander.Deedplanner.Caves
                 }
 
                 _completed = true;
+                _historySuspension.Dispose();
             }
 
             public void Cancel()
@@ -268,6 +271,7 @@ namespace Warlander.Deedplanner.Caves
                 }
 
                 _completed = true;
+                _historySuspension.Dispose();
             }
 
             public void Dispose()
@@ -338,6 +342,7 @@ namespace Warlander.Deedplanner.Caves
             private readonly Dictionary<CaveCellCoordinate, CaveHeightEditEntry> _entries =
                 new Dictionary<CaveCellCoordinate, CaveHeightEditEntry>();
             private readonly List<CaveCellCoordinate> _order = new List<CaveCellCoordinate>();
+            private readonly IDisposable _historySuspension;
             private bool _completed;
 
             public CaveHeightEdit(CaveEditor editor, CaveEditKind kind, bool preserveCeilingHeight)
@@ -345,6 +350,7 @@ namespace Warlander.Deedplanner.Caves
                 _editor = editor;
                 _kind = kind;
                 _preserveCeilingHeight = preserveCeilingHeight;
+                _historySuspension = editor._target.SuspendHistory();
             }
 
             public bool SetAt(int x, int y, int value)
@@ -419,6 +425,7 @@ namespace Warlander.Deedplanner.Caves
                 }
 
                 _completed = true;
+                _historySuspension.Dispose();
             }
 
             public void Cancel()
@@ -435,6 +442,7 @@ namespace Warlander.Deedplanner.Caves
                 }
 
                 _completed = true;
+                _historySuspension.Dispose();
             }
 
             public void Dispose()

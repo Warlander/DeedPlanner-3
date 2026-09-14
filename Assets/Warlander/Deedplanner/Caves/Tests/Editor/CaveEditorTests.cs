@@ -60,6 +60,41 @@ namespace Warlander.Deedplanner.Caves.Tests
         }
 
         [Test]
+        public void HistoryCannotInterruptTerrainStroke()
+        {
+            _editor.SetTerrain(0, 0, _stoneWall, CaveOccupiedCellPolicy.PreserveAndHide);
+            using (ICaveEditStroke stroke = _editor.BeginTerrainStroke(_reinforcedWall,
+                       CaveOccupiedCellPolicy.PreserveAndHide))
+            {
+                stroke.ApplyAt(0, 0);
+                _target.CommandManager.Undo();
+                Assert.That(_target.GetTerrain(0, 0), Is.SameAs(_reinforcedWall));
+                stroke.Commit();
+            }
+            _target.CommandManager.Undo();
+            Assert.That(_target.GetTerrain(0, 0), Is.SameAs(_stoneWall));
+            _target.CommandManager.Undo();
+            Assert.That(_target.GetTerrain(0, 0), Is.SameAs(_stoneFloor));
+        }
+
+        [Test]
+        public void RedoWaitsForCancelledHeightEdit()
+        {
+            _editor.SetFloorHeightAtVertex(0, 0, 10);
+            _target.CommandManager.Undo();
+            int original = _target.GetFloorHeightAtVertex(0, 0);
+            using (ICaveHeightEdit edit = _editor.BeginFloorHeightEdit(true))
+            {
+                edit.SetAt(0, 0, 20);
+                _target.CommandManager.Redo();
+                Assert.That(_target.GetFloorHeightAtVertex(0, 0), Is.EqualTo(20));
+            }
+            Assert.That(_target.GetFloorHeightAtVertex(0, 0), Is.EqualTo(original));
+            _target.CommandManager.Redo();
+            Assert.That(_target.GetFloorHeightAtVertex(0, 0), Is.EqualTo(10));
+        }
+
+        [Test]
         public void CompletedRegionPublishesOnceAfterLiveStroke()
         {
             int liveCount = 0;
@@ -351,6 +386,8 @@ namespace Warlander.Deedplanner.Caves.Tests
 
         private sealed class FakeMutationTarget : ICaveMutationTarget
         {
+            public IDisposable SuspendHistory() => CommandManager.SuspendHistory();
+
             private readonly int _width;
             private readonly int _height;
             private readonly CaveCell[,] _cells;

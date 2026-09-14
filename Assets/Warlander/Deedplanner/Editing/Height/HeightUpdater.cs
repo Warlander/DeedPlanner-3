@@ -628,6 +628,19 @@ namespace Warlander.Deedplanner.Editing
 
         private void UpdatePaintTerrain()
         {
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
+            {
+                FinishEdit();
+                state = HeightUpdaterState.Idle;
+            }
+
+            if (_input.UpdatersShared.Deletion.WasPressedThisFrame())
+            {
+                CancelEdit();
+                state = HeightUpdaterState.Idle;
+                return;
+            }
+
             Map map = _mapHandler.Map;
             if (!int.TryParse(CurrentTargetHeight, out int targetHeight))
             {
@@ -646,18 +659,6 @@ namespace Warlander.Deedplanner.Editing
                 {
                     SetHeightValue(map, handle, targetHeight);
                 }
-            }
-
-            if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
-            {
-                FinishEdit();
-                state = HeightUpdaterState.Idle;
-            }
-
-            if (_input.UpdatersShared.Deletion.WasPressedThisFrame())
-            {
-                CancelEdit();
-                state = HeightUpdaterState.Idle;
             }
 
         }

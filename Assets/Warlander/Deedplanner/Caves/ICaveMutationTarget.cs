@@ -1,3 +1,4 @@
+using System;
 using Warlander.Deedplanner.Domain.Entities.Caves;
 using Warlander.Deedplanner.Editing;
 
@@ -16,5 +17,6 @@ namespace Warlander.Deedplanner.Caves
         void SetFloorHeightAtVertex(int x, int y, int height);
         void SetClearanceAtVertex(int x, int y, int clearance);
         void Record(IReversibleCommand command);
+        IDisposable SuspendHistory();
     }
 }

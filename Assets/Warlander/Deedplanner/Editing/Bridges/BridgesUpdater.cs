@@ -55,6 +55,7 @@ namespace Warlander.Deedplanner.Editing
         private BridgePart _hoveredPaintPart;
         private List<BridgePart> _strokeParts;
         private List<BridgePavementData> _strokeOldPavements;
+        private IDisposable _historySuspension;
 
         private IMapProjector _firstTileProjector;
         private IMapProjector _secondTileProjector;
@@ -235,6 +236,10 @@ namespace Warlander.Deedplanner.Editing
         // Null pavement with active brush = eraser.
         public void SetPavingBrush(bool active, BridgePavementData pavement)
         {
+            if (_strokeParts != null)
+            {
+                FinishStroke();
+            }
             _pavingBrushActive = active;
             _pavingBrush = pavement;
             if (!active)
@@ -277,6 +282,7 @@ namespace Warlander.Deedplanner.Editing
             }
 
             _strokeParts = new List<BridgePart>();
+            _historySuspension = _mapHandler.Map.CommandManager.SuspendHistory();
             _strokeOldPavements = new List<BridgePavementData>();
             AddToStroke(target);
             return true;
@@ -321,6 +327,8 @@ namespace Warlander.Deedplanner.Editing
 
             _strokeParts = null;
             _strokeOldPavements = null;
+            _historySuspension.Dispose();
+            _historySuspension = null;
         }
 
         private void UpdatePaintHover(BridgePart part)
