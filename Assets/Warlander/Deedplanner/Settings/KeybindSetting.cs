@@ -32,10 +32,15 @@ namespace Warlander.Deedplanner.Settings
             _inputSettings = inputSettings;
 
             Group = action.actionMap.name;
-            Key = $"keybind.{action.actionMap.name}.{action.name}.{bindingIndex}";
+            Key = GetKey(action, bindingIndex);
             Label = ComputeLabel();
 
             _inputSettings.SettingsReset += OnSettingsReset;
+        }
+
+        public static string GetKey(InputAction action, int bindingIndex)
+        {
+            return $"keybind.{action.actionMap.name}.{action.name}.{bindingIndex}";
         }
 
         public string Value

@@ -222,7 +222,9 @@ namespace Warlander.Deedplanner.Editing
                 return;
             }
             var view = window.GetComponent<SettingsWindowView>();
-            _ = new SettingsWindowSession(_settingsRegistry, _inputSettings, view);
+            string settingKey = KeybindSetting.GetKey(_input.Symmetry.PickVerticalAxis, 0);
+            _ = new SettingsWindowSession(_settingsRegistry, _inputSettings, view,
+                SettingsDestination.ForSetting(settingKey));
         }
     }
 }
