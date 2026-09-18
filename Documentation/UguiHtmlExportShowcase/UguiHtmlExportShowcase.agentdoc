@@ -1,0 +1,100 @@
+@schema agentdocs/v1
+@id ugui-html-export-showcase
+@title "uGUI HTML Export: Live Composition"
+@kind exploration
+@description
+This document directly composes the real HTML fragment exported from DeedPlanner's `Deed Card.prefab` in its initialized no-thumbnail state. It retains the nested RectTransform structure and exposes the paper background behind “No Screenshot.” The left close button was added afterward by cloning the exported button subtree in HTML; no Unity hierarchy or asset was changed.
+@end-description
+
+@references
+@reference doc=deedplanner-3/ugui-html-export-feasibility label="Exporter contract and implementation"
+@end-references
+
+@css
+.composed-demo {
+  width: min(100%, 560px);
+  margin: 1rem auto;
+}
+.ugui-export {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: visible;
+  isolation: isolate;
+  container-type: inline-size;
+  background: transparent;
+}
+.ugui-export, .ugui-export * { box-sizing: border-box; }
+.ugui-export__rect {
+  position: absolute;
+  transform-origin: 0 0;
+  margin: 0;
+  padding: 0;
+}
+.ugui-export__visual {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+}
+.ugui-export__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+.ugui-export__text {
+  display: flex;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  white-space: pre-wrap;
+}
+.html-only-marker { filter: drop-shadow(0 0 4px #f59e0b); }
+@end-css
+
+@section format=html title="Live Composed Result"
+<p><strong>Right X:</strong> exported from Unity. <strong>Left X:</strong> added only in this document's HTML.</p>
+<div class="composed-demo">
+  <div class="ugui-export" data-format="ugui-html-export/v2" data-source-path="/Deed Card" data-width="280" data-height="280">
+    <img class="ugui-export__visual ugui-export__image" data-component="image" data-path="/Deed Card" src="assets/deed-card-8affa786ed05.png" alt="">
+    <div class="ugui-export__rect" data-path="/Deed Card/Placeholder" data-x="0" data-y="0" data-width="280" data-height="200" style="left:0%;top:0%;width:100%;height:71.42857%;transform:matrix(1,0,0,1,0,0)">
+      <div class="ugui-export__visual ugui-export__text" data-component="text" data-path="/Deed Card/Placeholder" style="color:#323232FF;font-size:17.14286cqw;font-weight:400;font-style:normal;text-decoration:none;justify-content:center;text-align:center;align-items:center" data-unity-font="LiberationSans SDF">No Screenshot</div>
+    </div>
+    <div class="ugui-export__rect" data-path="/Deed Card/Plate" data-x="0" data-y="200" data-width="280" data-height="80" style="left:0%;top:71.42857%;width:100%;height:28.57143%;transform:matrix(1,0,0,1,0,0)">
+      <img class="ugui-export__visual ugui-export__image" data-component="image" data-path="/Deed Card/Plate" src="assets/plate-21de16b8e019.png" alt="">
+      <div class="ugui-export__rect" data-path="/Deed Card/Plate/Divider" data-x="0" data-y="-7" data-width="280" data-height="14" style="left:0%;top:-8.75%;width:100%;height:17.5%;transform:matrix(1,0,0,1,0,0)">
+        <img class="ugui-export__visual ugui-export__image" data-component="image" data-path="/Deed Card/Plate/Divider" src="assets/divider-bd2bc028db1d.png" alt="">
+      </div>
+    </div>
+    <div class="ugui-export__rect" data-path="/Deed Card/Delete Button" data-x="244" data-y="0" data-width="36" data-height="36" style="left:87.14286%;top:0%;width:12.85714%;height:12.85714%;transform:matrix(1,0,0,1,0,0)">
+      <img class="ugui-export__visual ugui-export__image" data-component="image" data-path="/Deed Card/Delete Button" src="assets/delete-button-80927d3705de.png" alt="">
+      <div class="ugui-export__rect" data-path="/Deed Card/Delete Button/X" data-x="0" data-y="0" data-width="36" data-height="36" style="left:0%;top:0%;width:100%;height:100%;transform:matrix(1,0,0,1,0,0)">
+        <div class="ugui-export__visual ugui-export__text" data-component="text" data-path="/Deed Card/Delete Button/X" style="color:#FFFFFFFF;font-size:4.642857cqw;font-weight:700;font-style:normal;text-decoration:none;justify-content:center;text-align:center;align-items:center" data-unity-font="LiberationSans SDF">X</div>
+      </div>
+    </div>
+    <div class="ugui-export__rect" data-path="/Deed Card/Border" data-x="-4" data-y="-4" data-width="288" data-height="288" style="left:-1.428571%;top:-1.428571%;width:102.8571%;height:102.8571%;transform:matrix(1,0,0,1,0,0)">
+      <img class="ugui-export__visual ugui-export__image" data-component="image" data-path="/Deed Card/Border" src="assets/border-af6bc96a8c70.png" alt="">
+    </div>
+    <div class="ugui-export__rect html-only-marker" data-origin="html-only" title="Added after export using HTML only" style="left:0%;top:0%;width:12.85714%;height:12.85714%;transform:matrix(1,0,0,1,0,0)">
+      <img class="ugui-export__visual ugui-export__image" src="assets/delete-button-80927d3705de.png" alt="HTML-only close button">
+      <div class="ugui-export__rect" style="left:0%;top:0%;width:100%;height:100%;transform:matrix(1,0,0,1,0,0)">
+        <div class="ugui-export__visual ugui-export__text" style="color:#FFFFFFFF;font-size:4.642857cqw;font-weight:700;font-style:normal;text-decoration:none;justify-content:center;text-align:center;align-items:center">X</div>
+      </div>
+    </div>
+  </div>
+</div>
+@end-section
+
+@section format=markdown title="The HTML-Only Change"
+The original export already used nested RectTransform wrappers, percentage geometry, and ordinary relative images. The opposite-side button therefore required only:
+
+1. Cloning the exported Delete Button wrapper and its nested X wrapper.
+2. Reusing `assets/delete-button-80927d3705de.png`.
+3. Setting the clone to `left: 0%`, while the Unity-exported subtree remains at `left: 87.14286%`.
+
+The amber glow marks the added subtree for this demonstration. It is document CSS, not part of the Unity export.
+@end-section
+
+@section format=markdown title="The LEGO Model"
+The visible card is not one screenshot. It is five PNG layers—root paper, plate, divider, delete button, and border—plus two editable TMP text layers. The Plate owns Divider, and Delete Button owns X, exactly as retained nested RectTransforms in the exported HTML. The inactive RawImage is correctly absent in this no-thumbnail state; when a thumbnail is assigned and activated, it exports as its own PNG layer. Empty non-visual leaves are omitted.
+@end-section
