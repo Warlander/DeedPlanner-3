@@ -24,10 +24,10 @@ namespace Warlander.Deedplanner.Editing
         private readonly DPInput _input;
         private readonly MapHandler _mapHandler;
         private readonly TabContext _tabContext;
-        private readonly DockFactory _dockFactory;
         private readonly ISharedMaterials _sharedMaterials;
         private readonly PreviewAtlasCatalog _previewAtlasCatalog;
         private readonly IDataCatalog _dataCatalog;
+        private readonly IMapEditFacade _mapEditFacade;
 
         public Tab TargetTab => Tab.Floors;
 
@@ -46,14 +46,16 @@ namespace Warlander.Deedplanner.Editing
         private Tile _previousPaintedTile;
         private readonly HashSet<Tile> _paintedTiles = new HashSet<Tile>();
         private readonly List<Dock> _invalidMarkers = new List<Dock>();
+        private IMapDockStroke _dockEditStroke;
 
         public FloorPaintMode PaintMode => _paintMode;
         public bool DockSupportAuto => _dockSupportAuto;
         public DockSupportData SelectedDockSupport => _selectedDockSupport;
 
         public FloorUpdater(IFloorUpdaterView view, TooltipHandler tooltipHandler, CameraCoordinator cameraCoordinator,
-            DPInput input, MapHandler mapHandler, TabContext tabContext, DockFactory dockFactory,
-            ISharedMaterials sharedMaterials, PreviewAtlasCatalog previewAtlasCatalog, IDataCatalog dataCatalog)
+            DPInput input, MapHandler mapHandler, TabContext tabContext,
+            ISharedMaterials sharedMaterials, PreviewAtlasCatalog previewAtlasCatalog, IDataCatalog dataCatalog,
+            IMapEditFacade mapEditFacade)
         {
             _view = view;
             _tooltipHandler = tooltipHandler;
@@ -61,10 +63,10 @@ namespace Warlander.Deedplanner.Editing
             _input = input;
             _mapHandler = mapHandler;
             _tabContext = tabContext;
-            _dockFactory = dockFactory;
             _sharedMaterials = sharedMaterials;
             _previewAtlasCatalog = previewAtlasCatalog;
             _dataCatalog = dataCatalog;
+            _mapEditFacade = mapEditFacade;
         }
 
         public void Initialize()
@@ -132,9 +134,11 @@ namespace Warlander.Deedplanner.Editing
 
         public void Tick()
         {
-            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
+            if (_paintMode != FloorPaintMode.Docks
+                && (_input.UpdatersShared.Placement.WasReleasedThisFrame()
+                    || _input.UpdatersShared.Deletion.WasReleasedThisFrame()))
             {
-                _mapHandler.Map.CommandManager.FinishAction();
+                _mapEditFacade.FinishAction();
             }
 
             if (_paintMode == FloorPaintMode.Docks)
@@ -197,14 +201,13 @@ namespace Warlander.Deedplanner.Editing
                 if (dockAtTile != null && floor == dockAtTile.AnchorLevel)
                 {
                     _tooltipHandler.ShowTooltipText("<color=red><b>There's already a dock at this level</b></color>");
-                    return;
                 }
 
-                _mapHandler.Map[x, y].SetFloor(data, _orientation, floor);
+                _mapEditFacade.SetFloor(x, y, data, _orientation, floor);
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
             {
-                _mapHandler.Map[x, y].SetFloor(null, _orientation, floor);
+                _mapEditFacade.SetFloor(x, y, null, _orientation, floor);
             }
         }
 
@@ -251,6 +254,7 @@ namespace Warlander.Deedplanner.Editing
                 {
                     _dockStroke = DockStroke.Erase;
                     _lastStrokeTile = null;
+                    _dockEditStroke = _mapEditFacade.BeginDockStroke(tile.X, tile.Y);
                 }
                 return;
             }
@@ -275,11 +279,7 @@ namespace Warlander.Deedplanner.Editing
                     DockRealm realm = _cameraCoordinator.Current.Level < 0
                         ? DockRealm.Cave
                         : DockRealm.Surface;
-                    Dock dock = tile.GetDock(realm);
-                    if (dock != null)
-                    {
-                        map.CommandManager.AddToActionAndExecute(new DockRemovalCommand(map, dock));
-                    }
+                    _dockEditStroke.Remove(tile.X, tile.Y, realm);
                 }
             }
         }
@@ -314,6 +314,7 @@ namespace Warlander.Deedplanner.Editing
             }
 
             _dockStroke = DockStroke.Paint;
+            _dockEditStroke = _mapEditFacade.BeginDockStroke(tile.X, tile.Y);
             _lastStrokeTile = tile;
             _previousPaintedTile = tile;
             _paintedTiles.Clear();
@@ -332,7 +333,7 @@ namespace Warlander.Deedplanner.Editing
 
             if (tile.GetTileContent(level) == null)
             {
-                tile.SetFloor(_selectedFloor, _orientation, level);
+                _mapEditFacade.SetFloor(tile.X, tile.Y, _selectedFloor, _orientation, level);
             }
 
             return true;
@@ -342,22 +343,20 @@ namespace Warlander.Deedplanner.Editing
         {
             Map map = _mapHandler.Map;
 
-            DockHardBlock block = DockSupportResolver.GetHardBlock(map, tile.X, tile.Y, _strokeHeight,
-                _strokeRealm);
-            if (block != DockHardBlock.None)
+            DockSupportData support = ResolveSupport(map, tile, out EntityOrientation braceDir);
+            var request = new DockPaintRequest(tile.X, tile.Y, _strokeHeight, _selectedFloor,
+                _dockSupportAuto, support, _lastPillarSupport, braceDir, _strokeRealm, _strokeAnchorLevel,
+                _previousPaintedTile?.X, _previousPaintedTile?.Y);
+            bool originalPlaced = _dockEditStroke.Place(request);
+            if (!originalPlaced)
             {
                 CreateInvalidMarker(tile);
-                _paintedTiles.Add(tile);
-                return;
             }
-
-            DockSupportData support = ResolveSupport(map, tile, out EntityOrientation braceDir);
-            Dock replacedDock = tile.GetDock(_strokeRealm);
-            Dock newDock = _dockFactory.CreateDock(map, tile.X, tile.Y, _strokeHeight, _selectedFloor, support, braceDir,
-                _strokeRealm, _strokeAnchorLevel);
-            map.CommandManager.AddToActionAndExecute(new DockPlacementCommand(map, newDock, replacedDock));
             _paintedTiles.Add(tile);
-            _previousPaintedTile = tile;
+            if (originalPlaced)
+            {
+                _previousPaintedTile = tile;
+            }
         }
 
         private DockSupportData ResolveSupport(Map map, Tile tile, out EntityOrientation braceDir)
@@ -422,6 +421,12 @@ namespace Warlander.Deedplanner.Editing
 
         private void ResetDockStroke()
         {
+            if (_dockEditStroke != null)
+            {
+                _dockEditStroke.Commit();
+                _dockEditStroke.Dispose();
+                _dockEditStroke = null;
+            }
             foreach (Dock marker in _invalidMarkers)
             {
                 if (marker)

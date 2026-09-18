@@ -50,6 +50,8 @@ Add `--json` for machine-readable output in agentic loops.
 unity open "E:/Unity/DeedPlanner-3" --args "-automated"
 ```
 
+On SteamOS/Linux, add `-noaudio` for automated Play-mode sessions (`--args "-automated -noaudio"`). Unity 6000.3.20f1 otherwise crashes in the FMOD audio thread while entering Play mode; edit-mode compilation and tests are unaffected.
+
 Without it, play mode ENTRY stalls indefinitely while the Editor window is unfocused (in-play behavior is unaffected).
 
 **CLI call latency / polling pitfall:** `unity open` stays attached for the Editor's lifetime — always run it as a background task and never wait on its completion. Every CLI invocation on this machine also pays a multi-second telemetry fetch timeout (no external network), so tight `until unity status | grep -q ready` polling loops effectively hang: each iteration is slow and the Editor typically becomes ready long before the loop notices. Instead, launch, do other work, then check `unity status` once when needed — treat "hangs on status polling" as "Editor is probably already up, just check it".

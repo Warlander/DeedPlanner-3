@@ -142,6 +142,13 @@ namespace Warlander.Deedplanner.Domain.Tests
             Assert.That(mask & LayerMasks.BridgeMask, Is.Zero);
         }
 
+        [Test]
+        public void MirrorEditMasksUseTerrainForCurrentLevel()
+        {
+            Assert.That(LayerMasks.GetMaskForTab(Editing.Tab.Mirror, 0), Is.EqualTo(LayerMasks.GroundMask));
+            Assert.That(LayerMasks.GetMaskForTab(Editing.Tab.Mirror, -1), Is.EqualTo(LayerMasks.CaveMask));
+        }
+
         private static Color GetBaseColor(Renderer renderer)
         {
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();

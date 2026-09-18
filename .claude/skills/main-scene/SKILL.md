@@ -82,7 +82,7 @@ Editing Panel
 | Labels Tab | — (plain UIContentTab) | no view |
 | Borders Tab | — (plain UIContentTab) | Scroll View list only |
 | Bridges Tab | BridgeTabSwapper + BridgeCreationView + BridgeEditingView | 4 swap states: BridgeNothingSelected, BridgeOneTileSelectedSelected, BridgeTwoTilesSelected, BridgeSelected; ButtonsSection (Cancel/Place/Delete) |
-| Mirror Tab | — (plain UIContentTab) | no view |
+| Mirror Tab | MirrorUpdaterView | Vertical/horizontal symmetry axes, pick controls, clear action, shortcut summary/settings; axis groups use dividers |
 | Tools Tab | ToolsUpdaterView | Calculate Materials / Map Warnings panels |
 | Menu Tab | MenuUpdaterView | Resize/Clear/Save/Load map, settings, about, donation, fullscreen, quit, version text |
 

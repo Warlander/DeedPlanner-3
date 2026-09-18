@@ -15,8 +15,8 @@ namespace Warlander.Deedplanner.Bridges.Widgets
         private readonly IBridgeCreationView _view;
         private readonly BridgesUpdater _bridgesUpdater;
         private readonly MapHandler _mapHandler;
-        private readonly BridgeFactory _bridgeFactory;
         private readonly IDataCatalog _dataCatalog;
+        private readonly IMapEditFacade _mapEditFacade;
 
         private TileCoords _start;
         private TileCoords _end;
@@ -25,13 +25,13 @@ namespace Warlander.Deedplanner.Bridges.Widgets
         private int _hiddenMaterials;
 
         public BridgeCreationPresenter(IBridgeCreationView view, BridgesUpdater bridgesUpdater,
-            MapHandler mapHandler, BridgeFactory bridgeFactory, IDataCatalog dataCatalog)
+            MapHandler mapHandler, IDataCatalog dataCatalog, IMapEditFacade mapEditFacade)
         {
             _view = view;
             _bridgesUpdater = bridgesUpdater;
             _mapHandler = mapHandler;
-            _bridgeFactory = bridgeFactory;
             _dataCatalog = dataCatalog;
+            _mapEditFacade = mapEditFacade;
         }
 
         public void Initialize()
@@ -152,14 +152,13 @@ namespace Warlander.Deedplanner.Bridges.Widgets
 
             int extraArgument = _view.SelectedExtraArgument;
             string segments = BuildDefaultSegments(_start, _end, material, type.Value);
-            Map map = _mapHandler.Map;
-            Bridge bridge = _bridgeFactory.CreateBridge(map, _start, _end, material,
-                type.Value, extraArgument, segments);
-
-            map.CommandManager.AddToActionAndExecute(new BridgePlacementCommand(map, bridge));
-            map.CommandManager.FinishAction();
+            var request = new BridgePlacementRequest(_start, _end, material, type.Value, extraArgument, segments);
+            Bridge bridge = _mapEditFacade.PlaceBridge(request);
             _bridgesUpdater.ClearTileSelection();
-            _bridgesUpdater.SelectBridge(bridge);
+            if (bridge != null)
+            {
+                _bridgesUpdater.SelectBridge(bridge);
+            }
         }
 
         private void OnCancelClicked()
@@ -308,131 +307,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
 
         private bool ValidateSpan(TileCoords start, TileCoords end, out string error)
         {
-            error = string.Empty;
-
-            if (start == null || end == null)
-            {
-                error = "Select start and end tiles.";
-                return false;
-            }
-
-            Map map = _mapHandler.Map;
-            if (map == null)
-            {
-                error = "No map loaded.";
-                return false;
-            }
-
-            if ((start.Level >= 0) != (end.Level >= 0))
-            {
-                error = "Bridge cannot go from surface to cave.";
-                return false;
-            }
-
-            int minX = Mathf.Min(start.X, end.X);
-            int maxX = Mathf.Max(start.X, end.X);
-            int minY = Mathf.Min(start.Y, end.Y);
-            int maxY = Mathf.Max(start.Y, end.Y);
-            int bridgeLength = Mathf.Max(maxX - minX, maxY - minY) - 1;
-
-            if (bridgeLength < 1)
-            {
-                error = "Bridge must span at least one tile.";
-                return false;
-            }
-
-            if (bridgeLength > BridgeDefaults.MaxLength)
-            {
-                error = $"Bridge cannot be longer than {BridgeDefaults.MaxLength} tiles.";
-                return false;
-            }
-
-            if (minX < 0 || maxX >= map.Width - 1 || minY < 0 || maxY >= map.Height - 1)
-            {
-                error = "Too close to the map edge - each end of a bridge needs an anchor tile.";
-                return false;
-            }
-
-            bool vertical = (maxY - minY) > (maxX - minX);
-
-            bool startOnTerrain = start.Level == 0 || start.Level == -1;
-            bool endOnTerrain = end.Level == 0 || end.Level == -1;
-            if ((startOnTerrain && !AnchorBorderEven(map, start.Level, minX, maxX, minY, maxY, vertical, true))
-                || (endOnTerrain && !AnchorBorderEven(map, end.Level, minX, maxX, minY, maxY, vertical, false)))
-            {
-                error = "Bridge cannot start or end on uneven ground - all tiles at each end must have equal height.";
-                return false;
-            }
-
-            int spanMinX = minX;
-            int spanMaxX = maxX;
-            int spanMinY = minY;
-            int spanMaxY = maxY;
-            if (vertical)
-            {
-                spanMinY++;
-                spanMaxY--;
-            }
-            else
-            {
-                spanMinX++;
-                spanMaxX--;
-            }
-
-            for (int x = spanMinX; x <= spanMaxX; x++)
-            {
-                for (int y = spanMinY; y <= spanMaxY; y++)
-                {
-                    if (map[x, y].GetBridgePart(start.Level < 0) != null)
-                    {
-                        error = "Bridge would intersect an existing bridge.";
-                        return false;
-                    }
-                }
-            }
-
-            error = string.Empty;
-            return true;
-        }
-
-        // Heightmap is vertex-based: a tile corner at (x, y) takes its height from map[x, y].
-        // The deck border at each end of the bridge is a line of such vertices - all must match.
-        private static bool AnchorBorderEven(Map map, int level, int minX, int maxX, int minY, int maxY,
-            bool vertical, bool startEdge)
-        {
-            int from;
-            int to;
-            int fixedCoord;
-            if (vertical)
-            {
-                from = minX;
-                to = maxX + 1;
-                fixedCoord = startEdge ? minY + 1 : maxY;
-            }
-            else
-            {
-                from = minY;
-                to = maxY + 1;
-                fixedCoord = startEdge ? minX + 1 : maxX;
-            }
-
-            int? borderHeight = null;
-            for (int i = from; i <= to; i++)
-            {
-                Tile tile = vertical ? map[i, fixedCoord] : map[fixedCoord, i];
-                int height = level < 0 ? tile.CaveHeight : tile.SurfaceHeight;
-
-                if (borderHeight == null)
-                {
-                    borderHeight = height;
-                }
-                else if (height != borderHeight.Value)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return BridgeSpanValidator.Validate(_mapHandler.Map, start, end, out error);
         }
 
         private string BuildDefaultSegments(TileCoords start, TileCoords end, BridgeData material, BridgeType type)

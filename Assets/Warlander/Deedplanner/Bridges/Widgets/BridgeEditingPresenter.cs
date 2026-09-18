@@ -1,6 +1,5 @@
 using Warlander.Deedplanner.Ui.Widgets;
 using Warlander.Deedplanner.Editing;
-using Warlander.Deedplanner.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,16 +14,16 @@ namespace Warlander.Deedplanner.Bridges.Widgets
     {
         private readonly IBridgeEditingView _view;
         private readonly BridgesUpdater _bridgesUpdater;
-        private readonly MapHandler _mapHandler;
         private readonly IDataCatalog _dataCatalog;
+        private readonly IMapEditFacade _mapEditFacade;
 
-        public BridgeEditingPresenter(IBridgeEditingView view, BridgesUpdater bridgesUpdater, MapHandler mapHandler,
-            IDataCatalog dataCatalog)
+        public BridgeEditingPresenter(IBridgeEditingView view, BridgesUpdater bridgesUpdater,
+            IDataCatalog dataCatalog, IMapEditFacade mapEditFacade)
         {
             _view = view;
             _bridgesUpdater = bridgesUpdater;
-            _mapHandler = mapHandler;
             _dataCatalog = dataCatalog;
+            _mapEditFacade = mapEditFacade;
         }
 
         public void Initialize()
@@ -68,9 +67,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
                 return;
             }
 
-            Map map = _mapHandler.Map;
-            map.CommandManager.AddToActionAndExecute(new BridgeRemovalCommand(map, selectedBridge));
-            map.CommandManager.FinishAction();
+            _mapEditFacade.RemoveBridge(selectedBridge);
             _bridgesUpdater.ClearBridgeSelection();
         }
 
@@ -87,13 +84,9 @@ namespace Warlander.Deedplanner.Bridges.Widgets
                 return;
             }
 
-            string oldSegments = bridge.GetSegmentsString();
             string newSegments = BuildSegmentsForMaterial(bridge, material);
 
-            Map map = _mapHandler.Map;
-            map.CommandManager.AddToActionAndExecute(new BridgeMaterialChangeCommand(
-                map, bridge, bridge.Data, material, oldSegments, newSegments));
-            map.CommandManager.FinishAction();
+            _mapEditFacade.ChangeBridgeMaterial(bridge, material, newSegments);
         }
 
         private string BuildSegmentsForMaterial(Bridge bridge, BridgeData material)
@@ -180,10 +173,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
                 return;
             }
 
-            Map map = _mapHandler.Map;
-            map.CommandManager.AddToActionAndExecute(new BridgeExtraArgumentChangeCommand(
-                map, bridge, bridge.AdditionalData, value));
-            map.CommandManager.FinishAction();
+            _mapEditFacade.ChangeBridgeExtraArgument(bridge, value);
         }
 
         private void RefreshExtraArguments()

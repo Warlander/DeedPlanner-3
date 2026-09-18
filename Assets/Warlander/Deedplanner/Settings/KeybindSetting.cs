@@ -57,7 +57,14 @@ namespace Warlander.Deedplanner.Settings
 
         public string DefaultValue => _action.bindings[_bindingIndex].path;
 
-        public string DisplayString => _action.bindings[_bindingIndex].ToDisplayString();
+        public string DisplayString
+        {
+            get
+            {
+                string display = _action.bindings[_bindingIndex].ToDisplayString();
+                return string.IsNullOrEmpty(display) ? "Unbound" : display;
+            }
+        }
 
         public void Commit() { }
 

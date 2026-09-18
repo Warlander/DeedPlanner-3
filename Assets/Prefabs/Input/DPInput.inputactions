@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "DPInput",
     "maps": [
         {
@@ -1382,6 +1383,114 @@
                     "action": "Snappy Object Rotate",
                     "isComposite": false,
                     "isPartOfComposite": true
+                }
+            ]
+        },
+        {
+            "name": "Symmetry",
+            "id": "27d04127-05d9-42be-b287-936b0a9d480a",
+            "actions": [
+                {
+                    "name": "Pick Vertical Axis",
+                    "type": "Button",
+                    "id": "4a23bca3-536d-40a5-b56e-79df9209a677",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pick Horizontal Axis",
+                    "type": "Button",
+                    "id": "e67cc359-76de-44d6-b4b4-71d6c737a4a7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Toggle Vertical Axis",
+                    "type": "Button",
+                    "id": "f88c83cc-806d-43db-98d4-5260d190b851",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Toggle Horizontal Axis",
+                    "type": "Button",
+                    "id": "d1356baf-c451-4b42-8604-dd415d0a0f1f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Clear Symmetry",
+                    "type": "Button",
+                    "id": "b99304a2-529b-4f38-9513-808f617102a7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "ff8f07db-e440-4177-adee-8ad407da5be9",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pick Vertical Axis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0c654091-2388-4538-9b85-6e8f45c8f730",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pick Horizontal Axis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7d14eca9-6922-4430-8706-2a2f6ee5f2c1",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toggle Vertical Axis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "23ec14c3-2d3a-4e9d-93eb-03f3da4c256f",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toggle Horizontal Axis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "45689bde-dc33-4af3-a1c0-46aa45ccd513",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Clear Symmetry",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

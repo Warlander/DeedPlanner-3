@@ -121,6 +121,22 @@ namespace Warlander.Deedplanner.Rendering.Projectors
             }
         }
 
+        public void ProjectAxisLine(int coordinate2, PlaneAlignment alignment)
+        {
+            Map map = _mapHandler.Map;
+            float coordinate = coordinate2 * 2f;
+            if (alignment == PlaneAlignment.Horizontal)
+            {
+                attachedProjector.transform.position = new Vector3(map.Width * 2f, 500, coordinate);
+                attachedProjector.size = new Vector3(map.Width * 4f, 0.5f, RenderDistance);
+            }
+            else
+            {
+                attachedProjector.transform.position = new Vector3(coordinate, 500, map.Height * 2f);
+                attachedProjector.size = new Vector3(0.5f, map.Height * 4f, RenderDistance);
+            }
+        }
+
         private void OnDestroy()
         {
             RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;

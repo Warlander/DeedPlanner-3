@@ -76,6 +76,7 @@ namespace Warlander.Deedplanner.Composition
             builder.RegisterComponentInHierarchy<DecorationUpdaterView>().As<IDecorationUpdaterView>();
             builder.RegisterComponentInHierarchy<ToolsUpdaterView>().As<IToolsUpdaterView>();
             builder.RegisterComponentInHierarchy<HeightUpdaterView>().As<IHeightUpdaterView>();
+            builder.RegisterComponentInHierarchy<MirrorUpdaterView>().As<IMirrorUpdaterView>();
 
             foreach (GameObject root in gameObject.scene.GetRootGameObjects())
             {
@@ -117,6 +118,9 @@ namespace Warlander.Deedplanner.Composition
             builder.Register<CaveTextureArray>(Lifetime.Singleton);
             builder.Register<CaveRenderOptions>(Lifetime.Singleton).AsSelf().As<ICaveRenderOptions>();
             builder.Register<MapHandler>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<SymmetrySession>().AsSelf();
+            builder.Register<MapEditFacade>(Lifetime.Singleton).As<IMapEditFacade>();
+            builder.RegisterEntryPoint<SymmetryShortcuts>();
             builder.RegisterEntryPoint<UndoRedoInputHandler>();
             builder.RegisterEntryPoint<QuickSaveInputHandler>();
             builder.Register<ScreenshotRenderer>(Lifetime.Singleton).As<IScreenshotRenderer>();
@@ -164,7 +168,7 @@ namespace Warlander.Deedplanner.Composition
 
             builder.Register<BorderUpdater>(Lifetime.Singleton).As<IUpdater>();
             builder.Register<LabelUpdater>(Lifetime.Singleton).As<IUpdater>();
-            builder.Register<MirrorUpdater>(Lifetime.Singleton).As<IUpdater>();
+            builder.Register<MirrorUpdater>(Lifetime.Singleton).As<IUpdater>().AsSelf();
             builder.Register<BridgesUpdater>(Lifetime.Singleton).As<IUpdater>().AsSelf();
             builder.Register<GroundUpdater>(Lifetime.Singleton).As<IUpdater>();
             builder.Register<CaveUpdater>(Lifetime.Singleton).As<IUpdater>();
