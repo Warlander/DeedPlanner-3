@@ -17,6 +17,7 @@
 - Lighting and visuals overhaul: tonemapping, bloom, ambient occlusion, improved anti-aliasing and retuned shadows
 - Sharper water reflections on Ultra quality
 - Settings window overhaul - a single immediate-apply tabbed window now covers all settings, with reliable cancellable key rebinding
+- Fixed mouse-wheel scrolling over labels in the Keybinds settings
 - Errors now open a window with a copyable report you can attach when reporting bugs
 - Richer tooltips, including accurate edge-aware placement and a tinted slope grid when hovering terrain on the Height tab
 - New dragon HOTA statue model (the old one was oversized)
