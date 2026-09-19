@@ -10,7 +10,7 @@ namespace Warlander.Deedplanner.Editing.Tests
         [Test]
         public void UpdateHoveredHandlesSimpleSelection_MissedRaycastReturnsNoHandles()
         {
-            var updater = new HeightUpdater(null, null, null, null, null, null, null, null);
+            var updater = new HeightUpdater(null, null, null, null, null, null, null, null, null);
             MethodInfo method = typeof(HeightUpdater).GetMethod(
                 "UpdateHoveredHandlesSimpleSelection", BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(method, Is.Not.Null);

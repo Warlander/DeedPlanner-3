@@ -1473,6 +1473,114 @@ namespace Warlander.Deedplanner.Inputs
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""Symmetry"",
+            ""id"": ""27d04127-05d9-42be-b287-936b0a9d480a"",
+            ""actions"": [
+                {
+                    ""name"": ""Pick Vertical Axis"",
+                    ""type"": ""Button"",
+                    ""id"": ""4a23bca3-536d-40a5-b56e-79df9209a677"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pick Horizontal Axis"",
+                    ""type"": ""Button"",
+                    ""id"": ""e67cc359-76de-44d6-b4b4-71d6c737a4a7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Toggle Vertical Axis"",
+                    ""type"": ""Button"",
+                    ""id"": ""f88c83cc-806d-43db-98d4-5260d190b851"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Toggle Horizontal Axis"",
+                    ""type"": ""Button"",
+                    ""id"": ""d1356baf-c451-4b42-8604-dd415d0a0f1f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Clear Symmetry"",
+                    ""type"": ""Button"",
+                    ""id"": ""b99304a2-529b-4f38-9513-808f617102a7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""ff8f07db-e440-4177-adee-8ad407da5be9"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pick Vertical Axis"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0c654091-2388-4538-9b85-6e8f45c8f730"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pick Horizontal Axis"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7d14eca9-6922-4430-8706-2a2f6ee5f2c1"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Toggle Vertical Axis"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""23ec14c3-2d3a-4e9d-93eb-03f3da4c256f"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Toggle Horizontal Axis"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""45689bde-dc33-4af3-a1c0-46aa45ccd513"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Clear Symmetry"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1543,6 +1651,13 @@ namespace Warlander.Deedplanner.Inputs
             m_DecorationUpdater_DeleteSingleObject = m_DecorationUpdater.FindAction("Delete Single Object", throwIfNotFound: true);
             m_DecorationUpdater_SmoothObjectRotate = m_DecorationUpdater.FindAction("Smooth Object Rotate", throwIfNotFound: true);
             m_DecorationUpdater_SnappyObjectRotate = m_DecorationUpdater.FindAction("Snappy Object Rotate", throwIfNotFound: true);
+            // Symmetry
+            m_Symmetry = asset.FindActionMap("Symmetry", throwIfNotFound: true);
+            m_Symmetry_PickVerticalAxis = m_Symmetry.FindAction("Pick Vertical Axis", throwIfNotFound: true);
+            m_Symmetry_PickHorizontalAxis = m_Symmetry.FindAction("Pick Horizontal Axis", throwIfNotFound: true);
+            m_Symmetry_ToggleVerticalAxis = m_Symmetry.FindAction("Toggle Vertical Axis", throwIfNotFound: true);
+            m_Symmetry_ToggleHorizontalAxis = m_Symmetry.FindAction("Toggle Horizontal Axis", throwIfNotFound: true);
+            m_Symmetry_ClearSymmetry = m_Symmetry.FindAction("Clear Symmetry", throwIfNotFound: true);
         }
 
         ~@DPInput()
@@ -1555,6 +1670,7 @@ namespace Warlander.Deedplanner.Inputs
             UnityEngine.Debug.Assert(!m_UpdatersShared.enabled, "This will cause a leak and performance issues, DPInput.UpdatersShared.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_HeightUpdater.enabled, "This will cause a leak and performance issues, DPInput.HeightUpdater.Disable() has not been called.");
             UnityEngine.Debug.Assert(!m_DecorationUpdater.enabled, "This will cause a leak and performance issues, DPInput.DecorationUpdater.Disable() has not been called.");
+            UnityEngine.Debug.Assert(!m_Symmetry.enabled, "This will cause a leak and performance issues, DPInput.Symmetry.Disable() has not been called.");
         }
 
         /// <summary>
@@ -2669,6 +2785,146 @@ namespace Warlander.Deedplanner.Inputs
         /// Provides a new <see cref="DecorationUpdaterActions" /> instance referencing this action map.
         /// </summary>
         public DecorationUpdaterActions @DecorationUpdater => new DecorationUpdaterActions(this);
+
+        // Symmetry
+        private readonly InputActionMap m_Symmetry;
+        private List<ISymmetryActions> m_SymmetryActionsCallbackInterfaces = new List<ISymmetryActions>();
+        private readonly InputAction m_Symmetry_PickVerticalAxis;
+        private readonly InputAction m_Symmetry_PickHorizontalAxis;
+        private readonly InputAction m_Symmetry_ToggleVerticalAxis;
+        private readonly InputAction m_Symmetry_ToggleHorizontalAxis;
+        private readonly InputAction m_Symmetry_ClearSymmetry;
+        /// <summary>
+        /// Provides access to input actions defined in input action map "Symmetry".
+        /// </summary>
+        public struct SymmetryActions
+        {
+            private @DPInput m_Wrapper;
+
+            /// <summary>
+            /// Construct a new instance of the input action map wrapper class.
+            /// </summary>
+            public SymmetryActions(@DPInput wrapper) { m_Wrapper = wrapper; }
+            /// <summary>
+            /// Provides access to the underlying input action "Symmetry/PickVerticalAxis".
+            /// </summary>
+            public InputAction @PickVerticalAxis => m_Wrapper.m_Symmetry_PickVerticalAxis;
+            /// <summary>
+            /// Provides access to the underlying input action "Symmetry/PickHorizontalAxis".
+            /// </summary>
+            public InputAction @PickHorizontalAxis => m_Wrapper.m_Symmetry_PickHorizontalAxis;
+            /// <summary>
+            /// Provides access to the underlying input action "Symmetry/ToggleVerticalAxis".
+            /// </summary>
+            public InputAction @ToggleVerticalAxis => m_Wrapper.m_Symmetry_ToggleVerticalAxis;
+            /// <summary>
+            /// Provides access to the underlying input action "Symmetry/ToggleHorizontalAxis".
+            /// </summary>
+            public InputAction @ToggleHorizontalAxis => m_Wrapper.m_Symmetry_ToggleHorizontalAxis;
+            /// <summary>
+            /// Provides access to the underlying input action "Symmetry/ClearSymmetry".
+            /// </summary>
+            public InputAction @ClearSymmetry => m_Wrapper.m_Symmetry_ClearSymmetry;
+            /// <summary>
+            /// Provides access to the underlying input action map instance.
+            /// </summary>
+            public InputActionMap Get() { return m_Wrapper.m_Symmetry; }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+            public void Enable() { Get().Enable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+            public void Disable() { Get().Disable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+            public bool enabled => Get().enabled;
+            /// <summary>
+            /// Implicitly converts an <see ref="SymmetryActions" /> to an <see ref="InputActionMap" /> instance.
+            /// </summary>
+            public static implicit operator InputActionMap(SymmetryActions set) { return set.Get(); }
+            /// <summary>
+            /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <param name="instance">Callback instance.</param>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+            /// </remarks>
+            /// <seealso cref="SymmetryActions" />
+            public void AddCallbacks(ISymmetryActions instance)
+            {
+                if (instance == null || m_Wrapper.m_SymmetryActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_SymmetryActionsCallbackInterfaces.Add(instance);
+                @PickVerticalAxis.started += instance.OnPickVerticalAxis;
+                @PickVerticalAxis.performed += instance.OnPickVerticalAxis;
+                @PickVerticalAxis.canceled += instance.OnPickVerticalAxis;
+                @PickHorizontalAxis.started += instance.OnPickHorizontalAxis;
+                @PickHorizontalAxis.performed += instance.OnPickHorizontalAxis;
+                @PickHorizontalAxis.canceled += instance.OnPickHorizontalAxis;
+                @ToggleVerticalAxis.started += instance.OnToggleVerticalAxis;
+                @ToggleVerticalAxis.performed += instance.OnToggleVerticalAxis;
+                @ToggleVerticalAxis.canceled += instance.OnToggleVerticalAxis;
+                @ToggleHorizontalAxis.started += instance.OnToggleHorizontalAxis;
+                @ToggleHorizontalAxis.performed += instance.OnToggleHorizontalAxis;
+                @ToggleHorizontalAxis.canceled += instance.OnToggleHorizontalAxis;
+                @ClearSymmetry.started += instance.OnClearSymmetry;
+                @ClearSymmetry.performed += instance.OnClearSymmetry;
+                @ClearSymmetry.canceled += instance.OnClearSymmetry;
+            }
+
+            /// <summary>
+            /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <remarks>
+            /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+            /// </remarks>
+            /// <seealso cref="SymmetryActions" />
+            private void UnregisterCallbacks(ISymmetryActions instance)
+            {
+                @PickVerticalAxis.started -= instance.OnPickVerticalAxis;
+                @PickVerticalAxis.performed -= instance.OnPickVerticalAxis;
+                @PickVerticalAxis.canceled -= instance.OnPickVerticalAxis;
+                @PickHorizontalAxis.started -= instance.OnPickHorizontalAxis;
+                @PickHorizontalAxis.performed -= instance.OnPickHorizontalAxis;
+                @PickHorizontalAxis.canceled -= instance.OnPickHorizontalAxis;
+                @ToggleVerticalAxis.started -= instance.OnToggleVerticalAxis;
+                @ToggleVerticalAxis.performed -= instance.OnToggleVerticalAxis;
+                @ToggleVerticalAxis.canceled -= instance.OnToggleVerticalAxis;
+                @ToggleHorizontalAxis.started -= instance.OnToggleHorizontalAxis;
+                @ToggleHorizontalAxis.performed -= instance.OnToggleHorizontalAxis;
+                @ToggleHorizontalAxis.canceled -= instance.OnToggleHorizontalAxis;
+                @ClearSymmetry.started -= instance.OnClearSymmetry;
+                @ClearSymmetry.performed -= instance.OnClearSymmetry;
+                @ClearSymmetry.canceled -= instance.OnClearSymmetry;
+            }
+
+            /// <summary>
+            /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="SymmetryActions.UnregisterCallbacks(ISymmetryActions)" />.
+            /// </summary>
+            /// <seealso cref="SymmetryActions.UnregisterCallbacks(ISymmetryActions)" />
+            public void RemoveCallbacks(ISymmetryActions instance)
+            {
+                if (m_Wrapper.m_SymmetryActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            /// <summary>
+            /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+            /// </summary>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+            /// </remarks>
+            /// <seealso cref="SymmetryActions.AddCallbacks(ISymmetryActions)" />
+            /// <seealso cref="SymmetryActions.RemoveCallbacks(ISymmetryActions)" />
+            /// <seealso cref="SymmetryActions.UnregisterCallbacks(ISymmetryActions)" />
+            public void SetCallbacks(ISymmetryActions instance)
+            {
+                foreach (var item in m_Wrapper.m_SymmetryActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_SymmetryActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        /// <summary>
+        /// Provides a new <see cref="SymmetryActions" /> instance referencing this action map.
+        /// </summary>
+        public SymmetryActions @Symmetry => new SymmetryActions(this);
         private int m_MouseandKeyboardSchemeIndex = -1;
         /// <summary>
         /// Provides access to the input control scheme.
@@ -2976,6 +3232,49 @@ namespace Warlander.Deedplanner.Inputs
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnSnappyObjectRotate(InputAction.CallbackContext context);
+        }
+        /// <summary>
+        /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Symmetry" which allows adding and removing callbacks.
+        /// </summary>
+        /// <seealso cref="SymmetryActions.AddCallbacks(ISymmetryActions)" />
+        /// <seealso cref="SymmetryActions.RemoveCallbacks(ISymmetryActions)" />
+        public interface ISymmetryActions
+        {
+            /// <summary>
+            /// Method invoked when associated input action "Pick Vertical Axis" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnPickVerticalAxis(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Pick Horizontal Axis" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnPickHorizontalAxis(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Toggle Vertical Axis" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnToggleVerticalAxis(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Toggle Horizontal Axis" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnToggleHorizontalAxis(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Clear Symmetry" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnClearSymmetry(InputAction.CallbackContext context);
         }
     }
 }

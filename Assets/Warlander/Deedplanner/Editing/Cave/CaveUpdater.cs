@@ -19,6 +19,7 @@ namespace Warlander.Deedplanner.Editing
         private readonly MapHandler _mapHandler;
         private readonly ICaveRenderOptions _renderOptions;
         private readonly EditingSettings _editingSettings;
+        private readonly IMapEditFacade _mapEditFacade;
 
         private CaveData _primaryData;
         private CaveData _secondaryData;
@@ -30,7 +31,7 @@ namespace Warlander.Deedplanner.Editing
 
         public CaveUpdater(ICaveUpdaterView view, CameraCoordinator cameraCoordinator, TabContext tabContext,
             IDataCatalog dataCatalog, DPInput input, MapHandler mapHandler, ICaveRenderOptions renderOptions,
-            EditingSettings editingSettings)
+            EditingSettings editingSettings, IMapEditFacade mapEditFacade)
         {
             _view = view;
             _cameraCoordinator = cameraCoordinator;
@@ -40,6 +41,7 @@ namespace Warlander.Deedplanner.Editing
             _mapHandler = mapHandler;
             _renderOptions = renderOptions;
             _editingSettings = editingSettings;
+            _mapEditFacade = mapEditFacade;
         }
 
         public void Initialize()
@@ -137,7 +139,7 @@ namespace Warlander.Deedplanner.Editing
 
             if (_stroke == null)
             {
-                _stroke = map.CaveEditor.BeginTerrainStroke(data, _editingSettings.CaveOccupiedCellPolicy);
+                _stroke = _mapEditFacade.BeginCaveTerrainStroke(data, _editingSettings.CaveOccupiedCellPolicy);
             }
 
             _stroke.ApplyAt(x, y);
@@ -151,11 +153,12 @@ namespace Warlander.Deedplanner.Editing
                 return;
             }
 
-            using (ICaveEditStroke stroke = map.CaveEditor.BeginTerrainStroke(data,
+            using (ICaveEditStroke stroke = _mapEditFacade.BeginCaveTerrainStroke(data,
                        _editingSettings.CaveOccupiedCellPolicy))
             {
                 var pending = new Stack<CavePaintCell>();
                 var visited = new HashSet<int>();
+                var region = new List<CavePaintCell>();
                 pending.Push(new CavePaintCell(x, y));
 
                 while (pending.Count > 0)
@@ -168,11 +171,16 @@ namespace Warlander.Deedplanner.Editing
                         continue;
                     }
 
-                    stroke.ApplyAt(coordinate.X, coordinate.Y);
+                    region.Add(coordinate);
                     pending.Push(new CavePaintCell(coordinate.X - 1, coordinate.Y));
                     pending.Push(new CavePaintCell(coordinate.X + 1, coordinate.Y));
                     pending.Push(new CavePaintCell(coordinate.X, coordinate.Y - 1));
                     pending.Push(new CavePaintCell(coordinate.X, coordinate.Y + 1));
+                }
+
+                foreach (CavePaintCell coordinate in region)
+                {
+                    stroke.ApplyAt(coordinate.X, coordinate.Y);
                 }
 
                 stroke.Commit();

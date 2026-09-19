@@ -3,6 +3,7 @@
 ## [3.4.0] - Unreleased
 
 - Active uGUI hierarchies and prefab assets can now be exported from the Editor or Unity CLI as scalable, composable HTML bundles that preserve RectTransform structure, Image and RawImage visuals, and editable text
+- Symmetry planning is now available from the Mirror tab, with independently placeable vertical and horizontal axes, live map guides, support across editing tools, single-step undo, optional user-bound shortcuts, and direct navigation from Configure Bindings to the Symmetry keybinds
 - Fixed undo and redo interrupting unfinished painting and height edits; finish or cancel the current edit before using history
 - Fixed height painting outside the map changing its origin corner
 - Cave level controls and cave editing are now enabled, with Ground/Caves controls that swap with the active realm, reliable 3D transitions between surface and cave levels, Wurmian navigation that finds a nearby cave with enough headroom and blocks movement into rock or low passages, independent per-camera levels, complete cave shells in 3D, distinct wall and floor rendering in planning views, absolute ceiling-height editing, compact cave height controls and guidance, optional ceiling-preserving floor edits, cave rendering controls, responsive underground views on large deeds, legacy-map clearance repair, consistent solid-rock painting across camera modes, and correct surface rendering
@@ -16,6 +17,7 @@
 - Lighting and visuals overhaul: tonemapping, bloom, ambient occlusion, improved anti-aliasing and retuned shadows
 - Sharper water reflections on Ultra quality
 - Settings window overhaul - a single immediate-apply tabbed window now covers all settings, with reliable cancellable key rebinding
+- Fixed mouse-wheel scrolling over labels in the Keybinds settings
 - Errors now open a window with a copyable report you can attach when reporting bugs
 - Richer tooltips, including accurate edge-aware placement and a tinted slope grid when hovering terrain on the Height tab
 - New dragon HOTA statue model (the old one was oversized)

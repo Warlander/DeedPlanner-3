@@ -18,6 +18,7 @@ namespace Warlander.Deedplanner.Editing
         private readonly TabContext _tabContext;
         private readonly PreviewAtlasCatalog _previewAtlasCatalog;
         private readonly IDataCatalog _dataCatalog;
+        private readonly IMapEditFacade _mapEditFacade;
 
         public Tab TargetTab => Tab.Ground;
 
@@ -29,7 +30,7 @@ namespace Warlander.Deedplanner.Editing
 
         public GroundUpdater(IGroundUpdaterView view, CameraCoordinator cameraCoordinator, DPInput input,
             MapHandler mapHandler, TabContext tabContext, PreviewAtlasCatalog previewAtlasCatalog,
-            IDataCatalog dataCatalog)
+            IDataCatalog dataCatalog, IMapEditFacade mapEditFacade)
         {
             _view = view;
             _cameraCoordinator = cameraCoordinator;
@@ -38,6 +39,7 @@ namespace Warlander.Deedplanner.Editing
             _tabContext = tabContext;
             _previewAtlasCatalog = previewAtlasCatalog;
             _dataCatalog = dataCatalog;
+            _mapEditFacade = mapEditFacade;
         }
 
         public void Initialize()
@@ -114,7 +116,7 @@ namespace Warlander.Deedplanner.Editing
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
-                _mapHandler.Map.CommandManager.FinishAction();
+                _mapEditFacade.FinishAction();
             }
 
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
@@ -151,35 +153,32 @@ namespace Warlander.Deedplanner.Editing
 
             if (_tool == GroundTool.Pencil)
             {
-                if (_editCorners && _leftClickData.Diagonal)
+                RoadDirection direction = RoadDirection.Center;
+                if (_editCorners && currentClickData.Diagonal)
                 {
                     TileSelectionHit hit = TileSelection.PositionToTileSelectionHit(raycast.point, TileSelectionMode.TilesAndCorners);
                     if (hit.Target == TileSelectionTarget.InnerTile || hit.Target == TileSelectionTarget.Nothing)
                     {
-                        ground.RoadDirection = RoadDirection.Center;
+                        direction = RoadDirection.Center;
                     }
                     else if (hit.X - tile.X == 0 && hit.Y - tile.Y == 0)
                     {
-                        ground.RoadDirection = RoadDirection.SW;
+                        direction = RoadDirection.SW;
                     }
                     else if (hit.X - tile.X == 1 && hit.Y - tile.Y == 0)
                     {
-                        ground.RoadDirection = RoadDirection.SE;
+                        direction = RoadDirection.SE;
                     }
                     else if (hit.X - tile.X == 0 && hit.Y - tile.Y == 1)
                     {
-                        ground.RoadDirection = RoadDirection.NW;
+                        direction = RoadDirection.NW;
                     }
                     else if (hit.X - tile.X == 1 && hit.Y - tile.Y == 1)
                     {
-                        ground.RoadDirection = RoadDirection.NE;
+                        direction = RoadDirection.NE;
                     }
                 }
-                else
-                {
-                    ground.RoadDirection = RoadDirection.Center;
-                }
-                ground.Data = currentClickData;
+                _mapEditFacade.PaintGround(tileX, tileZ, currentClickData, direction);
             }
             else if (_tool == GroundTool.Fill)
             {
@@ -214,7 +213,7 @@ namespace Warlander.Deedplanner.Editing
 
             foreach (Tile tileToChange in tilesToChange)
             {
-                tileToChange.Ground.Data = data;
+                _mapEditFacade.ReplaceGroundData(tileToChange.X, tileToChange.Y, data);
             }
         }
 

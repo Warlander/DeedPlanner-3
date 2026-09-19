@@ -1,6 +1,5 @@
 using Warlander.Deedplanner.Ui.Widgets;
 using Warlander.Deedplanner.Editing;
-using Warlander.Deedplanner.Persistence;
 using System;
 using System.Linq;
 using VContainer.Unity;
@@ -18,8 +17,8 @@ namespace Warlander.Deedplanner.Bridges.Widgets
 
         private readonly IBridgeSegmentBarView _view;
         private readonly BridgesUpdater _bridgesUpdater;
-        private readonly MapHandler _mapHandler;
         private readonly IDataCatalog _dataCatalog;
+        private readonly IMapEditFacade _mapEditFacade;
 
         private Bridge _bridge;
         private bool[] _pendingSupports;
@@ -30,12 +29,12 @@ namespace Warlander.Deedplanner.Bridges.Widgets
         private int _selectedPavingIndex;
 
         public BridgeSegmentBarPresenter(IBridgeSegmentBarView view, BridgesUpdater bridgesUpdater,
-            MapHandler mapHandler, IDataCatalog dataCatalog)
+            IDataCatalog dataCatalog, IMapEditFacade mapEditFacade)
         {
             _view = view;
             _bridgesUpdater = bridgesUpdater;
-            _mapHandler = mapHandler;
             _dataCatalog = dataCatalog;
+            _mapEditFacade = mapEditFacade;
         }
 
         public void Initialize()
@@ -166,10 +165,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
                 return;
             }
 
-            Map map = _mapHandler.Map;
-            map.CommandManager.AddToActionAndExecute(
-                new BridgeSegmentsChangeCommand(map, _bridge, oldSegments, newSegments));
-            map.CommandManager.FinishAction();
+            _mapEditFacade.ChangeBridgeSegments(_bridge, newSegments);
         }
 
         private bool HasAdjacentSupports(bool[] supports)
