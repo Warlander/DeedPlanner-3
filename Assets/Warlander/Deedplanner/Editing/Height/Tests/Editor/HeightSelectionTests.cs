@@ -14,7 +14,7 @@ namespace Warlander.Deedplanner.Editing.Tests
         [TestCase(0, 400)]
         public void MissedRayDoesNotSelectHeightHandles(float x, float z)
         {
-            var updater = new HeightUpdater(null, null, null, null, null, null, null, null);
+            var updater = new HeightUpdater(null, null, null, null, null, null, null, null, null);
             var raycast = new RaycastHit { point = new Vector3(x, 0, z) };
             MethodInfo select = typeof(HeightUpdater).GetMethod("UpdateHoveredHandlesSimpleSelection",
                 BindingFlags.Instance | BindingFlags.NonPublic);

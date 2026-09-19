@@ -17,13 +17,15 @@ namespace Warlander.Deedplanner.Editing
         private readonly MapHandler _mapHandler;
         private readonly TabContext _tabContext;
         private readonly IDataCatalog _dataCatalog;
+        private readonly IMapEditFacade _mapEditFacade;
 
         public Tab TargetTab => Tab.Roofs;
 
         private RoofData _selectedRoof;
 
         public RoofUpdater(IRoofUpdaterView view, TooltipHandler tooltipHandler, CameraCoordinator cameraCoordinator,
-            DPInput input, MapHandler mapHandler, TabContext tabContext, IDataCatalog dataCatalog)
+            DPInput input, MapHandler mapHandler, TabContext tabContext, IDataCatalog dataCatalog,
+            IMapEditFacade mapEditFacade)
         {
             _view = view;
             _tooltipHandler = tooltipHandler;
@@ -32,6 +34,7 @@ namespace Warlander.Deedplanner.Editing
             _mapHandler = mapHandler;
             _tabContext = tabContext;
             _dataCatalog = dataCatalog;
+            _mapEditFacade = mapEditFacade;
         }
 
         public void Initialize()
@@ -62,7 +65,7 @@ namespace Warlander.Deedplanner.Editing
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
-                _mapHandler.Map.CommandManager.FinishAction();
+                _mapEditFacade.FinishAction();
             }
 
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
@@ -108,11 +111,11 @@ namespace Warlander.Deedplanner.Editing
 
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
             {
-                _mapHandler.Map[x, y].SetRoof(_selectedRoof, floor);
+                _mapEditFacade.SetRoof(x, y, _selectedRoof, floor);
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
             {
-                _mapHandler.Map[x, y].SetRoof(null, floor);
+                _mapEditFacade.SetRoof(x, y, null, floor);
             }
 
         }

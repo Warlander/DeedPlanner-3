@@ -32,10 +32,15 @@ namespace Warlander.Deedplanner.Settings
             _inputSettings = inputSettings;
 
             Group = action.actionMap.name;
-            Key = $"keybind.{action.actionMap.name}.{action.name}.{bindingIndex}";
+            Key = GetKey(action, bindingIndex);
             Label = ComputeLabel();
 
             _inputSettings.SettingsReset += OnSettingsReset;
+        }
+
+        public static string GetKey(InputAction action, int bindingIndex)
+        {
+            return $"keybind.{action.actionMap.name}.{action.name}.{bindingIndex}";
         }
 
         public string Value
@@ -57,7 +62,14 @@ namespace Warlander.Deedplanner.Settings
 
         public string DefaultValue => _action.bindings[_bindingIndex].path;
 
-        public string DisplayString => _action.bindings[_bindingIndex].ToDisplayString();
+        public string DisplayString
+        {
+            get
+            {
+                string display = _action.bindings[_bindingIndex].ToDisplayString();
+                return string.IsNullOrEmpty(display) ? "Unbound" : display;
+            }
+        }
 
         public void Commit() { }
 

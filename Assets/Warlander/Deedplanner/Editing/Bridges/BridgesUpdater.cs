@@ -23,11 +23,13 @@ namespace Warlander.Deedplanner.Editing
         private readonly TabContext _tabContext;
         private readonly IMapProjectorFacade _mapProjectorFacade;
         private readonly MapHandler _mapHandler;
+        private readonly IMapEditFacade _mapEditFacade;
 
         public Tab TargetTab => Tab.Bridges;
 
         public BridgesUpdater(CameraCoordinator cameraCoordinator, DPInput input, TooltipHandler tooltipHandler,
-            BridgeTabSwapper bridgeTabSwapper, TabContext tabContext, IMapProjectorFacade mapProjectorFacade, MapHandler mapHandler)
+            BridgeTabSwapper bridgeTabSwapper, TabContext tabContext, IMapProjectorFacade mapProjectorFacade,
+            MapHandler mapHandler, IMapEditFacade mapEditFacade)
         {
             _cameraCoordinator = cameraCoordinator;
             _input = input;
@@ -36,6 +38,7 @@ namespace Warlander.Deedplanner.Editing
             _tabContext = tabContext;
             _mapProjectorFacade = mapProjectorFacade;
             _mapHandler = mapHandler;
+            _mapEditFacade = mapEditFacade;
         }
 
         public event Action SelectedBridgeChanged;
@@ -56,6 +59,7 @@ namespace Warlander.Deedplanner.Editing
         private List<BridgePart> _strokeParts;
         private List<BridgePavementData> _strokeOldPavements;
         private IDisposable _historySuspension;
+        private IBridgePavingStroke _symmetryPavingStroke;
 
         private IMapProjector _firstTileProjector;
         private IMapProjector _secondTileProjector;
@@ -276,12 +280,13 @@ namespace Warlander.Deedplanner.Editing
         {
             BridgePart target = bridgePart != null && bridgePart.ParentBridge.Data.CanBePaved
                 ? bridgePart : null;
-            if (target == null || target.Pavement == _pavingBrush)
+            if (target == null)
             {
                 return false;
             }
 
             _strokeParts = new List<BridgePart>();
+            _symmetryPavingStroke = _mapEditFacade.BeginBridgePavingStroke();
             _historySuspension = _mapHandler.Map.CommandManager.SuspendHistory();
             _strokeOldPavements = new List<BridgePavementData>();
             AddToStroke(target);
@@ -291,14 +296,21 @@ namespace Warlander.Deedplanner.Editing
         private void AddToStroke(BridgePart part)
         {
             // Skipping same-pavement parts keeps the refresh per newly painted part only.
-            if (part == null || _strokeParts.Contains(part) || part.Pavement == _pavingBrush)
+            if (part == null || _strokeParts.Contains(part))
             {
                 return;
             }
 
-            _strokeParts.Add(part);
-            _strokeOldPavements.Add(part.Pavement);
-            part.SetPavement(_pavingBrush);
+            _symmetryPavingStroke.ForEachSymmetricPart(part, target =>
+            {
+                if (_strokeParts.Contains(target) || target.Pavement == _pavingBrush)
+                {
+                    return;
+                }
+                _strokeParts.Add(target);
+                _strokeOldPavements.Add(target.Pavement);
+                target.SetPavement(_pavingBrush);
+            });
         }
 
         private void EndStrokeIfNeeded()
@@ -320,13 +332,13 @@ namespace Warlander.Deedplanner.Editing
                 }
 
                 // Pavements were already applied live during the stroke - record for undo only.
-                Map map = _mapHandler.Map;
-                map.CommandManager.AddToStack(new BridgePavingChangeCommand(
-                    _strokeParts.ToArray(), _strokeOldPavements.ToArray(), newPavements));
+                _mapEditFacade.RecordBridgePaving(
+                    _strokeParts.ToArray(), _strokeOldPavements.ToArray(), newPavements);
             }
 
             _strokeParts = null;
             _strokeOldPavements = null;
+            _symmetryPavingStroke = null;
             _historySuspension.Dispose();
             _historySuspension = null;
         }

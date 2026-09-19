@@ -29,6 +29,7 @@ namespace Warlander.Deedplanner.Editing
         private readonly MapHandler _mapHandler;
         private readonly IMapProjectorFacade _mapProjectorFacade;
         private readonly TabContext _tabContext;
+        private readonly IMapEditFacade _mapEditFacade;
 
         public Tab TargetTab => Tab.Height;
 
@@ -42,7 +43,7 @@ namespace Warlander.Deedplanner.Editing
         private PlaneAlignment anchorAlignment;
         private readonly Dictionary<HeightmapHandle, int> _originalCaveValues =
             new Dictionary<HeightmapHandle, int>();
-        private ICaveHeightEdit _caveHeightEdit;
+        private IMapHeightEdit _heightEdit;
         private CaveHeightMode _caveHeightMode = CaveHeightMode.Floor;
         private bool _preserveCaveCeiling;
         private bool? _lastCaveRealm;
@@ -66,7 +67,7 @@ namespace Warlander.Deedplanner.Editing
 
         public HeightUpdater(IHeightUpdaterView view, TooltipHandler tooltipHandler, EditingSettings settings,
             CameraCoordinator cameraCoordinator, DPInput input, MapHandler mapHandler,
-            IMapProjectorFacade mapProjectorFacade, TabContext tabContext)
+            IMapProjectorFacade mapProjectorFacade, TabContext tabContext, IMapEditFacade mapEditFacade)
         {
             _view = view;
             _tooltipHandler = tooltipHandler;
@@ -76,6 +77,7 @@ namespace Warlander.Deedplanner.Editing
             _mapHandler = mapHandler;
             _mapProjectorFacade = mapProjectorFacade;
             _tabContext = tabContext;
+            _mapEditFacade = mapEditFacade;
         }
 
         public void Initialize()
@@ -152,7 +154,7 @@ namespace Warlander.Deedplanner.Editing
         private void OnPreserveCaveCeilingChanged(bool value)
         {
             _preserveCaveCeiling = value;
-            if (_caveHeightEdit != null)
+            if (_heightEdit != null)
             {
                 CancelEdit();
                 RefreshCaveGrid();
@@ -293,7 +295,7 @@ namespace Warlander.Deedplanner.Editing
                 {
                     activeHandle = currentFrameHoveredHandles[0];
                     state = HeightUpdaterState.Manipulating;
-                    BeginCaveEdit(map);
+                    BeginHeightEdit(map, HeightEditBehavior.ReplacePreview);
                 }
                 else if (_input.HeightUpdater.DragSelection.IsPressed())
                 {
@@ -311,6 +313,7 @@ namespace Warlander.Deedplanner.Editing
             {
                 if (state == HeightUpdaterState.Manipulating)
                 {
+                    _heightEdit.BeginPreview();
                     int heightDelta = (int) ((dragEndPos.y - dragStartPos.y) * _settings.HeightDragSensitivity);
                     if (IsCaveRealm)
                     {
@@ -320,25 +323,26 @@ namespace Warlander.Deedplanner.Editing
                             int target = _respectOriginalSlopes
                                 ? _originalCaveValues[heightmapHandle] + heightDelta
                                 : originalHeight + heightDelta;
-                            SetCaveValue(heightmapHandle, target);
+                            SetHeightValue(map, heightmapHandle, target);
                         }
                     }
                     else
                     {
-                        map.CommandManager.UndoAction();
                         int originalHeight = map[activeHandle.TileCoords].SurfaceHeight;
                         foreach (HeightmapHandle heightmapHandle in selectedHandles)
                         {
                             Vector2Int tileCoords = heightmapHandle.TileCoords;
                             if (_respectOriginalSlopes)
                             {
-                                map[tileCoords].SurfaceHeight += heightDelta;
+                                SetHeightValue(map, heightmapHandle,
+                                    map[tileCoords].SurfaceHeight + heightDelta);
                             }
                             else
                             {
-                                map[tileCoords].SurfaceHeight = originalHeight + heightDelta;
+                                SetHeightValue(map, heightmapHandle, originalHeight + heightDelta);
                             }
                         }
+                        ApplyHeightPreview(map);
                     }
                 }
             }
@@ -403,7 +407,7 @@ namespace Warlander.Deedplanner.Editing
                     if (anchorHandle != null && anchorHandle != currentFrameHoveredHandles[0])
                     {
                         activeHandle = currentFrameHoveredHandles[0];
-                        BeginCaveEdit(map);
+                        BeginHeightEdit(map, HeightEditBehavior.ReplacePreview);
                     }
                     else
                     {
@@ -435,6 +439,7 @@ namespace Warlander.Deedplanner.Editing
                 {
                     if (activeHandle != null && anchorHandle != null)
                     {
+                        _heightEdit.BeginPreview();
                         bool locked = _anchorProjector != null;
                         int originalHeight;
                         int activeOriginalHeight;
@@ -445,7 +450,6 @@ namespace Warlander.Deedplanner.Editing
                         }
                         else
                         {
-                            map.CommandManager.UndoAction();
                             originalHeight = map[anchorHandle.TileCoords].SurfaceHeight;
                             activeOriginalHeight = map[activeHandle.TileCoords].SurfaceHeight;
                         }
@@ -497,6 +501,7 @@ namespace Warlander.Deedplanner.Editing
                                     originalHeight + (int) (heightDelta * delta));
                             }
                         }
+                        ApplyHeightPreview(map);
                     }
                     else if (anchorHandle != null)
                     {
@@ -608,11 +613,13 @@ namespace Warlander.Deedplanner.Editing
 
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() && state == HeightUpdaterState.Dragging)
             {
-                BeginCaveEdit(map, currentFrameHoveredHandles);
+                BeginHeightEdit(map, HeightEditBehavior.ReplacePreview, currentFrameHoveredHandles);
+                _heightEdit.BeginPreview();
                 foreach (HeightmapHandle handle in currentFrameHoveredHandles)
                 {
                     SetHeightValue(map, handle, targetHeight);
                 }
+                ApplyHeightPreview(map);
                 FinishEdit();
                 state = HeightUpdaterState.Idle;
                 _cameraCoordinator.Current.RenderSelectionBox = false;
@@ -650,15 +657,17 @@ namespace Warlander.Deedplanner.Editing
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
                 state = HeightUpdaterState.Manipulating;
-                BeginCaveEdit(map, currentFrameHoveredHandles);
+                BeginHeightEdit(map, HeightEditBehavior.Accumulate, currentFrameHoveredHandles);
             }
 
             if (_input.UpdatersShared.Placement.ReadValue<float>() > 0 && state == HeightUpdaterState.Manipulating)
             {
+                _heightEdit.BeginPreview();
                 foreach (HeightmapHandle handle in currentFrameHoveredHandles)
                 {
                     SetHeightValue(map, handle, targetHeight);
                 }
+                ApplyHeightPreview(map);
             }
 
         }
@@ -804,17 +813,22 @@ namespace Warlander.Deedplanner.Editing
             }
         }
 
-        private void BeginCaveEdit(Map map, IEnumerable<HeightmapHandle> handles = null)
+        private void BeginHeightEdit(Map map, HeightEditBehavior behavior,
+            IEnumerable<HeightmapHandle> handles = null)
         {
-            if (!IsCaveRealm || _caveHeightEdit != null)
+            if (_heightEdit != null)
             {
                 return;
             }
 
-            _caveHeightEdit = _caveHeightMode == CaveHeightMode.Floor
-                ? map.CaveEditor.BeginFloorHeightEdit(_preserveCaveCeiling)
-                : map.CaveEditor.BeginClearanceEdit();
+            _heightEdit = _mapEditFacade.BeginHeightEdit(IsCaveRealm, _caveHeightMode,
+                _preserveCaveCeiling, behavior);
             _originalCaveValues.Clear();
+
+            if (!IsCaveRealm)
+            {
+                return;
+            }
 
             foreach (HeightmapHandle handle in handles ?? selectedHandles)
             {
@@ -856,53 +870,38 @@ namespace Warlander.Deedplanner.Editing
             if (IsCaveRealm)
             {
                 EnsureCaveOriginalValue(handle);
-                SetCaveValue(handle, value);
+                _heightEdit.SetAt(handle.TileCoords.x, handle.TileCoords.y, value);
+                return;
             }
-            else
-            {
-                map[handle.TileCoords].SurfaceHeight = value;
-            }
+            _heightEdit.SetAt(handle.TileCoords.x, handle.TileCoords.y, value);
         }
 
-        private void SetCaveValue(HeightmapHandle handle, int value)
+        private void ApplyHeightPreview(Map map)
         {
-            if (_caveHeightMode == CaveHeightMode.Clearance)
-            {
-                value = Mathf.Max(0, value - _mapHandler.Map[handle.TileCoords].CaveHeight);
-            }
-            if (_caveHeightEdit.SetAt(handle.TileCoords.x, handle.TileCoords.y, value))
-            {
-                RefreshCaveVertex(_mapHandler.Map, handle.TileCoords.x, handle.TileCoords.y);
-            }
+            _heightEdit.ApplyPreview(IsCaveRealm
+                ? (x, y) => RefreshCaveVertex(map, x, y)
+                : null);
         }
 
         private void FinishEdit()
         {
-            if (_caveHeightEdit != null)
+            if (_heightEdit != null)
             {
-                _caveHeightEdit.Commit();
-                _caveHeightEdit.Dispose();
-                _caveHeightEdit = null;
+                _heightEdit.Commit();
+                _heightEdit.Dispose();
+                _heightEdit = null;
                 _originalCaveValues.Clear();
-            }
-            else
-            {
-                _mapHandler.Map?.CommandManager.FinishAction();
             }
         }
 
         private void CancelEdit()
         {
-            if (_caveHeightEdit != null)
+            if (_heightEdit != null)
             {
-                _caveHeightEdit.Cancel();
-                _caveHeightEdit.Dispose();
-                _caveHeightEdit = null;
+                _heightEdit.Cancel();
+                _heightEdit.Dispose();
+                _heightEdit = null;
                 _originalCaveValues.Clear();
-            }
-            else
-            {
-                _mapHandler.Map?.CommandManager.UndoAction();
             }
         }
 

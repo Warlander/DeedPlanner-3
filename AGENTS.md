@@ -6,6 +6,10 @@ This file provides guidance to AI coding agents (OpenAI Codex and others) when w
 
 Skills live canonically in `.agents/skills/`. `.claude/skills/` is a generated mirror: the pre-commit hook regenerates it and rejects commits that edit only the mirror. Never edit `.claude/skills/` directly. Fresh clones need `git config core.hooksPath .githooks` once to enable the hook. The hook also runs `.githooks/check-meta-pairing.sh`, which rejects commits where a tracked file/dir under `Assets/` or an embedded `Packages/<pkg>/` lacks its Unity `.meta` (or a `.meta` lost its base file); fix by staging the Unity-generated meta or removing the orphan. A same-named CI workflow alarms on violations that bypass the local hook.
 
+## Human-Facing Documentation
+
+AgentDocs are vault artifacts, not repository files. Create `.agentdoc` sources outside the repository (for example, in a system temporary directory), upload them with `vault add <file> --project DeedPlanner-3`, and do not create `Documentation/`, `docs/`, or another repo-facing documentation directory unless the developer explicitly requests repository documentation.
+
 ## Commit Message Style
 
 Use a short, plain, capitalized imperative subject without a Conventional Commit prefix, for example `Sync Unity agent skills`. Check recent commit history before committing and follow it if the dominant convention changes.
@@ -49,6 +53,8 @@ Add `--json` for machine-readable output in agentic loops.
 ```
 unity open "E:/Unity/DeedPlanner-3" --args "-automated"
 ```
+
+On SteamOS/Linux, add `-noaudio` for automated Play-mode sessions (`--args "-automated -noaudio"`). Unity 6000.3.20f1 otherwise crashes in the FMOD audio thread while entering Play mode; edit-mode compilation and tests are unaffected.
 
 Without it, play mode ENTRY stalls indefinitely while the Editor window is unfocused (in-play behavior is unaffected).
 

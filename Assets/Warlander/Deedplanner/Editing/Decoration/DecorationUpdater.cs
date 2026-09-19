@@ -36,6 +36,7 @@ namespace Warlander.Deedplanner.Editing
         private readonly ICategoryLogger _logger;
         private readonly PreviewAtlasCatalog _previewAtlasCatalog;
         private readonly IDataCatalog _dataCatalog;
+        private readonly IMapEditFacade _mapEditFacade;
 
         public Tab TargetTab => Tab.Objects;
 
@@ -59,7 +60,7 @@ namespace Warlander.Deedplanner.Editing
         public DecorationUpdater(IDecorationUpdaterView view, EditingSettings settings, CameraCoordinator cameraCoordinator,
             DPInput input, MapHandler mapHandler, IOutlineCoordinator outlineCoordinator,
             ISharedMaterials sharedMaterials, TabContext tabContext, ILoggerSource loggerSource,
-            PreviewAtlasCatalog previewAtlasCatalog, IDataCatalog dataCatalog)
+            PreviewAtlasCatalog previewAtlasCatalog, IDataCatalog dataCatalog, IMapEditFacade mapEditFacade)
         {
             _view = view;
             _settings = settings;
@@ -72,6 +73,7 @@ namespace Warlander.Deedplanner.Editing
             _logger = loggerSource.Create(Category);
             _previewAtlasCatalog = previewAtlasCatalog;
             _dataCatalog = dataCatalog;
+            _mapEditFacade = mapEditFacade;
         }
 
         public void Initialize()
@@ -303,17 +305,19 @@ namespace Warlander.Deedplanner.Editing
                 _ghostObject.transform.localRotation = Quaternion.Euler(0, _rotation, 0);
             }
 
-            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() && _placingDecoration)
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() && _placingDecoration
+                && placementOverlap)
             {
                 float decorationPositionX = _position.x - _targetedTile.X * 4f;
                 float decorationPositionY = _position.z - _targetedTile.Y * 4f;
                 Vector2 decorationPosition = new Vector2(decorationPositionX, decorationPositionY);
-                Decoration placed = _targetedTile.SetDecoration(data, decorationPosition, _rotation * Mathf.Deg2Rad, targetFloor, data.Floating);
+                Decoration placed = _mapEditFacade.SetDecoration(_targetedTile.X, _targetedTile.Y, data,
+                    decorationPosition, _rotation * Mathf.Deg2Rad, targetFloor, data.Floating);
                 if (placed == null)
                 {
                     _logger.Warning("Attempted placing decoration at X: " + decorationPosition.x + ", Y: " + decorationPosition.y);
                 }
-                map.CommandManager.FinishAction();
+                _mapEditFacade.FinishAction();
 
                 _placingDecoration = false;
                 _ghostObject.transform.localRotation = Quaternion.identity;
@@ -333,9 +337,10 @@ namespace Warlander.Deedplanner.Editing
                 IEnumerable<Decoration> decorationsOnTile = _targetedTile.GetDecorations();
                 foreach (Decoration decoration in decorationsOnTile)
                 {
-                    _targetedTile.SetDecoration(null, decoration.Position, decoration.Rotation, targetFloor);
+                    _mapEditFacade.SetDecoration(_targetedTile.X, _targetedTile.Y, null, decoration.Position,
+                        decoration.Rotation, decoration.Level);
                 }
-                map.CommandManager.FinishAction();
+                _mapEditFacade.FinishAction();
             }
 
             if (_input.DecorationUpdater.DeleteSingleObject.WasPressedThisFrame() && !_placingDecoration)
@@ -347,11 +352,12 @@ namespace Warlander.Deedplanner.Editing
                     float distance = Vector2.Distance(position2d, decorationPosition2d);
                     if (distance < MinimumPlacementGap)
                     {
-                        decoration.Tile.SetDecoration(null, decoration.Position, decoration.Rotation, targetFloor);
+                        _mapEditFacade.SetDecoration(decoration.Tile.X, decoration.Tile.Y, null, decoration.Position,
+                            decoration.Rotation, decoration.Level);
                         break;
                     }
                 }
-                map.CommandManager.FinishAction();
+                _mapEditFacade.FinishAction();
             }
         }
 
@@ -455,7 +461,7 @@ namespace Warlander.Deedplanner.Editing
             _placingDecoration = false;
             _dragStartPos = new Vector2();
 
-            _mapHandler.Map.CommandManager.UndoAction();
+            _mapEditFacade.CancelAction();
         }
     }
 }

@@ -17,6 +17,11 @@ namespace Warlander.UI.Windows
         private Dictionary<int, Window> _windows = new Dictionary<int, Window>();
         private List<string> _spawnedPrefabInstances = new List<string>();
 
+        public bool BlocksGlobalShortcuts()
+        {
+            return _windows.Values.Any(window => window && window.DefaultLayer == WindowLayer.Default);
+        }
+
         /// <summary>
         /// Won't create window instance if there's at least one window of given type already instanced.
         /// </summary>

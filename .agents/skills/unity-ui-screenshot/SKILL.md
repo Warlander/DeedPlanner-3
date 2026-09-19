@@ -13,7 +13,7 @@ For turning an approved mockup into real Unity UI, use the `unity-ui-build` skil
 
 ## Prerequisites
 
-- Editor connected: `unity status`. If not connected: `unity open "E:/Unity/DeedPlanner-3" --args "-automated"` as background task (never wait on it), continue other work, check status once later.
+- Editor connected: `unity status`. If not connected: `unity open "E:/Unity/DeedPlanner-3" --args "-automated"` as background task (never wait on it), continue other work, check status once later. On SteamOS/Linux use `--args "-automated -noaudio"`; this Editor version otherwise crashes in the FMOD audio thread on Play-mode entry.
 
 Generic CLI and `eval_file` rules live in `AGENTS.md` and `unity-cli`; do not duplicate them here.
 

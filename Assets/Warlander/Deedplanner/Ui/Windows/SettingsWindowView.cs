@@ -11,7 +11,7 @@ using Warlogic.Settings.Ugui;
 
 namespace Warlander.Deedplanner.Ui.Windows
 {
-    public class SettingsWindowView : MonoBehaviour, ISettingsWindowView
+    public class SettingsWindowView : MonoBehaviour, ISettingsWindowView, ISettingsNavigationView
     {
         [SerializeField] private RectTransform tabButtonRoot;
         [SerializeField] private RectTransform contentRoot;
@@ -57,6 +57,33 @@ namespace Warlander.Deedplanner.Ui.Windows
             discardButton.interactable = interactable;
         }
 
+        public void ScrollToTop()
+        {
+            RefreshContentLayout();
+            contentScrollRect.StopMovement();
+            contentScrollRect.verticalNormalizedPosition = 1;
+        }
+
+        public void Reveal(RectTransform target)
+        {
+            RefreshContentLayout();
+            contentScrollRect.StopMovement();
+
+            RectTransform viewport = contentScrollRect.viewport != null
+                ? contentScrollRect.viewport
+                : (RectTransform)contentScrollRect.transform;
+            float scrollableHeight = Mathf.Max(0, contentRoot.rect.height - viewport.rect.height);
+            if (scrollableHeight <= 0)
+            {
+                contentScrollRect.verticalNormalizedPosition = 1;
+                return;
+            }
+
+            Bounds targetBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(contentRoot, target);
+            float targetOffset = Mathf.Clamp(contentRoot.rect.yMax - targetBounds.max.y, 0, scrollableHeight);
+            contentScrollRect.verticalNormalizedPosition = 1 - targetOffset / scrollableHeight;
+        }
+
         public void ShowRebind(string bindingLabel)
         {
             rebindText.text = $"Waiting for input to rebind\n\n{bindingLabel}";
@@ -77,6 +104,13 @@ namespace Warlander.Deedplanner.Ui.Windows
             resetBindingsButton.gameObject.SetActive(visible);
         }
 
+        private void RefreshContentLayout()
+        {
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot);
+            Canvas.ForceUpdateCanvases();
+        }
+
         private void OnDestroy()
         {
             rebindFade.DOKill();
@@ -93,7 +127,8 @@ namespace Warlander.Deedplanner.Ui.Windows
         private KeybindSetting _activeRebind;
         private bool _disposed;
 
-        public SettingsWindowSession(SettingsRegistry registry, InputSettings inputSettings, SettingsWindowView view)
+        public SettingsWindowSession(SettingsRegistry registry, InputSettings inputSettings, SettingsWindowView view,
+            SettingsDestination? initialDestination = null)
         {
             _registry = registry;
             _inputSettings = inputSettings;
@@ -101,14 +136,14 @@ namespace Warlander.Deedplanner.Ui.Windows
 
             view.WidgetCatalog.RegisterFactory(typeof(KeybindSetting),
                 new KeybindSettingWidgetFactory(view.KeybindRowPrefab, this));
-            _presenter = new SettingsWindowPresenter(registry, view.WidgetCatalog, view);
+            _presenter = new SettingsWindowPresenter(registry, view.WidgetCatalog, view, view, initialDestination);
             _presenter.ActiveTabChanged += OnActiveTabChanged;
             _view.ResetBindingsClicked += OnResetBindingsClicked;
             _view.Destroyed += Dispose;
 
-            if (registry.Tabs.Count > 0)
+            if (_presenter.ActiveTabId != null)
             {
-                OnActiveTabChanged(registry.Tabs[0].Id);
+                OnActiveTabChanged(_presenter.ActiveTabId);
             }
         }
 

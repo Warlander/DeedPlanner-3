@@ -11,5 +11,6 @@ namespace Warlander.Deedplanner.Rendering.Projectors
         void ProjectTile(Vector2Int tileCoord, TileSelectionTarget target = TileSelectionTarget.Tile);
         void ProjectArea(Vector2Int min, Vector2Int max);
         void ProjectLine(Vector2Int tileCoord, PlaneAlignment alignment);
+        void ProjectAxisLine(int coordinate2, PlaneAlignment alignment);
     }
 }

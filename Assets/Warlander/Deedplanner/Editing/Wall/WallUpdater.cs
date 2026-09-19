@@ -21,6 +21,7 @@ namespace Warlander.Deedplanner.Editing
         private readonly TabContext _tabContext;
         private readonly PreviewAtlasCatalog _previewAtlasCatalog;
         private readonly IDataCatalog _dataCatalog;
+        private readonly IMapEditFacade _mapEditFacade;
 
         public Tab TargetTab => Tab.Walls;
 
@@ -28,7 +29,7 @@ namespace Warlander.Deedplanner.Editing
 
         public WallUpdater(IWallUpdaterView view, EditingSettings settings, CameraCoordinator cameraCoordinator,
             DPInput input, MapHandler mapHandler, TabContext tabContext, PreviewAtlasCatalog previewAtlasCatalog,
-            IDataCatalog dataCatalog)
+            IDataCatalog dataCatalog, IMapEditFacade mapEditFacade)
         {
             _view = view;
             _settings = settings;
@@ -38,6 +39,7 @@ namespace Warlander.Deedplanner.Editing
             _tabContext = tabContext;
             _previewAtlasCatalog = previewAtlasCatalog;
             _dataCatalog = dataCatalog;
+            _mapEditFacade = mapEditFacade;
         }
 
         public void Initialize()
@@ -85,7 +87,7 @@ namespace Warlander.Deedplanner.Editing
         {
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
-                _mapHandler.Map.CommandManager.FinishAction();
+                _mapEditFacade.FinishAction();
             }
 
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
@@ -174,11 +176,11 @@ namespace Warlander.Deedplanner.Editing
 
                 if (horizontal)
                 {
-                    _mapHandler.Map[x, y].SetHorizontalWall(_selectedWall, shouldReverse, floor);
+                    _mapEditFacade.SetHorizontalWall(x, y, _selectedWall, shouldReverse, floor);
                 }
                 else
                 {
-                    _mapHandler.Map[x, y].SetVerticalWall(_selectedWall, shouldReverse, floor);
+                    _mapEditFacade.SetVerticalWall(x, y, _selectedWall, shouldReverse, floor);
                 }
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
@@ -189,11 +191,11 @@ namespace Warlander.Deedplanner.Editing
                 }
                 if (horizontal)
                 {
-                    _mapHandler.Map[x, y].SetHorizontalWall(null, false, floor);
+                    _mapEditFacade.SetHorizontalWall(x, y, null, false, floor);
                 }
                 else
                 {
-                    _mapHandler.Map[x, y].SetVerticalWall(null, false, floor);
+                    _mapEditFacade.SetVerticalWall(x, y, null, false, floor);
                 }
             }
         }
