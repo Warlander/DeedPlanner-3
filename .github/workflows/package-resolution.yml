@@ -3,10 +3,9 @@ name: Package Resolution
 # Resolve from the manifest rather than trusting the committed lock file. This catches
 # unavailable registry versions, unreachable Git dependencies, and dependency conflicts.
 on:
-  push:
-    branches: ['**']
   pull_request:
   merge_group:
+    types: [checks_requested]
   workflow_dispatch:
 
 permissions:
@@ -15,6 +14,11 @@ permissions:
 jobs:
   resolve-packages:
     name: Unity packages are solvable
+    # Fork and Dependabot pull requests cannot receive the Unity credentials used below.
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -43,7 +47,11 @@ jobs:
               /opt/unity/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client \
                 --activate-all --include-personal \
                 --username "$UNITY_EMAIL" --password "$UNITY_PASSWORD"
-              unity-editor -batchmode -nographics -quit -logFile /dev/stdout -projectPath /project
+              unset UNITY_EMAIL UNITY_PASSWORD
+              # The minimal project can fail compilation after UPM has resolved successfully.
+              unity-editor -batchmode -nographics -quit -logFile /dev/stdout -projectPath /project \
+                2>&1 | tee /tmp/unity.log || true
+              grep -Fq "[Package Manager] Lock file was created" /tmp/unity.log
               test -s /project/Packages/packages-lock.json
             '
         env:
