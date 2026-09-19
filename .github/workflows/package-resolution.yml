@@ -1,0 +1,59 @@
+name: Package Resolution
+
+# Resolve from the manifest rather than trusting the committed lock file. This catches
+# unavailable registry versions, unreachable Git dependencies, and dependency conflicts.
+on:
+  pull_request:
+  merge_group:
+    types: [checks_requested]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  resolve-packages:
+    name: Unity packages are solvable
+    # Fork and Dependabot pull requests cannot receive the Unity credentials used below.
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Resolve packages with the project Unity version
+        run: |
+          set -euo pipefail
+
+          project="$RUNNER_TEMP/package-resolution-project"
+          unity_config="$RUNNER_TEMP/unity-config"
+          mkdir -p "$project/Assets" "$project/Packages" "$project/ProjectSettings" "$unity_config"
+          cp Packages/manifest.json "$project/Packages/manifest.json"
+          cp ProjectSettings/ProjectVersion.txt "$project/ProjectSettings/ProjectVersion.txt"
+
+          docker run --rm \
+            -e UNITY_EMAIL -e UNITY_PASSWORD \
+            -v "$project:/project" \
+            -v "$unity_config:/root/.config/unity3d" \
+            unityci/editor:ubuntu-6000.3.20f1-base-3.2.2 \
+            bash -lc '
+              set -euo pipefail
+              /opt/unity/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client \
+                --activate-all --include-personal \
+                --username "$UNITY_EMAIL" --password "$UNITY_PASSWORD"
+              unset UNITY_EMAIL UNITY_PASSWORD
+              # The minimal project can fail compilation after UPM has resolved successfully.
+              unity-editor -batchmode -nographics -quit -logFile /dev/stdout -projectPath /project \
+                2>&1 | tee /tmp/unity.log || true
+              grep -Fq "[Package Manager] Lock file was created" /tmp/unity.log
+              test -s /project/Packages/packages-lock.json
+            '
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
