@@ -305,24 +305,9 @@ namespace Warlander.Deedplanner.Editing
                 _ghostObject.transform.localRotation = Quaternion.Euler(0, _rotation, 0);
             }
 
-            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() && _placingDecoration
-                && placementOverlap)
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() && _placingDecoration)
             {
-                float decorationPositionX = _position.x - _targetedTile.X * 4f;
-                float decorationPositionY = _position.z - _targetedTile.Y * 4f;
-                Vector2 decorationPosition = new Vector2(decorationPositionX, decorationPositionY);
-                Decoration placed = _mapEditFacade.SetDecoration(_targetedTile.X, _targetedTile.Y, data,
-                    decorationPosition, _rotation * Mathf.Deg2Rad, targetFloor, data.Floating);
-                if (placed == null)
-                {
-                    _logger.Warning("Attempted placing decoration at X: " + decorationPosition.x + ", Y: " + decorationPosition.y);
-                }
-                _mapEditFacade.FinishAction();
-
-                _placingDecoration = false;
-                _ghostObject.transform.localRotation = Quaternion.identity;
-                _isScrollRotate = false;
-                _rotation = 0f;
+                CompletePlacement(placementOverlap, data, targetFloor);
             }
 
             if (_input.UpdatersShared.Deletion.WasPerformedThisFrame())
@@ -359,6 +344,28 @@ namespace Warlander.Deedplanner.Editing
                 }
                 _mapEditFacade.FinishAction();
             }
+        }
+
+        private void CompletePlacement(bool placementAllowed, DecorationData data, int targetFloor)
+        {
+            if (placementAllowed)
+            {
+                float decorationPositionX = _position.x - _targetedTile.X * 4f;
+                float decorationPositionY = _position.z - _targetedTile.Y * 4f;
+                Vector2 decorationPosition = new Vector2(decorationPositionX, decorationPositionY);
+                Decoration placed = _mapEditFacade.SetDecoration(_targetedTile.X, _targetedTile.Y, data,
+                    decorationPosition, _rotation * Mathf.Deg2Rad, targetFloor, data.Floating);
+                if (placed == null)
+                {
+                    _logger.Warning("Attempted placing decoration at X: " + decorationPosition.x + ", Y: " + decorationPosition.y);
+                }
+                _mapEditFacade.FinishAction();
+            }
+
+            _placingDecoration = false;
+            _ghostObject.transform.localRotation = Quaternion.identity;
+            _isScrollRotate = false;
+            _rotation = 0f;
         }
 
         private void OnGhostCreated(GameObject ghost)
