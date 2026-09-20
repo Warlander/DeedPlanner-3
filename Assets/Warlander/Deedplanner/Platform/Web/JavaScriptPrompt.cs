@@ -25,9 +25,15 @@ namespace Warlander.Deedplanner.Platform.Web
 
         private void OnInputSelected(string content)
         {
+            inputField.text = OpenPrompt(message, defaultInput);
+        }
+
+        private static string OpenPrompt(string promptMessage, string promptDefaultInput)
+        {
 #if UNITY_WEBGL
-            string result = JavaScriptUtils.PromptNative(message, defaultInput);
-            inputField.text = result;
+            return JavaScriptUtils.PromptNative(promptMessage, promptDefaultInput);
+#else
+            return promptDefaultInput;
 #endif
         }
     }
