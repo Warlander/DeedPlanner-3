@@ -47,6 +47,12 @@ namespace Warlander.Deedplanner.Domain
             set {
                 if (surfaceHeight != value)
                 {
+                    if (Map.IsDeserializing)
+                    {
+                        surfaceHeight = value;
+                        Map.Ground.SetSlope(X, Y, value);
+                        return;
+                    }
                     Map.CommandManager.AddToActionAndExecute(new SurfaceHeightChangeCommand(this, surfaceHeight, value));
                 }
             }
@@ -376,12 +382,12 @@ namespace Warlander.Deedplanner.Domain
             if (data != null && needsChange)
             {
                 Floor floor = CreateNewFloor(entityData, data, orientation);
-                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, levelEntity, floor));
+                ApplyEntityChange(entityData, levelEntity, floor);
                 return floor;
             }
             if (data == null && levelEntity)
             {
-                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, levelEntity, null));
+                ApplyEntityChange(entityData, levelEntity, null);
                 return null;
             }
 
@@ -411,12 +417,12 @@ namespace Warlander.Deedplanner.Domain
             if (data != null && needsChange)
             {
                 Roof roof = CreateNewRoof(entityData, data);
-                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, levelEntity, roof));
+                ApplyEntityChange(entityData, levelEntity, roof);
                 return roof;
             }
             if (data == null && levelEntity)
             {
-                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, entityData, levelEntity, null));
+                ApplyEntityChange(entityData, levelEntity, null);
                 return null;
             }
 
@@ -503,19 +509,19 @@ namespace Warlander.Deedplanner.Domain
                 if (wallNeedsChange)
                 {
                     Wall wall = CreateNewVerticalWall(wallEntityData, data, reversed);
-                    Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, wall));
+                    ApplyEntityChange(wallEntityData, currentWall, wall);
                     return wall;
                 }
                 if (fenceNeedsChange)
                 {
                     Wall fence = CreateNewVerticalWall(fenceEntityData, data, reversed);
-                    Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, fence));
+                    ApplyEntityChange(fenceEntityData, currentFence, fence);
                     return fence;
                 }
 
                 if (wallNeedsRemoval)
                 {
-                    Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
+                    ApplyEntityChange(wallEntityData, currentWall, null);
                     return null;
                 }
 
@@ -524,12 +530,12 @@ namespace Warlander.Deedplanner.Domain
             {
                 if (currentWall)
                 {
-                    Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
+                    ApplyEntityChange(wallEntityData, currentWall, null);
                     return null;
                 }
                 if (currentFence)
                 {
-                    Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, null));
+                    ApplyEntityChange(fenceEntityData, currentFence, null);
                     return null;
                 }
             }
@@ -619,19 +625,19 @@ namespace Warlander.Deedplanner.Domain
                 if (wallNeedsChange)
                 {
                     Wall wall = CreateNewHorizontalWall(wallEntityData, data, reversed);
-                    Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, wall));
+                    ApplyEntityChange(wallEntityData, currentWall, wall);
                     return wall;
                 }
                 if (fenceNeedsChange)
                 {
                     Wall fence = CreateNewHorizontalWall(fenceEntityData, data, reversed);
-                    Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, fence));
+                    ApplyEntityChange(fenceEntityData, currentFence, fence);
                     return fence;
                 }
 
                 if (wallNeedsRemoval)
                 {
-                    Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
+                    ApplyEntityChange(wallEntityData, currentWall, null);
                     return null;
                 }
             }
@@ -639,12 +645,12 @@ namespace Warlander.Deedplanner.Domain
             {
                 if (currentWall)
                 {
-                    Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, wallEntityData, currentWall, null));
+                    ApplyEntityChange(wallEntityData, currentWall, null);
                     return null;
                 }
                 if (currentFence)
                 {
-                    Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, fenceEntityData, currentFence, null));
+                    ApplyEntityChange(fenceEntityData, currentFence, null);
                     return null;
                 }
             }
@@ -713,13 +719,13 @@ namespace Warlander.Deedplanner.Domain
             if (data != null && needsChange)
             {
                 Decoration decoration = CreateNewDecoration(decorationEntityData, data, position, rotation);
-                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, decorationEntityData, currentDecoration, decoration));
+                ApplyEntityChange(decorationEntityData, currentDecoration, decoration);
                 return decoration;
             }
 
             if (data == null && decorationEntity)
             {
-                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, decorationEntityData, currentDecoration, null));
+                ApplyEntityChange(decorationEntityData, currentDecoration, null);
                 return null;
             }
 
@@ -735,6 +741,25 @@ namespace Warlander.Deedplanner.Domain
             Map.AddEntityToMap(decorationObject, entity.Level);
 
             return decoration;
+        }
+
+        private void ApplyEntityChange(EntityData data, LevelEntity oldEntity, LevelEntity newEntity)
+        {
+            if (!Map.IsDeserializing)
+            {
+                Map.CommandManager.AddToActionAndExecute(new TileEntityChangeCommand(this, data, oldEntity, newEntity));
+                return;
+            }
+
+            Entities.Remove(data);
+            if (newEntity)
+            {
+                Entities[data] = newEntity;
+            }
+            if (oldEntity)
+            {
+                oldEntity.gameObject.SetActive(false);
+            }
         }
 
         public void RegisterBridgePart(BridgePart bridgePart, bool cave)

@@ -55,6 +55,7 @@ namespace Warlander.Deedplanner.Domain
         public string DisplayName { get; set; } = "Untitled";
 
         public bool IsDirty { get; private set; }
+        internal bool IsDeserializing { get; private set; }
         public event Action<bool> DirtyChanged = delegate { };
 
         public void MarkDirty()
@@ -231,6 +232,7 @@ namespace Warlander.Deedplanner.Domain
             }
             string name = mapRoot.GetAttribute("name");
             DisplayName = string.IsNullOrEmpty(name) ? "Untitled" : name;
+            IsDeserializing = true;
             PreInitialize(width, height);
 
             XmlNodeList tilesList = mapRoot.GetElementsByTagName("tile");
@@ -262,6 +264,7 @@ namespace Warlander.Deedplanner.Domain
 
                 this[x, y].DeserializeEntities(tileElement);
             }
+            IsDeserializing = false;
 
             _bridgesController.InitializeBridges(mapRoot);
             _dockCollection.InitializeDocks(mapRoot);

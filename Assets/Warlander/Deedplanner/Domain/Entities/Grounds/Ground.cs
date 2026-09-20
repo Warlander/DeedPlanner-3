@@ -15,14 +15,34 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
 
         public Tile Tile { get; }
 
-        public GroundData Data {
+        public GroundData Data
+        {
             get => data;
-            set => Tile.Map.CommandManager.AddToActionAndExecute(new GroundDataChangeCommand(this, data, value));
+            set
+            {
+                if (Tile.Map.IsDeserializing)
+                {
+                    data = value;
+                    Tile.Map.Ground.SetGroundData(Tile.X, Tile.Y, data, roadDirection);
+                    return;
+                }
+                Tile.Map.CommandManager.AddToActionAndExecute(new GroundDataChangeCommand(this, data, value));
+            }
         }
 
-        public RoadDirection RoadDirection {
+        public RoadDirection RoadDirection
+        {
             get => roadDirection;
-            set => Tile.Map.CommandManager.AddToActionAndExecute(new RoadDirectionChangeCommand(this, roadDirection, value));
+            set
+            {
+                if (Tile.Map.IsDeserializing)
+                {
+                    roadDirection = value;
+                    Tile.Map.Ground.SetGroundData(Tile.X, Tile.Y, data, roadDirection);
+                    return;
+                }
+                Tile.Map.CommandManager.AddToActionAndExecute(new RoadDirectionChangeCommand(this, roadDirection, value));
+            }
         }
 
         public Ground(Tile tile, GroundData data, IGroundDataResolver dataResolver)
