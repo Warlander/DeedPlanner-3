@@ -16,9 +16,10 @@ namespace Warlander.Deedplanner.Editing
             _roofsList.ValueChanged += OnRoofsListValueChanged;
         }
 
-        public void AddRoofEntry(RoofData data)
+        public void AddRoofEntry(RoofData data, Sprite sprite)
         {
-            _roofsList.Add(data);
+            IconUnityListElement iconListElement = (IconUnityListElement) _roofsList.Add(data);
+            iconListElement.Sprite = sprite;
         }
 
         public void PushSelection()

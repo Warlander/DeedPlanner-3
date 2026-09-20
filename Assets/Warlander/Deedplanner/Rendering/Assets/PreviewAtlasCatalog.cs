@@ -11,7 +11,8 @@ namespace Warlander.Deedplanner.Rendering.Assets
         Floors,
         Walls,
         Objects,
-        Grounds
+        Grounds,
+        Roofs
     }
 
     public sealed class PreviewAtlasCatalog : IDisposable
@@ -43,6 +44,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
             Load(PreviewAtlasCategory.Walls);
             Load(PreviewAtlasCategory.Objects);
             Load(PreviewAtlasCategory.Grounds);
+            Load(PreviewAtlasCategory.Roofs);
         }
 
         public bool TryGetSprite(PreviewAtlasCategory category, string shortName, out Sprite sprite)

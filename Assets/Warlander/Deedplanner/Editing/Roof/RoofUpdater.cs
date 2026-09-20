@@ -5,6 +5,7 @@ using Warlander.Deedplanner.Domain.Entities.Roofs;
 using Warlander.Deedplanner.Ui.Tooltips;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Cameras;
+using Warlander.Deedplanner.Rendering.Assets;
 
 namespace Warlander.Deedplanner.Editing
 {
@@ -18,6 +19,7 @@ namespace Warlander.Deedplanner.Editing
         private readonly TabContext _tabContext;
         private readonly IDataCatalog _dataCatalog;
         private readonly IMapEditFacade _mapEditFacade;
+        private readonly PreviewAtlasCatalog _previewAtlasCatalog;
 
         public Tab TargetTab => Tab.Roofs;
 
@@ -25,7 +27,7 @@ namespace Warlander.Deedplanner.Editing
 
         public RoofUpdater(IRoofUpdaterView view, TooltipHandler tooltipHandler, CameraCoordinator cameraCoordinator,
             DPInput input, MapHandler mapHandler, TabContext tabContext, IDataCatalog dataCatalog,
-            IMapEditFacade mapEditFacade)
+            IMapEditFacade mapEditFacade, PreviewAtlasCatalog previewAtlasCatalog)
         {
             _view = view;
             _tooltipHandler = tooltipHandler;
@@ -35,6 +37,7 @@ namespace Warlander.Deedplanner.Editing
             _tabContext = tabContext;
             _dataCatalog = dataCatalog;
             _mapEditFacade = mapEditFacade;
+            _previewAtlasCatalog = previewAtlasCatalog;
         }
 
         public void Initialize()
@@ -43,7 +46,8 @@ namespace Warlander.Deedplanner.Editing
 
             foreach (RoofData data in _dataCatalog.GetAllRoofs())
             {
-                _view.AddRoofEntry(data);
+                _previewAtlasCatalog.TryGetSprite(PreviewAtlasCategory.Roofs, data.ShortName, out Sprite sprite);
+                _view.AddRoofEntry(data, sprite);
             }
 
             _view.PushSelection();

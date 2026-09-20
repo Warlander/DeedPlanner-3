@@ -4879,6 +4879,7 @@
 
 
 	<roofs>
+
 		<roof name="Wood shingle roof" shortname="wRoof" tex="Special/wooden.png">
 			<materials>
 				Wood shingles = 10,

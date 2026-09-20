@@ -19,13 +19,13 @@ using Object = UnityEngine.Object;
 namespace Warlander.Deedplanner.Editor
 {
     /// <summary>
-    /// Renders floors, walls and decorations from objects.xml into 64x64 preview atlas
+    /// Renders floors, walls, roofs, decorations and grounds from objects.xml into 64x64 preview atlas
     /// textures with JSON manifests. Outputs live in generated Resources.
     /// </summary>
     public static class PreviewThumbnailGenerator
     {
         // Render-input changes require this bump plus a harmless objects.xml change to invalidate CI caches.
-        public const int GeneratorVersion = 4;
+        public const int GeneratorVersion = 6;
         private const int CellSize = 64;
         private const int RenderResolution = 256;
         private const float FitMargin = 1.02f;
@@ -194,7 +194,8 @@ namespace Warlander.Deedplanner.Editor
                 List<PreviewEntry> walls = CollectWalls(document);
                 List<PreviewEntry> objects = CollectObjects(document);
                 List<GroundPreviewEntry> grounds = CollectGrounds(document);
-                TotalCount = floors.Count + walls.Count + objects.Count + grounds.Count;
+                List<PreviewEntry> roofs = CollectRoofs(document);
+                TotalCount = floors.Count + walls.Count + objects.Count + grounds.Count + roofs.Count;
                 CompletedCount = 0;
 
                 List<string> writtenPaths = new List<string>();
@@ -211,6 +212,8 @@ namespace Warlander.Deedplanner.Editor
                 writtenPaths.AddRange(await GenerateCategoryAsync("objects", objects, LayerMasks.DecorationLayer,
                     entry => entry.NormalModelElement, xmlSha256));
                 writtenPaths.AddRange(await GenerateGroundsAsync(grounds, xmlSha256));
+                writtenPaths.AddRange(await GenerateCategoryAsync("roofs", roofs, LayerMasks.FloorRoofLayer,
+                    entry => entry.NormalModelElement, xmlSha256));
 
                 ImportWrittenAtlases(writtenPaths);
             }
@@ -356,6 +359,28 @@ namespace Warlander.Deedplanner.Editor
                     }
                 }
                 entries.Add(new GroundPreviewEntry(element.GetAttribute("shortname"), location));
+            }
+            return entries;
+        }
+
+        private static List<PreviewEntry> CollectRoofs(XmlDocument document)
+        {
+            List<PreviewEntry> entries = new List<PreviewEntry>();
+            HashSet<string> seenShortNames = new HashSet<string>();
+            foreach (XmlElement element in document.GetElementsByTagName("roof"))
+            {
+                if (!VerifyShortName(element, seenShortNames))
+                {
+                    continue;
+                }
+
+                XmlElement modelElement = document.CreateElement("model");
+                modelElement.SetAttribute("location", "Special/spineEnd.wom");
+                XmlElement textureOverride = document.CreateElement("override");
+                textureOverride.SetAttribute("mesh", "*");
+                textureOverride.SetAttribute("texture", element.GetAttribute("tex"));
+                modelElement.AppendChild(textureOverride);
+                entries.Add(new PreviewEntry(element.GetAttribute("shortname"), modelElement, null));
             }
             return entries;
         }
@@ -578,6 +603,16 @@ namespace Warlander.Deedplanner.Editor
             {
                 Logger.Warning($"Preview thumbnails: {entry.ShortName} model file missing: {location}, leaving cell empty");
                 return null;
+            }
+
+            foreach (XmlElement textureOverride in modelElement.GetElementsByTagName("override"))
+            {
+                TextureReference textureReference =
+                    AssetFacade.GetTextureReference(textureOverride.GetAttribute("texture"));
+                if (textureReference != null)
+                {
+                    await textureReference.LoadOrGetTextureAsync();
+                }
             }
 
             ModelHandle model = AssetFacade.GetModel(modelElement, layer);

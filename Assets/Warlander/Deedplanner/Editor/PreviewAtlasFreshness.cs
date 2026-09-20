@@ -8,7 +8,7 @@ namespace Warlander.Deedplanner.Editor
 {
     public static class PreviewAtlasFreshness
     {
-        private static readonly string[] Categories = { "floors", "walls", "objects", "grounds" };
+        private static readonly string[] Categories = { "floors", "walls", "objects", "grounds", "roofs" };
 
         public static bool IsFresh(out string reason)
         {
