@@ -2,6 +2,7 @@
   "dependencies": {
     "com.cysharp.r3": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity",
     "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
+    "com.rlabrecque.steamworks.net": "https://github.com/rlabrecque/Steamworks.NET.git?path=/com.rlabrecque.steamworks.net#2025.162.1",
     "com.unity.2d.animation": "13.0.5",
     "com.unity.2d.common": "12.0.3",
     "com.unity.2d.psdimporter": "12.0.2",
