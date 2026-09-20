@@ -13,7 +13,11 @@ namespace Warlander.Deedplanner.Ui.Widgets
         private KeybindSetting _setting;
         private IRebindOverlay _overlay;
 
-        public event Action ValueEdited;
+        public event Action ValueEdited
+        {
+            add { }
+            remove { }
+        }
 
         public RectTransform Root => (RectTransform) transform;
 
