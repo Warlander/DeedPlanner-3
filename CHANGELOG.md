@@ -2,6 +2,7 @@
 
 ## [3.4.1] - Unreleased
 
+- Settings window overhaul - a single window with tabs now covers all settings, replacing the old separate graphics and input windows
 - Updated Steam integration to Steamworks SDK 1.62
 - Added double-window log walls and the Temple epic structure
 - Fixed ground texture errors continuing after leaving Play Mode in the Editor
