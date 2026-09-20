@@ -19,6 +19,7 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
             foreach (GroundData data in dataCatalog.GetAllGrounds())
             {
                 textures.Add(data.Tex3d);
+                textures.Add(data.Tex2d);
             }
 
             _textures = new IndexedTextureArray<TextureReference>(TextureWidth, TextureHeight, textures.Count);

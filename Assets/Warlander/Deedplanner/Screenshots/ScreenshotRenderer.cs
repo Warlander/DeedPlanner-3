@@ -58,6 +58,7 @@ namespace Warlander.Deedplanner.Screenshots
 
                 bool renderWater = request.RenderEntireMap || request.Level == 0 || request.Level == -1;
                 using (map.PrepareForCamera(new MapRenderView(request.Level, request.RenderEntireMap, false)))
+                using (map.Ground.PrepareForCamera(request.RenderCrops))
                 using (_waterFacade.PrepareForCamera(camera, request.CameraController, renderWater,
                            WaterQuality.Ultra))
                 {

@@ -81,7 +81,7 @@ namespace Warlander.Deedplanner.Screenshots
                 var request = new ScreenshotRequest(
                     camera.worldToCameraMatrix, camera.projectionMatrix,
                     CameraClearFlags.Skybox, Color.black,
-                    0, true, _cameraCoordinator.Current.CameraController,
+                    0, true, false, _cameraCoordinator.Current.CameraController,
                     ThumbnailWidth, ThumbnailHeight, camera.nearClipPlane, camera.farClipPlane);
 
                 return _screenshotRenderer.TakeScreenshot(request);

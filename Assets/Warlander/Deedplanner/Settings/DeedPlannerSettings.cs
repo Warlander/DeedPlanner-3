@@ -21,9 +21,10 @@ namespace Warlander.Deedplanner.Settings
         public EditingSettings Editing { get; }
         public UiSettings Ui { get; }
         public GraphicsOptions Graphics { get; }
+        public CropVisibilitySettings CropVisibility { get; }
 
         private DeedPlannerSettings(SettingsRegistry registry, ISettingsStore store, CameraSettings camera,
-            EditingSettings editing, UiSettings ui, GraphicsOptions graphics)
+            EditingSettings editing, UiSettings ui, GraphicsOptions graphics, CropVisibilitySettings cropVisibility)
         {
             Registry = registry;
             Store = store;
@@ -31,6 +32,7 @@ namespace Warlander.Deedplanner.Settings
             Editing = editing;
             Ui = ui;
             Graphics = graphics;
+            CropVisibility = cropVisibility;
         }
 
         public static DeedPlannerSettings Create(ICategoryLogger logger)
@@ -50,6 +52,7 @@ namespace Warlander.Deedplanner.Settings
             SettingsTab generalTab = registry.AddTab("general", "General");
             SettingsTab graphicsTab = registry.AddTab("graphics", "Graphics");
             SettingsTab camerasTab = registry.AddTab("cameras", "Cameras");
+            SettingsTab cropsTab = registry.AddTab("crops", "Crops");
 
             var guiScale = new IntSetting("guiScale", "GUI Scale", 10, 5, 20, "Scales the whole user interface.");
             generalTab.Add(guiScale);
@@ -104,6 +107,13 @@ namespace Warlander.Deedplanner.Settings
             var controlSpeedModifier = new FloatSetting("controlSpeedModifier", "Precise Speed Modifier", 0.2f, 0.05f, 1f);
             camerasTab.Add(controlSpeedModifier);
 
+            var showCropsIn3D = new BoolSetting("showCropsIn3D", "Show Crops in 3D", false);
+            cropsTab.Add(showCropsIn3D);
+            var showCropsIn2D = new BoolSetting("showCropsIn2D", "Show Crops in 2D", true);
+            cropsTab.Add(showCropsIn2D);
+            var showCropsInIsometric = new BoolSetting("showCropsInIsometric", "Show Crops in Isometric", true);
+            cropsTab.Add(showCropsInIsometric);
+
             // editing settings live in their mode tabs (Height/Wall/Decoration), registered tab-less
             var heightDragSensitivity = new FloatSetting("heightDragSensitivity", "Height Drag Sensitivity", 0.5f, 0.05f, 2f);
             registry.Register(heightDragSensitivity);
@@ -127,8 +137,9 @@ namespace Warlander.Deedplanner.Settings
                 decorationRotationSensitivity, caveOccupiedCellPolicy);
             var ui = new UiSettings(guiScale, compassVisibility);
             var graphics = new GraphicsOptions(waterQuality, qualityLevel);
+            var cropVisibility = new CropVisibilitySettings(showCropsIn3D, showCropsIn2D, showCropsInIsometric);
 
-            return new DeedPlannerSettings(registry, store, camera, editing, ui, graphics);
+            return new DeedPlannerSettings(registry, store, camera, editing, ui, graphics, cropVisibility);
         }
 
         private static void WarnForInvalidEnum<T>(ISettingsStore store, string key, ICategoryLogger logger)

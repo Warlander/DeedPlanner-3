@@ -2,6 +2,7 @@
 
 ## [3.4.0] - Unreleased
 
+- Crop-specific field textures can now be shown independently in 3D, 2D, and isometric camera modes from the Crops settings tab
 - Roof materials now have rendered previews in the Roofs tab
 - Active uGUI hierarchies and prefab assets can now be exported from the Editor or Unity CLI as scalable, composable HTML bundles that preserve RectTransform structure, Image and RawImage visuals, and editable text
 - Symmetry planning is now available from the Mirror tab, with independently placeable vertical and horizontal axes, live map guides, support across editing tools, single-step undo, optional user-bound shortcuts, and direct navigation from Configure Bindings to the Symmetry keybinds

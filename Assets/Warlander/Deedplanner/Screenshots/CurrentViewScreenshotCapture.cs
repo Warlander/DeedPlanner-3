@@ -37,6 +37,7 @@ namespace Warlander.Deedplanner.Screenshots
                 camera.backgroundColor,
                 multiCamera.Level,
                 multiCamera.RenderEntireMap,
+                multiCamera.RenderCrops,
                 multiCamera.CameraController,
                 width,
                 height,

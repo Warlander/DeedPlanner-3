@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Warlander.Deedplanner.Rendering.Assets;
@@ -31,8 +32,11 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
         private RoadDirection[,] directionsArray;
         
         private Vector3[] renderVertices;
-        private Vector2[] uv2;
+        private Vector2[] uv2WithoutCrops;
+        private Vector2[] uv2WithCrops;
         private Vector3[] colliderVertices;
+
+        private bool _showCrops;
 
         private bool needsVerticesUpdate = false;
         private bool needsUvUpdate = false;
@@ -101,7 +105,8 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
             Vector2[] uv = InitializeRenderUV(Width, Height);
             RenderMesh.uv = uv;
             
-            uv2 = InitializeRenderUV2(Width, Height);
+            uv2WithoutCrops = InitializeRenderUV2(Width, Height);
+            uv2WithCrops = InitializeRenderUV2(Width, Height);
             
             int[] triangles = InitializeRenderTriangles(Width, Height);
             RenderMesh.triangles = triangles;
@@ -347,9 +352,28 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
 
             if (needsUvUpdate)
             {
-                RenderMesh.uv2 = uv2;
+                RenderMesh.uv2 = _showCrops ? uv2WithCrops : uv2WithoutCrops;
                 needsUvUpdate = false;
             }
+        }
+
+        public IDisposable PrepareForCamera(bool showCrops)
+        {
+            var scope = new CameraScope(this, _showCrops);
+            SetCropVisibility(showCrops);
+            return scope;
+        }
+
+        public void SetCropVisibility(bool showCrops)
+        {
+            if (_showCrops == showCrops)
+            {
+                return;
+            }
+
+            _showCrops = showCrops;
+            RenderMesh.uv2 = _showCrops ? uv2WithCrops : uv2WithoutCrops;
+            needsUvUpdate = false;
         }
 
         public int GetSlope(int x, int y)
@@ -614,23 +638,68 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
         // observable never emits for already-completed tasks, killing ground repaints
         private async void UpdateUV2Async(GroundData data, int uvIndex, Vector2Int tileCoords)
         {
-            Texture2D loadedTexture = await data.Tex3d.LoadOrGetTextureAsync();
-            if (!this || !loadedTexture || dataArray[tileCoords.x, tileCoords.y] != data)
+            Texture2D textureWithoutCrops = await data.Tex3d.LoadOrGetTextureAsync();
+            if (!this || !textureWithoutCrops || dataArray[tileCoords.x, tileCoords.y] != data)
             {
                 return;
             }
 
-            if (!_groundTextures.TryGetOrAdd(data.Tex3d, loadedTexture, out int texIndex))
+            if (!_groundTextures.TryGetOrAdd(data.Tex3d, textureWithoutCrops, out int textureWithoutCropsIndex))
             {
                 return;
             }
 
-            Vector2 texVector = new Vector2(texIndex, 0);
-            uv2[uvIndex] = texVector;
-            uv2[uvIndex + 1] = texVector;
-            uv2[uvIndex + 2] = texVector;
+            SetTextureIndex(uv2WithoutCrops, uvIndex, textureWithoutCropsIndex);
+            SetTextureIndex(uv2WithCrops, uvIndex, textureWithoutCropsIndex);
+            needsUvUpdate = true;
+
+            Texture2D textureWithCrops = data.Tex2d == data.Tex3d
+                ? textureWithoutCrops
+                : await data.Tex2d.LoadOrGetTextureAsync();
+            if (!this || !textureWithCrops || dataArray[tileCoords.x, tileCoords.y] != data)
+            {
+                return;
+            }
+
+            if (!_groundTextures.TryGetOrAdd(data.Tex2d, textureWithCrops, out int textureWithCropsIndex))
+            {
+                return;
+            }
+
+            SetTextureIndex(uv2WithCrops, uvIndex, textureWithCropsIndex);
 
             needsUvUpdate = true;
+        }
+
+        private static void SetTextureIndex(Vector2[] target, int uvIndex, int textureIndex)
+        {
+            Vector2 textureVector = new Vector2(textureIndex, 0);
+            target[uvIndex] = textureVector;
+            target[uvIndex + 1] = textureVector;
+            target[uvIndex + 2] = textureVector;
+        }
+
+        private sealed class CameraScope : IDisposable
+        {
+            private GroundMesh _groundMesh;
+            private readonly bool _showCrops;
+
+            public CameraScope(GroundMesh groundMesh, bool showCrops)
+            {
+                _groundMesh = groundMesh;
+                _showCrops = showCrops;
+            }
+
+            public void Dispose()
+            {
+                if (!_groundMesh)
+                {
+                    return;
+                }
+
+                _groundMesh.SetCropVisibility(_showCrops);
+                _groundMesh = null;
+            }
         }
     }
 }

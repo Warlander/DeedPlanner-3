@@ -312,6 +312,54 @@ namespace Warlander.Deedplanner.Tests
             StringAssert.Contains("caveOccupiedCellPolicy", logger.LastWarning);
         }
 
+        [Test]
+        public void CropVisibility_MissingKeysUseCameraDefaults()
+        {
+            DeedPlannerSettings settings = DeedPlannerSettings.Create(new RecordingLogger(), new MemoryStore());
+
+            Assert.IsFalse(settings.CropVisibility.ShowIn3D);
+            Assert.IsTrue(settings.CropVisibility.ShowIn2D);
+            Assert.IsTrue(settings.CropVisibility.ShowInIsometric);
+        }
+
+        [Test]
+        public void CropVisibility_RoundTrips()
+        {
+            var store = new MemoryStore();
+            DeedPlannerSettings settings = DeedPlannerSettings.Create(new RecordingLogger(), store);
+
+            settings.CropVisibility.ShowIn3D = true;
+            settings.CropVisibility.ShowIn2D = false;
+            settings.CropVisibility.ShowInIsometric = false;
+            DeedPlannerSettings reloaded = DeedPlannerSettings.Create(new RecordingLogger(), store);
+
+            Assert.IsTrue(reloaded.CropVisibility.ShowIn3D);
+            Assert.IsFalse(reloaded.CropVisibility.ShowIn2D);
+            Assert.IsFalse(reloaded.CropVisibility.ShowInIsometric);
+        }
+
+        [Test]
+        public void CropVisibility_HasDedicatedSettingsTab()
+        {
+            DeedPlannerSettings settings = DeedPlannerSettings.Create(new RecordingLogger(), new MemoryStore());
+            SettingsTab cropsTab = null;
+            foreach (SettingsTab tab in settings.Registry.Tabs)
+            {
+                if (tab.Id == "crops")
+                {
+                    cropsTab = tab;
+                    break;
+                }
+            }
+
+            Assert.That(cropsTab, Is.Not.Null);
+            Assert.That(cropsTab.Label, Is.EqualTo("Crops"));
+            Assert.That(cropsTab.Settings.Count, Is.EqualTo(3));
+            Assert.That(cropsTab.Settings[0].Key, Is.EqualTo("showCropsIn3D"));
+            Assert.That(cropsTab.Settings[1].Key, Is.EqualTo("showCropsIn2D"));
+            Assert.That(cropsTab.Settings[2].Key, Is.EqualTo("showCropsInIsometric"));
+        }
+
         private sealed class MemoryStore : ISettingsStore
         {
             private readonly Dictionary<string, string> _values = new Dictionary<string, string>();

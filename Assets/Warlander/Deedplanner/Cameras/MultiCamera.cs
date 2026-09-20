@@ -20,6 +20,7 @@ using Warlander.Deedplanner.Ui.Widgets;
 using Warlander.Deedplanner.Inputs;
 using VContainer;
 using Warlander.Deedplanner.Caves;
+using Warlander.Deedplanner.Settings;
 
 namespace Warlander.Deedplanner.Cameras
 {
@@ -37,6 +38,7 @@ namespace Warlander.Deedplanner.Cameras
         [Inject] private IWaterFacade _waterFacade;
         [Inject] private TabContext _tabContext;
         [Inject] private ICaveHitResolver _caveHitResolver;
+        [Inject] private CropVisibilitySettings _cropVisibilitySettings;
 
         public event Action LevelChanged;
         public event Action ModeChanged;
@@ -102,6 +104,21 @@ namespace Warlander.Deedplanner.Cameras
 
         public int ScreenId => screenId;
         public bool RenderEntireMap => CameraMode == CameraMode.Perspective || CameraMode == CameraMode.Wurmian;
+        public bool RenderCrops
+        {
+            get
+            {
+                switch (CameraMode)
+                {
+                    case CameraMode.Top:
+                        return _cropVisibilitySettings.ShowIn2D;
+                    case CameraMode.Isometric:
+                        return _cropVisibilitySettings.ShowInIsometric;
+                    default:
+                        return _cropVisibilitySettings.ShowIn3D;
+                }
+            }
+        }
 
         public GameObject Screen => screen;
 
@@ -133,6 +150,7 @@ namespace Warlander.Deedplanner.Cameras
         private readonly int[] _heightsBuffer = new int[9];
         private IDisposable _mapRenderScope;
         private IDisposable _gridRenderScope;
+        private IDisposable _groundRenderScope;
 
         private CameraMode cameraMode = CameraMode.Top;
         private int _level = 0;
@@ -234,6 +252,11 @@ namespace Warlander.Deedplanner.Cameras
             if (this != _cameraCoordinator.Current)
             {
                 _mapRenderScope = map.PrepareForCamera(new MapRenderView(Level, RenderEntireMap, map.RenderGrid));
+                _groundRenderScope = map.Ground.PrepareForCamera(RenderCrops);
+            }
+            else
+            {
+                map.Ground.SetCropVisibility(RenderCrops);
             }
             bool renderWater = RenderEntireMap || Level == 0 || Level == -1;
             _waterFacade.PrepareForCamera(AttachedCamera, CameraController, renderWater);
@@ -255,6 +278,8 @@ namespace Warlander.Deedplanner.Cameras
         {
             _gridRenderScope?.Dispose();
             _gridRenderScope = null;
+            _groundRenderScope?.Dispose();
+            _groundRenderScope = null;
             _mapRenderScope?.Dispose();
             _mapRenderScope = null;
         }

@@ -11,6 +11,7 @@ namespace Warlander.Deedplanner.Screenshots
         public readonly Color BackgroundColor;
         public readonly int Level;
         public readonly bool RenderEntireMap;
+        public readonly bool RenderCrops;
         public readonly ICameraController CameraController;
         public readonly int Width;
         public readonly int Height;
@@ -18,7 +19,7 @@ namespace Warlander.Deedplanner.Screenshots
         public readonly float FarClip;
 
         public ScreenshotRequest(Matrix4x4 worldToCamera, Matrix4x4 projection, CameraClearFlags clearFlags,
-            Color backgroundColor, int level, bool renderEntireMap, ICameraController cameraController,
+            Color backgroundColor, int level, bool renderEntireMap, bool renderCrops, ICameraController cameraController,
             int width, int height, float nearClip, float farClip)
         {
             WorldToCamera = worldToCamera;
@@ -27,6 +28,7 @@ namespace Warlander.Deedplanner.Screenshots
             BackgroundColor = backgroundColor;
             Level = level;
             RenderEntireMap = renderEntireMap;
+            RenderCrops = renderCrops;
             CameraController = cameraController;
             Width = width;
             Height = height;
