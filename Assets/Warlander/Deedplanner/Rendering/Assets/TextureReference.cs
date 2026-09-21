@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -28,9 +27,11 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 return Task.FromResult(texture);
             }
 
-            // concurrent callers must share the in-flight load - on WebGL thousands of
-            // duplicate requests exhaust the browser socket pool (ERR_INSUFFICIENT_RESOURCES)
-            textureLoadTask ??= LoadTextureInternalAsync();
+            // Share pending requests to avoid exhausting WebGL’s browser connection pool.
+            if (textureLoadTask == null || textureLoadTask.IsCompleted)
+            {
+                textureLoadTask = LoadTextureInternalAsync();
+            }
             return textureLoadTask;
         }
 
@@ -40,23 +41,10 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 ? Location
                 : Application.streamingAssetsPath + "/" + Location;
 
-            try
-            {
-                texture = await _textureLoader.LoadTextureAsync(location, false);
-            }
-            catch (Exception)
-            {
-                textureLoadTask = null;
-                throw;
-            }
-
+            texture = await _textureLoader.LoadTextureAsync(location, false);
             if (texture)
             {
                 texture.name = Location;
-            }
-            else
-            {
-                textureLoadTask = null;
             }
 
             return texture;
@@ -74,7 +62,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 await LoadOrGetTextureAsync();
             }
 
-            if (texture)
+            if (!sprite && texture)
             {
                 sprite = CreateSprite(texture);
             }

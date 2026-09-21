@@ -43,7 +43,7 @@
 - Fixed UI toggle (F10) desyncing the bridge bar and tabs
 - Fixed ground smoothness rendering
 - Fixed ground texture errors continuing after leaving Play Mode in the Editor
-- Fixed textures sometimes failing to load
+- Fixed textures sometimes failing to load or remaining unavailable after a failed request
 - Maps referencing objects missing from game data now load with fallbacks instead of failing
 - Fixed exporting a map disabling auto-save recovery for later edits
 - Fixed file save errors blocking all later saves and loads
