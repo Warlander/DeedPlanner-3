@@ -6,75 +6,79 @@ namespace Warlander.Deedplanner.Rendering.Outline
 {
     public class OutlineCoordinator : IOutlineCoordinator
     {
-        private readonly Dictionary<DynamicModelBehaviour, OutlineType> _outlinesToUse = new Dictionary<DynamicModelBehaviour, OutlineType>();
-        private readonly Dictionary<DynamicModelBehaviour, int> _outlinesPriority  = new Dictionary<DynamicModelBehaviour, int>();
-        private readonly Dictionary<DynamicModelBehaviour, OutlineEntry> _activeOutlines = new Dictionary<DynamicModelBehaviour, OutlineEntry>();
+        private readonly Dictionary<DynamicModelBehaviour, OutlineRegistration> _outlines =
+            new Dictionary<DynamicModelBehaviour, OutlineRegistration>();
 
-        public bool HasOutlinedObjects => _activeOutlines.Count > 0;
+        public bool HasOutlinedObjects
+        {
+            get
+            {
+                foreach (OutlineRegistration outline in _outlines.Values)
+                {
+                    if (outline.Renderers != null) return true;
+                }
+                return false;
+            }
+        }
+
         public bool RenderingSuspended { get; set; }
 
         public void AddObject(DynamicModelBehaviour behaviour, OutlineType type, int priority)
         {
-            if (_outlinesPriority.TryGetValue(behaviour, out int currentPriority))
+            if (_outlines.TryGetValue(behaviour, out OutlineRegistration outline))
             {
-                if (currentPriority > priority) return;
+                if (outline.Priority > priority) return;
+            }
+            else
+            {
+                outline = new OutlineRegistration();
+                _outlines.Add(behaviour, outline);
+                behaviour.ModelLoaded += OnModelLoaded;
             }
 
-            _outlinesToUse[behaviour] = type;
-            _outlinesPriority[behaviour] = priority;
-
-            if (behaviour.Model != null)
-                ApplyOutline(behaviour, type);
-
-            behaviour.ModelLoaded += OnModelLoaded;
+            outline.Type = type;
+            outline.Priority = priority;
+            if (outline.Renderers == null && behaviour.Model != null)
+            {
+                outline.Renderers = behaviour.Model.GetComponentsInChildren<Renderer>();
+            }
         }
 
         private void OnModelLoaded(DynamicModelBehaviour rootObject, GameObject newModel)
         {
-            OutlineType typeToUse = _outlinesToUse[rootObject];
-            RemoveOutline(rootObject);
-            ApplyOutline(rootObject, typeToUse);
+            if (_outlines.TryGetValue(rootObject, out OutlineRegistration outline))
+            {
+                outline.Renderers = newModel != null ? newModel.GetComponentsInChildren<Renderer>() : null;
+            }
         }
 
         public void RemoveObject(DynamicModelBehaviour behaviour, int priority)
         {
-            if (_outlinesPriority.TryGetValue(behaviour, out int currentPriority))
-            {
-                if (currentPriority > priority) return;
-            }
+            if (!_outlines.TryGetValue(behaviour, out OutlineRegistration outline)
+                || outline.Priority > priority) return;
 
             behaviour.ModelLoaded -= OnModelLoaded;
-            _outlinesToUse.Remove(behaviour);
-            _outlinesPriority.Remove(behaviour);
-            RemoveOutline(behaviour);
-        }
-
-        private void ApplyOutline(DynamicModelBehaviour behaviour, OutlineType type)
-        {
-            GameObject modelRoot = behaviour.Model;
-            if (modelRoot == null) return;
-
-            if (_activeOutlines.TryGetValue(behaviour, out OutlineEntry existing))
-            {
-                _activeOutlines[behaviour] = new OutlineEntry(existing.Renderers, type);
-                return;
-            }
-
-            Renderer[] renderers = modelRoot.GetComponentsInChildren<Renderer>();
-            _activeOutlines[behaviour] = new OutlineEntry(renderers, type);
-        }
-
-        private void RemoveOutline(DynamicModelBehaviour behaviour)
-        {
-            _activeOutlines.Remove(behaviour);
+            _outlines.Remove(behaviour);
         }
 
         public List<OutlineEntry> GetOutlinedObjectsSnapshot()
         {
-            var result = new List<OutlineEntry>(_activeOutlines.Count);
-            foreach (var kvp in _activeOutlines)
-                result.Add(kvp.Value);
+            var result = new List<OutlineEntry>(_outlines.Count);
+            foreach (OutlineRegistration outline in _outlines.Values)
+            {
+                if (outline.Renderers != null)
+                {
+                    result.Add(new OutlineEntry(outline.Renderers, outline.Type));
+                }
+            }
             return result;
+        }
+
+        private sealed class OutlineRegistration
+        {
+            public OutlineType Type;
+            public int Priority;
+            public Renderer[] Renderers;
         }
     }
 }
