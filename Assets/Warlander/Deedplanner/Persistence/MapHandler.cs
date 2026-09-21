@@ -71,21 +71,7 @@ namespace Warlander.Deedplanner.Persistence
         public void LoadMap(string mapString)
         {
             Map oldMap = _registry.CurrentMap;
-            Map newMap;
-            try
-            {
-                newMap = _loader.LoadMap(mapString);
-            }
-            catch
-            {
-                Map currentMap = _registry.CurrentMap;
-                if (currentMap)
-                {
-                    currentMap.RestoreAsCurrentMap();
-                }
-
-                throw;
-            }
+            Map newMap = _loader.LoadMap(mapString);
 
             if (oldMap)
             {
@@ -101,21 +87,7 @@ namespace Warlander.Deedplanner.Persistence
         public async Task<bool> LoadMapAsync(Uri mapUri)
         {
             Map oldMap = _registry.CurrentMap;
-            Map newMap;
-            try
-            {
-                newMap = await _loadMapAsync(mapUri);
-            }
-            catch
-            {
-                Map currentMap = _registry.CurrentMap;
-                if (currentMap)
-                {
-                    currentMap.RestoreAsCurrentMap();
-                }
-
-                throw;
-            }
+            Map newMap = await _loadMapAsync(mapUri);
 
             if (newMap == null)
             {
@@ -125,11 +97,6 @@ namespace Warlander.Deedplanner.Persistence
             if (_registry.CurrentMap != oldMap)
             {
                 UnityEngine.Object.Destroy(newMap.gameObject);
-                if (_registry.CurrentMap)
-                {
-                    _registry.CurrentMap.RestoreAsCurrentMap();
-                }
-
                 return false;
             }
 

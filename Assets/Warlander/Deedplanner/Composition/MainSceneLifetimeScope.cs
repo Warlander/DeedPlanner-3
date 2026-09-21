@@ -163,9 +163,6 @@ namespace Warlander.Deedplanner.Composition
             builder.Register<BridgeFactory>(Lifetime.Singleton);
             builder.Register<DockFactory>(Lifetime.Singleton);
 
-            builder.Register<MapHeightTracker>(Lifetime.Singleton);
-            builder.RegisterEntryPoint<MapRoofCalculator>().AsSelf();
-
             builder.Register<BorderUpdater>(Lifetime.Singleton).As<IUpdater>();
             builder.Register<LabelUpdater>(Lifetime.Singleton).As<IUpdater>();
             builder.Register<MirrorUpdater>(Lifetime.Singleton).As<IUpdater>().AsSelf();

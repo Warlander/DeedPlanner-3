@@ -107,8 +107,8 @@ Injection style:
   - `MapTileGrid` — 2D grid of tiles
   - `MapLevelRenderer` — per-level rendering
   - `MapBridgesController` — bridge logic (lives in the `Bridges/` module)
-  - `MapRoofCalculator` — roof computation
-  - `MapHeightTracker` — heightmap tracking
+  - `MapRoofCalculator` — owned by each map; pending roof work runs from `Map.LateUpdate`
+  - `MapHeightTracker` — owned by each map; tracks that map's height bounds and grids
 - **Tile** (`Domain/Tile.cs`) — individual grid cell containing ground, walls, floors, roof, decorations, cave data
 - **Database** (`Domain/Database.cs`) — static dictionaries for all game asset metadata (ground/floor/wall/roof/decoration types)
 - **Materials** (`Domain/Materials.cs`) — material costs are unit counts, not weights; weight-based goods use template-weight units (Mortar unit = 2 kg, Tar unit = 1 kg), matching the game's build-list convention

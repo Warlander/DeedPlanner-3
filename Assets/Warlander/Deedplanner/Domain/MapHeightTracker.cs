@@ -2,7 +2,7 @@ namespace Warlander.Deedplanner.Domain
 {
     public class MapHeightTracker
     {
-        private Map _currentMap;
+        private readonly Map _map;
 
         private int _lowestSurfaceHeight;
         private int _highestSurfaceHeight;
@@ -38,41 +38,25 @@ namespace Warlander.Deedplanner.Domain
             }
         }
 
-        public void SetCurrentMap(Map map)
+        public MapHeightTracker(Map map)
         {
-            _currentMap = map;
-            _lowestSurfaceHeight = 0;
-            _highestSurfaceHeight = 0;
-            _lowestCaveHeight = 0;
-            _highestCaveHeight = 0;
+            _map = map;
             _boundsDirty = true;
-        }
-
-        // destroyed maps call this from OnDestroy, which runs end-of-frame - potentially AFTER
-        // the replacement map already registered itself; only clear if it is still the owner
-        public void ClearCurrentMap(Map map)
-        {
-            if (_currentMap == map)
-            {
-                _currentMap = null;
-            }
         }
 
         public void RecalculateHeights()
         {
-            if (_currentMap == null) return;
-
             int min = int.MaxValue;
             int max = int.MinValue;
             int caveMin = int.MaxValue;
             int caveMax = int.MinValue;
 
-            for (int i = 0; i <= _currentMap.Width; i++)
+            for (int i = 0; i <= _map.Width; i++)
             {
-                for (int i2 = 0; i2 <= _currentMap.Height; i2++)
+                for (int i2 = 0; i2 <= _map.Height; i2++)
                 {
-                    int elevation = _currentMap[i, i2].SurfaceHeight;
-                    int caveElevation = _currentMap[i, i2].CaveHeight;
+                    int elevation = _map[i, i2].SurfaceHeight;
+                    int caveElevation = _map[i, i2].CaveHeight;
                     if (elevation > max) max = elevation;
                     if (elevation < min) min = elevation;
                     if (caveElevation > caveMax) caveMax = caveElevation;
@@ -97,9 +81,7 @@ namespace Warlander.Deedplanner.Domain
 
         public void RecalculateSurfaceHeight(int x, int y, int previousElevation)
         {
-            if (_currentMap == null) return;
-
-            int elevation = _currentMap[x, y].SurfaceHeight;
+            int elevation = _map[x, y].SurfaceHeight;
             if (elevation > _highestSurfaceHeight) _highestSurfaceHeight = elevation;
             if (elevation < _lowestSurfaceHeight) _lowestSurfaceHeight = elevation;
             if (previousElevation == _highestSurfaceHeight && elevation < previousElevation ||
@@ -107,14 +89,12 @@ namespace Warlander.Deedplanner.Domain
             {
                 _boundsDirty = true;
             }
-            _currentMap.SurfaceGridMesh.SetHeight(x, y, elevation);
+            _map.SurfaceGridMesh.SetHeight(x, y, elevation);
         }
 
         public void RecalculateCaveHeight(int x, int y, int previousElevation)
         {
-            if (_currentMap == null) return;
-
-            int caveElevation = _currentMap[x, y].CaveHeight;
+            int caveElevation = _map[x, y].CaveHeight;
             if (caveElevation > _highestCaveHeight) _highestCaveHeight = caveElevation;
             if (caveElevation < _lowestCaveHeight) _lowestCaveHeight = caveElevation;
             if (previousElevation == _highestCaveHeight && caveElevation < previousElevation ||
@@ -122,7 +102,7 @@ namespace Warlander.Deedplanner.Domain
             {
                 _boundsDirty = true;
             }
-            _currentMap.CaveGridMesh.SetHeight(x, y, caveElevation);
+            _map.CaveGridMesh.SetHeight(x, y, caveElevation);
         }
     }
 }

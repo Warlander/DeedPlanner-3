@@ -28,8 +28,6 @@ namespace Warlander.Deedplanner.Domain
         [Inject] private BridgeFactory _bridgeFactory;
         [Inject] private DockFactory _dockFactory;
         [Inject] private IMapRenderSettingsRetriever _mapRenderSettingsRetriever;
-        [Inject] private MapHeightTracker _heightTracker;
-        [Inject] private MapRoofCalculator _roofCalculator;
         [Inject] private ISharedMaterials _sharedMaterials;
         [Inject] private IDataCatalog _dataCatalog;
         [Inject] private ICaveDataResolver _caveDataResolver;
@@ -97,6 +95,8 @@ namespace Warlander.Deedplanner.Domain
 
         public Transform PlaneLineRoot { get; private set; }
 
+        private MapHeightTracker _heightTracker;
+        private MapRoofCalculator _roofCalculator;
         private MapTileGrid _tileGrid;
         private MapLevelRenderer _levelRenderer;
         private MapBridgesController _bridgesController;
@@ -143,6 +143,11 @@ namespace Warlander.Deedplanner.Domain
         private void Start()
         {
             _mapRenderSettingsRetriever.Changed += GameManagerOnRenderSettingsChanged;
+        }
+
+        private void LateUpdate()
+        {
+            _roofCalculator?.RecalculateIfDirty();
         }
 
         public void Initialize(Map originalMap, int addLeft, int addRight, int addBottom, int addTop)
@@ -348,8 +353,8 @@ namespace Warlander.Deedplanner.Domain
             SurfaceGridMesh = PrepareGridMesh("Surface grid", _surfaceGridRoot);
             CaveGridMesh = PrepareGridMesh("Cave grid", _caveGridRoot);
 
-            _heightTracker.SetCurrentMap(this);
-            _roofCalculator.SetCurrentMap(this);
+            _heightTracker = new MapHeightTracker(this);
+            _roofCalculator = new MapRoofCalculator(this);
 
             RenderGrid = _tabContext.CurrentTab != Tab.Menu;
             CommandManager.ForgetAction();
@@ -651,19 +656,9 @@ namespace Warlander.Deedplanner.Domain
             _heightTracker.RecalculateHeights();
         }
 
-        internal void RestoreAsCurrentMap()
-        {
-            _heightTracker.SetCurrentMap(this);
-            _heightTracker.RecalculateHeights();
-            _roofCalculator.SetCurrentMap(this);
-            _roofCalculator.ScheduleRecalculation();
-        }
-
         private void OnDestroy()
         {
             _mapRenderSettingsRetriever.Changed -= GameManagerOnRenderSettingsChanged;
-            _heightTracker.ClearCurrentMap(this);
-            _roofCalculator.ClearCurrentMap(this);
         }
     }
 }
