@@ -123,7 +123,7 @@ Each editing mode maps to a UI tab and a corresponding `*Updater` class in `Asse
 ### Screen-Space Outline System
 Custom screen-space selection outline unified under `Rendering/Outline/`:
 - `ScreenSpaceOutlineFeature` — `ScriptableRendererFeature`; renders outlined objects to a mask RT, dilates, composites border over scene
-- `OutlineCoordinator` — pure plain C# class tracking `Dictionary<DynamicModelBehaviour, OutlineEntry>`; no statics
+- `OutlineCoordinator` — plain C# class with one registration per object containing its priority, outline type, and renderers; subscribes once per object
 - `OutlineFeatureBridge` — `IInitializable`+`IDisposable`, bound NonLazy; discovers and wires the feature on startup via reflection
 - `OutlineEntry` — readonly struct grouping renderers and outline type
 - Auto-setup: `Editor/OutlineFeatureSetup.cs` uses `[InitializeOnLoad]` + `EditorApplication.update`

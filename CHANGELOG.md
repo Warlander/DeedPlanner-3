@@ -53,6 +53,7 @@
 - Fixed painting terrain outside the map changing its southwest corner
 - Fixed automatic wall orientation failing along the south and west map boundaries
 - Fixed model and material loading failures preventing later retries
+- Fixed repeated object highlighting causing errors when a model finishes loading or changes
 
 ## [3.3.2] - 2026-08-15
 
