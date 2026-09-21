@@ -107,6 +107,7 @@ Injection style:
   - `MapTileGrid` — 2D grid of tiles
   - `MapLevelRenderer` — per-level rendering
   - `MapBridgesController` — bridge logic (lives in the `Bridges/` module)
+  - `MapDockCollection` — owns dock registration, removal, and active state; factories create unattached docks
   - `MapRoofCalculator` — owned by each map; pending roof work runs from `Map.LateUpdate`
   - `MapHeightTracker` — owned by each map; tracks that map's height bounds and grids
 - **Tile** (`Domain/Tile.cs`) — individual grid cell containing ground, walls, floors, roof, decorations, cave data

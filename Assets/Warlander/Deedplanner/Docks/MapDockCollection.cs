@@ -135,7 +135,9 @@ namespace Warlander.Deedplanner.Docks
         {
             Tile tile = dock.Tile;
             _docks.Remove(dock);
-            GetDockIndex(dock.Realm).Remove(dock.Tile);
+            GetDockIndex(dock.Realm).Remove(tile);
+            tile.UnregisterDock(dock);
+            dock.gameObject.SetActive(false);
             RevalidateArea(tile);
             DocksChanged?.Invoke();
         }
@@ -200,6 +202,8 @@ namespace Warlander.Deedplanner.Docks
         {
             _docks.Add(dock);
             GetDockIndex(dock.Realm)[dock.Tile] = dock;
+            dock.Tile.RegisterDock(dock);
+            dock.gameObject.SetActive(true);
         }
 
         private Dictionary<Tile, Dock> GetDockIndex(DockRealm realm)

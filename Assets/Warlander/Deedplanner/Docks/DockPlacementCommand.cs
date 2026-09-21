@@ -21,27 +21,19 @@ namespace Warlander.Deedplanner.Docks
         {
             if (_replacedDock)
             {
-                _replacedDock.Tile.UnregisterDock(_replacedDock);
                 _map.RemoveDock(_replacedDock);
-                _replacedDock.gameObject.SetActive(false);
             }
 
-            _dock.Tile.RegisterDock(_dock);
             _map.AddDock(_dock);
-            _dock.gameObject.SetActive(true);
         }
 
         public void Undo()
         {
-            _dock.Tile.UnregisterDock(_dock);
             _map.RemoveDock(_dock);
-            _dock.gameObject.SetActive(false);
 
             if (_replacedDock)
             {
-                _replacedDock.Tile.RegisterDock(_replacedDock);
                 _map.AddDock(_replacedDock);
-                _replacedDock.gameObject.SetActive(true);
             }
         }
 

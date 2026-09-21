@@ -796,7 +796,7 @@ namespace Warlander.Deedplanner.Domain
             return cave ? caveBridgePart : surfaceBridgePart;
         }
 
-        public void RegisterDock(Dock newDock)
+        internal void RegisterDock(Dock newDock)
         {
             if (newDock.Realm == DockRealm.Cave)
             {
@@ -810,7 +810,7 @@ namespace Warlander.Deedplanner.Domain
             newDock.transform.SetParent(Map.transform);
         }
 
-        public void UnregisterDock(Dock removedDock)
+        internal void UnregisterDock(Dock removedDock)
         {
             if (removedDock.Realm == DockRealm.Cave)
             {
@@ -1170,9 +1170,7 @@ namespace Warlander.Deedplanner.Domain
                 }
                 if (_dock != null)
                 {
-                    _tile.UnregisterDock(_dock);
                     _tile.Map.RemoveDock(_dock);
-                    _dock.gameObject.SetActive(false);
                 }
 
                 Refresh();
@@ -1195,9 +1193,7 @@ namespace Warlander.Deedplanner.Domain
                 }
                 if (_dock != null)
                 {
-                    _tile.RegisterDock(_dock);
                     _tile.Map.AddDock(_dock);
-                    _dock.gameObject.SetActive(true);
                 }
 
                 Refresh();

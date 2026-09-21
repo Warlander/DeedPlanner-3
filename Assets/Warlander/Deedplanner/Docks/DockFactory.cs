@@ -85,10 +85,10 @@ namespace Warlander.Deedplanner.Docks
             EntityOrientation braceRotation, DockRealm realm = DockRealm.Surface, int? anchorLevel = null)
         {
             GameObject dockObject = new GameObject("Dock " + floor.Name, typeof(Dock));
+            dockObject.SetActive(false);
             Dock dock = dockObject.GetComponent<Dock>();
             dock.Initialize(map[x, y], height, floor, support, braceRotation, realm, _sharedMaterials.GhostMaterial,
                 anchorLevel);
-            map[x, y].RegisterDock(dock);
             return dock;
         }
     }
