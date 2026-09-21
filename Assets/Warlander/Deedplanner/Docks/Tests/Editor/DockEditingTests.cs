@@ -8,7 +8,9 @@ using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Domain.Entities.Caves;
 using Warlander.Deedplanner.Domain.Entities.Floors;
 using Warlander.Deedplanner.Domain.Entities.Grounds;
+using Warlander.Deedplanner.Editing;
 using Warlander.Deedplanner.Logging;
+using Warlander.Deedplanner.Persistence;
 using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Settings;
 using Object = UnityEngine.Object;
@@ -94,6 +96,105 @@ namespace Warlander.Deedplanner.Docks.Tests
             fixture.AssertAttached(surface, true);
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public void StrokePlacesSelectedPillarsAndUndoesAsOneAction(bool automaticSupport)
+        {
+            using var fixture = new DockFixture();
+            using var stroke = fixture.Edits.BeginDockStroke(0, 0);
+            Assert.That(stroke.Place(new DockPaintRequest(0, 0, 30, fixture.Floor, automaticSupport,
+                fixture.Pillar, fixture.Pillar, DockRealm.Surface, 1)), Is.True);
+            Assert.That(stroke.Place(new DockPaintRequest(1, 0, 30, fixture.Floor, automaticSupport,
+                fixture.Pillar, fixture.Pillar, DockRealm.Surface, 1)), Is.True);
+            stroke.Commit();
+
+            Assert.That(fixture.Map.Docks, Has.Count.EqualTo(2));
+            Assert.That(fixture.Map[0, 0].GetDock(DockRealm.Surface).Support, Is.SameAs(fixture.Pillar));
+            Assert.That(fixture.Map[1, 0].GetDock(DockRealm.Surface).Support, Is.SameAs(fixture.Pillar));
+            fixture.Map.CommandManager.Undo();
+            Assert.That(fixture.Map.Docks, Is.Empty);
+            fixture.Map.CommandManager.Redo();
+            Assert.That(fixture.Map.Docks, Has.Count.EqualTo(2));
+        }
+
+        [Test]
+        public void AutomaticSupportUsesNoSupportOnFlatGround()
+        {
+            using var fixture = new DockFixture();
+            using var stroke = fixture.Edits.BeginDockStroke(0, 0);
+            Assert.That(stroke.Place(new DockPaintRequest(0, 0, 0, fixture.Floor, true,
+                fixture.Pillar, fixture.Pillar, DockRealm.Surface, 0)), Is.True);
+            stroke.Commit();
+
+            Assert.That(fixture.Map[0, 0].GetDock(DockRealm.Surface).Support, Is.Null);
+        }
+
+        [Test]
+        public void ManualBracesPreferEachMirroredStrokesPreviousTile()
+        {
+            using var fixture = new DockFixture(7, 3);
+            fixture.Symmetry.PlaceVerticalAxis(7);
+            foreach (int x in new[] { 0, 6 })
+            {
+                Dock anchor = fixture.CreateDock(DockRealm.Surface, x, 1, 30);
+                new DockPlacementCommand(fixture.Map, anchor, null).Execute();
+            }
+            foreach (int x in new[] { 1, 5 })
+            {
+                Dock alternative = fixture.CreateDock(DockRealm.Surface, x, 2, 30);
+                new DockPlacementCommand(fixture.Map, alternative, null).Execute();
+            }
+            using var stroke = fixture.Edits.BeginDockStroke(0, 1);
+            for (int x = 1; x <= 2; x++)
+            {
+                Assert.That(stroke.Place(new DockPaintRequest(x, 1, 30, fixture.Floor, false,
+                    fixture.Brace, fixture.Pillar, DockRealm.Surface, 1)), Is.True);
+                Assert.That(fixture.Map[x, 1].GetDock(DockRealm.Surface).BraceRotation,
+                    Is.EqualTo(EntityOrientation.Right));
+                Assert.That(fixture.Map[6 - x, 1].GetDock(DockRealm.Surface).BraceRotation,
+                    Is.EqualTo(EntityOrientation.Left));
+            }
+            stroke.Commit();
+            fixture.Map.CommandManager.Undo();
+            Assert.That(fixture.Map.Docks, Has.Count.EqualTo(4));
+        }
+
+        [Test]
+        public void StrokeSkipsCellsWithTerrainAboveDeck()
+        {
+            using var fixture = new DockFixture();
+            SetField(fixture.Map[0, 0], "surfaceHeight", 1);
+            using var stroke = fixture.Edits.BeginDockStroke(0, 0);
+            Assert.That(stroke.Place(new DockPaintRequest(0, 0, 0, fixture.Floor, true,
+                null, fixture.Pillar, DockRealm.Surface, 0)), Is.False);
+            stroke.Commit();
+
+            Assert.That(fixture.Map.Docks, Is.Empty);
+            Assert.That(fixture.Map[0, 0].GetDock(DockRealm.Surface), Is.Null);
+        }
+
+        [Test]
+        public void CrossingAxesAndRepeatedPaintingCreateOneDock()
+        {
+            using var fixture = new DockFixture(3, 3);
+            fixture.Symmetry.PlaceVerticalAxis(3);
+            fixture.Symmetry.PlaceHorizontalAxis(3);
+            using var stroke = fixture.Edits.BeginDockStroke(1, 1);
+            var request = new DockPaintRequest(1, 1, 0, fixture.Floor, true,
+                null, fixture.Pillar, DockRealm.Surface, 0);
+            Assert.That(stroke.Place(request), Is.True);
+            Dock placed = fixture.Map[1, 1].GetDock(DockRealm.Surface);
+            Assert.That(stroke.Place(request), Is.False);
+            stroke.Commit();
+
+            Assert.That(fixture.Map.Docks, Has.Count.EqualTo(1));
+            Assert.That(fixture.Map[1, 1].GetDock(DockRealm.Surface), Is.SameAs(placed));
+            fixture.Map.CommandManager.Undo();
+            fixture.AssertAttached(placed, false);
+            fixture.Map.CommandManager.Redo();
+            fixture.AssertAttached(placed, true);
+        }
+
         private static void SetField(object target, string name, object value)
         {
             FieldInfo field = target.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic);
@@ -111,15 +212,19 @@ namespace Warlander.Deedplanner.Docks.Tests
             public Map Map { get; }
             public Database Database { get; }
             public FloorData Floor { get; }
+            public DockSupportData Pillar { get; }
+            public DockSupportData Brace { get; }
+            public SymmetrySession Symmetry { get; }
+            public MapEditFacade Edits { get; }
 
-            public DockFixture()
+            public DockFixture(int width = 2, int height = 2)
             {
                 Map = new GameObject("Dock test map").AddComponent<Map>();
                 SetField(Map, "_mapRenderSettingsRetriever", new MapRenderSettings());
                 SetField(Map, "<Ground>k__BackingField", Map.gameObject.AddComponent<GroundMesh>());
                 Database = new Database();
                 Database.AddCave(new CaveData(null, "Stone", "sw", Array.Empty<string[]>(), true, true, false));
-                var grid = new MapTileGrid(2, 2);
+                var grid = new MapTileGrid(width, height);
                 SetField(Map, "_tileGrid", grid);
                 var groundResolver = new TestGroundResolver();
                 for (int x = 0; x <= Map.Width; x++)
@@ -142,15 +247,26 @@ namespace Warlander.Deedplanner.Docks.Tests
                 SetField(model, "_originalModel", originalModel);
                 Floor = new FloorData(model, "Dock test floor", "test", Array.Empty<string[]>(), false, true, null);
                 Database.AddFloor(Floor);
+                Pillar = new DockSupportData("Pillar", "test-pillar", DockSupportType.WoodPillar, model, null, null);
+                Brace = new DockSupportData("Brace", "dwb", DockSupportType.Brace, model, null, null);
+                Database.AddDockSupport(Pillar);
+                Database.AddDockSupport(Brace);
                 _materials = ScriptableObject.CreateInstance<SharedMaterials>();
                 _factory = new DockFactory(_materials, Database, loggerSource);
                 SetField(Map, "_dockCollection", new MapDockCollection(Map, _factory));
                 SetField(Map, "_levelRenderer", new MapLevelRenderer());
+                Map.CommandManager.ForgetAction();
+                var maps = new MapHandler(null, null, loggerSource);
+                var registry = new MapRegistry();
+                registry.SetMap(Map);
+                SetField(maps, "_registry", registry);
+                Symmetry = new SymmetrySession(maps);
+                Edits = new MapEditFacade(maps, Symmetry, _factory, Database, null);
             }
 
-            public Dock CreateDock(DockRealm realm)
+            public Dock CreateDock(DockRealm realm, int x = 0, int y = 0, int? height = null)
             {
-                Dock dock = _factory.CreateDock(Map, 0, 0, realm == DockRealm.Cave ? -30 : 0,
+                Dock dock = _factory.CreateDock(Map, x, y, height ?? (realm == DockRealm.Cave ? -30 : 0),
                     Floor, null, EntityOrientation.Up, realm);
                 _createdDocks.Add(dock);
                 return dock;

@@ -43,7 +43,6 @@ namespace Warlander.Deedplanner.Editing
         private int _strokeAnchorLevel;
         private DockRealm _strokeRealm;
         private Tile _lastStrokeTile;
-        private Tile _previousPaintedTile;
         private readonly HashSet<Tile> _paintedTiles = new HashSet<Tile>();
         private readonly List<Dock> _invalidMarkers = new List<Dock>();
         private IMapDockStroke _dockEditStroke;
@@ -316,7 +315,6 @@ namespace Warlander.Deedplanner.Editing
             _dockStroke = DockStroke.Paint;
             _dockEditStroke = _mapEditFacade.BeginDockStroke(tile.X, tile.Y);
             _lastStrokeTile = tile;
-            _previousPaintedTile = tile;
             _paintedTiles.Clear();
             _paintedTiles.Add(tile);
         }
@@ -341,44 +339,14 @@ namespace Warlander.Deedplanner.Editing
 
         private void TryPaintTile(Tile tile)
         {
-            Map map = _mapHandler.Map;
-
-            DockSupportData support = ResolveSupport(map, tile, out EntityOrientation braceDir);
             var request = new DockPaintRequest(tile.X, tile.Y, _strokeHeight, _selectedFloor,
-                _dockSupportAuto, support, _lastPillarSupport, braceDir, _strokeRealm, _strokeAnchorLevel,
-                _previousPaintedTile?.X, _previousPaintedTile?.Y);
+                _dockSupportAuto, _selectedDockSupport, _lastPillarSupport, _strokeRealm, _strokeAnchorLevel);
             bool originalPlaced = _dockEditStroke.Place(request);
             if (!originalPlaced)
             {
                 CreateInvalidMarker(tile);
             }
             _paintedTiles.Add(tile);
-            if (originalPlaced)
-            {
-                _previousPaintedTile = tile;
-            }
-        }
-
-        private DockSupportData ResolveSupport(Map map, Tile tile, out EntityOrientation braceDir)
-        {
-            if (_dockSupportAuto)
-            {
-                return DockSupportResolver.ResolveAutoSupport(map, tile.X, tile.Y, _strokeHeight,
-                    _strokeRealm, _lastPillarSupport, _dataCatalog, out braceDir);
-            }
-
-            DockSupportData support = _selectedDockSupport;
-            if (support != null && support.Type == DockSupportType.Brace)
-            {
-                DockSupportResolver.TryPickBraceSide(map, tile.X, tile.Y, _strokeHeight, _strokeRealm,
-                    _previousPaintedTile, out braceDir);
-            }
-            else
-            {
-                braceDir = EntityOrientation.Up;
-            }
-
-            return support;
         }
 
         private void CreateInvalidMarker(Tile tile)
@@ -438,7 +406,6 @@ namespace Warlander.Deedplanner.Editing
 
             _dockStroke = DockStroke.None;
             _lastStrokeTile = null;
-            _previousPaintedTile = null;
             _paintedTiles.Clear();
         }
     }

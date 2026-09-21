@@ -721,7 +721,7 @@ namespace Warlander.Deedplanner.Editing
                     else
                     {
                         support = request.Support;
-                        braceDirection = transform.Transform(request.BraceDirection);
+                        braceDirection = transform.Transform(EntityOrientation.Up);
                         if (support != null && support.Type == DockSupportType.Brace)
                         {
                             DockSupportResolver.TryPickBraceSide(_map, x, y, request.Height,

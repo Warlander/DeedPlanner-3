@@ -1,4 +1,3 @@
-using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Domain.Entities.Floors;
 
 namespace Warlander.Deedplanner.Docks
@@ -12,15 +11,11 @@ namespace Warlander.Deedplanner.Docks
         public bool AutomaticSupport { get; }
         public DockSupportData Support { get; }
         public DockSupportData LastPillarSupport { get; }
-        public EntityOrientation BraceDirection { get; }
         public DockRealm Realm { get; }
         public int AnchorLevel { get; }
-        public int? PreviousX { get; }
-        public int? PreviousY { get; }
 
         public DockPaintRequest(int x, int y, int height, FloorData floor, bool automaticSupport,
-            DockSupportData support, DockSupportData lastPillarSupport, EntityOrientation braceDirection,
-            DockRealm realm, int anchorLevel, int? previousX, int? previousY)
+            DockSupportData support, DockSupportData lastPillarSupport, DockRealm realm, int anchorLevel)
         {
             X = x;
             Y = y;
@@ -29,11 +24,8 @@ namespace Warlander.Deedplanner.Docks
             AutomaticSupport = automaticSupport;
             Support = support;
             LastPillarSupport = lastPillarSupport;
-            BraceDirection = braceDirection;
             Realm = realm;
             AnchorLevel = anchorLevel;
-            PreviousX = previousX;
-            PreviousY = previousY;
         }
     }
 }
