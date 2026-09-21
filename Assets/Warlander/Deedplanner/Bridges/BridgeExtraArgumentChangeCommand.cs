@@ -21,13 +21,11 @@ namespace Warlander.Deedplanner.Bridges
         public void Execute()
         {
             _bridge.Rebuild(_map, _bridge.Data, _bridge.GetSegmentsString(), _newValue);
-            _map.RefreshBridgesRendering();
         }
 
         public void Undo()
         {
             _bridge.Rebuild(_map, _bridge.Data, _bridge.GetSegmentsString(), _oldValue);
-            _map.RefreshBridgesRendering();
         }
 
         public void DisposeUndo()

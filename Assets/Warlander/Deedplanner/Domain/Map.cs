@@ -179,7 +179,6 @@ namespace Warlander.Deedplanner.Domain
 
             _bridgesController.InitializeBridgesAfterResize(originalMap, addLeft, addBottom);
             _dockCollection.InitializeDocksAfterResize(originalMap, addLeft, addBottom);
-            _levelRenderer.UpdateDocksRendering();
 
             for (int i = 0; i <= Width; i++)
             {
@@ -273,7 +272,6 @@ namespace Warlander.Deedplanner.Domain
 
             _bridgesController.InitializeBridges(mapRoot);
             _dockCollection.InitializeDocks(mapRoot);
-            _levelRenderer.UpdateDocksRendering();
 
             Ground.UpdateNow();
 
@@ -417,14 +415,12 @@ namespace Warlander.Deedplanner.Domain
         public void AddDock(Dock dock)
         {
             _dockCollection.AddDock(dock);
-            _levelRenderer.UpdateDocksRendering();
             RefreshEntitiesAroundDock(dock.Tile);
         }
 
         public void RemoveDock(Dock dock)
         {
             _dockCollection.RemoveDock(dock);
-            _levelRenderer.UpdateDocksRendering();
             RefreshEntitiesAroundDock(dock.Tile);
         }
 
@@ -463,11 +459,6 @@ namespace Warlander.Deedplanner.Domain
             remove => _bridgesController.BridgesChanged -= value;
         }
 
-        public void RefreshBridgesRendering()
-        {
-            _levelRenderer.UpdateBridgesRendering();
-        }
-
         public void RecalculateSurfaceHeight(int x, int y, int previousHeight)
         {
             _heightTracker.RecalculateSurfaceHeight(x, y, previousHeight);
@@ -486,13 +477,11 @@ namespace Warlander.Deedplanner.Domain
         public void RefreshDocksForSurfaceHeight(int x, int y)
         {
             _dockCollection.RefreshDocksForSurfaceHeight(x, y);
-            _levelRenderer.UpdateDocksRendering();
         }
 
         public void RefreshDocksForCaveHeight(int x, int y)
         {
             _dockCollection.RefreshDocksForCaveHeight(x, y);
-            _levelRenderer.UpdateDocksRendering();
         }
 
         public void RefreshDocksForWallChange(int x, int y, bool vertical)
@@ -642,13 +631,10 @@ namespace Warlander.Deedplanner.Domain
             }
         }
 
-        public float GetRelativeLevelOpacity(int relativeLevel) => _levelRenderer.GetRelativeLevelOpacity(relativeLevel);
-        
         private void GameManagerOnRenderSettingsChanged()
         {
             RefreshAllTiles();
             _levelRenderer.RenderBridges = RenderBridges;
-            _levelRenderer.UpdateBridgesRendering();
         }
 
         private void RecalculateHeights()

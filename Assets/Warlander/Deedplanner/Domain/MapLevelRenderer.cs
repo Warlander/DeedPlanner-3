@@ -17,14 +17,9 @@ namespace Warlander.Deedplanner.Domain
         private Transform _caveShellRoot;
         private Func<IEnumerable<Bridge>> _getBridges;
         private Func<IEnumerable<Dock>> _getDocks;
-        private IDisposable _legacyRenderScope;
         private readonly Dictionary<Renderer, RendererBaseState> _baseRendererStates =
             new Dictionary<Renderer, RendererBaseState>();
         private int _scopeDepth;
-
-        private int _renderedLevel;
-        private bool _renderEntireMap = true;
-        private bool _renderGrid = true;
 
         public bool RenderBridges { get; set; } = true;
 
@@ -52,48 +47,18 @@ namespace Warlander.Deedplanner.Domain
             _caveShellRoot.gameObject.SetActive(true);
         }
 
-        public int RenderedLevel
-        {
-            get => _renderedLevel;
-            set
-            {
-                if (_renderedLevel == value) return;
-                _renderedLevel = value;
-                UpdateLevelsRendering();
-            }
-        }
-
-        public bool RenderEntireMap
-        {
-            get => _renderEntireMap;
-            set
-            {
-                if (_renderEntireMap == value) return;
-                _renderEntireMap = value;
-                UpdateLevelsRendering();
-            }
-        }
-
-        public bool RenderGrid
-        {
-            get => _renderGrid;
-            set
-            {
-                if (_renderGrid == value) return;
-                _renderGrid = value;
-                UpdateLevelsRendering();
-            }
-        }
+        public int RenderedLevel { get; set; }
+        public bool RenderEntireMap { get; set; } = true;
+        public bool RenderGrid { get; set; } = true;
 
         public void SetActiveView(MapRenderView view)
         {
-            _renderedLevel = view.Level;
-            _renderEntireMap = view.RenderEntireMap;
-            _renderGrid = view.RenderGrid;
-            UpdateLevelsRendering();
+            RenderedLevel = view.Level;
+            RenderEntireMap = view.RenderEntireMap;
+            RenderGrid = view.RenderGrid;
         }
 
-        public float GetRelativeLevelOpacity(int relativeLevel)
+        private static float GetRelativeLevelOpacity(int relativeLevel)
         {
             if (relativeLevel == 0) return 1f;
             if (relativeLevel == -1) return 0.6f;
@@ -115,15 +80,6 @@ namespace Warlander.Deedplanner.Domain
             {
                 dynamicModel.SetRaycastLayer(LayerMasks.GetLayerForLevel(entity.layer, level));
             }
-        }
-
-        public void UpdateLevelsRendering()
-        {
-            if (_surfaceLevelRoots == null) return;
-
-            _legacyRenderScope?.Dispose();
-            _legacyRenderScope = PrepareForCamera(new MapRenderView(_renderedLevel, _renderEntireMap, _renderGrid));
-
         }
 
         public IDisposable PrepareForCamera(MapRenderView view)
@@ -201,16 +157,16 @@ namespace Warlander.Deedplanner.Domain
                 scope.Add(state);
                 if (!_baseRendererStates.TryGetValue(renderer, out RendererBaseState baseState))
                 {
-                    baseState = new RendererBaseState(state.ForceRenderingOff);
+                    baseState = new RendererBaseState(state.ForceRenderingOff, GetBaseColor(renderer, state.PropertyBlock));
                     _baseRendererStates.Add(renderer, baseState);
                 }
 
                 renderer.forceRenderingOff = baseState.ForceRenderingOff || !visible;
-                if (visible && opacity < 1f)
+                if (visible && (opacity < 1f || _scopeDepth > 1))
                 {
                     MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
                     renderer.GetPropertyBlock(propertyBlock);
-                    Color baseColor = GetBaseColor(renderer, propertyBlock);
+                    Color baseColor = baseState.BaseColor;
                     propertyBlock.SetColor(ShaderPropertyIds.BaseColor,
                         new Color(baseColor.r * opacity, baseColor.g * opacity, baseColor.b * opacity, baseColor.a));
                     renderer.SetPropertyBlock(propertyBlock);
@@ -248,12 +204,6 @@ namespace Warlander.Deedplanner.Domain
                 root.gameObject.SetActive(true);
         }
 
-        public void UpdateBridgesRendering()
-        {
-            if (_surfaceLevelRoots == null) return;
-            UpdateLevelsRendering();
-        }
-
         private void ApplyBridges(RenderScope scope, MapRenderView view)
         {
             if (_getBridges == null) return;
@@ -271,12 +221,6 @@ namespace Warlander.Deedplanner.Domain
                     ApplyRoot(scope, part.transform, opacity);
                 }
             }
-        }
-
-        public void UpdateDocksRendering()
-        {
-            if (_surfaceLevelRoots == null) return;
-            UpdateLevelsRendering();
         }
 
         private void ApplyDocks(RenderScope scope, MapRenderView view)
@@ -337,9 +281,12 @@ namespace Warlander.Deedplanner.Domain
         {
             public bool ForceRenderingOff { get; }
 
-            public RendererBaseState(bool forceRenderingOff)
+            public Color BaseColor { get; }
+
+            public RendererBaseState(bool forceRenderingOff, Color baseColor)
             {
                 ForceRenderingOff = forceRenderingOff;
+                BaseColor = baseColor;
             }
         }
 

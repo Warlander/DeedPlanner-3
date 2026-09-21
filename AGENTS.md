@@ -105,7 +105,7 @@ Injection style:
 ### Core Data Model
 - **Map** (`Domain/Map*.cs`) — central data structure, recently split into:
   - `MapTileGrid` — 2D grid of tiles
-  - `MapLevelRenderer` — per-level rendering
+  - `MapLevelRenderer` — camera-based hiding and fading applied/restored for every camera; active view stores editing context only
   - `MapBridgesController` — bridge logic (lives in the `Bridges/` module)
   - `MapDockCollection` — owns dock registration, removal, and active state; factories create unattached docks
   - `MapRoofCalculator` — owned by each map; pending roof work runs from `Map.LateUpdate`

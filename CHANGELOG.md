@@ -34,11 +34,12 @@
 - Fixed bridges wider than long not reaching ground height at the far end
 - Fixed bridge supports and deck not following terrain height edits
 - Fixed decorations loading at the previous map's terrain heights
+- Fixed objects staying hidden after undoing edits on another level, and hidden trees reappearing after edits
 - Fixed decoration rotation snapping only working in one direction
 - Fixed empty tooltip box appearing when dragging the map over terrain
 - Fixed map being lost after a failed load
 - Fixed redo order getting mixed up in grouped edits
-- Fixed lower floors not darkening in 2D and isometric views
+- Fixed lower floors not darkening in 2D and isometric views, with consistent fading across multiple cameras and preserved object colors
 - Fixed compass not hiding when the UI is toggled off
 - Fixed UI toggle (F10) desyncing the bridge bar and tabs
 - Fixed ground smoothness rendering

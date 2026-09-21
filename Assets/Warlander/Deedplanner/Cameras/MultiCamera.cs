@@ -249,9 +249,9 @@ namespace Warlander.Deedplanner.Cameras
 
             Map map = _mapHandler.Map;
             CompleteCameraRendering();
+            _mapRenderScope = map.PrepareForCamera(new MapRenderView(Level, RenderEntireMap, map.RenderGrid));
             if (this != _cameraCoordinator.Current)
             {
-                _mapRenderScope = map.PrepareForCamera(new MapRenderView(Level, RenderEntireMap, map.RenderGrid));
                 _groundRenderScope = map.Ground.PrepareForCamera(RenderCrops);
             }
             else

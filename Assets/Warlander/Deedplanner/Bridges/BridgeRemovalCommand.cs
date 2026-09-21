@@ -17,13 +17,11 @@ namespace Warlander.Deedplanner.Bridges
         public void Execute()
         {
             _map.RemoveBridge(_bridge);
-            _map.RefreshBridgesRendering();
         }
 
         public void Undo()
         {
             _map.AddBridge(_bridge);
-            _map.RefreshBridgesRendering();
         }
 
         public void DisposeUndo()

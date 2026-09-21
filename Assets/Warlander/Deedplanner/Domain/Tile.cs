@@ -1294,7 +1294,6 @@ namespace Warlander.Deedplanner.Domain
                 }
 
                 RefreshDocksForEntityChange();
-                UpdateEntityRendering(newEntity);
             }
 
             public void Undo()
@@ -1330,7 +1329,6 @@ namespace Warlander.Deedplanner.Domain
                 }
 
                 RefreshDocksForEntityChange();
-                UpdateEntityRendering(oldEntity);
             }
 
             // Dock brace validity can depend on wall tops and neighbor floors, so any wall/floor
@@ -1350,44 +1348,6 @@ namespace Warlander.Deedplanner.Domain
                     case EntityType.Floorroof:
                         tile.Map.RefreshDocksForFloorChange(tile.X, tile.Y);
                         break;
-                }
-            }
-
-            private void UpdateEntityRendering(LevelEntity entity)
-            {
-                if (!entity)
-                {
-                    return;
-                }
-
-                int renderedLevel = tile.Map.RenderedLevel;
-                bool renderEntireMap = tile.Map.RenderEntireMap;
-                
-                bool underground = renderedLevel < 0;
-                if (entity.Level < 0 != underground)
-                {
-                    entity.gameObject.SetActive(false);
-                    return;
-                }
-
-                int renderedStorey = underground ? CaveLevel.GetStoreyIndex(renderedLevel) : renderedLevel;
-                int entityStorey = entity.Level < 0 ? CaveLevel.GetStoreyIndex(entity.Level) : entity.Level;
-                int relativeLevel = entityStorey - renderedStorey;
-                float opacity = renderEntireMap ? 1f : tile.Map.GetRelativeLevelOpacity(relativeLevel);
-                bool renderLevel = opacity > 0;
-                entity.gameObject.SetActive(renderLevel && (entity.Level >= 0 || !tile.Cave.IsSolid));
-
-                if (renderLevel)
-                {
-                    MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                    Color opacityColor = new Color(opacity, opacity, opacity);
-                    Renderer[] renderers = entity.GetComponentsInChildren<Renderer>();
-                    foreach (Renderer renderer in renderers)
-                    {
-                        renderer.GetPropertyBlock(propertyBlock);
-                        propertyBlock.SetColor(ShaderPropertyIds.BaseColor, opacityColor);
-                        renderer.SetPropertyBlock(propertyBlock);
-                    }
                 }
             }
 

@@ -113,6 +113,66 @@ namespace Warlander.Deedplanner.Domain.Tests
         }
 
         [Test]
+        public void NestedViewsUseOriginalColorRatherThanFadingTwice()
+        {
+            var original = new Color(0.8f, 0.4f, 0.2f, 0.25f);
+            var block = new MaterialPropertyBlock();
+            block.SetColor(ShaderPropertyIds.BaseColor, original);
+            block.SetFloat(ShaderPropertyIds.CaveOverview, 0.7f);
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            renderer.SetPropertyBlock(block);
+
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false)))
+            {
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(2, false, false)))
+                {
+                    Assert.That(GetBaseColor(renderer).r, Is.EqualTo(0.2f).Within(0.001f));
+                    Assert.That(GetBaseColor(renderer).a, Is.EqualTo(original.a));
+                    Assert.That(GetCaveOverview(renderer), Is.EqualTo(0.7f));
+                }
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+                {
+                    Assert.That(GetBaseColor(renderer), Is.EqualTo(original));
+                }
+                Assert.That(GetBaseColor(renderer).r, Is.EqualTo(0.48f).Within(0.001f));
+            }
+            Assert.That(GetBaseColor(renderer), Is.EqualTo(original));
+        }
+
+        [Test]
+        public void ActiveViewKeepsOriginalStateBetweenCameraPasses()
+        {
+            _fixture.Renderer.SetActiveView(new MapRenderView(1, false, false));
+            Assert.That(GetEffectiveBaseColor(_fixture.Surface[0].Renderer), Is.EqualTo(Color.white));
+            Assert.That(_fixture.Surface[2].Renderer.forceRenderingOff, Is.False);
+        }
+
+        [Test]
+        public void NextCameraPassIncludesModelsLoadedAfterThePreviousPass()
+        {
+            var view = new MapRenderView(1, false, false);
+            using (_fixture.Renderer.PrepareForCamera(view)) { }
+            var model = new GameObject("Late model", typeof(MeshRenderer));
+            model.transform.SetParent(_fixture.Surface[0].Root);
+            Renderer renderer = model.GetComponent<Renderer>();
+            var block = new MaterialPropertyBlock();
+            block.SetColor(ShaderPropertyIds.BaseColor, Color.cyan);
+            renderer.SetPropertyBlock(block);
+
+            using (_fixture.Renderer.PrepareForCamera(view))
+            {
+                Assert.That(GetBaseColor(renderer).g, Is.EqualTo(0.6f).Within(0.001f));
+                Assert.That(renderer.forceRenderingOff, Is.False);
+            }
+            Assert.That(GetBaseColor(renderer), Is.EqualTo(Color.cyan));
+            renderer.gameObject.SetActive(false);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                Assert.That(renderer.gameObject.activeSelf, Is.False);
+            }
+        }
+
+        [Test]
         public void AddEntityToMapAssignsCaveRaycastLayer()
         {
             GameObject entity = new GameObject("Cave floor", typeof(DynamicModelBehaviour), typeof(BoxCollider));
