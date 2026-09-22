@@ -33,7 +33,7 @@ namespace Warlander.Deedplanner.Rendering.Assets.Tests
             MethodInfo decode = typeof(DDSTextureLoader).GetMethod("LoadTextureDxt", BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(decode, Is.Not.Null);
             Texture2D texture = Track((Texture2D)decode.Invoke(new DDSTextureLoader(new SilentLogger()),
-                new object[] { CreateDxt5Bytes(), true, true }));
+                new object[] { CreateDxt5Bytes(), true, true, false }));
 
             Assert.That(texture.isDataSRGB, Is.False);
             Color32[] pixels = texture.GetPixels32();
@@ -220,7 +220,7 @@ namespace Warlander.Deedplanner.Rendering.Assets.Tests
 
             public FixedTextureLoader(Texture2D texture) => _texture = texture;
 
-            public Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false)
+            public Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false, bool linearData = false)
             {
                 Loads++;
                 return Task.FromResult(_texture);

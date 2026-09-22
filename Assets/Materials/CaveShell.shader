@@ -4,6 +4,8 @@ Shader "DeedPlanner/Cave Shell"
     {
         [NoScaleOffset] _MainTex("Cave Textures", 2DArray) = "white" {}
         [NoScaleOffset] _NormalArray("Cave Normals", 2DArray) = "" {}
+        _OcclusionStrength("Occlusion Strength", Range(0, 1)) = 0.18
+        [NoScaleOffset] _OcclusionArray("Cave Occlusion", 2DArray) = "white" {}
         _SpecularStrength("Specular Strength", Range(0, 1)) = 1
         [NoScaleOffset] _SurfaceProperties("Surface Properties", 2DArray) = "" {}
         _NormalStrength("Normal Strength", Range(0, 1)) = 1
@@ -36,6 +38,8 @@ Shader "DeedPlanner/Cave Shell"
             TEXTURE2D_ARRAY(_NormalArray);
             SAMPLER(sampler_NormalArray);
 
+            TEXTURE2D_ARRAY(_OcclusionArray);
+            SAMPLER(sampler_OcclusionArray);
             TEXTURE2D_ARRAY(_SurfaceProperties);
             SAMPLER(sampler_SurfaceProperties);
 
@@ -44,6 +48,7 @@ Shader "DeedPlanner/Cave Shell"
                 half _CaveOverview;
                 half _NormalStrength;
                 half _SpecularStrength;
+                half _OcclusionStrength;
             CBUFFER_END
 
             struct Attributes
@@ -90,6 +95,8 @@ Shader "DeedPlanner/Cave Shell"
                 half3 halfDirection = normalize(detailLight + half3(0, 0, 1));
                 half highlight = pow(saturate(dot(normalTS, halfDirection)), lerp(8.0h, 64.0h, surface.b));
                 color.rgb *= 1.0h + 0.06h * highlight * specular * surface.a * _SpecularStrength;
+                half occlusion = SAMPLE_TEXTURE2D_ARRAY(_OcclusionArray, sampler_OcclusionArray, input.uv, input.textureData.x).g;
+                color.rgb *= lerp(1.0h, occlusion, _OcclusionStrength);
                 color.rgb = MixFog(color.rgb, input.fogFactor);
                 return color;
             }

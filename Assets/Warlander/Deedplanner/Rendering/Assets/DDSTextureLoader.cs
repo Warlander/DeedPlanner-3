@@ -16,24 +16,24 @@ namespace Warlander.Deedplanner.Rendering.Assets
             _logger = logger;
         }
 
-        public async Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false)
+        public async Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false, bool linearData = false)
         {
             var data = await WebUtils.ReadUrlToByteArrayAsync(location);
             if (data == null)
             {
                 _logger.Warning("Unable to load DDS texture: " + location + ". Returning placeholder instead.");
-                return normalMap ? null : Texture2D.whiteTexture;
+                return normalMap || linearData ? null : Texture2D.whiteTexture;
             }
 
             string name = location.Substring(location.LastIndexOf("/", StringComparison.Ordinal) + 1);
 
-            Texture2D texture = LoadTextureDxt(data, readable, normalMap);
+            Texture2D texture = LoadTextureDxt(data, readable, normalMap, linearData);
             texture.name = name;
 
             return texture;
         }
 
-        private Texture2D LoadTextureDxt(byte[] ddsBytes, bool readable, bool normalMap)
+        private Texture2D LoadTextureDxt(byte[] ddsBytes, bool readable, bool normalMap, bool linearData = false)
         {
             byte ddsSizeCheck = ddsBytes[4];
             if (ddsSizeCheck != 124)
@@ -59,10 +59,10 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 textureFormat = TextureFormat.DXT1;
             }
 
-            Texture2D dxtTexture = new Texture2D(width, height, textureFormat, false, normalMap);
+            Texture2D dxtTexture = new Texture2D(width, height, textureFormat, false, normalMap || linearData);
             dxtTexture.LoadRawTextureData(dxtBytes);
 
-            Texture2D finalTexture = new Texture2D(dxtTexture.width, dxtTexture.height, TextureFormat.RGBA32, true, normalMap);
+            Texture2D finalTexture = new Texture2D(dxtTexture.width, dxtTexture.height, TextureFormat.RGBA32, true, normalMap || linearData);
             Color32[] pixelBuffer = dxtTexture.GetPixels32();
             if (Application.isPlaying)
             {

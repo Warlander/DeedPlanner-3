@@ -14,6 +14,7 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
         private readonly IndexedTextureArray<TextureReference> _textures;
         private readonly IndexedTextureArray<TextureReference> _normals;
         private readonly Texture2D _flatNormal;
+        private readonly IndexedTextureArray<TextureReference> _occlusions;
         private readonly TerrainSurfaceProperties _surfaceProperties;
 
         public GroundTextureArray(IDataCatalog dataCatalog)
@@ -27,6 +28,7 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
 
             _textures = new IndexedTextureArray<TextureReference>(TextureWidth, TextureHeight, textures.Count);
             _normals = new IndexedTextureArray<TextureReference>(TextureWidth, TextureHeight, textures.Count, linear: true);
+            _occlusions = new IndexedTextureArray<TextureReference>(TextureWidth, TextureHeight, textures.Count, linear: true);
             _surfaceProperties = new TerrainSurfaceProperties(textures.Count);
             _flatNormal = new Texture2D(2, 2, TextureFormat.RGBA32, false, true);
             _flatNormal.SetPixels(new[] { new Color(0.5f, 0.5f, 1, 0), new Color(0.5f, 0.5f, 1, 0),
@@ -39,9 +41,10 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
             material.SetTexture("_MainTex", _textures.TextureArray);
             material.SetTexture("_NormalArray", _normals.TextureArray);
             _surfaceProperties.ApplyTo(material);
+            material.SetTexture("_OcclusionArray", _occlusions.TextureArray);
         }
 
-        public bool TryGetOrAdd(TextureReference reference, Texture2D texture, Texture2D normal, out int index)
+        public bool TryGetOrAdd(TextureReference reference, Texture2D texture, Texture2D normal, out int index, Texture2D occlusion = null)
         {
             if (!_textures.IsValid)
             {
@@ -49,9 +52,11 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
                 return false;
             }
 
+            bool isNew = _textures.GetTextureIndex(reference) < 0;
             index = _textures.PutOrGetTexture(reference, texture);
             if (index < 0 || _normals.PutOrGetTexture(reference, normal ? normal : _flatNormal) != index) return false;
-            _surfaceProperties.Set(index, reference, normal);
+            if (_occlusions.PutOrGetTexture(reference, occlusion ? occlusion : Texture2D.whiteTexture) != index) return false;
+            if (isNew) _surfaceProperties.Set(index, reference, normal);
             return true;
         }
 
@@ -60,6 +65,7 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
             _textures.Dispose();
             _normals.Dispose();
             _surfaceProperties.Dispose();
+            _occlusions.Dispose();
             if (Application.isPlaying) UnityEngine.Object.Destroy(_flatNormal);
             else UnityEngine.Object.DestroyImmediate(_flatNormal);
         }

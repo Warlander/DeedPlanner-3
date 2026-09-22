@@ -67,6 +67,7 @@ namespace Warlander.Deedplanner.Editor
                 "Assets/Materials/ModelShader.shadergraph"
             };
             paths.AddRange(Directory.GetFiles(Application.streamingAssetsPath, "*_n.dds", SearchOption.AllDirectories));
+            paths.AddRange(Directory.GetFiles(Application.streamingAssetsPath, "*_d.dds", SearchOption.AllDirectories));
             paths.Sort(StringComparer.Ordinal);
             using SHA256 sha256 = SHA256.Create();
             foreach (string path in paths)

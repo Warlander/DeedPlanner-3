@@ -15,7 +15,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
             _logger = logger;
         }
 
-        public async Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false)
+        public async Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false, bool linearData = false)
         {
             var data = await WebUtils.ReadUrlToByteArrayAsync(location);
             if (data == null)
@@ -26,7 +26,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
 
             string name = location.Substring(location.LastIndexOf("/", StringComparison.Ordinal) + 1);
             
-            Texture2D texture = new Texture2D(4, 4, normalMap ? TextureFormat.RGBA32 : TextureFormat.DXT1, true, normalMap);
+            Texture2D texture = new Texture2D(4, 4, normalMap || linearData ? TextureFormat.RGBA32 : TextureFormat.DXT1, true, normalMap || linearData);
             texture.LoadImage(data, !readable && !normalMap);
             if (normalMap)
             {

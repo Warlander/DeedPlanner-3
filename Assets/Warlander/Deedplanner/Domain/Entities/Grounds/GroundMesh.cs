@@ -641,12 +641,13 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
         {
             Texture2D textureWithoutCrops = await data.Tex3d.LoadOrGetTextureAsync();
             Texture2D normalWithoutCrops = await data.Tex3d.LoadOrGetNormalAsync();
+            Texture2D occlusionWithoutCrops = await data.Tex3d.LoadOrGetOcclusionAsync();
             if (!this || !textureWithoutCrops || dataArray[tileCoords.x, tileCoords.y] != data)
             {
                 return;
             }
 
-            if (!_groundTextures.TryGetOrAdd(data.Tex3d, textureWithoutCrops, normalWithoutCrops, out int textureWithoutCropsIndex))
+            if (!_groundTextures.TryGetOrAdd(data.Tex3d, textureWithoutCrops, normalWithoutCrops, out int textureWithoutCropsIndex, occlusionWithoutCrops))
             {
                 return;
             }
@@ -660,12 +661,14 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
                 : await data.Tex2d.LoadOrGetTextureAsync();
             Texture2D normalWithCrops = data.Tex2d == data.Tex3d
                 ? normalWithoutCrops : await data.Tex2d.LoadOrGetNormalAsync();
+            Texture2D occlusionWithCrops = data.Tex2d == data.Tex3d
+                ? occlusionWithoutCrops : await data.Tex2d.LoadOrGetOcclusionAsync();
             if (!this || !textureWithCrops || dataArray[tileCoords.x, tileCoords.y] != data)
             {
                 return;
             }
 
-            if (!_groundTextures.TryGetOrAdd(data.Tex2d, textureWithCrops, normalWithCrops, out int textureWithCropsIndex))
+            if (!_groundTextures.TryGetOrAdd(data.Tex2d, textureWithCrops, normalWithCrops, out int textureWithCropsIndex, occlusionWithCrops))
             {
                 return;
             }

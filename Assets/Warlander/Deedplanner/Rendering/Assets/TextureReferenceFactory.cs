@@ -11,6 +11,8 @@ namespace Warlander.Deedplanner.Rendering.Assets
     public class TextureReferenceFactory : ITextureReferenceFactory
     {
         private readonly ITextureLoader _textureLoader;
+        private readonly Dictionary<string, string> _occlusionLocations = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, TextureReference> _occlusionReferences = new Dictionary<string, TextureReference>();
         private readonly Dictionary<string, Vector2> _specularRanges = new Dictionary<string, Vector2>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, string> _normalLocations = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, TextureReference> _normalReferences = new Dictionary<string, TextureReference>();
@@ -25,13 +27,15 @@ namespace Warlander.Deedplanner.Rendering.Assets
 
         public void LoadTextureDefinitions(XmlDocument document)
         {
-            foreach (XmlElement element in document.SelectNodes("//tex[@normal] | //override[@normal] | //rock[@normal] | //roof[@normal]"))
+            foreach (XmlElement element in document.SelectNodes("//tex[@normal or @occlusion] | //override[@normal or @occlusion] | //rock[@normal or @occlusion] | //roof[@normal or @occlusion]"))
             {
                 string location = element.Name == "tex" ? element.GetAttribute("location")
                     : element.Name == "override" ? element.GetAttribute("texture") : element.GetAttribute("tex");
-                _normalLocations[location] = element.GetAttribute("normal");
-                float min = element.HasAttribute("specularMin") ? float.Parse(element.GetAttribute("specularMin"), CultureInfo.InvariantCulture) : 0;
-                float max = element.HasAttribute("specularMax") ? float.Parse(element.GetAttribute("specularMax"), CultureInfo.InvariantCulture) : 1;
+                if (element.HasAttribute("normal")) _normalLocations[location] = element.GetAttribute("normal");
+                if (element.HasAttribute("occlusion")) _occlusionLocations[location] = element.GetAttribute("occlusion");
+                Vector2 previousRange = _specularRanges.TryGetValue(location, out Vector2 existingRange) ? existingRange : new Vector2(0, 1);
+                float min = element.HasAttribute("specularMin") ? float.Parse(element.GetAttribute("specularMin"), CultureInfo.InvariantCulture) : previousRange.x;
+                float max = element.HasAttribute("specularMax") ? float.Parse(element.GetAttribute("specularMax"), CultureInfo.InvariantCulture) : previousRange.y;
                 _specularRanges[location] = new Vector2(min, max);
             }
         }
@@ -58,8 +62,15 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 normalReference = new TextureReference(_textureLoader, normalLocation, normalMap: true);
                 _normalReferences.Add(normalLocation, normalReference);
             }
+            TextureReference occlusionReference = null;
+            if (_occlusionLocations.TryGetValue(location, out string occlusionLocation)
+                && !_occlusionReferences.TryGetValue(occlusionLocation, out occlusionReference))
+            {
+                occlusionReference = new TextureReference(_textureLoader, occlusionLocation, linearData: true);
+                _occlusionReferences.Add(occlusionLocation, occlusionReference);
+            }
             Vector2? specularRange = _specularRanges.TryGetValue(location, out Vector2 range) ? range : (Vector2?)null;
-            TextureReference reference = new TextureReference(_textureLoader, location, normalReference: normalReference, specularRange: specularRange);
+            TextureReference reference = new TextureReference(_textureLoader, location, normalReference: normalReference, specularRange: specularRange, occlusionReference: occlusionReference);
             _references[location] = reference;
             return reference;
         }

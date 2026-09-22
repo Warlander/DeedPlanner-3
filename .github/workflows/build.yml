@@ -65,7 +65,7 @@ jobs:
         with:
           path: Assets/Generated
           # v5: v4 cache is poisoned - first llvmpipe run rendered the wFloor cell red (software GL first-render quirk)
-          key: previews-windows-v5-${{ hashFiles('Assets/StreamingAssets/objects.xml', 'Assets/StreamingAssets/**/*_n.dds', 'Assets/Materials/ModelShader.shadergraph', 'Assets/Warlander/Deedplanner/Editor/PreviewThumbnailGenerator.cs') }}
+          key: previews-windows-v5-${{ hashFiles('Assets/StreamingAssets/objects.xml', 'Assets/StreamingAssets/**/*_n.dds', 'Assets/StreamingAssets/**/*_d.dds', 'Assets/Materials/ModelShader.shadergraph', 'Assets/Warlander/Deedplanner/Editor/PreviewThumbnailGenerator.cs') }}
 
       - name: Ensure Docker daemon is running
         shell: pwsh
@@ -159,7 +159,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: Assets/Generated
-          key: previews-linux-v4-${{ hashFiles('Assets/StreamingAssets/objects.xml', 'Assets/StreamingAssets/**/*_n.dds', 'Assets/Materials/ModelShader.shadergraph', 'Assets/Warlander/Deedplanner/Editor/PreviewThumbnailGenerator.cs') }}
+          key: previews-linux-v4-${{ hashFiles('Assets/StreamingAssets/objects.xml', 'Assets/StreamingAssets/**/*_n.dds', 'Assets/StreamingAssets/**/*_d.dds', 'Assets/Materials/ModelShader.shadergraph', 'Assets/Warlander/Deedplanner/Editor/PreviewThumbnailGenerator.cs') }}
 
       - name: Build (IL2CPP)
         run: |
@@ -228,7 +228,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: Assets/Generated
-          key: previews-macos-v4-${{ hashFiles('Assets/StreamingAssets/objects.xml', 'Assets/StreamingAssets/**/*_n.dds', 'Assets/Materials/ModelShader.shadergraph', 'Assets/Warlander/Deedplanner/Editor/PreviewThumbnailGenerator.cs') }}
+          key: previews-macos-v4-${{ hashFiles('Assets/StreamingAssets/objects.xml', 'Assets/StreamingAssets/**/*_n.dds', 'Assets/StreamingAssets/**/*_d.dds', 'Assets/Materials/ModelShader.shadergraph', 'Assets/Warlander/Deedplanner/Editor/PreviewThumbnailGenerator.cs') }}
 
       - name: Install Unity editor + Mac IL2CPP module
         run: |
@@ -319,7 +319,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: Assets/Generated
-          key: previews-webgl-v4-${{ hashFiles('Assets/StreamingAssets/objects.xml', 'Assets/StreamingAssets/**/*_n.dds', 'Assets/Materials/ModelShader.shadergraph', 'Assets/Warlander/Deedplanner/Editor/PreviewThumbnailGenerator.cs') }}
+          key: previews-webgl-v4-${{ hashFiles('Assets/StreamingAssets/objects.xml', 'Assets/StreamingAssets/**/*_n.dds', 'Assets/StreamingAssets/**/*_d.dds', 'Assets/Materials/ModelShader.shadergraph', 'Assets/Warlander/Deedplanner/Editor/PreviewThumbnailGenerator.cs') }}
 
       - name: Build (WebGL)
         run: |

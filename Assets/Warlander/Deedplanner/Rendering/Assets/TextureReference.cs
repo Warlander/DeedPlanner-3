@@ -8,6 +8,8 @@ namespace Warlander.Deedplanner.Rendering.Assets
     {
         private readonly ITextureLoader _textureLoader;
         private readonly bool _normalMap;
+        private readonly bool _linearData;
+        private readonly TextureReference _occlusionReference;
         private readonly TextureReference _normalReference;
 
         private Texture2D texture;
@@ -17,11 +19,13 @@ namespace Warlander.Deedplanner.Rendering.Assets
         public string Location { get; }
         public Vector2 SpecularRange { get; }
 
-        public TextureReference(ITextureLoader textureLoader, string location, bool normalMap = false, TextureReference normalReference = null, Vector2? specularRange = null)
+        public TextureReference(ITextureLoader textureLoader, string location, bool normalMap = false, TextureReference normalReference = null, Vector2? specularRange = null, TextureReference occlusionReference = null, bool linearData = false)
         {
             _textureLoader = textureLoader;
             Location = location;
             _normalMap = normalMap;
+            _linearData = linearData;
+            _occlusionReference = occlusionReference;
             _normalReference = normalReference;
             SpecularRange = specularRange ?? new Vector2(0, 1);
         }
@@ -47,7 +51,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 ? Location
                 : Application.streamingAssetsPath + "/" + Location;
 
-            texture = await _textureLoader.LoadTextureAsync(location, false, _normalMap);
+            texture = await _textureLoader.LoadTextureAsync(location, false, _normalMap, _linearData);
             if (texture)
             {
                 texture.name = Location;
@@ -59,6 +63,11 @@ namespace Warlander.Deedplanner.Rendering.Assets
         public Task<Texture2D> LoadOrGetNormalAsync()
         {
             return _normalReference != null ? _normalReference.LoadOrGetTextureAsync() : Task.FromResult<Texture2D>(null);
+        }
+
+        public Task<Texture2D> LoadOrGetOcclusionAsync()
+        {
+            return _occlusionReference != null ? _occlusionReference.LoadOrGetTextureAsync() : Task.FromResult<Texture2D>(null);
         }
 
         public async Task<Sprite> LoadOrGetSpriteAsync()

@@ -6,6 +6,6 @@ namespace Warlander.Deedplanner.Rendering.Assets
 {
     public interface ITextureLoader
     {
-        Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false);
+        Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false, bool linearData = false);
     }
 }
