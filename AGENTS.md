@@ -114,6 +114,16 @@ Injection style:
 - **Database** (`Domain/Database.cs`) — static dictionaries for all game asset metadata (ground/floor/wall/roof/decoration types)
 - **Materials** (`Domain/Materials.cs`) — material costs are unit counts, not weights; weight-based goods use template-weight units (Mortar unit = 2 kg, Tar unit = 1 kg), matching the game's build-list convention
 
+### Data Definitions: Single Source of Truth
+
+`Assets/StreamingAssets/objects.xml` is the canonical source of truth for authored application data and how that data is interpreted. Treat every data-related concern as part of this schema: entity definitions, categories, relationships, asset associations, material properties, costs, capabilities, overrides, and data-specific loading or rendering behavior. Existing custom `objects*.xml` files extend the same syntax and loading path.
+
+- Express new data requirements in the existing XML structure, next to the entity or asset they describe; extend the syntax coherently when needed.
+- Do not create parallel catalogs, sidecar mappings, hardcoded asset lists, filename-based guesses, or entity-specific rules in loaders, shaders, previews, editor tools, or build scripts.
+- Runtime code implements generic interpretation and algorithms. Data-specific choices belong in XML, not in code branches keyed by names, paths, or identifiers.
+- All consumers use the same definitions. Generated caches, previews, and validation artifacts must derive from XML and must not become independently maintained sources of truth.
+- Update the custom XML template and relevant validation when extending the schema. Preserve the meaning of existing definitions and document any intentional compatibility change.
+
 ### Tab-Based Updater Pattern
 Each editing mode maps to a UI tab and a corresponding `*Updater` class in `Assets/Warlander/Deedplanner/Editing/<Tab>/` (updater, `I*UpdaterView` interface, and view MonoBehaviour co-located per tab). Updaters are plain C# classes implementing `IUpdater` (`TargetTab`, `Initialize`, `Enable`, `Disable`, `Tick`), constructor-injected, and registered in the VContainer scope. `UpdaterCoordinator` (`Editing/UpdaterCoordinator.cs`) receives them as `IReadOnlyList<IUpdater>`, initializes all, and on `TabContext.TabChanged` disables the active updater, enables the one whose `TargetTab` matches, and ticks only the active one.
 
