@@ -124,6 +124,9 @@ namespace Warlander.Deedplanner.Domain
 
         private void PerformLoading(XmlDocument[] documents)
         {
+            foreach (XmlDocument document in documents)
+                _assetFacade.LoadTextureDefinitions(document);
+
             IncrementStep(documents, "Loading grounds", LoadGrounds);
             IncrementStep(documents, "Loading caves", LoadCaves);
             IncrementStep(documents, "Loading floors", LoadFloors);

@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -18,7 +18,6 @@ namespace Warlander.Deedplanner.Rendering.Assets
             List<Vector3> normalList = new List<Vector3>();
             List<Vector2> uvList = new List<Vector2>();
             List<Color> colorList = new List<Color>();
-            List<Vector4> tangentsList = new List<Vector4>();
 
             for (int i = 0; i < verticesCount; i++)
             {
@@ -26,7 +25,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 vertex.Scale(scale);
                 vertexList.Add(vertex);
                 Vector3 normal = new Vector3(source.ReadSingle(), source.ReadSingle(), source.ReadSingle());
-                normal.Scale(scale);
+                normal = new Vector3(normal.x / scale.x, normal.y / scale.y, normal.z / scale.z).normalized;
                 normalList.Add(normal);
                 uvList.Add(new Vector2(source.ReadSingle(), 1 - source.ReadSingle()));
 
@@ -36,7 +35,9 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 }
                 if (hasTangents)
                 {
-                    tangentsList.Add(new Vector4(source.ReadSingle(), source.ReadSingle(), source.ReadSingle()));
+                    source.ReadSingle();
+                    source.ReadSingle();
+                    source.ReadSingle();
                 }
                 if (hasBinormal)
                 {
@@ -73,11 +74,8 @@ namespace Warlander.Deedplanner.Rendering.Assets
             {
                 mesh.SetColors(colorList);
             }
-            if (tangentsList.Count != 0)
-            {
-                mesh.SetTangents(tangentsList);
-            }
             mesh.SetTriangles(triangles, 0);
+            mesh.RecalculateTangents();
 
             return mesh;
         }

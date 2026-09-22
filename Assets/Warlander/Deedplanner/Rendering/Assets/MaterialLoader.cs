@@ -23,15 +23,9 @@ namespace Warlander.Deedplanner.Rendering.Assets
 
             if (textureReference != null)
             {
-                var texture = await textureReference.LoadOrGetTextureAsync();
-                if (texture)
-                {
-                    material.SetTexture("_BaseMap", texture);
-                }
-                else
-                {
+                await ModelMaterialTextures.ApplyAsync(material, textureReference);
+                if (!material.GetTexture(ShaderPropertyIds.BaseMap))
                     material.color = new Color(1, 1, 1, 0);
-                }
             }
 
             material.SetFloat(ShaderPropertyIds.Glossiness, materialMetadata.Glossiness);

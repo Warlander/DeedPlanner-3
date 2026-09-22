@@ -5,6 +5,8 @@ namespace Warlander.Deedplanner.Rendering.Assets
 {
     public interface IWurmAssetFacade
     {
+        void LoadTextureDefinitions(XmlDocument document);
+
         ModelHandle GetModel(XmlElement element, int layer = int.MaxValue);
         ModelHandle GetModel(XmlElement element, Vector3 scale, int layer = int.MaxValue);
         ModelHandle GetModel(string location, int layer = int.MaxValue);

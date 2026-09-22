@@ -336,6 +336,7 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
             {
                 RenderMesh.vertices = renderVertices;
                 RenderMesh.RecalculateNormals();
+                RenderMesh.RecalculateTangents();
                 RenderMesh.RecalculateBounds();
 
                 ColliderMesh.vertices = colliderVertices;
@@ -639,12 +640,13 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
         private async void UpdateUV2Async(GroundData data, int uvIndex, Vector2Int tileCoords)
         {
             Texture2D textureWithoutCrops = await data.Tex3d.LoadOrGetTextureAsync();
+            Texture2D normalWithoutCrops = await data.Tex3d.LoadOrGetNormalAsync();
             if (!this || !textureWithoutCrops || dataArray[tileCoords.x, tileCoords.y] != data)
             {
                 return;
             }
 
-            if (!_groundTextures.TryGetOrAdd(data.Tex3d, textureWithoutCrops, out int textureWithoutCropsIndex))
+            if (!_groundTextures.TryGetOrAdd(data.Tex3d, textureWithoutCrops, normalWithoutCrops, out int textureWithoutCropsIndex))
             {
                 return;
             }
@@ -656,12 +658,14 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
             Texture2D textureWithCrops = data.Tex2d == data.Tex3d
                 ? textureWithoutCrops
                 : await data.Tex2d.LoadOrGetTextureAsync();
+            Texture2D normalWithCrops = data.Tex2d == data.Tex3d
+                ? normalWithoutCrops : await data.Tex2d.LoadOrGetNormalAsync();
             if (!this || !textureWithCrops || dataArray[tileCoords.x, tileCoords.y] != data)
             {
                 return;
             }
 
-            if (!_groundTextures.TryGetOrAdd(data.Tex2d, textureWithCrops, out int textureWithCropsIndex))
+            if (!_groundTextures.TryGetOrAdd(data.Tex2d, textureWithCrops, normalWithCrops, out int textureWithCropsIndex))
             {
                 return;
             }

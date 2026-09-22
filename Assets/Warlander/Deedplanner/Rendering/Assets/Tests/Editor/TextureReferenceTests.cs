@@ -122,7 +122,7 @@ namespace Warlander.Deedplanner.Rendering.Assets.Tests
 
             public StubTextureLoader(Func<Task<Texture2D>> load) => Load = load;
 
-            public Task<Texture2D> LoadTextureAsync(string location, bool readable)
+            public Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false)
             {
                 Attempts++;
                 return Load();

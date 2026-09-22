@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -201,13 +202,23 @@ namespace Warlander.Deedplanner.Rendering.Assets
 
         private async void LoadMasterModelAsync(string fullLocation, Action onDone)
         {
-            GameObject model;
+            GameObject model = null;
             try
             {
                 model = await _facade.ModelLoader.LoadModelAsync(fullLocation, Scale);
+                if (model)
+                {
+                    model.transform.SetParent(_modelRoot.transform);
+                    await ApplyTextureOverridesAsync(model);
+                }
             }
             catch (Exception exception)
             {
+                if (model)
+                {
+                    if (Application.isPlaying) Object.Destroy(model);
+                    else Object.DestroyImmediate(model);
+                }
                 _loadingOriginalModel = false;
                 _modelRequests.Clear();
                 _facade.Logger.Error("Model failed to load: " + _location + ": " + exception.Message);
@@ -231,7 +242,20 @@ namespace Warlander.Deedplanner.Rendering.Assets
             _originalModel = masterModel;
             _originalModel.layer = Layer;
 
-            foreach (Transform child in _originalModel.transform)
+            _originalModel.transform.SetParent(_modelRoot.transform);
+            ModelProperties originalProperties = new ModelProperties(Vector2.zero, null);
+            _modifiedModels[originalProperties] = _originalModel;
+
+            foreach (ModelRequest modelRequest in _modelRequests)
+            {
+                CreateModelInstance(modelRequest.ModelProperties, modelRequest.Callback);
+            }
+            _modelRequests.Clear();
+        }
+
+        private async Task ApplyTextureOverridesAsync(GameObject masterModel)
+        {
+            foreach (Transform child in masterModel.transform)
             {
                 child.gameObject.layer = Layer;
                 string textureOverride;
@@ -247,24 +271,9 @@ namespace Warlander.Deedplanner.Rendering.Assets
                     Material newMaterial = new Material(renderer.sharedMaterial);
                     renderer.sharedMaterial = newMaterial;
 
-                    ApplyTextureOverrideAsync(texture, newMaterial);
+                    await ModelMaterialTextures.ApplyAsync(newMaterial, texture);
                 }
             }
-            _originalModel.transform.SetParent(_modelRoot.transform);
-            ModelProperties originalProperties = new ModelProperties(Vector2.zero, null);
-            _modifiedModels[originalProperties] = _originalModel;
-
-            foreach (ModelRequest modelRequest in _modelRequests)
-            {
-                CreateModelInstance(modelRequest.ModelProperties, modelRequest.Callback);
-            }
-            _modelRequests.Clear();
-        }
-
-        private static async void ApplyTextureOverrideAsync(TextureReference texture, Material material)
-        {
-            Texture2D loadedTexture = await texture.LoadOrGetTextureAsync();
-            material.SetTexture(ShaderPropertyIds.BaseMap, loadedTexture);
         }
 
         private void InitializeModifiedModel(ModelProperties modelProperties)

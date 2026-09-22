@@ -16,24 +16,24 @@ namespace Warlander.Deedplanner.Rendering.Assets
             _logger = logger;
         }
 
-        public async Task<Texture2D> LoadTextureAsync(string location, bool readable)
+        public async Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false)
         {
             var data = await WebUtils.ReadUrlToByteArrayAsync(location);
             if (data == null)
             {
                 _logger.Warning("Unable to load DDS texture: " + location + ". Returning placeholder instead.");
-                return Texture2D.whiteTexture;
+                return normalMap ? null : Texture2D.whiteTexture;
             }
 
             string name = location.Substring(location.LastIndexOf("/", StringComparison.Ordinal) + 1);
 
-            Texture2D texture = LoadTextureDxt(data);
+            Texture2D texture = LoadTextureDxt(data, readable, normalMap);
             texture.name = name;
 
             return texture;
         }
 
-        private Texture2D LoadTextureDxt(byte[] ddsBytes)
+        private Texture2D LoadTextureDxt(byte[] ddsBytes, bool readable, bool normalMap)
         {
             byte ddsSizeCheck = ddsBytes[4];
             if (ddsSizeCheck != 124)
@@ -59,10 +59,10 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 textureFormat = TextureFormat.DXT1;
             }
 
-            Texture2D dxtTexture = new Texture2D(width, height, textureFormat, false);
+            Texture2D dxtTexture = new Texture2D(width, height, textureFormat, false, normalMap);
             dxtTexture.LoadRawTextureData(dxtBytes);
 
-            Texture2D finalTexture = new Texture2D(dxtTexture.width, dxtTexture.height);
+            Texture2D finalTexture = new Texture2D(dxtTexture.width, dxtTexture.height, TextureFormat.RGBA32, true, normalMap);
             Color32[] pixelBuffer = dxtTexture.GetPixels32();
             if (Application.isPlaying)
             {
@@ -84,6 +84,15 @@ namespace Warlander.Deedplanner.Rendering.Assets
                     Color32 temp = pixelBuffer[flippedIndex];
                     pixelBuffer[flippedIndex] = pixelBuffer[originalIndex];
                     pixelBuffer[originalIndex] = temp;
+                }
+            }
+            if (normalMap)
+            {
+                // Match the V-flipped UVs and regenerated tangent basis.
+                for (int i = 0; i < pixelBuffer.Length; i++)
+                {
+                    pixelBuffer[i].g = (byte)(255 - pixelBuffer[i].g);
+                    pixelBuffer[i].a = 255;
                 }
             }
             finalTexture.SetPixels32(pixelBuffer);

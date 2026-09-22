@@ -18,6 +18,8 @@ namespace Warlander.Deedplanner.Caves
         private readonly List<TextureReference> _references;
         private readonly Dictionary<TextureReference, int> _indices = new Dictionary<TextureReference, int>();
         private readonly IndexedTextureArray<TextureReference> _textures;
+        private readonly IndexedTextureArray<TextureReference> _normals;
+        private readonly Texture2D _flatNormal;
         private Task _loadTask;
         private int _defaultIndex;
 
@@ -37,6 +39,11 @@ namespace Warlander.Deedplanner.Caves
             _references = new List<TextureReference>(uniqueReferences);
             _references.Remove(_defaultTerrain.Texture);
             _textures = new IndexedTextureArray<TextureReference>(TextureWidth, TextureHeight, uniqueReferences.Count);
+            _normals = new IndexedTextureArray<TextureReference>(TextureWidth, TextureHeight, uniqueReferences.Count, linear: true);
+            _flatNormal = new Texture2D(2, 2, TextureFormat.RGBA32, false, true);
+            _flatNormal.SetPixels(new[] { new Color(0.5f, 0.5f, 1, 0), new Color(0.5f, 0.5f, 1, 0),
+                new Color(0.5f, 0.5f, 1, 0), new Color(0.5f, 0.5f, 1, 0) });
+            _flatNormal.Apply();
         }
 
         public Task LoadAsync()
@@ -48,6 +55,7 @@ namespace Warlander.Deedplanner.Caves
         public void ApplyTo(Material material)
         {
             material.SetTexture("_MainTex", _textures.TextureArray);
+            material.SetTexture("_NormalArray", _normals.TextureArray);
         }
 
         public int GetIndex(CaveData terrain)
@@ -74,10 +82,11 @@ namespace Warlander.Deedplanner.Caves
             try
             {
                 Texture2D texture = await reference.LoadOrGetTextureAsync();
+                Texture2D normal = await reference.LoadOrGetNormalAsync();
                 if (texture && _textures.IsValid)
                 {
                     int index = _textures.PutOrGetTexture(reference, texture);
-                    if (index >= 0)
+                    if (index >= 0 && _normals.PutOrGetTexture(reference, normal ? normal : _flatNormal) == index)
                     {
                         _indices[reference] = index;
                         return index;
@@ -96,6 +105,9 @@ namespace Warlander.Deedplanner.Caves
         public void Dispose()
         {
             _textures.Dispose();
+            _normals.Dispose();
+            if (Application.isPlaying) UnityEngine.Object.Destroy(_flatNormal);
+            else UnityEngine.Object.DestroyImmediate(_flatNormal);
         }
     }
 }

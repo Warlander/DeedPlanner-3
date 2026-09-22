@@ -43,11 +43,7 @@ namespace Warlander.Deedplanner.Bridges
 
         private async void LoadOverlayTextureAsync()
         {
-            Texture2D texture = await Tex.LoadOrGetTextureAsync();
-            if (_overlayMaterial && texture)
-            {
-                _overlayMaterial.SetTexture(ShaderPropertyIds.BaseMap, texture);
-            }
+            await ModelMaterialTextures.ApplyAsync(_overlayMaterial, Tex);
         }
     }
 }

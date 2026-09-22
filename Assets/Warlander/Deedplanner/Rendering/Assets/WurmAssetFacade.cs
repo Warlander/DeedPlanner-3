@@ -47,6 +47,11 @@ namespace Warlander.Deedplanner.Rendering.Assets
             }
         }
 
+        public void LoadTextureDefinitions(XmlDocument document)
+        {
+            _textureReferenceFactory.LoadTextureDefinitions(document);
+        }
+
         public ModelHandle GetModel(XmlElement element, int layer = int.MaxValue)
         {
             return new ModelHandle(this, element, layer);

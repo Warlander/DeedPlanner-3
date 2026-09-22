@@ -19,7 +19,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
             _logger = logger;
         }
 
-        public async Task<Texture2D> LoadTextureAsync(string location, bool readable)
+        public async Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false)
         {
             if (string.IsNullOrEmpty(Path.GetExtension(location)))
             {
@@ -31,11 +31,11 @@ namespace Warlander.Deedplanner.Rendering.Assets
 
             if (location.EndsWith(".dds", StringComparison.OrdinalIgnoreCase))
             {
-                return await _ddsTextureLoader.LoadTextureAsync(location, readable);
+                return await _ddsTextureLoader.LoadTextureAsync(location, readable, normalMap);
             }
             else
             {
-                return await _genericTextureLoader.LoadTextureAsync(location, readable);
+                return await _genericTextureLoader.LoadTextureAsync(location, readable, normalMap);
             }
         }
     }

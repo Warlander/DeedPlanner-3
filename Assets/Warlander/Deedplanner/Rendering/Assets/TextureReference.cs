@@ -7,6 +7,8 @@ namespace Warlander.Deedplanner.Rendering.Assets
     public class TextureReference
     {
         private readonly ITextureLoader _textureLoader;
+        private readonly bool _normalMap;
+        private readonly TextureReference _normalReference;
 
         private Texture2D texture;
         private Sprite sprite;
@@ -14,10 +16,12 @@ namespace Warlander.Deedplanner.Rendering.Assets
 
         public string Location { get; }
 
-        public TextureReference(ITextureLoader textureLoader, string location)
+        public TextureReference(ITextureLoader textureLoader, string location, bool normalMap = false, TextureReference normalReference = null)
         {
             _textureLoader = textureLoader;
             Location = location;
+            _normalMap = normalMap;
+            _normalReference = normalReference;
         }
 
         public Task<Texture2D> LoadOrGetTextureAsync()
@@ -41,7 +45,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 ? Location
                 : Application.streamingAssetsPath + "/" + Location;
 
-            texture = await _textureLoader.LoadTextureAsync(location, false);
+            texture = await _textureLoader.LoadTextureAsync(location, false, _normalMap);
             if (texture)
             {
                 texture.name = Location;
@@ -50,6 +54,11 @@ namespace Warlander.Deedplanner.Rendering.Assets
             return texture;
         }
         
+        public Task<Texture2D> LoadOrGetNormalAsync()
+        {
+            return _normalReference != null ? _normalReference.LoadOrGetTextureAsync() : Task.FromResult<Texture2D>(null);
+        }
+
         public async Task<Sprite> LoadOrGetSpriteAsync()
         {
             if (sprite)

@@ -3,6 +3,8 @@ Shader "DeedPlanner/Cave Shell"
     Properties
     {
         [NoScaleOffset] _MainTex("Cave Textures", 2DArray) = "white" {}
+        [NoScaleOffset] _NormalArray("Cave Normals", 2DArray) = "" {}
+        _NormalStrength("Normal Strength", Range(0, 1)) = 1
         _BaseColor("Base Color", Color) = (1, 1, 1, 1)
         [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", Float) = 2
         [HideInInspector] _CaveOverview("Cave Overview", Float) = 0
@@ -29,10 +31,13 @@ Shader "DeedPlanner/Cave Shell"
 
             TEXTURE2D_ARRAY(_MainTex);
             SAMPLER(sampler_MainTex);
+            TEXTURE2D_ARRAY(_NormalArray);
+            SAMPLER(sampler_NormalArray);
 
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseColor;
                 half _CaveOverview;
+                half _NormalStrength;
             CBUFFER_END
 
             struct Attributes
@@ -68,6 +73,12 @@ Shader "DeedPlanner/Cave Shell"
                 half4 color = SAMPLE_TEXTURE2D_ARRAY(_MainTex, sampler_MainTex, input.uv, input.textureData.x);
                 color.rgb *= _BaseColor.rgb;
                 color.rgb *= lerp(0.55h, 1.0h, abs(input.textureData.y - 1.0h));
+                half4 packedNormal = SAMPLE_TEXTURE2D_ARRAY(_NormalArray, sampler_NormalArray, input.uv, input.textureData.x);
+                half3 normalTS = normalize(packedNormal.rgb * 2.0h - 1.0h);
+                // Fixed texture-space light adds relief without darkening the unlit cave interior.
+                half3 detailLight = normalize(half3(-0.4h, 0.6h, 0.7h));
+                half detail = clamp(1.0h + 0.3h * (dot(normalTS, detailLight) - detailLight.z), 0.85h, 1.15h);
+                color.rgb *= lerp(1.0h, detail, packedNormal.a * _NormalStrength);
                 color.rgb = MixFog(color.rgb, input.fogFactor);
                 return color;
             }

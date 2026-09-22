@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
 using Warlander.Deedplanner.Rendering.Assets;
@@ -19,7 +20,7 @@ namespace Warlander.Deedplanner.Editor
             }
             catch (Exception exception)
             {
-                reason = "Unable to hash objects.xml: " + exception.Message;
+                reason = "Unable to hash preview inputs: " + exception.Message;
                 return false;
             }
 
@@ -60,9 +61,21 @@ namespace Warlander.Deedplanner.Editor
 
         public static string CalculateInputsHash()
         {
-            string path = Path.Combine(Application.streamingAssetsPath, "objects.xml");
+            var paths = new List<string>
+            {
+                "Assets/StreamingAssets/objects.xml",
+                "Assets/Materials/ModelShader.shadergraph"
+            };
+            paths.AddRange(Directory.GetFiles(Application.streamingAssetsPath, "*_n.dds", SearchOption.AllDirectories));
+            paths.Sort(StringComparer.Ordinal);
             using SHA256 sha256 = SHA256.Create();
-            return BitConverter.ToString(sha256.ComputeHash(File.ReadAllBytes(path))).Replace("-", string.Empty);
+            foreach (string path in paths)
+            {
+                byte[] bytes = File.ReadAllBytes(path);
+                sha256.TransformBlock(bytes, 0, bytes.Length, null, 0);
+            }
+            sha256.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            return BitConverter.ToString(sha256.Hash).Replace("-", string.Empty);
         }
     }
 }

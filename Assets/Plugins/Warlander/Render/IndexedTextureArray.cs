@@ -18,10 +18,12 @@ namespace Warlander.Render
         public int Length { get; private set; }
 
         private readonly Material blitCopyMaterial;
+        private readonly bool linear;
 
-        public IndexedTextureArray(int width, int height, int depth, bool mipmaps = true)
+        public IndexedTextureArray(int width, int height, int depth, bool mipmaps = true, bool linear = false)
         {
-            TextureArray = new Texture2DArray(width, height, depth, GetTextureFormatToUse(), mipmaps);
+            this.linear = linear;
+            TextureArray = new Texture2DArray(width, height, depth, GetTextureFormatToUse(), mipmaps, linear);
             TextureArray.name = "GroundTextureArray";
             indexToSlice = new Dictionary<T, int>();
             
@@ -78,7 +80,8 @@ namespace Warlander.Render
 
             try
             {
-                if (texture.mipmapCount == TextureArray.mipmapCount && texture.format == TextureArray.format)
+                if (texture.width == TextureArray.width && texture.height == TextureArray.height
+                    && texture.mipmapCount == TextureArray.mipmapCount && texture.format == TextureArray.format)
                 {
                     AppendTexture(texture, Length);
                 }
@@ -93,7 +96,7 @@ namespace Warlander.Render
 
                     AppendTexture(tempTexture, Length);
                     
-                    UnityEngine.Object.Destroy(tempTexture);
+                    DestroyObject(tempTexture);
                 }
 
                 indexToSlice[key] = Length;
@@ -131,14 +134,17 @@ namespace Warlander.Render
         private Texture2D Resize(Texture2D source, int newWidth, int newHeight)
         {
             source.filterMode = FilterMode.Bilinear;
-            RenderTexture rt = RenderTexture.GetTemporary(newWidth, newHeight);
+            RenderTexture previous = RenderTexture.active;
+            RenderTexture rt = RenderTexture.GetTemporary(newWidth, newHeight, 0, RenderTextureFormat.ARGB32,
+                linear ? RenderTextureReadWrite.Linear : RenderTextureReadWrite.Default);
             rt.filterMode = FilterMode.Bilinear;
             RenderTexture.active = rt;
             Graphics.Blit(source, rt, blitCopyMaterial);
-            Texture2D nTex = new Texture2D(newWidth, newHeight);
-            nTex.ReadPixels(new Rect(0, 0, newWidth, newWidth), 0,0);
+            Texture2D nTex = new Texture2D(newWidth, newHeight, TextureFormat.RGBA32, true, linear);
+            nTex.ReadPixels(new Rect(0, 0, newWidth, newHeight), 0,0);
             nTex.Apply();
-            RenderTexture.active = null;
+            RenderTexture.active = previous;
+            RenderTexture.ReleaseTemporary(rt);
             return nTex;
         }
 

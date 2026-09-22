@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -24,8 +23,8 @@ namespace Warlander.Deedplanner.Editor
     /// </summary>
     public static class PreviewThumbnailGenerator
     {
-        // Render-input changes require this bump plus a harmless objects.xml change to invalidate CI caches.
-        public const int GeneratorVersion = 6;
+        // Bump for rendering changes not covered by the preview input hash.
+        public const int GeneratorVersion = 7;
         private const int CellSize = 64;
         private const int RenderResolution = 256;
         private const float FitMargin = 1.02f;
@@ -63,6 +62,7 @@ namespace Warlander.Deedplanner.Editor
         // recreated on failure so caches rebuild from scratch.
         private static Camera _camera;
         private static WurmAssetFacade _assetFacade;
+        private static XmlDocument _assetDocument;
         private static readonly List<string> FailedEntries = new List<string>();
         private static readonly List<long> LoadMilliseconds = new List<long>();
         private static readonly List<long> RenderMilliseconds = new List<long>();
@@ -177,11 +177,8 @@ namespace Warlander.Deedplanner.Editor
             byte[] xmlBytes = File.ReadAllBytes(Path.Combine(Application.streamingAssetsPath, ObjectsXmlLocation));
             XmlDocument document = new XmlDocument();
             document.LoadXml(Encoding.UTF8.GetString(xmlBytes));
-            string xmlSha256;
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                xmlSha256 = BitConverter.ToString(sha256.ComputeHash(xmlBytes)).Replace("-", string.Empty);
-            }
+            _assetDocument = document;
+            string inputsHash = PreviewAtlasFreshness.CalculateInputsHash();
 
             NewSceneMode sceneMode = Application.isBatchMode ? NewSceneMode.Single : NewSceneMode.Additive;
             Scene previewScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, sceneMode);
@@ -206,14 +203,14 @@ namespace Warlander.Deedplanner.Editor
                     await WarmUpRenderAsync(floors[0], LayerMasks.FloorRoofLayer);
                 }
                 writtenPaths.AddRange(await GenerateCategoryAsync("floors", floors, LayerMasks.FloorRoofLayer,
-                    entry => entry.NormalModelElement, xmlSha256));
+                    entry => entry.NormalModelElement, inputsHash));
                 writtenPaths.AddRange(await GenerateCategoryAsync("walls", walls, LayerMasks.WallLayer,
-                    entry => entry.NormalModelElement ?? entry.BottomModelElement, xmlSha256));
+                    entry => entry.NormalModelElement ?? entry.BottomModelElement, inputsHash));
                 writtenPaths.AddRange(await GenerateCategoryAsync("objects", objects, LayerMasks.DecorationLayer,
-                    entry => entry.NormalModelElement, xmlSha256));
-                writtenPaths.AddRange(await GenerateGroundsAsync(grounds, xmlSha256));
+                    entry => entry.NormalModelElement, inputsHash));
+                writtenPaths.AddRange(await GenerateGroundsAsync(grounds, inputsHash));
                 writtenPaths.AddRange(await GenerateCategoryAsync("roofs", roofs, LayerMasks.FloorRoofLayer,
-                    entry => entry.NormalModelElement, xmlSha256));
+                    entry => entry.NormalModelElement, inputsHash));
 
                 ImportWrittenAtlases(writtenPaths);
             }
@@ -227,7 +224,11 @@ namespace Warlander.Deedplanner.Editor
         {
             get
             {
-                _assetFacade ??= new WurmAssetFacade(LoaderSource);
+                if (_assetFacade == null)
+                {
+                    _assetFacade = new WurmAssetFacade(LoaderSource);
+                    _assetFacade.LoadTextureDefinitions(_assetDocument);
+                }
                 return _assetFacade;
             }
         }
@@ -405,7 +406,7 @@ namespace Warlander.Deedplanner.Editor
         }
 
         private static async Task<List<string>> GenerateCategoryAsync(string categoryName, List<PreviewEntry> entries,
-            int layer, Func<PreviewEntry, XmlElement> modelSelector, string xmlSha256)
+            int layer, Func<PreviewEntry, XmlElement> modelSelector, string inputsHash)
         {
             int columns = Mathf.CeilToInt(Mathf.Sqrt(entries.Count));
             int rows = Mathf.CeilToInt(entries.Count / (float) columns);
@@ -445,11 +446,11 @@ namespace Warlander.Deedplanner.Editor
             }
 
             PreviewAtlasManifest manifest = CreateManifest(categoryName, entries.Select(entry => entry.ShortName), columns,
-                xmlSha256);
+                inputsHash);
             return WriteAtlasOutputs(categoryName, cellPixels, columns, rows, manifest);
         }
 
-        private static async Task<List<string>> GenerateGroundsAsync(List<GroundPreviewEntry> entries, string xmlSha256)
+        private static async Task<List<string>> GenerateGroundsAsync(List<GroundPreviewEntry> entries, string inputsHash)
         {
             int columns = Mathf.CeilToInt(Mathf.Sqrt(entries.Count));
             int rows = Mathf.CeilToInt(entries.Count / (float) columns);
@@ -471,7 +472,7 @@ namespace Warlander.Deedplanner.Editor
             }
 
             PreviewAtlasManifest manifest = CreateManifest("grounds", entries.Select(entry => entry.ShortName), columns,
-                xmlSha256);
+                inputsHash);
             return WriteAtlasOutputs("grounds", cellPixels, columns, rows, manifest);
         }
 
