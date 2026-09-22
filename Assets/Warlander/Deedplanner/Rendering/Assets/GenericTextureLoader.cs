@@ -34,7 +34,6 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 for (int i = 0; i < pixels.Length; i++)
                 {
                     pixels[i].g = (byte)(255 - pixels[i].g);
-                    pixels[i].a = 255;
                 }
                 texture.SetPixels32(pixels);
                 texture.Apply(true, !readable);

@@ -6,6 +6,7 @@ namespace Warlander.Deedplanner
     {
         public static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
         public static readonly int BaseMap = Shader.PropertyToID("_BaseMap");
+        public static readonly int SpecularRange = Shader.PropertyToID("_SpecularRange");
         public static readonly int NormalMap = Shader.PropertyToID("_NormalMap");
         public static readonly int NormalStrength = Shader.PropertyToID("_NormalStrength");
         public static readonly int Color = Shader.PropertyToID("_Color");  // for SimpleLineShader (Built-in Cg shader)

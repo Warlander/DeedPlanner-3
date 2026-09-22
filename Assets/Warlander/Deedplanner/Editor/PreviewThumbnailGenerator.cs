@@ -24,7 +24,7 @@ namespace Warlander.Deedplanner.Editor
     public static class PreviewThumbnailGenerator
     {
         // Bump for rendering changes not covered by the preview input hash.
-        public const int GeneratorVersion = 7;
+        public const int GeneratorVersion = 8;
         private const int CellSize = 64;
         private const int RenderResolution = 256;
         private const float FitMargin = 1.02f;

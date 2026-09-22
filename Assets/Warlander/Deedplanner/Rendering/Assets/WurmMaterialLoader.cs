@@ -44,11 +44,8 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 bool hasShininess = source.ReadBoolean();
                 if (hasShininess)
                 {
-                    glossiness = source.ReadSingle() / 100;
-                    if (glossiness > 1)
-                    {
-                        glossiness = 0;
-                    }
+                    float shininess = Mathf.Max(0, source.ReadSingle());
+                    glossiness = 1 - Mathf.Pow(2 / (shininess + 2), 0.25f);
                 }
 
                 bool hasSpecular = source.ReadBoolean();

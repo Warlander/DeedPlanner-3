@@ -4,6 +4,8 @@ Shader "DeedPlanner/Cave Shell"
     {
         [NoScaleOffset] _MainTex("Cave Textures", 2DArray) = "white" {}
         [NoScaleOffset] _NormalArray("Cave Normals", 2DArray) = "" {}
+        _SpecularStrength("Specular Strength", Range(0, 1)) = 1
+        [NoScaleOffset] _SurfaceProperties("Surface Properties", 2DArray) = "" {}
         _NormalStrength("Normal Strength", Range(0, 1)) = 1
         _BaseColor("Base Color", Color) = (1, 1, 1, 1)
         [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", Float) = 2
@@ -34,10 +36,14 @@ Shader "DeedPlanner/Cave Shell"
             TEXTURE2D_ARRAY(_NormalArray);
             SAMPLER(sampler_NormalArray);
 
+            TEXTURE2D_ARRAY(_SurfaceProperties);
+            SAMPLER(sampler_SurfaceProperties);
+
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseColor;
                 half _CaveOverview;
                 half _NormalStrength;
+                half _SpecularStrength;
             CBUFFER_END
 
             struct Attributes
@@ -78,7 +84,12 @@ Shader "DeedPlanner/Cave Shell"
                 // Fixed texture-space light adds relief without darkening the unlit cave interior.
                 half3 detailLight = normalize(half3(-0.4h, 0.6h, 0.7h));
                 half detail = clamp(1.0h + 0.3h * (dot(normalTS, detailLight) - detailLight.z), 0.85h, 1.15h);
-                color.rgb *= lerp(1.0h, detail, packedNormal.a * _NormalStrength);
+                half4 surface = SAMPLE_TEXTURE2D_ARRAY(_SurfaceProperties, sampler_SurfaceProperties, float2(0.5, 0.5), input.textureData.x);
+                color.rgb *= lerp(1.0h, detail, surface.a * _NormalStrength);
+                half specular = saturate(lerp(surface.r, surface.g, packedNormal.a));
+                half3 halfDirection = normalize(detailLight + half3(0, 0, 1));
+                half highlight = pow(saturate(dot(normalTS, halfDirection)), lerp(8.0h, 64.0h, surface.b));
+                color.rgb *= 1.0h + 0.06h * highlight * specular * surface.a * _SpecularStrength;
                 color.rgb = MixFog(color.rgb, input.fogFactor);
                 return color;
             }

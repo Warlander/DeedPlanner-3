@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Globalization;
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Logging;
@@ -10,6 +11,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
     public class TextureReferenceFactory : ITextureReferenceFactory
     {
         private readonly ITextureLoader _textureLoader;
+        private readonly Dictionary<string, Vector2> _specularRanges = new Dictionary<string, Vector2>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, string> _normalLocations = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, TextureReference> _normalReferences = new Dictionary<string, TextureReference>();
         private readonly Dictionary<string, TextureReference> _references = new Dictionary<string, TextureReference>();
@@ -28,6 +30,9 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 string location = element.Name == "tex" ? element.GetAttribute("location")
                     : element.Name == "override" ? element.GetAttribute("texture") : element.GetAttribute("tex");
                 _normalLocations[location] = element.GetAttribute("normal");
+                float min = element.HasAttribute("specularMin") ? float.Parse(element.GetAttribute("specularMin"), CultureInfo.InvariantCulture) : 0;
+                float max = element.HasAttribute("specularMax") ? float.Parse(element.GetAttribute("specularMax"), CultureInfo.InvariantCulture) : 1;
+                _specularRanges[location] = new Vector2(min, max);
             }
         }
 
@@ -53,7 +58,8 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 normalReference = new TextureReference(_textureLoader, normalLocation, normalMap: true);
                 _normalReferences.Add(normalLocation, normalReference);
             }
-            TextureReference reference = new TextureReference(_textureLoader, location, normalReference: normalReference);
+            Vector2? specularRange = _specularRanges.TryGetValue(location, out Vector2 range) ? range : (Vector2?)null;
+            TextureReference reference = new TextureReference(_textureLoader, location, normalReference: normalReference, specularRange: specularRange);
             _references[location] = reference;
             return reference;
         }

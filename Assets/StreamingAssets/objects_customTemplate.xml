@@ -3,6 +3,7 @@
 <!-- it is good practice to also keep custom models/textures in new folder inside the "Data" folder - keep in mind that models and textures inside "official" folders can change without any warning, so assets inside custom folders should be self-contained. -->
 <!-- Texture normals: <tex location="Custom/color.dds" normal="Custom/color_n.dds"/> works on grounds and inside models for their embedded textures. -->
 <!-- Existing <override mesh="..." texture="..."/> entries and roof/cave definitions with a tex attribute can also specify normal="Custom/color_n.dds". -->
+<!-- Normal alpha controls specular strength; optional specularMin/specularMax remap it (defaults 0/1). -->
 <entities>
 	<grounds>
 		<!-- add custom ground types here -->

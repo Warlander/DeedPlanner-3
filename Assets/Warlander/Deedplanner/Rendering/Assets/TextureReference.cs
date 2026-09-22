@@ -15,13 +15,15 @@ namespace Warlander.Deedplanner.Rendering.Assets
         private Task<Texture2D> textureLoadTask;
 
         public string Location { get; }
+        public Vector2 SpecularRange { get; }
 
-        public TextureReference(ITextureLoader textureLoader, string location, bool normalMap = false, TextureReference normalReference = null)
+        public TextureReference(ITextureLoader textureLoader, string location, bool normalMap = false, TextureReference normalReference = null, Vector2? specularRange = null)
         {
             _textureLoader = textureLoader;
             Location = location;
             _normalMap = normalMap;
             _normalReference = normalReference;
+            SpecularRange = specularRange ?? new Vector2(0, 1);
         }
 
         public Task<Texture2D> LoadOrGetTextureAsync()

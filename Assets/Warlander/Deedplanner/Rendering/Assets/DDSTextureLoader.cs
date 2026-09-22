@@ -92,7 +92,6 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 for (int i = 0; i < pixelBuffer.Length; i++)
                 {
                     pixelBuffer[i].g = (byte)(255 - pixelBuffer[i].g);
-                    pixelBuffer[i].a = 255;
                 }
             }
             finalTexture.SetPixels32(pixelBuffer);

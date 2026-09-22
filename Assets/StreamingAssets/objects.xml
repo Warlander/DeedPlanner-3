@@ -1,19 +1,19 @@
 <entities>
 	<grounds>
 		<ground name="Grass" shortname="gr">
-			<tex location="GroundTextures/grass.dds" normal="GroundTextures/grass_n.dds"/>
+			<tex location="GroundTextures/grass.dds" specularMax="0.55" normal="GroundTextures/grass_n.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Dirt" shortname="di">
-			<tex location="GroundTextures/dirt.dds" normal="GroundTextures/dirt_n.dds"/>
+			<tex location="GroundTextures/dirt.dds" specularMax="0.92" normal="GroundTextures/dirt_n.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Packed dirt" shortname="pd">
-			<tex location="GroundTextures/packed.dds" normal="GroundTextures/packed_n.dds"/>
+			<tex location="GroundTextures/packed.dds" specularMax="0.42" normal="GroundTextures/packed_n.dds"/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Sand" shortname="sa">
-			<tex location="GroundTextures/sand.dds" normal="GroundTextures/sand_n.dds"/>
+			<tex location="GroundTextures/sand.dds" specularMax="1" normal="GroundTextures/sand_n.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Water" shortname="wa">
@@ -21,216 +21,216 @@
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Forest" shortname="fo">
-			<tex location="GroundTextures/forest.dds" normal="GroundTextures/forest_n.dds"/>
+			<tex location="GroundTextures/forest.dds" specularMax="0.6" normal="GroundTextures/forest_n.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Marsh" shortname="ma">
-			<tex location="GroundTextures/marsh.dds" normal="GroundTextures/marsh_n.dds"/>
+			<tex location="GroundTextures/marsh.dds" specularMax="1" normal="GroundTextures/marsh_n.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Steppe" shortname="st">
-			<tex location="GroundTextures/steppe.dds" normal="GroundTextures/steppe_n.dds"/>
+			<tex location="GroundTextures/steppe.dds" specularMax="0.8" normal="GroundTextures/steppe_n.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Tundra" shortname="tu">
-			<tex location="GroundTextures/tundra.dds" normal="GroundTextures/tundra_n.dds"/>
+			<tex location="GroundTextures/tundra.dds" specularMax="0.8" normal="GroundTextures/tundra_n.dds"/>
 			<category>Natural terrain</category>
 		</ground>
 		<ground name="Field" shortname="fi">
-			<tex location="GroundTextures/farm.dds" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Barley Field" shortname="bafi">
 			<tex location="GroundTextures/2d-crop-barley.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Cabbage Field" shortname="cafi">
 			<tex location="GroundTextures/2d-crop-cabbage.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Carrot Field" shortname="carfi">
 			<tex location="GroundTextures/2d-crop-carrot.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Corn Field" shortname="cornfi">
 			<tex location="GroundTextures/2d-crop-corn.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Cotton Field" shortname="cottfi">
 			<tex location="GroundTextures/2d-crop-cotton.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Cucumber Field" shortname="cufi">
 			<tex location="GroundTextures/2d-crop-cucumber.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Garlic Field" shortname="gafi">
 			<tex location="GroundTextures/2d-crop-garlic.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Lettuce Field" shortname="lefi">
 			<tex location="GroundTextures/2d-crop-lettuce.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Oat Field" shortname="oafi">
 			<tex location="GroundTextures/2d-crop-oat.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Onion Field" shortname="onfi">
 			<tex location="GroundTextures/2d-crop-onion.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Peapod Field" shortname="pefi">
 			<tex location="GroundTextures/2d-crop-peapod.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Potato Field" shortname="pofi">
 			<tex location="GroundTextures/2d-crop-potato.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Pumpkin Field" shortname="pufi">
 			<tex location="GroundTextures/2d-crop-pumpkin.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Reed Field" shortname="refi">
 			<tex location="GroundTextures/2d-crop-wemp.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Rice Field" shortname="rifi">
 			<tex location="GroundTextures/2d-crop-rice.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Rye Field" shortname="ryfi">
 			<tex location="GroundTextures/2d-crop-rye.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Strawberry Field" shortname="stfi">
 			<tex location="GroundTextures/2d-crop-strawberry.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Sugarbeet Field" shortname="sufi">
 			<tex location="GroundTextures/2d-crop-sugarbeet.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Tomato Field" shortname="tofi">
 			<tex location="GroundTextures/2d-crop-tomato.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Wemp Field" shortname="wefi">
 			<tex location="GroundTextures/2d-crop-wemp.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Wheat Field" shortname="whfi">
 			<tex location="GroundTextures/2d-crop-wheat.jpg" target="editmode"/>
-			<tex location="GroundTextures/farm.dds" target="previewmode" normal="GroundTextures/farm_n.dds"/>
+			<tex location="GroundTextures/farm.dds" target="previewmode" specularMax="0.75" normal="GroundTextures/farm_n.dds"/>
 			<category>Farm</category>
 		</ground>
 		<ground name="Gravel" shortname="gv">
-			<tex location="GroundTextures/gravel.dds" normal="GroundTextures/gravel_n.dds"/>
+			<tex location="GroundTextures/gravel.dds" specularMax="0.7" normal="GroundTextures/gravel_n.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Cobblestone" shortname="cs">
-			<tex location="GroundTextures/cobble.dds" normal="GroundTextures/cobble_n.dds"/>
+			<tex location="GroundTextures/cobble.dds" specularMax="0.65" normal="GroundTextures/cobble_n.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Rough cobblestone" shortname="rcs">
-			<tex location="GroundTextures/cobble2.dds" normal="GroundTextures/cobble2_n.dds"/>
+			<tex location="GroundTextures/cobble2.dds" specularMax="0.45" normal="GroundTextures/cobble2_n.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Round cobblestone" shortname="csr">
-			<tex location="GroundTextures/cobble3.dds" normal="GroundTextures/cobble3_n.dds"/>
+			<tex location="GroundTextures/cobble3.dds" specularMax="0.1" normal="GroundTextures/cobble3_n.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Stone slab" shortname="sl">
-			<tex location="GroundTextures/slab.dds" normal="GroundTextures/slab_n.dds"/>
+			<tex location="GroundTextures/slab.dds" specularMax="1" normal="GroundTextures/slab_n.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Marble slab" shortname="msl">
-			<tex location="GroundTextures/marbleslab.dds" normal="GroundTextures/marbleslab_n.dds"/>
+			<tex location="GroundTextures/marbleslab.dds" specularMax="0.7" normal="GroundTextures/marbleslab_n.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Marble brick" shortname="mb">
-			<tex location="GroundTextures/marbleBricks.dds" normal="GroundTextures/marbleBricks_n.dds"/>
+			<tex location="GroundTextures/marbleBricks.dds" specularMax="0.6" normal="GroundTextures/marbleBricks_n.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Slate slab" shortname="ssl2">
-			<tex location="GroundTextures/slateTiles.dds" normal="GroundTextures/slateTiles_n.dds"/>
+			<tex location="GroundTextures/slateTiles.dds" specularMax="0.6" normal="GroundTextures/slateTiles_n.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Slate brick" shortname="ssl">
-			<tex location="GroundTextures/slatebricks.dds" normal="GroundTextures/slatebricks_n.dds"/>
+			<tex location="GroundTextures/slatebricks.dds" specularMax="0.48" normal="GroundTextures/slatebricks_n.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Sandstone slab" shortname="sas">
-			<tex location="GroundTextures/sandstoneslab.dds" normal="GroundTextures/sandstoneslab_n.dds"/>
+			<tex location="GroundTextures/sandstoneslab.dds" specularMax="0.65" normal="GroundTextures/sandstoneslab_n.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Sandstone brick" shortname="sab">
-			<tex location="GroundTextures/sandstonebrick.dds" normal="GroundTextures/sandstonebrick_n.dds"/>
+			<tex location="GroundTextures/sandstonebrick.dds" specularMax="0.64" normal="GroundTextures/sandstonebrick_n.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Pottery brick" shortname="pb">
-			<tex location="GroundTextures/potterybrickpaving.dds" normal="GroundTextures/potterybrickpaving_n.dds"/>
+			<tex location="GroundTextures/potterybrickpaving.dds" specularMax="1" normal="GroundTextures/potterybrickpaving_n.dds"/>
 			<diagonal/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Planks" shortname="pl">
-			<tex location="GroundTextures/planks.dds" normal="GroundTextures/floorBoardTarred_n.dds"/>
+			<tex location="GroundTextures/planks.dds" specularMax="0.86" normal="GroundTextures/floorBoardTarred_n.dds"/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Tarred Planks" shortname="tpl">
-			<tex location="GroundTextures/floorBoardTarred.dds" normal="GroundTextures/floorBoardTarred_n.dds"/>
+			<tex location="GroundTextures/floorBoardTarred.dds" specularMax="0.94" normal="GroundTextures/floorBoardTarred_n.dds"/>
 			<category>Roads</category>
 		</ground>
 		<ground name="Enchanted forest" shortname="ef">
-			<tex location="GroundTextures/enchantedforest.dds" normal="GroundTextures/enchantedforest_n.dds"/>
+			<tex location="GroundTextures/enchantedforest.dds" specularMax="0.6" normal="GroundTextures/enchantedforest_n.dds"/>
 			<category>Enchanted terrain</category>
 		</ground>
 		<ground name="Enchanted grass" shortname="eg">
-			<tex location="GroundTextures/enchantedgrass.dds" normal="GroundTextures/enchantedgrass_n.dds"/>
+			<tex location="GroundTextures/enchantedgrass.dds" specularMax="0.72" normal="GroundTextures/enchantedgrass_n.dds"/>
 			<category>Enchanted terrain</category>
 		</ground>
 		<ground name="Lawn" shortname="lw">
-			<tex location="GroundTextures/lawn.dds" normal="GroundTextures/lawn_n.dds"/>
+			<tex location="GroundTextures/lawn.dds" specularMax="0.45" normal="GroundTextures/lawn_n.dds"/>
 			<category>Enchanted terrain</category>
 		</ground>
 		<ground name="Forest mycelium" shortname="fm">
-			<tex location="GroundTextures/forest-Mycelium.dds" normal="GroundTextures/forest-Mycelium_n.dds"/>
+			<tex location="GroundTextures/forest-Mycelium.dds" specularMax="0.6" normal="GroundTextures/forest-Mycelium_n.dds"/>
 			<category>Infected terrain</category>
 		</ground>
 		<ground name="Mycelium" shortname="my">
-			<tex location="GroundTextures/mycelium.dds" normal="GroundTextures/mycelium_n.dds"/>
+			<tex location="GroundTextures/mycelium.dds" specularMax="0.8" normal="GroundTextures/mycelium_n.dds"/>
 			<category>Infected terrain</category>
 		</ground>
 		<ground name="Wooden cave door" shortname="wcaDoor">
@@ -251,31 +251,31 @@
 		</ground>
 
 		<ground name="Rock" shortname="ro">
-			<tex location="GroundTextures/rock.dds" normal="GroundTextures/rock_n.dds"/>
+			<tex location="GroundTextures/rock.dds" specularMax="0.3" normal="GroundTextures/rock_n.dds"/>
 			<category>Natural terrain/Mountain</category>
 		</ground>
 		<ground name="Cliff" shortname="cl">
-			<tex location="GroundTextures/cliff.dds" normal="GroundTextures/cliff_n.dds"/>
+			<tex location="GroundTextures/cliff.dds" specularMax="0.35" normal="GroundTextures/cliff_n.dds"/>
 			<category>Natural terrain/Mountain</category>
 		</ground>
 		<ground name="Lava" shortname="la">
-			<tex location="GroundTextures/lava.dds" normal="GroundTextures/lava_n.dds"/>
+			<tex location="GroundTextures/lava.dds" specularMax="1" normal="GroundTextures/lava_n.dds"/>
 			<category>Natural terrain/Mountain</category>
 		</ground>
 		<ground name="Clay" shortname="cy">
-			<tex location="GroundTextures/clay.dds" normal="GroundTextures/clay_n.dds"/>
+			<tex location="GroundTextures/clay.dds" specularMax="0.6" normal="GroundTextures/clay_n.dds"/>
 			<category>Natural terrain/Resources</category>
 		</ground>
 		<ground name="Moss" shortname="mo">
-			<tex location="GroundTextures/moss.dds" normal="GroundTextures/moss_n.dds"/>
+			<tex location="GroundTextures/moss.dds" specularMax="0.76" normal="GroundTextures/moss_n.dds"/>
 			<category>Natural terrain/Resources</category>
 		</ground>
 		<ground name="Peat" shortname="pe">
-			<tex location="GroundTextures/peat.dds" normal="GroundTextures/peat_n.dds"/>
+			<tex location="GroundTextures/peat.dds" specularMax="0.85" normal="GroundTextures/peat_n.dds"/>
 			<category>Natural terrain/Resources</category>
 		</ground>
 		<ground name="Tar" shortname="ta">
-			<tex location="GroundTextures/tar.dds" normal="GroundTextures/tar_n.dds"/>
+			<tex location="GroundTextures/tar.dds" specularMax="0.95" normal="GroundTextures/tar_n.dds"/>
 			<category>Natural terrain/Resources</category>
 		</ground>
 	</grounds>
@@ -10217,60 +10217,60 @@
 
 	<caves>
 
-		<rock name="Stone wall" shortname="sw" type="wall" tex="Caves/cave512.dds" normal="Caves/cave512_n.dds">
+		<rock name="Stone wall" shortname="sw" type="wall" tex="Caves/cave512.dds" specularMax="0.6" normal="Caves/cave512_n.dds">
 			<category>Walls</category>
 		</rock>
-		<rock name="Reinforced stone wall" shortname="rsw" type="wall" tex="Caves/reinforcedcave_v1.dds" normal="Caves/reinforcedcave_v1_n.dds">
+		<rock name="Reinforced stone wall" shortname="rsw" type="wall" tex="Caves/reinforcedcave_v1.dds" specularMax="0.6" normal="Caves/reinforcedcave_v1_n.dds">
 			<category>Walls</category>
 			<materials>
 				Support beams = 1
 			</materials>
 		</rock>
-		<rock name="Iron vein" shortname="iv" type="wall" tex="Caves/ironvein_512.dds" normal="Caves/ironvein_512_n.dds">
+		<rock name="Iron vein" shortname="iv" type="wall" tex="Caves/ironvein_512.dds" specularMax="0.6" normal="Caves/ironvein_512_n.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Copper vein" shortname="cv" type="wall" tex="Caves/coppervein_512.dds" normal="Caves/coppervein_512_n.dds">
+		<rock name="Copper vein" shortname="cv" type="wall" tex="Caves/coppervein_512.dds" specularMax="0.6" normal="Caves/coppervein_512_n.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Tin vein" shortname="tv" type="wall" tex="Caves/tinvein_512.dds" normal="Caves/tinvein_512_n.dds">
+		<rock name="Tin vein" shortname="tv" type="wall" tex="Caves/tinvein_512.dds" specularMax="0.6" normal="Caves/tinvein_512_n.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Zinc vein" shortname="zv" type="wall" tex="Caves/zincvein_512.dds" normal="Caves/zincvein_512_n.dds">
+		<rock name="Zinc vein" shortname="zv" type="wall" tex="Caves/zincvein_512.dds" specularMax="0.6" normal="Caves/zincvein_512_n.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Lead vein" shortname="lv" type="wall" tex="Caves/leadvein_512.dds" normal="Caves/leadvein_512_n.dds">
+		<rock name="Lead vein" shortname="lv" type="wall" tex="Caves/leadvein_512.dds" specularMax="0.6" normal="Caves/leadvein_512_n.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Silver vein" shortname="sv" type="wall" tex="Caves/silvervein_512.dds" normal="Caves/silvervein_512_n.dds">
+		<rock name="Silver vein" shortname="sv" type="wall" tex="Caves/silvervein_512.dds" specularMax="0.6" normal="Caves/silvervein_512_n.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Gold vein" shortname="gv" type="wall" tex="Caves/goldvein_512.dds" normal="Caves/goldvein_512_n.dds">
+		<rock name="Gold vein" shortname="gv" type="wall" tex="Caves/goldvein_512.dds" specularMax="0.6" normal="Caves/goldvein_512_n.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Slate vein" shortname="slv" type="wall" tex="Caves/slatevein_512.dds" normal="Caves/slatevein_512_n.dds">
+		<rock name="Slate vein" shortname="slv" type="wall" tex="Caves/slatevein_512.dds" specularMax="0.6" normal="Caves/slatevein_512_n.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Marble vein" shortname="mv" type="wall" tex="Caves/marblevein_512.dds" normal="Caves/marblevein_512_n.dds">
+		<rock name="Marble vein" shortname="mv" type="wall" tex="Caves/marblevein_512.dds" specularMax="0.6" normal="Caves/marblevein_512_n.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Sandstone vein" shortname="ssv" type="wall" tex="Caves/sandstonevein.dds" normal="Caves/sandstonevein_n.dds">
+		<rock name="Sandstone vein" shortname="ssv" type="wall" tex="Caves/sandstonevein.dds" specularMax="0.6" normal="Caves/sandstonevein_n.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Rocksalt" shortname="rs" type="wall" tex="Caves/rocksalt.dds" normal="Caves/rocksalt_n.dds">
+		<rock name="Rocksalt" shortname="rs" type="wall" tex="Caves/rocksalt.dds" specularMax="0.6" normal="Caves/rocksalt_n.dds">
 			<category>Walls</category>
 			<category>Veins</category>
 		</rock>
-		<rock name="Stone brick reinforced cave wall" shortname="rswStone" type="wall" tex="Caves/cave_stonehouse.dds" normal="Caves/cave_stonehouse_n.dds">
+		<rock name="Stone brick reinforced cave wall" shortname="rswStone" type="wall" tex="Caves/cave_stonehouse.dds" specularMax="0.6" normal="Caves/cave_stonehouse_n.dds">
 			<category>Walls/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10278,7 +10278,7 @@
 				Mortar = 10
 			</materials>
 		</rock>
-		<rock name="Marble brick reinforced cave wall" shortname="rswMarble" type="wall" tex="Caves/cave_marble.dds" normal="Caves/cave_marble_n.dds">
+		<rock name="Marble brick reinforced cave wall" shortname="rswMarble" type="wall" tex="Caves/cave_marble.dds" specularMax="0.6" normal="Caves/cave_marble_n.dds">
 			<category>Walls/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10286,7 +10286,7 @@
 				Mortar = 10
 			</materials>
 		</rock>
-		<rock name="Slate brick reinforced cave wall" shortname="rswSlate" type="wall" tex="Caves/cave_slate.dds" normal="Caves/cave_slate_n.dds">
+		<rock name="Slate brick reinforced cave wall" shortname="rswSlate" type="wall" tex="Caves/cave_slate.dds" specularMax="0.6" normal="Caves/cave_slate_n.dds">
 			<category>Walls/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10294,7 +10294,7 @@
 				Mortar = 10
 			</materials>
 		</rock>
-		<rock name="Pottery brick reinforced cave wall" shortname="rswPottery" type="wall" tex="Caves/cave_brick.dds" normal="Caves/cave_brick_n.dds">
+		<rock name="Pottery brick reinforced cave wall" shortname="rswPottery" type="wall" tex="Caves/cave_brick.dds" specularMax="0.6" normal="Caves/cave_brick_n.dds">
 			<category>Walls/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10302,7 +10302,7 @@
 				Mortar = 10
 			</materials>
 		</rock>
-		<rock name="Rounded stone reinforced cave wall" shortname="rswRound" type="wall" tex="Caves/cave_rounded.dds" normal="Caves/cave_rounded_n.dds">
+		<rock name="Rounded stone reinforced cave wall" shortname="rswRound" type="wall" tex="Caves/cave_rounded.dds" specularMax="0.6" normal="Caves/cave_rounded_n.dds">
 			<category>Walls/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10310,7 +10310,7 @@
 				Mortar = 10
 			</materials>
 		</rock>
-		<rock name="Rendered reinforced cave wall" shortname="rswRend" type="wall" tex="Caves/cave_rendered.dds" normal="Caves/cave_rendered_n.dds">
+		<rock name="Rendered reinforced cave wall" shortname="rswRend" type="wall" tex="Caves/cave_rendered.dds" specularMax="0.6" normal="Caves/cave_rendered_n.dds">
 			<category>Walls/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10319,7 +10319,7 @@
 				Clay = 10
 			</materials>
 		</rock>
-		<rock name="Sandstone reinforced cave wall" shortname="rswSand" type="wall" tex="Caves/cave_sandstone.dds" normal="Caves/cave_sandstone_n.dds">
+		<rock name="Sandstone reinforced cave wall" shortname="rswSand" type="wall" tex="Caves/cave_sandstone.dds" specularMax="0.6" normal="Caves/cave_sandstone_n.dds">
 			<category>Walls/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10327,7 +10327,7 @@
 				Mortar = 10
 			</materials>
 		</rock>
-		<rock name="Wooden reinforced cave wall" shortname="rswWood" type="wall" tex="Caves/cave_wood.dds" normal="Caves/cave_wood_n.dds">
+		<rock name="Wooden reinforced cave wall" shortname="rswWood" type="wall" tex="Caves/cave_wood.dds" specularMax="0.6" normal="Caves/cave_wood_n.dds">
 			<category>Walls/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10336,16 +10336,16 @@
 			</materials>
 		</rock>
 
-		<rock name="Stone floor" shortname="sfl" type="floor" tex="Caves/cave512.dds" normal="Caves/cave512_n.dds">
+		<rock name="Stone floor" shortname="sfl" type="floor" tex="Caves/cave512.dds" specularMax="0.6" normal="Caves/cave512_n.dds">
 			<category>Floors</category>
 		</rock>
-		<rock name="Reinforced stone floor" shortname="rsfl" type="floor" tex="Caves/reinforcedcaveFloor_v1.dds" normal="Caves/reinforcedcaveFloor_v1_n.dds">
+		<rock name="Reinforced stone floor" shortname="rsfl" type="floor" tex="Caves/reinforcedcaveFloor_v1.dds" specularMax="0.6" normal="Caves/reinforcedcaveFloor_v1_n.dds">
 			<category>Floors</category>
 			<materials>
 				Support beams = 1
 			</materials>
 		</rock>
-		<rock name="Gravel" shortname="grav" type="floor" tex="GroundTextures/gravel.dds" normal="GroundTextures/gravel_n.dds">
+		<rock name="Gravel" shortname="grav" type="floor" tex="GroundTextures/gravel.dds" specularMax="0.7" normal="GroundTextures/gravel_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10353,7 +10353,7 @@
 				Rock shards = 1
 			</materials>
 		</rock>
-		<rock name="Cobblestone" shortname="cs" type="floor" tex="GroundTextures/cobble.dds" normal="GroundTextures/cobble_n.dds">
+		<rock name="Cobblestone" shortname="cs" type="floor" tex="GroundTextures/cobble.dds" specularMax="0.65" normal="GroundTextures/cobble_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10361,7 +10361,7 @@
 				Stone bricks = 1
 			</materials>
 		</rock>
-		<rock name="Rough cobblestone" shortname="rcs" type="floor" tex="GroundTextures/cobble2.dds" normal="GroundTextures/cobble2_n.dds">
+		<rock name="Rough cobblestone" shortname="rcs" type="floor" tex="GroundTextures/cobble2.dds" specularMax="0.45" normal="GroundTextures/cobble2_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10369,7 +10369,7 @@
 				Colossus bricks = 1
 			</materials>
 		</rock>
-		<rock name="Round cobblestone" shortname="csr" type="floor" tex="GroundTextures/cobble3.dds" normal="GroundTextures/cobble3_n.dds">
+		<rock name="Round cobblestone" shortname="csr" type="floor" tex="GroundTextures/cobble3.dds" specularMax="0.1" normal="GroundTextures/cobble3_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10377,7 +10377,7 @@
 				Rounded stones = 1
 			</materials>
 		</rock>
-		<rock name="Stone slab" shortname="sl" type="floor" tex="GroundTextures/slab.dds" normal="GroundTextures/slab_n.dds">
+		<rock name="Stone slab" shortname="sl" type="floor" tex="GroundTextures/slab.dds" specularMax="1" normal="GroundTextures/slab_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10385,7 +10385,7 @@
 				Stone slabs = 1
 			</materials>
 		</rock>
-		<rock name="Marble slab" shortname="msl" type="floor" tex="GroundTextures/marbleslab.dds" normal="GroundTextures/marbleslab_n.dds">
+		<rock name="Marble slab" shortname="msl" type="floor" tex="GroundTextures/marbleslab.dds" specularMax="0.7" normal="GroundTextures/marbleslab_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10393,7 +10393,7 @@
 				Marble slabs = 1
 			</materials>
 		</rock>
-		<rock name="Marble brick" shortname="mb" type="floor" tex="GroundTextures/marbleBricks.dds" normal="GroundTextures/marbleBricks_n.dds">
+		<rock name="Marble brick" shortname="mb" type="floor" tex="GroundTextures/marbleBricks.dds" specularMax="0.6" normal="GroundTextures/marbleBricks_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10401,7 +10401,7 @@
 				Marble bricks = 1
 			</materials>
 		</rock>
-		<rock name="Slate slab" shortname="ssl2" type="floor" tex="GroundTextures/slateTiles.dds" normal="GroundTextures/slateTiles_n.dds">
+		<rock name="Slate slab" shortname="ssl2" type="floor" tex="GroundTextures/slateTiles.dds" specularMax="0.6" normal="GroundTextures/slateTiles_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10409,7 +10409,7 @@
 				Slate slabs = 1
 			</materials>
 		</rock>
-		<rock name="Slate brick" shortname="ssl" type="floor" tex="GroundTextures/slatebricks.dds" normal="GroundTextures/slatebricks_n.dds">
+		<rock name="Slate brick" shortname="ssl" type="floor" tex="GroundTextures/slatebricks.dds" specularMax="0.48" normal="GroundTextures/slatebricks_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10417,7 +10417,7 @@
 				Slate bricks = 1
 			</materials>
 		</rock>
-		<rock name="Sandstone slab" shortname="sas" type="floor" tex="GroundTextures/sandstoneslab.dds" normal="GroundTextures/sandstoneslab_n.dds">
+		<rock name="Sandstone slab" shortname="sas" type="floor" tex="GroundTextures/sandstoneslab.dds" specularMax="0.65" normal="GroundTextures/sandstoneslab_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10425,7 +10425,7 @@
 				Sandstone slabs = 1
 			</materials>
 		</rock>
-		<rock name="Sandstone brick" shortname="sab" type="floor" tex="GroundTextures/sandstonebrick.dds" normal="GroundTextures/sandstonebrick_n.dds">
+		<rock name="Sandstone brick" shortname="sab" type="floor" tex="GroundTextures/sandstonebrick.dds" specularMax="0.64" normal="GroundTextures/sandstonebrick_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10433,7 +10433,7 @@
 				Sandstone bricks = 1
 			</materials>
 		</rock>
-		<rock name="Pottery brick" shortname="pb" type="floor" tex="GroundTextures/potterybrickpaving.dds" normal="GroundTextures/potterybrickpaving_n.dds">
+		<rock name="Pottery brick" shortname="pb" type="floor" tex="GroundTextures/potterybrickpaving.dds" specularMax="1" normal="GroundTextures/potterybrickpaving_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10441,7 +10441,7 @@
 				Pottery bricks = 1
 			</materials>
 		</rock>
-		<rock name="Planks" shortname="pl" type="floor" tex="GroundTextures/planks.dds" normal="GroundTextures/floorBoardTarred_n.dds">
+		<rock name="Planks" shortname="pl" type="floor" tex="GroundTextures/planks.dds" specularMax="0.86" normal="GroundTextures/floorBoardTarred_n.dds">
 			<category>Floors/Decorative</category>
 			<materials>
 				Support beams = 1,
@@ -10469,91 +10469,91 @@
 
 	<bridgepavements>
 		<bridgepavement name="Cobblestone" shortname="pcs">
-			<tex location="GroundTextures/cobble.dds" normal="GroundTextures/cobble_n.dds"/>
+			<tex location="GroundTextures/cobble.dds" specularMax="0.65" normal="GroundTextures/cobble_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Stone bricks = 1
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Rough cobblestone" shortname="prcs">
-			<tex location="GroundTextures/cobble2.dds" normal="GroundTextures/cobble2_n.dds"/>
+			<tex location="GroundTextures/cobble2.dds" specularMax="0.45" normal="GroundTextures/cobble2_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Colossus bricks = 1
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Round cobblestone" shortname="pcsr">
-			<tex location="GroundTextures/cobble3.dds" normal="GroundTextures/cobble3_n.dds"/>
+			<tex location="GroundTextures/cobble3.dds" specularMax="0.1" normal="GroundTextures/cobble3_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Rounded stones = 1
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Stone slabs" shortname="psl">
-			<tex location="GroundTextures/slab.dds" normal="GroundTextures/slab_n.dds"/>
+			<tex location="GroundTextures/slab.dds" specularMax="1" normal="GroundTextures/slab_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Stone slabs = 1
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Marble bricks" shortname="pmb">
-			<tex location="GroundTextures/marbleBricks.dds" normal="GroundTextures/marbleBricks_n.dds"/>
+			<tex location="GroundTextures/marbleBricks.dds" specularMax="0.6" normal="GroundTextures/marbleBricks_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Marble bricks = 1
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Marble slabs" shortname="pmsl">
-			<tex location="GroundTextures/marbleslab.dds" normal="GroundTextures/marbleslab_n.dds"/>
+			<tex location="GroundTextures/marbleslab.dds" specularMax="0.7" normal="GroundTextures/marbleslab_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Marble slabs = 1
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Slate bricks" shortname="pssl">
-			<tex location="GroundTextures/slatebricks.dds" normal="GroundTextures/slatebricks_n.dds"/>
+			<tex location="GroundTextures/slatebricks.dds" specularMax="0.48" normal="GroundTextures/slatebricks_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Slate bricks = 1
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Slate slabs" shortname="pssl2">
-			<tex location="GroundTextures/slateTiles.dds" normal="GroundTextures/slateTiles_n.dds"/>
+			<tex location="GroundTextures/slateTiles.dds" specularMax="0.6" normal="GroundTextures/slateTiles_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Slate slabs = 1
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Sandstone bricks" shortname="psab">
-			<tex location="GroundTextures/sandstonebrick.dds" normal="GroundTextures/sandstonebrick_n.dds"/>
+			<tex location="GroundTextures/sandstonebrick.dds" specularMax="0.64" normal="GroundTextures/sandstonebrick_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Sandstone bricks = 1
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Sandstone slabs" shortname="psas">
-			<tex location="GroundTextures/sandstoneslab.dds" normal="GroundTextures/sandstoneslab_n.dds"/>
+			<tex location="GroundTextures/sandstoneslab.dds" specularMax="0.65" normal="GroundTextures/sandstoneslab_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Sandstone slabs = 1
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Pottery bricks" shortname="ppb">
-			<tex location="GroundTextures/potterybrickpaving.dds" normal="GroundTextures/potterybrickpaving_n.dds"/>
+			<tex location="GroundTextures/potterybrickpaving.dds" specularMax="1" normal="GroundTextures/potterybrickpaving_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Pottery bricks = 1
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Planks" shortname="ppl">
-			<tex location="GroundTextures/planks.dds" normal="GroundTextures/floorBoardTarred_n.dds"/>
+			<tex location="GroundTextures/planks.dds" specularMax="0.86" normal="GroundTextures/floorBoardTarred_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Floor boards = 1
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Tarred Planks" shortname="ptpl">
-			<tex location="GroundTextures/floorBoardTarred.dds" normal="GroundTextures/floorBoardTarred_n.dds"/>
+			<tex location="GroundTextures/floorBoardTarred.dds" specularMax="0.94" normal="GroundTextures/floorBoardTarred_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Floor boards = 1,
@@ -10561,7 +10561,7 @@
 			</materials>
 		</bridgepavement>
 		<bridgepavement name="Gravel" shortname="pgv">
-			<tex location="GroundTextures/gravel.dds" normal="GroundTextures/gravel_n.dds"/>
+			<tex location="GroundTextures/gravel.dds" specularMax="0.7" normal="GroundTextures/gravel_n.dds"/>
 			<materials>
 				Mortar = 1,
 				Rock shards = 1

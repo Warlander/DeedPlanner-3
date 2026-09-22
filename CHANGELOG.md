@@ -18,7 +18,7 @@
 - Bridge pavements: bridge lanes can now be paved with different materials per lane, including new tarred planks
 - Hovering over a segment in the bridge bar now highlights it in the world
 - New 4K screenshot options, including 4K with UI visible (unbound by default, can be bound in settings)
-- Lighting and visuals overhaul: tonemapping, bloom, ambient occlusion, improved anti-aliasing, retuned shadows, and Wurm normal-map detail on supported models, ground and cave surfaces while preserving cave visibility
+- Lighting and visuals overhaul: tonemapping, bloom, ambient occlusion, improved anti-aliasing, retuned shadows, and Wurm normal-map detail and material highlights on supported models, ground and cave surfaces while preserving cave visibility
 - Sharper water reflections on Ultra quality
 - Settings window overhaul - a single immediate-apply tabbed window now covers all settings, with reliable cancellable key rebinding
 - Fixed mouse-wheel scrolling over labels in the Keybinds settings

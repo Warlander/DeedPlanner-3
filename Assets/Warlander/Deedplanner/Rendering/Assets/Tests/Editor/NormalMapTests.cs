@@ -134,6 +134,7 @@ namespace Warlander.Deedplanner.Rendering.Assets.Tests
             Task apply = ModelMaterialTextures.ApplyAsync(material, reference);
 
             Assert.That(apply.IsCompleted, Is.False);
+            Assert.That(material.IsKeywordEnabled("_SPECULAR_SETUP"), Is.True);
             Assert.That(material.GetTexture(ShaderPropertyIds.NormalMap), Is.Null);
             Assert.That(material.GetFloat(ShaderPropertyIds.NormalStrength), Is.Zero);
             completion.SetResult(diffuse);

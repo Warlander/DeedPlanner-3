@@ -20,6 +20,7 @@ namespace Warlander.Deedplanner.Caves
         private readonly IndexedTextureArray<TextureReference> _textures;
         private readonly IndexedTextureArray<TextureReference> _normals;
         private readonly Texture2D _flatNormal;
+        private readonly TerrainSurfaceProperties _surfaceProperties;
         private Task _loadTask;
         private int _defaultIndex;
 
@@ -40,6 +41,7 @@ namespace Warlander.Deedplanner.Caves
             _references.Remove(_defaultTerrain.Texture);
             _textures = new IndexedTextureArray<TextureReference>(TextureWidth, TextureHeight, uniqueReferences.Count);
             _normals = new IndexedTextureArray<TextureReference>(TextureWidth, TextureHeight, uniqueReferences.Count, linear: true);
+            _surfaceProperties = new TerrainSurfaceProperties(uniqueReferences.Count);
             _flatNormal = new Texture2D(2, 2, TextureFormat.RGBA32, false, true);
             _flatNormal.SetPixels(new[] { new Color(0.5f, 0.5f, 1, 0), new Color(0.5f, 0.5f, 1, 0),
                 new Color(0.5f, 0.5f, 1, 0), new Color(0.5f, 0.5f, 1, 0) });
@@ -56,6 +58,7 @@ namespace Warlander.Deedplanner.Caves
         {
             material.SetTexture("_MainTex", _textures.TextureArray);
             material.SetTexture("_NormalArray", _normals.TextureArray);
+            _surfaceProperties.ApplyTo(material);
         }
 
         public int GetIndex(CaveData terrain)
@@ -88,6 +91,7 @@ namespace Warlander.Deedplanner.Caves
                     int index = _textures.PutOrGetTexture(reference, texture);
                     if (index >= 0 && _normals.PutOrGetTexture(reference, normal ? normal : _flatNormal) == index)
                     {
+                        _surfaceProperties.Set(index, reference, normal);
                         _indices[reference] = index;
                         return index;
                     }
@@ -106,6 +110,7 @@ namespace Warlander.Deedplanner.Caves
         {
             _textures.Dispose();
             _normals.Dispose();
+            _surfaceProperties.Dispose();
             if (Application.isPlaying) UnityEngine.Object.Destroy(_flatNormal);
             else UnityEngine.Object.DestroyImmediate(_flatNormal);
         }
