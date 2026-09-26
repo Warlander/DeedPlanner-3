@@ -1,16 +1,38 @@
 # Changelog
 
-## [3.4.0] - Unreleased
+## [3.5.0] - Unreleased
 
-- Updated Steam integration to Steamworks SDK 1.62
+- Cave level controls and cave editing are now enabled, with Ground/Caves controls that swap with the active realm, reliable 3D transitions between surface and cave levels, Wurmian navigation that finds a nearby cave with enough headroom and blocks movement into rock or low passages, independent per-camera levels, complete cave shells in 3D, distinct wall and floor rendering in planning views, absolute ceiling-height editing, compact cave height controls and guidance, optional ceiling-preserving floor edits, cave rendering controls, responsive underground views on large deeds, legacy-map clearance repair, consistent solid-rock painting across camera modes, and correct surface rendering
+- Symmetry planning is now available from the Mirror tab, with independently placeable vertical and horizontal axes, live map guides, support across editing tools, single-step undo, optional user-bound shortcuts, and direct navigation from Configure Bindings to the Symmetry keybinds
+- Settings window overhaul - a single immediate-apply tabbed window now covers all settings, with reliable cancellable key rebinding
 - Crop-specific field textures can now be shown independently in 3D, 2D, and isometric camera modes from the Crops settings tab
 - Roof materials now have rendered previews in the Roofs tab
 - Active uGUI hierarchies and prefab assets can now be exported from the Editor or Unity CLI as scalable, composable HTML bundles that preserve RectTransform structure, Image and RawImage visuals, and editable text
-- Symmetry planning is now available from the Mirror tab, with independently placeable vertical and horizontal axes, live map guides, support across editing tools, single-step undo, optional user-bound shortcuts, and direct navigation from Configure Bindings to the Symmetry keybinds
-- Fixed undo and redo interrupting unfinished painting and height edits; finish or cancel the current edit before using history
-- Fixed height painting outside the map changing its origin corner
+- Wurm normal-map detail, material highlights, and subtle shading in terrain crevices on supported models, ground and cave surfaces
+- Fixed mouse-wheel scrolling over labels in the Keybinds settings
 - Fixed large maps spending most of their load time repeatedly refreshing unfinished map rendering
-- Cave level controls and cave editing are now enabled, with Ground/Caves controls that swap with the active realm, reliable 3D transitions between surface and cave levels, Wurmian navigation that finds a nearby cave with enough headroom and blocks movement into rock or low passages, independent per-camera levels, complete cave shells in 3D, distinct wall and floor rendering in planning views, absolute ceiling-height editing, compact cave height controls and guidance, optional ceiling-preserving floor edits, cave rendering controls, responsive underground views on large deeds, legacy-map clearance repair, consistent solid-rock painting across camera modes, and correct surface rendering
+- Fixed objects staying hidden after undoing edits on another level, and hidden trees reappearing after edits
+- Fixed object fading and colors being inconsistent across multiple cameras
+
+## [3.4.1] - Unreleased
+
+- Updated Steam integration to Steamworks SDK 1.62
+- Added double-window log walls and the Temple epic structure
+- Fixed ground texture errors continuing after leaving Play Mode in the Editor
+- Fixed textures sometimes failing to load or remaining unavailable after a failed request
+- Fixed exporting a map disabling auto-save recovery for later edits
+- Fixed file save errors blocking all later saves and loads
+- Fixed new Steam Cloud and browser saves silently replacing maps with the same sanitized name
+- Fixed bridge paving undo after changing a bridge's structure
+- Fixed failed or superseded web loads clearing the current map's save identity
+- Fixed automatic wall orientation failing along the south and west map boundaries
+- Fixed painting terrain outside the map changing its southwest corner
+- Fixed undo and redo interrupting unfinished painting and height edits; finish or cancel the current edit before using history
+- Fixed model and material loading failures preventing later retries
+- Fixed repeated object highlighting causing errors when a model finishes loading or changes
+
+## [3.4.0] - Unreleased
+
 - Docks can now be planned over water from the Floors tab - paint dock decks with multiple materials and support types, with full undo, validation and save/load support
 - New saving system with a home screen on startup listing your deeds with thumbnails - saves can now be renamed and deleted
 - Quick save and auto-save with crash recovery - unsaved work is no longer lost on a crash
@@ -18,15 +40,12 @@
 - Bridge pavements: bridge lanes can now be paved with different materials per lane, including new tarred planks
 - Hovering over a segment in the bridge bar now highlights it in the world
 - New 4K screenshot options, including 4K with UI visible (unbound by default, can be bound in settings)
-- Lighting and visuals overhaul: tonemapping, bloom, ambient occlusion, improved anti-aliasing, retuned shadows, and Wurm normal-map detail, material highlights, and subtle shading in terrain crevices on supported models, ground and cave surfaces while preserving cave visibility
+- Lighting and visuals overhaul: tonemapping, bloom, ambient occlusion, improved anti-aliasing and retuned shadows
 - Sharper water reflections on Ultra quality
-- Settings window overhaul - a single immediate-apply tabbed window now covers all settings, with reliable cancellable key rebinding
-- Fixed mouse-wheel scrolling over labels in the Keybinds settings
 - Errors now open a window with a copyable report you can attach when reporting bugs
 - Richer tooltips, including accurate edge-aware placement and a tinted slope grid when hovering terrain on the Height tab
 - New dragon HOTA statue model (the old one was oversized)
 - Added aged log wall texture
-- Added double-window log walls and the Temple epic structure
 - Improved Floor tab UI
 - Funding links are now hidden in the Steam version (EULA requirement)
 - Pastebin export is disabled on the web version (blocked by browsers)
@@ -34,27 +53,15 @@
 - Fixed bridges wider than long not reaching ground height at the far end
 - Fixed bridge supports and deck not following terrain height edits
 - Fixed decorations loading at the previous map's terrain heights
-- Fixed objects staying hidden after undoing edits on another level, and hidden trees reappearing after edits
 - Fixed decoration rotation snapping only working in one direction
 - Fixed empty tooltip box appearing when dragging the map over terrain
 - Fixed map being lost after a failed load
 - Fixed redo order getting mixed up in grouped edits
-- Fixed lower floors not darkening in 2D and isometric views, with consistent fading across multiple cameras and preserved object colors
+- Fixed lower floors not darkening in 2D and isometric views
 - Fixed compass not hiding when the UI is toggled off
 - Fixed UI toggle (F10) desyncing the bridge bar and tabs
 - Fixed ground smoothness rendering
-- Fixed ground texture errors continuing after leaving Play Mode in the Editor
-- Fixed textures sometimes failing to load or remaining unavailable after a failed request
 - Maps referencing objects missing from game data now load with fallbacks instead of failing
-- Fixed exporting a map disabling auto-save recovery for later edits
-- Fixed file save errors blocking all later saves and loads
-- Fixed new Steam Cloud and browser saves silently replacing maps with the same sanitized name
-- Fixed bridge paving undo after changing a bridge's structure
-- Fixed failed or superseded web loads clearing the current map's save identity
-- Fixed painting terrain outside the map changing its southwest corner
-- Fixed automatic wall orientation failing along the south and west map boundaries
-- Fixed model and material loading failures preventing later retries
-- Fixed repeated object highlighting causing errors when a model finishes loading or changes
 
 ## [3.3.2] - 2026-08-15
 
