@@ -1,9 +1,9 @@
-﻿namespace Warlander.Deedplanner
+namespace Warlander.Deedplanner
 {
 
     public static class Constants
     {
-        public const string VersionString = "3.4.0 EA";
+        public const string VersionString = "3.4.1 EA";
         public const string TitleString = "DeedPlanner " + VersionString;
         public const string SimpleTitleString = "DeedPlanner";
         public const int SteamAppId = 1179760;
