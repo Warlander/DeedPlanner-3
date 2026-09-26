@@ -9,6 +9,7 @@ namespace Warlander.Deedplanner.Editing
         private readonly LinkedList<IReversibleCommand> redoList = new LinkedList<IReversibleCommand>();
 
         private readonly Stack<IReversibleCommand> currentActionStack = new Stack<IReversibleCommand>();
+        private int _liveEditCount;
 
         public int MaxUndoCount { get; }
 
@@ -22,7 +23,7 @@ namespace Warlander.Deedplanner.Editing
 
         public void Undo()
         {
-            if (undoList.Count == 0)
+            if (undoList.Count == 0 || currentActionStack.Count > 0 || _liveEditCount > 0)
             {
                 return;
             }
@@ -36,7 +37,7 @@ namespace Warlander.Deedplanner.Editing
 
         public void Redo()
         {
-            if (redoList.Count == 0)
+            if (redoList.Count == 0 || currentActionStack.Count > 0 || _liveEditCount > 0)
             {
                 return;
             }
@@ -65,6 +66,32 @@ namespace Warlander.Deedplanner.Editing
             }
 
             Mutated();
+        }
+
+        public IDisposable SuspendHistory()
+        {
+            return new LiveEdit(this);
+        }
+
+        private sealed class LiveEdit : IDisposable
+        {
+            private CommandManager _owner;
+
+            public LiveEdit(CommandManager owner)
+            {
+                _owner = owner;
+                _owner._liveEditCount++;
+            }
+
+            public void Dispose()
+            {
+                if (_owner == null)
+                {
+                    return;
+                }
+                _owner._liveEditCount--;
+                _owner = null;
+            }
         }
 
         public void AddToActionAndExecute(IReversibleCommand reversibleCommand)

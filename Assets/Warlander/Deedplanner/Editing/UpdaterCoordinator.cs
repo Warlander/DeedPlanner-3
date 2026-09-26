@@ -38,6 +38,7 @@ namespace Warlander.Deedplanner.Editing
         private void OnTabChange(Tab tab)
         {
             _currentUpdater?.Disable();
+            _mapHandler.Map?.CommandManager.FinishAction();
 
             _currentUpdater = null;
             foreach (IUpdater updater in _updaters)

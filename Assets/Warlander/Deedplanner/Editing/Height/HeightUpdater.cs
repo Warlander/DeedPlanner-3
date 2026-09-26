@@ -518,14 +518,6 @@ namespace Warlander.Deedplanner.Editing
                 state = HeightUpdaterState.Manipulating;
             }
 
-            if (_input.UpdatersShared.Placement.ReadValue<float>() > 0 && state == HeightUpdaterState.Manipulating)
-            {
-                foreach (HeightmapHandle handle in currentFrameHoveredHandles)
-                {
-                    map[handle.TileCoords].SurfaceHeight = targetHeight;
-                }
-            }
-
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
             {
                 map.CommandManager.FinishAction();
@@ -536,6 +528,15 @@ namespace Warlander.Deedplanner.Editing
             {
                 map.CommandManager.UndoAction();
                 state = HeightUpdaterState.Idle;
+                return;
+            }
+
+            if (_input.UpdatersShared.Placement.ReadValue<float>() > 0 && state == HeightUpdaterState.Manipulating)
+            {
+                foreach (HeightmapHandle handle in currentFrameHoveredHandles)
+                {
+                    map[handle.TileCoords].SurfaceHeight = targetHeight;
+                }
             }
 
         }

@@ -60,6 +60,11 @@ namespace Warlander.Deedplanner.Editing
 
         public void Tick()
         {
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
+            {
+                _mapHandler.Map.CommandManager.FinishAction();
+            }
+
             RaycastHit raycast = _cameraCoordinator.Current.CurrentRaycast;
             if (!raycast.transform)
             {
@@ -98,11 +103,6 @@ namespace Warlander.Deedplanner.Editing
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
             {
                 _mapHandler.Map[x, y].SetRoof(null, floor);
-            }
-
-            if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
-            {
-                _mapHandler.Map.CommandManager.FinishAction();
             }
         }
     }
