@@ -42,6 +42,7 @@
 - Fixed bridge paving undo after changing a bridge's structure
 - Fixed failed or superseded web loads clearing the current map's save identity
 - Fixed automatic wall orientation failing along the south and west map boundaries
+- Fixed painting terrain outside the map changing its southwest corner
 - Fixed model and material loading failures preventing later retries
 - Fixed repeated object highlighting causing errors when a model finishes loading or changes
 

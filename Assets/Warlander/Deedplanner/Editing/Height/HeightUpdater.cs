@@ -626,9 +626,13 @@ namespace Warlander.Deedplanner.Editing
 
         private List<HeightmapHandle> UpdateHoveredHandlesSimpleSelection(RaycastHit raycast)
         {
-            GridMesh gridMesh = _mapHandler.Map.SurfaceGridMesh;
-
             List<HeightmapHandle> hoveredHandles = new List<HeightmapHandle>();
+            if (!raycast.transform)
+            {
+                return hoveredHandles;
+            }
+
+            GridMesh gridMesh = _mapHandler.Map.SurfaceGridMesh;
 
             TileSelectionHit hit = TileSelection.PositionToTileSelectionHit(raycast.point, TileSelectionMode.Everything);
             switch (hit.Target)
