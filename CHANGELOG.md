@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.4.1] - Unreleased
+## [3.4.1] - 2026-09-27
 
 - Settings window overhaul - a single window with tabs now covers all settings, replacing the old separate graphics and input windows
 - Updated Steam integration to Steamworks SDK 1.62
@@ -18,7 +18,7 @@
 - Fixed model and material loading failures preventing later retries
 - Fixed repeated object highlighting causing errors when a model finishes loading or changes
 
-## [3.4.0] - Unreleased
+## [3.4.0] - 2026-09-27
 
 - Docks can now be planned over water from the Floors tab - paint dock decks with multiple materials and support types, with full undo, validation and save/load support
 - New saving system with a home screen on startup listing your deeds with thumbnails - saves can now be renamed and deleted
