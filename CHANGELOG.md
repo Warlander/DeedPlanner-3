@@ -1,8 +1,24 @@
 # Changelog
 
-## [3.4.0] - Unreleased
+## [3.4.1] - Unreleased
 
 - Updated Steam integration to Steamworks SDK 1.62
+- Added double-window log walls and the Temple epic structure
+- Fixed ground texture errors continuing after leaving Play Mode in the Editor
+- Fixed textures sometimes failing to load or remaining unavailable after a failed request
+- Fixed exporting a map disabling auto-save recovery for later edits
+- Fixed file save errors blocking all later saves and loads
+- Fixed new Steam Cloud and browser saves silently replacing maps with the same sanitized name
+- Fixed bridge paving undo after changing a bridge's structure
+- Fixed failed or superseded web loads clearing the current map's save identity
+- Fixed automatic wall orientation failing along the south and west map boundaries
+- Fixed painting terrain outside the map changing its southwest corner
+- Fixed undo and redo interrupting unfinished painting and height edits; finish or cancel the current edit before using history
+- Fixed model and material loading failures preventing later retries
+- Fixed repeated object highlighting causing errors when a model finishes loading or changes
+
+## [3.4.0] - Unreleased
+
 - Docks can now be planned over water from the Floors tab - paint dock decks with multiple materials and support types, with full undo, validation and save/load support
 - New saving system with a home screen on startup listing your deeds with thumbnails - saves can now be renamed and deleted
 - Quick save and auto-save with crash recovery - unsaved work is no longer lost on a crash
@@ -12,12 +28,10 @@
 - New 4K screenshot options, including 4K with UI visible (unbound by default, can be bound in settings)
 - Lighting and visuals overhaul: tonemapping, bloom, ambient occlusion, improved anti-aliasing and retuned shadows
 - Sharper water reflections on Ultra quality
-- Settings window overhaul - a single window with tabs now covers all settings, replacing the old separate graphics and input windows
 - Errors now open a window with a copyable report you can attach when reporting bugs
 - Richer tooltips, including accurate edge-aware placement and a tinted slope grid when hovering terrain on the Height tab
 - New dragon HOTA statue model (the old one was oversized)
 - Added aged log wall texture
-- Added double-window log walls and the Temple epic structure
 - Improved Floor tab UI
 - Funding links are now hidden in the Steam version (EULA requirement)
 - Pastebin export is disabled on the web version (blocked by browsers)
@@ -33,19 +47,7 @@
 - Fixed compass not hiding when the UI is toggled off
 - Fixed UI toggle (F10) desyncing the bridge bar and tabs
 - Fixed ground smoothness rendering
-- Fixed ground texture errors continuing after leaving Play Mode in the Editor
-- Fixed textures sometimes failing to load or remaining unavailable after a failed request
 - Maps referencing objects missing from game data now load with fallbacks instead of failing
-- Fixed exporting a map disabling auto-save recovery for later edits
-- Fixed file save errors blocking all later saves and loads
-- Fixed new Steam Cloud and browser saves silently replacing maps with the same sanitized name
-- Fixed bridge paving undo after changing a bridge's structure
-- Fixed failed or superseded web loads clearing the current map's save identity
-- Fixed automatic wall orientation failing along the south and west map boundaries
-- Fixed painting terrain outside the map changing its southwest corner
-- Fixed undo and redo interrupting unfinished painting and height edits; finish or cancel the current edit before using history
-- Fixed model and material loading failures preventing later retries
-- Fixed repeated object highlighting causing errors when a model finishes loading or changes
 
 ## [3.3.2] - 2026-08-15
 
