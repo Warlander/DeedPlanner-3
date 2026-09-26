@@ -4,18 +4,17 @@
 
 - Cave level controls and cave editing are now enabled, with Ground/Caves controls that swap with the active realm, reliable 3D transitions between surface and cave levels, Wurmian navigation that finds a nearby cave with enough headroom and blocks movement into rock or low passages, independent per-camera levels, complete cave shells in 3D, distinct wall and floor rendering in planning views, absolute ceiling-height editing, compact cave height controls and guidance, optional ceiling-preserving floor edits, cave rendering controls, responsive underground views on large deeds, legacy-map clearance repair, consistent solid-rock painting across camera modes, and correct surface rendering
 - Symmetry planning is now available from the Mirror tab, with independently placeable vertical and horizontal axes, live map guides, support across editing tools, single-step undo, optional user-bound shortcuts, and direct navigation from Configure Bindings to the Symmetry keybinds
-- Settings window overhaul - a single immediate-apply tabbed window now covers all settings, with reliable cancellable key rebinding
 - Crop-specific field textures can now be shown independently in 3D, 2D, and isometric camera modes from the Crops settings tab
 - Roof materials now have rendered previews in the Roofs tab
 - Active uGUI hierarchies and prefab assets can now be exported from the Editor or Unity CLI as scalable, composable HTML bundles that preserve RectTransform structure, Image and RawImage visuals, and editable text
 - Wurm normal-map detail, material highlights, and subtle shading in terrain crevices on supported models, ground and cave surfaces
-- Fixed mouse-wheel scrolling over labels in the Keybinds settings
 - Fixed large maps spending most of their load time repeatedly refreshing unfinished map rendering
 - Fixed objects staying hidden after undoing edits on another level, and hidden trees reappearing after edits
 - Fixed object fading and colors being inconsistent across multiple cameras
 
 ## [3.4.1] - Unreleased
 
+- Settings window overhaul - a single window with tabs now covers all settings, replacing the old separate graphics and input windows
 - Updated Steam integration to Steamworks SDK 1.62
 - Added double-window log walls and the Temple epic structure
 - Fixed ground texture errors continuing after leaving Play Mode in the Editor
