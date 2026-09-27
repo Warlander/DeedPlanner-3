@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -83,9 +84,9 @@ namespace Warlander.Deedplanner.Rendering.Assets
 
         public void AddTextureOverride(string mesh, string texture)
         {
-            if (_modifiedModels.Count != 0)
+            if (_loadingOriginalModel || _modifiedModels.Count != 0)
             {
-                throw new InvalidOperationException("Model is already initialized, cannot add texture override");
+                throw new InvalidOperationException("Model is already loading or initialized, cannot add texture override");
             }
 
             _textureOverrides[mesh] = texture;
@@ -214,24 +215,25 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 return;
             }
 
-            OnMasterModelLoaded(model);
+            await OnMasterModelLoadedAsync(model);
             onDone();
         }
 
-        private void OnMasterModelLoaded(GameObject masterModel)
+        private async Task OnMasterModelLoadedAsync(GameObject masterModel)
         {
-            _loadingOriginalModel = false;
             if (!masterModel)
             {
+                _loadingOriginalModel = false;
                 _modelRequests.Clear();
                 _facade.Logger.Error("Model failed to load: " + _location);
                 return;
             }
 
-            _originalModel = masterModel;
-            _originalModel.layer = Layer;
+            masterModel.layer = Layer;
+            masterModel.transform.SetParent(_modelRoot.transform);
+            var overrideTasks = new List<Task>();
 
-            foreach (Transform child in _originalModel.transform)
+            foreach (Transform child in masterModel.transform)
             {
                 child.gameObject.layer = Layer;
                 string textureOverride;
@@ -244,15 +246,22 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 {
                     MeshRenderer renderer = child.GetComponent<MeshRenderer>();
                     TextureReference texture = _facade.TextureReferenceFactory.GetTextureReference(textureOverride);
+                    if (texture == null)
+                    {
+                        _facade.Logger.Warning("Invalid texture override: " + textureOverride);
+                        continue;
+                    }
                     Material newMaterial = new Material(renderer.sharedMaterial);
                     renderer.sharedMaterial = newMaterial;
 
-                    ApplyTextureOverrideAsync(texture, newMaterial);
+                    overrideTasks.Add(ApplyTextureOverrideAsync(texture, newMaterial));
                 }
             }
-            _originalModel.transform.SetParent(_modelRoot.transform);
+            await Task.WhenAll(overrideTasks);
+            _originalModel = masterModel;
             ModelProperties originalProperties = new ModelProperties(Vector2.zero, null);
             _modifiedModels[originalProperties] = _originalModel;
+            _loadingOriginalModel = false;
 
             foreach (ModelRequest modelRequest in _modelRequests)
             {
@@ -261,10 +270,20 @@ namespace Warlander.Deedplanner.Rendering.Assets
             _modelRequests.Clear();
         }
 
-        private static async void ApplyTextureOverrideAsync(TextureReference texture, Material material)
+        private async Task ApplyTextureOverrideAsync(TextureReference texture, Material material)
         {
-            Texture2D loadedTexture = await texture.LoadOrGetTextureAsync();
-            material.SetTexture(ShaderPropertyIds.BaseMap, loadedTexture);
+            try
+            {
+                Texture2D loadedTexture = await texture.LoadOrGetTextureAsync();
+                if (loadedTexture)
+                {
+                    material.SetTexture(ShaderPropertyIds.BaseMap, loadedTexture);
+                }
+            }
+            catch (Exception exception)
+            {
+                _facade.Logger.Error("Texture override failed: " + texture.Location + ": " + exception.Message);
+            }
         }
 
         private void InitializeModifiedModel(ModelProperties modelProperties)

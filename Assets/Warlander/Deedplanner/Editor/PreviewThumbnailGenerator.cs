@@ -24,8 +24,9 @@ namespace Warlander.Deedplanner.Editor
     /// </summary>
     public static class PreviewThumbnailGenerator
     {
-        // Render-input changes require this bump plus a harmless objects.xml change to invalidate CI caches.
-        public const int GeneratorVersion = 4;
+        // Render-input changes require this bump; stale manifests (including restored CI caches)
+        // fail the freshness check and are regenerated before build.
+        public const int GeneratorVersion = 5;
         private const int CellSize = 64;
         private const int RenderResolution = 256;
         private const float FitMargin = 1.02f;
