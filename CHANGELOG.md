@@ -18,6 +18,7 @@
 - Updated Steam integration to Steamworks SDK 1.62
 - Added double-window log walls and the Temple epic structure
 - Fixed ground texture errors continuing after leaving Play Mode in the Editor
+- Fixed preview thumbnails showing the model's default texture for floors, walls and objects sharing a model with different materials
 - Fixed textures sometimes failing to load or remaining unavailable after a failed request
 - Fixed exporting a map disabling auto-save recovery for later edits
 - Fixed file save errors blocking all later saves and loads
