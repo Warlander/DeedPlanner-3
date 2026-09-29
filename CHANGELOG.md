@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.4.2] - Unreleased
+## [3.4.2] - 2026-09-29
 
 - Web version links now open the secure site directly, and HTTP requests redirect to HTTPS
 
