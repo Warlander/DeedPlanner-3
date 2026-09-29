@@ -11,6 +11,7 @@
 - Fixed large maps spending most of their load time repeatedly refreshing unfinished map rendering
 - Fixed objects staying hidden after undoing edits on another level, and hidden trees reappearing after edits
 - Fixed object fading and colors being inconsistent across multiple cameras
+- Web version links now open the secure site directly, and HTTP requests redirect to HTTPS
 
 ## [3.4.1] - 2026-09-27
 
