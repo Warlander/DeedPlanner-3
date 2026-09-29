@@ -8,7 +8,7 @@ namespace Warlander.Deedplanner
         public const string SimpleTitleString = "DeedPlanner";
         public const int SteamAppId = 1179760;
 
-        public const string WebVersionLink = "https://warlander.github.io/DeedPlanner-3-web";
+        public const string WebVersionLink = "https://deedplanner.warlander.app/";
 
         public const int LevelLimit = 16;
         public const int NegativeLevelLimit = -6;

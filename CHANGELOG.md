@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.4.2] - Unreleased
+
+- Web version links now open the secure site directly, and HTTP requests redirect to HTTPS
+
 ## [3.4.1] - 2026-09-27
 
 - Settings window overhaul - a single window with tabs now covers all settings, replacing the old separate graphics and input windows
