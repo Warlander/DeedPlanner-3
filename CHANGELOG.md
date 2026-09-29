@@ -2,6 +2,8 @@
 
 ## [3.5.0] - Unreleased
 
+- WebGL assets now load from the address hosting the app
+
 - Cave level controls and cave editing are now enabled, with Ground/Caves controls that swap with the active realm, reliable 3D transitions between surface and cave levels, Wurmian navigation that finds a nearby cave with enough headroom and blocks movement into rock or low passages, independent per-camera levels, complete cave shells in 3D, distinct wall and floor rendering in planning views, absolute ceiling-height editing, compact cave height controls and guidance, optional ceiling-preserving floor edits, cave rendering controls, responsive underground views on large deeds, legacy-map clearance repair, consistent solid-rock painting across camera modes, and correct surface rendering
 - Symmetry planning is now available from the Mirror tab, with independently placeable vertical and horizontal axes, live map guides, support across editing tools, single-step undo, optional user-bound shortcuts, and direct navigation from Configure Bindings to the Symmetry keybinds
 - Crop-specific field textures can now be shown independently in 3D, 2D, and isometric camera modes from the Crops settings tab
