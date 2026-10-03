@@ -231,7 +231,7 @@ namespace Warlander.Deedplanner.Editor
                     await PreviewThumbnailGenerator.GenerateAllAsync();
                 }
                 SessionState.EraseString(PendingBuildKey);
-                success = await build();
+                success = await BuildOnEditorDelayAsync(build);
             }
             catch (Exception exception)
             {
@@ -244,6 +244,23 @@ namespace Warlander.Deedplanner.Editor
                     EditorApplication.Exit(success ? 0 : 1);
                 }
             }
+        }
+
+        internal static Task<bool> BuildOnEditorDelayAsync(Func<Task<bool>> build)
+        {
+            var completion = new TaskCompletionSource<bool>();
+            EditorApplication.delayCall += async () =>
+            {
+                try
+                {
+                    completion.SetResult(await build());
+                }
+                catch (Exception exception)
+                {
+                    completion.SetException(exception);
+                }
+            };
+            return completion.Task;
         }
 
         private const string PendingBuildKey = "DeedPlanner.PendingBatchBuild";
