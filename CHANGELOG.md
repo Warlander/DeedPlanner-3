@@ -14,6 +14,10 @@
 - Fixed objects staying hidden after undoing edits on another level, and hidden trees reappearing after edits
 - Fixed object fading and colors being inconsistent across multiple cameras
 
+## [3.4.3] - 2026-10-03
+
+- Fixed GUI scaling making settings unreachable; scale is limited to 9–20, old values outside this range are corrected at startup, and resizing waits until the slider is released
+
 ## [3.4.2] - 2026-09-29
 
 - Web version links now open the secure site directly, and HTTP requests redirect to HTTPS

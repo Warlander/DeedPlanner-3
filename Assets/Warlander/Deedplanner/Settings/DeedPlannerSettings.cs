@@ -54,8 +54,13 @@ namespace Warlander.Deedplanner.Settings
             SettingsTab camerasTab = registry.AddTab("cameras", "Cameras");
             SettingsTab cropsTab = registry.AddTab("crops", "Crops");
 
-            var guiScale = new IntSetting("guiScale", "GUI Scale", 10, 5, 20, "Scales the whole user interface.");
+            var guiScale = new IntSetting("guiScale", "GUI Scale", 10, 9, 20, "Scales the whole user interface after releasing the slider.");
             generalTab.Add(guiScale);
+            if (store.TryLoad(guiScale.Key, out string savedGuiScale) &&
+                int.TryParse(savedGuiScale, out int savedScale) && savedScale != guiScale.Value)
+            {
+                store.Save(guiScale.Key, guiScale.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            }
             var compassVisibility = new BoolSetting("compassVisibility", "Show Compass", true);
             generalTab.Add(compassVisibility);
             var caveOccupiedCellPolicy = new EnumSetting<CaveOccupiedCellPolicy>("caveOccupiedCellPolicy",

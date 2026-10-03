@@ -143,6 +143,23 @@ namespace Warlander.Deedplanner.Tests
             Assert.IsFalse(PlayerPrefs.HasKey(StoreKey));
         }
 
+        [TestCase(5, 9)]
+        [TestCase(25, 20)]
+        public void GuiScale_LegacyMigrationClampsAndPersistsAtStartup(int legacyScale, int expectedScale)
+        {
+            PlayerPrefs.SetString(PropertiesKey, $"<DPSettings><GuiScale>{legacyScale}</GuiScale></DPSettings>");
+            var store = new PlayerPrefsJsonSettingsStore(StoreKey);
+            LegacySettingsMigration.Migrate(store, PropertiesKey, InputSettingsKey);
+            var logger = new LoggerSource(new LogLevelFilter()).Create(DeedPlannerSettings.Category);
+
+            DeedPlannerSettings settings = DeedPlannerSettings.Create(logger, store);
+
+            Assert.AreEqual(expectedScale, settings.Ui.GuiScale);
+            var reloaded = new PlayerPrefsJsonSettingsStore(StoreKey);
+            Assert.IsTrue(reloaded.TryLoad("guiScale", out string savedScale));
+            Assert.AreEqual(expectedScale.ToString(), savedScale);
+        }
+
         [Test]
         public void Migrate_ExistingBindingOverrides_KeepsNewerValue()
         {
@@ -272,6 +289,49 @@ namespace Warlander.Deedplanner.Tests
 
     public class DeedPlannerSettingsTests
     {
+        [TestCase("-100", 9)]
+        [TestCase("5", 9)]
+        [TestCase("8", 9)]
+        [TestCase("9", 9)]
+        [TestCase("14", 14)]
+        [TestCase("20", 20)]
+        [TestCase("21", 20)]
+        [TestCase("100", 20)]
+        public void GuiScale_LoadClampsAndPersistsWithinSafeRange(string savedValue, int expectedScale)
+        {
+            var store = new MemoryStore();
+            store.Save("guiScale", savedValue);
+
+            DeedPlannerSettings settings = DeedPlannerSettings.Create(new RecordingLogger(), store);
+
+            Assert.AreEqual(expectedScale, settings.Ui.GuiScale);
+            Assert.IsTrue(store.TryLoad("guiScale", out string persistedValue));
+            Assert.AreEqual(expectedScale.ToString(), persistedValue);
+            Assert.AreEqual(expectedScale, DeedPlannerSettings.Create(new RecordingLogger(), store).Ui.GuiScale);
+        }
+
+        [TestCase(5, 9)]
+        [TestCase(25, 20)]
+        public void GuiScale_AssignmentClampsWithinSafeRange(int value, int expectedScale)
+        {
+            var store = new MemoryStore();
+            DeedPlannerSettings settings = DeedPlannerSettings.Create(new RecordingLogger(), store);
+
+            settings.Ui.GuiScale = value;
+
+            Assert.AreEqual(expectedScale, settings.Ui.GuiScale);
+            Assert.IsTrue(store.TryLoad("guiScale", out string persistedValue));
+            Assert.AreEqual(expectedScale.ToString(), persistedValue);
+        }
+
+        [Test]
+        public void GuiScale_MissingValueUsesDefault()
+        {
+            DeedPlannerSettings settings = DeedPlannerSettings.Create(new RecordingLogger(), new MemoryStore());
+
+            Assert.AreEqual(10, settings.Ui.GuiScale);
+        }
+
         [Test]
         public void CaveOccupiedCellPolicy_MissingKeyUsesPreserveAndHide()
         {
