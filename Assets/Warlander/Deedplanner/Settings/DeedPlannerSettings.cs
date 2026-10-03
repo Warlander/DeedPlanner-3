@@ -36,6 +36,11 @@ namespace Warlander.Deedplanner.Settings
         {
             var store = new PlayerPrefsJsonSettingsStore();
             LegacySettingsMigration.Migrate(store);
+            return Create(logger, store);
+        }
+
+        public static DeedPlannerSettings Create(ICategoryLogger logger, ISettingsStore store)
+        {
             WarnForInvalidEnum<WaterQuality>(store, "waterQuality", logger);
             WarnForInvalidEnum<QualityLevel>(store, "qualityLevel", logger);
             var registry = new SettingsRegistry(store);
@@ -44,8 +49,13 @@ namespace Warlander.Deedplanner.Settings
             SettingsTab graphicsTab = registry.AddTab("graphics", "Graphics");
             SettingsTab camerasTab = registry.AddTab("cameras", "Cameras");
 
-            var guiScale = new IntSetting("guiScale", "GUI Scale", 10, 5, 20, "Scales the whole user interface.");
+            var guiScale = new IntSetting("guiScale", "GUI Scale", 10, 9, 20, "Scales the whole user interface after releasing the slider.");
             generalTab.Add(guiScale);
+            if (store.TryLoad(guiScale.Key, out string savedGuiScale) &&
+                int.TryParse(savedGuiScale, out int savedScale) && savedScale != guiScale.Value)
+            {
+                store.Save(guiScale.Key, guiScale.Value.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            }
             var compassVisibility = new BoolSetting("compassVisibility", "Show Compass", true);
             generalTab.Add(compassVisibility);
 
