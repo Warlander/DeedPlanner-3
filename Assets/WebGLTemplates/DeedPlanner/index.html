@@ -3,9 +3,24 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>{{{ PRODUCT_NAME }}}</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <title>{{{ PRODUCT_NAME }}} | 3D Deed Planner for Wurm</title>
+    <meta name="description" content="Plan deeds and houses for Wurm Online and Wurm Unlimited in your browser with DeedPlanner 3.">
+    <link rel="canonical" href="https://deedplanner.warlander.app/">
+    <meta property="og:site_name" content="{{{ PRODUCT_NAME }}}">
+    <meta property="og:title" content="{{{ PRODUCT_NAME }}} | 3D Deed Planner for Wurm">
+    <meta property="og:description" content="Plan deeds and houses for Wurm Online and Wurm Unlimited in your browser with DeedPlanner 3.">
+    <meta property="og:url" content="https://deedplanner.warlander.app/">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png" sizes="64x64" href="TemplateData/favicon.png">
     <link rel="stylesheet" href="TemplateData/style.css">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "{{{ PRODUCT_NAME }}}",
+        "url": "https://deedplanner.warlander.app/"
+      }
+    </script>
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
@@ -23,6 +38,10 @@
         <div id="unity-build-title">{{{ PRODUCT_NAME }}}</div>
       </div>
     </div>
+    <section id="app-description" aria-labelledby="app-title">
+      <h1 id="app-title">{{{ PRODUCT_NAME }}}</h1>
+      <p>Plan deeds and houses for Wurm Online and Wurm Unlimited in your browser with DeedPlanner 3.</p>
+    </section>
     <script>
       var canvas = document.querySelector("#unity-canvas");
 
