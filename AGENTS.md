@@ -16,12 +16,12 @@ Use a short, plain, capitalized imperative subject without a Conventional Commit
 
 ## Project Overview
 
-DeedPlanner 3 is a 3D deed/house planning tool for Wurm Online and Wurm Unlimited, built with Unity 6000.3.20f1. It runs as a standalone application (Windows/Linux/Mac) and WebGL version.
+DeedPlanner 3 is a 3D deed/house planning tool for Wurm Online and Wurm Unlimited, built with Unity 6000.3.28f1. It runs as a standalone application (Windows/Linux/Mac) and WebGL version.
 
 ## Building and Running
 
 Development workflow:
-- Open the project in **Unity 6000.3.20f1** (see `ProjectSettings/ProjectVersion.txt` for the exact version)
+- Open the project in **Unity 6000.3.28f1** (see `ProjectSettings/ProjectVersion.txt` for the exact version)
 - Main scenes: `Assets/Scenes/LoadingScene.unity` (startup) → `Assets/Scenes/MainScene.unity`
 - Use Unity Editor Play mode to run
 - Automated build logic is in `Assets/Warlander/Deedplanner/Editor/BuildSystem.cs`
@@ -31,15 +31,17 @@ Development workflow:
 
 ## Unity CLI (preferred automation path)
 
-The **Unity CLI** (`unity`, v1.0.0-beta.3+) is the primary way to interact with Unity from the terminal. Use the `unity-cli` skill for guidance. Always prefer CLI over MCP.
+The **Unity CLI** (`unity`, verified with 1.0.0-beta.17 and `com.unity.pipeline` 0.10.0-exp.1) is the primary way to interact with Unity from the terminal. Use the `unity-cli` skill for guidance. Always prefer CLI over MCP.
 
 **Availability:** the CLI is expected on every dev machine but is a separate install. Check it exists (`unity --version`) before relying on it. If missing, ask the developer to install it and fall back to manual/Editor-side verification — NEVER install it automatically or silently.
 
 Useful commands:
 
 - `unity status` — is an Editor connected? Which project/PID/state?
-- `unity list` — commands the connected Editor exposes (Pipeline package)
-- `unity command <cmd> [args]` — execute a command on the connected Editor (domain reload, play mode, scene queries, etc.)
+- `unity command` — command groups the connected Editor exposes (Pipeline package)
+- `unity command --query <term>` — discover commands and their current parameter names
+- `unity command <group> <cmd> -- [args]` — execute a command on the connected Editor; the `--` fence separates Pipeline arguments from CLI options
+- `unity recompile --strict` — verify compilation, including warnings
 - `unity test --mode EditMode` — run tests, NUnit XML to test-results.xml
 - `unity open` — open the project with the correct Editor version
 - `unity build` — full batch-mode build (see the build restriction above)
@@ -58,13 +60,15 @@ On SteamOS/Linux, add `-noaudio` for automated Play-mode sessions (`--args "-aut
 
 Without it, play mode ENTRY stalls indefinitely while the Editor window is unfocused (in-play behavior is unaffected).
 
-**CLI call latency / polling pitfall:** `unity open` stays attached for the Editor's lifetime — always run it as a background task and never wait on its completion. Every CLI invocation on this machine also pays a multi-second telemetry fetch timeout (no external network), so tight `until unity status | grep -q ready` polling loops effectively hang: each iteration is slow and the Editor typically becomes ready long before the loop notices. Instead, launch, do other work, then check `unity status` once when needed — treat "hangs on status polling" as "Editor is probably already up, just check it".
+**Waiting for the Editor:** CLI beta.17 returns from `unity open` after launch. Use `unity status --until-ready --project-path <path> --timeout 120 --json` after launch or a domain reload instead of a tight status-polling loop. A sandbox can hide the Editor or block registry/Git traffic; distinguish that from an Editor or package failure before retrying.
 
-**Code evaluation:** the Pipeline package ships a CodeEval command (edit-mode AND runtime — `unity command` / `unity list` can also attach to a running Player via `--runtime`). This lets the CLI execute arbitrary C# in the live Editor or in the running app — usable both for manipulating the Editor (scenes, assets, play mode) and for testing the app's behavior from the outside. Discover exact command names with `unity list`.
+**AIHub Git capture on Windows:** if UPM reports invalid Git revisions even though terminal lookups succeed, inspect UPM's debug log for its Git executable. AIHub's `git-capture/git.EXE` can return empty stdout to UPM. Launch the Editor with the real Git directory first in that process's PATH (`$env:PATH = 'C:\Program Files\Git\cmd;' + $env:PATH` before `unity open`); do not change the system PATH. Restore UPM logging to Info after diagnosis.
 
-**eval_file quirks (verified):** `eval` rejects bare expressions; use `eval_file` with an explicit `return`. `eval_file` wraps the file in an `Execute()` method body: statements only (no `using` directives, no class/method definitions), fully-qualified names (`UnityEngine.Object`, `System.IO.Path` — `Object` collides with `object`). Write eval scripts to system temp, never under `Assets/` (stray .cs files break compilation).
+**Code evaluation:** use `unity command script eval -- --code '<C#>'` or `unity command script eval -- --file <path.cs>`. Pipeline 0.10 accepts full C# scripts, including `using` directives, declarations, `await`, explicit returns, and trailing expressions. Write temporary scripts outside `Assets/` to avoid unwanted imports. Desktop Player control via `--runtime` is experimental; browser Players are not officially supported.
 
-**Driving the running app (project commands, `Platform/AgentCommands.cs`):** prefer these over eval for app-level actions. `app_await_ready` (blocks in-game until playing + MainScene active + map present; pass CLI `--timeout` above `--timeoutSeconds`), `app_status` (instant snapshot: scene/map/tab/camera/save state), `map_new`/`map_load <path>`/`map_save` (quicksave only)/`map_info` (compact entity counts), `tab_select <name>`, `camera_set <fpp|wurmian|top|iso> [level]` (no position control — controllers own it), `await_idle [frames]` (wait out saves + rendered frames before screenshots), `edit_undo`/`edit_redo`. Typical loop: `editor_play` → `app_await_ready --timeout 120` → act → `await_idle` → `screenshot --output <file>` → `editor_stop`. For screenshots use `screenshot --output <path>` — bare `capture_game_view` returns huge inline base64.
+**Package updates:** prefer Pipeline's `package` commands or `UnityEditor.PackageManager.Client` APIs. Package mutations are asynchronous and trigger reloads; verify the resolved manifest/lock and compilation afterwards. Never block the Editor main thread waiting for an asynchronous Package Manager request.
+
+**Driving the running app (project commands, `Platform/AgentCommands.cs`):** prefer these over eval for app-level actions. `app_await_ready` waits for MainScene and a map; `app_status` reports scene/map/tab/camera/save state; `map_new`/`map_load`/`map_save`/`map_info` handle maps; `tab_select`, `camera_set`, `await_idle`, `edit_undo`, and `edit_redo` handle editing checks. Discover their parameters with `unity command --query <name>`. Before Play mode, enable `editor set_auto_tick` and `editor.playmode set_run_in_background`; then use `editor.playmode start` → wait for Editor and app readiness → act → `await_idle` → `capture game_view --output-path <file>` → `editor.playmode stop`. Confirm frames advance, then restore the background override and disable auto-tick after the check. Pass an output path for captures to avoid inline base64.
 
 ## Agentic Verification
 
@@ -72,15 +76,15 @@ The project iterates fast — domain reload and play-mode enter/exit each take o
 
 **Unit tests are EditMode only — even for non-editor code.** No PlayMode tests. Test files live in a `Tests/Editor/` folder next to the tested code (e.g. `Persistence/Compression/Tests/Editor/`): the `Editor` folder compiles them into Assembly-CSharp-Editor, which the Test Framework discovers and runs without any asmdef. Do not add test asmdefs.
 
-**Never recompile or run tests while in play mode.** Before `recompile`, `run_tests`, or any action that triggers an assembly reload (package add/remove/resolve, script creation), verify the Editor is in edit mode (`unity status`) — if it is playing, `editor_stop` first. A domain reload mid-play silently breaks the session: the running app loses its state (map references go null, evals fail with NullReferenceException) while the Editor reports itself ready, and an EditMode test run submitted mid-play hard-fails (`RestoreSceneSetupTask`: "This cannot be used during play mode"). Always `editor_stop` → recompile/test → `editor_play` → re-run the scenario.
+**Never recompile or run tests while in play mode.** Before compilation, tests, or any action that triggers an assembly reload (package add/remove/resolve, script creation), verify `unity command editor status` reports `playMode: stopped`; otherwise use `editor.playmode stop` first. A domain reload mid-play can invalidate application state, and an EditMode test run submitted mid-play fails. Always stop → recompile/test → start → re-run the scenario.
 
-**Pipeline wedge detection and recovery.** Signature: every `unity command` times out while `unity status` still reports "ready" (status reads the port file, never touches the pipeline). It may self-recover after minutes, but do not wait it out — restart the Editor (kill PID, `unity open` again). While wedged, `cancel_tests`/`editor_stop` cannot reach the Editor either. Note `unity command --timeout` is in **seconds** (default 30) — do not pass millisecond values.
+**Pipeline wedge detection and recovery.** A `ready` discovery result alone does not prove the command executor is responsive. If commands time out, rule out loading, compilation, Safe Mode, modal dialogs, and sandbox restrictions. Report the failure and restart a confirmed wedged Editor after accounting for unsaved work. CLI `--timeout` values are in seconds.
 
-**Run tests detached, then wait on the job.** `unity command run_tests --mode EditMode --detach` returns a job ID; `unity job wait <id>` blocks until done and prints the pass/fail summary. Job records do not survive domain reloads — if a reload lands mid-run the job vanishes ("Job Not Found"), so re-run after recompile settles. Blocking `run_tests` couples the CLI call to a full test+reload cycle and turns any editor-side failure into a CLI hang.
+**Run tests detached, then wait on the job.** `unity command test run --detach -- --mode editor` returns a job ID; `unity job wait <id>` waits for the result. Pipeline uses `editor` for EditMode tests; the standalone `unity test` command uses `--mode EditMode`. Retain the test report and check totals/failures. A reload can interrupt job tracking; inspect test status and the report before deciding whether a rerun is needed.
 
 Suggested verification ladder, cheapest first:
 1. Compile check (connected Editor via `unity command`, or `unity test --mode EditMode` batch) — catches syntax/type errors.
-2. EditMode tests (`unity test --mode EditMode` batch, or `run_tests` on the connected Editor) when the change touches covered logic.
+2. EditMode tests (`unity test --mode EditMode` batch, or `test run --mode editor` on the connected Editor) when the change touches covered logic.
 3. Play mode enter/exit on the connected Editor to catch startup/initialization exceptions (VContainer wiring, scene load). While in play mode, use the Pipeline CodeEval command to execute C# against the running app — assert state, drive interactions, and read back results, giving real behavioral testing without a test assembly.
 4. Manual/QA pass by the developer for visual or gameplay behavior — agents cannot judge rendering correctness.
 
@@ -197,7 +201,7 @@ Promotion rule: an entity type inside `Domain/Entities/` graduates to its own mo
 
 Verify compilation after every code edit before considering the task done:
 
-1. If an Editor is connected (`unity status`): trigger a refresh/compile via `unity command` (discover exact command names with `unity list`) and read the console/compile status back the same way.
+1. If an Editor is connected (`unity status`): trigger a refresh/compile via `unity command` (discover exact command names with `unity command --query <term>`) and read the console/compile status back the same way.
 2. If no Editor is connected: `unity test --mode EditMode` forces a full compile and surfaces errors, or check `Editor.log` after a domain reload.
 3. If the Unity CLI itself is missing: ask the developer to install it (never install it yourself) and ask them to confirm compilation in the Editor.
 4. Do not consider a task finished until compilation is clean (errors AND new warnings).
@@ -222,6 +226,6 @@ If a proposed approach is architecturally poor, has no clean implementation path
 
 - **VContainer** — DI container
 - **R3** — reactive extensions
-- **Unity InputSystem** 1.19.0
+- **Unity InputSystem** 1.20.1
 - **TextMesh Pro** — UI text
 - **Steamworks.NET** — Steam distribution/achievements

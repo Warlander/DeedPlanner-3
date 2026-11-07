@@ -13,23 +13,24 @@ For turning an approved mockup into real Unity UI, use the `unity-ui-build` skil
 
 ## Prerequisites
 
-- Editor connected: `unity status`. If not connected: `unity open "E:/Unity/DeedPlanner-3" --args "-automated"` as background task (never wait on it), continue other work, check status once later. On SteamOS/Linux use `--args "-automated -noaudio"`; this Editor version otherwise crashes in the FMOD audio thread on Play-mode entry.
+- Editor connected: `unity status`. If not connected: `unity open "E:/Unity/DeedPlanner-3" --args "-automated"`, then `unity status --until-ready --project-path "E:/Unity/DeedPlanner-3" --timeout 120`. On SteamOS/Linux retain `--args "-automated -noaudio"`; a Play-mode FMOD crash was observed on 6000.3.20f1 and has not been rechecked on Linux with the new Editor.
 
-Generic CLI and `eval_file` rules live in `AGENTS.md` and `unity-cli`; do not duplicate them here.
+Generic CLI and `script eval --file` rules live in `AGENTS.md` and `unity-cli`; do not duplicate them here.
 
 ## Capture constraint
 
-- **Edit-mode capture of screen-space-overlay UI**: camera `Render()` does not composite overlay canvases. Result: blank grey image. Same for `capture_game_view` in edit mode (GameView does not repaint unfocused).
-- Guess-clicking coordinates with `simulate_pointer` — brittle, resolution/origin dependent.
+- A raw camera `Render()` does not composite overlay canvases. Prefer Pipeline's `capture game_view --source screen`; Pipeline 0.10 can also composite overlay UI for URP/HDRP camera captures with `--overlay true`.
+- Verify that Play-mode frames advance before trusting a capture; an unfocused or blocked Game view can show a stale frame.
+- Guess-clicking coordinates with `runtime simulate_pointer` is brittle and resolution/origin dependent.
 
 ## Reliable capture workflow (play mode)
 
-1. Enter play mode: `unity command editor_play`.
-2. Wait for the app: `unity command app_await_ready --timeoutSeconds 120 --timeout 130`.
+1. Enable `unity command editor set_auto_tick` and `unity command editor.playmode set_run_in_background`, then enter with `unity command editor.playmode start`.
+2. Wait for the Editor with `unity status --until-ready --project-path "E:/Unity/DeedPlanner-3" --timeout 120`, then for the app with `unity command app_await_ready --timeout 130 -- --timeoutSeconds 120`. Confirm frames advance using the `unity-cli` verification loop.
 3. Set up the target state with project commands: `map_load <path>` or `map_new`, then `tab_select <name>` and `camera_set <mode> [level]` as needed.
 4. Wait for saves and rendered frames: `unity command await_idle`.
-5. Capture to a file: `unity command screenshot --output <path>`. Inspect the PNG; the active editor panel is in the right column.
-6. **Cleanup (mandatory):** `unity command editor_stop`, even when setup or capture fails.
+5. Capture to a file: `unity command capture game_view -- --source screen --output-path <path>`. Inspect the PNG; the active app panel is in the right column.
+6. **Cleanup (mandatory):** `unity command editor.playmode stop`, restore the background override with `editor.playmode set_run_in_background --enabled false`, and disable auto-tick with `editor set_auto_tick --enabled false`, even when setup or capture fails.
 
 ## Reference layout (verified 2026-08-21)
 

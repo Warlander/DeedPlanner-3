@@ -38,7 +38,7 @@ namespace Warlander.Deedplanner.Editor
         {
             bool dirty = false;
 
-            string[] guids = AssetDatabase.FindAssets("t:UniversalRendererData");
+            string[] guids = AssetDatabase.FindAssets("t:UniversalRendererData", new[] { "Assets" });
             foreach (string guid in guids)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);

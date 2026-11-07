@@ -112,11 +112,11 @@ Never hand-edit the `.unity` YAML while an Editor is running. Drive the live Edi
 
 ```bash
 unity status --json                                   # Editor connected? state "ready"?
-unity command get_scene_hierarchy --json              # full tree with components + instanceIds
-unity command find_gameobjects --query "SunSlider"    # locate by name
-unity command get_component_properties ...            # inspect one component
-unity command set_active / set_transform / ...        # mutate live scene
-unity command save_scene                              # persist to disk
+unity command scene get_hierarchy --json              # full tree with object references
+unity command gameobject find -- --name "SunSlider"   # locate by name
+unity command component get_fields -- ...             # inspect one component
+unity command gameobject set_active -- ...            # mutate live scene
+unity command scene save                              # persist to disk
 ```
 
 If no Editor is connected, open one: `unity open "E:/Unity/DeedPlanner-3" --args "-automated"`. Only hand-edit YAML as a last resort with no Editor available — fileIDs/GUIDs are easy to corrupt.

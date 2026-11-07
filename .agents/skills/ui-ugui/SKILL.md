@@ -1,18 +1,12 @@
 ---
 name: ui-ugui
-description: Unity uGUI (Canvas-based) UI expert. Understands, edits, and generates Canvas hierarchies, RectTransforms, Layout Groups, and prefab UI. Use for requests involving Canvas, uGUI, RectTransform, or .prefab UI files.
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Glob
-  - Grep
+description: Understands, edits, and generates Unity uGUI Canvas hierarchies, RectTransforms, Layout Groups, and prefab UI. Use for requests involving Canvas, uGUI, RectTransform, or prefab UI files.
 ---
 
 Understand existing Unity uGUI, make targeted edits, and generate new Canvas-based hierarchies.
 
 When working with ScrollRect/ScrollView, read the reference file:
-- `references/scrollview-setup.md` — Required hierarchy, setup rules, and common failures
+- [references/scrollview-setup.md](references/scrollview-setup.md) — Required hierarchy, setup rules, and common failures
 
 ## Scope
 
@@ -46,7 +40,7 @@ Determine what the user is asking for:
 - Other namespaces in the project can cause ambiguous type errors
 
 **Verify before modifying:**
-- Always check what currently exists before making changes
+- Always check what exists before making changes
 - Confirm parent objects exist before adding children
 - Verify components are present before modifying properties
 - Never assume hierarchy state — query it first

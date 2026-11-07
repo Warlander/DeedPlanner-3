@@ -31,7 +31,7 @@ Load `ui` and `ui-ugui` first for generic Unity UI guidance. This skill adds or 
 
 ## Editing via CLI (connected Editor)
 
-Discover names with `unity list`. Useful commands: `create_gameobject`, `add_component`, `set_parent`, `set_transform`, `set_serialized_field`, `instantiate_prefab`, `set_active`, `rename_gameobject`, `delete_gameobject`, `save_prefab_contents`, `save_scene`. Prefer prefab-stage edits, then `save_prefab_contents`. Use `move_asset`/`rename_asset` for file moves (CLAUDE.md's GUID rule).
+Discover names and parameters with `unity command --query <term>`. Pipeline 0.10 groups commands under `gameobject`, `component`, `prefab`, `asset`, and `scene`; use `component set_field` for serialized fields and `scene save` for scene changes. Prefer prefab-stage edits and discover the matching save command. Use the asset move/rename commands for file moves to preserve GUIDs.
 
 ## Layout fidelity checklist (mockup → UI)
 

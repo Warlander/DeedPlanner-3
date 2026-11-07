@@ -2,6 +2,7 @@
 
 ## [3.5.0] - Unreleased
 
+- Updated the Unity runtime to 6.3.28 LTS and Steam integration to Steamworks SDK 1.65
 - Updated unavailable Labels and Borders tab tooltips to "Feature coming soon!"
 - Web version now has a DeedPlanner compass icon and clearer page information for search results
 - WebGL assets now load from the address hosting the app

@@ -41,7 +41,7 @@ jobs:
             -e UNITY_EMAIL -e UNITY_PASSWORD \
             -v "$project:/project" \
             -v "$unity_config:/root/.config/unity3d" \
-            unityci/editor:ubuntu-6000.3.20f1-base-3.2.2 \
+            unityci/editor:ubuntu-6000.3.28f1-base-3.2.2 \
             bash -lc '
               set -euo pipefail
               /opt/unity/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client \
