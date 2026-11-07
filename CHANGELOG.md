@@ -2,6 +2,7 @@
 
 ## [3.5.0] - Unreleased
 
+- Updated unavailable Labels and Borders tab tooltips to "Feature coming soon!"
 - Web version now has a DeedPlanner compass icon and clearer page information for search results
 - WebGL assets now load from the address hosting the app
 

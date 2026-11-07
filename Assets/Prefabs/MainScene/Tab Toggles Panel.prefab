@@ -1878,7 +1878,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: Feature not available<br>in current alpha version
+  text: Feature coming soon!
   showDelay: 0
 --- !u!224 &8907318971942492789 stripped
 RectTransform:
@@ -2687,7 +2687,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d40f8af888a4768901802bb87d23044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: Feature not available<br>in current alpha version
+  text: Feature coming soon!
   showDelay: 0
 --- !u!224 &2170293582049121227 stripped
 RectTransform:
