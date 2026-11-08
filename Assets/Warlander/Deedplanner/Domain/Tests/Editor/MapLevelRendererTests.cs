@@ -33,6 +33,50 @@ namespace Warlander.Deedplanner.Domain.Tests
             var block = new MaterialPropertyBlock();
             renderer.GetPropertyBlock(block);
             Assert.That(block.isEmpty, Is.True);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                Assert.That(renderer.HasPropertyBlock(), Is.True);
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(-1, true, false)))
+                {
+                    Assert.That(renderer.HasPropertyBlock(), Is.True);
+                    renderer.GetPropertyBlock(block);
+                    Assert.That(block.isEmpty, Is.True);
+                }
+                renderer.GetPropertyBlock(block);
+                Assert.That(block.isEmpty, Is.True);
+            }
+            Assert.That(renderer.HasPropertyBlock(), Is.True);
+            renderer.GetPropertyBlock(block);
+            Assert.That(block.isEmpty, Is.True);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void NestedHiddenViewsRetainOriginalVisibilityForInnerSurfaceView(bool originallyHidden)
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            renderer.forceRenderingOff = originallyHidden;
+            var block = new MaterialPropertyBlock();
+            block.SetColor(ShaderPropertyIds.BaseColor, Color.cyan);
+            renderer.SetPropertyBlock(block);
+
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(-1, true, false)))
+            {
+                Assert.That(renderer.forceRenderingOff, Is.True);
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(-2, true, false)))
+                {
+                    Assert.That(renderer.forceRenderingOff, Is.True);
+                    using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+                    {
+                        Assert.That(renderer.forceRenderingOff, Is.EqualTo(originallyHidden));
+                        Assert.That(GetBaseColor(renderer), Is.EqualTo(Color.cyan));
+                    }
+                    Assert.That(renderer.forceRenderingOff, Is.True);
+                }
+                Assert.That(renderer.forceRenderingOff, Is.True);
+            }
+            Assert.That(renderer.forceRenderingOff, Is.EqualTo(originallyHidden));
+            Assert.That(GetBaseColor(renderer), Is.EqualTo(Color.cyan));
         }
 
         [Test]

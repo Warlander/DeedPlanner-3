@@ -156,15 +156,21 @@ namespace Warlander.Deedplanner.Domain
             Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
             foreach (Renderer renderer in renderers)
             {
+                bool hasBaseState = _baseRendererStates.TryGetValue(renderer, out RendererBaseState baseState);
+                bool currentForceRenderingOff = renderer.forceRenderingOff;
+                bool forceRenderingOff = (hasBaseState ? baseState.ForceRenderingOff : currentForceRenderingOff) || !visible;
+                if (!capturePropertyBlock && currentForceRenderingOff == forceRenderingOff && renderer.HasPropertyBlock())
+                    continue;
+
                 RendererState state = RendererState.Capture(renderer, capturePropertyBlock);
                 scope.Add(state);
-                if (!_baseRendererStates.TryGetValue(renderer, out RendererBaseState baseState))
+                if (!hasBaseState)
                 {
                     baseState = new RendererBaseState(state.ForceRenderingOff, null);
                     _baseRendererStates.Add(renderer, baseState);
                 }
 
-                renderer.forceRenderingOff = baseState.ForceRenderingOff || !visible;
+                renderer.forceRenderingOff = forceRenderingOff;
                 if (changeColor)
                 {
                     if (!baseState.BaseColor.HasValue)
