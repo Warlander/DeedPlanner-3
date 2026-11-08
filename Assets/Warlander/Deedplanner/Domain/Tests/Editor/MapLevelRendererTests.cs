@@ -80,6 +80,119 @@ namespace Warlander.Deedplanner.Domain.Tests
         }
 
         [Test]
+        public void ReusedPropertyBlocksPreserveRendererOverridesWithoutLeakingProperties()
+        {
+            int valueId = Shader.PropertyToID("_SnapshotValue");
+            int vectorId = Shader.PropertyToID("_SnapshotVector");
+            int textureId = Shader.PropertyToID("_SnapshotTexture");
+            var vector = new Vector4(1, 2, 3, 4);
+            var texture = new Texture2D(1, 1);
+            var block = new MaterialPropertyBlock();
+            try
+            {
+                for (int pass = 0; pass < 2; pass++)
+                {
+                    Renderer rich = _fixture.Surface[pass].Renderer;
+                    Renderer plain = _fixture.Surface[1 - pass].Renderer;
+                    block.Clear();
+                    block.SetFloat(valueId, 7);
+                    block.SetVector(vectorId, vector);
+                    block.SetTexture(textureId, texture);
+                    rich.SetPropertyBlock(block);
+                    block.Clear();
+                    plain.SetPropertyBlock(block);
+
+                    void AssertOverrides()
+                    {
+                        rich.GetPropertyBlock(block);
+                        Assert.That(block.GetFloat(valueId), Is.EqualTo(7));
+                        Assert.That(block.GetVector(vectorId), Is.EqualTo(vector));
+                        Assert.That(block.GetTexture(textureId), Is.SameAs(texture));
+                        plain.GetPropertyBlock(block);
+                        Assert.That(block.HasFloat(valueId), Is.False);
+                        Assert.That(block.GetVector(vectorId), Is.EqualTo(Vector4.zero));
+                        Assert.That(block.GetTexture(textureId), Is.Null);
+                    }
+
+                    using (_fixture.Renderer.PrepareForCamera(new MapRenderView(2, false, false)))
+                    {
+                        AssertOverrides();
+                    }
+                    AssertOverrides();
+                }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
+            }
+        }
+
+        [Test]
+        public void NestedSiblingScopesPreserveTheOuterSnapshot()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            var block = new MaterialPropertyBlock();
+            block.SetColor(ShaderPropertyIds.BaseColor, Color.cyan);
+            renderer.SetPropertyBlock(block);
+
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, true)))
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    using (_fixture.Renderer.PrepareForCamera(new MapRenderView(2, false, false)))
+                    {
+                        Assert.That(GetBaseColor(renderer).g, Is.EqualTo(0.25f));
+                        Assert.That(_fixture.SurfaceGrid.Renderer.forceRenderingOff, Is.True);
+                    }
+                    Assert.That(GetBaseColor(renderer).g, Is.EqualTo(0.6f));
+                    Assert.That(_fixture.SurfaceGrid.Renderer.forceRenderingOff, Is.False);
+                    Assert.That(_fixture.SurfaceGrid.Root.localPosition.y, Is.EqualTo(3.01f));
+                }
+            }
+            Assert.That(GetBaseColor(renderer), Is.EqualTo(Color.cyan));
+        }
+
+        [Test]
+        public void DisposingAnOldScopeDoesNotChangeTheCurrentScope()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            IDisposable oldScope = _fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false));
+            oldScope.Dispose();
+
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(2, false, false)))
+            {
+                oldScope.Dispose();
+                Assert.That(GetBaseColor(renderer).r, Is.EqualTo(0.25f));
+                Assert.That(_fixture.SurfaceGrid.Root.localPosition.y, Is.EqualTo(6.01f));
+            }
+            Assert.That(GetEffectiveBaseColor(renderer), Is.EqualTo(Color.white));
+            Assert.That(_fixture.SurfaceGrid.Root.localPosition, Is.EqualTo(Vector3.zero));
+        }
+
+        [Test]
+        public void DestroyedCapturedRendererDoesNotBreakLaterScopes()
+        {
+            Renderer deleted = _fixture.Surface[0].Renderer;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false)))
+            {
+                UnityEngine.Object.DestroyImmediate(deleted.gameObject);
+            }
+
+            var replacement = new GameObject("Replacement model", typeof(MeshRenderer));
+            replacement.transform.SetParent(_fixture.Surface[0].Root);
+            Renderer renderer = replacement.GetComponent<Renderer>();
+            var block = new MaterialPropertyBlock();
+            block.SetColor(ShaderPropertyIds.BaseColor, Color.magenta);
+            renderer.SetPropertyBlock(block);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false)))
+            {
+                Assert.That(GetBaseColor(renderer).r, Is.EqualTo(0.6f));
+                Assert.That(GetBaseColor(renderer).g, Is.Zero);
+            }
+            Assert.That(GetBaseColor(renderer), Is.EqualTo(Color.magenta));
+        }
+
+        [Test]
         public void PrepareForCameraFiltersSurfaceLevelsAndGrid()
         {
             using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, true)))

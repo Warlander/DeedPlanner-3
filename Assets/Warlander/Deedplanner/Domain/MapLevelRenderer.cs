@@ -20,6 +20,8 @@ namespace Warlander.Deedplanner.Domain
         private readonly Dictionary<Renderer, RendererBaseState> _baseRendererStates =
             new Dictionary<Renderer, RendererBaseState>();
         private readonly MaterialPropertyBlock _emptyPropertyBlock = new MaterialPropertyBlock();
+        private readonly MaterialPropertyBlock _workingPropertyBlock = new MaterialPropertyBlock();
+        private readonly Stack<MaterialPropertyBlock> _propertyBlocks = new Stack<MaterialPropertyBlock>();
         private int _scopeDepth;
 
         public bool RenderBridges { get; set; } = true;
@@ -98,6 +100,7 @@ namespace Warlander.Deedplanner.Domain
             _scopeDepth++;
             RenderScope scope = new RenderScope(this, _surfaceGridRoot.localPosition, _caveGridRoot.localPosition);
             ApplyView(scope, view);
+            _workingPropertyBlock.Clear();
             return scope;
         }
 
@@ -140,7 +143,7 @@ namespace Warlander.Deedplanner.Domain
             Renderer[] renderers = _caveShellRoot.GetComponentsInChildren<Renderer>(true);
             foreach (Renderer renderer in renderers)
             {
-                var propertyBlock = new MaterialPropertyBlock();
+                MaterialPropertyBlock propertyBlock = _workingPropertyBlock;
                 renderer.GetPropertyBlock(propertyBlock);
                 propertyBlock.SetFloat(ShaderPropertyIds.CaveOverview,
                     view.IsUnderground && !view.RenderEntireMap ? 1f : 0f);
@@ -162,7 +165,10 @@ namespace Warlander.Deedplanner.Domain
                 if (!capturePropertyBlock && currentForceRenderingOff == forceRenderingOff && renderer.HasPropertyBlock())
                     continue;
 
-                RendererState state = RendererState.Capture(renderer, capturePropertyBlock);
+                MaterialPropertyBlock snapshot = capturePropertyBlock
+                    ? (_propertyBlocks.Count > 0 ? _propertyBlocks.Pop() : new MaterialPropertyBlock())
+                    : null;
+                RendererState state = RendererState.Capture(renderer, currentForceRenderingOff, snapshot);
                 scope.Add(state);
                 if (!hasBaseState)
                 {
@@ -179,7 +185,7 @@ namespace Warlander.Deedplanner.Domain
                             GetBaseColor(renderer, state.PropertyBlock));
                         _baseRendererStates[renderer] = baseState;
                     }
-                    MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+                    MaterialPropertyBlock propertyBlock = _workingPropertyBlock;
                     renderer.GetPropertyBlock(propertyBlock);
                     Color baseColor = baseState.BaseColor.Value;
                     propertyBlock.SetColor(ShaderPropertyIds.BaseColor,
@@ -278,7 +284,16 @@ namespace Warlander.Deedplanner.Domain
             public void Restore()
             {
                 for (int i = _renderers.Count - 1; i >= 0; i--)
+                {
                     _renderers[i].Restore(_owner._emptyPropertyBlock);
+                    MaterialPropertyBlock snapshot = _renderers[i].PropertyBlock;
+                    if (snapshot != null)
+                    {
+                        snapshot.Clear();
+                        _owner._propertyBlocks.Push(snapshot);
+                    }
+                }
+                _renderers.Clear();
 
                 _owner._surfaceGridRoot.localPosition = _surfaceGridPosition;
                 _owner._caveGridRoot.localPosition = _caveGridPosition;
@@ -318,15 +333,11 @@ namespace Warlander.Deedplanner.Domain
                 PropertyBlock = propertyBlock;
             }
 
-            public static RendererState Capture(Renderer renderer, bool capturePropertyBlock)
+            public static RendererState Capture(Renderer renderer, bool forceRenderingOff, MaterialPropertyBlock propertyBlock)
             {
-                MaterialPropertyBlock propertyBlock = null;
-                if (capturePropertyBlock)
-                {
-                    propertyBlock = new MaterialPropertyBlock();
+                if (propertyBlock != null)
                     renderer.GetPropertyBlock(propertyBlock);
-                }
-                return new RendererState(renderer, renderer.forceRenderingOff, propertyBlock);
+                return new RendererState(renderer, forceRenderingOff, propertyBlock);
             }
 
             public void Restore(MaterialPropertyBlock emptyPropertyBlock)
