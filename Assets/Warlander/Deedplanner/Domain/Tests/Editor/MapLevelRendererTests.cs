@@ -21,6 +21,21 @@ namespace Warlander.Deedplanner.Domain.Tests
         }
 
         [Test]
+        public void UnmodifiedRendererKeepsTheExistingPropertyBlockBatchingPath()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            Assert.That(renderer.HasPropertyBlock(), Is.False);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                Assert.That(renderer.HasPropertyBlock(), Is.False);
+            }
+            Assert.That(renderer.HasPropertyBlock(), Is.True);
+            var block = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(block);
+            Assert.That(block.isEmpty, Is.True);
+        }
+
+        [Test]
         public void PrepareForCameraFiltersSurfaceLevelsAndGrid()
         {
             using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, true)))
@@ -98,8 +113,10 @@ namespace Warlander.Deedplanner.Domain.Tests
         public void FadedRendererPreservesExistingColorAndAlpha()
         {
             Color originalColor = new Color(0.8f, 0.4f, 0.2f, 0.25f);
+            Vector4 shear = new Vector4(0.1f, -0.2f, 0, 0);
             MaterialPropertyBlock originalBlock = new MaterialPropertyBlock();
             originalBlock.SetColor(ShaderPropertyIds.BaseColor, originalColor);
+            originalBlock.SetVector(ShaderPropertyIds.ShearY, shear);
             _fixture.Surface[0].Renderer.SetPropertyBlock(originalBlock);
 
             using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, true)))
@@ -109,7 +126,124 @@ namespace Warlander.Deedplanner.Domain.Tests
                 Assert.That(fadedColor.g, Is.EqualTo(0.24f).Within(0.001f));
                 Assert.That(fadedColor.b, Is.EqualTo(0.12f).Within(0.001f));
                 Assert.That(fadedColor.a, Is.EqualTo(0.25f));
+                _fixture.Surface[0].Renderer.GetPropertyBlock(originalBlock);
+                Assert.That(originalBlock.GetVector(ShaderPropertyIds.ShearY), Is.EqualTo(shear));
             }
+            _fixture.Surface[0].Renderer.GetPropertyBlock(originalBlock);
+            Assert.That(originalBlock.GetColor(ShaderPropertyIds.BaseColor), Is.EqualTo(originalColor));
+            Assert.That(originalBlock.GetVector(ShaderPropertyIds.ShearY), Is.EqualTo(shear));
+        }
+
+        [TestCase(0)]
+        [TestCase(-1)]
+        [TestCase(-2)]
+        public void CaveShellRestoresOverridesAcrossNestedViews(int outerLevel)
+        {
+            Renderer renderer = _fixture.CaveShell.Renderer;
+            Color originalColor = new Color(0.8f, 0.4f, 0.2f, 0.25f);
+            Vector4 shear = new Vector4(0.1f, -0.2f, 0, 0);
+            var block = new MaterialPropertyBlock();
+            block.SetColor(ShaderPropertyIds.BaseColor, originalColor);
+            block.SetVector(ShaderPropertyIds.ShearY, shear);
+            block.SetFloat(ShaderPropertyIds.CaveOverview, 0.7f);
+            renderer.SetPropertyBlock(block);
+
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(outerLevel, false, false)))
+            {
+                Color outerColor = GetBaseColor(renderer);
+                Assert.That(GetCaveOverview(renderer), Is.EqualTo(outerLevel < 0 ? 1f : 0f));
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(-1, true, false)))
+                {
+                    Assert.That(GetBaseColor(renderer), Is.EqualTo(originalColor));
+                    Assert.That(GetCaveOverview(renderer), Is.Zero);
+                }
+                Assert.That(GetBaseColor(renderer), Is.EqualTo(outerColor));
+                Assert.That(GetCaveOverview(renderer), Is.EqualTo(outerLevel < 0 ? 1f : 0f));
+            }
+            renderer.GetPropertyBlock(block);
+            Assert.That(block.GetColor(ShaderPropertyIds.BaseColor), Is.EqualTo(originalColor));
+            Assert.That(block.GetVector(ShaderPropertyIds.ShearY), Is.EqualTo(shear));
+            Assert.That(block.GetFloat(ShaderPropertyIds.CaveOverview), Is.EqualTo(0.7f));
+        }
+
+        [TestCase(0, false)]
+        [TestCase(-1, false)]
+        [TestCase(0, true)]
+        [TestCase(-1, true)]
+        public void NestedFadeRestoresOpaqueOrHiddenOuterView(int outerLevel, bool originallyHidden)
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            renderer.forceRenderingOff = originallyHidden;
+            var block = new MaterialPropertyBlock();
+            block.SetColor(ShaderPropertyIds.BaseColor, Color.cyan);
+            renderer.SetPropertyBlock(block);
+
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(outerLevel, true, false)))
+            {
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false)))
+                {
+                    Assert.That(GetBaseColor(renderer).g, Is.EqualTo(0.6f).Within(0.001f));
+                    Assert.That(renderer.forceRenderingOff, Is.EqualTo(originallyHidden));
+                }
+                Assert.That(GetBaseColor(renderer), Is.EqualTo(Color.cyan));
+                Assert.That(renderer.forceRenderingOff, Is.EqualTo(originallyHidden || outerLevel < 0));
+            }
+            Assert.That(GetBaseColor(renderer), Is.EqualTo(Color.cyan));
+            Assert.That(renderer.forceRenderingOff, Is.EqualTo(originallyHidden));
+        }
+
+        [Test]
+        public void MaterialColorFallbackDoesNotLeaveAnOverrideAfterRestoration()
+        {
+            var shader = Shader.Find("Universal Render Pipeline/Lit");
+            Assert.That(shader, Is.Not.Null);
+            var material = new Material(shader);
+            try
+            {
+                Renderer renderer = _fixture.Surface[0].Renderer;
+                var originalColor = new Color(0.8f, 0.4f, 0.2f, 0.25f);
+                material.SetColor(ShaderPropertyIds.BaseColor, originalColor);
+                renderer.sharedMaterial = material;
+
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+                {
+                    using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false)))
+                    {
+                        Assert.That(GetBaseColor(renderer).r, Is.EqualTo(0.48f).Within(0.001f));
+                        Assert.That(GetBaseColor(renderer).a, Is.EqualTo(originalColor.a));
+                    }
+                    var block = new MaterialPropertyBlock();
+                    renderer.GetPropertyBlock(block);
+                    Assert.That(block.HasColor(ShaderPropertyIds.BaseColor), Is.False);
+                }
+                var restoredBlock = new MaterialPropertyBlock();
+                renderer.GetPropertyBlock(restoredBlock);
+                Assert.That(restoredBlock.HasColor(ShaderPropertyIds.BaseColor), Is.False);
+                Assert.That(GetEffectiveBaseColor(renderer), Is.EqualTo(originalColor));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(material);
+            }
+        }
+
+        [Test]
+        public void NextCameraPassUsesColorChangedBetweenPasses()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            var block = new MaterialPropertyBlock();
+            block.SetColor(ShaderPropertyIds.BaseColor, Color.cyan);
+            renderer.SetPropertyBlock(block);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false))) { }
+
+            block.SetColor(ShaderPropertyIds.BaseColor, Color.magenta);
+            renderer.SetPropertyBlock(block);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false)))
+            {
+                Assert.That(GetBaseColor(renderer).r, Is.EqualTo(0.6f).Within(0.001f));
+                Assert.That(GetBaseColor(renderer).g, Is.Zero);
+            }
+            Assert.That(GetBaseColor(renderer), Is.EqualTo(Color.magenta));
         }
 
         [Test]

@@ -19,6 +19,7 @@ namespace Warlander.Deedplanner.Domain
         private Func<IEnumerable<Dock>> _getDocks;
         private readonly Dictionary<Renderer, RendererBaseState> _baseRendererStates =
             new Dictionary<Renderer, RendererBaseState>();
+        private readonly MaterialPropertyBlock _emptyPropertyBlock = new MaterialPropertyBlock();
         private int _scopeDepth;
 
         public bool RenderBridges { get; set; } = true;
@@ -150,23 +151,31 @@ namespace Warlander.Deedplanner.Domain
         private void ApplyRoot(RenderScope scope, Transform root, float opacity)
         {
             bool visible = opacity > 0f;
+            bool changeColor = visible && (opacity < 1f || _scopeDepth > 1);
+            bool capturePropertyBlock = changeColor || root == _caveShellRoot;
             Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
             foreach (Renderer renderer in renderers)
             {
-                RendererState state = RendererState.Capture(renderer);
+                RendererState state = RendererState.Capture(renderer, capturePropertyBlock);
                 scope.Add(state);
                 if (!_baseRendererStates.TryGetValue(renderer, out RendererBaseState baseState))
                 {
-                    baseState = new RendererBaseState(state.ForceRenderingOff, GetBaseColor(renderer, state.PropertyBlock));
+                    baseState = new RendererBaseState(state.ForceRenderingOff, null);
                     _baseRendererStates.Add(renderer, baseState);
                 }
 
                 renderer.forceRenderingOff = baseState.ForceRenderingOff || !visible;
-                if (visible && (opacity < 1f || _scopeDepth > 1))
+                if (changeColor)
                 {
+                    if (!baseState.BaseColor.HasValue)
+                    {
+                        baseState = new RendererBaseState(baseState.ForceRenderingOff,
+                            GetBaseColor(renderer, state.PropertyBlock));
+                        _baseRendererStates[renderer] = baseState;
+                    }
                     MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
                     renderer.GetPropertyBlock(propertyBlock);
-                    Color baseColor = baseState.BaseColor;
+                    Color baseColor = baseState.BaseColor.Value;
                     propertyBlock.SetColor(ShaderPropertyIds.BaseColor,
                         new Color(baseColor.r * opacity, baseColor.g * opacity, baseColor.b * opacity, baseColor.a));
                     renderer.SetPropertyBlock(propertyBlock);
@@ -263,7 +272,7 @@ namespace Warlander.Deedplanner.Domain
             public void Restore()
             {
                 for (int i = _renderers.Count - 1; i >= 0; i--)
-                    _renderers[i].Restore();
+                    _renderers[i].Restore(_owner._emptyPropertyBlock);
 
                 _owner._surfaceGridRoot.localPosition = _surfaceGridPosition;
                 _owner._caveGridRoot.localPosition = _caveGridPosition;
@@ -281,9 +290,9 @@ namespace Warlander.Deedplanner.Domain
         {
             public bool ForceRenderingOff { get; }
 
-            public Color BaseColor { get; }
+            public Color? BaseColor { get; }
 
-            public RendererBaseState(bool forceRenderingOff, Color baseColor)
+            public RendererBaseState(bool forceRenderingOff, Color? baseColor)
             {
                 ForceRenderingOff = forceRenderingOff;
                 BaseColor = baseColor;
@@ -303,18 +312,26 @@ namespace Warlander.Deedplanner.Domain
                 PropertyBlock = propertyBlock;
             }
 
-            public static RendererState Capture(Renderer renderer)
+            public static RendererState Capture(Renderer renderer, bool capturePropertyBlock)
             {
-                MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
-                renderer.GetPropertyBlock(propertyBlock);
+                MaterialPropertyBlock propertyBlock = null;
+                if (capturePropertyBlock)
+                {
+                    propertyBlock = new MaterialPropertyBlock();
+                    renderer.GetPropertyBlock(propertyBlock);
+                }
                 return new RendererState(renderer, renderer.forceRenderingOff, propertyBlock);
             }
 
-            public void Restore()
+            public void Restore(MaterialPropertyBlock emptyPropertyBlock)
             {
                 if (!Renderer) return;
                 Renderer.forceRenderingOff = ForceRenderingOff;
-                Renderer.SetPropertyBlock(PropertyBlock);
+                if (PropertyBlock != null)
+                    Renderer.SetPropertyBlock(PropertyBlock);
+                else if (!Renderer.HasPropertyBlock())
+                    // Keep the existing batching path after the renderer's first pass.
+                    Renderer.SetPropertyBlock(emptyPropertyBlock);
             }
         }
 
