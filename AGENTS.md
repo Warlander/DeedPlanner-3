@@ -64,6 +64,8 @@ Without it, play mode ENTRY stalls indefinitely while the Editor window is unfoc
 
 **AIHub Git capture on Windows:** if UPM reports invalid Git revisions even though terminal lookups succeed, inspect UPM's debug log for its Git executable. AIHub's `git-capture/git.EXE` can return empty stdout to UPM. Launch the Editor with the real Git directory first in that process's PATH (`$env:PATH = 'C:\Program Files\Git\cmd;' + $env:PATH` before `unity open`); do not change the system PATH. Restore UPM logging to Info after diagnosis.
 
+**Old Editor removal on Windows:** Unity Hub can keep the old Editor directory as its working directory, preventing removal even after the Editor exits. If only an empty old Editor folder remains locked, restart Hub and its Hub-owned licensing helper from a neutral directory, then retry removal. Do not terminate unrelated licensing clients or the verified new Editor.
+
 **Code evaluation:** use `unity command script eval -- --code '<C#>'` or `unity command script eval -- --file <path.cs>`. Pipeline 0.10 accepts full C# scripts, including `using` directives, declarations, `await`, explicit returns, and trailing expressions. Write temporary scripts outside `Assets/` to avoid unwanted imports. Desktop Player control via `--runtime` is experimental; browser Players are not officially supported.
 
 **Package updates:** prefer Pipeline's `package` commands or `UnityEditor.PackageManager.Client` APIs. Package mutations are asynchronous and trigger reloads; verify the resolved manifest/lock and compilation afterwards. Never block the Editor main thread waiting for an asynchronous Package Manager request.
