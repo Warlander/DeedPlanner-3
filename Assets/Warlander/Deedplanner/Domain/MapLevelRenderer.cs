@@ -23,8 +23,13 @@ namespace Warlander.Deedplanner.Domain
         private readonly MaterialPropertyBlock _workingPropertyBlock = new MaterialPropertyBlock();
         private readonly Stack<MaterialPropertyBlock> _propertyBlocks = new Stack<MaterialPropertyBlock>();
         private readonly List<Renderer> _rendererBuffer = new List<Renderer>();
+        private readonly List<Material> _materialBuffer = new List<Material>();
+        private readonly List<Renderer> _modelBatchingCandidates = new List<Renderer>();
+        private readonly Dictionary<Material, ModelBatching> _modelMaterials = new Dictionary<Material, ModelBatching>();
+        private bool _modelDefaultsCompatible;
         private readonly Stack<List<RendererState>> _rendererStates = new Stack<List<RendererState>>();
         private int _scopeDepth;
+        private readonly Shader _modelShader = Shader.Find("Warlander/ModelShader");
 
         public bool RenderBridges { get; set; } = true;
 
@@ -100,8 +105,27 @@ namespace Warlander.Deedplanner.Domain
             }
 
             _scopeDepth++;
-            RenderScope scope = new RenderScope(this, _surfaceGridRoot.localPosition, _caveGridRoot.localPosition);
+            RenderScope scope = new RenderScope(this, _surfaceGridRoot.localPosition, _caveGridRoot.localPosition,
+                view.RenderEntireMap && _scopeDepth == 1 && _modelShader);
+            if (scope.AllowModelBatching) _modelDefaultsCompatible = true;
             ApplyView(scope, view);
+            if (scope.AllowModelBatching)
+            {
+                if (_modelDefaultsCompatible)
+                {
+                    foreach (Renderer renderer in _modelBatchingCandidates)
+                    {
+                        renderer.GetPropertyBlock(_workingPropertyBlock);
+                        if (_workingPropertyBlock.isEmpty)
+                        {
+                            scope.Add(RendererState.ClearedEmptyBlock(renderer));
+                            renderer.SetPropertyBlock(null);
+                        }
+                    }
+                }
+                _modelBatchingCandidates.Clear();
+                _modelMaterials.Clear();
+            }
             _workingPropertyBlock.Clear();
             _rendererBuffer.Clear();
             return scope;
@@ -165,8 +189,12 @@ namespace Warlander.Deedplanner.Domain
                 bool hasBaseState = _baseRendererStates.TryGetValue(renderer, out RendererBaseState baseState);
                 bool currentForceRenderingOff = renderer.forceRenderingOff;
                 bool forceRenderingOff = (hasBaseState ? baseState.ForceRenderingOff : currentForceRenderingOff) || !visible;
+                bool canBatchModel = scope.AllowModelBatching && !forceRenderingOff && CanBatchModel(renderer);
                 if (!capturePropertyBlock && currentForceRenderingOff == forceRenderingOff && renderer.HasPropertyBlock())
+                {
+                    if (canBatchModel) _modelBatchingCandidates.Add(renderer);
                     continue;
+                }
 
                 MaterialPropertyBlock snapshot = capturePropertyBlock
                     ? (_propertyBlocks.Count > 0 ? _propertyBlocks.Pop() : new MaterialPropertyBlock())
@@ -210,6 +238,40 @@ namespace Warlander.Deedplanner.Domain
             return material && material.HasProperty(ShaderPropertyIds.BaseColor)
                 ? material.GetColor(ShaderPropertyIds.BaseColor)
                 : Color.white;
+        }
+
+        private bool CanBatchModel(Renderer renderer)
+        {
+            renderer.GetSharedMaterials(_materialBuffer);
+            bool matches = _materialBuffer.Count == 1;
+            foreach (Material material in _materialBuffer)
+            {
+                if (!material)
+                {
+                    matches = false;
+                    continue;
+                }
+                if (!_modelMaterials.TryGetValue(material, out ModelBatching policy))
+                {
+                    policy = _modelShader && material.shader == _modelShader
+                        ? (material.GetVector(ShaderPropertyIds.ShearY).Equals(Vector4.zero)
+                            ? ModelBatching.Compatible : ModelBatching.Incompatible)
+                        : ModelBatching.Other;
+                    _modelMaterials.Add(material, policy);
+                }
+                // Material-default shear changes the mixed SRP/instancing result.
+                if (policy == ModelBatching.Incompatible) _modelDefaultsCompatible = false;
+                matches &= policy == ModelBatching.Compatible;
+            }
+            _materialBuffer.Clear();
+            return matches;
+        }
+
+        private enum ModelBatching
+        {
+            Other,
+            Compatible,
+            Incompatible
         }
 
         private void CompleteScope(RenderScope scope)
@@ -271,13 +333,16 @@ namespace Warlander.Deedplanner.Domain
             private readonly Vector3 _surfaceGridPosition;
             private readonly Vector3 _caveGridPosition;
             private bool _disposed;
+            public bool AllowModelBatching { get; }
 
-            public RenderScope(MapLevelRenderer owner, Vector3 surfaceGridPosition, Vector3 caveGridPosition)
+            public RenderScope(MapLevelRenderer owner, Vector3 surfaceGridPosition, Vector3 caveGridPosition,
+                bool allowModelBatching)
             {
                 _owner = owner;
                 _renderers = owner._rendererStates.Count > 0 ? owner._rendererStates.Pop() : new List<RendererState>();
                 _surfaceGridPosition = surfaceGridPosition;
                 _caveGridPosition = caveGridPosition;
+                AllowModelBatching = allowModelBatching;
             }
 
             public void Add(RendererState state)
@@ -330,12 +395,15 @@ namespace Warlander.Deedplanner.Domain
             public Renderer Renderer { get; }
             public bool ForceRenderingOff { get; }
             public MaterialPropertyBlock PropertyBlock { get; }
+            private readonly bool _restoreVisibility;
 
-            private RendererState(Renderer renderer, bool forceRenderingOff, MaterialPropertyBlock propertyBlock)
+            private RendererState(Renderer renderer, bool forceRenderingOff, MaterialPropertyBlock propertyBlock,
+                bool restoreVisibility = true)
             {
                 Renderer = renderer;
                 ForceRenderingOff = forceRenderingOff;
                 PropertyBlock = propertyBlock;
+                _restoreVisibility = restoreVisibility;
             }
 
             public static RendererState Capture(Renderer renderer, bool forceRenderingOff, MaterialPropertyBlock propertyBlock)
@@ -345,10 +413,15 @@ namespace Warlander.Deedplanner.Domain
                 return new RendererState(renderer, forceRenderingOff, propertyBlock);
             }
 
+            public static RendererState ClearedEmptyBlock(Renderer renderer)
+            {
+                return new RendererState(renderer, false, null, false);
+            }
+
             public void Restore(MaterialPropertyBlock emptyPropertyBlock)
             {
                 if (!Renderer) return;
-                Renderer.forceRenderingOff = ForceRenderingOff;
+                if (_restoreVisibility) Renderer.forceRenderingOff = ForceRenderingOff;
                 if (PropertyBlock != null)
                     Renderer.SetPropertyBlock(PropertyBlock);
                 else if (!Renderer.HasPropertyBlock())

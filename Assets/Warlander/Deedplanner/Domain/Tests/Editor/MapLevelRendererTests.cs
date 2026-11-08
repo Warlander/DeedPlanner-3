@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -48,6 +49,244 @@ namespace Warlander.Deedplanner.Domain.Tests
             Assert.That(renderer.HasPropertyBlock(), Is.True);
             renderer.GetPropertyBlock(block);
             Assert.That(block.isEmpty, Is.True);
+        }
+
+        [Test]
+        public void ModelShaderFullMapScopesTemporarilyClearWarmedEmptyBlocks()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            Material material = _fixture.CreateMaterial("Warlander/ModelShader");
+            var original = new Color(0.8f, 0.4f, 0.2f, 0.25f);
+            material.SetColor(ShaderPropertyIds.BaseColor, original);
+            renderer.sharedMaterial = material;
+            Assert.That(renderer.HasPropertyBlock(), Is.False);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                Assert.That(renderer.HasPropertyBlock(), Is.False);
+            }
+            AssertEmptyPropertyBlock(renderer);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, false, false)))
+            {
+                AssertEmptyPropertyBlock(renderer);
+            }
+
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                Assert.That(renderer.HasPropertyBlock(), Is.False);
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false)))
+                {
+                    Assert.That(GetBaseColor(renderer).r, Is.EqualTo(0.48f).Within(0.001f));
+                    Assert.That(GetBaseColor(renderer).a, Is.EqualTo(original.a));
+                    using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+                    {
+                        Assert.That(GetBaseColor(renderer), Is.EqualTo(original));
+                    }
+                    Assert.That(GetBaseColor(renderer).r, Is.EqualTo(0.48f).Within(0.001f));
+                }
+                AssertEmptyPropertyBlock(renderer);
+            }
+            AssertEmptyPropertyBlock(renderer);
+            Assert.That(GetEffectiveBaseColor(renderer), Is.EqualTo(original));
+        }
+
+        [Test]
+        public void ModelShaderNonemptyOverridesRemainAfterNestedViews()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            renderer.sharedMaterial = _fixture.CreateMaterial("Warlander/ModelShader");
+            var original = new Color(0.8f, 0.4f, 0.2f, 0.45f);
+            var shear = new Vector4(0.2f, -0.1f, 0, 0);
+            int valueId = Shader.PropertyToID("_ModelOverrideValue");
+            var block = new MaterialPropertyBlock();
+            block.SetColor(ShaderPropertyIds.BaseColor, original);
+            block.SetVector(ShaderPropertyIds.ShearY, shear);
+            block.SetFloat(valueId, 17);
+            renderer.SetPropertyBlock(block);
+
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                Assert.That(renderer.HasPropertyBlock(), Is.True);
+                Assert.That(GetBaseColor(renderer), Is.EqualTo(original));
+            }
+
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false)))
+            {
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+                {
+                    renderer.GetPropertyBlock(block);
+                    Assert.That(block.GetColor(ShaderPropertyIds.BaseColor), Is.EqualTo(original));
+                    Assert.That(block.GetVector(ShaderPropertyIds.ShearY), Is.EqualTo(shear));
+                    Assert.That(block.GetFloat(valueId), Is.EqualTo(17));
+                }
+                Assert.That(GetBaseColor(renderer).a, Is.EqualTo(original.a));
+            }
+            Assert.That(renderer.HasPropertyBlock(), Is.True);
+            renderer.GetPropertyBlock(block);
+            Assert.That(block.GetColor(ShaderPropertyIds.BaseColor), Is.EqualTo(original));
+            Assert.That(block.GetVector(ShaderPropertyIds.ShearY), Is.EqualTo(shear));
+            Assert.That(block.GetFloat(valueId), Is.EqualTo(17));
+        }
+
+        [Test]
+        public void MixedModelShaderMaterialsKeepTheExistingEmptyPropertyBlock()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            renderer.sharedMaterials = new[] { _fixture.CreateMaterial("Warlander/ModelShader"),
+                _fixture.CreateMaterial("Universal Render Pipeline/Unlit") };
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false))) { }
+            AssertEmptyPropertyBlock(renderer);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                AssertEmptyPropertyBlock(renderer);
+            }
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false)))
+            {
+                Assert.That(GetBaseColor(renderer).r, Is.EqualTo(0.6f));
+            }
+            var block = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(block);
+            Assert.That(renderer.HasPropertyBlock(), Is.True);
+            Assert.That(block.isEmpty, Is.True);
+        }
+
+        [Test]
+        public void ChangedShaderAndReplacementRendererUseTheirCurrentMaterials()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            Material modelMaterial = _fixture.CreateMaterial("Warlander/ModelShader");
+            Material otherMaterial = _fixture.CreateMaterial("Universal Render Pipeline/Unlit");
+            Shader modelShader = modelMaterial.shader;
+            renderer.sharedMaterial = modelMaterial;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false))) { }
+            AssertEmptyPropertyBlock(renderer);
+
+            modelMaterial.shader = otherMaterial.shader;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                AssertEmptyPropertyBlock(renderer);
+            }
+            AssertEmptyPropertyBlock(renderer);
+            modelMaterial.shader = modelShader;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                Assert.That(renderer.HasPropertyBlock(), Is.False);
+            }
+            AssertEmptyPropertyBlock(renderer);
+
+            UnityEngine.Object.DestroyImmediate(renderer.gameObject);
+            var replacement = new GameObject("Replacement material test", typeof(MeshRenderer));
+            replacement.transform.SetParent(_fixture.Surface[0].Root);
+            renderer = replacement.GetComponent<Renderer>();
+            renderer.sharedMaterial = otherMaterial;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false))) { }
+            AssertEmptyPropertyBlock(renderer);
+            renderer.sharedMaterial = modelMaterial;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                Assert.That(renderer.HasPropertyBlock(), Is.False);
+            }
+            AssertEmptyPropertyBlock(renderer);
+        }
+
+        [Test]
+        public void ChangedMaterialDefaultShearControlsTemporaryClearing()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            Material material = _fixture.CreateMaterial("Warlander/ModelShader");
+            renderer.sharedMaterial = material;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false))) { }
+            AssertEmptyPropertyBlock(renderer);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                Assert.That(renderer.HasPropertyBlock(), Is.False);
+            }
+            material.SetVector(ShaderPropertyIds.ShearY, new Vector4(0.1f, -0.05f, 0, 0));
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                AssertEmptyPropertyBlock(renderer);
+            }
+            AssertEmptyPropertyBlock(renderer);
+            material.SetVector(ShaderPropertyIds.ShearY, Vector4.zero);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                Assert.That(renderer.HasPropertyBlock(), Is.False);
+            }
+            AssertEmptyPropertyBlock(renderer);
+        }
+
+        [TestCase(false, false, false)]
+        [TestCase(true, false, false)]
+        [TestCase(false, true, false)]
+        [TestCase(false, false, true)]
+        public void IncompatibleMaterialDefaultsKeepOtherModelsOnTheLegacyPath(
+            bool nonemptyBlock, bool lateRenderer, bool multipleMaterials)
+        {
+            Renderer ordinary = _fixture.Surface[0].Renderer;
+            ordinary.sharedMaterial = _fixture.CreateMaterial("Warlander/ModelShader");
+            Material material = _fixture.CreateMaterial("Warlander/ModelShader");
+            Renderer incompatible = lateRenderer ? null : _fixture.Surface[1].Renderer;
+            if (incompatible) incompatible.sharedMaterial = material;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false))) { }
+            AssertEmptyPropertyBlock(ordinary);
+
+            if (lateRenderer)
+            {
+                var added = new GameObject("Late incompatible model", typeof(MeshRenderer));
+                added.transform.SetParent(_fixture.Surface[1].Root);
+                incompatible = added.GetComponent<Renderer>();
+                incompatible.sharedMaterial = material;
+                Assert.That(incompatible.HasPropertyBlock(), Is.False);
+            }
+            if (multipleMaterials)
+                incompatible.sharedMaterials = new[] { _fixture.CreateMaterial("Universal Render Pipeline/Unlit"), material };
+            if (nonemptyBlock)
+            {
+                var block = new MaterialPropertyBlock();
+                block.SetColor(ShaderPropertyIds.BaseColor, Color.cyan);
+                incompatible.SetPropertyBlock(block);
+            }
+
+            material.SetVector(ShaderPropertyIds.ShearY, new Vector4(0.1f, -0.05f, 0, 0));
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                AssertEmptyPropertyBlock(ordinary);
+                if (nonemptyBlock) Assert.That(GetBaseColor(incompatible), Is.EqualTo(Color.cyan));
+            }
+            material.SetVector(ShaderPropertyIds.ShearY, Vector4.zero);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                Assert.That(ordinary.HasPropertyBlock(), Is.False);
+                if (nonemptyBlock) Assert.That(GetBaseColor(incompatible), Is.EqualTo(Color.cyan));
+            }
+            AssertEmptyPropertyBlock(ordinary);
+            material.SetVector(ShaderPropertyIds.ShearY, new Vector4(0.1f, -0.05f, 0, 0));
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                AssertEmptyPropertyBlock(ordinary);
+            }
+            AssertEmptyPropertyBlock(ordinary);
+        }
+
+        [Test]
+        public void NewOverridesDuringTemporaryClearingSurviveScopeDisposal()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            renderer.sharedMaterial = _fixture.CreateMaterial("Warlander/ModelShader");
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false))) { }
+            var block = new MaterialPropertyBlock();
+            int valueId = Shader.PropertyToID("_LateModelOverride");
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+            {
+                Assert.That(renderer.HasPropertyBlock(), Is.False);
+                block.SetColor(ShaderPropertyIds.BaseColor, Color.magenta);
+                block.SetFloat(valueId, 23);
+                renderer.SetPropertyBlock(block);
+                renderer.forceRenderingOff = true;
+            }
+            renderer.GetPropertyBlock(block);
+            Assert.That(block.GetColor(ShaderPropertyIds.BaseColor), Is.EqualTo(Color.magenta));
+            Assert.That(block.GetFloat(valueId), Is.EqualTo(23));
+            Assert.That(renderer.forceRenderingOff, Is.True);
         }
 
         [TestCase(false)]
@@ -540,6 +779,14 @@ namespace Warlander.Deedplanner.Domain.Tests
             Assert.That(LayerMasks.GetMaskForTab(Editing.Tab.Mirror, -1), Is.EqualTo(LayerMasks.CaveMask));
         }
 
+        private static void AssertEmptyPropertyBlock(Renderer renderer)
+        {
+            var block = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(block);
+            Assert.That(renderer.HasPropertyBlock(), Is.True);
+            Assert.That(block.isEmpty, Is.True);
+        }
+
         private static Color GetBaseColor(Renderer renderer)
         {
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
@@ -570,6 +817,7 @@ namespace Warlander.Deedplanner.Domain.Tests
         private sealed class RenderFixture : IDisposable
         {
             private readonly GameObject _container = new GameObject("Map rendering test");
+            private readonly List<Material> _materials = new List<Material>();
 
             public MapLevelRenderer Renderer { get; } = new MapLevelRenderer();
             public RenderTarget[] Surface { get; }
@@ -593,6 +841,17 @@ namespace Warlander.Deedplanner.Domain.Tests
             public void Dispose()
             {
                 UnityEngine.Object.DestroyImmediate(_container);
+                foreach (Material material in _materials)
+                    UnityEngine.Object.DestroyImmediate(material);
+            }
+
+            public Material CreateMaterial(string shaderName)
+            {
+                Shader shader = Shader.Find(shaderName);
+                Assert.That(shader, Is.Not.Null);
+                var material = new Material(shader);
+                _materials.Add(material);
+                return material;
             }
 
             private RenderTarget[] CreateLevels(string prefix)
