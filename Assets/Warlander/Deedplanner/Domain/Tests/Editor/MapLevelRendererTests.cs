@@ -193,6 +193,46 @@ namespace Warlander.Deedplanner.Domain.Tests
         }
 
         [Test]
+        public void CameraPassRescansChangedHierarchyAndRestoresNestedViews()
+        {
+            var surfaceView = new MapRenderView(2, false, true);
+            using (_fixture.Renderer.PrepareForCamera(surfaceView)) { }
+
+            Renderer moved = _fixture.Surface[0].Renderer;
+            moved.transform.SetParent(_fixture.Cave[1].Root);
+            var addedObject = new GameObject("Added model", typeof(MeshRenderer));
+            addedObject.transform.SetParent(_fixture.Surface[1].Root);
+            Renderer added = addedObject.GetComponent<Renderer>();
+            var block = new MaterialPropertyBlock();
+            block.SetColor(ShaderPropertyIds.BaseColor, Color.cyan);
+            moved.SetPropertyBlock(block);
+            block.SetColor(ShaderPropertyIds.BaseColor, Color.magenta);
+            added.SetPropertyBlock(block);
+
+            using (_fixture.Renderer.PrepareForCamera(surfaceView))
+            {
+                Assert.That(moved.forceRenderingOff, Is.True);
+                Assert.That(added.forceRenderingOff, Is.False);
+                Assert.That(GetBaseColor(added).r, Is.EqualTo(0.6f));
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(-2, false, false)))
+                {
+                    Assert.That(moved.forceRenderingOff, Is.False);
+                    Assert.That(GetBaseColor(moved), Is.EqualTo(Color.cyan));
+                    Assert.That(added.forceRenderingOff, Is.True);
+                }
+                Assert.That(moved.forceRenderingOff, Is.True);
+                Assert.That(added.forceRenderingOff, Is.False);
+                Assert.That(GetBaseColor(added).r, Is.EqualTo(0.6f));
+            }
+            Assert.That(moved.forceRenderingOff, Is.False);
+            Assert.That(added.forceRenderingOff, Is.False);
+            Assert.That(GetBaseColor(moved), Is.EqualTo(Color.cyan));
+            Assert.That(GetBaseColor(added), Is.EqualTo(Color.magenta));
+            Assert.That(_fixture.SurfaceGrid.Root.localPosition, Is.EqualTo(Vector3.zero));
+            Assert.That(_fixture.CaveGrid.Root.localPosition, Is.EqualTo(Vector3.zero));
+        }
+
+        [Test]
         public void PrepareForCameraFiltersSurfaceLevelsAndGrid()
         {
             using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, true)))

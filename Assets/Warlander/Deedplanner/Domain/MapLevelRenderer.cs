@@ -22,6 +22,8 @@ namespace Warlander.Deedplanner.Domain
         private readonly MaterialPropertyBlock _emptyPropertyBlock = new MaterialPropertyBlock();
         private readonly MaterialPropertyBlock _workingPropertyBlock = new MaterialPropertyBlock();
         private readonly Stack<MaterialPropertyBlock> _propertyBlocks = new Stack<MaterialPropertyBlock>();
+        private readonly List<Renderer> _rendererBuffer = new List<Renderer>();
+        private readonly Stack<List<RendererState>> _rendererStates = new Stack<List<RendererState>>();
         private int _scopeDepth;
 
         public bool RenderBridges { get; set; } = true;
@@ -101,6 +103,7 @@ namespace Warlander.Deedplanner.Domain
             RenderScope scope = new RenderScope(this, _surfaceGridRoot.localPosition, _caveGridRoot.localPosition);
             ApplyView(scope, view);
             _workingPropertyBlock.Clear();
+            _rendererBuffer.Clear();
             return scope;
         }
 
@@ -140,8 +143,8 @@ namespace Warlander.Deedplanner.Domain
 
         private void ApplyCaveShellView(MapRenderView view)
         {
-            Renderer[] renderers = _caveShellRoot.GetComponentsInChildren<Renderer>(true);
-            foreach (Renderer renderer in renderers)
+            _caveShellRoot.GetComponentsInChildren(true, _rendererBuffer);
+            foreach (Renderer renderer in _rendererBuffer)
             {
                 MaterialPropertyBlock propertyBlock = _workingPropertyBlock;
                 renderer.GetPropertyBlock(propertyBlock);
@@ -156,8 +159,8 @@ namespace Warlander.Deedplanner.Domain
             bool visible = opacity > 0f;
             bool changeColor = visible && (opacity < 1f || _scopeDepth > 1);
             bool capturePropertyBlock = changeColor || root == _caveShellRoot;
-            Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
-            foreach (Renderer renderer in renderers)
+            root.GetComponentsInChildren(true, _rendererBuffer);
+            foreach (Renderer renderer in _rendererBuffer)
             {
                 bool hasBaseState = _baseRendererStates.TryGetValue(renderer, out RendererBaseState baseState);
                 bool currentForceRenderingOff = renderer.forceRenderingOff;
@@ -264,7 +267,7 @@ namespace Warlander.Deedplanner.Domain
         private sealed class RenderScope : IDisposable
         {
             private readonly MapLevelRenderer _owner;
-            private readonly List<RendererState> _renderers = new List<RendererState>();
+            private readonly List<RendererState> _renderers;
             private readonly Vector3 _surfaceGridPosition;
             private readonly Vector3 _caveGridPosition;
             private bool _disposed;
@@ -272,6 +275,7 @@ namespace Warlander.Deedplanner.Domain
             public RenderScope(MapLevelRenderer owner, Vector3 surfaceGridPosition, Vector3 caveGridPosition)
             {
                 _owner = owner;
+                _renderers = owner._rendererStates.Count > 0 ? owner._rendererStates.Pop() : new List<RendererState>();
                 _surfaceGridPosition = surfaceGridPosition;
                 _caveGridPosition = caveGridPosition;
             }
@@ -294,6 +298,7 @@ namespace Warlander.Deedplanner.Domain
                     }
                 }
                 _renderers.Clear();
+                _owner._rendererStates.Push(_renderers);
 
                 _owner._surfaceGridRoot.localPosition = _surfaceGridPosition;
                 _owner._caveGridRoot.localPosition = _caveGridPosition;
