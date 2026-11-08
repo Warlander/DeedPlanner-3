@@ -12,6 +12,10 @@ namespace Warlander.Deedplanner.Domain
 {
     public class GridMesh : MonoBehaviour
     {
+        private const double HandleSpacing = 4;
+        private const double HandleHalfSize = 0.6f * 0.5f;
+        private const double FloatRelativePrecision = 1.1920928955078125e-7;
+
         [Inject] private HeightmapHandleMeshLoader _heightmapHandleMeshLoader;
         [Inject] private ISharedMaterials _sharedMaterials;
         
@@ -168,6 +172,87 @@ namespace Warlander.Deedplanner.Domain
         }
 
         public HeightmapHandle RaycastHandles(Ray ray)
+        {
+            int width = heightmapHandles.GetLength(0);
+            int height = heightmapHandles.GetLength(1);
+            Vector3 origin = ray.origin;
+            Vector3 direction = ray.direction;
+            if (!IsFinite(origin.x) || !IsFinite(origin.y) || !IsFinite(origin.z) ||
+                !IsFinite(direction.x) || !IsFinite(direction.y) || !IsFinite(direction.z) ||
+                direction.Equals(Vector3.zero))
+                return RaycastAllHandles(ray);
+
+            double dx = direction.x;
+            double dz = direction.z;
+            double padding = 64 * FloatRelativePrecision *
+                (Math.Abs((double)origin.x) + Math.Abs((double)origin.z) + HandleSpacing * ((double)width + height) + 1);
+            double majorDirection = Math.Max(Math.Abs(dx), Math.Abs(dz));
+            double maximumTravel = majorDirection == 0 ? 0 :
+                (Math.Max(Math.Abs((double)origin.x), Math.Abs((double)origin.z)) + HandleSpacing * Math.Max(width, height) + 4) / majorDirection;
+            if (padding >= HandleSpacing * Math.Max(width, height) + 8 || maximumTravel > float.MaxValue / 32.0)
+                return RaycastAllHandles(ray);
+
+            float closestDistance = float.MaxValue;
+            HeightmapHandle closestHandle = null;
+            long closestOrdinal = long.MaxValue;
+            if (majorDirection == 0)
+            {
+                if (GetHandleBandRange(origin.x, HandleSpacing * 0.5 + HandleHalfSize + padding, width, out int firstX, out int lastX) &&
+                    GetHandleBandRange(origin.z, HandleSpacing * 0.5 + HandleHalfSize + padding, height, out int firstZ, out int lastZ))
+                    for (int x = firstX; x <= lastX; x++)
+                        for (int z = firstZ; z <= lastZ; z++)
+                            TestHandle(ray, x, z, height, ref closestDistance, ref closestHandle, ref closestOrdinal);
+            }
+            else
+            {
+                bool xMajor = Math.Abs(dx) >= Math.Abs(dz);
+                double ratio = xMajor ? dz / dx : dx / dz;
+                double majorOrigin = xMajor ? origin.x : origin.z;
+                double minorOrigin = xMajor ? origin.z : origin.x;
+                int majorLength = xMajor ? width : height;
+                int minorLength = xMajor ? height : width;
+                double radius = HandleSpacing * 0.5 * Math.Abs(ratio) + HandleHalfSize + padding;
+                for (int major = 0; major < majorLength; major++)
+                {
+                    double projected = minorOrigin + ratio * (HandleSpacing * major - majorOrigin);
+                    if (!GetHandleBandRange(projected, radius, minorLength, out int first, out int last)) continue;
+                    for (int minor = first; minor <= last; minor++)
+                        TestHandle(ray, xMajor ? major : minor, xMajor ? minor : major, height,
+                            ref closestDistance, ref closestHandle, ref closestOrdinal);
+                }
+            }
+            return closestHandle;
+        }
+
+        private void TestHandle(Ray ray, int x, int z, int height, ref float closestDistance,
+            ref HeightmapHandle closestHandle, ref long closestOrdinal)
+        {
+            HeightmapHandle handle = heightmapHandles[x, z];
+            float distance = handle.Raycast(ray);
+            if (distance < 0) return;
+            long ordinal = (long)x * height + z;
+            if (distance < closestDistance || (closestHandle != null && distance == closestDistance && ordinal < closestOrdinal))
+            {
+                closestDistance = distance;
+                closestHandle = handle;
+                closestOrdinal = ordinal;
+            }
+        }
+
+        private static bool GetHandleBandRange(double center, double radius, int length, out int first, out int last)
+        {
+            first = 0;
+            last = -1;
+            if (length == 0 || center + radius < 0 || center - radius > HandleSpacing * (length - 1)) return false;
+            // Outward rounding includes an extra row on both sides of the geometric band.
+            first = (int)Math.Max(0, Math.Min(length - 1, Math.Floor((center - radius) / HandleSpacing)));
+            last = (int)Math.Max(0, Math.Min(length - 1, Math.Ceiling((center + radius) / HandleSpacing)));
+            return first <= last;
+        }
+
+        private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
+
+        private HeightmapHandle RaycastAllHandles(Ray ray)
         {
             float closestDistance = float.MaxValue;
             HeightmapHandle closestHandle = null;
