@@ -424,8 +424,7 @@ namespace Warlander.Deedplanner.Domain
             RefreshEntitiesAroundDock(dock.Tile);
         }
 
-        // A dock overrides all four of its height corners. Re-apply entities around the full
-        // footprint so positions and wall slopes use the deck's virtual surface.
+        // Refresh the deck tile and walls attached to its borders.
         private void RefreshEntitiesAroundDock(Tile tile)
         {
             for (int dx = -1; dx <= 1; dx++)

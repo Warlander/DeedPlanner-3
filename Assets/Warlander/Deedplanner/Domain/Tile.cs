@@ -488,7 +488,8 @@ namespace Warlander.Deedplanner.Domain
             return GetVerticalFence(level);
         }
 
-        public Wall SetVerticalWall(WallData data, bool reversed, int level)
+        public Wall SetVerticalWall(WallData data, bool reversed, int level,
+            WallSupportSide supportSide = WallSupportSide.Ground)
         {
             EntityData wallEntityData = new EntityData(level, EntityType.Vwall);
             LevelEntity wallEntity;
@@ -502,19 +503,19 @@ namespace Warlander.Deedplanner.Domain
 
             if (data != null)
             {
-                bool wallNeedsChange = !data.ArchBuildable && (!currentWall || currentWall.Data != data || currentWall.Reversed != reversed);
-                bool fenceNeedsChange = data.ArchBuildable && (!currentFence || currentFence.Data != data || currentFence.Reversed != reversed);
+                bool wallNeedsChange = !data.ArchBuildable && (!currentWall || currentWall.Data != data || currentWall.Reversed != reversed || currentWall.SupportSide != supportSide);
+                bool fenceNeedsChange = data.ArchBuildable && (!currentFence || currentFence.Data != data || currentFence.Reversed != reversed || currentFence.SupportSide != supportSide);
                 bool wallNeedsRemoval = (wallNeedsChange && !data.ArchBuildable && currentWall) || (data.ArchBuildable && currentWall && !currentWall.Data.Arch);
 
                 if (wallNeedsChange)
                 {
-                    Wall wall = CreateNewVerticalWall(wallEntityData, data, reversed);
+                    Wall wall = CreateNewVerticalWall(wallEntityData, data, reversed, supportSide);
                     ApplyEntityChange(wallEntityData, currentWall, wall);
                     return wall;
                 }
                 if (fenceNeedsChange)
                 {
-                    Wall fence = CreateNewVerticalWall(fenceEntityData, data, reversed);
+                    Wall fence = CreateNewVerticalWall(fenceEntityData, data, reversed, supportSide);
                     ApplyEntityChange(fenceEntityData, currentFence, fence);
                     return fence;
                 }
@@ -543,12 +544,14 @@ namespace Warlander.Deedplanner.Domain
             return null;
         }
 
-        private Wall CreateNewVerticalWall(EntityData entity, WallData data, bool reversed)
+        private Wall CreateNewVerticalWall(EntityData entity, WallData data, bool reversed, WallSupportSide supportSide)
         {
-            int slopeDifference = GetHeightForLevel(entity.Level) - Map.GetRelativeTile(this, 0, 1).GetHeightForLevel(entity.Level);
+            Tile end = Map.GetRelativeTile(this, 0, 1);
+            int slopeDifference = supportSide != WallSupportSide.Ground ? 0 : entity.Level < 0
+                ? CaveHeight - end.CaveHeight : SurfaceHeight - end.SurfaceHeight;
             GameObject wallObject = new GameObject("Vertical Wall " + data.Name, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
-            wall.Initialize(this, data, reversed, slopeDifference);
+            wall.Initialize(this, data, reversed, slopeDifference, supportSide);
             wallObject.transform.rotation = Quaternion.Euler(0, 90, 0);
 
             Entities[entity] = wall;
@@ -604,7 +607,8 @@ namespace Warlander.Deedplanner.Domain
             return GetHorizontalFence(level);
         }
 
-        public Wall SetHorizontalWall(WallData data, bool reversed, int level)
+        public Wall SetHorizontalWall(WallData data, bool reversed, int level,
+            WallSupportSide supportSide = WallSupportSide.Ground)
         {
             EntityData wallEntityData = new EntityData(level, EntityType.Hwall);
             LevelEntity wallEntity;
@@ -618,19 +622,19 @@ namespace Warlander.Deedplanner.Domain
 
             if (data != null)
             {
-                bool wallNeedsChange = !data.ArchBuildable && (!currentWall || currentWall.Data != data || currentWall.Reversed != reversed);
-                bool fenceNeedsChange = data.ArchBuildable && (!currentFence || currentFence.Data != data || currentFence.Reversed != reversed);
+                bool wallNeedsChange = !data.ArchBuildable && (!currentWall || currentWall.Data != data || currentWall.Reversed != reversed || currentWall.SupportSide != supportSide);
+                bool fenceNeedsChange = data.ArchBuildable && (!currentFence || currentFence.Data != data || currentFence.Reversed != reversed || currentFence.SupportSide != supportSide);
                 bool wallNeedsRemoval = (wallNeedsChange && !data.ArchBuildable && currentWall) || (data.ArchBuildable && currentWall && !currentWall.Data.Arch);
 
                 if (wallNeedsChange)
                 {
-                    Wall wall = CreateNewHorizontalWall(wallEntityData, data, reversed);
+                    Wall wall = CreateNewHorizontalWall(wallEntityData, data, reversed, supportSide);
                     ApplyEntityChange(wallEntityData, currentWall, wall);
                     return wall;
                 }
                 if (fenceNeedsChange)
                 {
-                    Wall fence = CreateNewHorizontalWall(fenceEntityData, data, reversed);
+                    Wall fence = CreateNewHorizontalWall(fenceEntityData, data, reversed, supportSide);
                     ApplyEntityChange(fenceEntityData, currentFence, fence);
                     return fence;
                 }
@@ -658,12 +662,14 @@ namespace Warlander.Deedplanner.Domain
             return null;
         }
 
-        private Wall CreateNewHorizontalWall(EntityData entity, WallData data, bool reversed)
+        private Wall CreateNewHorizontalWall(EntityData entity, WallData data, bool reversed, WallSupportSide supportSide)
         {
-            int slopeDifference = GetHeightForLevel(entity.Level) - Map.GetRelativeTile(this, 1, 0).GetHeightForLevel(entity.Level);
+            Tile end = Map.GetRelativeTile(this, 1, 0);
+            int slopeDifference = supportSide != WallSupportSide.Ground ? 0 : entity.Level < 0
+                ? CaveHeight - end.CaveHeight : SurfaceHeight - end.SurfaceHeight;
             GameObject wallObject = new GameObject("Horizontal Wall " + data.Name, typeof(Wall));
             Wall wall = wallObject.GetComponent<Wall>();
-            wall.Initialize(this, data, reversed, slopeDifference);
+            wall.Initialize(this, data, reversed, slopeDifference, supportSide);
             wallObject.transform.rotation = Quaternion.Euler(0, 180, 0);
 
             Entities[entity] = wall;
@@ -983,6 +989,7 @@ namespace Warlander.Deedplanner.Domain
 
             bool horizontal = (element.Name.Equals("hWall", StringComparison.OrdinalIgnoreCase));
             bool reversed = element.GetAttribute("reversed").Equals("true", StringComparison.OrdinalIgnoreCase);
+            Enum.TryParse(element.GetAttribute("supportSide"), out WallSupportSide supportSide);
             if (data.Arch && !Map.OriginalExporter.Contains("DeedPlanner 2") && Map.OriginalExporterVersion != null && Map.OriginalExporterVersion.CompareTo(new Version("3.1.2")) < 0)
             {
                 reversed = !reversed;
@@ -990,11 +997,11 @@ namespace Warlander.Deedplanner.Domain
 
             if (horizontal)
             {
-                SetHorizontalWall(data, reversed, level);
+                SetHorizontalWall(data, reversed, level, supportSide);
             }
             else
             {
-                SetVerticalWall(data, reversed, level);
+                SetVerticalWall(data, reversed, level, supportSide);
             }
         }
 
@@ -1092,19 +1099,13 @@ namespace Warlander.Deedplanner.Domain
 
         private void RefreshEntity(EntityData data, LevelEntity entity)
         {
-            data.Apply(this, entity.transform);
-
-            if (data.Type == EntityType.Hfence || data.Type == EntityType.Hwall)
+            if (entity is Wall wall)
             {
-                int slopeDifference = GetHeightForLevel(entity.Level) - Map.GetRelativeTile(this, 1, 0).GetHeightForLevel(entity.Level);
-                Wall wall = (Wall) entity;
-                wall.UpdateModel(slopeDifference, data.IsGroundLevel);
+                wall.RefreshHeight(data.Level, data.Type == EntityType.Hfence || data.Type == EntityType.Hwall);
             }
-            else if (data.Type == EntityType.Vfence || data.Type == EntityType.Vwall)
+            else
             {
-                int slopeDifference = GetHeightForLevel(entity.Level) - Map.GetRelativeTile(this, 0, 1).GetHeightForLevel(entity.Level);
-                Wall wall = (Wall) entity;
-                wall.UpdateModel(slopeDifference, data.IsGroundLevel);
+                data.Apply(this, entity.transform);
             }
 
             if (entity is Decoration decoration)

@@ -8,6 +8,8 @@ using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Cameras;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Rendering.Assets;
+using Warlander.Deedplanner.Docks;
+using Warlander.Deedplanner.Ui.Tooltips;
 
 namespace Warlander.Deedplanner.Editing
 {
@@ -22,14 +24,18 @@ namespace Warlander.Deedplanner.Editing
         private readonly PreviewAtlasCatalog _previewAtlasCatalog;
         private readonly IDataCatalog _dataCatalog;
         private readonly IMapEditFacade _mapEditFacade;
+        private readonly TooltipHandler _tooltipHandler;
 
         public Tab TargetTab => Tab.Walls;
 
         private WallData _selectedWall;
+        private int? _paintLevel;
+        private int? _paintDockHeight;
+        private int _paintDockAnchorLevel;
 
         public WallUpdater(IWallUpdaterView view, EditingSettings settings, CameraCoordinator cameraCoordinator,
             DPInput input, MapHandler mapHandler, TabContext tabContext, PreviewAtlasCatalog previewAtlasCatalog,
-            IDataCatalog dataCatalog, IMapEditFacade mapEditFacade)
+            IDataCatalog dataCatalog, IMapEditFacade mapEditFacade, TooltipHandler tooltipHandler)
         {
             _view = view;
             _settings = settings;
@@ -40,6 +46,7 @@ namespace Warlander.Deedplanner.Editing
             _previewAtlasCatalog = previewAtlasCatalog;
             _dataCatalog = dataCatalog;
             _mapEditFacade = mapEditFacade;
+            _tooltipHandler = tooltipHandler;
         }
 
         public void Initialize()
@@ -66,7 +73,10 @@ namespace Warlander.Deedplanner.Editing
             _tabContext.TileSelectionMode = TileSelectionMode.Borders;
         }
 
-        public void Disable() { }
+        public void Disable()
+        {
+            _paintLevel = null;
+        }
 
         private void OnWallSelected(WallData data)
         {
@@ -85,6 +95,11 @@ namespace Warlander.Deedplanner.Editing
 
         public void Tick()
         {
+            bool painting = _input.UpdatersShared.Placement.ReadValue<float>() > 0;
+            if (!painting)
+            {
+                _paintLevel = null;
+            }
             if (_input.UpdatersShared.Placement.WasReleasedThisFrame() || _input.UpdatersShared.Deletion.WasReleasedThisFrame())
             {
                 _mapEditFacade.FinishAction();
@@ -100,11 +115,14 @@ namespace Warlander.Deedplanner.Editing
             GroundMesh groundMesh = raycast.transform.GetComponent<GroundMesh>();
             LevelEntity levelEntity = raycast.transform.GetComponent<LevelEntity>();
             Wall wallEntity = levelEntity as Wall;
+            Floor hitFloor = levelEntity as Floor;
+            Dock hitDock = raycast.transform.GetComponent<Dock>();
 
             int floor = 0;
             int x = -1;
             int y = -1;
             bool horizontal = false;
+            WallSupportSide supportSide = WallSupportSide.Ground;
 
             if (wallEntity && wallEntity.Valid)
             {
@@ -117,10 +135,20 @@ namespace Warlander.Deedplanner.Editing
                 y = levelEntity.Tile.Y;
                 EntityType type = levelEntity.Type;
                 horizontal = (type == EntityType.Hwall || type == EntityType.Hfence);
+                supportSide = wallEntity.SupportSide;
             }
-            else if (overlayMesh || groundMesh || _cameraCoordinator.Current.HasCurrentCaveHit)
+            else if (overlayMesh || groundMesh || hitDock || hitFloor || _cameraCoordinator.Current.HasCurrentCaveHit)
             {
-                if (overlayMesh)
+                if (hitDock)
+                {
+                    floor = hitDock.AnchorLevel;
+                }
+                else if (hitFloor)
+                {
+                    floor = hitFloor.Level;
+                    hitDock = hitFloor.Tile.GetDock(floor < 0 ? DockRealm.Cave : DockRealm.Surface);
+                }
+                else if (overlayMesh)
                 {
                     floor = _cameraCoordinator.Current.Level;
                 }
@@ -147,14 +175,38 @@ namespace Warlander.Deedplanner.Editing
                 x = tileSelectionHit.X;
                 y = tileSelectionHit.Y;
                 horizontal = (target == TileSelectionTarget.BottomBorder);
+                if (hitDock != null)
+                {
+                    supportSide = hitDock.Tile.X == x && hitDock.Tile.Y == y
+                        ? WallSupportSide.Tile : WallSupportSide.OppositeTile;
+                }
             }
 
-            if (x < 0 || y < 0)
+            Map map = _mapHandler.Map;
+            if (x < 0 || y < 0 || x > map.Width || y > map.Height)
             {
                 return;
             }
 
-            if (_input.UpdatersShared.Placement.ReadValue<float>() > 0)
+            if (painting && !TryResolvePaintBase(map, x, y, horizontal, ref floor, ref supportSide))
+            {
+                _tooltipHandler.ShowTooltipText("No support deck at the stroke's locked height on this edge.", 11);
+                return;
+            }
+
+            Wall existingWall = horizontal ? map[x, y].GetHorizontalWallOrFence(floor)
+                : map[x, y].GetVerticalWallOrFence(floor);
+            bool differentBase = existingWall != null && existingWall.SupportSide != supportSide;
+            string baseTooltip = supportSide == WallSupportSide.Ground ? "Wall base: Ground" : "Wall base: Support deck";
+            _tooltipHandler.ShowTooltipText(painting ? baseTooltip + " (locked)" : baseTooltip, 10);
+            if (differentBase)
+            {
+                _tooltipHandler.ShowTooltipText(supportSide == WallSupportSide.Ground
+                    ? "Click to replan this wall on the ground."
+                    : "Click to replan this wall on the deck.", 11);
+            }
+
+            if (painting)
             {
                 Floor currentFloor = GetFloor(_mapHandler.Map[x, y], floor);
                 bool shouldReverse = false;
@@ -176,11 +228,11 @@ namespace Warlander.Deedplanner.Editing
 
                 if (horizontal)
                 {
-                    _mapEditFacade.SetHorizontalWall(x, y, _selectedWall, shouldReverse, floor);
+                    _mapEditFacade.SetHorizontalWall(x, y, _selectedWall, shouldReverse, floor, supportSide);
                 }
                 else
                 {
-                    _mapEditFacade.SetVerticalWall(x, y, _selectedWall, shouldReverse, floor);
+                    _mapEditFacade.SetVerticalWall(x, y, _selectedWall, shouldReverse, floor, supportSide);
                 }
             }
             else if (_input.UpdatersShared.Deletion.ReadValue<float>() > 0)
@@ -198,6 +250,46 @@ namespace Warlander.Deedplanner.Editing
                     _mapEditFacade.SetVerticalWall(x, y, null, false, floor);
                 }
             }
+        }
+
+        private bool TryResolvePaintBase(Map map, int x, int y, bool horizontal, ref int level,
+            ref WallSupportSide supportSide)
+        {
+            DockRealm realm = (_paintLevel ?? level) < 0 ? DockRealm.Cave : DockRealm.Surface;
+            Tile tile = map[x, y];
+            Dock own = tile.GetDock(realm);
+            Dock opposite = map.GetRelativeTile(tile, horizontal ? 0 : -1, horizontal ? -1 : 0)?.GetDock(realm);
+            if (!_paintLevel.HasValue)
+            {
+                _paintLevel = level;
+                Dock dock = supportSide == WallSupportSide.Ground ? null
+                    : supportSide == WallSupportSide.Tile ? own : opposite;
+                _paintDockHeight = dock != null ? dock.Height : null;
+                _paintDockAnchorLevel = dock != null ? dock.AnchorLevel : 0;
+            }
+
+            level = _paintLevel.Value;
+            if (!_paintDockHeight.HasValue)
+            {
+                supportSide = WallSupportSide.Ground;
+                return true;
+            }
+
+            bool ownMatches = own != null && own.Height == _paintDockHeight.Value
+                && own.AnchorLevel == _paintDockAnchorLevel;
+            bool oppositeMatches = opposite != null && opposite.Height == _paintDockHeight.Value
+                && opposite.AnchorLevel == _paintDockAnchorLevel;
+            if (oppositeMatches && (supportSide == WallSupportSide.OppositeTile || !ownMatches))
+            {
+                supportSide = WallSupportSide.OppositeTile;
+                return true;
+            }
+            if (ownMatches)
+            {
+                supportSide = WallSupportSide.Tile;
+                return true;
+            }
+            return false;
         }
 
         private static bool ShouldReverseAutomatically(Floor currentFloor, Floor nearFloor, bool horizontal)

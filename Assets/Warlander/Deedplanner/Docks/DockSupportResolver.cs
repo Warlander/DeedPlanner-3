@@ -44,11 +44,6 @@ namespace Warlander.Deedplanner.Docks
                 return DockHardBlock.DockAtDifferentHeight;
             }
 
-            if (HasTouchingDockAtDifferentHeight(map, x, y, height, realm))
-            {
-                return DockHardBlock.DockAtDifferentHeight;
-            }
-
             if (HasAnyFloor(tile, realm))
             {
                 return DockHardBlock.FloorPresent;
@@ -238,7 +233,7 @@ namespace Warlander.Deedplanner.Docks
             for (int level = minimumLevel; level < maximumLevel; level++)
             {
                 Wall wall = vertical ? wallTile.GetVerticalHouseWall(level) : wallTile.GetHorizontalHouseWall(level);
-                if (wall != null && wallTile.GetAbsoluteHeightForLevel(level) + 30 == height)
+                if (wall != null && wall.GetAbsoluteBaseHeight(level, !vertical) + 30 == height)
                 {
                     return true;
                 }
@@ -262,28 +257,6 @@ namespace Warlander.Deedplanner.Docks
             return false;
         }
 
-        private static bool HasTouchingDockAtDifferentHeight(Map map, int x, int y, int height, DockRealm realm)
-        {
-            for (int dx = -1; dx <= 1; dx++)
-            {
-                for (int dy = -1; dy <= 1; dy++)
-                {
-                    if (dx == 0 && dy == 0)
-                    {
-                        continue;
-                    }
-
-                    Dock dock = map[x + dx, y + dy]?.GetDock(realm);
-                    if (dock != null && dock.Height != height)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
         public static List<string> ValidateDock(Map map, Dock dock)
         {
             var errors = new List<string>();
@@ -298,11 +271,6 @@ namespace Warlander.Deedplanner.Docks
             if (dock.Realm == DockRealm.Cave && MinCeilingHeight(map, tile.X, tile.Y) < height)
             {
                 errors.Add("cave ceiling below deck");
-            }
-
-            if (HasTouchingDockAtDifferentHeight(map, tile.X, tile.Y, height, dock.Realm))
-            {
-                errors.Add("touches dock at different height");
             }
 
             DockSupportData support = dock.Support;

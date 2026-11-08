@@ -22,8 +22,10 @@ namespace Warlander.Deedplanner.Editing
             HeightEditBehavior behavior);
         void SetFloor(int x, int y, FloorData data, EntityOrientation orientation, int level);
         void SetRoof(int x, int y, RoofData data, int level);
-        void SetHorizontalWall(int x, int y, WallData data, bool reversed, int level);
-        void SetVerticalWall(int x, int y, WallData data, bool reversed, int level);
+        void SetHorizontalWall(int x, int y, WallData data, bool reversed, int level,
+            WallSupportSide supportSide = WallSupportSide.Ground);
+        void SetVerticalWall(int x, int y, WallData data, bool reversed, int level,
+            WallSupportSide supportSide = WallSupportSide.Ground);
         Decoration SetDecoration(int x, int y, DecorationData data, Vector2 localPosition, float rotation,
             int level, bool floatOnWater = false);
         IMapDockStroke BeginDockStroke(int anchorX, int anchorY);

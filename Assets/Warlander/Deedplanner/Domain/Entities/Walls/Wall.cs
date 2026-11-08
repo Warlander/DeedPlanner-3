@@ -2,13 +2,21 @@
 using System.Xml;
 using UnityEngine;
 using Warlander.Deedplanner.Rendering.Assets;
+using Warlander.Deedplanner.Caves;
+using Warlander.Deedplanner.Docks;
 
 namespace Warlander.Deedplanner.Domain.Entities.Walls
 {
+    public enum WallSupportSide
+    {
+        Ground, Tile, OppositeTile
+    }
+
     public class Wall : LevelEntity
     {
         public WallData Data { get; private set; }
         public bool Reversed { get; private set; }
+        public WallSupportSide SupportSide { get; private set; }
         public override Materials Materials => Data.Materials;
         
         public int SlopeDifference { get; private set; } = int.MinValue;
@@ -17,7 +25,8 @@ namespace Warlander.Deedplanner.Domain.Entities.Walls
         private MeshCollider meshCollider;
         private Mesh boundsMesh;
 
-        public void Initialize(Tile tile, WallData data, bool reversed, int slopeDifference)
+        public void Initialize(Tile tile, WallData data, bool reversed, int slopeDifference,
+            WallSupportSide supportSide = WallSupportSide.Ground)
         {
             Tile = tile;
             gameObject.layer = LayerMasks.WallLayer;
@@ -29,8 +38,49 @@ namespace Warlander.Deedplanner.Domain.Entities.Walls
 
             Data = data;
             Reversed = reversed;
+            SupportSide = supportSide;
             boundsMesh = CreateBoundsMesh(slopeDifference);
             meshCollider.sharedMesh = boundsMesh;
+        }
+
+        public int GetAbsoluteBaseHeight(int level, bool horizontal)
+        {
+            int height = GetBaseHeight(level, horizontal);
+            return level < 0 ? CaveLevel.GetAbsoluteHeight(height, level) : height + level * 30;
+        }
+
+        public void RefreshHeight(int level, bool horizontal)
+        {
+            int height = GetBaseHeight(level, horizontal);
+            float worldHeight = GetAbsoluteBaseHeight(level, horizontal) * 0.1f;
+            transform.localPosition = new Vector3(Tile.X * 4, worldHeight, Tile.Y * 4);
+            Tile end = Tile.Map.GetRelativeTile(Tile, horizontal ? 1 : 0, horizontal ? 0 : 1);
+            int endHeight = level < 0 ? end.CaveHeight : end.SurfaceHeight;
+            int slope = GetSupportingDock(level, horizontal) != null ? 0 : height - endHeight;
+            UpdateModel(slope, level == 0 || level == -1);
+        }
+
+        private int GetBaseHeight(int level, bool horizontal)
+        {
+            Dock dock = GetSupportingDock(level, horizontal);
+            if (dock != null)
+            {
+                int offset = level < 0 ? CaveLevel.GetHeightOffset(dock.AnchorLevel) : dock.AnchorLevel * 30;
+                return dock.Height - offset;
+            }
+            return level < 0 ? Tile.CaveHeight : Tile.SurfaceHeight;
+        }
+
+        private Dock GetSupportingDock(int level, bool horizontal)
+        {
+            if (SupportSide == WallSupportSide.Ground)
+            {
+                return null;
+            }
+            Tile supportTile = SupportSide == WallSupportSide.Tile
+                ? Tile
+                : Tile.Map.GetRelativeTile(Tile, horizontal ? 0 : -1, horizontal ? -1 : 0);
+            return supportTile?.GetDock(level < 0 ? DockRealm.Cave : DockRealm.Surface);
         }
 
         public void UpdateModel(int slopeDifference, bool firstFloor)
@@ -189,6 +239,10 @@ namespace Warlander.Deedplanner.Domain.Entities.Walls
         public override void Serialize(XmlDocument document, XmlElement localRoot)
         {
             localRoot.SetAttribute("id", Data.ShortName);
+            if (SupportSide != WallSupportSide.Ground)
+            {
+                localRoot.SetAttribute("supportSide", SupportSide.ToString());
+            }
             if (Data.HouseWall) {
                 localRoot.SetAttribute("reversed", Reversed.ToString().ToLower());
             }
@@ -200,6 +254,7 @@ namespace Warlander.Deedplanner.Domain.Entities.Walls
 
             build.Append("X: ").Append(Tile.X).Append(" Y: ").Append(Tile.Y).AppendLine();
             build.Append(Data.Name);
+            build.AppendLine().Append("Base: ").Append(SupportSide == WallSupportSide.Ground ? "Ground" : "Support deck");
             if (Debug.isDebugBuild)
             {
                 build.AppendLine();

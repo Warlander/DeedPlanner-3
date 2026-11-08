@@ -2,6 +2,7 @@
 
 ## [3.5.0] - Unreleased
 
+- Fixed supports on slopes lifting neighboring walls and blocking adjacent supports at different heights; paint a deck or ground edge to choose a wall or fence's base, locked for each drag with hover guidance and saved attachment; walls in older saves default to ground and can be reattached from a deck edge
 - Updated the Unity runtime to 6.3.28 LTS and Steam integration to Steamworks SDK 1.65
 - Updated unavailable Labels and Borders tab tooltips to "Feature coming soon!"
 - Web version now has a DeedPlanner compass icon and clearer page information for search results

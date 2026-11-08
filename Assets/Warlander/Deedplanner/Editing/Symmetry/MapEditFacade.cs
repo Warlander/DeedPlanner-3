@@ -119,7 +119,8 @@ namespace Warlander.Deedplanner.Editing
                 });
         }
 
-        public void SetHorizontalWall(int x, int y, WallData data, bool reversed, int level)
+        public void SetHorizontalWall(int x, int y, WallData data, bool reversed, int level,
+            WallSupportSide supportSide = WallSupportSide.Ground)
         {
             Map map = _mapHandler.Map;
             if (x < 0 || x >= map.Width || y < 0 || y > map.Height)
@@ -144,11 +145,14 @@ namespace Warlander.Deedplanner.Editing
                 }
 
                 bool targetReversed = (transform & SymmetryTransform.ReflectY) != 0 ? !reversed : reversed;
-                map[targetX, targetY].SetHorizontalWall(data, targetReversed, level);
+                WallSupportSide targetSupport = ReflectWallSupport(supportSide,
+                    (transform & SymmetryTransform.ReflectY) != 0);
+                map[targetX, targetY].SetHorizontalWall(data, targetReversed, level, targetSupport);
             });
         }
 
-        public void SetVerticalWall(int x, int y, WallData data, bool reversed, int level)
+        public void SetVerticalWall(int x, int y, WallData data, bool reversed, int level,
+            WallSupportSide supportSide = WallSupportSide.Ground)
         {
             Map map = _mapHandler.Map;
             if (x < 0 || x > map.Width || y < 0 || y >= map.Height)
@@ -173,8 +177,19 @@ namespace Warlander.Deedplanner.Editing
                 }
 
                 bool targetReversed = (transform & SymmetryTransform.ReflectX) != 0 ? !reversed : reversed;
-                map[targetX, targetY].SetVerticalWall(data, targetReversed, level);
+                WallSupportSide targetSupport = ReflectWallSupport(supportSide,
+                    (transform & SymmetryTransform.ReflectX) != 0);
+                map[targetX, targetY].SetVerticalWall(data, targetReversed, level, targetSupport);
             });
+        }
+
+        private static WallSupportSide ReflectWallSupport(WallSupportSide supportSide, bool reflected)
+        {
+            if (!reflected || supportSide == WallSupportSide.Ground)
+            {
+                return supportSide;
+            }
+            return supportSide == WallSupportSide.Tile ? WallSupportSide.OppositeTile : WallSupportSide.Tile;
         }
 
         public Decoration SetDecoration(int x, int y, DecorationData data, Vector2 localPosition, float rotation,

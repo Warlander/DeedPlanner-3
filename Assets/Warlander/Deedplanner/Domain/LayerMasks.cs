@@ -36,7 +36,7 @@ namespace Warlander.Deedplanner.Domain
         public const int HeightEditMask = GroundMask;
         public const int FloorEditMask = TileMask | GroundMask | FloorRoofMask | WallMask;
         public const int RoofEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | BridgeMask;
-        public const int WallEditMask = TileMask | GroundMask | WallMask;
+        public const int WallEditMask = TileMask | GroundMask | WallMask | FloorRoofMask;
         public const int DecorationEditMask = TileMask | GroundMask | FloorRoofMask | WallMask | DecorationMask | BridgeMask;
         public const int LabelEditMask = GroundMask;
         public const int BorderEditMask = GroundMask;
@@ -66,7 +66,7 @@ namespace Warlander.Deedplanner.Domain
                 case Tab.Roofs:
                     return cave ? CaveMask | CaveFloorRoofMask | CaveWallMask | CaveBridgeMask : RoofEditMask;
                 case Tab.Walls:
-                    return cave ? CaveMask | CaveWallMask : WallEditMask;
+                    return cave ? CaveMask | CaveWallMask | CaveFloorRoofMask : WallEditMask;
                 case Tab.Objects:
                     return cave
                         ? CaveMask | CaveFloorRoofMask | CaveWallMask | CaveDecorationMask | CaveBridgeMask
