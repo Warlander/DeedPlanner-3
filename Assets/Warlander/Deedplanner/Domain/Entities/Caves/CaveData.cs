@@ -20,6 +20,7 @@ namespace Warlander.Deedplanner.Domain.Entities.Caves
             bool show, bool entrance, Materials materials = null)
         {
             Texture = texture;
+            Texture?.PreserveSpriteData();
             Name = name;
             ShortName = shortName;
             Categories = categories;

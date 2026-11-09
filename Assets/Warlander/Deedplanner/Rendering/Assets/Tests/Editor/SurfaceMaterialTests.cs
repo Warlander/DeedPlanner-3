@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using NUnit.Framework;
 using UnityEngine;
+using Warlander.Deedplanner.Bridges;
+using Warlander.Deedplanner.Domain.Entities.Caves;
 using Warlander.Deedplanner.Logging;
 using Object = UnityEngine.Object;
 
@@ -33,7 +35,7 @@ namespace Warlander.Deedplanner.Rendering.Assets.Tests
             MethodInfo decode = typeof(DDSTextureLoader).GetMethod("LoadTextureDxt", BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(decode, Is.Not.Null);
             Texture2D texture = Track((Texture2D)decode.Invoke(new DDSTextureLoader(new SilentLogger()),
-                new object[] { CreateDxt5Bytes(), true, true, false }));
+                new object[] { CreateDxt5Bytes(), true, true, false, null }));
 
             Assert.That(texture.isDataSRGB, Is.False);
             Color32[] pixels = texture.GetPixels32();
@@ -77,6 +79,69 @@ namespace Warlander.Deedplanner.Rendering.Assets.Tests
             {
                 File.Delete(path);
             }
+        }
+
+        [TestCase(false, false)]
+        [TestCase(false, true)]
+        [TestCase(true, true)]
+        public async Task AggregateDdsPredicateControlsOptionalCpuRelease(bool readable, bool discard)
+        {
+            string path = Path.Combine(Path.GetTempPath(), "dp3-callback-" + Guid.NewGuid().ToString("N") + ".dds");
+            try
+            {
+                File.WriteAllBytes(path, CreateDxt5Bytes());
+                var loader = new AggregateTextureLoader(new SilentLogger());
+                Texture2D expected = Track(await loader.LoadTextureAsync(path, true, true));
+                int callbacks = 0;
+                Texture2D actual = Track(await loader.LoadTextureAsync(path, readable, true, false, () =>
+                {
+                    callbacks++;
+                    return discard;
+                }));
+                Assert.That(callbacks, Is.EqualTo(readable ? 0 : 1));
+                Assert.That(actual.format, Is.EqualTo(expected.format));
+                Assert.That(actual.mipmapCount, Is.EqualTo(expected.mipmapCount));
+                Assert.That(actual.isReadable, Is.EqualTo(readable || !discard));
+                if (actual.isReadable) CollectionAssert.AreEqual(expected.GetPixels32(), actual.GetPixels32());
+                Texture2D direct = Track(await loader.LoadTextureAsync(path, false, true));
+                Assert.That(direct.isReadable, Is.False);
+            }
+            finally { File.Delete(path); }
+        }
+
+        [Test]
+        public async Task AggregatePngIgnoresDdsDiscardPredicateAndKeepsExistingReadability()
+        {
+            Texture2D source = Track(new Texture2D(2, 2, TextureFormat.RGBA32, false, true));
+            source.SetPixels(new[] { Color.red, Color.green, Color.blue, Color.clear }); source.Apply();
+            string path = Path.Combine(Path.GetTempPath(), "dp3-callback-" + Guid.NewGuid().ToString("N") + ".png");
+            try
+            {
+                File.WriteAllBytes(path, source.EncodeToPNG());
+                Texture2D actual = Track(await new AggregateTextureLoader(new SilentLogger()).LoadTextureAsync(path, false, true, false,
+                    () => throw new InvalidOperationException("PNG must not evaluate the DDS discard predicate.")));
+                Assert.That(actual.isReadable, Is.False);
+                Assert.That(actual.isDataSRGB, Is.False);
+            }
+            finally { File.Delete(path); }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public async Task CatalogSpriteRolesPreserveSharedRenderingReferenceWithoutEagerSprites(bool cave)
+        {
+            Texture2D texture = Track(new Texture2D(2, 2));
+            var loader = new FixedTextureLoader(texture);
+            var factory = new TextureReferenceFactory(loader, new SilentLogger());
+            TextureReference reference = factory.GetTextureReference("shared.dds");
+            if (cave) new CaveData(reference, "Cave", "c", new string[0][], true, true, false);
+            else new BridgePavementData("Pavement", "p", reference, null);
+            TextureReference renderingAlias = factory.GetTextureReference("shared.dds");
+
+            Assert.That(renderingAlias, Is.SameAs(reference));
+            Assert.That(await renderingAlias.LoadForRenderingAsync(), Is.SameAs(texture));
+            Assert.That(loader.CanDiscardReadableData(), Is.False);
+            Assert.That(Array.Exists(Resources.FindObjectsOfTypeAll<Sprite>(), sprite => sprite.texture == texture), Is.False);
         }
 
         [Test]
@@ -217,12 +282,15 @@ namespace Warlander.Deedplanner.Rendering.Assets.Tests
         {
             private readonly Texture2D _texture;
             public int Loads { get; private set; }
+            public Func<bool> CanDiscardReadableData { get; private set; }
 
             public FixedTextureLoader(Texture2D texture) => _texture = texture;
 
-            public Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false, bool linearData = false)
+            public Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false, bool linearData = false,
+                Func<bool> canDiscardReadableData = null)
             {
                 Loads++;
+                CanDiscardReadableData = canDiscardReadableData;
                 return Task.FromResult(_texture);
             }
         }

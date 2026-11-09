@@ -13,7 +13,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
             material.SetTexture(ShaderPropertyIds.NormalMap, null);
             material.SetTexture(ShaderPropertyIds.OcclusionMap, null);
             material.SetFloat(ShaderPropertyIds.OcclusionStrength, 0);
-            Texture2D texture = await reference.LoadOrGetTextureAsync();
+            Texture2D texture = await reference.LoadForRenderingAsync();
             Texture2D normal = await reference.LoadOrGetNormalAsync();
             Texture2D occlusion = await reference.LoadOrGetOcclusionAsync();
             if (!material) return;

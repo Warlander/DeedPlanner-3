@@ -15,6 +15,8 @@ namespace Warlander.Deedplanner.Rendering.Assets
         private Texture2D texture;
         private Sprite sprite;
         private Task<Texture2D> textureLoadTask;
+        private bool _renderUsage;
+        private bool _spriteUsage;
 
         public string Location { get; }
         public Vector2 SpecularRange { get; }
@@ -51,27 +53,39 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 ? Location
                 : Application.streamingAssetsPath + "/" + Location;
 
-            texture = await _textureLoader.LoadTextureAsync(location, false, _normalMap, _linearData);
+            texture = await _textureLoader.LoadTextureAsync(location, false, _normalMap, _linearData,
+                () => _renderUsage && !_spriteUsage);
             if (texture)
             {
                 texture.name = Location;
             }
-
             return texture;
+        }
+
+        public Task<Texture2D> LoadForRenderingAsync()
+        {
+            _renderUsage = true;
+            return LoadOrGetTextureAsync();
+        }
+
+        public void PreserveSpriteData()
+        {
+            _spriteUsage = true;
         }
         
         public Task<Texture2D> LoadOrGetNormalAsync()
         {
-            return _normalReference != null ? _normalReference.LoadOrGetTextureAsync() : Task.FromResult<Texture2D>(null);
+            return _normalReference != null ? _normalReference.LoadForRenderingAsync() : Task.FromResult<Texture2D>(null);
         }
 
         public Task<Texture2D> LoadOrGetOcclusionAsync()
         {
-            return _occlusionReference != null ? _occlusionReference.LoadOrGetTextureAsync() : Task.FromResult<Texture2D>(null);
+            return _occlusionReference != null ? _occlusionReference.LoadForRenderingAsync() : Task.FromResult<Texture2D>(null);
         }
 
         public async Task<Sprite> LoadOrGetSpriteAsync()
         {
+            PreserveSpriteData();
             if (sprite)
             {
                 return sprite;

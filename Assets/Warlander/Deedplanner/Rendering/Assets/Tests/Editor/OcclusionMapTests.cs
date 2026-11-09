@@ -227,7 +227,8 @@ namespace Warlander.Deedplanner.Rendering.Assets.Tests
             public int NormalLoads { get; private set; }
             public int LinearLoads { get; private set; }
 
-            public Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false, bool linearData = false)
+            public Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false, bool linearData = false,
+                Func<bool> canDiscardReadableData = null)
             {
                 if (normalMap)
                 {

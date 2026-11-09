@@ -55,6 +55,7 @@ namespace Warlander.Deedplanner.Bridges
             }
 
             _uiSpriteReference = uiTex;
+            _uiSpriteReference?.PreserveSpriteData();
         }
 
         public ModelHandle GetModel(BridgePartSide side)

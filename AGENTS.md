@@ -56,6 +56,8 @@ Add `--json` for machine-readable output in agentic loops.
 unity open "E:/Unity/DeedPlanner-3" --args "-automated"
 ```
 
+**Performance profiling:** In the verified Unity 6000.3.28f1 Windows/D3D11 setup, `-automated` without `-force-gfx-mt` selects single-threaded rendering. For performance runs on this baseline, use `--args "-automated -force-d3d11 -force-gfx-mt"`. Verify `SystemInfo.renderingThreadingMode`, `SystemInfo.graphicsMultiThreaded`, and the startup `GfxDevice` log before measuring; requested flags and Player Settings alone are insufficient. Keep the actual graphics API and threading mode matched between comparisons, and establish a fresh baseline after changing them. The verified standalone Player already renders with threads, so correcting the Editor launch is not a shipping optimization.
+
 On SteamOS/Linux, add `-noaudio` for automated Play-mode sessions (`--args "-automated -noaudio"`). Unity 6000.3.20f1 otherwise crashes in the FMOD audio thread while entering Play mode; edit-mode compilation and tests are unaffected.
 
 Without it, play mode ENTRY stalls indefinitely while the Editor window is unfocused (in-play behavior is unaffected).

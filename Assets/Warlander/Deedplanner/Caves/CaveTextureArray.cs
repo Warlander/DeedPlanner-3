@@ -87,7 +87,7 @@ namespace Warlander.Deedplanner.Caves
         {
             try
             {
-                Texture2D texture = await reference.LoadOrGetTextureAsync();
+                Texture2D texture = await reference.LoadForRenderingAsync();
                 Texture2D normal = await reference.LoadOrGetNormalAsync();
                 Texture2D occlusion = await reference.LoadOrGetOcclusionAsync();
                 if (texture && _textures.IsValid)
