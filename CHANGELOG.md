@@ -2,6 +2,7 @@
 
 ## [3.5.0] - Unreleased
 
+- Fixed barred wall names appearing as "bars" instead of "barred wall"
 - Fixed the materials report's reversed scrollbar and jump on the first scroll
 - Fixed right-clicking bridges in the Objects tab causing an error
 - Fixed deleting or placing objects on one level affecting objects on other levels

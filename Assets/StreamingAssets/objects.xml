@@ -1447,7 +1447,7 @@
 			<category>House walls/Plain Stone</category>
 			<category>Materials/Stone</category>
 		</wall>
-		<wall name="Plain stone bars" shortname="psBars" scale="1" type="house">
+		<wall name="Plain stone barred wall" shortname="psBars" scale="1" type="house">
 			<model location="Walls/PlainStoneWall_bars1_upper.wom">
 				<tex location="Walls/StoneWall.jpg" normal="Docks/StoneWall_n.dds"/>
 				<tex location="Walls/portcullisParts.png" normal="Walls/portcullisParts_n.dds"/>
@@ -1651,7 +1651,7 @@
 			<category>House walls/Slate</category>
 			<category>Materials/Slate</category>
 		</wall>
-		<wall name="Slate bars" shortname="dsBars" scale="1" type="house">
+		<wall name="Slate barred wall" shortname="dsBars" scale="1" type="house">
 			<model location="Walls/PlainStoneWall_bars1_upper.wom">
 				<override mesh="StoneWallPlain3Mesh" texture="Walls/slate.png" normal="Docks/slate_n.dds"/>
 				<tex location="Walls/StoneWall.jpg" normal="Docks/StoneWall_n.dds"/>
@@ -1857,7 +1857,7 @@
 			<category>House walls/Marble</category>
 			<category>Materials/Marble</category>
 		</wall>
-		<wall name="Marble bars" shortname="mbBars" scale="1" type="house">
+		<wall name="Marble barred wall" shortname="mbBars" scale="1" type="house">
 			<model location="Walls/PlainStoneWall_bars1_upper.wom">
 				<override mesh="StoneWallPlain3Mesh" texture="Walls/marble.png" normal="Docks/marble_n.dds"/>
 				<tex location="Walls/StoneWall.jpg" normal="Docks/StoneWall_n.dds"/>
@@ -2063,7 +2063,7 @@
 			<category>House walls/Sandstone</category>
 			<category>Materials/Sandstone</category>
 		</wall>
-		<wall name="Sandstone bars" shortname="sbBars" scale="1" type="house">
+		<wall name="Sandstone barred wall" shortname="sbBars" scale="1" type="house">
 			<model location="Walls/PlainStoneWall_bars1_upper.wom">
 				<override mesh="StoneWallPlain3Mesh" texture="Walls/sandstone.png" normal="Docks/sandstone_n.dds"/>
 				<tex location="Walls/StoneWall.jpg" normal="Docks/StoneWall_n.dds"/>
@@ -2269,7 +2269,7 @@
 			<category>House walls/Pottery</category>
 			<category>Materials/Pottery</category>
 		</wall>
-		<wall name="Pottery bars" shortname="pbBars" scale="1" type="house">
+		<wall name="Pottery barred wall" shortname="pbBars" scale="1" type="house">
 			<model location="Walls/PlainStoneWall_bars1_upper.wom">
 				<override mesh="StoneWallPlain3Mesh" texture="Walls/brick.png" normal="Docks/brick_n.dds"/>
 				<tex location="Walls/StoneWall.jpg" normal="Docks/StoneWall_n.dds"/>
@@ -2475,7 +2475,7 @@
 			<category>House walls/Rounded stone</category>
 			<category>Materials/Stone</category>
 		</wall>
-		<wall name="Rounded stone bars" shortname="rsBars" scale="1" type="house">
+		<wall name="Rounded stone barred wall" shortname="rsBars" scale="1" type="house">
 			<model location="Walls/PlainStoneWall_bars1_upper.wom">
 				<override mesh="StoneWallPlain3Mesh" texture="Walls/rounded.png" normal="Docks/rounded_n.dds"/>
 				<tex location="Walls/StoneWall.jpg" normal="Docks/StoneWall_n.dds"/>
@@ -2691,7 +2691,7 @@
 			<category>House walls/Rendered</category>
 			<category>Materials/Stone</category>
 		</wall>
-		<wall name="Rendered bars" shortname="rBars" scale="1" type="house">
+		<wall name="Rendered barred wall" shortname="rBars" scale="1" type="house">
 			<model location="Walls/PlainStoneWall_bars1_upper.wom">
 				<override mesh="StoneWallPlain3Mesh" texture="Walls/plaster.png" normal="Walls/plaster_n.dds"/>
 				<tex location="Walls/StoneWall.jpg" normal="Docks/StoneWall_n.dds"/>
