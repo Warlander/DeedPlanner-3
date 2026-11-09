@@ -779,6 +779,344 @@ namespace Warlander.Deedplanner.Domain.Tests
             Assert.That(LayerMasks.GetMaskForTab(Editing.Tab.Mirror, -1), Is.EqualTo(LayerMasks.CaveMask));
         }
 
+        [Test]
+        public void PreserveOpaquePartialScopeRestoresOwnedAbsence()
+        {
+            foreach (RenderTarget surface in _fixture.Surface) WarmOwnedModel(surface.Renderer);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, false, false)))
+            {
+                AssertEmptyPropertyBlock(_fixture.Surface[0].Renderer);
+                AssertAbsentPropertyBlock(_fixture.Surface[1].Renderer);
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false))) { }
+                AssertEmptyPropertyBlock(_fixture.Surface[0].Renderer);
+            }
+            foreach (RenderTarget surface in _fixture.Surface) AssertAbsentPropertyBlock(surface.Renderer);
+            Assert.That(OwnedNullBlocks().Count, Is.EqualTo(3));
+        }
+
+        [Test]
+        public void PreserveFullMapDoesNotAdmitNewOwnership()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            Material material = _fixture.CreateMaterial("Warlander/ModelShader");
+            renderer.sharedMaterial = material;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false))) { }
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false)))
+                AssertAbsentPropertyBlock(renderer);
+            AssertEmptyPropertyBlock(renderer);
+            Assert.That(OwnedNullBlocks().Count, Is.Zero);
+            WarmOwnedModel(renderer);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false))) AssertAbsentPropertyBlock(renderer);
+            AssertAbsentPropertyBlock(renderer);
+        }
+
+        [TestCase(0, false)]
+        [TestCase(2, false)]
+        [TestCase(-1, false)]
+        [TestCase(-1, true)]
+        public void DisabledViewsFlushOwnedBlocksAndUseLegacyStateRepeatedly(int level, bool full)
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            WarmOwnedModel(renderer);
+            for (int i = 0; i < 3; i++)
+            {
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(level, full, false, ModelPropertyBlockRetention.Disabled))) { }
+                AssertEmptyPropertyBlock(renderer);
+                Assert.That(OwnedNullBlocks().Count, Is.Zero);
+            }
+        }
+
+        [Test]
+        public void EnabledUndergroundCannotRetainHiddenSurfaceOwnership()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            WarmOwnedModel(renderer);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(-1, true, false, ModelPropertyBlockRetention.Enabled))) { }
+            AssertEmptyPropertyBlock(renderer);
+            Assert.That(OwnedNullBlocks().Count, Is.Zero);
+        }
+
+        [Test]
+        public void SingleSplitSingleContextsRestoreAdmissionWithoutALatch()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            WarmOwnedModel(renderer);
+            var splitFull = new MapRenderView(0, true, false, ModelPropertyBlockRetention.Disabled);
+            var splitTop = new MapRenderView(0, false, false, ModelPropertyBlockRetention.Disabled);
+            for (int i = 0; i < 3; i++)
+            {
+                using (_fixture.Renderer.PrepareForCamera(splitFull)) { }
+                using (_fixture.Renderer.PrepareForCamera(splitTop)) { }
+                AssertEmptyPropertyBlock(renderer);
+                Assert.That(OwnedNullBlocks().Count, Is.Zero);
+            }
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled))) { }
+            AssertAbsentPropertyBlock(renderer);
+            Assert.That(OwnedNullBlocks().Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void NestedDisabledViewPreservesOuterOwnership()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            WarmOwnedModel(renderer);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled)))
+            {
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false, ModelPropertyBlockRetention.Disabled)))
+                    Assert.That(GetEffectiveBaseColor(renderer).r, Is.EqualTo(0.6f).Within(0.001f));
+                AssertAbsentPropertyBlock(renderer);
+            }
+            AssertAbsentPropertyBlock(renderer);
+            Assert.That(OwnedNullBlocks().Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void OwnedAbsenceSurvivesRepeatedCompatibleFullMapScopes()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            WarmOwnedModel(renderer);
+            for (int i = 0; i < 3; i++)
+            {
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled)))
+                    AssertAbsentPropertyBlock(renderer);
+                AssertAbsentPropertyBlock(renderer);
+            }
+        }
+
+        [Test]
+        public void DisabledPartialScopesReleaseAllOwnershipBeforeRepeatedViews()
+        {
+            foreach (RenderTarget surface in _fixture.Surface) WarmOwnedModel(surface.Renderer);
+            for (int i = 0; i < 3; i++)
+            {
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false, ModelPropertyBlockRetention.Disabled)))
+                {
+                    Assert.That(GetEffectiveBaseColor(_fixture.Surface[0].Renderer).r, Is.EqualTo(0.6f).Within(0.001f));
+                    AssertEmptyPropertyBlock(_fixture.Surface[1].Renderer);
+                    AssertEmptyPropertyBlock(_fixture.Surface[2].Renderer);
+                    Assert.That(_fixture.Surface[2].Renderer.forceRenderingOff, Is.True);
+                }
+                AssertEmptyPropertyBlock(_fixture.Surface[0].Renderer);
+                AssertEmptyPropertyBlock(_fixture.Surface[1].Renderer);
+                AssertEmptyPropertyBlock(_fixture.Surface[2].Renderer);
+                Assert.That(OwnedNullBlocks().Count, Is.Zero);
+            }
+        }
+
+        [Test]
+        public void NestedFadedAndHiddenViewsRestoreOuterOwnedAbsence()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            WarmOwnedModel(renderer);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled)))
+            {
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false)))
+                    Assert.That(GetEffectiveBaseColor(renderer).r, Is.EqualTo(0.6f).Within(0.001f));
+                AssertAbsentPropertyBlock(renderer);
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(-1, true, false, ModelPropertyBlockRetention.Enabled)))
+                {
+                    Assert.That(renderer.forceRenderingOff, Is.True);
+                    AssertAbsentPropertyBlock(renderer);
+                }
+                Assert.That(renderer.forceRenderingOff, Is.False);
+                AssertAbsentPropertyBlock(renderer);
+            }
+            AssertAbsentPropertyBlock(renderer);
+        }
+
+        [Test]
+        public void InactiveIncompatibleMaterialRehydratesOtherOwnedModels()
+        {
+            Renderer ordinary = _fixture.Surface[0].Renderer;
+            Renderer incompatible = _fixture.Surface[1].Renderer;
+            WarmOwnedModel(ordinary);
+            Material material = WarmOwnedModel(incompatible);
+            incompatible.gameObject.SetActive(false);
+            material.SetVector(ShaderPropertyIds.ShearY, new Vector4(0.1f, 0, 0, 0));
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled)))
+            {
+                AssertEmptyPropertyBlock(ordinary);
+                AssertEmptyPropertyBlock(incompatible);
+            }
+            AssertEmptyPropertyBlock(ordinary);
+            Assert.That(OwnedNullBlocks().Count, Is.Zero);
+            material.SetVector(ShaderPropertyIds.ShearY, Vector4.zero);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled))) { }
+            AssertAbsentPropertyBlock(ordinary);
+        }
+
+        [Test]
+        public void NestedScopesReleaseTemporaryMarkersBeforeLateOverrides()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            WarmOwnedModel(renderer);
+            var block = new MaterialPropertyBlock();
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled)))
+            {
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false)))
+                {
+                    using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled)))
+                        Assert.That(GetEffectiveBaseColor(renderer), Is.EqualTo(Color.white));
+                    Assert.That(GetEffectiveBaseColor(renderer).r, Is.EqualTo(0.6f).Within(0.001f));
+                }
+                AssertAbsentPropertyBlock(renderer);
+                block.SetColor(ShaderPropertyIds.BaseColor, Color.cyan);
+                renderer.SetPropertyBlock(block);
+                using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false))) { }
+                Assert.That(GetBaseColor(renderer), Is.EqualTo(Color.cyan));
+            }
+            Assert.That(GetBaseColor(renderer), Is.EqualTo(Color.cyan));
+            var scoped = (HashSet<Renderer>)typeof(MapLevelRenderer).GetField("_scopedPropertyBlocks",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(_fixture.Renderer);
+            Assert.That(scoped.Count, Is.Zero);
+            Assert.That(OwnedNullBlocks().Count, Is.Zero);
+        }
+
+        [Test]
+        public void LateAttachedEmptyBlockRelinquishesOwnership()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            WarmOwnedModel(renderer);
+            renderer.SetPropertyBlock(new MaterialPropertyBlock());
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(1, false, false))) { }
+            AssertEmptyPropertyBlock(renderer);
+            Assert.That(OwnedNullBlocks().Count, Is.Zero);
+        }
+
+        [Test]
+        public void GlobalAndIndexedOverridesRelinquishOwnedAbsence()
+        {
+            Renderer global = _fixture.Surface[0].Renderer;
+            Renderer indexed = _fixture.Surface[1].Renderer;
+            WarmOwnedModel(global);
+            WarmOwnedModel(indexed);
+            int valueId = Shader.PropertyToID("_OwnedNullExternalValue");
+            var block = new MaterialPropertyBlock();
+            block.SetColor(ShaderPropertyIds.BaseColor, Color.cyan);
+            block.SetFloat(valueId, 31);
+            global.SetPropertyBlock(block);
+            block.SetColor(ShaderPropertyIds.BaseColor, Color.magenta);
+            block.SetFloat(valueId, 47);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled)))
+                indexed.SetPropertyBlock(block, 0);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled))) { }
+            global.GetPropertyBlock(block);
+            Assert.That(block.GetColor(ShaderPropertyIds.BaseColor), Is.EqualTo(Color.cyan));
+            Assert.That(block.GetFloat(valueId), Is.EqualTo(31));
+            indexed.GetPropertyBlock(block, 0);
+            Assert.That(block.GetColor(ShaderPropertyIds.BaseColor), Is.EqualTo(Color.magenta));
+            Assert.That(block.GetFloat(valueId), Is.EqualTo(47));
+            Assert.That(OwnedNullBlocks().Count, Is.Zero);
+            indexed.SetPropertyBlock(null, 0);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled))) { }
+            AssertEmptyPropertyBlock(indexed);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled))) { }
+            AssertAbsentPropertyBlock(indexed);
+        }
+
+        [Test]
+        public void OwnedShaderAndMaterialSlotFallbackRehydratesOnce()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            Material material = WarmOwnedModel(renderer);
+            Material other = _fixture.CreateMaterial("Universal Render Pipeline/Unlit");
+            Shader shader = material.shader;
+            material.shader = other.shader;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled))) AssertEmptyPropertyBlock(renderer);
+            AssertEmptyPropertyBlock(renderer);
+            Assert.That(OwnedNullBlocks().Count, Is.Zero);
+            material.shader = shader;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled))) { }
+            AssertAbsentPropertyBlock(renderer);
+            renderer.sharedMaterials = new[] { material, other };
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled))) AssertEmptyPropertyBlock(renderer);
+            AssertEmptyPropertyBlock(renderer);
+            Assert.That(OwnedNullBlocks().Count, Is.Zero);
+        }
+
+        [Test]
+        public void DestroyedOwnershipDoesNotTransferToAReplacementRenderer()
+        {
+            Renderer renderer = _fixture.Surface[0].Renderer;
+            Material material = WarmOwnedModel(renderer);
+            UnityEngine.Object.DestroyImmediate(renderer.gameObject);
+            var replacement = new GameObject("Owned-null replacement", typeof(MeshRenderer));
+            replacement.transform.SetParent(_fixture.Surface[0].Root);
+            renderer = replacement.GetComponent<Renderer>();
+            renderer.sharedMaterial = material;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled))) { }
+            AssertEmptyPropertyBlock(renderer);
+            Assert.That(OwnedNullBlocks().Count, Is.Zero);
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled))) { }
+            AssertAbsentPropertyBlock(renderer);
+            Assert.That(OwnedNullBlocks().Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void RenderingCameraPredicateTracksSingleSplitSingleAndCameraEnablement()
+        {
+            var coordinatorObject = new GameObject("Retention camera coordinator");
+            var firstObject = new GameObject("First retention camera");
+            var secondObject = new GameObject("Second retention camera");
+            coordinatorObject.SetActive(false);
+            firstObject.SetActive(false);
+            secondObject.SetActive(false);
+            try
+            {
+                var coordinator = coordinatorObject.AddComponent<Cameras.CameraCoordinator>();
+                var first = firstObject.AddComponent<Cameras.MultiCamera>();
+                var second = secondObject.AddComponent<Cameras.MultiCamera>();
+                var attached = typeof(Cameras.MultiCamera).GetProperty("AttachedCamera");
+                attached.GetSetMethod(true).Invoke(first, new object[] { firstObject.GetComponent<Camera>() });
+                attached.GetSetMethod(true).Invoke(second, new object[] { secondObject.GetComponent<Camera>() });
+                typeof(Cameras.CameraCoordinator).GetField("_cameras",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    .SetValue(coordinator, new[] { first, second });
+                firstObject.SetActive(true);
+                Assert.That(coordinator.IsOnlyRenderingCamera(first), Is.True);
+                secondObject.SetActive(true);
+                second.enabled = false;
+                Assert.That(coordinator.IsOnlyRenderingCamera(first), Is.False);
+                second.AttachedCamera.enabled = false;
+                Assert.That(coordinator.IsOnlyRenderingCamera(first), Is.True);
+                second.AttachedCamera.enabled = true;
+                secondObject.SetActive(false);
+                Assert.That(coordinator.IsOnlyRenderingCamera(first), Is.True);
+                first.AttachedCamera.enabled = false;
+                Assert.That(coordinator.IsOnlyRenderingCamera(first), Is.False);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(coordinatorObject);
+                UnityEngine.Object.DestroyImmediate(firstObject);
+                UnityEngine.Object.DestroyImmediate(secondObject);
+            }
+        }
+
+        private Material WarmOwnedModel(Renderer renderer)
+        {
+            Material material = _fixture.CreateMaterial("Warlander/ModelShader");
+            renderer.sharedMaterial = material;
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled))) { }
+            using (_fixture.Renderer.PrepareForCamera(new MapRenderView(0, true, false, ModelPropertyBlockRetention.Enabled))) { }
+            AssertAbsentPropertyBlock(renderer);
+            return material;
+        }
+
+        private HashSet<Renderer> OwnedNullBlocks()
+        {
+            return (HashSet<Renderer>)typeof(MapLevelRenderer).GetField("_ownedNullBlocks",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(_fixture.Renderer);
+        }
+
+        private static void AssertAbsentPropertyBlock(Renderer renderer)
+        {
+            Assert.That(renderer.HasPropertyBlock(), Is.False);
+            var block = new MaterialPropertyBlock();
+            renderer.GetPropertyBlock(block);
+            Assert.That(block.isEmpty, Is.True);
+        }
+
         private static void AssertEmptyPropertyBlock(Renderer renderer)
         {
             var block = new MaterialPropertyBlock();

@@ -78,6 +78,14 @@ namespace Warlander.Deedplanner.Cameras
             LevelChanged?.Invoke();
         }
 
+        public bool IsOnlyRenderingCamera(MultiCamera camera)
+        {
+            foreach (MultiCamera candidate in _cameras)
+                if (candidate != camera && candidate.AttachedCamera && candidate.AttachedCamera.isActiveAndEnabled)
+                    return false;
+            return camera.AttachedCamera && camera.AttachedCamera.isActiveAndEnabled;
+        }
+
         public void ToggleCamera(int cameraId, bool render)
         {
             _cameras[cameraId].gameObject.SetActive(render);

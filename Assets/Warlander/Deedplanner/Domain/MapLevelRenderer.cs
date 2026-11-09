@@ -19,6 +19,8 @@ namespace Warlander.Deedplanner.Domain
         private Func<IEnumerable<Dock>> _getDocks;
         private readonly Dictionary<Renderer, RendererBaseState> _baseRendererStates =
             new Dictionary<Renderer, RendererBaseState>();
+        private readonly HashSet<Renderer> _ownedNullBlocks = new HashSet<Renderer>();
+        private readonly HashSet<Renderer> _scopedPropertyBlocks = new HashSet<Renderer>();
         private readonly MaterialPropertyBlock _emptyPropertyBlock = new MaterialPropertyBlock();
         private readonly MaterialPropertyBlock _workingPropertyBlock = new MaterialPropertyBlock();
         private readonly Stack<MaterialPropertyBlock> _propertyBlocks = new Stack<MaterialPropertyBlock>();
@@ -101,6 +103,10 @@ namespace Warlander.Deedplanner.Domain
 
             if (_scopeDepth == 0)
             {
+                if (view.PropertyBlockRetention == ModelPropertyBlockRetention.Disabled
+                    || view.PropertyBlockRetention == ModelPropertyBlockRetention.Enabled && view.IsUnderground)
+                    ReleaseOwnedNullBlocks();
+                if (_ownedNullBlocks.Count > 0) _ownedNullBlocks.RemoveWhere(renderer => !renderer);
                 _baseRendererStates.Clear();
             }
 
@@ -111,7 +117,15 @@ namespace Warlander.Deedplanner.Domain
             ApplyView(scope, view);
             if (scope.AllowModelBatching)
             {
-                if (_modelDefaultsCompatible)
+                bool retain = view.PropertyBlockRetention == ModelPropertyBlockRetention.Enabled && !view.IsUnderground;
+                if (!_modelDefaultsCompatible)
+                {
+                    if (_ownedNullBlocks.Count > 0)
+                        foreach (Renderer renderer in _modelBatchingCandidates)
+                            if (_ownedNullBlocks.Remove(renderer) && !renderer.HasPropertyBlock())
+                                renderer.SetPropertyBlock(_emptyPropertyBlock);
+                }
+                else if (!retain && _ownedNullBlocks.Count == 0)
                 {
                     foreach (Renderer renderer in _modelBatchingCandidates)
                     {
@@ -123,12 +137,31 @@ namespace Warlander.Deedplanner.Domain
                         }
                     }
                 }
+                else
+                {
+                    foreach (Renderer renderer in _modelBatchingCandidates)
+                    {
+                        if (_ownedNullBlocks.Contains(renderer)) continue;
+                        renderer.GetPropertyBlock(_workingPropertyBlock);
+                        if (!_workingPropertyBlock.isEmpty) continue;
+                        scope.Add(RendererState.ClearedEmptyBlock(renderer));
+                        renderer.SetPropertyBlock(null);
+                        if (retain && !renderer.HasPropertyBlock()) _ownedNullBlocks.Add(renderer);
+                    }
+                }
                 _modelBatchingCandidates.Clear();
                 _modelMaterials.Clear();
             }
             _workingPropertyBlock.Clear();
             _rendererBuffer.Clear();
             return scope;
+        }
+
+        private void ReleaseOwnedNullBlocks()
+        {
+            foreach (Renderer renderer in _ownedNullBlocks)
+                if (renderer && !renderer.HasPropertyBlock()) renderer.SetPropertyBlock(_emptyPropertyBlock);
+            _ownedNullBlocks.Clear();
         }
 
         private void ApplyView(RenderScope scope, MapRenderView view)
@@ -175,10 +208,17 @@ namespace Warlander.Deedplanner.Domain
                 propertyBlock.SetFloat(ShaderPropertyIds.CaveOverview,
                     view.IsUnderground && !view.RenderEntireMap ? 1f : 0f);
                 renderer.SetPropertyBlock(propertyBlock);
+                if (_ownedNullBlocks.Count > 0 && _ownedNullBlocks.Contains(renderer)) _scopedPropertyBlocks.Add(renderer);
             }
         }
 
         private void ApplyRoot(RenderScope scope, Transform root, float opacity)
+        {
+            if (_ownedNullBlocks.Count == 0) ApplyRootLegacy(scope, root, opacity);
+            else ApplyRootOwned(scope, root, opacity);
+        }
+
+        private void ApplyRootLegacy(RenderScope scope, Transform root, float opacity)
         {
             bool visible = opacity > 0f;
             bool changeColor = visible && (opacity < 1f || _scopeDepth > 1);
@@ -222,6 +262,78 @@ namespace Warlander.Deedplanner.Domain
                     propertyBlock.SetColor(ShaderPropertyIds.BaseColor,
                         new Color(baseColor.r * opacity, baseColor.g * opacity, baseColor.b * opacity, baseColor.a));
                     renderer.SetPropertyBlock(propertyBlock);
+                }
+            }
+
+        }
+
+        private void ApplyRootOwned(RenderScope scope, Transform root, float opacity)
+        {
+            bool visible = opacity > 0f;
+            bool changeColor = visible && (opacity < 1f || _scopeDepth > 1);
+            bool capturePropertyBlock = changeColor || root == _caveShellRoot;
+            root.GetComponentsInChildren(true, _rendererBuffer);
+            foreach (Renderer renderer in _rendererBuffer)
+            {
+                bool ownedNull = _ownedNullBlocks.Contains(renderer);
+                bool hasOwnedBlock = ownedNull && renderer.HasPropertyBlock();
+                if (hasOwnedBlock && !_scopedPropertyBlocks.Contains(renderer))
+                {
+                    _ownedNullBlocks.Remove(renderer);
+                    ownedNull = false;
+                }
+                bool hasBaseState = _baseRendererStates.TryGetValue(renderer, out RendererBaseState baseState);
+                bool currentForceRenderingOff = renderer.forceRenderingOff;
+                bool forceRenderingOff = (hasBaseState ? baseState.ForceRenderingOff : currentForceRenderingOff) || !visible;
+                bool canBatchModel = scope.AllowModelBatching && !forceRenderingOff && CanBatchModel(renderer);
+                if (ownedNull && !forceRenderingOff && _scopeDepth == 1 && scope.AllowModelBatching && !canBatchModel)
+                {
+                    _ownedNullBlocks.Remove(renderer);
+                    ownedNull = false;
+                    renderer.SetPropertyBlock(_emptyPropertyBlock);
+                }
+                bool rehydrate = ownedNull && !hasOwnedBlock && !forceRenderingOff && _scopeDepth == 1 && !canBatchModel;
+                bool captureRendererBlock = capturePropertyBlock || rehydrate;
+                if (!captureRendererBlock && currentForceRenderingOff == forceRenderingOff
+                    && (ownedNull || renderer.HasPropertyBlock()))
+                {
+                    if (canBatchModel) _modelBatchingCandidates.Add(renderer);
+                    continue;
+                }
+
+                MaterialPropertyBlock snapshot = captureRendererBlock
+                    ? (_propertyBlocks.Count > 0 ? _propertyBlocks.Pop() : new MaterialPropertyBlock())
+                    : null;
+                RendererState state = RendererState.Capture(renderer, currentForceRenderingOff, snapshot,
+                    ownedNull && !hasOwnedBlock, _scopedPropertyBlocks.Contains(renderer));
+                scope.Add(state);
+                if (!hasBaseState)
+                {
+                    baseState = new RendererBaseState(state.ForceRenderingOff, null);
+                    _baseRendererStates.Add(renderer, baseState);
+                }
+
+                renderer.forceRenderingOff = forceRenderingOff;
+                if (rehydrate && !changeColor)
+                {
+                    renderer.SetPropertyBlock(_emptyPropertyBlock);
+                    _scopedPropertyBlocks.Add(renderer);
+                }
+                if (changeColor)
+                {
+                    if (!baseState.BaseColor.HasValue)
+                    {
+                        baseState = new RendererBaseState(baseState.ForceRenderingOff,
+                            GetBaseColor(renderer, state.PropertyBlock));
+                        _baseRendererStates[renderer] = baseState;
+                    }
+                    MaterialPropertyBlock propertyBlock = _workingPropertyBlock;
+                    renderer.GetPropertyBlock(propertyBlock);
+                    Color baseColor = baseState.BaseColor.Value;
+                    propertyBlock.SetColor(ShaderPropertyIds.BaseColor,
+                        new Color(baseColor.r * opacity, baseColor.g * opacity, baseColor.b * opacity, baseColor.a));
+                    renderer.SetPropertyBlock(propertyBlock);
+                    if (_ownedNullBlocks.Contains(renderer)) _scopedPropertyBlocks.Add(renderer);
                 }
             }
 
@@ -281,6 +393,7 @@ namespace Warlander.Deedplanner.Domain
             if (_scopeDepth == 0)
             {
                 _baseRendererStates.Clear();
+                if (_scopedPropertyBlocks.Count > 0) _scopedPropertyBlocks.Clear();
             }
         }
 
@@ -352,9 +465,14 @@ namespace Warlander.Deedplanner.Domain
 
             public void Restore()
             {
+                bool restoreOwned = _owner._ownedNullBlocks.Count > 0 || _owner._scopedPropertyBlocks.Count > 0;
                 for (int i = _renderers.Count - 1; i >= 0; i--)
                 {
-                    _renderers[i].Restore(_owner._emptyPropertyBlock);
+                    if (restoreOwned)
+                        _renderers[i].RestoreOwned(_owner._emptyPropertyBlock, _owner._ownedNullBlocks,
+                            _owner._scopedPropertyBlocks);
+                    else
+                        _renderers[i].Restore(_owner._emptyPropertyBlock);
                     MaterialPropertyBlock snapshot = _renderers[i].PropertyBlock;
                     if (snapshot != null)
                     {
@@ -396,21 +514,27 @@ namespace Warlander.Deedplanner.Domain
             public bool ForceRenderingOff { get; }
             public MaterialPropertyBlock PropertyBlock { get; }
             private readonly bool _restoreVisibility;
+            private readonly bool _restoreAbsence;
+            private readonly bool _restoreScopedBlock;
 
             private RendererState(Renderer renderer, bool forceRenderingOff, MaterialPropertyBlock propertyBlock,
-                bool restoreVisibility = true)
+                bool restoreVisibility = true, bool restoreAbsence = false, bool restoreScopedBlock = false)
             {
                 Renderer = renderer;
                 ForceRenderingOff = forceRenderingOff;
                 PropertyBlock = propertyBlock;
                 _restoreVisibility = restoreVisibility;
+                _restoreAbsence = restoreAbsence;
+                _restoreScopedBlock = restoreScopedBlock;
             }
 
-            public static RendererState Capture(Renderer renderer, bool forceRenderingOff, MaterialPropertyBlock propertyBlock)
+            public static RendererState Capture(Renderer renderer, bool forceRenderingOff, MaterialPropertyBlock propertyBlock,
+                bool restoreAbsence = false, bool restoreScopedBlock = false)
             {
                 if (propertyBlock != null)
                     renderer.GetPropertyBlock(propertyBlock);
-                return new RendererState(renderer, forceRenderingOff, propertyBlock);
+                return new RendererState(renderer, forceRenderingOff, propertyBlock,
+                    restoreAbsence: restoreAbsence, restoreScopedBlock: restoreScopedBlock);
             }
 
             public static RendererState ClearedEmptyBlock(Renderer renderer)
@@ -427,6 +551,20 @@ namespace Warlander.Deedplanner.Domain
                 else if (!Renderer.HasPropertyBlock())
                     // Keep the existing batching path after the renderer's first pass.
                     Renderer.SetPropertyBlock(emptyPropertyBlock);
+            }
+
+            public void RestoreOwned(MaterialPropertyBlock emptyPropertyBlock, HashSet<Renderer> ownedNullBlocks,
+                HashSet<Renderer> scopedPropertyBlocks)
+            {
+                if (!Renderer) return;
+                if (_restoreVisibility) Renderer.forceRenderingOff = ForceRenderingOff;
+                if (PropertyBlock != null)
+                    Renderer.SetPropertyBlock(_restoreAbsence && ownedNullBlocks.Contains(Renderer) ? null : PropertyBlock);
+                else if (!ownedNullBlocks.Contains(Renderer) && !Renderer.HasPropertyBlock())
+                    // Keep the existing batching path after the renderer's first pass.
+                    Renderer.SetPropertyBlock(emptyPropertyBlock);
+                if (_restoreScopedBlock) scopedPropertyBlocks.Add(Renderer);
+                else scopedPropertyBlocks.Remove(Renderer);
             }
         }
 

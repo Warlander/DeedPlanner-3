@@ -249,7 +249,9 @@ namespace Warlander.Deedplanner.Cameras
 
             Map map = _mapHandler.Map;
             CompleteCameraRendering();
-            _mapRenderScope = map.PrepareForCamera(new MapRenderView(Level, RenderEntireMap, map.RenderGrid));
+            ModelPropertyBlockRetention retention = RenderEntireMap && Level >= 0 && _cameraCoordinator.IsOnlyRenderingCamera(this)
+                ? ModelPropertyBlockRetention.Enabled : ModelPropertyBlockRetention.Disabled;
+            _mapRenderScope = map.PrepareForCamera(new MapRenderView(Level, RenderEntireMap, map.RenderGrid, retention));
             if (this != _cameraCoordinator.Current)
             {
                 _groundRenderScope = map.Ground.PrepareForCamera(RenderCrops);
