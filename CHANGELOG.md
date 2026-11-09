@@ -4,6 +4,7 @@
 
 - Fixed right-clicking bridges in the Objects tab causing an error
 - Fixed deleting or placing objects on one level affecting objects on other levels
+- Fixed height-area selections shifting across the map when moving or zooming the camera
 - Fixed supports on slopes lifting neighboring walls and blocking adjacent supports at different heights; paint a deck or ground edge to choose a wall or fence's base, locked for each drag with hover guidance and saved attachment; walls in older saves default to ground and can be reattached from a deck edge
 - Updated the Unity runtime to 6.3.28 LTS and Steam integration to Steamworks SDK 1.65
 - Updated unavailable Labels and Borders tab tooltips to "Feature coming soon!"
