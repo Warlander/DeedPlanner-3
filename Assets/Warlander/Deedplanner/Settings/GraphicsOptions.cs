@@ -8,6 +8,7 @@ namespace Warlander.Deedplanner.Settings
     {
         private readonly ISetting<WaterQuality> _waterQuality;
         private readonly ISetting<QualityLevel> _qualityLevel;
+        private readonly ISetting<bool> _surfaceHeightDetail;
 
         public event Action WaterQualityChanged
         {
@@ -19,6 +20,12 @@ namespace Warlander.Deedplanner.Settings
         {
             add => _qualityLevel.Changed += value;
             remove => _qualityLevel.Changed -= value;
+        }
+
+        public event Action SurfaceHeightDetailChanged
+        {
+            add => _surfaceHeightDetail.Changed += value;
+            remove => _surfaceHeightDetail.Changed -= value;
         }
 
         public WaterQuality WaterQuality
@@ -33,10 +40,18 @@ namespace Warlander.Deedplanner.Settings
             set => _qualityLevel.Value = value;
         }
 
-        internal GraphicsOptions(ISetting<WaterQuality> waterQuality, ISetting<QualityLevel> qualityLevel)
+        public bool SurfaceHeightDetail
+        {
+            get => _surfaceHeightDetail.Value;
+            set => _surfaceHeightDetail.Value = value;
+        }
+
+        internal GraphicsOptions(ISetting<WaterQuality> waterQuality, ISetting<QualityLevel> qualityLevel,
+            ISetting<bool> surfaceHeightDetail)
         {
             _waterQuality = waterQuality;
             _qualityLevel = qualityLevel;
+            _surfaceHeightDetail = surfaceHeightDetail;
         }
     }
 }

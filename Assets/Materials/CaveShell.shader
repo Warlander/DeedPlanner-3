@@ -8,6 +8,7 @@ Shader "DeedPlanner/Cave Shell"
         [NoScaleOffset] _OcclusionArray("Cave Occlusion", 2DArray) = "white" {}
         _SpecularStrength("Specular Strength", Range(0, 1)) = 1
         [NoScaleOffset] _SurfaceProperties("Surface Properties", 2DArray) = "" {}
+        [NoScaleOffset] _HeightProperties("Height Properties", 2DArray) = "" {}
         _NormalStrength("Normal Strength", Range(0, 1)) = 1
         _BaseColor("Base Color", Color) = (1, 1, 1, 1)
         [Enum(UnityEngine.Rendering.CullMode)] _Cull("Cull", Float) = 2
@@ -32,6 +33,7 @@ Shader "DeedPlanner/Cave Shell"
             #pragma multi_compile_fog
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "SurfaceHeight.hlsl"
 
             TEXTURE2D_ARRAY(_MainTex);
             SAMPLER(sampler_MainTex);
@@ -42,6 +44,10 @@ Shader "DeedPlanner/Cave Shell"
             SAMPLER(sampler_OcclusionArray);
             TEXTURE2D_ARRAY(_SurfaceProperties);
             SAMPLER(sampler_SurfaceProperties);
+            TEXTURE2D_ARRAY(_HeightProperties);
+            SAMPLER(sampler_HeightProperties);
+
+            float _CavesPavementParallax;
 
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseColor;
@@ -54,6 +60,7 @@ Shader "DeedPlanner/Cave Shell"
             struct Attributes
             {
                 float4 positionOS : POSITION;
+                float3 normalOS : NORMAL;
                 float2 uv : TEXCOORD0;
                 float2 textureIndex : TEXCOORD1;
             };
@@ -64,6 +71,8 @@ Shader "DeedPlanner/Cave Shell"
                 float2 uv : TEXCOORD0;
                 nointerpolation float2 textureData : TEXCOORD1;
                 float fogFactor : TEXCOORD2;
+                float3 positionWS : TEXCOORD3;
+                float3 normalWS : TEXCOORD4;
             };
 
             Varyings Vertex(Attributes input)
@@ -73,6 +82,8 @@ Shader "DeedPlanner/Cave Shell"
                 output.uv = input.uv;
                 output.textureData = input.textureIndex;
                 output.fogFactor = ComputeFogFactor(output.positionCS.z);
+                output.positionWS = TransformObjectToWorld(input.positionOS.xyz);
+                output.normalWS = TransformObjectToWorldNormal(input.normalOS);
                 return output;
             }
 
@@ -81,10 +92,25 @@ Shader "DeedPlanner/Cave Shell"
                 half physicalVisibility = abs(input.textureData.y - 1.0h);
                 half overviewVisibility = 1.0h - step(1.5h, input.textureData.y);
                 clip(lerp(physicalVisibility, overviewVisibility, _CaveOverview) - 0.5h);
-                half4 color = SAMPLE_TEXTURE2D_ARRAY(_MainTex, sampler_MainTex, input.uv, input.textureData.x);
+                float2 uv, uvDx, uvDy;
+                float3 viewTS = float3(0, 0, 1);
+                float heightScale = 0;
+                if (_CavesPavementParallax > 0.5 && input.textureData.y == 0 && _CaveOverview < 0.5h)
+                {
+                    float3 normalWS = normalize(input.normalWS);
+                    float3 tangent = normalize(cross(normalWS, TransformObjectToWorldDir(float3(0, 0, 1))));
+                    float3 bitangent = cross(tangent, normalWS);
+                    float3 viewWS = GetWorldSpaceNormalizeViewDir(input.positionWS);
+                    viewTS = float3(dot(viewWS, tangent), dot(viewWS, bitangent), dot(viewWS, normalWS));
+                    heightScale = SAMPLE_TEXTURE2D_ARRAY(_HeightProperties, sampler_HeightProperties,
+                        float2(0.5, 0.5), input.textureData.x).r;
+                }
+                SurfaceHeightArray_float(input.uv, viewTS, input.positionWS, input.textureData.x,
+                    UnityBuildTexture2DArrayStruct(_OcclusionArray), heightScale, uv, uvDx, uvDy);
+                half4 color = SAMPLE_TEXTURE2D_ARRAY_GRAD(_MainTex, sampler_MainTex, uv, input.textureData.x, uvDx, uvDy);
                 color.rgb *= _BaseColor.rgb;
                 color.rgb *= lerp(0.55h, 1.0h, abs(input.textureData.y - 1.0h));
-                half4 packedNormal = SAMPLE_TEXTURE2D_ARRAY(_NormalArray, sampler_NormalArray, input.uv, input.textureData.x);
+                half4 packedNormal = SAMPLE_TEXTURE2D_ARRAY_GRAD(_NormalArray, sampler_NormalArray, uv, input.textureData.x, uvDx, uvDy);
                 half3 normalTS = normalize(packedNormal.rgb * 2.0h - 1.0h);
                 // Fixed texture-space light adds relief without darkening the unlit cave interior.
                 half3 detailLight = normalize(half3(-0.4h, 0.6h, 0.7h));
@@ -95,7 +121,7 @@ Shader "DeedPlanner/Cave Shell"
                 half3 halfDirection = normalize(detailLight + half3(0, 0, 1));
                 half highlight = pow(saturate(dot(normalTS, halfDirection)), lerp(8.0h, 64.0h, surface.b));
                 color.rgb *= 1.0h + 0.06h * highlight * specular * surface.a * _SpecularStrength;
-                half occlusion = SAMPLE_TEXTURE2D_ARRAY(_OcclusionArray, sampler_OcclusionArray, input.uv, input.textureData.x).g;
+                half occlusion = SAMPLE_TEXTURE2D_ARRAY_GRAD(_OcclusionArray, sampler_OcclusionArray, uv, input.textureData.x, uvDx, uvDy).g;
                 color.rgb *= lerp(1.0h, occlusion, _OcclusionStrength);
                 color.rgb = MixFog(color.rgb, input.fogFactor);
                 return color;

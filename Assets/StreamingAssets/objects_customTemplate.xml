@@ -5,6 +5,7 @@
 <!-- Existing <override mesh="..." texture="..."/> entries and roof/cave definitions with a tex attribute can also specify normal="Custom/color_n.dds". -->
 <!-- Normal alpha controls specular strength; optional specularMin/specularMax remap it (defaults 0/1). -->
 <!-- Optional occlusion="Custom/surface_d.dds" reads linear occlusion from the green channel beside the same texture. -->
+<!-- Add heightScale="0.035" to use that occlusion texture's red channel as parallax depth; the scale is in UV units and defaults to 0 (off). -->
 <entities>
 	<grounds>
 		<!-- add custom ground types here -->

@@ -189,7 +189,15 @@ namespace Warlander.Deedplanner.Bridges
                 },
                 triangles = new[] { 0, 2, 1, 2, 3, 1 }
             };
+            // Keep paving aligned when lane and support-facing models rotate 180 degrees.
+            if (_renderOrientation == EntityOrientation.Up || _renderOrientation == EntityOrientation.Right)
+            {
+                Vector2[] uv = _pavingMesh.uv;
+                for (int i = 0; i < uv.Length; i++) uv[i] = Vector2.one - uv[i];
+                _pavingMesh.uv = uv;
+            }
             _pavingMesh.RecalculateNormals();
+            _pavingMesh.RecalculateTangents();
 
             overlay.AddComponent<MeshFilter>().sharedMesh = _pavingMesh;
             overlay.AddComponent<MeshRenderer>();

@@ -5,6 +5,8 @@ namespace Warlander.Deedplanner.Platform.Features
         Bridges = 1,
         Caves = 2,
         // Docks = 3,
-        ErrorWindow = 4
+        ErrorWindow = 4,
+        BridgesPavementParallax = 5,
+        CavesPavementParallax = 6
     }
 }

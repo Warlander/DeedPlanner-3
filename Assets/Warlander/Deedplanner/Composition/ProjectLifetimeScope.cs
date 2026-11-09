@@ -50,6 +50,7 @@ namespace Warlander.Deedplanner.Composition
             builder.RegisterInstance(settings.Graphics);
             builder.RegisterInstance(settings.CropVisibility);
             builder.RegisterEntryPoint<QualityLevelApplier>();
+            builder.RegisterEntryPoint<SurfaceHeightRendering>();
 
             builder.RegisterInstance(new DPInput());
             builder.RegisterEntryPoint<InputSettings>().AsSelf();

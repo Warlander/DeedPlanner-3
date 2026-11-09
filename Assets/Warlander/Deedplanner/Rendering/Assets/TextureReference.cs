@@ -20,8 +20,9 @@ namespace Warlander.Deedplanner.Rendering.Assets
 
         public string Location { get; }
         public Vector2 SpecularRange { get; }
+        public float HeightScale { get; }
 
-        public TextureReference(ITextureLoader textureLoader, string location, bool normalMap = false, TextureReference normalReference = null, Vector2? specularRange = null, TextureReference occlusionReference = null, bool linearData = false)
+        public TextureReference(ITextureLoader textureLoader, string location, bool normalMap = false, TextureReference normalReference = null, Vector2? specularRange = null, TextureReference occlusionReference = null, bool linearData = false, float heightScale = 0)
         {
             _textureLoader = textureLoader;
             Location = location;
@@ -30,6 +31,7 @@ namespace Warlander.Deedplanner.Rendering.Assets
             _occlusionReference = occlusionReference;
             _normalReference = normalReference;
             SpecularRange = specularRange ?? new Vector2(0, 1);
+            HeightScale = heightScale;
         }
 
         public Task<Texture2D> LoadOrGetTextureAsync()

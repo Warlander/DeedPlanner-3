@@ -96,6 +96,9 @@ namespace Warlander.Deedplanner.Settings
                 }
             };
             graphicsTab.Add(qualityLevel);
+            var surfaceHeightDetail = new BoolSetting("surfaceHeightDetail", "Surface Height Detail", true,
+                "Adds depth to supported outdoor ground surfaces.");
+            graphicsTab.Add(surfaceHeightDetail);
 
             var fppMouseSensitivity = new FloatSetting("fppMouseSensitivity", "Mouse Sensitivity", 0.5f, 0.05f, 3f);
             camerasTab.Add(fppMouseSensitivity);
@@ -141,7 +144,7 @@ namespace Warlander.Deedplanner.Settings
                 wallAutomaticReverse, wallReverse, decorationSnapToGrid, decorationRotationSnapping,
                 decorationRotationSensitivity, caveOccupiedCellPolicy);
             var ui = new UiSettings(guiScale, compassVisibility);
-            var graphics = new GraphicsOptions(waterQuality, qualityLevel);
+            var graphics = new GraphicsOptions(waterQuality, qualityLevel, surfaceHeightDetail);
             var cropVisibility = new CropVisibilitySettings(showCropsIn3D, showCropsIn2D, showCropsInIsometric);
 
             return new DeedPlannerSettings(registry, store, camera, editing, ui, graphics, cropVisibility);

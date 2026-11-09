@@ -56,7 +56,7 @@ namespace Warlander.Deedplanner.Domain.Entities.Grounds
             index = _textures.PutOrGetTexture(reference, texture);
             if (index < 0 || _normals.PutOrGetTexture(reference, normal ? normal : _flatNormal) != index) return false;
             if (_occlusions.PutOrGetTexture(reference, occlusion ? occlusion : Texture2D.whiteTexture) != index) return false;
-            if (isNew) _surfaceProperties.Set(index, reference, normal);
+            if (isNew) _surfaceProperties.Set(index, reference, normal, occlusion);
             return true;
         }
 

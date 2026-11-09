@@ -44,7 +44,8 @@ namespace Warlander.Deedplanner.Bridges
 
         private async void LoadOverlayTextureAsync()
         {
-            await ModelMaterialTextures.ApplyAsync(_overlayMaterial, Tex);
+            await ModelMaterialTextures.ApplyAsync(_overlayMaterial, Tex,
+                Shader.GetGlobalFloat(ShaderPropertyIds.BridgesPavementParallax) > 0.5f);
         }
     }
 }

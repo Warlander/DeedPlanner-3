@@ -96,7 +96,7 @@ namespace Warlander.Deedplanner.Caves
                     if (index >= 0 && _normals.PutOrGetTexture(reference, normal ? normal : _flatNormal) == index
                         && _occlusions.PutOrGetTexture(reference, occlusion ? occlusion : Texture2D.whiteTexture) == index)
                     {
-                        _surfaceProperties.Set(index, reference, normal);
+                        _surfaceProperties.Set(index, reference, normal, occlusion);
                         _indices[reference] = index;
                         return index;
                     }

@@ -8,6 +8,9 @@ namespace Warlander.Deedplanner
         public static readonly int BaseMap = Shader.PropertyToID("_BaseMap");
         public static readonly int OcclusionMap = Shader.PropertyToID("_OcclusionMap");
         public static readonly int OcclusionStrength = Shader.PropertyToID("_OcclusionStrength");
+        public static readonly int HeightScale = Shader.PropertyToID("_HeightScale");
+        public static readonly int BridgesPavementParallax = Shader.PropertyToID("_BridgesPavementParallax");
+        public static readonly int CavesPavementParallax = Shader.PropertyToID("_CavesPavementParallax");
         public static readonly int SpecularRange = Shader.PropertyToID("_SpecularRange");
         public static readonly int NormalMap = Shader.PropertyToID("_NormalMap");
         public static readonly int NormalStrength = Shader.PropertyToID("_NormalStrength");
