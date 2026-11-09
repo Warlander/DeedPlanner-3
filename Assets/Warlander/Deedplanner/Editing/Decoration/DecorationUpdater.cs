@@ -317,7 +317,7 @@ namespace Warlander.Deedplanner.Editing
                 _ghostObject.transform.localRotation = Quaternion.identity;
             }
 
-            if (_input.UpdatersShared.Deletion.WasPerformedThisFrame() && !_placingDecoration)
+            if (_input.UpdatersShared.Deletion.WasPerformedThisFrame() && !_placingDecoration && _targetedTile != null)
             {
                 IEnumerable<Decoration> decorationsOnTile = _targetedTile.GetDecorations();
                 foreach (Decoration decoration in decorationsOnTile)
