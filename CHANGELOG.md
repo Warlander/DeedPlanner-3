@@ -2,6 +2,7 @@
 
 ## [3.5.0] - Unreleased
 
+- Fixed one-tile-long bridges using single-width segments across multiple lanes, placing railings between lanes
 - Fixed barred wall names appearing as "bars" instead of "barred wall"
 - Fixed the materials report's reversed scrollbar and jump on the first scroll
 - Fixed right-clicking bridges in the Objects tab causing an error

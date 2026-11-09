@@ -89,7 +89,8 @@ namespace Warlander.Deedplanner.Bridges
                 _logger.Error($"Bridge type enum parsing fail, type: {typeString}");
             }
 
-            int requiredSegments = Mathf.Max(Mathf.Abs(secondX - firstX), Mathf.Abs(secondY - firstY)) + 1;
+            int requiredSegments = (verticalOrientation
+                ? Mathf.Abs(secondY - firstY) : Mathf.Abs(secondX - firstX)) + 1;
             if (segments.Length < requiredSegments)
             {
                 throw new FormatException($"Bridge segments data too short: {segments.Length}, expected at least {requiredSegments}");
@@ -200,9 +201,8 @@ namespace Warlander.Deedplanner.Bridges
 
         private int GetBridgeWidth()
         {
-            int width = Mathf.Min(
-                Mathf.Abs(secondX - firstX),
-                Mathf.Abs(secondY - firstY)) + 1;
+            int width = (verticalOrientation
+                ? Mathf.Abs(secondX - firstX) : Mathf.Abs(secondY - firstY)) + 1;
             return Mathf.Min(width, Data.MaxWidth);
         }
 
@@ -229,7 +229,7 @@ namespace Warlander.Deedplanner.Bridges
             // }
             
             int maxWidth = Data.MaxWidth;
-            int bridgeWidth = Mathf.Min(endX - startX, endY - startY) + 1;
+            int bridgeWidth = (verticalOrientation ? endX - startX : endY - startY) + 1;
             if (maxWidth < bridgeWidth) {
                 _logger.Error($"Impossible bridge: requested width {bridgeWidth}, max possible: {maxWidth}");
                 return;
@@ -325,7 +325,7 @@ namespace Warlander.Deedplanner.Bridges
         }
         
         private BridgePartSide GetPartSide(int startX, int startY, int endX, int endY, int x, int y, bool isVertical) {
-            if (startX == endX || startY == endY) {
+            if (isVertical ? startX == endX : startY == endY) {
                 return BridgePartSide.NARROW;
             }
 
