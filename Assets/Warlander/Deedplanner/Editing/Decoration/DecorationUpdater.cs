@@ -231,7 +231,10 @@ namespace Warlander.Deedplanner.Editing
             {
                 foreach (Decoration decoration in _targetedTile.GetDecorations())
                 {
-                    _outlineCoordinator.AddObject(decoration, OutlineType.Neutral, 1);
+                    if (decoration.Level == targetFloor)
+                    {
+                        _outlineCoordinator.AddObject(decoration, OutlineType.Neutral, 1);
+                    }
                 }
             }
 
@@ -250,7 +253,7 @@ namespace Warlander.Deedplanner.Editing
 
             bool placementOverlap = true;
             Vector2 position2d = new Vector2(_position.x, _position.z);
-            IEnumerable<Decoration> nearbyDecorations = GetAllNearbyDecorations(_targetedTile);
+            IEnumerable<Decoration> nearbyDecorations = GetAllNearbyDecorations(_targetedTile, targetFloor);
 
             foreach (Decoration decoration in nearbyDecorations)
             {
@@ -317,11 +320,15 @@ namespace Warlander.Deedplanner.Editing
                 _ghostObject.transform.localRotation = Quaternion.identity;
             }
 
-            if (_input.UpdatersShared.Deletion.WasPerformedThisFrame() && !_placingDecoration)
+            if (_input.UpdatersShared.Deletion.WasPerformedThisFrame() && !_placingDecoration && _targetedTile != null)
             {
                 IEnumerable<Decoration> decorationsOnTile = _targetedTile.GetDecorations();
                 foreach (Decoration decoration in decorationsOnTile)
                 {
+                    if (decoration.Level != targetFloor)
+                    {
+                        continue;
+                    }
                     _mapEditFacade.SetDecoration(_targetedTile.X, _targetedTile.Y, null, decoration.Position,
                         decoration.Rotation, decoration.Level);
                 }
@@ -417,7 +424,7 @@ namespace Warlander.Deedplanner.Editing
             return pos;
         }
 
-        private IEnumerable<Decoration> GetAllNearbyDecorations(Tile centralTile)
+        private IEnumerable<Decoration> GetAllNearbyDecorations(Tile centralTile, int level)
         {
             List<Decoration> decorations = new List<Decoration>();
 
@@ -433,7 +440,13 @@ namespace Warlander.Deedplanner.Editing
                     Tile relativeTile = centralTile.Map.GetRelativeTile(centralTile, x, y);
                     if (relativeTile != null)
                     {
-                        decorations.AddRange(relativeTile.GetDecorations());
+                        foreach (Decoration decoration in relativeTile.GetDecorations())
+                        {
+                            if (decoration.Level == level)
+                            {
+                                decorations.Add(decoration);
+                            }
+                        }
                     }
                 }
             }

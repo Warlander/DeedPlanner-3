@@ -101,6 +101,57 @@ namespace Warlander.Deedplanner.Editing.Tests
         }
 
         [Test]
+        public void CaveLevelButtonsIncludeAllSevenStoreys()
+        {
+            const string path = "Assets/Prefabs/MainScene/Height Chooser.prefab";
+            GameObject root = PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                int[] caveLevels = root.GetComponentsInChildren<LevelToggle>(true)
+                    .Select(toggle => new SerializedObject(toggle).FindProperty("_level").intValue)
+                    .Where(level => level < 0)
+                    .OrderBy(level => level)
+                    .ToArray();
+
+                Assert.That(caveLevels, Is.EqualTo(Enumerable.Range(-7, 7)));
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        [Test]
+        public void CaveSelectorKeepsSizesWhenSceneOverridesResetChildRects()
+        {
+            const string path = "Assets/Prefabs/MainScene/Height Chooser.prefab";
+            GameObject root = PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                RectTransform panel = (RectTransform)root.transform.Find("Heights Panel");
+                foreach (RectTransform child in panel)
+                {
+                    child.sizeDelta = Vector2.zero;
+                }
+                panel.sizeDelta = new Vector2(40, 683);
+                LayoutRebuilder.ForceRebuildLayoutImmediate(panel);
+
+                foreach (RectTransform child in panel)
+                {
+                    if (!child.gameObject.activeSelf) continue;
+                    Assert.That(child.rect.width, Is.EqualTo(40));
+                    Assert.That(child.rect.height,
+                        Is.EqualTo(child.GetComponent<Toggle>() == null ? 16 : 28));
+                }
+                Assert.That(panel.GetComponent<VerticalLayoutGroup>().preferredHeight, Is.EqualTo(676));
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        [Test]
         public void CaveLevelButtonsDoNotShowObsoleteUnavailableTooltip()
         {
             const string path = "Assets/Prefabs/MainScene/Height Chooser.prefab";

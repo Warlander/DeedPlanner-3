@@ -299,7 +299,7 @@ namespace Warlander.Deedplanner.Domain
                 _surfaceLevelRoots[i] = root;
             }
 
-            _caveLevelRoots = new Transform[6];
+            _caveLevelRoots = new Transform[-Constants.NegativeLevelLimit];
             for (int i = 0; i < _caveLevelRoots.Length; i++)
             {
                 Transform root = new GameObject("Level -" + (i + 1)).transform;

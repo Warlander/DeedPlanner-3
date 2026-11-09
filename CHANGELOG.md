@@ -2,6 +2,11 @@
 
 ## [3.5.0] - Unreleased
 
+- Fixed barred wall names appearing as "bars" instead of "barred wall"
+- Fixed the materials report's reversed scrollbar and jump on the first scroll
+- Fixed right-clicking bridges in the Objects tab causing an error
+- Fixed deleting or placing objects on one level affecting objects on other levels
+- Fixed height-area selections shifting across the map when moving or zooming the camera
 - Reduced texture memory use and improved large-deed rendering in 3D, especially with a single camera, and faded-level editing views, plus height selection in Top view, without changing graphics or editing behavior
 - Fixed supports on slopes lifting neighboring walls and blocking adjacent supports at different heights; paint a deck or ground edge to choose a wall or fence's base, locked for each drag with hover guidance and saved attachment; walls in older saves default to ground and can be reattached from a deck edge
 - Updated the Unity runtime to 6.3.28 LTS and Steam integration to Steamworks SDK 1.65
@@ -9,7 +14,7 @@
 - Web version now has a DeedPlanner compass icon and clearer page information for search results
 - WebGL assets now load from the address hosting the app
 
-- Cave level controls and cave editing are now enabled, with Ground/Caves controls that swap with the active realm, reliable 3D transitions between surface and cave levels, Wurmian navigation that finds a nearby cave with enough headroom and blocks movement into rock or low passages, independent per-camera levels, complete cave shells in 3D, distinct wall and floor rendering in planning views, absolute ceiling-height editing, compact cave height controls and guidance, optional ceiling-preserving floor edits, cave rendering controls, responsive underground views on large deeds, legacy-map clearance repair, consistent solid-rock painting across camera modes, and correct surface rendering
+- Cave level controls and cave editing are now enabled, with seven underground storeys, Ground/Caves controls that swap with the active realm, reliable 3D transitions between surface and cave levels, Wurmian navigation that finds a nearby cave with enough headroom and blocks movement into rock or low passages, independent per-camera levels, complete cave shells in 3D, distinct wall and floor rendering in planning views, absolute ceiling-height editing, compact cave height controls and guidance, optional ceiling-preserving floor edits, cave rendering controls, responsive underground views on large deeds, legacy-map clearance repair, consistent solid-rock painting across camera modes, and correct surface rendering
 - Symmetry planning is now available from the Mirror tab, with independently placeable vertical and horizontal axes, live map guides, support across editing tools, single-step undo, optional user-bound shortcuts, and direct navigation from Configure Bindings to the Symmetry keybinds
 - Crop-specific field textures can now be shown independently in 3D, 2D, and isometric camera modes from the Crops settings tab
 - Roof materials now have rendered previews in the Roofs tab

@@ -7,7 +7,7 @@ description: Map and editing guide for Assets/Scenes/MainScene.unity (the main e
 
 > **MAINTENANCE: This skill mirrors `Assets/Scenes/MainScene.unity`. Whenever you change the main scene (add/remove/rename/reparent any GameObject or change view wiring), update this file in the same change. A stale map is worse than no map.**
 
-Last verified against the scene: 2026-08-14.
+Last verified against the scene: 2026-11-09.
 
 ## Quick Facts
 
@@ -57,7 +57,9 @@ Path prefix: `/GUI/Main Canvas/Main Panel/Side Panel/`
 ```
 Height Chooser              [PREFAB: Height Chooser.prefab]
   Heights Panel             4 camera-mode toggles (WU/ISO/3D/2D, CameraModeToggle)
-                            + Floor 16..1 and Floor -1..-6 toggles (LevelToggle)
+                            + Floor 16..1 and Floor -1..-7 toggles (LevelToggle)
+                            VerticalLayoutGroup with 40x28 buttons, -4 spacing,
+                            and two 16-high spacers between mode/surface/cave groups
                             — every toggle is a Simple Toggle Button prefab instance
                               (Assets/Prefabs/Gui/) with per-instance level/text overrides
   Windows Panel             CameraLayoutIndicatorsCoordinator; Layouts = WindowOpenerButtonView

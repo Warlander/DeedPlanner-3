@@ -53,6 +53,7 @@ namespace Warlander.Deedplanner.Editing
         private HeightUpdaterState state = HeightUpdaterState.Idle;
         private Vector2 dragStartPos;
         private Vector2 dragEndPos;
+        private Vector3? _selectionStartWorldPosition;
 
         private string _dragSensitivity;
         private bool _respectOriginalSlopes;
@@ -188,6 +189,7 @@ namespace Warlander.Deedplanner.Editing
                 _anchorProjector = null;
             }
             state = HeightUpdaterState.Idle;
+            _selectionStartWorldPosition = null;
             CancelEdit();
             UpdateHandlesColors();
             _cameraCoordinator.Current.RenderSelectionBox = false;
@@ -696,37 +698,52 @@ namespace Warlander.Deedplanner.Editing
             GridMesh gridMesh = IsCaveRealm
                 ? _mapHandler.Map.CaveGridMesh
                 : _mapHandler.Map.SurfaceGridMesh;
+            MultiCamera camera = _cameraCoordinator.Current;
+            Camera checkedCamera = camera.AttachedCamera;
+            Vector2 screenSize = camera.Screen.GetComponent<RectTransform>().sizeDelta;
 
             if (_input.UpdatersShared.Placement.WasPressedThisFrame())
             {
-                dragStartPos = _cameraCoordinator.Current.MousePosition;
+                dragStartPos = camera.MousePosition;
+                _selectionStartWorldPosition = raycast.transform ? raycast.point : null;
+                if (!_selectionStartWorldPosition.HasValue)
+                {
+                    Ray ray = checkedCamera.ViewportPointToRay(dragStartPos / screenSize);
+                    var plane = new Plane(Vector3.up, new Vector3(0, GetWorldHeight(_mapHandler.Map, 0, 0) * 0.1f, 0));
+                    if (plane.Raycast(ray, out float distance))
+                    {
+                        _selectionStartWorldPosition = ray.GetPoint(distance);
+                    }
+                }
             }
 
             dragEndPos = _cameraCoordinator.Current.MousePosition;
 
             if (state == HeightUpdaterState.Dragging)
             {
-                if (Vector2.Distance(dragStartPos, dragEndPos) > 5)
+                Vector2 selectionOrigin = _selectionStartWorldPosition.HasValue
+                    ? (Vector2)checkedCamera.WorldToViewportPoint(_selectionStartWorldPosition.Value) * screenSize
+                    : dragStartPos;
+                if (Vector2.Distance(selectionOrigin, dragEndPos) > 5)
                 {
                     _cameraCoordinator.Current.RenderSelectionBox = true;
                 }
 
-                Vector2 difference = dragEndPos - dragStartPos;
+                Vector2 difference = dragEndPos - selectionOrigin;
                 float clampedDifferenceX = Mathf.Clamp(-difference.x, 0, float.MaxValue);
                 float clampedDifferenceY = Mathf.Clamp(-difference.y, 0, float.MaxValue);
                 Vector2 clampedDifference = new Vector2(clampedDifferenceX, clampedDifferenceY);
 
-                Vector2 selectionStart = dragStartPos - clampedDifference;
-                Vector2 selectionEnd = dragEndPos - dragStartPos + clampedDifference * 2;
+                Vector2 selectionStart = selectionOrigin - clampedDifference;
+                Vector2 selectionEnd = dragEndPos - selectionOrigin + clampedDifference * 2;
 
                 _cameraCoordinator.Current.SelectionBoxPosition = selectionStart;
                 _cameraCoordinator.Current.SelectionBoxSize = selectionEnd;
 
-                Vector2 viewportStart = selectionStart / _cameraCoordinator.Current.Screen.GetComponent<RectTransform>().sizeDelta;
-                Vector2 viewportEnd = selectionEnd / _cameraCoordinator.Current.Screen.GetComponent<RectTransform>().sizeDelta;
+                Vector2 viewportStart = selectionStart / screenSize;
+                Vector2 viewportEnd = selectionEnd / screenSize;
                 Rect viewportRect = new Rect(viewportStart, viewportEnd);
 
-                Camera checkedCamera = _cameraCoordinator.Current.AttachedCamera;
                 for (int i = 0; i <= _mapHandler.Map.Width; i++)
                 {
                     for (int i2 = 0; i2 <= _mapHandler.Map.Height; i2++)

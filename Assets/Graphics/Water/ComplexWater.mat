@@ -42,18 +42,18 @@ Material:
     - _FresnelBias: 0.02
     - _FresnelPower: 4
     - _MinWaterAlpha: 0.5
-    - _ShoreFadeDistance: 0.5
-    - _ShoreStrength: 0.65
     - _NormalScale: 1
     - _NormalTiling: 0.03
     - _ReflectionStrength: 0.85
     - _Shininess: 200
+    - _ShoreFadeDistance: 0.5
+    - _ShoreStrength: 0.65
     m_Colors:
     - _BaseColor: {r: 0.15, g: 0.45, b: 0.7, a: 0.65}
     - _DeepColor: {r: 0.02, g: 0.1, b: 0.28, a: 0.9}
-    - _ShoreColor: {r: 0.5, g: 0.8, b: 0.92, a: 1}
     - _ScrollSpeed1: {r: 0.009, g: 0.006, b: 0, a: 0}
     - _ScrollSpeed2: {r: -0.006, g: 0.008, b: 0, a: 0}
+    - _ShoreColor: {r: 0.5, g: 0.8, b: 0.92, a: 1}
     - _SpecColor: {r: 0.9, g: 0.9, b: 0.9019608, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
