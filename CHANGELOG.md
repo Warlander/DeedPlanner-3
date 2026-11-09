@@ -2,6 +2,7 @@
 
 ## [3.5.0] - Unreleased
 
+- Fixed the materials report's reversed scrollbar and jump on the first scroll
 - Fixed right-clicking bridges in the Objects tab causing an error
 - Fixed deleting or placing objects on one level affecting objects on other levels
 - Fixed height-area selections shifting across the map when moving or zooming the camera
