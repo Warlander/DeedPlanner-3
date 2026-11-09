@@ -6,17 +6,20 @@
 - Expanded cave planning to seven underground storeys
 - Removed the redundant Veins category from the Caves tab to reduce clutter
 - Fixed the ground tree selection not following the active left-click or right-click ground type
-- Refreshed item selectors with parchment rows, clearer selection marks, centered previews, and readable two-line names with full-name tooltips
+- Refreshed item selectors with parchment rows, clearer selection marks, centered previews, room for two-line names, and tooltips for truncated names
 - Fixed bridge paving texture seams between lanes and oppositely facing segments
 - Added surface height detail to supported outdoor ground, enabled by default with a Graphics setting to turn it off
 - Fixed one-tile-long bridges using single-width segments across multiple lanes, placing railings between lanes
 - Fixed barred wall names appearing as "bars" instead of "barred wall"
 - Fixed the materials report's reversed scrollbar and jump on the first scroll
 - Fixed right-clicking bridges in the Objects tab causing an error
-- Fixed deleting or placing objects on one level affecting objects on other levels
+- Fixed object deletion affecting other floors and placement being blocked by objects on other floors
 - Fixed height-area selections shifting across the map when moving or zooming the camera
-- Reduced texture memory use and improved large-deed rendering in 3D, especially with a single camera, and faded-level editing views, plus height selection in Top view, without changing graphics or editing behavior
-- Fixed supports on slopes lifting neighboring walls and blocking adjacent supports at different heights; paint a deck or ground edge to choose a wall or fence's base, locked for each drag with hover guidance and saved attachment; walls in older saves default to ground and can be reattached from a deck edge
+- Reduced memory use by releasing unused CPU copies of loaded textures
+- Improved 3D rendering performance on large deeds, especially with a single camera
+- Improved height-handle picking performance on large maps
+- Fixed support decks lifting nearby ground-based walls and blocking neighboring support decks at different heights
+- Walls and fences can use a ground or support-deck base, retained throughout each paint drag; older saves default to ground and can be reattached by repainting from a deck edge
 - Updated the Unity runtime to 6.3.28 LTS and Steam integration to Steamworks SDK 1.65
 
 ## [3.5.0] - 2026-11-07
