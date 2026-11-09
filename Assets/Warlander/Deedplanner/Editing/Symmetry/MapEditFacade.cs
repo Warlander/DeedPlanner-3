@@ -222,7 +222,7 @@ namespace Warlander.Deedplanner.Editing
                 {
                     return;
                 }
-                if (data != null && HasNearbyDecoration(map, worldX, worldY))
+                if (data != null && HasNearbyDecoration(map, worldX, worldY, level))
                 {
                     return;
                 }
@@ -557,7 +557,7 @@ namespace Warlander.Deedplanner.Editing
             });
         }
 
-        private static bool HasNearbyDecoration(Map map, float worldX, float worldY)
+        private static bool HasNearbyDecoration(Map map, float worldX, float worldY, int level)
         {
             int centerX = Mathf.FloorToInt(worldX / 4f);
             int centerY = Mathf.FloorToInt(worldY / 4f);
@@ -574,6 +574,10 @@ namespace Warlander.Deedplanner.Editing
                     }
                     foreach (Decoration decoration in map[x, y].GetDecorations())
                     {
+                        if (decoration.Level != level)
+                        {
+                            continue;
+                        }
                         Vector3 position = decoration.transform.position;
                         if (Vector2.Distance(target, new Vector2(position.x, position.z)) < 0.25f)
                         {
