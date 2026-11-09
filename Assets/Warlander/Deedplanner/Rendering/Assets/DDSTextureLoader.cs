@@ -16,7 +16,8 @@ namespace Warlander.Deedplanner.Rendering.Assets
             _logger = logger;
         }
 
-        public async Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false, bool linearData = false)
+        public async Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false, bool linearData = false,
+            Func<bool> canDiscardReadableData = null)
         {
             var data = await WebUtils.ReadUrlToByteArrayAsync(location);
             if (data == null)
@@ -27,13 +28,14 @@ namespace Warlander.Deedplanner.Rendering.Assets
 
             string name = location.Substring(location.LastIndexOf("/", StringComparison.Ordinal) + 1);
 
-            Texture2D texture = LoadTextureDxt(data, readable, normalMap, linearData);
+            Texture2D texture = LoadTextureDxt(data, readable, normalMap, linearData, canDiscardReadableData);
             texture.name = name;
 
             return texture;
         }
 
-        private Texture2D LoadTextureDxt(byte[] ddsBytes, bool readable, bool normalMap, bool linearData = false)
+        private Texture2D LoadTextureDxt(byte[] ddsBytes, bool readable, bool normalMap, bool linearData = false,
+            Func<bool> canDiscardReadableData = null)
         {
             byte ddsSizeCheck = ddsBytes[4];
             if (ddsSizeCheck != 124)
@@ -102,7 +104,17 @@ namespace Warlander.Deedplanner.Rendering.Assets
                 finalTexture.Compress(true);
             }
 
-            return finalTexture;
+            try
+            {
+                if (!readable && (canDiscardReadableData == null || canDiscardReadableData())) finalTexture.Apply(false, true);
+                return finalTexture;
+            }
+            catch
+            {
+                if (Application.isPlaying) Object.Destroy(finalTexture);
+                else Object.DestroyImmediate(finalTexture);
+                throw;
+            }
         }
         
         private short ReadShort(byte[] data, int index)

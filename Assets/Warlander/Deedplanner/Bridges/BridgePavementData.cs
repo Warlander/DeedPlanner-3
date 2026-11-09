@@ -19,6 +19,7 @@ namespace Warlander.Deedplanner.Bridges
             Name = name;
             ShortName = shortName;
             Tex = tex;
+            Tex?.PreserveSpriteData();
             Materials = materials ?? new Materials();
         }
 

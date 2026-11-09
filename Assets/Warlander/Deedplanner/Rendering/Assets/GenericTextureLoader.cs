@@ -15,7 +15,8 @@ namespace Warlander.Deedplanner.Rendering.Assets
             _logger = logger;
         }
 
-        public async Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false, bool linearData = false)
+        public async Task<Texture2D> LoadTextureAsync(string location, bool readable, bool normalMap = false, bool linearData = false,
+            Func<bool> canDiscardReadableData = null)
         {
             var data = await WebUtils.ReadUrlToByteArrayAsync(location);
             if (data == null)
