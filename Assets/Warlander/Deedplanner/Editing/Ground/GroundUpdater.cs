@@ -104,6 +104,7 @@ namespace Warlander.Deedplanner.Editing
         private void OnLeftClickTargetChanged(bool targeted)
         {
             _leftClickTargeted = targeted;
+            _view.SelectGroundEntry(targeted ? _leftClickData : _rightClickData);
         }
 
         private void OnEditCornersChanged(bool editCorners)

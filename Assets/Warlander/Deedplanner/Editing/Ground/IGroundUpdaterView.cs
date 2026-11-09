@@ -12,6 +12,7 @@ namespace Warlander.Deedplanner.Editing
         event Action<bool> EditCornersChanged;
 
         void AddGroundEntry(GroundData data, string[] category, Sprite sprite);
+        void SelectGroundEntry(GroundData data);
         void SetLeftClickData(GroundData data, Sprite sprite);
         void SetRightClickData(GroundData data, Sprite sprite);
     }

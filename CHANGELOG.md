@@ -2,6 +2,8 @@
 
 ## [3.5.0] - Unreleased
 
+- Fixed the ground tree selection not following the active left-click or right-click ground type
+- Refreshed item selectors with parchment rows, clearer selection marks, centered previews, and readable two-line names with full-name tooltips
 - Fixed bridge paving texture seams between lanes and oppositely facing segments
 - Added surface height detail to supported outdoor ground, enabled by default with a Graphics setting to turn it off
 - Fixed one-tile-long bridges using single-width segments across multiple lanes, placing railings between lanes

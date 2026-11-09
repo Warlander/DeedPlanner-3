@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 namespace Warlander.Deedplanner.Ui.Widgets
 {
-    public class UnityList : MonoBehaviour
+    public class UnityList : MonoBehaviour, IEntryTooltipView
     {
 
         public event Action<object> ValueChanged;
+        public event Action<string> TooltipRequested;
 
         // we want these fields to be settable via inspector, but not via code
         [SerializeField] private ToggleGroup toggleGroup = null;
@@ -35,6 +36,10 @@ namespace Warlander.Deedplanner.Ui.Widgets
             UnityListElement newElement = Instantiate(listElementPrefab, listElementsParent);
             newElement.Toggle.group = toggleGroup;
             newElement.Value = value;
+            if (newElement is IconUnityListElement iconElement)
+            {
+                iconElement.TooltipRequested += OnTooltipRequested;
+            }
             newElement.Toggle.onValueChanged.AddListener(toggled =>
             {
                 if (toggled)
@@ -51,6 +56,11 @@ namespace Warlander.Deedplanner.Ui.Widgets
             }
 
             return newElement;
+        }
+
+        private void OnTooltipRequested(string text)
+        {
+            TooltipRequested?.Invoke(text);
         }
 
         public void Clear()

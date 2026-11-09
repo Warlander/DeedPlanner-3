@@ -41,6 +41,11 @@ namespace Warlander.Deedplanner.Editing
             iconListElement.Sprite = sprite;
         }
 
+        public void SelectGroundEntry(GroundData data)
+        {
+            _groundsTree.SelectValue(data);
+        }
+
         public void SetLeftClickData(GroundData data, Sprite sprite)
         {
             _leftClickText.text = data.Name;

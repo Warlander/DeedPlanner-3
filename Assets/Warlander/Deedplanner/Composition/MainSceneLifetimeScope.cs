@@ -13,6 +13,7 @@ using Warlander.Deedplanner.Rendering.Water;
 using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Ui;
 using Warlander.Deedplanner.Ui.Home;
+using Warlander.Deedplanner.Ui.Widgets;
 using Warlander.Deedplanner.Bridges.Widgets;
 using Warlander.Deedplanner.Cameras;
 using Warlander.Deedplanner.Persistence.Compression;
@@ -82,6 +83,13 @@ namespace Warlander.Deedplanner.Composition
             {
                 foreach (WindowOpenerButtonView view in root.GetComponentsInChildren<WindowOpenerButtonView>(true))
                     builder.RegisterInstance(view).As<IWindowOpenerButtonView>();
+                foreach (MonoBehaviour view in root.GetComponentsInChildren<MonoBehaviour>(true))
+                {
+                    if (view is IEntryTooltipView tooltipView)
+                    {
+                        builder.RegisterEntryPoint<EntryTooltipPresenter>(Lifetime.Scoped).WithParameter<IEntryTooltipView>(tooltipView);
+                    }
+                }
             }
             builder.RegisterEntryPoint<WindowOpenerPresenter>();
 

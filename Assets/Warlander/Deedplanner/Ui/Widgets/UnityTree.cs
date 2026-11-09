@@ -7,10 +7,11 @@ using UnityEngine.UI;
 
 namespace Warlander.Deedplanner.Ui.Widgets
 {
-    public class UnityTree : MonoBehaviour
+    public class UnityTree : MonoBehaviour, IEntryTooltipView
     {
 
         public event Action<object> ValueChanged;
+        public event Action<string> TooltipRequested;
 
         // we want these fields to be settable via inspector, but not via code
         [SerializeField] private ToggleGroup toggleGroup = null;
@@ -69,6 +70,10 @@ namespace Warlander.Deedplanner.Ui.Widgets
             UnityListElement newElement = Instantiate(listElementPrefab, currentParent);
             newElement.Toggle.group = toggleGroup;
             newElement.Value = value;
+            if (newElement is IconUnityListElement iconElement)
+            {
+                iconElement.TooltipRequested += OnTooltipRequested;
+            }
             newElement.Toggle.onValueChanged.AddListener(toggled =>
             {
                 if (toggled)
@@ -87,6 +92,28 @@ namespace Warlander.Deedplanner.Ui.Widgets
             }
 
             return newElement;
+        }
+
+        private void OnTooltipRequested(string text)
+        {
+            TooltipRequested?.Invoke(text);
+        }
+
+        public void SelectValue(object value)
+        {
+            UnityListElement[] elements = GetComponentsInChildren<UnityListElement>(true);
+            UnityListElement selectedElement = elements.FirstOrDefault(element => Equals(element.Value, value));
+            if (selectedElement == null)
+            {
+                return;
+            }
+
+            toggleGroup.SetAllTogglesOff(false);
+            foreach (UnityListElement element in elements)
+            {
+                element.Toggle.SetIsOnWithoutNotify(element == selectedElement);
+            }
+            SelectedValue = selectedElement.Value;
         }
 
         private UnityTreeNode GetOrCreateNode(Transform parent, IEnumerable<UnityTreeNode> nodes, string[] tree)
