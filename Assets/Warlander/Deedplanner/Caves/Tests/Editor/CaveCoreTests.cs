@@ -138,6 +138,7 @@ namespace Warlander.Deedplanner.Caves.Tests
         [TestCase(-1, 0, 0, 0f)]
         [TestCase(-2, 1, 30, 3f)]
         [TestCase(-6, 5, 150, 15f)]
+        [TestCase(-7, 6, 180, 18f)]
         public void ConvertsNegativeLevelToCaveStorey(int level, int expectedIndex, int expectedHeight,
             float expectedWorldHeight)
         {

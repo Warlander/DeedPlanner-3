@@ -32,6 +32,6 @@ Generic CLI and `script eval --file` rules live in `AGENTS.md` and `unity-cli`; 
 5. Capture to a file: `unity command capture game_view -- --source screen --output-path <path>`. Inspect the PNG; the active app panel is in the right column.
 6. **Cleanup (mandatory):** `unity command editor.playmode stop`, restore the background override with `editor.playmode set_run_in_background --enabled false`, and disable auto-tick with `editor set_auto_tick --enabled false`, even when setup or capture fails.
 
-## Reference layout (verified 2026-08-21)
+## Reference layout (verified 2026-11-09)
 
-Right column top-down: tab toggles grid (Ground, Height, Floors, Walls, Roofs, Objects / Labels, Borders, Bridges, Mirror, Tools, Menu) → level chooser (WU/ISO/3D/2D + levels 16..-6) → active tab panel. Floors panel: "Floor Orientation" serif header with compass N/W/E/S buttons, search bar, tree (Floors, Materials, Openings, Staircases, Unfinished).
+Right column: level chooser (WU/ISO/3D/2D + levels 16..-7) beside the tab toggles grid (Ground, Height, Floors, Walls, Roofs, Objects / Labels, Borders, Bridges, Mirror, Tools, Menu) and active tab panel. The chooser uses 40x28 buttons with -4 vertical spacing and two 16-high spacers. Floors panel: "Floor Orientation" serif header with compass N/W/E/S buttons, search bar, tree (Floors, Materials, Openings, Staircases, Unfinished).

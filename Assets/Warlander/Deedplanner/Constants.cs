@@ -11,7 +11,7 @@
         public const string WebVersionLink = "https://deedplanner.warlander.app/";
 
         public const int LevelLimit = 16;
-        public const int NegativeLevelLimit = -6;
+        public const int NegativeLevelLimit = -7;
 
         public const int DefaultGuiWidth = 1024;
         public const int DefaultGuiHeight = 768;
