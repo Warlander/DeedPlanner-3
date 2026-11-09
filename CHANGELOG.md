@@ -3,7 +3,8 @@
 ## [3.5.1] - Unreleased
 
 - Fixed Perspective camera position changing when switching between surface and cave floors
-- Expanded cave planning to seven underground storeys, with vein types listed under Walls
+- Expanded cave planning to seven underground storeys
+- Removed the redundant Veins category from the Caves tab to reduce clutter
 - Fixed the ground tree selection not following the active left-click or right-click ground type
 - Refreshed item selectors with parchment rows, clearer selection marks, centered previews, and readable two-line names with full-name tooltips
 - Fixed bridge paving texture seams between lanes and oppositely facing segments
