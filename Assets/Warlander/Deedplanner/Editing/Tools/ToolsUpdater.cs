@@ -1,5 +1,6 @@
 using Warlander.Deedplanner.Persistence;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using Warlander.Deedplanner.Domain;
@@ -27,12 +28,18 @@ namespace Warlander.Deedplanner.Editing
         private readonly DPInput _input;
         private readonly TabContext _tabContext;
         private readonly ICategoryLogger _logger;
+        private readonly List<Vector2> _areaOutline = new List<Vector2>();
 
         public Tab TargetTab => Tab.Tools;
 
         private ToolsMode _currentTool = ToolsMode.MaterialsCalculator;
         private ToolsMaterialsScope _materialsScope = ToolsMaterialsScope.BuildingAllLevels;
         private int _warningsAdded;
+        private bool _selectingArea;
+        private Map _selectionMap;
+        private Vector2Int _areaStart;
+        private Vector2Int _areaEnd;
+        private int _areaLevel;
 
         public ToolsUpdater(IToolsUpdaterView view, WindowCoordinator windowCoordinator, CameraCoordinator cameraCoordinator,
             MapHandler mapHandler, DPInput input, TabContext tabContext, ILoggerSource loggerSource)
@@ -51,6 +58,10 @@ namespace Warlander.Deedplanner.Editing
             _view.ModeChanged += OnModeChanged;
             _view.MaterialsScopeChanged += OnMaterialsScopeChanged;
             _view.MaterialsCalculationRequested += CalculateMapMaterials;
+            _cameraCoordinator.CurrentCameraChanged += CancelAreaSelection;
+            _cameraCoordinator.LevelChanged += CancelAreaSelection;
+            _cameraCoordinator.ModeChanged += CancelAreaSelection;
+            _mapHandler.MapInitialized += CancelAreaSelection;
         }
 
         public void Enable()
@@ -60,16 +71,18 @@ namespace Warlander.Deedplanner.Editing
             RefreshGui();
         }
 
-        public void Disable() { }
+        public void Disable() => CancelAreaSelection();
 
         private void OnModeChanged(ToolsMode mode)
         {
+            CancelAreaSelection();
             _currentTool = mode;
             RefreshGui();
         }
 
         private void OnMaterialsScopeChanged(ToolsMaterialsScope scope)
         {
+            CancelAreaSelection();
             _materialsScope = scope;
         }
 
@@ -78,6 +91,12 @@ namespace Warlander.Deedplanner.Editing
             if (_currentTool != ToolsMode.MaterialsCalculator)
             {
                 // we need to react to actions on map only when calculating materials
+                return;
+            }
+
+            if (_materialsScope == ToolsMaterialsScope.AreaAllLevels || _materialsScope == ToolsMaterialsScope.AreaCurrentLevel)
+            {
+                UpdateAreaSelection();
                 return;
             }
 
@@ -203,6 +222,89 @@ namespace Warlander.Deedplanner.Editing
                     }
                 }
             }
+        }
+
+        private void UpdateAreaSelection()
+        {
+            MultiCamera camera = _cameraCoordinator.Current;
+            Map map = _mapHandler.Map;
+            if (_selectingArea && (_selectionMap != map || camera.Level != _areaLevel))
+            {
+                CancelAreaSelection();
+            }
+
+            Vector2Int hoveredTile = default;
+            bool hasTile = map && camera.MouseOver && Cursor.visible
+                && LevelTileRaycast.TryGetTile(map, camera.CreateMouseRay(), camera.Level, out hoveredTile);
+            if (!_selectingArea && hasTile && _input.UpdatersShared.Placement.WasPressedThisFrame())
+            {
+                _areaStart = hoveredTile;
+                _areaEnd = _areaStart;
+                _areaLevel = camera.Level;
+                _selectionMap = map;
+                _selectingArea = true;
+            }
+
+            if (!_selectingArea) return;
+            if (hasTile) _areaEnd = hoveredTile;
+            UpdateAreaOutline(map, camera);
+
+            if (_input.UpdatersShared.Placement.WasReleasedThisFrame())
+            {
+                Vector2Int min = Vector2Int.Min(_areaStart, _areaEnd);
+                Vector2Int max = Vector2Int.Max(_areaStart, _areaEnd);
+                int? level = _materialsScope == ToolsMaterialsScope.AreaCurrentLevel ? _areaLevel : (int?)null;
+                Materials materials = map.CalculateAreaMaterials(min, max, level);
+                CancelAreaSelection();
+                ShowMaterialsWindow($"Area: ({min.x}, {min.y}) to ({max.x}, {max.y})\n"
+                    + $"Tiles in this area: {(max.x - min.x + 1) * (max.y - min.y + 1)}\n"
+                    + (level.HasValue ? $"Floor: {level.Value}\n\n" : "All floors (surface and caves)\n\n") + materials);
+            }
+            else if (!_input.UpdatersShared.Placement.IsPressed())
+            {
+                CancelAreaSelection();
+            }
+        }
+
+        private void CancelAreaSelection()
+        {
+            if (!_selectingArea) return;
+            _view.HideAreaSelection();
+            _selectingArea = false;
+            _selectionMap = null;
+        }
+
+        private void UpdateAreaOutline(Map map, MultiCamera camera)
+        {
+            Vector2Int min = Vector2Int.Min(_areaStart, _areaEnd);
+            Vector2Int max = Vector2Int.Max(_areaStart, _areaEnd) + Vector2Int.one;
+            RectTransform screen = (RectTransform)camera.Screen.transform;
+            _areaOutline.Clear();
+            for (int x = min.x; x < max.x; x++)
+            {
+                AddAreaEdge(map, camera.AttachedCamera, screen.rect, x, min.y, x + 1, min.y);
+                AddAreaEdge(map, camera.AttachedCamera, screen.rect, x, max.y, x + 1, max.y);
+            }
+            for (int y = min.y; y < max.y; y++)
+            {
+                AddAreaEdge(map, camera.AttachedCamera, screen.rect, min.x, y, min.x, y + 1);
+                AddAreaEdge(map, camera.AttachedCamera, screen.rect, max.x, y, max.x, y + 1);
+            }
+            _view.ShowAreaSelection(screen, _areaOutline);
+        }
+
+        private void AddAreaEdge(Map map, Camera camera, Rect rect, int x1, int y1, int x2, int y2)
+        {
+            Vector3 start = new Vector3(x1 * 4f, map.GetInterpolatedHeightForLevel(x1 * 4f, y1 * 4f, _areaLevel), y1 * 4f);
+            Vector3 end = new Vector3(x2 * 4f, map.GetInterpolatedHeightForLevel(x2 * 4f, y2 * 4f, _areaLevel), y2 * 4f);
+            Vector3 a = camera.WorldToViewportPoint(start);
+            Vector3 b = camera.WorldToViewportPoint(end);
+            float near = camera.nearClipPlane;
+            if (a.z < near && b.z < near) return;
+            if (a.z < near) a = camera.WorldToViewportPoint(Vector3.Lerp(start, end, (near - a.z) / (b.z - a.z)));
+            if (b.z < near) b = camera.WorldToViewportPoint(Vector3.Lerp(start, end, (near - a.z) / (b.z - a.z)));
+            _areaOutline.Add(rect.min + Vector2.Scale(new Vector2(a.x, a.y), rect.size));
+            _areaOutline.Add(rect.min + Vector2.Scale(new Vector2(b.x, b.y), rect.size));
         }
 
         private void RefreshGui()
@@ -381,6 +483,7 @@ namespace Warlander.Deedplanner.Editing
 
         public void CalculateMapMaterials()
         {
+            CancelAreaSelection();
             Materials mapMaterials = _mapHandler.Map.CalculateMapMaterials();
 
             BuildingsSummary surfaceSummary = new BuildingsSummary(_mapHandler.Map, 0);

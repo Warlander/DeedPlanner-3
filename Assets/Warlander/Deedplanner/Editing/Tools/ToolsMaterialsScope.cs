@@ -2,6 +2,6 @@ namespace Warlander.Deedplanner.Editing
 {
     public enum ToolsMaterialsScope
     {
-        BuildingAllLevels, BuildingCurrentLevel, RoomCurrentLevel
+        BuildingAllLevels, BuildingCurrentLevel, RoomCurrentLevel, AreaAllLevels, AreaCurrentLevel
     }
 }

@@ -390,6 +390,31 @@ namespace Warlander.Deedplanner.Domain
             return mapMaterials;
         }
 
+        public Materials CalculateAreaMaterials(Vector2Int start, Vector2Int end, int? level)
+        {
+            Vector2Int min = Vector2Int.Min(start, end);
+            Vector2Int max = Vector2Int.Max(start, end);
+            Materials materials = new Materials();
+            for (int x = min.x; x <= max.x + 1; x++)
+            {
+                for (int y = min.y; y <= max.y + 1; y++)
+                {
+                    if (x > max.x && y > max.y)
+                    {
+                        continue;
+                    }
+
+                    TilePart part = x > max.x ? TilePart.VerticalWallOnly
+                        : y > max.y ? TilePart.HorizontalWallOnly : TilePart.Everything;
+                    Tile tile = this[x, y];
+                    materials.Add(level.HasValue
+                        ? tile.CalculateLevelMaterials(level.Value, part)
+                        : tile.CalculateTileMaterials(part));
+                }
+            }
+            return materials;
+        }
+
         public int CoordinateToIndex(int x, int y)
         {
             return _tileGrid.CoordinateToIndex(x, y);

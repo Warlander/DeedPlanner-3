@@ -270,6 +270,20 @@ namespace Warlander.Deedplanner.Domain
                 }
             }
 
+            if (tilePart == TilePart.Everything)
+            {
+                BridgePart bridge = GetBridgePart(level < 0);
+                if (bridge != null && bridge.Level == level)
+                {
+                    tileMaterials.Add(bridge.Materials);
+                }
+                Dock dock = GetDock(level < 0 ? DockRealm.Cave : DockRealm.Surface);
+                if (dock != null && dock.AnchorLevel == level)
+                {
+                    tileMaterials.Add(dock.Materials);
+                }
+            }
+
             return tileMaterials;
         }
 
@@ -311,7 +325,7 @@ namespace Warlander.Deedplanner.Domain
                 }
             }
             
-            if (!cave.HasValue || !cave.Value)
+            if (tilePart == TilePart.Everything && (!cave.HasValue || !cave.Value))
             {
                 if (surfaceBridgePart != null)
                 {
@@ -323,7 +337,7 @@ namespace Warlander.Deedplanner.Domain
                 }
             }
 
-            if (!cave.HasValue || cave.Value)
+            if (tilePart == TilePart.Everything && (!cave.HasValue || cave.Value))
             {
                 if (caveBridgePart != null)
                 {
