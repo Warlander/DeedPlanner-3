@@ -1,7 +1,9 @@
 # Changelog
 
-## [3.5.0] - Unreleased
+## [3.5.1] - Unreleased
 
+- Fixed Perspective camera position changing when switching between surface and cave floors
+- Expanded cave planning to seven underground storeys, with vein types listed under Walls
 - Fixed the ground tree selection not following the active left-click or right-click ground type
 - Refreshed item selectors with parchment rows, clearer selection marks, centered previews, and readable two-line names with full-name tooltips
 - Fixed bridge paving texture seams between lanes and oppositely facing segments
@@ -15,17 +17,15 @@
 - Reduced texture memory use and improved large-deed rendering in 3D, especially with a single camera, and faded-level editing views, plus height selection in Top view, without changing graphics or editing behavior
 - Fixed supports on slopes lifting neighboring walls and blocking adjacent supports at different heights; paint a deck or ground edge to choose a wall or fence's base, locked for each drag with hover guidance and saved attachment; walls in older saves default to ground and can be reattached from a deck edge
 - Updated the Unity runtime to 6.3.28 LTS and Steam integration to Steamworks SDK 1.65
-- Updated unavailable Labels and Borders tab tooltips to "Feature coming soon!"
-- Web version now has a DeedPlanner compass icon and clearer page information for search results
-- WebGL assets now load from the address hosting the app
 
-- Cave level controls and cave editing are now enabled, with vein types listed under Walls, seven underground storeys, Ground/Caves controls that swap with the active realm, Perspective camera positioning that stays unchanged when switching floors, Wurmian navigation that finds a nearby cave with enough headroom and blocks movement into rock or low passages, independent per-camera levels, complete cave shells in 3D, distinct wall and floor rendering in planning views, absolute ceiling-height editing, compact cave height controls and guidance, optional ceiling-preserving floor edits, cave rendering controls, responsive underground views on large deeds, legacy-map clearance repair, consistent solid-rock painting across camera modes, and correct surface rendering
-- Symmetry planning is now available from the Mirror tab, with independently placeable vertical and horizontal axes, live map guides, support across editing tools, single-step undo, optional user-bound shortcuts, and direct navigation from Configure Bindings to the Symmetry keybinds
-- Crop-specific field textures can now be shown independently in 3D, 2D, and isometric camera modes from the Crops settings tab
+## [3.5.0] - 2026-11-07
+
+- Cave editing is now enabled: paint cave terrain, adjust floor and ceiling heights, and explore underground in 3D
+- Added symmetry planning from the Mirror tab, with movable horizontal and vertical axes, live guides, undo support and configurable shortcuts
+- Crop-specific field textures can now be shown independently in 3D, 2D and isometric views
 - Roof materials now have rendered previews in the Roofs tab
-- Active uGUI hierarchies and prefab assets can now be exported from the Editor or Unity CLI as scalable, composable HTML bundles that preserve RectTransform structure, Image and RawImage visuals, and editable text
-- Wurm normal-map detail, material highlights, and subtle shading in terrain crevices on supported models, ground and cave surfaces
-- Fixed large maps spending most of their load time repeatedly refreshing unfinished map rendering
+- Added Wurm normal-map detail, material highlights and subtle terrain crevice shading on supported models, ground and cave surfaces
+- Improved loading speed for large maps
 - Fixed objects staying hidden after undoing edits on another level, and hidden trees reappearing after edits
 - Fixed object fading and colors being inconsistent across multiple cameras
 
