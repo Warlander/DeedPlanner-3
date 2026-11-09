@@ -10,6 +10,10 @@ Skills live canonically in `.agents/skills/`. `.claude/skills/` is a generated m
 
 AgentDocs are vault artifacts, not repository files. Create `.agentdoc` sources outside the repository (for example, in a system temporary directory), upload them with `vault add <file> --project DeedPlanner-3`, and do not create `Documentation/`, `docs/`, or another repo-facing documentation directory unless the developer explicitly requests repository documentation.
 
+## Proof of Work
+
+Always show proof of work for modifications, additions, and removals. Use before/after screenshots for visual changes, or a concise text summary of the previous and resulting behavior or content when that makes more sense. Include the relevant verification results and state anything you could not verify.
+
 ## Commit Message Style
 
 Use a short, plain, capitalized imperative subject without a Conventional Commit prefix, for example `Sync Unity agent skills`. Check recent commit history before committing and follow it if the dominant convention changes.
