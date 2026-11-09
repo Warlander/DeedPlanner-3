@@ -10228,47 +10228,36 @@
 		</rock>
 		<rock name="Iron vein" shortname="iv" type="wall" tex="Caves/ironvein_512.dds" specularMax="0.6" normal="Caves/ironvein_512_n.dds">
 			<category>Walls</category>
-			<category>Veins</category>
 		</rock>
 		<rock name="Copper vein" shortname="cv" type="wall" tex="Caves/coppervein_512.dds" specularMax="0.6" normal="Caves/coppervein_512_n.dds">
 			<category>Walls</category>
-			<category>Veins</category>
 		</rock>
 		<rock name="Tin vein" shortname="tv" type="wall" tex="Caves/tinvein_512.dds" specularMax="0.6" normal="Caves/tinvein_512_n.dds">
 			<category>Walls</category>
-			<category>Veins</category>
 		</rock>
 		<rock name="Zinc vein" shortname="zv" type="wall" tex="Caves/zincvein_512.dds" specularMax="0.6" normal="Caves/zincvein_512_n.dds">
 			<category>Walls</category>
-			<category>Veins</category>
 		</rock>
 		<rock name="Lead vein" shortname="lv" type="wall" tex="Caves/leadvein_512.dds" specularMax="0.6" normal="Caves/leadvein_512_n.dds">
 			<category>Walls</category>
-			<category>Veins</category>
 		</rock>
 		<rock name="Silver vein" shortname="sv" type="wall" tex="Caves/silvervein_512.dds" specularMax="0.6" normal="Caves/silvervein_512_n.dds">
 			<category>Walls</category>
-			<category>Veins</category>
 		</rock>
 		<rock name="Gold vein" shortname="gv" type="wall" tex="Caves/goldvein_512.dds" specularMax="0.6" normal="Caves/goldvein_512_n.dds">
 			<category>Walls</category>
-			<category>Veins</category>
 		</rock>
 		<rock name="Slate vein" shortname="slv" type="wall" tex="Caves/slatevein_512.dds" specularMax="0.6" normal="Caves/slatevein_512_n.dds">
 			<category>Walls</category>
-			<category>Veins</category>
 		</rock>
 		<rock name="Marble vein" shortname="mv" type="wall" tex="Caves/marblevein_512.dds" specularMax="0.6" normal="Caves/marblevein_512_n.dds">
 			<category>Walls</category>
-			<category>Veins</category>
 		</rock>
 		<rock name="Sandstone vein" shortname="ssv" type="wall" tex="Caves/sandstonevein.dds" specularMax="0.6" normal="Caves/sandstonevein_n.dds">
 			<category>Walls</category>
-			<category>Veins</category>
 		</rock>
 		<rock name="Rocksalt" shortname="rs" type="wall" tex="Caves/rocksalt.dds" specularMax="0.6" normal="Caves/rocksalt_n.dds">
 			<category>Walls</category>
-			<category>Veins</category>
 		</rock>
 		<rock name="Stone brick reinforced cave wall" shortname="rswStone" type="wall" tex="Caves/cave_stonehouse.dds" specularMax="0.6" normal="Caves/cave_stonehouse_n.dds">
 			<category>Walls/Decorative</category>
