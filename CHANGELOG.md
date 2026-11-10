@@ -1,37 +1,44 @@
 # Changelog
 
-## [3.5.1] - Unreleased
+## [3.5.2] - 2026-11-10
 
-- Fixed dock clicks, replacements and quick right-click deletion; new docks on slopes start at the highest terrain corner
-- Added deck orientation independent of dock braces, with Floor/Deck Orientation wording matching the placement mode
+- Added drag-to-select material calculations for rectangular areas on the current floor or across all surface and cave floors, with a shaded gold selection and live tile dimensions
 - Added flat/arched switching for existing bridges, with each shape's settings remembered until the map is reloaded
+- Added deck orientation independent of dock braces, with Floor/Deck Orientation wording matching the placement mode
+- Added fruit presses, cheese drills, baking stones, coloured catseyes, item piles, ten traps and standing Christmas decorations
 - Improved map error and warning checks on large deeds
+- Refreshed dock floor selection with preview images and the same rows used for floor placement
+- Fixed dock clicks, replacements and quick right-click deletion; new docks on slopes start at the highest terrain corner
 - Fixed map warnings retaining outdated or duplicate entries after refreshing
 - Fixed some saved objects resisting deletion and blocking replacement
 - Fixed catseye and waystone rotation and placement at shared and outer map corners
-- Added fruit presses, cheese drills, baking stones, coloured catseyes, item piles, ten traps and standing Christmas decorations
 - Fixed mine-door and object names to match Wurm, separated log walls by style, and moved Wall plan below the log wall groups
-- Added drag-to-select material calculations for rectangular areas on the current floor or across all surface and cave floors, with a shaded gold selection and live tile dimensions
-- Fixed Perspective camera position changing when switching between surface and cave floors
-- Expanded cave planning to seven underground storeys, with floors and walls targeting the selected storey
-- Removed the redundant Veins category from the Caves tab to reduce clutter
-- Fixed the Ground and Caves lists not following the active left-click or right-click terrain assignment
-- Refreshed item selectors, including dock floors, with parchment rows, clearer selection marks, centered previews, room for two-line names, and tooltips for truncated names
-- Fixed bridge paving texture seams between lanes and oppositely facing segments
-- Added surface height detail to supported outdoor ground, enabled by default with a Graphics setting to turn it off
-- Fixed one-tile-long bridges using single-width segments across multiple lanes, placing railings between lanes
-- Fixed barred wall names appearing as "bars" instead of "barred wall"
-- Fixed the materials report's reversed scrollbar and jump on the first scroll
-- Fixed right-clicking bridges in the Objects tab causing an error
-- Fixed object placement and removal on bare ground, deletion affecting other floors, and placement being blocked by objects on other floors
+- Fixed object placement and removal on bare ground
+- Fixed cave floors and walls targeting a different underground storey from the selected one
 - Fixed walls and fences failing to build along cave boundaries, including north and east edges
-- Fixed height-area selections shifting across the map when moving or zooming the camera
-- Reduced memory use by releasing unused CPU copies of loaded textures
-- Improved 3D rendering performance on large deeds, especially with a single camera
-- Improved height-handle picking performance on large maps
-- Fixed support decks lifting nearby ground-based walls and blocking neighboring support decks at different heights
-- Walls and fences can use a ground or support-deck base, retained throughout each paint drag; older saves default to ground and can be reattached by repainting from a deck edge
-- Updated the Unity runtime to 6.3.28 LTS and Steam integration to Steamworks SDK 1.65
+- Fixed the Caves list not following the active left-click or right-click terrain assignment
+
+## [3.5.1] - 2026-11-09
+
+- Fixed Perspective camera position changing when switching between surface and cave floors.
+- Expanded cave planning to seven underground storeys.
+- Removed the redundant Veins category from the Caves tab to reduce clutter.
+- Refreshed item selectors with parchment rows, clearer selection marks, centered previews, room for two-line names and tooltips for truncated names.
+- Fixed the ground tree selection not following the active left-click or right-click ground type.
+- Added surface height detail to supported outdoor ground, enabled by default with a Graphics setting to turn it off.
+- Fixed bridge paving texture seams between lanes and oppositely facing segments.
+- Fixed one-tile-long bridges using single-width segments across multiple lanes and placing railings between lanes.
+- Fixed barred wall names appearing as "bars" instead of "barred wall".
+- Fixed the materials report's reversed scrollbar and jump on the first scroll.
+- Fixed right-clicking bridges in the Objects tab causing an error.
+- Fixed object deletion affecting other floors and placement being blocked by objects on other floors.
+- Fixed height-area selections shifting across the map when moving or zooming the camera.
+- Reduced memory use by releasing unused CPU copies of loaded textures.
+- Improved 3D rendering performance on large deeds, especially with a single camera.
+- Improved height-handle picking performance on large maps.
+- Fixed support decks lifting nearby ground-based walls and blocking neighboring support decks at different heights.
+- Walls and fences can use a ground or support-deck base, retained throughout each paint drag. Older saves default to ground and can be reattached by repainting from a deck edge.
+- Updated the Unity runtime to 6.3.28 LTS and Steam integration to Steamworks SDK 1.65.
 
 ## [3.5.0] - 2026-11-07
 
