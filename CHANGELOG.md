@@ -16,7 +16,7 @@
 - Expanded cave planning to seven underground storeys, with floors and walls targeting the selected storey
 - Removed the redundant Veins category from the Caves tab to reduce clutter
 - Fixed the Ground and Caves lists not following the active left-click or right-click terrain assignment
-- Refreshed item selectors with parchment rows, clearer selection marks, centered previews, room for two-line names, and tooltips for truncated names
+- Refreshed item selectors, including dock floors, with parchment rows, clearer selection marks, centered previews, room for two-line names, and tooltips for truncated names
 - Fixed bridge paving texture seams between lanes and oppositely facing segments
 - Added surface height detail to supported outdoor ground, enabled by default with a Graphics setting to turn it off
 - Fixed one-tile-long bridges using single-width segments across multiple lanes, placing railings between lanes

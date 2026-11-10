@@ -75,9 +75,10 @@ namespace Warlander.Deedplanner.Editing
             iconListElement.Sprite = sprite;
         }
 
-        public void AddDockFloorEntry(FloorData data)
+        public void AddDockFloorEntry(FloorData data, Sprite sprite)
         {
-            _dockFloorsList.Add(data);
+            IconUnityListElement iconListElement = (IconUnityListElement) _dockFloorsList.Add(data);
+            iconListElement.Sprite = sprite;
         }
 
         public void SetDockSupportSectionVisible(bool visible)

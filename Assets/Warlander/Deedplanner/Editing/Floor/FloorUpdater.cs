@@ -78,15 +78,15 @@ namespace Warlander.Deedplanner.Editing
 
             foreach (FloorData data in _dataCatalog.GetAllFloors())
             {
+                _previewAtlasCatalog.TryGetSprite(PreviewAtlasCategory.Floors, data.ShortName, out Sprite sprite);
                 foreach (string[] category in data.Categories)
                 {
-                    _previewAtlasCatalog.TryGetSprite(PreviewAtlasCategory.Floors, data.ShortName, out Sprite sprite);
                     _view.AddFloorEntry(data, category, sprite);
                 }
 
                 if (data.SupportsDock)
                 {
-                    _view.AddDockFloorEntry(data);
+                    _view.AddDockFloorEntry(data, sprite);
                 }
             }
 
