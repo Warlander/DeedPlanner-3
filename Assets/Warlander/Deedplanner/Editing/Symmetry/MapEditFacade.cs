@@ -821,6 +821,8 @@ namespace Warlander.Deedplanner.Editing
                     }
 
                     _previousTiles.TryGetValue(transform, out Tile previousTile);
+                    Tile targetTile = _map[x, y];
+                    Dock replacedDock = targetTile.GetDock(request.Realm);
                     DockSupportData support;
                     EntityOrientation braceDirection;
                     if (request.AutomaticSupport)
@@ -834,15 +836,22 @@ namespace Warlander.Deedplanner.Editing
                         braceDirection = transform.Transform(EntityOrientation.Up);
                         if (support != null && support.Type == DockSupportType.Brace)
                         {
-                            DockSupportResolver.TryPickBraceSide(_map, x, y, request.Height,
-                                request.Realm, previousTile, out braceDirection);
+                            if (previousTile == targetTile && replacedDock != null
+                                && replacedDock.Support != null && replacedDock.Support.Type == DockSupportType.Brace)
+                            {
+                                braceDirection = replacedDock.BraceRotation;
+                            }
+                            else
+                            {
+                                DockSupportResolver.TryPickBraceSide(_map, x, y, request.Height,
+                                    request.Realm, previousTile, out braceDirection);
+                            }
                         }
                     }
 
-                    Tile targetTile = _map[x, y];
-                    Dock replacedDock = targetTile.GetDock(request.Realm);
                     Dock newDock = _dockFactory.CreateDock(_map, x, y, request.Height, request.Floor,
-                        support, braceDirection, request.Realm, request.AnchorLevel);
+                        support, braceDirection, request.Realm, request.AnchorLevel,
+                        transform.Transform(request.DeckOrientation));
                     _map.CommandManager.AddToActionAndExecute(
                         new DockPlacementCommand(_map, newDock, replacedDock));
                     _paintedCoordinates[coordinate] = priority;

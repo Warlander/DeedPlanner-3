@@ -4,6 +4,12 @@ using System.Reflection;
 using System.Xml;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
+using TMPro;
+using Warlander.Deedplanner.Cameras;
+using Warlander.Deedplanner.Inputs;
+using Warlander.Deedplanner.Ui.Tooltips;
 using Warlander.Deedplanner.Caves;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Domain.Entities.Caves;
@@ -453,6 +459,354 @@ namespace Warlander.Deedplanner.Docks.Tests
             side = WallSupportSide.Tile;
             Assert.That(ResolveWallStroke(updater, fixture.Map, 1, 1, true, ref level, ref side), Is.True);
             Assert.That(side, Is.EqualTo(WallSupportSide.Tile));
+        }
+
+        [TestCase(EntityOrientation.Up, 0f, -4f, 0f)]
+        [TestCase(EntityOrientation.Right, 90f, 0f, 0f)]
+        [TestCase(EntityOrientation.Down, 180f, 0f, -4f)]
+        [TestCase(EntityOrientation.Left, 270f, -4f, -4f)]
+        public void DeckRotationKeepsBraceDirectionAndTileFootprint(EntityOrientation orientation, float yaw, float x, float z)
+        {
+            using var fixture = new DockFixture(3, 3);
+            var factory = (DockFactory)typeof(DockFixture).GetField("_factory", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(fixture);
+            Dock dock = factory.CreateDock(fixture.Map, 1, 1, 30, fixture.Floor, fixture.Brace,
+                EntityOrientation.Right, DockRealm.Surface, 1, orientation);
+            try
+            {
+
+                var model = (GameObject)typeof(Dock).GetField("_deckModel", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(dock);
+                Transform deck = model.transform;
+                Assert.That(dock.DeckOrientation, Is.EqualTo(orientation));
+                Assert.That(dock.BraceRotation, Is.EqualTo(EntityOrientation.Right));
+                Assert.That(Quaternion.Angle(deck.localRotation, Quaternion.Euler(0, yaw, 0)), Is.LessThan(0.01f));
+                Assert.That(deck.localPosition, Is.EqualTo(new Vector3(x, 0, z)));
+                Transform support = dock.transform.Find("Support");
+                Assert.That(support.localRotation, Is.EqualTo(Quaternion.Euler(0, 180, 0)));
+            }
+            finally
+            {
+                Object.DestroyImmediate(dock.gameObject);
+            }
+        }
+
+        [TestCase(EntityOrientation.Up, DockRealm.Surface)]
+        [TestCase(EntityOrientation.Left, DockRealm.Cave)]
+        [TestCase(EntityOrientation.Down, DockRealm.Surface)]
+        [TestCase(EntityOrientation.Right, DockRealm.Cave)]
+        public void DockXmlPreservesIndependentDirectionsAndLegacyDefaults(EntityOrientation orientation, DockRealm realm)
+        {
+            using var fixture = new DockFixture(3, 3);
+            var factory = (DockFactory)typeof(DockFixture).GetField("_factory", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(fixture);
+            Dock original = factory.CreateDock(fixture.Map, 1, 1, 0, fixture.Floor, fixture.Brace,
+                EntityOrientation.Right, realm, realm == DockRealm.Surface ? 0 : -1, orientation);
+            var document = new XmlDocument();
+            XmlElement element = document.CreateElement("dock");
+            original.Serialize(document, element);
+            Dock loaded = factory.CreateDock(fixture.Map, element);
+            element.RemoveAttribute("deckDir");
+            Dock legacy = factory.CreateDock(fixture.Map, element);
+            try
+            {
+                Assert.That(loaded.DeckOrientation, Is.EqualTo(orientation));
+                Assert.That(loaded.BraceRotation, Is.EqualTo(EntityOrientation.Right));
+                Assert.That(loaded.Realm, Is.EqualTo(realm));
+                Assert.That(loaded.Support, Is.SameAs(fixture.Brace));
+                Assert.That(legacy.DeckOrientation, Is.EqualTo(EntityOrientation.Down));
+            }
+            finally
+            {
+                Object.DestroyImmediate(original.gameObject);
+                Object.DestroyImmediate(loaded.gameObject);
+                Object.DestroyImmediate(legacy.gameObject);
+            }
+        }
+
+        [Test]
+        public void MirroredDeckRotationAndResizePreserveIndependentBraceDirection()
+        {
+            using var fixture = new DockFixture(5, 3);
+            fixture.Symmetry.PlaceVerticalAxis(5);
+            using (var stroke = fixture.Edits.BeginDockStroke(0, 1))
+            {
+                Assert.That(stroke.Place(new DockPaintRequest(1, 1, 30, fixture.Floor, true,
+                    fixture.Pillar, fixture.Pillar, DockRealm.Surface, 1, EntityOrientation.Left)), Is.True);
+                stroke.Commit();
+            }
+            Dock own = fixture.Map[1, 1].GetDock(DockRealm.Surface);
+            Dock reflected = fixture.Map[3, 1].GetDock(DockRealm.Surface);
+            Assert.That(own.DeckOrientation, Is.EqualTo(EntityOrientation.Left));
+            Assert.That(reflected.DeckOrientation, Is.EqualTo(EntityOrientation.Right));
+            fixture.Map.CommandManager.Undo();
+            Assert.That(fixture.Map.Docks, Is.Empty);
+            fixture.Map.CommandManager.Redo();
+            Assert.That(reflected.DeckOrientation, Is.EqualTo(EntityOrientation.Right));
+            using var resized = new DockFixture(7, 5);
+            var collection = (MapDockCollection)typeof(Map).GetField("_dockCollection", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(resized.Map);
+            collection.InitializeDocksAfterResize(fixture.Map, 1, 1);
+            Assert.That(resized.Map[2, 2].GetDock(DockRealm.Surface).DeckOrientation, Is.EqualTo(EntityOrientation.Left));
+            Assert.That(resized.Map[4, 2].GetDock(DockRealm.Surface).DeckOrientation, Is.EqualTo(EntityOrientation.Right));
+        }
+
+        [TestCase(0)]
+        [TestCase(-1)]
+        [TestCase(-2)]
+        public void IsolatedClickOnSlopeCreatesSupportedDockAndQuickClickErasesFinalDock(int level)
+        {
+            using var fixture = new FloorInputFixture();
+            fixture.TargetGround(1, 1, level);
+            fixture.SetSlope(1, 1, level);
+            fixture.Press(MouseButton.Left);
+            fixture.Release();
+            DockRealm realm = level < 0 ? DockRealm.Cave : DockRealm.Surface;
+            Dock dock = fixture.Map[1, 1].GetDock(realm);
+            Assert.That(dock, Is.Not.Null);
+            Assert.That(fixture.Map[1, 1].GetTileContent(level), Is.Null);
+            Assert.That(dock.Support, Is.SameAs(fixture.Data.Pillar));
+            Assert.That(dock.Height, Is.EqualTo(level < 0 ? CaveLevel.GetAbsoluteHeight(-20, level) : 30));
+            Assert.That(dock.AnchorLevel, Is.EqualTo(level));
+            Assert.That(dock.ValidationErrors, Is.Empty);
+            fixture.Map.CommandManager.Undo();
+            Assert.That(fixture.Map.Docks, Is.Empty);
+            fixture.Map.CommandManager.Redo();
+            fixture.TargetDock(dock);
+            fixture.Press(MouseButton.Right);
+            Assert.That(fixture.Map.Docks, Is.Empty);
+            fixture.Release();
+            fixture.Map.CommandManager.Undo();
+            Assert.That(fixture.Map[1, 1].GetDock(realm), Is.SameAs(dock));
+            fixture.Map.CommandManager.Redo();
+            Assert.That(fixture.Map.Docks, Is.Empty);
+        }
+
+        [Test]
+        public void DragIncludesFirstDockAndReplacementKeepsSupportThroughHistory()
+        {
+            using var fixture = new FloorInputFixture();
+            fixture.SetSlope(1, 1, 0);
+            fixture.TargetGround(1, 1, 0);
+            fixture.Press(MouseButton.Left);
+            fixture.TargetGround(2, 1, 0);
+            fixture.Press(MouseButton.Left);
+            fixture.Release();
+            Assert.That(fixture.Map.Docks, Has.Count.EqualTo(2));
+            fixture.Map.CommandManager.Undo();
+            Assert.That(fixture.Map.Docks, Is.Empty);
+            fixture.Map.CommandManager.Redo();
+            Dock original = fixture.Map[1, 1].GetDock(DockRealm.Surface);
+            fixture.SetOrientation(EntityOrientation.Left);
+            fixture.TargetDock(original);
+            fixture.Press(MouseButton.Left);
+            fixture.Release();
+            Dock replacement = fixture.Map[1, 1].GetDock(DockRealm.Surface);
+            Assert.That(replacement, Is.Not.SameAs(original));
+            Assert.That(replacement.Height, Is.EqualTo(original.Height));
+            Assert.That(replacement.Support, Is.SameAs(fixture.Data.Pillar));
+            Assert.That(replacement.DeckOrientation, Is.EqualTo(EntityOrientation.Left));
+            fixture.Map.CommandManager.Undo();
+            Assert.That(fixture.Map[1, 1].GetDock(DockRealm.Surface), Is.SameAs(original));
+            fixture.Map.CommandManager.Redo();
+            Assert.That(fixture.Map[1, 1].GetDock(DockRealm.Surface), Is.SameAs(replacement));
+            fixture.TargetDock(replacement);
+            fixture.Press(MouseButton.Right);
+            fixture.Release();
+            fixture.TargetGround(1, 1, 0);
+            fixture.Press(MouseButton.Left);
+            fixture.Release();
+            Assert.That(fixture.Map[1, 1].GetDock(DockRealm.Surface).Support, Is.SameAs(fixture.Data.Pillar));
+        }
+
+        [Test]
+        public void ExistingUpperFloorAnchorsHeightAndBracesIgnoreDeckSelector()
+        {
+            using var fixture = new FloorInputFixture();
+            fixture.Data.Edits.SetFloor(0, 1, fixture.Data.Floor, EntityOrientation.Up, 2);
+            fixture.Data.Edits.SetFloor(2, 1, fixture.Data.Floor, EntityOrientation.Up, 2);
+            fixture.Data.Edits.FinishAction();
+            Floor anchor = (Floor)fixture.Map[0, 1].GetTileContent(2);
+            fixture.UseBraces();
+            fixture.SetOrientation(EntityOrientation.Up);
+            fixture.TargetFloor(anchor);
+            fixture.Press(MouseButton.Left);
+            fixture.TargetGround(1, 1, 2);
+            fixture.Press(MouseButton.Left);
+            fixture.Release();
+            Dock first = fixture.Map[1, 1].GetDock(DockRealm.Surface);
+            Assert.That(first.Height, Is.EqualTo(60));
+            Assert.That(first.AnchorLevel, Is.EqualTo(2));
+            Assert.That(first.DeckOrientation, Is.EqualTo(EntityOrientation.Up));
+            Assert.That(first.BraceRotation, Is.EqualTo(EntityOrientation.Right));
+            Assert.That(fixture.Map[0, 1].GetTileContent(2), Is.SameAs(anchor));
+            fixture.Map.CommandManager.Undo();
+            Assert.That(fixture.Map.Docks, Is.Empty);
+            Assert.That(fixture.Map[0, 1].GetTileContent(2), Is.SameAs(anchor));
+            fixture.Map.CommandManager.Redo();
+            fixture.TargetDock(first);
+            fixture.Press(MouseButton.Right);
+            fixture.Release();
+            fixture.TargetFloor((Floor)fixture.Map[2, 1].GetTileContent(2));
+            fixture.Press(MouseButton.Left);
+            fixture.TargetGround(1, 1, 2);
+            fixture.Press(MouseButton.Left);
+            fixture.Release();
+            Assert.That(fixture.Map[1, 1].GetDock(DockRealm.Surface).BraceRotation, Is.EqualTo(EntityOrientation.Left));
+        }
+
+        [Test]
+        public void RepaintingDeckKeepsBraceSideWhenSeveralAttachmentsAreValid()
+        {
+            using var fixture = new FloorInputFixture();
+            fixture.Data.Edits.SetFloor(0, 1, fixture.Data.Floor, EntityOrientation.Up, 1);
+            fixture.Data.Edits.SetFloor(1, 2, fixture.Data.Floor, EntityOrientation.Up, 1);
+            fixture.Data.Edits.FinishAction();
+            fixture.UseBraces();
+            fixture.TargetFloor((Floor)fixture.Map[0, 1].GetTileContent(1));
+            fixture.Press(MouseButton.Left);
+            fixture.TargetGround(1, 1, 1);
+            fixture.Press(MouseButton.Left);
+            fixture.Release();
+            Dock original = fixture.Map[1, 1].GetDock(DockRealm.Surface);
+            Assert.That(original.BraceRotation, Is.EqualTo(EntityOrientation.Right));
+            fixture.SetOrientation(EntityOrientation.Left);
+            fixture.TargetDock(original);
+            fixture.Press(MouseButton.Left);
+            fixture.Release();
+            Dock replacement = fixture.Map[1, 1].GetDock(DockRealm.Surface);
+            Assert.That(replacement.DeckOrientation, Is.EqualTo(EntityOrientation.Left));
+            Assert.That(replacement.BraceRotation, Is.EqualTo(original.BraceRotation));
+            Assert.That(replacement.ValidationErrors, Is.Empty);
+            fixture.Map.CommandManager.Undo();
+            Assert.That(fixture.Map[1, 1].GetDock(DockRealm.Surface), Is.SameAs(original));
+            fixture.Map.CommandManager.Redo();
+            Assert.That(fixture.Map[1, 1].GetDock(DockRealm.Surface), Is.SameAs(replacement));
+        }
+
+        private sealed class FloorInputFixture : IDisposable
+        {
+            private readonly GameObject _cameraRoot;
+            private readonly GameObject _tooltipRoot;
+            private readonly MultiCamera _camera;
+            private readonly BoxCollider _terrain;
+            private readonly DPInput _input;
+            private readonly Mouse _mouse;
+            private readonly UnityEngine.InputSystem.InputSettings _originalSettings;
+            private readonly UnityEngine.InputSystem.InputSettings _testSettings;
+            public DockFixture Data { get; }
+            public Map Map => Data.Map;
+            public FloorUpdater Updater { get; }
+
+            public FloorInputFixture()
+            {
+                Data = new DockFixture(4, 3);
+                Data.OpenCaves();
+                for (int x = 0; x <= Map.Width; x++)
+                {
+                    for (int y = 0; y <= Map.Height; y++) Map[x, y].Cave.InitializeHeights(-30, 100);
+                }
+                SetField(Map, "_roofCalculator", new MapRoofCalculator(Map));
+                _cameraRoot = new GameObject("Dock input camera");
+                _cameraRoot.SetActive(false);
+                _camera = _cameraRoot.AddComponent<MultiCamera>();
+                var coordinator = _cameraRoot.AddComponent<CameraCoordinator>();
+                SetField(coordinator, "_cameras", new[] { _camera });
+                _terrain = Map.Ground.gameObject.AddComponent<BoxCollider>();
+                _terrain.size = new Vector3(4, 0.1f, 4);
+                _originalSettings = InputSystem.settings;
+                _testSettings = Object.Instantiate(_originalSettings);
+                _testSettings.SetInternalFeatureFlag("RUN_PLAYER_UPDATES_IN_EDIT_MODE", true);
+                InputSystem.settings = _testSettings;
+                _input = new DPInput();
+                _mouse = InputSystem.AddDevice<Mouse>();
+                _input.devices = new InputDevice[] { _mouse };
+                _input.Enable();
+                _tooltipRoot = new GameObject("Dock tooltip", typeof(RectTransform), typeof(CanvasGroup));
+                _tooltipRoot.SetActive(false);
+                var tooltip = _tooltipRoot.AddComponent<Tooltip>();
+                SetField(tooltip, "canvasGroup", _tooltipRoot.GetComponent<CanvasGroup>());
+                SetField(tooltip, "_transformToMove", _tooltipRoot.GetComponent<RectTransform>());
+                var text = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(TooltipTextBlock));
+                text.transform.SetParent(_tooltipRoot.transform);
+                var block = text.GetComponent<TooltipTextBlock>();
+                SetField(block, "label", text.GetComponent<TextMeshProUGUI>());
+                SetField(tooltip, "textTemplate", block);
+                var tooltips = new TooltipHandler(null, null);
+                SetField(tooltips, "_tooltip", tooltip);
+                var maps = new MapHandler(null, null, new LoggerSource());
+                var registry = new MapRegistry();
+                registry.SetMap(Map);
+                SetField(maps, "_registry", registry);
+                Updater = new FloorUpdater(null, tooltips, coordinator, _input, maps, null, null, null, Data.Database, Data.Edits);
+                SetField(Updater, "_paintMode", FloorPaintMode.Docks);
+                SetField(Updater, "_selectedFloor", Data.Floor);
+                SetField(Updater, "_lastPillarSupport", Data.Pillar);
+            }
+
+            public void SetSlope(int x, int y, int level)
+            {
+                if (level < 0)
+                {
+                    Map[x + 1, y + 1].Cave.InitializeHeights(-20, 100);
+                }
+                else
+                {
+                    SetField(Map[x + 1, y + 1], "surfaceHeight", 30);
+                }
+            }
+
+            public void SetOrientation(EntityOrientation orientation) => SetField(Updater, "_orientation", orientation);
+            public void UseBraces()
+            {
+                SetField(Updater, "_dockSupportAuto", false);
+                SetField(Updater, "_selectedDockSupport", Data.Brace);
+            }
+
+            public void TargetGround(int x, int y, int level)
+            {
+                SetField(_camera, "_level", level);
+                _terrain.center = new Vector3(x * 4 + 2, -10, y * 4 + 2);
+                Target(x, y, _terrain);
+            }
+
+            public void TargetFloor(Floor floor)
+            {
+                SetField(_camera, "_level", floor.Level);
+                Target(floor.Tile.X, floor.Tile.Y, floor.GetComponent<Collider>());
+            }
+
+            public void TargetDock(Dock dock) => Target(dock.Tile.X, dock.Tile.Y, dock.GetComponent<Collider>());
+
+            private void Target(int x, int y, Collider collider)
+            {
+                Physics.SyncTransforms();
+                Assert.That(collider.Raycast(new Ray(new Vector3(x * 4 + 2, 100, y * 4 + 2), Vector3.down), out RaycastHit hit, 200), Is.True);
+                typeof(MultiCamera).GetProperty(nameof(MultiCamera.CurrentRaycast)).SetValue(_camera, hit);
+            }
+
+            public void Press(MouseButton button)
+            {
+                InputSystem.QueueStateEvent(_mouse, new MouseState().WithButton(button));
+                InputSystem.Update();
+                Updater.Tick();
+            }
+
+            public void Release()
+            {
+                InputSystem.QueueStateEvent(_mouse, new MouseState());
+                InputSystem.Update();
+                Updater.Tick();
+            }
+
+            public void Dispose()
+            {
+                Updater.Disable();
+                _input.Disable();
+                Object.DestroyImmediate(_input.asset);
+                InputSystem.RemoveDevice(_mouse);
+                InputSystem.settings = _originalSettings;
+                Object.DestroyImmediate(_testSettings);
+                Object.DestroyImmediate(_cameraRoot);
+                Object.DestroyImmediate(_tooltipRoot);
+                Data.Dispose();
+            }
         }
 
         private static bool ResolveWallStroke(WallUpdater updater, Map map, int x, int y, bool horizontal,

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Domain.Entities.Floors;
 using Warlander.Deedplanner.Ui.Widgets;
@@ -15,6 +16,7 @@ namespace Warlander.Deedplanner.Editing
         [SerializeField] private UnityTree _floorsTree;
         [SerializeField] private UnityList _dockFloorsList;
 
+        [SerializeField] private TMP_Text _orientationLabel;
         [SerializeField] private Toggle _southToggle;
         [SerializeField] private Toggle _westToggle;
         [SerializeField] private Toggle _northToggle;
@@ -125,6 +127,7 @@ namespace Warlander.Deedplanner.Editing
         // Docks mode swaps the categorized tree for a flat list of dockable floors (roofs-style).
         private void UpdateFloorPickerVisibility(bool docksMode)
         {
+            _orientationLabel.text = docksMode ? "Deck Orientation" : "Floor Orientation";
             _floorsTree.gameObject.SetActive(!docksMode);
             _dockFloorsList.gameObject.SetActive(docksMode);
         }

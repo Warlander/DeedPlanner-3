@@ -25,6 +25,7 @@ namespace Warlander.Deedplanner.Docks
         public FloorData Floor { get; private set; }
         public DockSupportData Support { get; private set; }
         public EntityOrientation BraceRotation { get; private set; }
+        public EntityOrientation DeckOrientation { get; private set; }
         public IReadOnlyList<string> ValidationErrors { get; private set; } = new List<string>();
         public override Materials Materials
         {
@@ -48,7 +49,7 @@ namespace Warlander.Deedplanner.Docks
 
         public void Initialize(Tile tile, int height, FloorData floor, DockSupportData support,
             EntityOrientation braceRotation, DockRealm realm = DockRealm.Surface, Material ghostMaterial = null,
-            int? anchorLevel = null)
+            int? anchorLevel = null, EntityOrientation deckOrientation = EntityOrientation.Down)
         {
             Tile = tile;
             Height = height;
@@ -57,6 +58,7 @@ namespace Warlander.Deedplanner.Docks
             Floor = floor;
             Support = support;
             BraceRotation = braceRotation;
+            DeckOrientation = deckOrientation;
             _ghostMaterial = ghostMaterial;
 
             SetRaycastLayer(LayerMasks.GetLayerForLevel(LayerMasks.FloorRoofLayer,
@@ -161,8 +163,24 @@ namespace Warlander.Deedplanner.Docks
 
             _deckModel = newModel;
             _deckModel.transform.SetParent(transform, false);
-            _deckModel.transform.localRotation = Quaternion.Euler(0, 180, 0);
-            _deckModel.transform.localPosition = new Vector3(0, 0, -4);
+            if (DeckOrientation == EntityOrientation.Right)
+            {
+                _deckModel.transform.localRotation = Quaternion.Euler(0, 90, 0);
+            }
+            else if (DeckOrientation == EntityOrientation.Down)
+            {
+                _deckModel.transform.localRotation = Quaternion.Euler(0, 180, 0);
+                _deckModel.transform.localPosition = new Vector3(0, 0, -4);
+            }
+            else if (DeckOrientation == EntityOrientation.Left)
+            {
+                _deckModel.transform.localRotation = Quaternion.Euler(0, 270, 0);
+                _deckModel.transform.localPosition = new Vector3(-4, 0, -4);
+            }
+            else if (DeckOrientation == EntityOrientation.Up)
+            {
+                _deckModel.transform.localPosition = new Vector3(-4, 0, 0);
+            }
 
             OnModelLoadedCallback(_deckModel);
         }
@@ -330,6 +348,7 @@ namespace Warlander.Deedplanner.Docks
             localRoot.SetAttribute("anchorLevel", AnchorLevel.ToString());
             localRoot.SetAttribute("realm", Realm.ToString().ToLowerInvariant());
             localRoot.SetAttribute("floor", Floor.ShortName);
+            localRoot.SetAttribute("deckDir", DeckOrientation.ToString().ToUpperInvariant());
             localRoot.SetAttribute("support", Support != null ? Support.ShortName : "none");
             if (Support != null && Support.Type == DockSupportType.Brace)
             {

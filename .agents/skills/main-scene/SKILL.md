@@ -77,7 +77,7 @@ Editing Panel
 | Ground Tab | GroundUpdaterView | Toolbelt (pencil/fill/diagonal), click-mode info, Grounds Tree (UnityTree + search) |
 | Caves Tab | CaveUpdaterView | Four-button toolbelt (pencil, fill, culling off/on), primary/secondary cave choices, Caves Tree |
 | Height Tab | HeightUpdaterView | 4 edit-mode toggles; cave Floor/Clearance modes; optional Preserve ceiling height; Handles Settings / Painting Settings panels |
-| Floors Tab | FloorUpdaterView | Orientation box (N/W/E/S toggles), Floors Tree |
+| Floors Tab | FloorUpdaterView | N/W/E/S orientation controls with a wired Floor/Deck Orientation heading; floor/dock placement modes, floor tree or dock list, and dock support choices |
 | Walls Tab | WallUpdaterView | Automatic Reverse / Reverse checkboxes, Walls Tree |
 | Roofs Tab | RoofUpdaterView | Roofs List (UnityList) |
 | Objects Tab | DecorationUpdaterView | Snap/rotation checkboxes, drag sensitivity, Objects Tree |

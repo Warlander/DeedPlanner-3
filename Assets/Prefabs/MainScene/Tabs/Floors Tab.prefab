@@ -954,14 +954,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Warlander.Deedplanner.Gui.Updaters.FloorUpdaterView
   _floorsTree: {fileID: 7891701916038173651}
   _dockFloorsList: {fileID: 398979083106403076}
+  _orientationLabel: {fileID: 6901906863185212383}
   _southToggle: {fileID: 2424140487619717345}
   _westToggle: {fileID: 8049714420562640848}
   _northToggle: {fileID: 8853246394943725998}
   _eastToggle: {fileID: 91792101917745837}
   _floorsModeToggle: {fileID: 5504777009478595053}
   _docksModeToggle: {fileID: 3238776262826067303}
-  _floorsModeIcon: {fileID: 0}
-  _docksModeIcon: {fileID: 0}
   _dockSupportSection: {fileID: 8567537329250801653}
   _autoSupportToggle: {fileID: 4254833064960301530}
   _noneSupportToggle: {fileID: 9166684143884874572}

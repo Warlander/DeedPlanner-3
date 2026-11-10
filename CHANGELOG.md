@@ -2,6 +2,8 @@
 
 ## [3.5.1] - Unreleased
 
+- Fixed dock clicks, replacements and quick right-click deletion; new docks on slopes start at the highest terrain corner
+- Added deck orientation independent of dock braces, with Floor/Deck Orientation wording matching the placement mode
 - Added flat/arched switching for existing bridges, with each shape's settings remembered until the map is reloaded
 - Improved map error and warning checks on large deeds
 - Fixed map warnings retaining outdated or duplicate entries after refreshing

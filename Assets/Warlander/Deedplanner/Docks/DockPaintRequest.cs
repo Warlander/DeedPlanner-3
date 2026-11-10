@@ -1,3 +1,4 @@
+using Warlander.Deedplanner.Domain;
 using Warlander.Deedplanner.Domain.Entities.Floors;
 
 namespace Warlander.Deedplanner.Docks
@@ -13,9 +14,11 @@ namespace Warlander.Deedplanner.Docks
         public DockSupportData LastPillarSupport { get; }
         public DockRealm Realm { get; }
         public int AnchorLevel { get; }
+        public EntityOrientation DeckOrientation { get; }
 
         public DockPaintRequest(int x, int y, int height, FloorData floor, bool automaticSupport,
-            DockSupportData support, DockSupportData lastPillarSupport, DockRealm realm, int anchorLevel)
+            DockSupportData support, DockSupportData lastPillarSupport, DockRealm realm, int anchorLevel,
+            EntityOrientation deckOrientation = EntityOrientation.Down)
         {
             X = x;
             Y = y;
@@ -26,6 +29,7 @@ namespace Warlander.Deedplanner.Docks
             LastPillarSupport = lastPillarSupport;
             Realm = realm;
             AnchorLevel = anchorLevel;
+            DeckOrientation = deckOrientation;
         }
     }
 }

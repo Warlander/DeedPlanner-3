@@ -8,6 +8,7 @@ using Warlander.Deedplanner.Ui.Tooltips;
 using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Cameras;
+using Warlander.Deedplanner.Caves;
 
 namespace Warlander.Deedplanner.Editing
 {
@@ -255,7 +256,6 @@ namespace Warlander.Deedplanner.Editing
                     _lastStrokeTile = null;
                     _dockEditStroke = _mapEditFacade.BeginDockStroke(tile.X, tile.Y);
                 }
-                return;
             }
 
             if (_dockStroke == DockStroke.Paint && placementHeld)
@@ -303,11 +303,14 @@ namespace Warlander.Deedplanner.Editing
             else
             {
                 int level = _cameraCoordinator.Current.Level < 0 ? _cameraCoordinator.Current.Level : 0;
-                if (!TryPlaceStarterFloor(tile, level))
-                {
-                    return;
-                }
-                _strokeHeight = tile.GetAbsoluteHeightForLevelOnTile(level);
+                Map map = tile.Map;
+                bool cave = level < 0;
+                int height = Mathf.Max(
+                    cave ? tile.CaveHeight : tile.SurfaceHeight,
+                    cave ? map[tile.X + 1, tile.Y].CaveHeight : map[tile.X + 1, tile.Y].SurfaceHeight,
+                    cave ? map[tile.X, tile.Y + 1].CaveHeight : map[tile.X, tile.Y + 1].SurfaceHeight,
+                    cave ? map[tile.X + 1, tile.Y + 1].CaveHeight : map[tile.X + 1, tile.Y + 1].SurfaceHeight);
+                _strokeHeight = cave ? CaveLevel.GetAbsoluteHeight(height, level) : height;
                 _strokeAnchorLevel = level;
                 _strokeRealm = level < 0 ? DockRealm.Cave : DockRealm.Surface;
             }
@@ -316,31 +319,20 @@ namespace Warlander.Deedplanner.Editing
             _dockEditStroke = _mapEditFacade.BeginDockStroke(tile.X, tile.Y);
             _lastStrokeTile = tile;
             _paintedTiles.Clear();
-            _paintedTiles.Add(tile);
-        }
-
-        // The clicked tile only anchors the stroke: an empty tile gets a ground floor, and the
-        // anchor itself is never converted - docks appear from the second tile onward.
-        private bool TryPlaceStarterFloor(Tile tile, int level)
-        {
-            if (_selectedFloor.Opening && level == 0)
+            if (hitFloor != null && hitFloor.Valid)
             {
-                _tooltipHandler.ShowTooltipText("<color=red><b>It's not possible to place openings/stairs on ground floor</b></color>");
-                return false;
+                _paintedTiles.Add(tile);
             }
-
-            if (tile.GetTileContent(level) == null)
+            else
             {
-                _mapEditFacade.SetFloor(tile.X, tile.Y, _selectedFloor, _orientation, level);
+                TryPaintTile(tile);
             }
-
-            return true;
         }
 
         private void TryPaintTile(Tile tile)
         {
             var request = new DockPaintRequest(tile.X, tile.Y, _strokeHeight, _selectedFloor,
-                _dockSupportAuto, _selectedDockSupport, _lastPillarSupport, _strokeRealm, _strokeAnchorLevel);
+                _dockSupportAuto, _selectedDockSupport, _lastPillarSupport, _strokeRealm, _strokeAnchorLevel, _orientation);
             bool originalPlaced = _dockEditStroke.Place(request);
             if (!originalPlaced)
             {
@@ -354,7 +346,7 @@ namespace Warlander.Deedplanner.Editing
             GameObject markerObject = new GameObject("Invalid Dock Marker", typeof(Dock));
             Dock marker = markerObject.GetComponent<Dock>();
             marker.Initialize(tile, _strokeHeight, _selectedFloor, null, EntityOrientation.Up, _strokeRealm,
-                _sharedMaterials.GhostMaterial, _strokeAnchorLevel);
+                _sharedMaterials.GhostMaterial, _strokeAnchorLevel, _orientation);
 
             BoxCollider markerCollider = markerObject.GetComponent<BoxCollider>();
             if (markerCollider)

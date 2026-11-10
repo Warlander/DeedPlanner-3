@@ -49,7 +49,7 @@ namespace Warlander.Deedplanner.Docks
                 {
                     Dock dock = _dockFactory.CreateDock(_map, shiftedX, shiftedY, originalDock.Height,
                         originalDock.Floor, originalDock.Support, originalDock.BraceRotation, originalDock.Realm,
-                        originalDock.AnchorLevel);
+                        originalDock.AnchorLevel, originalDock.DeckOrientation);
                     Register(dock);
                 }
             }

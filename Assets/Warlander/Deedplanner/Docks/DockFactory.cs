@@ -59,6 +59,12 @@ namespace Warlander.Deedplanner.Docks
                     Enum.TryParse(element.GetAttribute("braceDir"), true, out braceRotation);
                 }
 
+                EntityOrientation deckOrientation = EntityOrientation.Down;
+                if (Enum.TryParse(element.GetAttribute("deckDir"), true, out EntityOrientation savedDeckOrientation))
+                {
+                    deckOrientation = savedDeckOrientation;
+                }
+
                 int? anchorLevel = null;
                 if (element.HasAttribute("anchorLevel"))
                 {
@@ -72,7 +78,7 @@ namespace Warlander.Deedplanner.Docks
                     throw new FormatException("Unknown dock realm " + element.GetAttribute("realm"));
                 }
 
-                return CreateDock(map, x, y, height, floor, support, braceRotation, realm, anchorLevel);
+                return CreateDock(map, x, y, height, floor, support, braceRotation, realm, anchorLevel, deckOrientation);
             }
             catch (Exception e)
             {
@@ -82,13 +88,14 @@ namespace Warlander.Deedplanner.Docks
         }
 
         public Dock CreateDock(Map map, int x, int y, int height, FloorData floor, DockSupportData support,
-            EntityOrientation braceRotation, DockRealm realm = DockRealm.Surface, int? anchorLevel = null)
+            EntityOrientation braceRotation, DockRealm realm = DockRealm.Surface, int? anchorLevel = null,
+            EntityOrientation deckOrientation = EntityOrientation.Down)
         {
             GameObject dockObject = new GameObject("Dock " + floor.Name, typeof(Dock));
             dockObject.SetActive(false);
             Dock dock = dockObject.GetComponent<Dock>();
             dock.Initialize(map[x, y], height, floor, support, braceRotation, realm, _sharedMaterials.GhostMaterial,
-                anchorLevel);
+                anchorLevel, deckOrientation);
             return dock;
         }
     }
