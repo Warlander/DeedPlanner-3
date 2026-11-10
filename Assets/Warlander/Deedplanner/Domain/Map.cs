@@ -261,8 +261,23 @@ namespace Warlander.Deedplanner.Domain
             {
                 int x = Convert.ToInt32(tileElement.GetAttribute("x"));
                 int y = Convert.ToInt32(tileElement.GetAttribute("y"));
-                if (x < 0 || x >= Width || y < 0 || y >= Height)
+                if (x < 0 || x > Width || y < 0 || y > Height)
                 {
+                    continue;
+                }
+                if (x == Width || y == Height)
+                {
+                    foreach (XmlElement levelElement in tileElement.SelectNodes("level"))
+                    {
+                        foreach (XmlElement objectElement in levelElement.SelectNodes("object"))
+                        {
+                            if (_dataCatalog.GetDecoration(objectElement.GetAttribute("id"))?.CornerOnly == true)
+                            {
+                                this[x, y].DeserializeDecoration(objectElement,
+                                    Convert.ToInt32(levelElement.GetAttribute("value")));
+                            }
+                        }
+                    }
                     continue;
                 }
 

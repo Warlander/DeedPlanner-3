@@ -560,6 +560,9 @@ namespace Warlander.Deedplanner.Domain
                 string type = element.GetAttribute("type");
                 bool centerOnly = type == "centered";
                 bool cornerOnly = type == "corner";
+                float? fixedRotation = element.HasAttribute("fixedRotation")
+                    ? float.Parse(element.GetAttribute("fixedRotation"), CultureInfo.InvariantCulture) * Mathf.Deg2Rad
+                    : null;
                 bool floating = type == "floating";
                 bool tree = type == "tree";
                 bool bush = type == "bush";
@@ -595,7 +598,7 @@ namespace Warlander.Deedplanner.Domain
 
                 DecorationData data = new DecorationData(model, name, shortName, categories.ToArray(),
                     type, centerOnly, cornerOnly, floating,
-                    tree, bush, materials);
+                    tree, bush, materials, fixedRotation);
                 _database.AddDecoration(data);
             }
         }

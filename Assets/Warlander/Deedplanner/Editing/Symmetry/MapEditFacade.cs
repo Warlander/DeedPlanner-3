@@ -196,24 +196,32 @@ namespace Warlander.Deedplanner.Editing
             int level, bool floatOnWater = false)
         {
             Map map = _mapHandler.Map;
-            if (x < 0 || x >= map.Width || y < 0 || y >= map.Height)
+            if (x < 0 || x > map.Width || y < 0 || y > map.Height)
             {
                 return null;
             }
+            float sourceWorldX = x * 4f + localPosition.x;
+            float sourceWorldY = y * 4f + localPosition.y;
+            if (data != null && data.CornerOnly)
+            {
+                sourceWorldX = Mathf.Floor((sourceWorldX + 2f) / 4f) * 4f;
+                sourceWorldY = Mathf.Floor((sourceWorldY + 2f) / 4f) * 4f;
+            }
+            bool allowBoundary = data == null || data.CornerOnly;
+            int maxX = allowBoundary ? map.Width : map.Width - 1;
+            int maxY = allowBoundary ? map.Height : map.Height - 1;
             SymmetrySnapshot snapshot = _symmetry.Capture();
             var visited = new HashSet<PoseCoordinate>();
             Decoration original = null;
             snapshot.ForEachTransform(transform =>
             {
-                float worldX = x * 4f + localPosition.x;
-                float worldY = y * 4f + localPosition.y;
-                worldX = snapshot.TransformWorldX(worldX, transform);
-                worldY = snapshot.TransformWorldY(worldY, transform);
+                float worldX = snapshot.TransformWorldX(sourceWorldX, transform);
+                float worldY = snapshot.TransformWorldY(sourceWorldY, transform);
                 int targetX = Mathf.FloorToInt(worldX / 4f);
                 int targetY = Mathf.FloorToInt(worldY / 4f);
                 var targetPosition = new Vector2(worldX - targetX * 4f, worldY - targetY * 4f);
                 var coordinate = new PoseCoordinate(targetX, targetY, targetPosition);
-                if (targetX < 0 || targetX >= map.Width || targetY < 0 || targetY >= map.Height ||
+                if (targetX < 0 || targetX > maxX || targetY < 0 || targetY > maxY ||
                     !visited.Add(coordinate))
                 {
                     return;
@@ -228,7 +236,7 @@ namespace Warlander.Deedplanner.Editing
                 }
 
                 Decoration result = map[targetX, targetY].SetDecoration(data, targetPosition,
-                    transform.TransformRotation(rotation), level, floatOnWater);
+                    data?.FixedRotation ?? transform.TransformRotation(rotation), level, floatOnWater);
                 if (transform == SymmetryTransform.Identity)
                 {
                     original = result;
@@ -568,7 +576,7 @@ namespace Warlander.Deedplanner.Editing
                 {
                     int x = centerX + offsetX;
                     int y = centerY + offsetY;
-                    if (x < 0 || x >= map.Width || y < 0 || y >= map.Height)
+                    if (x < 0 || x > map.Width || y < 0 || y > map.Height)
                     {
                         continue;
                     }

@@ -10069,13 +10069,276 @@
 			<category>Displays</category>
 		</object>
 
-		<object name="Waystone" shortname="waystone" type="corner">
+		<object name="Waystone" shortname="waystone" type="corner" fixedRotation="0">
 			<model location="Objects/Waystone.wom"/>
 			<category>Highway</category>
 		</object>
-		<object name="Catseye" shortname="catseye" type="corner">
+		<object name="Catseye" shortname="catseye" type="corner" fixedRotation="0">
 			<model location="Objects/catseye.wom"/>
 			<category>Highway</category>
+		</object>
+
+		<object name="Fruit press" shortname="fruitPress" type="normal">
+			<model location="Objects/Kitchen/Barrel/fruit-press.wom">
+				<tex location="Objects/Kitchen/Barrel/barrels.dds" normal="Objects/barrels_n.dds" />
+			</model>
+			<materials>
+				Shafts = 1,
+				Planks = 4,
+				Sprouts = 2,
+				Small nails = 1
+			</materials>
+			<category>Cooking</category>
+			<category>Materials/Wood</category>
+		</object>
+
+		<object name="Cheese drill" shortname="cheeseDrill" type="normal">
+			<model location="Objects/Kitchen/Barrel/cheese-drill.wom">
+				<tex location="Objects/Kitchen/Barrel/barrels.dds" normal="Objects/barrels_n.dds" />
+			</model>
+			<materials>
+				Bladders = 1,
+				Shafts = 1,
+				Planks = 5,
+				Sprouts = 2,
+				Small nails = 1
+			</materials>
+			<category>Cooking</category>
+			<category>Materials/Wood</category>
+		</object>
+
+		<object name="Baking stone" shortname="bakingStone" type="normal">
+			<model location="Objects/Kitchen/BakingStone/Stoneware.wom" />
+			<category>Cooking</category>
+			<category>Materials/Stone</category>
+		</object>
+
+		<object name="Catseye (green)" shortname="catseyeGreen" type="corner" fixedRotation="0">
+			<model location="Objects/catseye.wom">
+				<override mesh="SphereMesh" texture="Objects/glowgreen.dds" />
+			</model>
+			<category>Highway</category>
+		</object>
+
+		<object name="Catseye (blue)" shortname="catseyeBlue" type="corner" fixedRotation="0">
+			<model location="Objects/catseye.wom">
+				<override mesh="SphereMesh" texture="Objects/glowblue.dds" />
+			</model>
+			<category>Highway</category>
+		</object>
+
+		<object name="Dirt pile" shortname="dirtPile" type="normal">
+			<model location="Objects/Piles/pileofdirt.wom">
+				<tex location="Objects/Piles/dirt.dds" normal="GroundTextures/dirt_n.dds" />
+			</model>
+			<category>Decoration/Piles</category>
+		</object>
+
+		<object name="Sand pile" shortname="sandPile" type="normal">
+			<model location="Objects/Piles/pileofsand.wom">
+				<tex location="Objects/Piles/sand.dds" normal="GroundTextures/sand_n.dds" />
+			</model>
+			<category>Decoration/Piles</category>
+		</object>
+
+		<object name="Pile of items" shortname="itemPile" type="normal">
+			<model location="Objects/Piles/pileofitems.wom">
+				<tex location="Objects/Piles/pileofitems_texture.dds" normal="Objects/Piles/pileofitems_texture_n.dds" />
+			</model>
+			<category>Decoration/Piles</category>
+		</object>
+
+		<object name="Net trap" shortname="netTrap" type="normal">
+			<model location="Objects/Traps/trap-net.wom" />
+			<materials>
+				Ropes = 2,
+				Cordage ropes = 5,
+				Shafts = 1
+			</materials>
+			<category>Traps</category>
+		</object>
+
+		<object name="Axe trap" shortname="axeTrap" type="normal">
+			<model location="Objects/Traps/trap-axe.wom" />
+			<materials>
+				Large nails = 1,
+				Planks = 5,
+				Large axe = 1,
+				Bow string = 1,
+				Steel spring = 1
+			</materials>
+			<category>Traps</category>
+		</object>
+
+		<object name="Man trap" shortname="manTrap" type="normal">
+			<model location="Objects/Traps/trap-man.wom" />
+			<materials>
+				Dredge lips = 2,
+				Steel spring = 1
+			</materials>
+			<category>Traps</category>
+		</object>
+
+		<object name="Knife trap" shortname="knifeTrap" type="normal">
+			<model location="Objects/Traps/trap-knife.wom" />
+			<materials>
+				Large nails = 1,
+				Planks = 5,
+				Carving knife blades = 10
+			</materials>
+			<category>Traps</category>
+		</object>
+
+		<object name="Stick trap" shortname="stickTrap" type="normal">
+			<model location="Objects/Traps/trap-sticks.wom" />
+			<materials>
+				Large nails = 1,
+				Planks = 5,
+				Wooden handles = 10
+			</materials>
+			<category>Traps</category>
+		</object>
+
+		<object name="Bow trap" shortname="bowTrap" type="normal">
+			<model location="Objects/Traps/trap-bow.wom" />
+			<materials>
+				Large nails = 1,
+				Planks = 2,
+				Short bow = 1,
+				Bow string = 1,
+				War arrow = 1
+			</materials>
+			<category>Traps</category>
+		</object>
+
+		<object name="Scythe trap" shortname="scytheTrap" type="normal">
+			<model location="Objects/Traps/trap-scythe.wom" />
+			<materials>
+				Stone bricks = 11,
+				Clay = 11,
+				Scythe blade = 1,
+				Steel spring = 1
+			</materials>
+			<category>Traps</category>
+		</object>
+
+		<object name="Corrosive trap" shortname="corrosiveTrap" type="normal">
+			<model location="Objects/Traps/trap-corrosive.wom" />
+			<materials>
+				Large nails = 1,
+				Planks = 1,
+				Pottery flasks = 10,
+				Lye = 4,
+				Bow string = 1
+			</materials>
+			<category>Traps</category>
+		</object>
+
+		<object name="Rope trap" shortname="ropeTrap" type="normal">
+			<model location="Objects/Traps/trap-rope.wom" />
+			<materials>
+				Ropes = 1,
+				Cordage ropes = 1,
+				Shafts = 1,
+				Bow string = 1
+			</materials>
+			<category>Traps</category>
+		</object>
+
+		<object name="Pole trap" shortname="poleTrap" type="normal">
+			<model location="Objects/Traps/trap-pole.wom" />
+			<materials>
+				Large nails = 1,
+				Planks = 5,
+				Logs = 1,
+				Ropes = 1
+			</materials>
+			<category>Traps</category>
+		</object>
+
+		<object name="Christmas tree" shortname="christmasTree" type="normal">
+			<model location="Objects/Christmas/Tree/xmasTree.wom" />
+			<materials>
+				Wood scraps = 1,
+				Felled pine trees = 1
+			</materials>
+			<category>Unique items/Christmas</category>
+		</object>
+
+		<object name="Figurine of Santa" shortname="santaFigurine" type="normal">
+			<model location="Objects/Christmas/Santa/santaFigurine.wom">
+				<tex location="Objects/Christmas/Santa/santaFigurine.dds" normal="Objects/Christmas/Santa/santaFigurine_n.dds" />
+			</model>
+			<category>Unique items/Christmas</category>
+			<category>Statues</category>
+		</object>
+
+		<object name="Snowman statue" shortname="snowmanStatue" type="normal">
+			<model location="Objects/Christmas/Snowman/Snowman.wom">
+				<tex location="Objects/Christmas/Snowman/snowman.dds" normal="Objects/Christmas/Snowman/snowman_n.dds" />
+			</model>
+			<category>Unique items/Christmas</category>
+			<category>Statues</category>
+		</object>
+
+		<object name="Merry wreath" shortname="merryWreath" type="normal">
+			<model location="Objects/Christmas/Wreath/Wreath_unlit.wom">
+				<tex location="Objects/Christmas/Wreath/candle.dds" normal="Objects/Christmas/Wreath/candle_n.dds" />
+				<tex location="Objects/Christmas/Wreath/wreath.dds" normal="Objects/Christmas/Wreath/wreath_n.dds" />
+			</model>
+			<category>Unique items/Christmas</category>
+		</object>
+
+		<object name="Statue of elf" shortname="elfStatue" type="normal">
+			<model location="Objects/Christmas/Elf/Elf.wom">
+				<tex location="Objects/Christmas/Elf/goblin2.dds" normal="Objects/Christmas/Elf/goblin2_n.dds" />
+				<tex location="Objects/Christmas/Elf/goblin.dds" normal="Objects/Christmas/Elf/goblin_n.dds" />
+			</model>
+			<category>Unique items/Christmas</category>
+			<category>Statues</category>
+		</object>
+
+		<object name="Gift box (green)" shortname="giftBoxGreen" type="normal">
+			<model location="Objects/Christmas/GiftBoxes/giftBox.wom">
+				<tex location="Objects/Christmas/GiftBoxes/GiftBox1_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+			</model>
+			<category>Unique items/Christmas</category>
+		</object>
+
+		<object name="Gift box (blue)" shortname="giftBoxBlue" type="normal">
+			<model location="Objects/Christmas/GiftBoxes/giftBox.wom">
+				<override mesh="Box2Mesh" texture="Objects/Christmas/GiftBoxes/GiftBox2_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+				<tex location="Objects/Christmas/GiftBoxes/GiftBox1_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+				<tex location="Objects/Christmas/GiftBoxes/GiftBox2_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+			</model>
+			<category>Unique items/Christmas</category>
+		</object>
+
+		<object name="Gift box (striped)" shortname="giftBoxStriped" type="normal">
+			<model location="Objects/Christmas/GiftBoxes/giftBox.wom">
+				<override mesh="Box2Mesh" texture="Objects/Christmas/GiftBoxes/GiftBox3_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+				<tex location="Objects/Christmas/GiftBoxes/GiftBox1_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+				<tex location="Objects/Christmas/GiftBoxes/GiftBox3_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+			</model>
+			<category>Unique items/Christmas</category>
+		</object>
+
+		<object name="Gift box (candy)" shortname="giftBoxCandy" type="normal">
+			<model location="Objects/Christmas/GiftBoxes/giftBox.wom">
+				<override mesh="Box2Mesh" texture="Objects/Christmas/GiftBoxes/GiftBox4_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+				<tex location="Objects/Christmas/GiftBoxes/GiftBox1_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+				<tex location="Objects/Christmas/GiftBoxes/GiftBox4_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+			</model>
+			<category>Unique items/Christmas</category>
+		</object>
+
+		<object name="Gift box (holly)" shortname="giftBoxHolly" type="normal">
+			<model location="Objects/Christmas/GiftBoxes/giftBox.wom">
+				<override mesh="Box2Mesh" texture="Objects/Christmas/GiftBoxes/GiftBox5_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+				<tex location="Objects/Christmas/GiftBoxes/GiftBox1_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+				<tex location="Objects/Christmas/GiftBoxes/GiftBox5_512.dds" normal="Objects/Christmas/GiftBoxes/GiftBox1_512_n.dds" />
+			</model>
+			<category>Unique items/Christmas</category>
 		</object>
 
 	</objects>

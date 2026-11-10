@@ -275,7 +275,13 @@ namespace Warlander.Deedplanner.Editing
                 _dragStartPos = _cameraCoordinator.Current.MousePosition;
             }
 
-            if (_input.DecorationUpdater.SmoothObjectRotate.IsPressed())
+            if (data.FixedRotation.HasValue)
+            {
+                _isScrollRotate = false;
+                _rotation = data.FixedRotation.Value * Mathf.Rad2Deg;
+                _ghostObject.transform.localRotation = Quaternion.Euler(0, _rotation, 0);
+            }
+            else if (_input.DecorationUpdater.SmoothObjectRotate.IsPressed())
             {
                 _isScrollRotate = true;
                 _rotation += _input.DecorationUpdater.SmoothObjectRotate.ReadValue<float>();
@@ -296,7 +302,8 @@ namespace Warlander.Deedplanner.Editing
                 _ghostObject.transform.localRotation = Quaternion.Euler(0, _rotation, 0);
             }
 
-            if (!_isScrollRotate && _input.UpdatersShared.Placement.ReadValue<float>() > 0 && _placingDecoration)
+            if (!data.FixedRotation.HasValue && !_isScrollRotate &&
+                _input.UpdatersShared.Placement.ReadValue<float>() > 0 && _placingDecoration)
             {
                 Vector2 dragEndPos = _cameraCoordinator.Current.MousePosition;
                 Vector2 difference = dragEndPos - _dragStartPos;
@@ -395,8 +402,8 @@ namespace Warlander.Deedplanner.Editing
             }
             else if (data.CornerOnly)
             {
-                pos.x = Mathf.Round(originalPosition.x / 4f) * 4f;
-                pos.z = Mathf.Round(originalPosition.z / 4f) * 4f;
+                pos.x = Mathf.Floor((originalPosition.x + 2f) / 4f) * 4f;
+                pos.z = Mathf.Floor((originalPosition.z + 2f) / 4f) * 4f;
             }
             else if (snapToGrid)
             {

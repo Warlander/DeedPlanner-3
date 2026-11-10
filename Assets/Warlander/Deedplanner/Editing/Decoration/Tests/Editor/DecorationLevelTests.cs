@@ -222,6 +222,134 @@ namespace Warlander.Deedplanner.Editing.Tests
 
             Assert.That(placed == null, Is.EqualTo(sameLevel));
         }
+
+        [TestCase(0.1f, 0)]
+        [TestCase(2f, 1)]
+        [TestCase(3.9f, 1)]
+        public void Facade_CornerOnlySnapsToGameCorner(float localX, int expectedX)
+        {
+            DecorationData data = _fixture.CornerData("catseye");
+
+            Decoration placed = _fixture.Facade.SetDecoration(0, 0, data, new Vector2(localX, 0.1f), 0, 0);
+
+            Assert.That(placed, Is.Not.Null);
+            Assert.That(placed.Tile.X, Is.EqualTo(expectedX));
+            Assert.That(placed.Position, Is.EqualTo(Vector2.zero));
+        }
+
+        [TestCase(2, 0)]
+        [TestCase(0, 1)]
+        [TestCase(2, 1)]
+        public void Facade_CornerOnlySupportsOuterMapCorner(int x, int y)
+        {
+            DecorationData data = _fixture.CornerData("catseye");
+
+            Decoration placed = _fixture.Facade.SetDecoration(x, y, data, Vector2.zero, 0, 0);
+            _fixture.Facade.FinishAction();
+
+            Assert.That(placed, Is.Not.Null);
+            Assert.That(placed.Tile, Is.SameAs(_fixture.Map[x, y]));
+            Assert.That(placed.Position, Is.EqualTo(Vector2.zero));
+            _fixture.Map.CommandManager.Undo();
+            Assert.That(placed.Tile.GetDecorations(), Is.Empty);
+            _fixture.Map.CommandManager.Redo();
+            Assert.That(placed.Tile.GetDecorations(), Does.Contain(placed));
+        }
+
+        [TestCase("catseyeGreen")]
+        [TestCase("catseyeBlue")]
+        [TestCase("waystone")]
+        public void Facade_CornerVariantsShareSlotAcrossAdjacentTiles(string otherId)
+        {
+            Decoration existing = _fixture.Facade.SetDecoration(0, 0, _fixture.CornerData("catseye"),
+                new Vector2(4, 0), 0, 0);
+
+            Decoration duplicate = _fixture.Facade.SetDecoration(1, 0, _fixture.CornerData(otherId), Vector2.zero, 0, 0);
+
+            Assert.That(existing, Is.Not.Null);
+            Assert.That(duplicate, Is.Null);
+            Assert.That(_fixture.Map[1, 0].GetDecorations().Count(), Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Updater_CornerMidpointUsesGameTieBreakWithGridDisabled()
+        {
+            _fixture.SelectDecoration(_fixture.CornerData("catseye"));
+
+            _fixture.MouseButton(MouseButton.Left);
+            _fixture.ReleaseMouse();
+
+            Decoration placed = _fixture.Map.Cast<Tile>().SelectMany(tile => tile.GetDecorations()).Single();
+            Assert.That(placed.Tile, Is.SameAs(_fixture.Map[1, 1]));
+            Assert.That(placed.Position, Is.EqualTo(Vector2.zero));
+        }
+
+        [TestCase(0f)]
+        [TestCase(0.75f)]
+        public void Facade_FixedRotationOverridesInputAndMirroring(float fixedRotation)
+        {
+            _fixture.Symmetry.PlaceVerticalAxis(2);
+            DecorationData data = _fixture.CornerData("catseye", fixedRotation);
+
+            Decoration placed = _fixture.Facade.SetDecoration(0, 0, data, Vector2.zero, 1.2f, 0);
+
+            Assert.That(placed.Rotation, Is.EqualTo(fixedRotation));
+            Assert.That(_fixture.Map[2, 0].GetDecorations().Single().Rotation, Is.EqualTo(fixedRotation));
+        }
+
+        [TestCase(-1)]
+        [TestCase(1)]
+        public void Facade_CornerSlotIsIndependentOnSeparateLevels(int otherLevel)
+        {
+            Decoration surface = _fixture.Facade.SetDecoration(1, 0, _fixture.CornerData("catseye"), Vector2.zero, 0, 0);
+
+            Decoration other = _fixture.Facade.SetDecoration(1, 0, _fixture.CornerData("catseyeGreen"),
+                Vector2.zero, 0, otherLevel);
+
+            Assert.That(surface, Is.Not.Null);
+            Assert.That(other, Is.Not.Null);
+            Assert.That(_fixture.Map[1, 0].GetDecorations().Count(), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void Facade_OuterCornerRejectsAnotherVariantAndCanBeRemoved()
+        {
+            Decoration existing = _fixture.Facade.SetDecoration(2, 1, _fixture.CornerData("catseye"), Vector2.zero, 0, 0);
+
+            Decoration duplicate = _fixture.Facade.SetDecoration(2, 1, _fixture.CornerData("catseyeBlue"), Vector2.zero, 0, 0);
+
+            Assert.That(existing, Is.Not.Null);
+            Assert.That(duplicate, Is.Null);
+            Assert.That(_fixture.Map[2, 1].GetDecorations().Count(), Is.EqualTo(1));
+            _fixture.Facade.SetDecoration(2, 1, null, Vector2.zero, 0, 0);
+            Assert.That(_fixture.Map[2, 1].GetDecorations(), Is.Empty);
+        }
+
+        [Test]
+        public void Facade_OrdinaryDecorationKeepsFreePositionAndRotation()
+        {
+            Vector2 position = new Vector2(1.3f, 2.1f);
+
+            Decoration placed = _fixture.Facade.SetDecoration(0, 0, _fixture.Data, position, 0.8f, 0);
+
+            Assert.That(placed.Position, Is.EqualTo(position));
+            Assert.That(placed.Rotation, Is.EqualTo(0.8f));
+        }
+
+        [Test]
+        public void Updater_FixedRotationIgnoresDragAndKeepsPreviewNorthFacing()
+        {
+            _fixture.SelectDecoration(_fixture.CornerData("catseye", 0));
+            _fixture.MouseButton(MouseButton.Left);
+
+            _fixture.MovePointer(new Vector2(100, 0));
+            _fixture.MouseButton(MouseButton.Left);
+
+            Assert.That(_fixture.PreviewRotation, Is.Zero);
+            _fixture.ReleaseMouse();
+            Decoration placed = _fixture.Map.Cast<Tile>().SelectMany(tile => tile.GetDecorations()).Single();
+            Assert.That(placed.Rotation, Is.Zero);
+        }
         private static void SetField(object target, string name, object value)
         {
             target.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).SetValue(target, value);
@@ -319,6 +447,25 @@ namespace Warlander.Deedplanner.Editing.Tests
             }
 
             public Decoration AddDecoration(int level, Vector2 position) => Tile.SetDecoration(Data, position, 0, level);
+
+            public float PreviewRotation => _ghost.transform.eulerAngles.y;
+
+            public DecorationData CornerData(string shortName, float? fixedRotation = null)
+            {
+                return new DecorationData(Data.Model, shortName, shortName, Array.Empty<string[]>(), "corner",
+                    false, true, false, false, false, null, fixedRotation);
+            }
+
+            public void SelectDecoration(DecorationData data)
+            {
+                SetField(Updater, "_selectedDecoration", data);
+                SetField(Updater, "_lastGhostData", data);
+            }
+
+            public void MovePointer(Vector2 position)
+            {
+                typeof(MultiCamera).GetProperty(nameof(MultiCamera.MousePosition)).SetValue(_camera, position);
+            }
 
             public void TargetLevel(int level)
             {

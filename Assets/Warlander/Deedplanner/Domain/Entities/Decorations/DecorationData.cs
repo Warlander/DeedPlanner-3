@@ -13,6 +13,7 @@ namespace Warlander.Deedplanner.Domain.Entities.Decorations
 
         public bool CenterOnly { get; }
         public bool CornerOnly { get; }
+        public float? FixedRotation { get; }
         public bool Floating { get; }
         public bool Tree { get; }
         public bool Bush { get; }
@@ -20,7 +21,8 @@ namespace Warlander.Deedplanner.Domain.Entities.Decorations
         public Materials Materials { get; }
 
         public DecorationData(ModelHandle model, string name, string shortName, string[][] categories, string type,
-            bool centerOnly, bool cornerOnly, bool floating, bool tree, bool bush, Materials materials)
+            bool centerOnly, bool cornerOnly, bool floating, bool tree, bool bush, Materials materials,
+            float? fixedRotation = null)
         {
             Model = model;
             Name = name;
@@ -29,6 +31,7 @@ namespace Warlander.Deedplanner.Domain.Entities.Decorations
             Type = type;
             CenterOnly = centerOnly;
             CornerOnly = cornerOnly;
+            FixedRotation = fixedRotation;
             Floating = floating;
             Tree = tree;
             Bush = bush;

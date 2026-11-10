@@ -20,6 +20,8 @@
 		<!-- add custom roof types here -->
 	</roofs>
 	<objects>
+		<!-- type="corner" restricts placement to tile corners. -->
+		<!-- Optional fixedRotation="0" locks world Y rotation in degrees, including mirrored placement. -->
 		<!-- add custom object types here -->
 	</objects>
 	<animals>
