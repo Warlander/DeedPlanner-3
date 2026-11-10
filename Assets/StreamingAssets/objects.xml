@@ -233,21 +233,21 @@
 			<tex location="GroundTextures/mycelium.dds" specularMax="0.8" occlusion="GroundTextures/mycelium_d.dds" heightScale="0.045" normal="GroundTextures/mycelium_n.dds"/>
 			<category>Infected terrain</category>
 		</ground>
-		<ground name="Wooden cave door" shortname="wcaDoor">
+		<ground name="Wooden mine door" shortname="wcaDoor">
 			<tex location="GroundTextures/minedoor_wooden.dds"/>
-			<category>Cave doors</category>
+			<category>Mine doors</category>
 		</ground>
-		<ground name="Metal cave door" shortname="mcaDoor">
+		<ground name="Steel mine door" shortname="mcaDoor">
 			<tex location="GroundTextures/minedoor_steel.dds"/>
-			<category>Cave doors</category>
+			<category>Mine doors</category>
 		</ground>
-		<ground name="Silver cave door" shortname="scaDoor">
+		<ground name="Silver mine door" shortname="scaDoor">
 			<tex location="GroundTextures/minedoor_silver.dds"/>
-			<category>Cave doors</category>
+			<category>Mine doors</category>
 		</ground>
-		<ground name="Golden cave door" shortname="gcaDoor">
+		<ground name="Golden mine door" shortname="gcaDoor">
 			<tex location="GroundTextures/minedoor_gold.dds"/>
-			<category>Cave doors</category>
+			<category>Mine doors</category>
 		</ground>
 
 		<ground name="Rock" shortname="ro">
@@ -2876,15 +2876,6 @@
 			<category>Materials/Timber</category>
 		</wall>
 
-		<wall name="Wall plan" shortname="wPlan" scale="4" type="house">
-			<model location="Walls/Wall_Plan.wom">
-				<tex location="Walls/wooden.jpg" normal="Walls/wooden_n.dds"/>
-			</model>
-			<color type="dec" r="1" g="1" b="1"/>
-			<icon location="Walls/Icons/outline.png"/>
-			<category>House walls</category>
-		</wall>
-
 		<wall name="Low stone wall" shortname="lsFence" scale="2" type="highfence">
 			<model location="Walls/SmallStone.wom">
 				<tex location="Walls/SmallStone.jpg" normal="Walls/SmallStone_n.dds"/>
@@ -4302,296 +4293,6 @@
 			<icon location="Walls/Icons/FlowerbedYellow.png"/>
 			<category>Flowerbeds</category>
 		</wall>
-		<wall name="Bark log wall" shortname="blWall" scale="4" type="house">
-			<model location="Walls/Log/logWall.wom">
-				<override mesh="logWallExtendedMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_wall_bark.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Bark log arched wall" shortname="blArch" scale="4" type="arch">
-			<model location="Walls/Log/logArch.wom">
-				<override mesh="logArchMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_arch_bark.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Bark log balcony" shortname="blBalcony" scale="4" type="house">
-			<model location="Walls/Log/logBalcony.wom">
-				<override mesh="logWallBalconyMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_balcony_bark.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Bark log canopy" shortname="blCanopy" scale="4" type="house">
-			<model location="Walls/Log/logCanopy.wom">
-				<override mesh="wallMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
-				<tex location="Walls/Log/metal.dds" normal="Walls/Log/metal_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-				<tex location="Walls/Log/planks2.dds" normal="Walls/Log/planks2_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_canopy_bark.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Bark log door" shortname="blDoor" scale="4" type="house">
-			<model location="Walls/Log/logDoor.wom">
-				<override mesh="WallMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-				<tex location="Walls/Log/metal.dds" normal="Walls/Log/metal_n.dds"/>
-				<tex location="Walls/Log/planks2.dds" normal="Walls/Log/planks2_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_door_bark.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Bark log double door" shortname="blDDoor" scale="4" type="house">
-			<model location="Walls/Log/logDoubleDoor.wom">
-				<override mesh="WallMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/metal.dds" normal="Walls/Log/metal_n.dds"/>
-				<tex location="Walls/Log/planks2.dds" normal="Walls/Log/planks2_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_door_double_bark.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Bark log double T arched wall" shortname="blDTArch" scale="4" type="arch">
-			<model location="Walls/Log/logDoubleT.wom">
-				<override mesh="logTDoubleMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-			</model>
-			<materials>
-				Logs = 6,
-				Pegs = 16,
-				Wooden Beams = 1
-			</materials>
-			<icon location="Walls/Log/Sprites/log_archdoublet_bark.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Bark log double window" shortname="blDWindow" scale="4" type="house">
-			<model location="Walls/Log/logWindowDouble.wom">
-				<override mesh="windowsMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_window_double_bark.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Bark log wide window" shortname="blWWindow" scale="4" type="house">
-			<model location="Walls/Log/logWideWindow.wom">
-				<override mesh="WallMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
-				<tex location="Walls/Log/logwall_rustic.dds" normal="Walls/Log/logwall_rustic_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_window_wide_bark.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Bark log window" shortname="blWindow" scale="4" type="house">
-			<model location="Walls/Log/logWindow.wom">
-				<override mesh="wallMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_window_bark.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Hardwood log wall" shortname="hlWall" scale="4" type="house">
-			<model location="Walls/Log/logWall.wom">
-				<override mesh="logWallExtendedMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_wall_decid.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Hardwood log arched wall" shortname="hlArch" scale="4" type="arch">
-			<model location="Walls/Log/logArch.wom">
-				<override mesh="logArchMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_arch_decid.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Hardwood log balcony" shortname="hlBalcony" scale="4" type="house">
-			<model location="Walls/Log/logBalcony.wom">
-				<override mesh="logWallBalconyMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_balcony_decid.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Hardwood log canopy" shortname="hlCanopy" scale="4" type="house">
-			<model location="Walls/Log/logCanopy.wom">
-				<override mesh="wallMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/metal.dds" normal="Walls/Log/metal_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-				<tex location="Walls/Log/planks2.dds" normal="Walls/Log/planks2_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_canopy_decid.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Hardwood log door" shortname="hlDoor" scale="4" type="house">
-			<model location="Walls/Log/logDoor.wom">
-				<override mesh="WallMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-				<tex location="Walls/Log/metal.dds" normal="Walls/Log/metal_n.dds"/>
-				<tex location="Walls/Log/planks2.dds" normal="Walls/Log/planks2_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_door_decid.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Hardwood log double door" shortname="hlDDoor" scale="4" type="house">
-			<model location="Walls/Log/logDoubleDoor.wom">
-				<override mesh="WallMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/metal.dds" normal="Walls/Log/metal_n.dds"/>
-				<tex location="Walls/Log/planks2.dds" normal="Walls/Log/planks2_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_door_double_decid.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Hardwood log double T arched wall" shortname="hlDTArch" scale="4" type="arch">
-			<model location="Walls/Log/logDoubleT.wom">
-				<override mesh="logTDoubleMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-			</model>
-			<materials>
-				Logs = 6,
-				Pegs = 16,
-				Wooden Beams = 1
-			</materials>
-			<icon location="Walls/Log/Sprites/log_archdoublet_decid.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Hardwood log double window" shortname="hlDWindow" scale="4" type="house">
-			<model location="Walls/Log/logWindowDouble.wom">
-				<override mesh="windowsMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_window_double_decid.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Hardwood log wide window" shortname="hlWWindow" scale="4" type="house">
-			<model location="Walls/Log/logWideWindow.wom">
-				<override mesh="WallMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/logwall_rustic.dds" normal="Walls/Log/logwall_rustic_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_window_wide_decid.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
-		<wall name="Hardwood log window" shortname="hlWindow" scale="4" type="house">
-			<model location="Walls/Log/logWindow.wom">
-				<override mesh="wallMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
-				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
-			</model>
-			<materials>
-				Logs = 7,
-				Pegs = 15
-			</materials>
-			<icon location="Walls/Log/Sprites/log_window_decid.png"/>
-			<category>House walls/Log</category>
-			<category>Materials/Wood</category>
-		</wall>
 		<wall name="Log wall" shortname="lWall" scale="4" type="house">
 			<model location="Walls/Log/logWall.wom">
 				<override mesh="logWallExtendedMesh" texture="Walls/Log/logwall_conif.dds" normal="Walls/Log/logwall_conif_n.dds"/>
@@ -4737,6 +4438,296 @@
 			<category>House walls/Log</category>
 			<category>Materials/Wood</category>
 		</wall>
+		<wall name="Hardwood log wall" shortname="hlWall" scale="4" type="house">
+			<model location="Walls/Log/logWall.wom">
+				<override mesh="logWallExtendedMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_wall_decid.png"/>
+			<category>House walls/Hardwood Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Hardwood log arched wall" shortname="hlArch" scale="4" type="arch">
+			<model location="Walls/Log/logArch.wom">
+				<override mesh="logArchMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_arch_decid.png"/>
+			<category>House walls/Hardwood Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Hardwood log balcony" shortname="hlBalcony" scale="4" type="house">
+			<model location="Walls/Log/logBalcony.wom">
+				<override mesh="logWallBalconyMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_balcony_decid.png"/>
+			<category>House walls/Hardwood Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Hardwood log canopy" shortname="hlCanopy" scale="4" type="house">
+			<model location="Walls/Log/logCanopy.wom">
+				<override mesh="wallMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/metal.dds" normal="Walls/Log/metal_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+				<tex location="Walls/Log/planks2.dds" normal="Walls/Log/planks2_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_canopy_decid.png"/>
+			<category>House walls/Hardwood Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Hardwood log door" shortname="hlDoor" scale="4" type="house">
+			<model location="Walls/Log/logDoor.wom">
+				<override mesh="WallMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+				<tex location="Walls/Log/metal.dds" normal="Walls/Log/metal_n.dds"/>
+				<tex location="Walls/Log/planks2.dds" normal="Walls/Log/planks2_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_door_decid.png"/>
+			<category>House walls/Hardwood Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Hardwood log double door" shortname="hlDDoor" scale="4" type="house">
+			<model location="Walls/Log/logDoubleDoor.wom">
+				<override mesh="WallMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/metal.dds" normal="Walls/Log/metal_n.dds"/>
+				<tex location="Walls/Log/planks2.dds" normal="Walls/Log/planks2_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_door_double_decid.png"/>
+			<category>House walls/Hardwood Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Hardwood log double T arched wall" shortname="hlDTArch" scale="4" type="arch">
+			<model location="Walls/Log/logDoubleT.wom">
+				<override mesh="logTDoubleMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+			</model>
+			<materials>
+				Logs = 6,
+				Pegs = 16,
+				Wooden Beams = 1
+			</materials>
+			<icon location="Walls/Log/Sprites/log_archdoublet_decid.png"/>
+			<category>House walls/Hardwood Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Hardwood log double window" shortname="hlDWindow" scale="4" type="house">
+			<model location="Walls/Log/logWindowDouble.wom">
+				<override mesh="windowsMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_double_decid.png"/>
+			<category>House walls/Hardwood Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Hardwood log wide window" shortname="hlWWindow" scale="4" type="house">
+			<model location="Walls/Log/logWideWindow.wom">
+				<override mesh="WallMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/logwall_rustic.dds" normal="Walls/Log/logwall_rustic_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_wide_decid.png"/>
+			<category>House walls/Hardwood Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Hardwood log window" shortname="hlWindow" scale="4" type="house">
+			<model location="Walls/Log/logWindow.wom">
+				<override mesh="wallMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_decid.png"/>
+			<category>House walls/Hardwood Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Bark log wall" shortname="blWall" scale="4" type="house">
+			<model location="Walls/Log/logWall.wom">
+				<override mesh="logWallExtendedMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_wall_bark.png"/>
+			<category>House walls/Bark Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Bark log arched wall" shortname="blArch" scale="4" type="arch">
+			<model location="Walls/Log/logArch.wom">
+				<override mesh="logArchMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_arch_bark.png"/>
+			<category>House walls/Bark Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Bark log balcony" shortname="blBalcony" scale="4" type="house">
+			<model location="Walls/Log/logBalcony.wom">
+				<override mesh="logWallBalconyMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_balcony_bark.png"/>
+			<category>House walls/Bark Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Bark log canopy" shortname="blCanopy" scale="4" type="house">
+			<model location="Walls/Log/logCanopy.wom">
+				<override mesh="wallMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
+				<tex location="Walls/Log/metal.dds" normal="Walls/Log/metal_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+				<tex location="Walls/Log/planks2.dds" normal="Walls/Log/planks2_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_canopy_bark.png"/>
+			<category>House walls/Bark Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Bark log door" shortname="blDoor" scale="4" type="house">
+			<model location="Walls/Log/logDoor.wom">
+				<override mesh="WallMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+				<tex location="Walls/Log/metal.dds" normal="Walls/Log/metal_n.dds"/>
+				<tex location="Walls/Log/planks2.dds" normal="Walls/Log/planks2_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_door_bark.png"/>
+			<category>House walls/Bark Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Bark log double door" shortname="blDDoor" scale="4" type="house">
+			<model location="Walls/Log/logDoubleDoor.wom">
+				<override mesh="WallMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/metal.dds" normal="Walls/Log/metal_n.dds"/>
+				<tex location="Walls/Log/planks2.dds" normal="Walls/Log/planks2_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_door_double_bark.png"/>
+			<category>House walls/Bark Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Bark log double T arched wall" shortname="blDTArch" scale="4" type="arch">
+			<model location="Walls/Log/logDoubleT.wom">
+				<override mesh="logTDoubleMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+			</model>
+			<materials>
+				Logs = 6,
+				Pegs = 16,
+				Wooden Beams = 1
+			</materials>
+			<icon location="Walls/Log/Sprites/log_archdoublet_bark.png"/>
+			<category>House walls/Bark Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Bark log double window" shortname="blDWindow" scale="4" type="house">
+			<model location="Walls/Log/logWindowDouble.wom">
+				<override mesh="windowsMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_double_bark.png"/>
+			<category>House walls/Bark Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Bark log wide window" shortname="blWWindow" scale="4" type="house">
+			<model location="Walls/Log/logWideWindow.wom">
+				<override mesh="WallMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
+				<tex location="Walls/Log/logwall_rustic.dds" normal="Walls/Log/logwall_rustic_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_wide_bark.png"/>
+			<category>House walls/Bark Log</category>
+			<category>Materials/Wood</category>
+		</wall>
+		<wall name="Bark log window" shortname="blWindow" scale="4" type="house">
+			<model location="Walls/Log/logWindow.wom">
+				<override mesh="wallMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
+				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
+			</model>
+			<materials>
+				Logs = 7,
+				Pegs = 15
+			</materials>
+			<icon location="Walls/Log/Sprites/log_window_bark.png"/>
+			<category>House walls/Bark Log</category>
+			<category>Materials/Wood</category>
+		</wall>
 		<wall name="Rustic log wall" shortname="rlWall" scale="4" type="house">
 			<model location="Walls/Log/logWall.wom">
 				<override mesh="logWallExtendedMesh" texture="Walls/Log/logwall_rustic.dds" normal="Walls/Log/logwall_rustic_n.dds"/>
@@ -4747,7 +4738,7 @@
 				Pegs = 15
 			</materials>
 			<icon location="Walls/Log/Sprites/log_wall_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Wood</category>
 		</wall>
 		<wall name="Rustic log arched wall" shortname="rlArch2" scale="4" type="arch">
@@ -4760,7 +4751,7 @@
 				Pegs = 15
 			</materials>
 			<icon location="Walls/Log/Sprites/log_arch_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Wood</category>
 		</wall>
 		<wall name="Rustic log balcony" shortname="rlBalcony" scale="4" type="house">
@@ -4774,7 +4765,7 @@
 				Pegs = 15
 			</materials>
 			<icon location="Walls/Log/Sprites/log_balcony_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Wood</category>
 		</wall>
 		<wall name="Rustic log canopy" shortname="rlCanopy" scale="4" type="house">
@@ -4790,7 +4781,7 @@
 				Pegs = 15
 			</materials>
 			<icon location="Walls/Log/Sprites/log_canopy_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Wood</category>
 		</wall>
 		<wall name="Rustic log door" shortname="rlDoor" scale="4" type="house">
@@ -4806,7 +4797,7 @@
 				Pegs = 15
 			</materials>
 			<icon location="Walls/Log/Sprites/log_door_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Wood</category>
 		</wall>
 		<wall name="Rustic log double door" shortname="rlDDoor" scale="4" type="house">
@@ -4822,7 +4813,7 @@
 				Pegs = 15
 			</materials>
 			<icon location="Walls/Log/Sprites/log_door_double_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Wood</category>
 		</wall>
 		<wall name="Rustic log double T arched wall" shortname="rlDTArch" scale="4" type="arch">
@@ -4837,7 +4828,7 @@
 				Wooden Beams = 1
 			</materials>
 			<icon location="Walls/Log/Sprites/log_archdoublet_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Wood</category>
 		</wall>
 		<wall name="Rustic log double window" shortname="rlDWindow" scale="4" type="house">
@@ -4851,7 +4842,7 @@
 				Pegs = 15
 			</materials>
 			<icon location="Walls/Log/Sprites/log_window_double_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Wood</category>
 		</wall>
 		<wall name="Rustic log wide window" shortname="rlWWindow" scale="4" type="house">
@@ -4864,7 +4855,7 @@
 				Pegs = 15
 			</materials>
 			<icon location="Walls/Log/Sprites/log_window_wide_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Wood</category>
 		</wall>
 		<wall name="Rustic log window" shortname="rlWindow" scale="4" type="house">
@@ -4878,7 +4869,7 @@
 				Pegs = 15
 			</materials>
 			<icon location="Walls/Log/Sprites/log_window_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Wood</category>
 		</wall>
 		<wall name="Bark log wall with chinking" shortname="blCWall" scale="4" type="house">
@@ -4892,7 +4883,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_wall_bark.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Bark Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -4907,7 +4898,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_arch_bark.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Bark Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -4923,7 +4914,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_balcony_bark.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Bark Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -4941,7 +4932,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_canopy_bark.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Bark Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -4959,7 +4950,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_door_bark.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Bark Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -4977,7 +4968,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_door_double_bark.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Bark Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -4994,7 +4985,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_archdoublet_bark.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Bark Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5010,7 +5001,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_window_double_bark.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Bark Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5026,7 +5017,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_window_wide_bark.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Bark Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5042,7 +5033,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_window_bark.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Bark Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5057,7 +5048,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_wall_decid.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Hardwood Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5072,7 +5063,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_arch_decid.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Hardwood Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5088,7 +5079,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_balcony_decid.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Hardwood Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5106,7 +5097,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_canopy_decid.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Hardwood Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5124,7 +5115,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_door_decid.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Hardwood Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5142,7 +5133,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_door_double_decid.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Hardwood Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5159,7 +5150,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_archdoublet_decid.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Hardwood Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5175,7 +5166,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_window_double_decid.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Hardwood Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5191,7 +5182,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_window_wide_decid.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Hardwood Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5207,7 +5198,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_window_decid.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Hardwood Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5387,7 +5378,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_wall_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5402,7 +5393,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_arch_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5418,7 +5409,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_balcony_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5436,7 +5427,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_canopy_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5454,7 +5445,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_door_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5472,7 +5463,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_door_double_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5489,7 +5480,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_archdoublet_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5505,7 +5496,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_window_double_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5521,7 +5512,7 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_window_wide_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
 		</wall>
@@ -5537,9 +5528,18 @@
 				Clay = 10
 			</materials>
 			<icon location="Walls/Log/Sprites/log_window_rustic.png"/>
-			<category>House walls/Log</category>
+			<category>House walls/Rustic Log</category>
 			<category>Materials/Clay</category>
 			<category>Materials/Wood</category>
+		</wall>
+
+		<wall name="Wall plan" shortname="wPlan" scale="4" type="house">
+			<model location="Walls/Wall_Plan.wom">
+				<tex location="Walls/wooden.jpg" normal="Walls/wooden_n.dds"/>
+			</model>
+			<color type="dec" r="1" g="1" b="1"/>
+			<icon location="Walls/Icons/outline.png"/>
+			<category>House walls</category>
 		</wall>
 	</walls>
 
@@ -5710,7 +5710,7 @@
 			<category>Containers/Racks and Stands</category>
 			<category>Materials/Wood</category>
 		</object>
-		<object name="Armor stand (empty)" shortname="arStandE" type="normal">
+		<object name="Armour stand (empty)" shortname="arStandE" type="normal">
 			<model location="Objects/armorStand01.wom">
 				<tex location="Objects/armourStand01.png" normal="Objects/armourStand01_n.dds"/>
 			</model>
@@ -5723,7 +5723,7 @@
 			<category>Containers/Racks and Stands</category>
 			<category>Materials/Wood</category>
 		</object>
-		<object name="Armor stand (full)" shortname="arStandF" type="normal">
+		<object name="Armour stand (full)" shortname="arStandF" type="normal">
 			<model location="Objects/armorStand01Filled.wom">
 				<tex location="Objects/armourStand01.png" normal="Objects/armourStand01_n.dds"/>
 			</model>
@@ -6077,12 +6077,12 @@
 			<category>Containers</category>
 			<category>Materials/Wood</category>
 		</object>
-		<object name="Small Amphora" shortname="ampSmall" type="normal">
+		<object name="Small pottery amphora" shortname="ampSmall" type="normal">
 			<model location="Objects/Amphora02.wom"/>
 			<category>Containers</category>
 			<category>Materials/Pottery</category>
 		</object>
-		<object name="Large Amphora" shortname="ampLarge" type="normal">
+		<object name="Large pottery amphora" shortname="ampLarge" type="normal">
 			<model location="Objects/Amphora01.wom"/>
 			<category>Containers</category>
 			<category>Materials/Pottery</category>
@@ -7202,7 +7202,7 @@
 			<category>Furniture/Chairs</category>
 			<category>Materials/Wood</category>
 		</object>
-		<object name="Pauper high chair" shortname="phChair" type="normal">
+		<object name="Pauper's high chair" shortname="phChair" type="normal">
 			<model location="Objects/HighChair3.wom"/>
 			<materials>
 				Shafts = 3,
@@ -7667,7 +7667,7 @@
 			<model location="Objects/Carpet1.wom"/>
 			<category>Rugs and carpets</category>
 		</object>
-		<object name="Colourful carpet" shortname="mCarpet" type="normal">
+		<object name="Medium colourful carpet" shortname="mCarpet" type="normal">
 			<model location="Objects/Carpet2.wom"/>
 			<category>Rugs and carpets</category>
 		</object>
@@ -7953,7 +7953,7 @@
 			<category>Banners/Tall Banners</category>
 			<category>Kingdoms/Empire of MR</category>
 		</object>
-		<object name="Jenn-Kellon PMK tall banner" shortname="tbJKPMK" type="normal">
+		<object name="Jenn Kellon tall banner" shortname="tbJKPMK" type="normal">
 			<model location="Objects/TallBanners/jk_tall_banner.wom">
 				<override mesh="jk_tall_BannerMesh" texture="Objects/TallBanners/tall_Banner_zjen.dds"/>
 			</model>
@@ -7962,7 +7962,7 @@
 				Square piece of cloth = 1
 			</materials>
 			<category>Banners/Tall Banners</category>
-			<category>Kingdoms/Jenn-Kellon PMK</category>
+			<category>Kingdoms/Jenn Kellon</category>
 		</object>
 		<object name="Valhalla Descendants tall banner" shortname="tbVD" type="normal">
 			<model location="Objects/TallBanners/jk_tall_banner.wom">
@@ -8184,7 +8184,7 @@
 			<category>Banners</category>
 			<category>Kingdoms/Empire of MR</category>
 		</object>
-		<object name="Jenn-Kellon PMK banner" shortname="bJKPMK" type="normal">
+		<object name="Jenn Kellon banner" shortname="bJKPMK" type="normal">
 			<model location="Objects/Banners/Banner_main.wom">
 				<override mesh="Cloth1Mesh" texture="Objects/Banners/jenn_banner.dds"/>
 			</model>
@@ -8193,7 +8193,7 @@
 				Square piece of cloth = 1
 			</materials>
 			<category>Banners</category>
-			<category>Kingdoms/Jenn-Kellon PMK</category>
+			<category>Kingdoms/Jenn Kellon</category>
 		</object>
 		<object name="Valhalla Descendants banner" shortname="bVD" type="normal">
 			<model location="Objects/Banners/Banner_main.wom">
@@ -8437,7 +8437,7 @@
 			<category>Flags</category>
 			<category>Kingdoms/Empire of MR</category>
 		</object>
-		<object name="Jenn-Kellon PMK flag" shortname="fJKPMK" type="normal">
+		<object name="Jenn Kellon flag" shortname="fJKPMK" type="normal">
 			<model location="Objects/Flags/Flag_main.wom">
 				<override mesh="Flag_flagMesh" texture="Objects/Flags/jenn_flag.dds"/>
 			</model>
@@ -8446,7 +8446,7 @@
 				Square piece of cloth = 1
 			</materials>
 			<category>Flags</category>
-			<category>Kingdoms/Jenn-Kellon PMK</category>
+			<category>Kingdoms/Jenn Kellon</category>
 		</object>
 		<object name="Valhalla Descendants flag" shortname="fVD" type="normal">
 			<model location="Objects/Flags/Flag_main.wom">
@@ -8699,7 +8699,7 @@
 			<category>Misc</category>
 			<category>Materials/Wood</category>
 		</object>
-		<object name="Loom" shortname="loom" type="normal">
+		<object name="Floor loom" shortname="loom" type="normal">
 			<model location="Objects/Loom.wom"/>
 			<materials>
 				Shafts = 10,
@@ -9132,7 +9132,7 @@
 			</materials>
 			<category>Decoration</category>
 		</object>
-		<object name="Belltower" shortname="belltower" type="normal">
+		<object name="Bell tower" shortname="belltower" type="normal">
 			<model location="Objects/Belltower_Main.wom">
 				<tex location="Objects/bell.jpg" normal="Objects/bell_n.dds"/>
 			</model>
@@ -9266,7 +9266,7 @@
 			<category>Decoration/Marble Planters</category>
 		</object>
 
-		<object name="Large Planter (earth)" shortname="lpEarth" type="centered">
+		<object name="Large planter" shortname="lpEarth" type="centered">
 			<model location="Objects/LargePlanter/raisedBedEarth.wom">
 				<tex location="Objects/LargePlanter/wood.dds" normal="Objects/LargePlanter/wood_n.dds"/>
 			</model>
@@ -9861,7 +9861,7 @@
 			</model>
 			<category>Ships</category>
 		</object>
-		<object name="Sailing Boat" shortname="boatSB" type="floating">
+		<object name="Small sailing boat" shortname="boatSB" type="floating">
 			<model location="Objects/SailingShip.wom">
 				<tex location="Objects/sailing_ship.dds" normal="Objects/sailing_ship_n.dds"/>
 			</model>
@@ -10439,16 +10439,16 @@
 			</materials>
 		</rock>
 
-		<rock name="Wooden cave door" shortname="wcaDoorC" type="entrance" tex="GroundTextures/minedoor_wooden.dds">
+		<rock name="Wooden mine door" shortname="wcaDoorC" type="entrance" tex="GroundTextures/minedoor_wooden.dds">
 			<category>Entrances</category>
 		</rock>
-		<rock name="Metal cave door" shortname="mcaDoorC" type="entrance" tex="GroundTextures/minedoor_steel.dds">
+		<rock name="Steel mine door" shortname="mcaDoorC" type="entrance" tex="GroundTextures/minedoor_steel.dds">
 			<category>Entrances</category>
 		</rock>
-		<rock name="Silver cave door" shortname="scaDoorC" type="entrance" tex="GroundTextures/minedoor_silver.dds">
+		<rock name="Silver mine door" shortname="scaDoorC" type="entrance" tex="GroundTextures/minedoor_silver.dds">
 			<category>Entrances</category>
 		</rock>
-		<rock name="Golden cave door" shortname="gcaDoorC" type="entrance" tex="GroundTextures/minedoor_gold.dds">
+		<rock name="Golden mine door" shortname="gcaDoorC" type="entrance" tex="GroundTextures/minedoor_gold.dds">
 			<category>Entrances</category>
 		</rock>
 

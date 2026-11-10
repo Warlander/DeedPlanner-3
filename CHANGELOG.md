@@ -2,6 +2,7 @@
 
 ## [3.5.1] - Unreleased
 
+- Fixed mine-door and object names to match Wurm, separated log walls by style, and moved Wall plan below the log wall groups
 - Added drag-to-select material calculations for rectangular areas on the current floor or across all surface and cave floors, with a shaded gold selection and live tile dimensions
 - Fixed Perspective camera position changing when switching between surface and cave floors
 - Expanded cave planning to seven underground storeys, with floors and walls targeting the selected storey
