@@ -290,7 +290,7 @@ namespace Warlander.Deedplanner.Editing
                 AddAreaEdge(map, camera.AttachedCamera, screen.rect, min.x, y, min.x, y + 1);
                 AddAreaEdge(map, camera.AttachedCamera, screen.rect, max.x, y, max.x, y + 1);
             }
-            _view.ShowAreaSelection(screen, _areaOutline);
+            _view.ShowAreaSelection(screen, _areaOutline, max - min);
         }
 
         private void AddAreaEdge(Map map, Camera camera, Rect rect, int x1, int y1, int x2, int y2)

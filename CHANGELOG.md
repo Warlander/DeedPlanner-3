@@ -2,7 +2,7 @@
 
 ## [3.5.1] - Unreleased
 
-- Added drag-to-select material calculations for rectangular areas on the current floor or across all surface and cave floors
+- Added drag-to-select material calculations for rectangular areas on the current floor or across all surface and cave floors, with a shaded gold selection and live tile dimensions
 - Fixed Perspective camera position changing when switching between surface and cave floors
 - Expanded cave planning to seven underground storeys
 - Removed the redundant Veins category from the Caves tab to reduce clutter

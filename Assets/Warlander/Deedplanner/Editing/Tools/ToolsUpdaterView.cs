@@ -23,6 +23,7 @@ namespace Warlander.Deedplanner.Editing
         [SerializeField] private Toggle _areaCurrentLevelMaterialsToggle = null;
 
         [SerializeField] private Button _calculateMapMaterialsButton = null;
+        [SerializeField] private AreaSelectionBadgeView _areaSelectionBadgePrefab = null;
 
         public event Action<ToolsMode> ModeChanged;
         public event Action<ToolsMaterialsScope> MaterialsScopeChanged;
@@ -30,6 +31,7 @@ namespace Warlander.Deedplanner.Editing
 
         private RectTransform _areaSelectionRoot;
         private AreaSelectionOutline _areaSelectionOutline;
+        private AreaSelectionBadgeView _areaSelectionBadge;
 
         private void Awake()
         {
@@ -51,7 +53,7 @@ namespace Warlander.Deedplanner.Editing
             _mapWarningsPanelTransform.gameObject.SetActive(mode == ToolsMode.MapWarnings);
         }
 
-        public void ShowAreaSelection(RectTransform screen, IReadOnlyList<Vector2> segments)
+        public void ShowAreaSelection(RectTransform screen, IReadOnlyList<Vector2> segments, Vector2Int dimensions)
         {
             if (!_areaSelectionRoot)
             {
@@ -64,8 +66,9 @@ namespace Warlander.Deedplanner.Editing
                 _areaSelectionOutline.rectTransform.anchorMax = Vector2.one;
                 _areaSelectionOutline.rectTransform.offsetMin = Vector2.zero;
                 _areaSelectionOutline.rectTransform.offsetMax = Vector2.zero;
-                _areaSelectionOutline.color = Color.yellow;
+                _areaSelectionOutline.color = new Color(0.94f, 0.84f, 0.54f, 1f);
                 _areaSelectionOutline.raycastTarget = false;
+                _areaSelectionBadge = Instantiate(_areaSelectionBadgePrefab, _areaSelectionRoot);
             }
             _areaSelectionRoot.SetParent(screen, false);
             _areaSelectionRoot.gameObject.layer = screen.gameObject.layer;
@@ -76,6 +79,17 @@ namespace Warlander.Deedplanner.Editing
             _areaSelectionRoot.offsetMax = Vector2.zero;
             _areaSelectionRoot.gameObject.SetActive(true);
             _areaSelectionOutline.SetSegments(segments);
+            Vector2 min = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+            Vector2 max = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
+            for (int i = 0; i < segments.Count; i++)
+            {
+                min = Vector2.Min(min, segments[i]);
+                max = Vector2.Max(max, segments[i]);
+            }
+            Rect selection = Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+            bool visible = segments.Count > 0 && selection.Overlaps(screen.rect);
+            _areaSelectionBadge.gameObject.SetActive(visible);
+            if (visible) _areaSelectionBadge.ShowDimensions(dimensions, selection, screen.rect);
         }
 
         public void HideAreaSelection()

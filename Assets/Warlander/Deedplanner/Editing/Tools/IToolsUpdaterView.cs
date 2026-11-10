@@ -13,7 +13,7 @@ namespace Warlander.Deedplanner.Editing
         void ShowPanel(ToolsMode mode);
         void ClearWarnings();
         void AddWarning(string text);
-        void ShowAreaSelection(RectTransform screen, IReadOnlyList<Vector2> segments);
+        void ShowAreaSelection(RectTransform screen, IReadOnlyList<Vector2> segments, Vector2Int dimensions);
         void HideAreaSelection();
     }
 }

@@ -1172,6 +1172,8 @@ MonoBehaviour:
   _areaAllLevelsMaterialsToggle: {fileID: 8322251501179123488}
   _areaCurrentLevelMaterialsToggle: {fileID: 4302069795666850076}
   _calculateMapMaterialsButton: {fileID: 143252966645829175}
+  _areaSelectionBadgePrefab: {fileID: 5576690440760498073, guid: c6510e0731d9a7f4999ef89faf7f137f,
+    type: 3}
 --- !u!1 &4401737668999245033
 GameObject:
   m_ObjectHideFlags: 0
