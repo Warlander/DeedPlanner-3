@@ -52,6 +52,8 @@ namespace Warlander.Deedplanner.Bridges
             return materials;
         }
 
+        public bool HasPart(BridgePartType type) => partsData.Any(part => part.PartType == type);
+
         public bool IsTypeAllowed(BridgeType type)
         {
             return allowedTypes.Contains(type);

@@ -34,11 +34,13 @@ namespace Warlander.Deedplanner.Bridges.Widgets
             _view.BecameInactive += OnViewBecameInactive;
             _view.SelectedMaterialChanged += OnSelectedMaterialChanged;
             _view.SelectedExtraArgumentChanged += OnSelectedExtraArgumentChanged;
+            _view.SelectedShapeChanged += OnSelectedShapeChanged;
             _bridgesUpdater.SelectedBridgeChanged += OnSelectedBridgeChanged;
 
             RefreshActionVisibility();
             RefreshMaterials();
             RefreshExtraArguments();
+            RefreshShapes();
         }
 
         public void Dispose()
@@ -49,6 +51,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
             _view.BecameInactive -= OnViewBecameInactive;
             _view.SelectedMaterialChanged -= OnSelectedMaterialChanged;
             _view.SelectedExtraArgumentChanged -= OnSelectedExtraArgumentChanged;
+            _view.SelectedShapeChanged -= OnSelectedShapeChanged;
             _bridgesUpdater.SelectedBridgeChanged -= OnSelectedBridgeChanged;
         }
 
@@ -57,6 +60,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
             RefreshActionVisibility();
             RefreshMaterials();
             RefreshExtraArguments();
+            RefreshShapes();
         }
 
         private void OnDeleteClicked()
@@ -111,6 +115,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
             RefreshActionVisibility();
             RefreshMaterials();
             RefreshExtraArguments();
+            RefreshShapes();
         }
 
         private void OnViewBecameInactive()
@@ -119,6 +124,35 @@ namespace Warlander.Deedplanner.Bridges.Widgets
             _view.SetCancelButtonVisible(false);
             _view.SetMaterialsVisible(false);
             _view.SetExtraArgumentsVisible(false);
+            _view.SetShapesVisible(false);
+        }
+
+        private void OnSelectedShapeChanged(BridgeType type)
+        {
+            Bridge bridge = _bridgesUpdater.SelectedBridge;
+            if (bridge == null || bridge.Type == type)
+            {
+                return;
+            }
+            if (!_mapEditFacade.TryChangeBridgeShape(bridge, type, out string error))
+            {
+                RefreshShapes(error);
+            }
+        }
+
+        private void RefreshShapes(string failure = null)
+        {
+            Bridge bridge = _bridgesUpdater.SelectedBridge;
+            bool visible = _view.IsActive && bridge != null && bridge.Type != BridgeType.Rope;
+            _view.SetShapesVisible(visible);
+            if (!visible)
+            {
+                return;
+            }
+            bool flatEnabled = _mapEditFacade.CanChangeBridgeShape(bridge, BridgeType.Flat, out string flatError);
+            bool archedEnabled = _mapEditFacade.CanChangeBridgeShape(bridge, BridgeType.Arched, out string archedError);
+            string message = failure ?? (!flatEnabled ? flatError : !archedEnabled ? archedError : string.Empty);
+            _view.SetShapes(bridge.Type, flatEnabled, archedEnabled, message);
         }
 
         private void RefreshActionVisibility()
@@ -144,11 +178,9 @@ namespace Warlander.Deedplanner.Bridges.Widgets
                 return;
             }
 
-            _view.SetTypeLabel($"Type: {bridge.Type}");
+            _view.SetTypeLabel(bridge.Type == BridgeType.Rope ? "Type: Rope" : "Shape");
 
-            int width = Mathf.Min(
-                Mathf.Abs(bridge.SecondTile.x - bridge.FirstTile.x),
-                Mathf.Abs(bridge.SecondTile.y - bridge.FirstTile.y)) + 1;
+            int width = bridge.Width;
 
             List<BridgeData> materials = _dataCatalog.GetAllBridges()
                 .Where(data => data.MaxWidth >= width && data.IsTypeAllowed(bridge.Type))
@@ -193,6 +225,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
             }
 
             _view.SetExtraArgumentsVisible(true);
+            _view.SetExtraArgumentLabel(bridge.Type == BridgeType.Arched ? "Steepness" : "Sag");
             int currentIndex = System.Array.IndexOf(extraArguments, bridge.AdditionalData);
             _view.SetExtraArguments(extraArguments, Mathf.Max(currentIndex, 0));
         }

@@ -17,6 +17,12 @@ namespace Warlander.Deedplanner.Ui.Widgets
             set => _toggle.isOn = value;
         }
 
+        public bool Interactable
+        {
+            get => _toggle.interactable;
+            set => _toggle.interactable = value;
+        }
+
         public ToggleGroup Group
         {
             get => _toggle.group;

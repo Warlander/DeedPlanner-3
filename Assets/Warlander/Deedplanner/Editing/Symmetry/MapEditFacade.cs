@@ -392,6 +392,68 @@ namespace Warlander.Deedplanner.Editing
             FinishAction();
         }
 
+        public bool CanChangeBridgeShape(Bridge bridge, BridgeType type, out string error)
+        {
+            return TryPlanBridgeShapeChange(bridge, type, out _, out error);
+        }
+
+        public bool TryChangeBridgeShape(Bridge bridge, BridgeType type, out string error)
+        {
+            if (!TryPlanBridgeShapeChange(bridge, type, out List<BridgeShapeChangeCommand> commands, out error))
+            {
+                return false;
+            }
+            foreach (BridgeShapeChangeCommand command in commands)
+            {
+                _mapHandler.Map.CommandManager.AddToActionAndExecute(command);
+            }
+            if (commands.Count > 0)
+            {
+                FinishAction();
+            }
+            return true;
+        }
+
+        private bool TryPlanBridgeShapeChange(Bridge bridge, BridgeType type,
+            out List<BridgeShapeChangeCommand> commands, out string error)
+        {
+            var planned = new List<BridgeShapeChangeCommand>();
+            commands = planned;
+            error = string.Empty;
+            if (bridge == null)
+            {
+                error = "Select a bridge first.";
+                return false;
+            }
+            if (bridge.Type == type)
+            {
+                return true;
+            }
+
+            string failure = null;
+            ForEachSymmetricBridge(bridge, (target, transform) =>
+            {
+                if (failure != null || target.Type == type)
+                {
+                    return;
+                }
+                if (!target.TryPrepareShapeChange(type, out BridgeShapeState state, out string reason))
+                {
+                    failure = target == bridge ? reason : "A mirrored bridge cannot change shape: " + reason;
+                    return;
+                }
+                if (ReversesBridgeLength(target, transform)
+                    && (type != BridgeType.Flat || state.CopyFlatSupports() == null))
+                {
+                    state = new BridgeShapeState(type, Reverse(state.Segments), state.AdditionalData,
+                        state.CopyFlatSupports(), state.RememberedArchSteepness);
+                }
+                planned.Add(new BridgeShapeChangeCommand(_mapHandler.Map, target, state));
+            });
+            error = failure ?? string.Empty;
+            return failure == null;
+        }
+
         public IBridgePavingStroke BeginBridgePavingStroke() =>
             new SymmetryBridgePavingStroke(this, _symmetry.Capture());
 

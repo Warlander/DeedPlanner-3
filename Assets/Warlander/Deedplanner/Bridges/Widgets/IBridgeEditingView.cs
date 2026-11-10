@@ -13,12 +13,16 @@ namespace Warlander.Deedplanner.Bridges.Widgets
         event Action BecameInactive;
         event Action<BridgeData> SelectedMaterialChanged;
         event Action<int> SelectedExtraArgumentChanged;
+        event Action<BridgeType> SelectedShapeChanged;
 
         bool IsActive { get; }
 
         void SetDeleteButtonVisible(bool visible);
         void SetCancelButtonVisible(bool visible);
         void SetTypeLabel(string text);
+        void SetShapes(BridgeType selected, bool flatEnabled, bool archedEnabled, string message);
+        void SetShapesVisible(bool visible);
+        void SetExtraArgumentLabel(string text);
         void SetMaterials(IReadOnlyList<BridgeData> materials, int selectedIndex);
         void SetMaterialsVisible(bool visible);
         void SetExtraArguments(IReadOnlyList<int> values, int selectedIndex);

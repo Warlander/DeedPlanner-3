@@ -34,6 +34,8 @@ namespace Warlander.Deedplanner.Editing
         void ChangeBridgeMaterial(Bridge bridge, BridgeData material, string newSegments);
         void ChangeBridgeExtraArgument(Bridge bridge, int value);
         void ChangeBridgeSegments(Bridge bridge, string newSegments);
+        bool CanChangeBridgeShape(Bridge bridge, BridgeType type, out string error);
+        bool TryChangeBridgeShape(Bridge bridge, BridgeType type, out string error);
         IBridgePavingStroke BeginBridgePavingStroke();
         void RecordBridgePaving(BridgePart[] parts, BridgePavementData[] oldPavements,
             BridgePavementData[] newPavements);

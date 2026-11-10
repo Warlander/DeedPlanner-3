@@ -4,6 +4,7 @@ using Warlander.Deedplanner.Persistence;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Xml;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem.Utilities;
 using Warlander.Deedplanner.Rendering.Outline;
@@ -18,6 +19,7 @@ namespace Warlander.Deedplanner.Bridges
 
         public BridgeType Type => bridgeType;
         public int AdditionalData => additionalData;
+        public int Width => (verticalOrientation ? Mathf.Abs(secondX - firstX) : Mathf.Abs(secondY - firstY)) + 1;
         public int LowerLevel => Mathf.Min(firstLevel, secondLevel);
         public int HigherLevel => Mathf.Max(firstLevel, secondLevel);
         public bool IsCave => !surfaced;
@@ -40,7 +42,9 @@ namespace Warlander.Deedplanner.Bridges
         private int additionalData;
         private readonly bool verticalOrientation;
         private readonly bool surfaced;
-        private readonly BridgeType bridgeType;
+        private BridgeType bridgeType;
+        private bool[] _rememberedFlatSupports;
+        private int? _rememberedArchSteepness;
 
         private List<BridgePart> bridgeParts = new List<BridgePart>();
         private readonly List<BridgePart> segmentParts = new List<BridgePart>();
@@ -130,6 +134,9 @@ namespace Warlander.Deedplanner.Bridges
             verticalOrientation = originalBridge.verticalOrientation;
             surfaced = originalBridge.surfaced;
             bridgeType = originalBridge.bridgeType;
+            _rememberedFlatSupports = originalBridge._rememberedFlatSupports == null
+                ? null : (bool[])originalBridge._rememberedFlatSupports.Clone();
+            _rememberedArchSteepness = originalBridge._rememberedArchSteepness;
 
             ConstructBridge(map, pavements);
         }
@@ -616,6 +623,103 @@ namespace Warlander.Deedplanner.Bridges
                 int delta = Mathf.RoundToInt(totalHeightAfter - totalHeight);
                 part.UpdateHeight(totalHeight, delta);
             }
+        }
+
+        public BridgeShapeState CaptureShapeState()
+        {
+            return new BridgeShapeState(bridgeType, GetSegmentsString(), additionalData,
+                _rememberedFlatSupports, _rememberedArchSteepness);
+        }
+
+        public bool TryPrepareShapeChange(BridgeType target, out BridgeShapeState state, out string error)
+        {
+            state = null;
+            error = string.Empty;
+            if ((bridgeType != BridgeType.Flat && bridgeType != BridgeType.Arched)
+                || (target != BridgeType.Flat && target != BridgeType.Arched))
+            {
+                error = "Rope bridges cannot change shape.";
+                return false;
+            }
+            if (!Data.IsTypeAllowed(target))
+            {
+                error = $"This material does not support {target.ToString().ToLowerInvariant()} bridges.";
+                return false;
+            }
+            if (Width > Data.MaxWidth)
+            {
+                error = "This material does not support the bridge's width.";
+                return false;
+            }
+
+            int length = (verticalOrientation ? Mathf.Abs(secondY - firstY) : Mathf.Abs(secondX - firstX)) + 1;
+            if (length < BridgeDefaults.MinLength || length > BridgeDefaults.MaxLength || length != segments.Length)
+            {
+                error = $"Bridge length must be between {BridgeDefaults.MinLength} and {BridgeDefaults.MaxLength} tiles and match its layout.";
+                return false;
+            }
+            if (target == BridgeType.Arched && length < 2)
+            {
+                error = "Arched bridges need at least 2 tiles.";
+                return false;
+            }
+
+            bool[] flatSupports = bridgeType == BridgeType.Flat ? GetSupportPositions() : _rememberedFlatSupports;
+            int? archSteepness = bridgeType == BridgeType.Arched ? additionalData : _rememberedArchSteepness;
+            string newSegments;
+            int extraArgument = 0;
+            if (target == BridgeType.Flat && flatSupports != null)
+            {
+                if (flatSupports.Length != length
+                    || !BridgeStructureUtils.ConstructFlatBridge(flatSupports, out BridgePartType?[] parts))
+                {
+                    error = "The remembered flat support layout is invalid.";
+                    return false;
+                }
+                for (int i = 0; i < parts.Length; i++)
+                {
+                    BridgePartType part = parts[i].Value;
+                    if (!Data.HasPart(part) && (part == BridgePartType.Bracing
+                        || part == BridgePartType.DoubleBracing || part == BridgePartType.DoubleAbutment)
+                        && Data.HasPart(BridgePartType.Crown))
+                    {
+                        parts[i] = BridgePartType.Crown;
+                    }
+                }
+                newSegments = BridgePartTypeUtils.EncodeSegments(parts.Select(part => part.Value).ToArray());
+            }
+            else
+            {
+                newSegments = BridgeDefaults.GetDefaultSegments(target, Data, length);
+            }
+            if (target == BridgeType.Arched)
+            {
+                extraArgument = archSteepness ?? GetTypeForBridge(target).ExtraArguments[0];
+                if (!GetTypeForBridge(target).ExtraArguments.Contains(extraArgument))
+                {
+                    error = "The remembered arch steepness is not supported.";
+                    return false;
+                }
+            }
+
+            foreach (BridgePartType part in BridgePartTypeUtils.DecodeSegments(newSegments))
+            {
+                if (!Data.HasPart(part))
+                {
+                    error = $"This material has no {part.ToHumanFriendlyName()} bridge segment.";
+                    return false;
+                }
+            }
+            state = new BridgeShapeState(target, newSegments, extraArgument, flatSupports, archSteepness);
+            return true;
+        }
+
+        public void ApplyShapeState(Map map, BridgeShapeState state)
+        {
+            bridgeType = state.Type;
+            _rememberedFlatSupports = state.CopyFlatSupports();
+            _rememberedArchSteepness = state.RememberedArchSteepness;
+            Rebuild(map, Data, state.Segments, state.AdditionalData);
         }
 
         public void Rebuild(Map map, BridgeData newData, string newSegments, int newAdditionalData)

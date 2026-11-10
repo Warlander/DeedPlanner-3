@@ -2,6 +2,7 @@
 
 ## [3.5.1] - Unreleased
 
+- Added flat/arched switching for existing bridges, with each shape's settings remembered until the map is reloaded
 - Improved map error and warning checks on large deeds
 - Fixed map warnings retaining outdated or duplicate entries after refreshing
 - Fixed some saved objects resisting deletion and blocking replacement

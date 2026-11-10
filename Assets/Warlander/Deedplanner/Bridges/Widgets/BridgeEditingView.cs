@@ -19,6 +19,11 @@ namespace Warlander.Deedplanner.Bridges.Widgets
         [SerializeField] private GameObject _extraArgumentSection;
         [SerializeField] private Transform _extraArgumentToggleRoot;
         [SerializeField] private LabeledToggle _togglePrefab;
+        [SerializeField] private Transform _shapeToggleRoot;
+        [SerializeField] private TextMeshProUGUI _shapeMessage;
+        [SerializeField] private LayoutElement _shapeMessageLayout;
+        [SerializeField] private TextMeshProUGUI _extraArgumentLabel;
+        [SerializeField] private TextMeshProUGUI _materialLabel;
 
         public event Action DeleteClicked;
         public event Action CancelClicked;
@@ -26,6 +31,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
         public event Action BecameInactive;
         public event Action<BridgeData> SelectedMaterialChanged;
         public event Action<int> SelectedExtraArgumentChanged;
+        public event Action<BridgeType> SelectedShapeChanged;
 
         public bool IsActive => gameObject.activeInHierarchy;
 
@@ -35,6 +41,8 @@ namespace Warlander.Deedplanner.Bridges.Widgets
         private readonly List<int> _extraArguments = new List<int>();
         private readonly List<LabeledToggle> _extraArgumentToggles = new List<LabeledToggle>();
         private int _selectedExtraArgumentIndex = -1;
+        private readonly List<LabeledToggle> _shapeToggles = new List<LabeledToggle>();
+        private bool _refreshingShapes;
 
         private void Awake()
         {
@@ -49,6 +57,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
 
             ClearToggles(_materialToggles);
             ClearToggles(_extraArgumentToggles);
+            ClearToggles(_shapeToggles);
         }
 
         private void OnEnable()
@@ -79,11 +88,57 @@ namespace Warlander.Deedplanner.Bridges.Widgets
             }
         }
 
+        public void SetShapesVisible(bool visible)
+        {
+            _shapeToggleRoot.gameObject.SetActive(visible);
+            _shapeMessage.gameObject.SetActive(visible);
+        }
+
+        public void SetShapes(BridgeType selected, bool flatEnabled, bool archedEnabled, string message)
+        {
+            _refreshingShapes = true;
+            ClearToggles(_shapeToggles);
+            ToggleGroup group = GetOrCreateToggleGroup(_shapeToggleRoot);
+            AddShapeToggle(BridgeType.Flat, flatEnabled);
+            AddShapeToggle(BridgeType.Arched, archedEnabled);
+            _shapeMessage.text = message;
+            float messageWidth = ((RectTransform)_shapeToggleRoot.parent).rect.width;
+            float messageHeight = _shapeMessage.GetPreferredValues(message, messageWidth, 0f).y + 8f;
+            _shapeMessageLayout.minHeight = messageHeight;
+            _shapeMessageLayout.preferredHeight = messageHeight;
+            _shapeMessage.gameObject.SetActive(message.Length > 0);
+            _refreshingShapes = false;
+
+            void AddShapeToggle(BridgeType type, bool enabled)
+            {
+                LabeledToggle toggle = Instantiate(_togglePrefab, _shapeToggleRoot);
+                toggle.LabelText = type.ToString();
+                toggle.Group = group;
+                toggle.Interactable = enabled;
+                toggle.gameObject.SetActive(true);
+                toggle.IsOn = selected == type;
+                toggle.Toggled += isOn =>
+                {
+                    if (isOn && !_refreshingShapes)
+                    {
+                        SelectedShapeChanged?.Invoke(type);
+                    }
+                };
+                _shapeToggles.Add(toggle);
+            }
+        }
+
+        public void SetExtraArgumentLabel(string text)
+        {
+            _extraArgumentLabel.text = text;
+        }
+
         public void SetMaterialsVisible(bool visible)
         {
             if (_materialSection != null)
             {
                 _materialSection.SetActive(visible);
+                _materialLabel.gameObject.SetActive(visible);
             }
         }
 
@@ -135,6 +190,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
             if (_extraArgumentSection != null)
             {
                 _extraArgumentSection.SetActive(visible);
+                _extraArgumentLabel.gameObject.SetActive(visible);
             }
         }
 
@@ -197,6 +253,7 @@ namespace Warlander.Deedplanner.Bridges.Widgets
             {
                 if (toggle != null)
                 {
+                    toggle.gameObject.SetActive(false);
                     Destroy(toggle.gameObject);
                 }
             }
