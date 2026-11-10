@@ -220,6 +220,13 @@ namespace Warlander.Deedplanner.Editing
                 int targetX = Mathf.FloorToInt(worldX / 4f);
                 int targetY = Mathf.FloorToInt(worldY / 4f);
                 var targetPosition = new Vector2(worldX - targetX * 4f, worldY - targetY * 4f);
+                if (data == null && transform == SymmetryTransform.Identity)
+                {
+                    // Saved local coordinates are exact entity keys.
+                    targetX = x;
+                    targetY = y;
+                    targetPosition = localPosition;
+                }
                 var coordinate = new PoseCoordinate(targetX, targetY, targetPosition);
                 if (targetX < 0 || targetX > maxX || targetY < 0 || targetY > maxY ||
                     !visited.Add(coordinate))
@@ -233,6 +240,20 @@ namespace Warlander.Deedplanner.Editing
                 if (data != null && HasNearbyDecoration(map, worldX, worldY, level))
                 {
                     return;
+                }
+                if (data == null && transform != SymmetryTransform.Identity)
+                {
+                    Decoration existing = map[targetX, targetY].GetDecorations()
+                        .Where(decoration => decoration.Level == level
+                            && Mathf.Approximately(targetX * 4f + decoration.Position.x, worldX)
+                            && Mathf.Approximately(targetY * 4f + decoration.Position.y, worldY))
+                        .OrderBy(decoration => (decoration.Position - targetPosition).sqrMagnitude)
+                        .FirstOrDefault();
+                    if (existing == null)
+                    {
+                        return;
+                    }
+                    targetPosition = existing.Position;
                 }
 
                 Decoration result = map[targetX, targetY].SetDecoration(data, targetPosition,

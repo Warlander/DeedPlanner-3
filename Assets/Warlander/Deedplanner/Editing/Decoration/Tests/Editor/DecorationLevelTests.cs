@@ -1,6 +1,8 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Xml;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -350,6 +352,93 @@ namespace Warlander.Deedplanner.Editing.Tests
             Decoration placed = _fixture.Map.Cast<Tile>().SelectMany(tile => tile.GetDecorations()).Single();
             Assert.That(placed.Rotation, Is.Zero);
         }
+        [TestCase(-1, false)]
+        [TestCase(-1, true)]
+        [TestCase(0, false)]
+        [TestCase(0, true)]
+        [TestCase(-2, false)]
+        [TestCase(-2, true)]
+        public void LoadedFractionalPosition_DeletesThroughInputAndHistory(int level, bool singleObject)
+        {
+            Tile tile = _fixture.Map[1, 0];
+            Decoration loaded = _fixture.LoadDecoration(tile, new Vector2(0.1f, 2), level);
+            Decoration other = tile.SetDecoration(_fixture.Data, loaded.Position, 0, level == 0 ? -1 : 0);
+            _fixture.Facade.FinishAction();
+            _fixture.TargetPosition(level, 1, loaded.Position);
+
+            if (singleObject)
+            {
+                _fixture.DeleteKey();
+            }
+            else
+            {
+                _fixture.MouseButton(MouseButton.Right);
+            }
+
+            Assert.That(tile.GetDecorations(), Is.EquivalentTo(new[] { other }));
+            _fixture.Map.CommandManager.Undo();
+            Assert.That(tile.GetDecorations(), Is.EquivalentTo(new[] { loaded, other }));
+            _fixture.Map.CommandManager.Redo();
+            Assert.That(tile.GetDecorations(), Is.EquivalentTo(new[] { other }));
+            Assert.That(_fixture.Facade.SetDecoration(1, 0, _fixture.Data, loaded.Position, 0, level), Is.Not.Null);
+        }
+
+        [TestCase(-1, false)]
+        [TestCase(-1, true)]
+        [TestCase(0, false)]
+        [TestCase(0, true)]
+        public void PlacedFractionalPosition_DeletesAfterXmlRoundtrip(int level, bool singleObject)
+        {
+            Tile tile = _fixture.Map[1, 0];
+            _fixture.Facade.SetDecoration(1, 0, _fixture.Data, new Vector2(0.1f, 2), 0, level);
+            _fixture.Facade.FinishAction();
+            _fixture.RoundtripDecorations(tile);
+            Decoration loaded = tile.GetDecorations().Single();
+            _fixture.TargetPosition(level, 1, loaded.Position);
+
+            if (singleObject)
+            {
+                _fixture.DeleteKey();
+            }
+            else
+            {
+                _fixture.MouseButton(MouseButton.Right);
+            }
+
+            Assert.That(tile.GetDecorations(), Is.Empty);
+            _fixture.Map.CommandManager.Undo();
+            Assert.That(tile.GetDecorations(), Is.EquivalentTo(new[] { loaded }));
+            _fixture.Map.CommandManager.Redo();
+            Assert.That(tile.GetDecorations(), Is.Empty);
+            Assert.That(_fixture.Facade.SetDecoration(1, 0, _fixture.Data, loaded.Position, 0, level), Is.Not.Null);
+        }
+
+        [TestCase(-1)]
+        [TestCase(0)]
+        [TestCase(-2)]
+        public void LoadedFractionalPosition_MirroredDeletionUsesStoredKeysAndPreservesNeighbors(int level)
+        {
+            _fixture.Symmetry.PlaceVerticalAxis(2);
+            Tile tile = _fixture.Map[1, 0];
+            Decoration loaded = _fixture.LoadDecoration(tile, new Vector2(0.1f, 2), level);
+            Decoration nearby = _fixture.Tile.SetDecoration(_fixture.Data, new Vector2(3.8f, 2), 0, level);
+            Decoration mirrored = _fixture.LoadDecoration(_fixture.Tile, new Vector2(3.9f, 2), level);
+            Decoration other = _fixture.Tile.SetDecoration(_fixture.Data, mirrored.Position, 0, level == 0 ? -1 : 0);
+            _fixture.Facade.FinishAction();
+            _fixture.TargetPosition(level, 1, loaded.Position);
+
+            _fixture.MouseButton(MouseButton.Right);
+
+            Assert.That(tile.GetDecorations(), Is.Empty);
+            Assert.That(_fixture.Tile.GetDecorations(), Is.EquivalentTo(new[] { nearby, other }));
+            _fixture.Map.CommandManager.Undo();
+            Assert.That(tile.GetDecorations(), Is.EquivalentTo(new[] { loaded }));
+            Assert.That(_fixture.Tile.GetDecorations(), Is.EquivalentTo(new[] { nearby, mirrored, other }));
+            _fixture.Map.CommandManager.Redo();
+            Assert.That(tile.GetDecorations(), Is.Empty);
+            Assert.That(_fixture.Tile.GetDecorations(), Is.EquivalentTo(new[] { nearby, other }));
+        }
+
         private static void SetField(object target, string name, object value)
         {
             target.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).SetValue(target, value);
@@ -386,11 +475,12 @@ namespace Warlander.Deedplanner.Editing.Tests
                 var open = new CaveData(null, "Open", "o", Array.Empty<string[]>(), false, true, false);
                 var database = new Database();
                 database.AddCave(solid);
+                database.AddCave(open);
                 for (int x = 0; x <= 2; x++)
                 {
                     for (int y = 0; y <= 1; y++)
                     {
-                        var tile = new Tile(Map, x, y, null, database, null, new GroundResolver(), null);
+                        var tile = new Tile(Map, x, y, null, database, new CaveDataResolver(database), new GroundResolver(), null);
                         tile.Cave.InitializeHeights(-30, 30);
                         tile.Cave.InitializeTerrain(open);
                         grid.SetTile(x, y, tile);
@@ -413,6 +503,7 @@ namespace Warlander.Deedplanner.Editing.Tests
                 SetField(model, "_originalModel", originalModel);
                 Data = new DecorationData(model, "Object", "object", Array.Empty<string[]>(), "tree",
                     false, false, false, true, false, null);
+                database.AddDecoration(Data);
                 var handler = new MapHandler(null, null, logger);
                 var registry = (MapRegistry)typeof(MapHandler).GetField("_registry", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(handler);
                 registry.SetMap(Map);
@@ -447,6 +538,38 @@ namespace Warlander.Deedplanner.Editing.Tests
             }
 
             public Decoration AddDecoration(int level, Vector2 position) => Tile.SetDecoration(Data, position, 0, level);
+
+            public Decoration LoadDecoration(Tile tile, Vector2 position, int level)
+            {
+                var document = new XmlDocument();
+                var element = document.CreateElement("object");
+                element.SetAttribute("id", Data.ShortName);
+                element.SetAttribute("x", position.x.ToString("R", CultureInfo.InvariantCulture));
+                element.SetAttribute("y", position.y.ToString("R", CultureInfo.InvariantCulture));
+                element.SetAttribute("rotation", "0");
+                tile.DeserializeDecoration(element, level);
+                return tile.GetDecorations().Single(d => d.Level == level && d.Position == position);
+            }
+
+            public void RoundtripDecorations(Tile tile)
+            {
+                var document = new XmlDocument();
+                var element = document.CreateElement("tile");
+                tile.Serialize(document, element);
+                foreach (Decoration decoration in tile.GetDecorations())
+                {
+                    tile.SetDecoration(null, decoration.Position, decoration.Rotation, decoration.Level);
+                }
+                Facade.FinishAction();
+                tile.DeserializeEntities(element);
+                Facade.FinishAction();
+            }
+
+            public void TargetPosition(int level, int tileX, Vector2 localPosition)
+            {
+                _overlay.center = new Vector3(tileX * 4f + localPosition.x, 0, localPosition.y);
+                TargetLevel(level);
+            }
 
             public float PreviewRotation => _ghost.transform.eulerAngles.y;
 
