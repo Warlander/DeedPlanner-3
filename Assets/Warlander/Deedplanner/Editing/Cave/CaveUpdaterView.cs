@@ -76,6 +76,11 @@ namespace Warlander.Deedplanner.Editing
             deselected.SetIsOnWithoutNotify(false);
         }
 
+        public void SelectCaveEntry(CaveData data)
+        {
+            _cavesTree.SelectValue(data);
+        }
+
         private void OnCaveSelected(object value)
         {
             CaveSelected?.Invoke(value as CaveData);

@@ -6,6 +6,7 @@ using Warlander.Deedplanner.Domain.Entities.Grounds;
 using Warlander.Deedplanner.Domain.Entities.Walls;
 using Warlander.Deedplanner.Inputs;
 using Warlander.Deedplanner.Cameras;
+using Warlander.Deedplanner.Caves;
 using Warlander.Deedplanner.Settings;
 using Warlander.Deedplanner.Rendering.Assets;
 using Warlander.Deedplanner.Docks;
@@ -127,15 +128,27 @@ namespace Warlander.Deedplanner.Editing
             if (wallEntity && wallEntity.Valid)
             {
                 floor = levelEntity.Level;
-                if (_cameraCoordinator.Current.Level == floor + 1)
+                if (_cameraCoordinator.Current.Level < 0 || _cameraCoordinator.Current.Level == floor + 1)
                 {
-                    floor++;
+                    floor = _cameraCoordinator.Current.Level;
                 }
                 x = levelEntity.Tile.X;
                 y = levelEntity.Tile.Y;
                 EntityType type = levelEntity.Type;
                 horizontal = (type == EntityType.Hwall || type == EntityType.Hfence);
                 supportSide = wallEntity.SupportSide;
+            }
+            else if (_cameraCoordinator.Current.HasCurrentCaveHit && _cameraCoordinator.Current.CurrentCaveHit.HasEdge)
+            {
+                CaveHit hit = _cameraCoordinator.Current.CurrentCaveHit;
+                if (!_mapHandler.Map.Caves.IsOpen(hit.OpenCellX, hit.OpenCellY))
+                {
+                    return;
+                }
+                floor = _cameraCoordinator.Current.Level;
+                horizontal = hit.Edge == CaveEdge.South || hit.Edge == CaveEdge.North;
+                x = hit.OpenCellX + (hit.Edge == CaveEdge.East ? 1 : 0);
+                y = hit.OpenCellY + (hit.Edge == CaveEdge.North ? 1 : 0);
             }
             else if (overlayMesh || groundMesh || hitDock || hitFloor || _cameraCoordinator.Current.HasCurrentCaveHit)
             {
@@ -145,7 +158,7 @@ namespace Warlander.Deedplanner.Editing
                 }
                 else if (hitFloor)
                 {
-                    floor = hitFloor.Level;
+                    floor = _cameraCoordinator.Current.Level < 0 ? _cameraCoordinator.Current.Level : hitFloor.Level;
                     hitDock = hitFloor.Tile.GetDock(floor < 0 ? DockRealm.Cave : DockRealm.Surface);
                 }
                 else if (overlayMesh)

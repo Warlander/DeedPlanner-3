@@ -160,7 +160,7 @@ namespace Warlander.Deedplanner.Editing
             int y = -1;
             if (levelEntity && levelEntity.Valid)
             {
-                floor = levelEntity.Level;
+                floor = _cameraCoordinator.Current.Level < 0 ? _cameraCoordinator.Current.Level : levelEntity.Level;
                 x = levelEntity.Tile.X;
                 y = levelEntity.Tile.Y;
             }

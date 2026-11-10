@@ -4,9 +4,9 @@
 
 - Added drag-to-select material calculations for rectangular areas on the current floor or across all surface and cave floors, with a shaded gold selection and live tile dimensions
 - Fixed Perspective camera position changing when switching between surface and cave floors
-- Expanded cave planning to seven underground storeys
+- Expanded cave planning to seven underground storeys, with floors and walls targeting the selected storey
 - Removed the redundant Veins category from the Caves tab to reduce clutter
-- Fixed the ground tree selection not following the active left-click or right-click ground type
+- Fixed the Ground and Caves lists not following the active left-click or right-click terrain assignment
 - Refreshed item selectors with parchment rows, clearer selection marks, centered previews, room for two-line names, and tooltips for truncated names
 - Fixed bridge paving texture seams between lanes and oppositely facing segments
 - Added surface height detail to supported outdoor ground, enabled by default with a Graphics setting to turn it off
@@ -14,7 +14,8 @@
 - Fixed barred wall names appearing as "bars" instead of "barred wall"
 - Fixed the materials report's reversed scrollbar and jump on the first scroll
 - Fixed right-clicking bridges in the Objects tab causing an error
-- Fixed object deletion affecting other floors and placement being blocked by objects on other floors
+- Fixed object placement and removal on bare ground, deletion affecting other floors, and placement being blocked by objects on other floors
+- Fixed walls and fences failing to build along cave boundaries, including north and east edges
 - Fixed height-area selections shifting across the map when moving or zooming the camera
 - Reduced memory use by releasing unused CPU copies of loaded textures
 - Improved 3D rendering performance on large deeds, especially with a single camera

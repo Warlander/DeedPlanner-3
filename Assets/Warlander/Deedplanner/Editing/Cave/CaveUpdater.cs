@@ -48,7 +48,7 @@ namespace Warlander.Deedplanner.Editing
         {
             _view.CaveSelected += OnCaveSelected;
             _view.ToolChanged += tool => _tool = tool;
-            _view.PrimaryTargetChanged += value => _primaryTargeted = value;
+            _view.PrimaryTargetChanged += OnPrimaryTargetChanged;
             _view.CullingChanged += _renderOptions.SetCullingEnabled;
 
             _primaryData = _dataCatalog.GetCave("sfl");
@@ -75,6 +75,7 @@ namespace Warlander.Deedplanner.Editing
         {
             _tabContext.TileSelectionMode = TileSelectionMode.Tiles;
             _view.SetCullingEnabled(_renderOptions.IsCullingEnabled());
+            _view.SelectCaveEntry(_primaryTargeted ? _primaryData : _secondaryData);
         }
 
         public void Disable()
@@ -234,16 +235,30 @@ namespace Warlander.Deedplanner.Editing
             }
         }
 
+        private void OnPrimaryTargetChanged(bool primaryTargeted)
+        {
+            _primaryTargeted = primaryTargeted;
+            _view.SelectCaveEntry(_primaryTargeted ? _primaryData : _secondaryData);
+        }
+
         private void SetPrimary(CaveData data)
         {
             _primaryData = data;
             _view.SetPrimaryData(data);
+            if (_primaryTargeted)
+            {
+                _view.SelectCaveEntry(data);
+            }
         }
 
         private void SetSecondary(CaveData data)
         {
             _secondaryData = data;
             _view.SetSecondaryData(data);
+            if (!_primaryTargeted)
+            {
+                _view.SelectCaveEntry(data);
+            }
         }
 
         private readonly struct CavePaintCell

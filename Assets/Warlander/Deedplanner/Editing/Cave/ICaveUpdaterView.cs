@@ -13,6 +13,7 @@ namespace Warlander.Deedplanner.Editing
         void AddCaveEntry(CaveData data, string[] category);
         void SetPrimaryData(CaveData data);
         void SetSecondaryData(CaveData data);
+        void SelectCaveEntry(CaveData data);
         void SetCullingEnabled(bool enabled);
     }
 }

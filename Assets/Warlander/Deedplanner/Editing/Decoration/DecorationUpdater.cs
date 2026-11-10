@@ -194,7 +194,7 @@ namespace Warlander.Deedplanner.Editing
             {
                 _position = CalculateCorrectedPosition(raycast.point, data, _settings.DecorationSnapToGrid);
                 _targetedTile = null;
-                if (overlayMesh || caveHit)
+                if (overlayMesh || groundMesh || caveHit)
                 {
                     int tileX = caveHit
                         ? _cameraCoordinator.Current.CurrentCaveHit.CellX

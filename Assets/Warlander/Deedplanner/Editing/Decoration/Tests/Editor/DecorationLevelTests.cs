@@ -70,6 +70,32 @@ namespace Warlander.Deedplanner.Editing.Tests
             Assert.That(_fixture.Tile.GetDecorations(), Is.EquivalentTo(new[] { other }));
         }
 
+        [Test]
+        public void RightClick_RealGroundHitDeletesSurfaceTreeAndPreservesCaveObject()
+        {
+            _fixture.TargetGround();
+            Decoration surface = _fixture.AddDecoration(0, new Vector2(2, 2));
+            Decoration cave = _fixture.AddDecoration(-1, new Vector2(2, 2));
+            _fixture.Map.CommandManager.FinishAction();
+
+            _fixture.MouseButton(MouseButton.Right);
+
+            Assert.That(_fixture.Tile.GetDecorations(), Is.EquivalentTo(new[] { cave }));
+            _fixture.Map.CommandManager.Undo();
+            Assert.That(_fixture.Tile.GetDecorations(), Is.EquivalentTo(new[] { surface, cave }));
+        }
+
+        [Test]
+        public void LeftClick_RealGroundHitPlacesSurfaceObject()
+        {
+            _fixture.TargetGround();
+
+            _fixture.MouseButton(MouseButton.Left);
+            _fixture.ReleaseMouse();
+
+            Assert.That(_fixture.Tile.GetDecorations().Single().Level, Is.Zero);
+        }
+
         [TestCase(-1, 0)]
         [TestCase(0, -1)]
         [TestCase(1, 0)]
@@ -305,6 +331,15 @@ namespace Warlander.Deedplanner.Editing.Tests
                 var floorData = new FloorData(Data.Model, "Floor", "floor", Array.Empty<string[]>(), false, false, null);
                 Floor floor = Tile.SetFloor(floorData, EntityOrientation.Up, level);
                 var collider = floor.GetComponent<BoxCollider>();
+                SetRaycast(collider);
+            }
+
+            public void TargetGround()
+            {
+                SetField(_camera, "_level", 0);
+                BoxCollider collider = Map.Ground.gameObject.AddComponent<BoxCollider>();
+                collider.center = new Vector3(2, 0, 2);
+                collider.size = new Vector3(4, 0.1f, 4);
                 SetRaycast(collider);
             }
 

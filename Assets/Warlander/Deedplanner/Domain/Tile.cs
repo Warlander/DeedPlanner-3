@@ -111,6 +111,8 @@ namespace Warlander.Deedplanner.Domain
         {
             Cave.SetTerrain(terrain);
             RefreshCaveEntities();
+            Map.GetRelativeTile(this, 1, 0)?.RefreshCaveEntities();
+            Map.GetRelativeTile(this, 0, 1)?.RefreshCaveEntities();
         }
 
         internal void ApplyCaveFloorHeight(int height)
@@ -1102,8 +1104,11 @@ namespace Warlander.Deedplanner.Domain
                     continue;
                 }
                 LevelEntity levelEntity = pair.Value;
-                levelEntity.gameObject.SetActive(!Cave.IsSolid);
-                if (Cave.IsSolid)
+                bool exposed = !Cave.IsSolid
+                    || (data.Type == EntityType.Hwall || data.Type == EntityType.Hfence) && Map.Caves.IsOpen(X, Y - 1)
+                    || (data.Type == EntityType.Vwall || data.Type == EntityType.Vfence) && Map.Caves.IsOpen(X - 1, Y);
+                levelEntity.gameObject.SetActive(exposed);
+                if (!exposed)
                 {
                     continue;
                 }

@@ -139,7 +139,7 @@ namespace Warlander.Deedplanner.Editing
                 {
                     return;
                 }
-                if (level < 0 && (targetY >= map.Height || !map.Caves.IsOpen(targetX, targetY)))
+                if (level < 0 && !map.Caves.IsOpen(targetX, targetY) && !map.Caves.IsOpen(targetX, targetY - 1))
                 {
                     return;
                 }
@@ -171,7 +171,7 @@ namespace Warlander.Deedplanner.Editing
                 {
                     return;
                 }
-                if (level < 0 && (targetX >= map.Width || !map.Caves.IsOpen(targetX, targetY)))
+                if (level < 0 && !map.Caves.IsOpen(targetX, targetY) && !map.Caves.IsOpen(targetX - 1, targetY))
                 {
                     return;
                 }
