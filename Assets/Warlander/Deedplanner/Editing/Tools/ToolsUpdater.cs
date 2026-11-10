@@ -283,12 +283,18 @@ namespace Warlander.Deedplanner.Editing
             for (int x = min.x; x < max.x; x++)
             {
                 AddAreaEdge(map, camera.AttachedCamera, screen.rect, x, min.y, x + 1, min.y);
-                AddAreaEdge(map, camera.AttachedCamera, screen.rect, x, max.y, x + 1, max.y);
             }
             for (int y = min.y; y < max.y; y++)
             {
-                AddAreaEdge(map, camera.AttachedCamera, screen.rect, min.x, y, min.x, y + 1);
                 AddAreaEdge(map, camera.AttachedCamera, screen.rect, max.x, y, max.x, y + 1);
+            }
+            for (int x = max.x; x > min.x; x--)
+            {
+                AddAreaEdge(map, camera.AttachedCamera, screen.rect, x, max.y, x - 1, max.y);
+            }
+            for (int y = max.y; y > min.y; y--)
+            {
+                AddAreaEdge(map, camera.AttachedCamera, screen.rect, min.x, y, min.x, y - 1);
             }
             _view.ShowAreaSelection(screen, _areaOutline, max - min);
         }
