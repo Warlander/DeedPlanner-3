@@ -2,6 +2,8 @@
 
 ## [3.5.1] - Unreleased
 
+- Improved map error and warning checks on large deeds
+- Fixed map warnings retaining outdated or duplicate entries after refreshing
 - Fixed some saved objects resisting deletion and blocking replacement
 - Fixed catseye and waystone rotation and placement at shared and outer map corners
 - Added fruit presses, cheese drills, baking stones, coloured catseyes, item piles, ten traps and standing Christmas decorations

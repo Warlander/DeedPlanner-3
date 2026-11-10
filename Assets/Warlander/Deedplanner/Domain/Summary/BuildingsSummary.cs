@@ -7,12 +7,19 @@ namespace Warlander.Deedplanner.Domain.Summary
         private HashSet<Building> Buildings { get; } = new HashSet<Building>();
         private HashSet<Room> Rooms { get; }
 
+        private readonly Building[,] _buildingsByTile;
+        private readonly bool[,] _horizontalWalls;
+        private readonly bool[,] _verticalWalls;
+
         public int BuildingsCount => Buildings.Count;
         public int RoomsCount => Rooms.Count;
 
         public BuildingsSummary(Map map, int level)
         {
             bool[,] tilesChecked = new bool[map.Width + 1, map.Height + 1];
+            _buildingsByTile = new Building[map.Width + 1, map.Height + 1];
+            _horizontalWalls = new bool[map.Width + 1, map.Height + 1];
+            _verticalWalls = new bool[map.Width + 1, map.Height + 1];
 
             LinkedList<Room> rooms = new LinkedList<Room>();
             
@@ -66,7 +73,29 @@ namespace Warlander.Deedplanner.Domain.Summary
                     rooms.Remove(room);
                 }
                 
-                Buildings.Add(new Building(roomsInBuilding));
+                Building building = new Building(roomsInBuilding);
+                Buildings.Add(building);
+                foreach (Room room in roomsInBuilding)
+                {
+                    foreach (TileSummary tile in room.Tiles)
+                    {
+                        switch (tile.TilePart)
+                        {
+                            case TilePart.Everything:
+                                if (_buildingsByTile[tile.X, tile.Y] == null)
+                                {
+                                    _buildingsByTile[tile.X, tile.Y] = building;
+                                }
+                                break;
+                            case TilePart.HorizontalWallOnly:
+                                _horizontalWalls[tile.X, tile.Y] = true;
+                                break;
+                            case TilePart.VerticalWallOnly:
+                                _verticalWalls[tile.X, tile.Y] = true;
+                                break;
+                        }
+                    }
+                }
             }
         }
 
@@ -191,19 +220,6 @@ namespace Warlander.Deedplanner.Domain.Summary
             return new Room(tilesInRoom);
         }
 
-        private bool ContainsTile(TileSummary summary)
-        {
-            foreach (Building building in Buildings)
-            {
-                if (building.ContainsTile(summary))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         public Building GetBuildingAtTile(Tile tile)
         {
             return GetBuildingAtCoords(tile.X, tile.Y);
@@ -211,17 +227,12 @@ namespace Warlander.Deedplanner.Domain.Summary
         
         public Building GetBuildingAtCoords(int x, int y)
         {
-            TileSummary summary = new TileSummary(x, y, TilePart.Everything);
-            
-            foreach (Building building in Buildings)
-            {
-                if (building.ContainsTile(summary))
-                {
-                    return building;
-                }
-            }
-            
-            return null;
+            return ContainsCoordinates(x, y) ? _buildingsByTile[x, y] : null;
+        }
+
+        private bool ContainsCoordinates(int x, int y)
+        {
+            return x >= 0 && y >= 0 && x < _buildingsByTile.GetLength(0) && y < _buildingsByTile.GetLength(1);
         }
 
         public Room GetRoomAtTile(Tile tile)
@@ -241,17 +252,17 @@ namespace Warlander.Deedplanner.Domain.Summary
 
         public bool ContainsFloor(Tile tile)
         {
-            return ContainsTile(new TileSummary(tile.X, tile.Y, TilePart.Everything));
+            return GetBuildingAtTile(tile) != null;
         }
 
         public bool ContainsVerticalWall(Tile tile)
         {
-            return ContainsTile(new TileSummary(tile.X, tile.Y, TilePart.Everything)) || ContainsTile(new TileSummary(tile.X, tile.Y, TilePart.VerticalWallOnly));
+            return ContainsFloor(tile) || (ContainsCoordinates(tile.X, tile.Y) && _verticalWalls[tile.X, tile.Y]);
         }
         
         public bool ContainsHorizontalWall(Tile tile)
         {
-            return ContainsTile(new TileSummary(tile.X, tile.Y, TilePart.Everything)) || ContainsTile(new TileSummary(tile.X, tile.Y, TilePart.HorizontalWallOnly));
+            return ContainsFloor(tile) || (ContainsCoordinates(tile.X, tile.Y) && _horizontalWalls[tile.X, tile.Y]);
         }
     }
 }

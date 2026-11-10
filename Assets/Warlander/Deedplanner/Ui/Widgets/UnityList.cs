@@ -65,9 +65,9 @@ namespace Warlander.Deedplanner.Ui.Widgets
 
         public void Clear()
         {
-            foreach (Transform childTransform in listElementsParent.transform)
+            for (int i = listElementsParent.childCount - 1; i >= 0; i--)
             {
-                DestroyImmediate(childTransform.gameObject);
+                DestroyImmediate(listElementsParent.GetChild(i).gameObject);
             }
         }
 
