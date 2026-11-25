@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Fixed log double-window textures so the logs match adjacent walls and the window frames keep their plank finish
+
 ## [3.5.2] - 2026-11-10
 
 - Added drag-to-select material calculations for rectangular areas on the current floor or across all surface and cave floors, with a shaded gold selection and live tile dimensions
