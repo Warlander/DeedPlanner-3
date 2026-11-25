@@ -4398,7 +4398,7 @@
 		</wall>
 		<wall name="Log double window" shortname="lDWindow" scale="4" type="house">
 			<model location="Walls/Log/logWindowDouble.wom">
-				<override mesh="windowsMesh" texture="Walls/Log/logwall_conif.dds" normal="Walls/Log/logwall_conif_n.dds"/>
+				<override mesh="wallMesh" texture="Walls/Log/logwall_conif.dds" normal="Walls/Log/logwall_conif_n.dds"/>
 				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
 				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
 			</model>
@@ -4543,7 +4543,7 @@
 		</wall>
 		<wall name="Hardwood log double window" shortname="hlDWindow" scale="4" type="house">
 			<model location="Walls/Log/logWindowDouble.wom">
-				<override mesh="windowsMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
+				<override mesh="wallMesh" texture="Walls/Log/logwall_decid.dds" normal="Walls/Log/logwall_decid_n.dds"/>
 				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
 				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
 			</model>
@@ -4688,7 +4688,7 @@
 		</wall>
 		<wall name="Bark log double window" shortname="blDWindow" scale="4" type="house">
 			<model location="Walls/Log/logWindowDouble.wom">
-				<override mesh="windowsMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
+				<override mesh="wallMesh" texture="Walls/Log/logwall_bark.dds" normal="Walls/Log/logwall_bark_n.dds"/>
 				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
 				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
 			</model>
@@ -4833,7 +4833,7 @@
 		</wall>
 		<wall name="Rustic log double window" shortname="rlDWindow" scale="4" type="house">
 			<model location="Walls/Log/logWindowDouble.wom">
-				<override mesh="windowsMesh" texture="Walls/Log/logwall_rustic.dds" normal="Walls/Log/logwall_rustic_n.dds"/>
+				<override mesh="wallMesh" texture="Walls/Log/logwall_rustic.dds" normal="Walls/Log/logwall_rustic_n.dds"/>
 				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
 				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
 			</model>
@@ -4991,7 +4991,7 @@
 		</wall>
 		<wall name="Bark log double window with chinking" shortname="blCDWindow" scale="4" type="house">
 			<model location="Walls/Log/logWindowDouble.wom">
-				<override mesh="windowsMesh" texture="Walls/Log/logwall_bark_chinking.dds"/>
+				<override mesh="wallMesh" texture="Walls/Log/logwall_bark_chinking.dds"/>
 				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
 				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
 			</model>
@@ -5156,7 +5156,7 @@
 		</wall>
 		<wall name="Hardwood log double window with chinking" shortname="hlCDWindow" scale="4" type="house">
 			<model location="Walls/Log/logWindowDouble.wom">
-				<override mesh="windowsMesh" texture="Walls/Log/logwall_decid_chinking.dds"/>
+				<override mesh="wallMesh" texture="Walls/Log/logwall_decid_chinking.dds"/>
 				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
 				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
 			</model>
@@ -5321,7 +5321,7 @@
 		</wall>
 		<wall name="Log double window with chinking" shortname="lCDWindow" scale="4" type="house">
 			<model location="Walls/Log/logWindowDouble.wom">
-				<override mesh="windowsMesh" texture="Walls/Log/logwall_conif_chinking.dds"/>
+				<override mesh="wallMesh" texture="Walls/Log/logwall_conif_chinking.dds"/>
 				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
 				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
 			</model>
@@ -5486,7 +5486,7 @@
 		</wall>
 		<wall name="Rustic log double window with chinking" shortname="rlCDWindow" scale="4" type="house">
 			<model location="Walls/Log/logWindowDouble.wom">
-				<override mesh="windowsMesh" texture="Walls/Log/logwall_rustic_chinking.dds"/>
+				<override mesh="wallMesh" texture="Walls/Log/logwall_rustic_chinking.dds"/>
 				<tex location="Walls/Log/planks.dds" normal="Walls/Log/planks_n.dds"/>
 				<tex location="Walls/Log/logwall_aged2.dds" normal="Walls/Log/logwall_decid_n.dds"/>
 			</model>
